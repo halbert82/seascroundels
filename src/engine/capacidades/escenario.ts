@@ -36,14 +36,16 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
 
   // Efectos temporales («Este turno…»)
   {
-    // TODO fase 3: +1 de dificultad a los encuentros Militar y Guardia.
+    // Este turno, los encuentros Militar y Guardia reciben +1 de dificultad.
     clave: 'bando.turno',
     carta: 'bando',
     ventana: 'constante',
     desde: 'temporal',
+    modifica: (_ctx, _yo, c) =>
+      c.tipo === 'dificultad' && c.claves.some((k) => k === 'Militar' || k === 'Guardia') ? numeroConIcono(textoDe('bando'), 'r') : 0,
   },
   {
-    // TODO fase 3: si zarpas este turno, empiezas la misión con 1 de Avance.
+    // Si zarpas este turno, empiezas la misión con 1 de Avance (lo aplica el inicio de la misión).
     clave: 'rumores.turno',
     carta: 'rumores',
     ventana: 'constante',

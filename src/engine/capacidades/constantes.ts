@@ -47,6 +47,11 @@ function distanciaDelBarco(): number {
   return Number(m[1].replace('−', '-'))
 }
 const DISTANCIA_BARCO = distanciaDelBarco()
+const NAV_BARCO = (() => {
+  const m = /reciben \{([+−-]?\d+)\}/.exec(DATOS.barco.texto)
+  if (!m?.[1]) throw new Error('El texto del Barco no dice cuánto suma a las Pruebas de NAV')
+  return Number(m[1].replace('−', '-').replace('+', ''))
+})()
 
 export const CAPACIDADES_CONSTANTES: Capacidad[] = [
   {
@@ -67,8 +72,18 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
         : 0,
   },
   {
+    // «Tus Pruebas de NAV en el Mar reciben +1».
+    clave: 'barco.nav',
+    carta: 'barco',
+    ventana: 'constante',
+    desde: 'barco',
+    modifica: (ctx, _yo, c) =>
+      c.tipo === 'totalPrueba' && c.hab === 'NAV' && ctx.s.mision !== null && entornoDeMision(ctx.s, ctx.s.mision.carta) === 'mar'
+        ? NAV_BARCO
+        : 0,
+  },
+  {
     // «Al zarpar hacia una misión lejana: Distancia −1». Solo afecta a misiones con Distancia (D7).
-    // TODO fase 3: «Tus Pruebas de NAV en el Mar reciben +1».
     clave: 'barco.distancia',
     carta: 'barco',
     ventana: 'constante',

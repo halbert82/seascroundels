@@ -1,7 +1,7 @@
 // Utilidades sobre el estado: copias de carta, registro de partida y pila de tareas.
 
 import { nombreDe } from './catalogo.ts'
-import { ZONAS, type CartaId, type Copia, type Estado, type InstId, type NuevaTarea, type Tarea, type TipoRegistro, type Zona } from './tipos.ts'
+import { ZONAS, type CartaId, type Copia, type Estado, type InstId, type NuevaTarea, type Suceso, type Tarea, type TipoRegistro, type Zona } from './tipos.ts'
 
 export function estadoVacio(azar: [number, number, number, number]): Estado {
   const zonas = {} as Record<Zona, InstId[]>
@@ -22,6 +22,8 @@ export function estadoVacio(azar: [number, number, number, number]): Estado {
     turno: 0,
     paso: 'preparacion',
     ultimoTurno: false,
+    mision: null,
+    prueba: null,
     temporales: [],
     usos: {},
     pila: [],
@@ -51,8 +53,8 @@ export function nombres(s: Estado, insts: readonly InstId[]): string {
   return insts.map((i) => nombre(s, i)).join(', ')
 }
 
-export function anotar(s: Estado, tipo: TipoRegistro, texto: string): void {
-  s.registro.push({ turno: s.turno, paso: s.paso, tipo, texto })
+export function anotar(s: Estado, tipo: TipoRegistro, texto: string, dato?: Suceso): void {
+  s.registro.push(dato ? { turno: s.turno, paso: s.paso, tipo, texto, dato } : { turno: s.turno, paso: s.paso, tipo, texto })
 }
 
 /** Añade tareas a la pila. Se resuelven en el orden en que se pasan (la primera, antes). */

@@ -60,6 +60,8 @@ export const ventanaJugar: Manejador<'ventanaJugar'> = (s, _t, e) => {
     case 'usar':
       encolarUso(s, accion.uso, null)
       return 'sigue'
+    default:
+      throw new Error(`Acción no válida en Jugar cartas: ${accion.tipo}`)
   }
 }
 

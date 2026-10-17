@@ -15,6 +15,34 @@ import {
   robarHastaMando,
 } from './cartas.ts'
 import type { Manejador } from './comun.ts'
+import {
+  agotarMejora,
+  agotarTripulantes,
+  aplicarEfectos,
+  aplicarFallo,
+  cambiarReputacion,
+  descartarMano,
+  entrarEnMazo,
+  herirUno,
+  perderAvance,
+  perderMunicion,
+  prepararUno,
+  reclutaEncuentro,
+  rehen,
+  repartirHeridas,
+} from './efectos.ts'
+import { encuentro, prueba } from './encuentro.ts'
+import {
+  alZarparOpcional,
+  cerrarMision,
+  fallarMision,
+  ganarAvance,
+  mezclarMazoPropio,
+  mision,
+  ponerTesoro,
+  superarMision,
+  zarpar,
+} from './mision.ts'
 import { adquirir, despedir, reclutar, ventanaJugar } from './jugar.ts'
 import { quedarseEnPuerto, reponerMisiones, soplos, tablon } from './puerto.ts'
 import { evento, jugarEvento, usar, ventanaLibre } from './sucesos.ts'
@@ -56,6 +84,31 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   robarHastaMando,
   anadirTemporal,
   evento,
+  zarpar,
+  mision,
+  ganarAvance,
+  alZarparOpcional,
+  mezclarMazoPropio,
+  encuentro,
+  prueba,
+  aplicarEfectos,
+  aplicarFallo,
+  herirUno,
+  repartirHeridas,
+  agotarTripulantes,
+  agotarMejora,
+  descartarMano,
+  perderAvance,
+  perderMunicion,
+  rehen,
+  cambiarReputacion,
+  entrarEnMazo,
+  reclutaEncuentro,
+  prepararUno,
+  superarMision,
+  fallarMision,
+  ponerTesoro,
+  cerrarMision,
 }
 
 /**
@@ -68,4 +121,7 @@ export const TAREAS_DE_ESTRUCTURA: ReadonlySet<TipoTarea> = new Set<TipoTarea>([
   'ventanaJugar',
   'ventanaLibre',
   'descartarFinal',
+  'mision',
+  'encuentro',
+  'prueba',
 ])

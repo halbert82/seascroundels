@@ -1,87 +1,58 @@
-// Prueba masiva: partidas enteras con un jugador que elige al azar entre las opciones legales.
-// Comprueba los invariantes en cada paso, que toda partida termina como muy tarde en el turno 12
-// y que la misma semilla da exactamente la misma partida.
+// Pruebas masivas: partidas enteras con jugadores automáticos. Comprueban los invariantes en cada paso,
+// que toda partida termina como muy tarde en el turno 12, que la misma semilla da la misma partida,
+// que el jugador con criterio gana partidas y que en la simulación ocurre de todo.
 
 import { describe, expect, it } from 'vitest'
-import { aleatorio, barajarLista, entero, sembrar } from './azar.ts'
-import { responder } from './motor.ts'
-import { nuevaPartida } from './preparacion.ts'
-import { comprobarInvariantes } from './pruebas/situacion.ts'
-import type { Decision, Eleccion, Estado, InstId } from './tipos.ts'
+import { jugarPartida } from './pruebas/equilibrio.ts'
+import { jugadorAlAzar, jugadorConCriterio } from './pruebas/jugadores.ts'
 
-const PARTIDAS = 200
-const MAXIMO_RESPUESTAS = 3000
-
-/** Elige al azar una respuesta legal a la decisión. */
-function eleccionAlAzar(azar: { azar: [number, number, number, number] }, d: Decision): Eleccion {
-  if (d.libres && d.libres.length > 0 && aleatorio(azar) < 0.2) {
-    return { tipo: 'usar', uso: d.libres[entero(azar, d.libres.length)]! }
-  }
-  switch (d.tipo) {
-    case 'ventanaAccion': {
-      // Terminar el paso de vez en cuando para que la partida avance.
-      const terminar = d.acciones.find((a) => a.tipo === 'terminarPaso')
-      if (terminar && aleatorio(azar) < 0.35) return { tipo: 'accion', accion: terminar }
-      return { tipo: 'accion', accion: d.acciones[entero(azar, d.acciones.length)]! }
+describe('Prueba masiva: jugador al azar', () => {
+  it('200 partidas: cumplen los invariantes y terminan como muy tarde en el turno 12', { timeout: 180_000 }, () => {
+    let rehenesPerdidos = 0
+    for (let semilla = 1; semilla <= 200; semilla++) {
+      const p = jugarPartida(semilla, jugadorAlAzar(semilla), { invariantes: true })
+      expect(p.final.resultado, `semilla ${semilla}`).not.toBeNull()
+      expect(p.turnoFinal, `semilla ${semilla}`).toBeLessThanOrEqual(12)
+      rehenesPerdidos += p.rehenesPerdidos
     }
-    case 'elegirCartas': {
-      const n = d.min + entero(azar, d.max - d.min + 1)
-      const ids = [...d.candidatas]
-      barajarLista(azar, ids)
-      return { tipo: 'cartas', ids: ids.slice(0, n) }
-    }
-    case 'elegirOpcion':
-      return { tipo: 'opcion', clave: d.opciones[entero(azar, d.opciones.length)]!.clave }
-    case 'ofrecer':
-      return aleatorio(azar) < 0.5 || d.usos.length === 0 ? { tipo: 'pasar' } : { tipo: 'usar', uso: d.usos[0]! }
-    case 'repartir': {
-      const n: Partial<Record<InstId, number>> = {}
-      let resto = d.cantidad
-      const destinos = Object.keys(d.maximos) as InstId[]
-      barajarLista(azar, destinos)
-      for (const inst of destinos) {
-        const poner = Math.min(resto, d.maximos[inst] ?? 0)
-        n[inst] = poner
-        resto -= poner
-      }
-      return { tipo: 'reparto', n }
-    }
-  }
-}
-
-function jugarPartida(semilla: number): { final: Estado; respuestas: number } {
-  let s = nuevaPartida({ semilla })
-  const azar = { azar: sembrar(`jugador-${semilla}`) }
-  let respuestas = 0
-  while (!s.resultado && respuestas < MAXIMO_RESPUESTAS) {
-    if (!s.pendiente) throw new Error('Partida parada sin decisión')
-    s = responder(s, eleccionAlAzar(azar, s.pendiente))
-    comprobarInvariantes(s, { json: false })
-    respuestas++
-  }
-  comprobarInvariantes(s)
-  return { final: s, respuestas }
-}
-
-describe(`Prueba masiva: ${PARTIDAS} partidas al azar`, () => {
-  it('cumplen los invariantes y terminan como muy tarde en el turno 12', { timeout: 120_000 }, () => {
-    const motivos = new Map<string, number>()
-    for (let semilla = 1; semilla <= PARTIDAS; semilla++) {
-      const { final } = jugarPartida(semilla)
-      expect(final.resultado, `semilla ${semilla}`).not.toBeNull()
-      expect(final.turno, `semilla ${semilla}`).toBeLessThanOrEqual(12)
-      const motivo = final.resultado?.motivo ?? ''
-      motivos.set(motivo, (motivos.get(motivo) ?? 0) + 1)
-    }
-    // Sin zarpar (fase 3) no se puede ganar: todas terminan por tiempo o con el Capitán derrotado.
-    for (const motivo of motivos.keys()) {
-      expect(['Se ha acabado el tiempo: no quedaban cartas de Escenario.', 'Tu Capitán ha quedado derrotado.']).toContain(motivo)
-    }
+    // El jugador con criterio casi nunca se retira con un rehén; el que juega al azar, sí.
+    expect(rehenesPerdidos).toBeGreaterThan(0)
   })
 
-  it('la misma semilla da exactamente la misma partida', { timeout: 30_000 }, () => {
+  it('la misma semilla da exactamente la misma partida', { timeout: 60_000 }, () => {
     for (const semilla of [3, 77, 401]) {
-      expect(jugarPartida(semilla).final).toEqual(jugarPartida(semilla).final)
+      expect(jugarPartida(semilla, jugadorAlAzar(semilla)).final).toEqual(jugarPartida(semilla, jugadorAlAzar(semilla)).final)
     }
+  })
+})
+
+describe('Prueba masiva: jugador con criterio', () => {
+  const partidas = Array.from({ length: 120 }, (_, i) => i + 1)
+
+  it('gana partidas de principio a fin en modo normal (18 de reputación)', { timeout: 180_000 }, () => {
+    const jugador = jugadorConCriterio()
+    const ganadas = partidas.map((semilla) => jugarPartida(semilla, jugador, { invariantes: true })).filter((p) => p.gana)
+    expect(ganadas.length).toBeGreaterThanOrEqual(5)
+    for (const p of ganadas) {
+      expect(p.final.resultado?.gana).toBe(true)
+      expect(p.turnoFinal).toBeLessThanOrEqual(12)
+      // Gana por reputación (18) o por «Las puertas de Panamá».
+      expect(p.reputacion >= 18 || p.motivo.includes('Panamá')).toBe(true)
+    }
+    expect(ganadas.some((p) => p.reputacion >= 18)).toBe(true)
+    expect(ganadas.some((p) => p.motivo.includes('Panamá'))).toBe(true)
+  })
+
+  it('en la simulación ocurre de todo: superar, retirarse, hundirse, morir, la Armada y «Se retira»', { timeout: 180_000 }, () => {
+    const jugador = jugadorConCriterio()
+    const todas = partidas.map((semilla) => jugarPartida(semilla, jugador))
+    const resultados = todas.flatMap((p) => p.resultados.map((r) => r.resultado))
+    expect(resultados).toContain('superada')
+    expect(resultados).toContain('retirada')
+    expect(resultados).toContain('hundida')
+    expect(todas.some((p) => p.muertes > 0)).toBe(true)
+    expect(todas.some((p) => p.entradasEnMazo > 0)).toBe(true)
+    expect(todas.some((p) => p.retiradasDelJuego > 0)).toBe(true)
+    expect(todas.some((p) => !p.gana && p.motivo.startsWith('Tu Capitán'))).toBe(true)
   })
 })

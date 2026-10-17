@@ -6,7 +6,8 @@ import { MANEJADORES, TAREAS_DE_ESTRUCTURA } from './tareas/index.ts'
 import type { Manejador, Resultado } from './tareas/comun.ts'
 import type { Decision, Eleccion, Estado, Tarea } from './tipos.ts'
 import { encolarUso, mismoUso, usosDisponibles } from './usos.ts'
-import { plazasOcupadas, valor } from './valores.ts'
+import { iconosDe } from './catalogo.ts'
+import { navParaDistancia, plazasOcupadas, valor } from './valores.ts'
 
 /** Pasos máximos sin decisión del jugador: si se superan, hay un bucle en las reglas. */
 const MAXIMO_PASOS = 20000
@@ -51,6 +52,15 @@ function comprobar(s: Estado): boolean {
     encolar(s, { tipo: 'evento', ev: { tipo: 'derrota', carta: c }, fase: 'antes', cancelado: false, usadas: [] })
     return true
   }
+  // D5a: en cuanto reúnes el Avance, superas la misión; pero la primera carta de Peligro se resuelve siempre.
+  if (s.mision && !s.mision.fin && s.mision.cartasResueltas >= 1) {
+    const avance = copia(s, s.mision.carta).avance
+    if (avance >= valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta })) {
+      s.mision.fin = 'superada'
+      if (s.zonas.encuentro.length > 0) anotar(s, 'efecto', 'Reúnes el Avance a mitad del encuentro: lo dejas sin resolver.', { tipo: 'superadaAMitad' })
+      return true
+    }
+  }
   if (s.danoBarco >= valor(s, { tipo: 'danoMaximo' }) && !pilaTiene(s, (t) => t.tipo === 'hundirse')) {
     encolar(s, { tipo: 'hundirse' })
     return true
@@ -91,7 +101,7 @@ function igual(a: unknown, b: unknown): boolean {
 }
 
 /** Comprueba que la elección responde a la decisión pendiente. Lanza un error si no. */
-export function validarEleccion(d: Decision, e: Eleccion): void {
+export function validarEleccion(s: Estado, d: Decision, e: Eleccion): void {
   const invalida = (por: string): never => {
     throw new Error(`Elección no válida para «${d.motivo.clave}»: ${por}`)
   }
@@ -134,6 +144,28 @@ export function validarEleccion(d: Decision, e: Eleccion): void {
       if (suma !== d.cantidad) invalida(`hay que repartir exactamente ${d.cantidad}`)
       return
     }
+    case 'cubrirDistancia': {
+      if (e.tipo !== 'cartas') return invalida('se esperaban Tripulantes y cartas')
+      if (new Set(e.ids).size !== e.ids.length) invalida('hay cartas repetidas')
+      const tripulantes = e.ids.filter((i) => d.tripulantes.includes(i))
+      const cartas = e.ids.filter((i) => d.cartas.includes(i))
+      if (tripulantes.length + cartas.length !== e.ids.length) invalida('alguna carta no sirve para cubrir la Distancia')
+      const nav = navParaDistancia(s, tripulantes) + cartas.reduce((n, c) => n + iconosDe(copia(s, c).id, 'NAV'), 0)
+      if (nav < d.distancia) invalida(`con eso sumas ${nav} y la Distancia es ${d.distancia}`)
+      return
+    }
+    case 'comprometer': {
+      if (e.tipo !== 'compromiso') return invalida('se esperaba un compromiso')
+      const opcion = d.opciones[e.opcion]
+      if (!opcion) return invalida('esa opción no existe')
+      if (new Set(e.tripulantes).size !== e.tripulantes.length || new Set(e.cartas).size !== e.cartas.length) invalida('hay repetidos')
+      if (e.tripulantes.some((c) => !d.tripulantes.includes(c))) invalida('algún Tripulante no está preparado')
+      if (e.cartas.some((c) => !d.cartas.includes(c) || iconosDe(copia(s, c).id, opcion.hab) === 0)) {
+        invalida(`alguna carta no tiene iconos de ${opcion.hab}`)
+      }
+      if (e.tripulantes.length === 0 && e.cartas.length > 0) invalida('sin comprometer a nadie no puedes añadir cartas')
+      return
+    }
   }
 }
 
@@ -145,7 +177,7 @@ export function responder(anterior: Estado, eleccion: Eleccion): Estado {
   if (anterior.resultado) throw new Error('La partida ya ha terminado')
   const d = anterior.pendiente
   if (!d) throw new Error('No hay ninguna decisión pendiente')
-  validarEleccion(d, eleccion)
+  validarEleccion(anterior, d, eleccion)
   // El estado es JSON simple (lo comprueban las pruebas): copiarlo así es más rápido que structuredClone.
   const s = JSON.parse(JSON.stringify(anterior)) as Estado
   s.pendiente = null

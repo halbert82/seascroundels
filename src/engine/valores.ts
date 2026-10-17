@@ -12,6 +12,16 @@ export function contexto(s: Estado, supuestasAgotadas?: ReadonlySet<InstId>): Co
   return { s, agotada: (inst) => copia(s, inst).agotada || (supuestasAgotadas?.has(inst) ?? false) }
 }
 
+/**
+ * Una Mejora aplica su texto si está preparada y su portador está en juego (el Barco o un Tripulante;
+ * las de un rehén, no).
+ */
+export function mejoraActiva(s: Estado, inst: InstId): boolean {
+  const c = copia(s, inst)
+  if (c.agotada) return false
+  return c.vinculadaA === 'barco' || (c.vinculadaA !== null && s.zonas.tripulacion.includes(c.vinculadaA))
+}
+
 /** Capacidades constantes activas, con la carta que las da (null para temporales y Barco). */
 function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   for (const inst of s.zonas.tripulacion) {
@@ -21,9 +31,14 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   }
   for (const inst of s.zonas.mejoras) {
     const c = copia(s, inst)
-    if (c.agotada) continue // Una Mejora agotada no aplica su texto.
+    if (!mejoraActiva(s, inst)) continue
     for (const cap of capacidadesDe(c.id)) {
       if (cap.ventana === 'constante' && cap.desde === 'juego') yield [cap, inst]
+    }
+  }
+  if (s.mision) {
+    for (const cap of capacidadesDe(copia(s, s.mision.carta).id)) {
+      if (cap.ventana === 'constante' && cap.desde === 'mision') yield [cap, s.mision.carta]
     }
   }
   for (const t of s.temporales) {
@@ -70,6 +85,13 @@ function base(s: Estado, c: Consulta): number {
     }
     case 'objetivoRobo':
       return valor(s, { tipo: 'mando' })
+    case 'dificultad':
+      return c.base
+    case 'totalPrueba':
+    case 'heridaExtraFallo':
+    case 'avanceExtraPrueba':
+    case 'sinCanones':
+      return 0
     case 'distancia':
     case 'avanceNecesario': {
       const e = porId(copia(s, c.mision).id)
@@ -91,6 +113,14 @@ export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<In
   let total = b
   for (const [cap, yo] of constantesActivas(s)) total += cap.modifica?.(ctx, yo, c) ?? 0
   return Math.max(0, total)
+}
+
+/** Suma de los modificadores activos de una consulta, sin número base ni mínimo. */
+export function modificadores(s: Estado, c: Consulta): number {
+  const ctx = contexto(s)
+  let total = 0
+  for (const [cap, yo] of constantesActivas(s)) total += cap.modifica?.(ctx, yo, c) ?? 0
+  return total
 }
 
 /** NAV que suman unos Tripulantes al agotarse juntos para cubrir una Distancia (D1a). */

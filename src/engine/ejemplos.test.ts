@@ -100,7 +100,63 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it.todo('Zarpar a «Rumbo a mar abierto» con 2 de Avance; Niebla espesa: Diego (2) + Bucanero (1, sin el +1) = 3 (fase 3)')
-  it.todo('Destino «Refuerzos»: pide 4; refuerza con «Mano firme al timón» y llega a 5; supera la misión (fase 3)')
-  it.todo('Recompensa: 1 de reputación, busca los Cañones de bronce; Final: se queda «¡Al abordaje!» y roba cuatro (fase 3)')
+  it('turno completo: zarpa, Niebla espesa, «Refuerzos», refuerza, supera, busca los Cañones y roba cuatro', () => {
+    const j = Jugador.en({
+      empezarEn: 'inicio',
+      escenario: ['rumores', 'calma_ev'],
+      mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
+      muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
+      mazoMuelle: ['vela', 'casco', 'vigia', 'carpintero', 'bronce', 'hamacas'],
+      mazoPeligros: ['niebla', 'fauna', 'calma'],
+      mazoCapitan: ['coraje', 'emboscada', 'estrellas', 'ojo', 'timon'],
+    })
+    j.reclutar('bucanero').elegir('soborno', 'ojo')
+    j.reclutar('marinero_p').elegir('reflejos')
+    j.terminar()
+
+    // Zarpa a «Rumbo a mar abierto»: 1 de «Rumores del tesoro» y 1 por tener un Marinero preparado.
+    j.zarpar('prueba-I')
+    expect(j.registro).toContain('Rumores del tesoro: +1 de Avance (1/3).')
+    expect(j.registro).toContain('Tienes un Marinero preparado: +1 de Avance (2/3).')
+    expect(j.registro).toContain('Revelas «Niebla»: Niebla espesa (Mar).')
+
+    // Diego (NAV 2) y el Bucanero (NAV 1, sin el +1 de Diego porque Diego se agota al comprometerse).
+    j.comprometer('NAV', ['capitan', 'bucanero'])
+    expect(j.registro).toContain('Destino: «Refuerzos» (+1).')
+    // TODO(regla) N12: el ejemplo dice que suman 3, pero La Sombra del Alba da +1 a las Pruebas de NAV en el Mar:
+    // el motor suma 4 contra 4. Albert refuerza igualmente con «Mano firme al timón».
+    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 4 } })
+    j.reforzar('timon').seguir()
+    expect(j.registro).toContain('Total 6 contra 4: superas la Prueba.')
+    expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
+
+    // Recompensa: 1 de reputación y busca una Mejora de barco: los Cañones de bronce.
+    expect(j.estado.reputacion).toBe(1)
+    j.elegir('bronce')
+    expect(j.zona('muelle')).toContain('bronce')
+
+    // Final: se queda «¡Al abordaje!» y roba cuatro para tener cinco.
+    j.ninguna()
+    expect(j.zona('mano')).toEqual(['abordaje', 'coraje', 'emboscada', 'estrellas', 'ojo'])
+  })
+})
+
+describe('Ejemplo · Resolver una Prueba (Diego contra el Jaguar)', () => {
+  it('«Zarpazo»: +1 y Diego se lleva la herida; descarta «¡Al abordaje!» y llega a 5', () => {
+    const j = Jugador.en({
+      empezarEn: 'quedarseOZarpar',
+      escenario: ['calma_ev'],
+      misiones: ['aguada-I'],
+      mano: ['abordaje'],
+      mazoPeligros: ['bestias', 'bestias', 'calma'],
+      mazoCapitan: [...MAZO],
+    })
+    j.zarpar('aguada-I')
+    expect(j.registro).toContain('Revelas «Bestias»: Jaguar (Naturaleza).')
+    j.comprometer('COM', ['capitan'])
+    expect(j.registro).toContain('Destino: «Zarpazo» (+1).')
+    expect(j.copia('capitan').heridas).toBe(1)
+    j.reforzar('abordaje').seguir()
+    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
+  })
 })

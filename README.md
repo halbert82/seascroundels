@@ -11,7 +11,11 @@ Esta aplicación web sirve para jugarlo y probarlo.
   de la Caja básica dibujadas desde `data/cartas.json`, con modo de comparación con `referencia/cartas`.
 - **Fase 2 (hecha):** motor de reglas, primera parte: preparación, turno, puerto, muelle, pagar, reclutar,
   adquirir, despedir, Escenario y derrota por tiempo, con sus pruebas.
-- Fases siguientes: misiones y Pruebas, capacidades de las cartas y mesa de juego (ver `CLAUDE.md`).
+- **Fase 3 (hecha):** motor de reglas, segunda parte: zarpar y Distancia, misiones y sus reglas, Peligros y
+  encuentros, Pruebas con Destino y Sin oposición, heridas, daño, rehenes, hundimiento, retirarse, recompensas,
+  mazo de historia, Tesoros y victoria. Con jugadores automáticos que juegan partidas enteras y un informe de
+  equilibrio (`docs/informe-equilibrio.md`).
+- Fases siguientes: capacidades de las cartas del jugador y mesa de juego (ver `CLAUDE.md`).
 
 ## Para trabajar en local
 
@@ -20,6 +24,7 @@ npm install
 npm run dev          # servidor de desarrollo
 npm test             # pruebas (Vitest)
 npm run build        # compilación para publicar
+npm run equilibrio   # juega 1000 partidas automáticas y reescribe docs/informe-equilibrio.md
 ```
 
 ### Comprobar que las cartas son fieles al diseño
@@ -38,7 +43,10 @@ del texto (las referencias se capturaron con medio píxel de desplazamiento).
 - `src/engine/`: datos y reglas del juego, en TypeScript puro (sin React).
   - El estado de la partida es JSON simple; `responder(estado, elección)` lo avanza hasta la siguiente decisión.
   - Las reglas son una pila de tareas (`tareas/`); las capacidades de las cartas, un registro por carta (`capacidades/`).
+  - Los textos impresos de encuentros, Destinos y misiones se interpretan (`efectos.ts`, `destinos.ts`,
+    `capacidades/misiones.ts`): un cambio en `cartas.json` llega solo al motor.
   - `pruebas/situacion.ts` monta situaciones de prueba en una llamada; `docs/decisiones.md` recoge las decisiones de reglas.
+  - `pruebas/jugadores.ts` tiene un jugador al azar y uno con criterio; `pruebas/equilibrio.ts` simula partidas y escribe el informe.
 - `src/ui/cartas/`: dibujo de las cartas. `cartas.css` es la maquetación original portada;
   `ajustes.ts` recoge los ajustes que la plantilla original decidía carta a carta.
 - `src/ui/galeria/`: la galería y la hoja que usan las capturas.

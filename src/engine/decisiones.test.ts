@@ -3,8 +3,18 @@
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { registrarParaPruebas } from './capacidades/index.ts'
-import { Jugador } from './pruebas/situacion.ts'
+import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
+
+/** En una misión ya empezada: zarpa (cubriendo la Distancia si hace falta) y se para en la primera decisión. */
+function enMision(op: OpcionesSituacion & { cubrir?: string[] }): Jugador {
+  const { cubrir, ...resto } = op
+  const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto })
+  const mision = resto.misiones?.[0] ?? 'deuda-I'
+  j.zarpar(mision)
+  if (cubrir) j.cubrir(...cubrir)
+  return j
+}
 
 let quitar: (() => void) | null = null
 afterEach(() => {
@@ -24,7 +34,12 @@ describe('D1a · «Mientras esté preparado» se pierde al agotarse, también a 
     expect(navParaDistancia(j.estado, [j.inst('bucanero'), j.inst('grumete')])).toBe(4)
   })
 
-  it.todo('D1a en una Prueba: Diego (NAV 2) y el Bucanero (NAV 1) comprometidos juntos suman 3 (fase 3)')
+  it('en una Prueba: Diego (NAV 2) y el Bucanero (NAV 1) comprometidos juntos suman 3', () => {
+    // Riada (Naturaleza): NAV 4. En tierra, el Barco no suma.
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], misiones: ['aguada-I'], tripulacion: ['bucanero'], mazoPeligros: ['temporal', 'chubasco', 'calma'] })
+    j.zarpar('aguada-I').comprometer('NAV', ['capitan', 'bucanero']).seguir()
+    expect(j.registro).toContain('Total 3 contra 4: fallas la Prueba.')
+  })
 })
 
 describe('D7 · Los cambios a «las Distancias» solo afectan a las misiones lejanas', () => {
@@ -130,7 +145,7 @@ describe('N1 · Un Tesoro nunca acaba en el mazo de muelle', () => {
     expect(j.copia('espada').vinculadaA).toBe(j.inst('marinero_p'))
     expect(j.zona('descartesMuelle')).toEqual(['bucanero'])
   })
-  it.todo('N1 al perder un rehén y al volver al muelle (fases 3 y 4)')
+  it.todo('N1 al volver al muelle (fase 4)')
 })
 
 describe('N3 · Una carta con munición entra en juego con su munición al máximo', () => {
@@ -165,19 +180,186 @@ describe('N4 · La pausa del Inicio va al final del paso, después de preparar y
   })
 })
 
-describe('Pendientes de su mecánica (fases 3 y 4)', () => {
-  it.todo('D1b · Arrecife de los Ahorcados (NAV 2 con un Vigía): comprometer a Íñigo no sube la dificultad a 4')
+describe('D1b · La rebaja por Rasgo se mantiene aunque ese Tripulante se comprometa', () => {
+  it('Arrecife de los Ahorcados (NAV 4, NAV 2 con un Vigía): comprometer a Íñigo deja la dificultad en 2', () => {
+    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bartolome'], mazoPeligros: ['arrecifes', 'chubasco', 'calma'] })
+    j.comprometer('NAV', ['bartolome']).seguir()
+    // Íñigo: NAV 0 + 1 (Diego) + 1 (Barco en el Mar) = 2 contra 2.
+    expect(j.registro).toContain('Total 2 contra 2: superas la Prueba.')
+  })
+})
+
+describe('D2 · Heridas de un fallo', () => {
+  it('D2a · sin comprometidos, cada icono de herida va a un Tripulante: «1 · 1» se puede repartir; «2» va a uno', () => {
+    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
+    j.comprometer('EXP').seguir() // Escorbuto fallado: 1 herida · 1 herida
+    j.elegir('capitan').elegir('bucanero')
+    expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([1, 1])
+    const tigre = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
+    tigre.comprometer('COM').seguir() // Tiburón tigre: 2 heridas a un solo Tripulante
+    expect(tigre.decision).toMatchObject({ tipo: 'elegirCartas', min: 1, max: 1, motivo: { clave: 'herir', n: 2 } })
+    tigre.elegir('capitan')
+    expect(tigre.copia('capitan').heridas).toBe(2)
+  })
+
+  it('D2b · en «El templo», fallar la Trampa de dardos («1 · 1») son 3 heridas en total', () => {
+    // Mazo mezclado solo con Trampas de dardos: la primera carta es una Trampa y su Destino, otra.
+    const dardos = ['dardos', 'dardos', 'dardos', 'dardos', 'dardos', 'dardos']
+    const j = enMision({ misiones: ['templo-III'], tripulacion: ['viejo_lobo'], mazoHistoria: ['dardos', 'dardos'], mazoPeligros: dardos, cubrir: ['viejo_lobo'] })
+    j.comprometer('EXP').seguir()
+    let heridas = 0
+    while (j.decision.motivo.clave === 'herir') {
+      j.elegir('capitan')
+      heridas++
+    }
+    expect(heridas).toBe(3)
+    expect(j.copia('capitan').heridas).toBe(3)
+  })
+
+  it('D2c · un recuadro rojo vacío no da herida extra («El polvorín», «Un soplo en la taberna»)', () => {
+    const j = enMision({ misiones: ['sanfelipe-III'], tripulacion: ['viejo_lobo', 'contrabandista'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], cubrir: ['viejo_lobo', 'contrabandista'] })
+    j.comprometer('EXP').seguir()
+    expect(j.registro.some((t) => t.includes('sufre'))).toBe(false)
+  })
+
+  it('N6 · con comprometidos, las heridas se reparten libremente entre ellos, también un «2 heridas»', () => {
+    // Tiburón tigre (2 heridas). Diego y el Bucanero llegarían, pero el Destino de la Leyenda es «Fallas la Prueba».
+    const f = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'leyenda', 'calma'] })
+    f.comprometer('COM', ['capitan', 'bucanero']).seguir()
+    expect(f.decision).toMatchObject({ tipo: 'repartir', cantidad: 2, motivo: { clave: 'heridas' } })
+    f.repartir({ capitan: 1, bucanero: 1 })
+    expect([f.copia('capitan').heridas, f.copia('bucanero').heridas]).toEqual([1, 1])
+  })
+})
+
+describe('N5 · Agotar sin preparados suficientes', () => {
+  it('«2 agotar» con un solo preparado: lo agotas y otro Tripulante sufre 1 herida', () => {
+    // Espíritus de la selva (Naturaleza): EXP 3, fallo 2 agotar.
+    const j = enMision({ misiones: ['aguada-I'], tripulacion: ['bucanero'], mazoPeligros: ['sirenas', 'chubasco', 'calma'] })
+    j.comprometer('EXP', ['capitan']).seguir() // Diego: EXP 1 contra 3; queda preparado el Bucanero
+    expect(j.copia('bucanero').agotada).toBe(true)
+    j.elegir('capitan')
+    expect(j.copia('capitan').heridas).toBe(1)
+  })
+
+  it('«Todos agotar» sin nadie preparado no hace nada', () => {
+    const j = enMision({ misiones: ['fantasma-I'], mazoPeligros: ['leyenda', 'chubasco', 'calma'] })
+    j.comprometer('COM', ['capitan']).seguir() // Kraken fallado: 3 daños · todos agotar
+    expect(j.registro.some((t) => t.startsWith('Agotas'))).toBe(false)
+    expect(j.registro.some((t) => t.includes('sufre'))).toBe(false)
+  })
+})
+
+describe('N7 · Si ya no queda ningún comprometido, heridas y rehén como sin comprometidos', () => {
+  it('el Grumete muere por el Destino; el rehén de Bandoleros se elige al azar entre los demás', () => {
+    const j = enMision({ misiones: ['aguada-I'], tripulacion: ['grumete', 'bucanero'], mazoPeligros: ['rivales', 'rivales', 'calma'] })
+    j.comprometer('COM', ['grumete']) // «Puñal escondido»: el Grumete (Vida 1) sufre 1 herida y queda derrotado
+    expect(j.zona('descartesMuelle')).toContain('grumete')
+    j.seguir()
+    expect(j.zona('rehenes')).toEqual(['bucanero'])
+  })
+})
+
+describe('N8 · Si el Barco se hunde con el recuadro rojo a medias, el resto se aplica igual', () => {
+  it('Kraken fallado con 3 daños: se hunde y después agotas a todos', () => {
+    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], barco: { dano: 3 }, mazoPeligros: ['leyenda', 'chubasco', 'calma'] })
+    j.comprometer('COM').seguir()
+    expect(j.registro).toContain('¡El Barco se hunde!')
+    expect(j.copia('capitan').agotada).toBe(true)
+    expect(j.copia('bucanero').agotada).toBe(true)
+  })
+})
+
+describe('N9 · El Destino se aplica después de su ventana; cancelado, no se aplica nada', () => {
+  it('una Interrupción que cancela «Zarpazo» evita también su herida', () => {
+    quitar = registrarParaPruebas({
+      clave: 'prueba.cancelarDestino',
+      carta: 'capitan',
+      ventana: 'interrupcion',
+      desde: 'juego',
+      disparo: (_s, _yo, ev) => ev.tipo === 'revelarDestino',
+      efecto: (s) => {
+        if (s.prueba) s.prueba.destinoCancelado = true
+        return []
+      },
+    })
+    const j = enMision({ misiones: ['aguada-I'], mazoPeligros: ['bestias', 'bestias', 'calma'] })
+    j.comprometer('COM', ['capitan'])
+    j.usar('prueba.cancelarDestino')
+    j.seguir()
+    expect(j.copia('capitan').heridas).toBe(0)
+    expect(j.registro).toContain('Total 3 contra 3: superas la Prueba.')
+  })
+})
+
+describe('N10 · La Armada entra en el mazo de Peligros normal aunque la misión use un mazo mezclado', () => {
+  it('en «El galeón rezagado», fallar la Patrulla española baraja la Armada en el mazo de Peligros', () => {
+    // Las 6 cartas que se mezclan son Patrullas: la primera es el encuentro y la segunda, su Destino.
+    const j = enMision({ misiones: ['flota-II'], mazoHistoria: [], mazoPeligros: ['ley', 'ley', 'ley', 'ley', 'ley', 'ley', 'racha'] })
+    j.comprometer('COM').seguir() // fallas: «1 daño · + La Armada»
+    while (j.decision.tipo === 'elegirCartas') j.responder({ tipo: 'cartas', ids: j.decision.candidatas.slice(0, j.decision.min) })
+    expect(j.zona('mazoPeligros').sort()).toEqual(['armada', 'racha'])
+    expect([...j.zona('mazoMision'), ...j.zona('descartesMision')]).not.toContain('armada')
+  })
+})
+
+describe('N11 · Rehén con solo el Capitán en juego: no pasa nada', () => {
+  it('fallas Bandoleros con Diego solo: nadie es capturado', () => {
+    const j = enMision({ misiones: ['aguada-I'], mazoPeligros: ['rivales', 'leyenda', 'calma'] })
+    j.comprometer('COM', ['capitan']).seguir()
+    expect(j.zona('rehenes')).toEqual([])
+    expect(j.registro).toContain('No hay nadie a quien capturar.')
+  })
+})
+
+describe('D9 · «Las cartas de tu mano no suman» anula también las añadidas al comprometer', () => {
+  it('la Vigía con «Ojo avizor» contra Espíritus de la selva y «Mal fario»: 3 contra 4, fallas', () => {
+    const j = enMision({ misiones: ['aguada-I'], tripulacion: ['vigia'], mano: ['ojo'], mazoPeligros: ['sirenas', 'sirenas', 'calma'] })
+    j.comprometer('EXP', ['vigia'], ['ojo']).seguir()
+    expect(j.registro).toContain('Total 3 contra 4: fallas la Prueba.')
+  })
+})
+
+describe('D10 · Si se acaba el mazo mezclado de una misión, se barajan los descartes de esa misión', () => {
+  it('en «El templo», el mazo mezclado se rebaraja con sus propios descartes', () => {
+    const j = enMision({
+      misiones: ['templo-III'],
+      tripulacion: ['viejo_lobo', 'baqueano', 'bucanero', 'contrabandista'],
+      mazoHistoria: ['pasadizo'],
+      mazoPeligros: ['calma'],
+      cubrir: ['viejo_lobo'],
+      reputacion: 0,
+    })
+    // Mazo mezclado: el Pasadizo secreto y 1 Remanso (2 cartas, 2 de Avance cada una). Con 5 de Avance
+    // necesario, hay que resolver 3 cartas: la tercera sale de rebarajar los descartes de la misión.
+    for (let i = 0; i < 20 && j.estado.mision; i++) {
+      const d = j.decision
+      if (d.motivo.clave === 'trasEncuentro') j.seguir()
+      else if (d.tipo === 'comprometer') j.comprometer(d.opciones[0]!.hab, [], []).seguir()
+      else if (d.tipo === 'elegirCartas') j.responder({ tipo: 'cartas', ids: d.candidatas.slice(0, d.min) })
+      else j.seguir()
+    }
+    expect(j.registro).toContain('Se acaba el mazo de la misión: se barajan sus descartes.')
+    expect(j.zona('mazoHistoria')).toContain('pasadizo')
+  })
+})
+
+describe('N1 · Tesoro de un rehén perdido', () => {
+  it('pasa a otro Tripulante', () => {
+    const j = enMision({ misiones: ['aguada-I'], tripulacion: [{ id: 'grumete', mejoras: ['espada'] }], mazoPeligros: ['rivales', 'leyenda', 'calma'] })
+    j.comprometer('COM', ['grumete']).seguir().retirarse().opcion('dejar')
+    expect(j.zona('fueraDeJuego')).toContain('grumete')
+    expect(j.copia('espada').vinculadaA).toBe(j.estado.capitan)
+  })
+})
+
+describe('Pendientes de su mecánica (fase 4)', () => {
   it.todo('D1c · el Loro que se une tras el Destino con Diego ya agotado suma su EXP 1 sin el +1')
-  it.todo('D2a · Escorbuto fallado sin comprometidos: 1 herida a Diego y 1 al Bucanero; el Tiburón tigre (2) va a uno solo')
-  it.todo('D2b · en «El templo», fallar la Trampa de dardos («1 · 1») son 3 heridas en total')
-  it.todo('D2c · en «El polvorín», fallar «Un soplo en la taberna» (rojo vacío) no da herida extra')
   it.todo('D3 · un Destino «Fallo» en el Mar no se puede mandar al fondo con «Cambio de rumbo» ni da Avance con «¡A toda vela!»')
   it.todo('D4 · la Patrulla española (COM 4 / NAV 4) se puede descartar con las Velas de tormenta y con el Pedrero')
-  it.todo('D5a · «Rumbo a la isla» con 3 de Avance tras la primera carta: el Kraken y «¡A toda vela!» la superan sin resolverlo; si es la primera carta, hay que resolverla')
-  it.todo('D5b · la primera carta quitada con «Sangre fría» no cuenta: hay que resolver otra')
+  it.todo('D5a · ejemplo exacto: «Rumbo a la isla» con 3 de Avance, el Kraken y «¡A toda vela!»')
+  it.todo('D5b · ejemplo exacto: la primera carta quitada con «Sangre fría» no cuenta')
   it.todo('D6 · el Viejo lobo que cubrió la Distancia de «La selva» puede comprometerse tras «Víveres de reserva» y recibir heridas')
-  it.todo('D9 · «Mal fario» anula también el «Ojo avizor» añadido al comprometer a la Vigía (3 contra 4: fallas)')
-  it.todo('D10 · se acaba el mazo mezclado de «El templo»: se barajan sus descartes de esta misión')
   it.todo('D11 · «Lección aprendida» no puede poner la ficha en el Grumete leal (0 huecos)')
   it.todo('N2 · Barco con 4 daños de 5, sale la Fragata cazadora: antes de comprometer, «Remiendo de urgencia» lo baja a 2')
 })

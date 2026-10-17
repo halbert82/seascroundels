@@ -168,3 +168,15 @@ export function esUnica(id: string): boolean {
   if (e.tipo === 'capitan' || e.tipo === 'tesoro') return true
   return 'unico' in e.carta && e.carta.unico === true
 }
+
+/** Iconos de una habilidad en una carta de la mano (Eventos y Habilidades). */
+export function iconosDe(id: string, hab: 'NAV' | 'COM' | 'EXP'): number {
+  const c = porId(id).carta
+  return 'iconos' in c && Array.isArray(c.iconos) ? c.iconos.filter((i) => i === hab).length : 0
+}
+
+/** Rasgos de un Tripulante o Capitán. */
+export function rasgosDe(id: string): string[] {
+  const e = porId(id)
+  return e.tipo === 'capitan' || e.tipo === 'tripulante' ? e.carta.rasgos : []
+}

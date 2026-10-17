@@ -1,6 +1,7 @@
 // Tipos del motor de reglas. Todo el estado de la partida es JSON simple: se guarda y se recupera tal cual.
 
 import type { Habilidad } from './datos.ts'
+import type { Efecto } from './efectos.ts'
 
 /** Identificador de carta del catálogo («bucanero», «templo-I»…). */
 export type CartaId = string
@@ -27,6 +28,13 @@ export const ZONAS = [
   'descartesEscenario',
   'mazoPeligros',
   'descartesPeligros',
+  /** Mazo mezclado de una misión con mazo propio (mazo propio + cartas del mazo de Peligros). */
+  'mazoMision',
+  'descartesMision',
+  /** Carta de Peligro cuyo encuentro se está resolviendo. */
+  'encuentro',
+  /** Cartas cuyo Destino se ha revelado en la Prueba en curso. */
+  'destino',
   /** «La Armada te persigue» y «Amigos en la costa», fuera del mazo hasta que una carta las meta. */
   'apartados',
   'misionesDisponibles',
@@ -69,6 +77,70 @@ export interface EntradaRegistro {
   paso: Paso
   tipo: TipoRegistro
   texto: string
+  /** Lo mismo en datos, para estadísticas y animaciones. */
+  dato?: Suceso
+}
+
+/** Sucesos destacados de la partida, en datos. */
+export type Suceso =
+  | { tipo: 'zarpar'; mision: CartaId }
+  | { tipo: 'prueba'; peligro: CartaId; encuentro: string; superada: boolean }
+  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision }
+  | { tipo: 'hundimiento' }
+  | { tipo: 'derrota'; carta: CartaId }
+  | { tipo: 'rehenPerdido'; carta: CartaId }
+  | { tipo: 'seRetira'; carta: CartaId }
+  | { tipo: 'entraEnMazo'; carta: CartaId }
+  | { tipo: 'mazoMisionBarajado' }
+  | { tipo: 'superadaAMitad' }
+
+export type FinMision = 'superada' | 'retirada' | 'hundida'
+
+export interface MisionEnCurso {
+  carta: InstId
+  /** Cartas de Peligro ya resueltas (D5a: hasta resolver la primera no se puede superar). */
+  cartasResueltas: number
+  /** Revela del mazo mezclado de la misión. */
+  mazoMezclado: boolean
+  /** Fin decidido; la misión se cierra en el siguiente punto seguro. */
+  fin: FinMision | null
+  /** Cartas que «se retiran» del juego al descartarse. */
+  retirar: InstId[]
+}
+
+export interface Bono {
+  n: number
+  /** Viene de un Cañón: «Los Cañones no suman» lo anula. */
+  canon: boolean
+  fuente: CartaId
+}
+
+export interface PruebaEnCurso {
+  encuentro: InstId
+  /** Índice de la opción elegida y su habilidad (null hasta comprometer). */
+  opcion: number | null
+  hab: Habilidad | null
+  /** Dificultad de la opción congelada al comprometer, con la rebaja por Rasgo (D1b). */
+  dificultadBase: number
+  comprometidos: InstId[]
+  /** Cartas de la mano añadidas al comprometer y al reforzar, y sus iconos de la habilidad. */
+  cartas: InstId[]
+  iconos: number
+  bonos: Bono[]
+  /** Carta cuyo Destino se aplica. */
+  destino: InstId | null
+  destinoCancelado: boolean
+  /** Nadie comprometido al revelar el Destino. */
+  sinOposicion: boolean
+  modDestino: number
+  falla: boolean
+  sinCartas: boolean
+  sinCanones: boolean
+  sinFallo: boolean
+  heridaSiFallas: number
+  avanceSiSuperas: number
+  preparaSiSuperas: boolean
+  resultado: 'superada' | 'fallada' | null
 }
 
 export interface Resultado {
@@ -96,6 +168,10 @@ export interface Estado {
   paso: Paso
   /** No quedaba carta de Escenario al empezar este turno: al terminarlo, se pierde. */
   ultimoTurno: boolean
+  /** Misión en curso (la carta sigue en «misionesDisponibles» hasta que termina). */
+  mision: MisionEnCurso | null
+  /** Prueba en curso dentro de la misión. */
+  prueba: PruebaEnCurso | null
   temporales: Temporal[]
   /** Usos de capacidades con límite: «iN/clave» → veces este turno o misión. */
   usos: Record<string, number>
@@ -118,6 +194,13 @@ export type Evento =
   | { tipo: 'reclutar'; carta: InstId }
   | { tipo: 'heridas'; objetivo: InstId; cantidad: number }
   | { tipo: 'derrota'; carta: InstId }
+  | { tipo: 'danoBarco'; cantidad: number }
+  | { tipo: 'zarpar'; mision: InstId }
+  | { tipo: 'revelarPeligro'; carta: InstId }
+  | { tipo: 'comprometer' }
+  | { tipo: 'revelarDestino'; carta: InstId }
+  | { tipo: 'superarPrueba' }
+  | { tipo: 'fallarPrueba' }
 
 // ---------------------------------------------------------------------------
 // Tareas: pasos de reglas pendientes. Son datos, para que la partida se pueda guardar en cualquier momento.
@@ -159,6 +242,32 @@ export type Tarea = { id: number } & (
   | { tipo: 'descartarFinal' }
   | { tipo: 'robarHastaMando' }
   | { tipo: 'anadirTemporal'; temporal: Temporal }
+  // Misiones (fase 3)
+  | { tipo: 'zarpar'; mision: InstId }
+  | { tipo: 'mision'; paso: 'inicio' | 'alZarpar' | 'encuentros' | 'terminar' }
+  | { tipo: 'ganarAvance'; n: number; si?: { rasgo: string } | { preparados: number } }
+  | { tipo: 'alZarparOpcional'; coste: { tipo: 'agotarRasgo'; rasgo: string } | { tipo: 'descartar'; n: number }; n: number }
+  | { tipo: 'mezclarMazoPropio'; n: number }
+  | { tipo: 'encuentro'; carta: InstId | null; paso: 'revelar' | 'leer' | 'avance' | 'despues' }
+  | { tipo: 'prueba'; paso: 'comprometer' | 'destino' | 'aplicarDestino' | 'ventana' | 'resolver' }
+  | { tipo: 'aplicarEfectos'; efectos: Efecto[]; contexto: 'efecto' | 'exito' | 'fallo' | 'sinOposicion' }
+  | { tipo: 'aplicarFallo' }
+  | { tipo: 'herirUno'; n: number; entre: InstId[] }
+  | { tipo: 'repartirHeridas'; n: number; entre: InstId[] }
+  | { tipo: 'agotarTripulantes'; n: number | 'todos' }
+  | { tipo: 'agotarMejora' }
+  | { tipo: 'descartarMano'; n: number }
+  | { tipo: 'perderAvance'; n: number | 'todo' }
+  | { tipo: 'perderMunicion'; n: number }
+  | { tipo: 'rehen'; entre: InstId[] }
+  | { tipo: 'cambiarReputacion'; n: number }
+  | { tipo: 'entrarEnMazo'; carta: CartaId }
+  | { tipo: 'reclutaEncuentro' }
+  | { tipo: 'prepararUno'; entre: InstId[] }
+  | { tipo: 'superarMision' }
+  | { tipo: 'fallarMision'; paso: 'rehenes' | 'conservar' }
+  | { tipo: 'ponerTesoro'; carta: InstId }
+  | { tipo: 'cerrarMision' }
   | {
       tipo: 'evento'
       ev: Evento
@@ -191,6 +300,9 @@ export type Accion =
   | { tipo: 'despedir'; carta: InstId }
   /** Usar una capacidad o jugar un Evento de la mano. */
   | { tipo: 'usar'; uso: Uso }
+  /** Descartar una carta de la mano por sus iconos para sumar a la Prueba (solo con comprometidos). */
+  | { tipo: 'reforzar'; carta: InstId }
+  | { tipo: 'retirarse' }
   | { tipo: 'terminarPaso' }
 
 /** Una capacidad concreta de una carta concreta. `fuente` es null para efectos temporales y el Barco. */
@@ -220,7 +332,17 @@ export type Decision = {
   | { tipo: 'ofrecer'; usos: Uso[] }
   /** Repartir exactamente `cantidad` entre varias cartas, sin pasar del máximo de cada una. */
   | { tipo: 'repartir'; cantidad: number; maximos: Partial<Record<InstId, number>> }
+  /** Cubrir la Distancia: Tripulantes preparados que se agotan a la vez y cartas con iconos de NAV. */
+  | { tipo: 'cubrirDistancia'; distancia: number; tripulantes: InstId[]; cartas: InstId[] }
+  /** Elegir opción de la Prueba y comprometer Tripulantes y cartas de la mano. */
+  | { tipo: 'comprometer'; opciones: OpcionPruebaDecision[]; tripulantes: InstId[]; cartas: InstId[] }
 )
+
+export interface OpcionPruebaDecision {
+  hab: Habilidad
+  dificultad: number
+  alternativa?: { rasgo: string; dificultad: number }
+}
 
 
 export type Eleccion =
@@ -230,6 +352,7 @@ export type Eleccion =
   | { tipo: 'usar'; uso: Uso }
   | { tipo: 'pasar' }
   | { tipo: 'reparto'; n: Partial<Record<InstId, number>> }
+  | { tipo: 'compromiso'; opcion: number; tripulantes: InstId[]; cartas: InstId[] }
 
 // ---------------------------------------------------------------------------
 // Capacidades de las cartas (registro por identificador de carta)
@@ -249,6 +372,16 @@ export type Consulta =
   | { tipo: 'objetivoRobo' }
   | { tipo: 'distancia'; mision: InstId }
   | { tipo: 'avanceNecesario'; mision: InstId }
+  /** Dificultad de una Prueba: `base` más modificadores (reglas de misión, Escenario…). */
+  | { tipo: 'dificultad'; base: number; hab: Habilidad; claves: readonly string[] }
+  /** Bonificación constante al total de una Prueba (La Sombra del Alba: +1 NAV en el Mar). */
+  | { tipo: 'totalPrueba'; hab: Habilidad }
+  /** Heridas que añade cada efecto de fallo (D2b). */
+  | { tipo: 'heridaExtraFallo' }
+  /** Avance extra al superar una Prueba de esa habilidad. */
+  | { tipo: 'avanceExtraPrueba'; hab: Habilidad }
+  /** Mayor que 0: los Cañones no suman. */
+  | { tipo: 'sinCanones' }
 
 /** Contexto de cálculo: permite suponer agotadas algunas cartas (agotarse a la vez, D1a). */
 export interface Contexto {
@@ -280,7 +413,9 @@ export interface Capacidad {
   carta: CartaId
   ventana: Ventana
   /** Desde dónde funciona: carta en juego, en la mano, efecto temporal, el Barco o la carta de Escenario. */
-  desde: 'juego' | 'mano' | 'temporal' | 'barco' | 'escenario'
+  desde: 'juego' | 'mano' | 'temporal' | 'barco' | 'escenario' | 'mision'
+  /** Condición extra para poder usarla ahora (p. ej., «solo en Pruebas de COM en el Mar»). */
+  requisito?: (s: Estado, yo: InstId | null) => boolean
   limite?: { veces: number; por: 'turno' | 'mision' }
   coste?: Coste[]
   /** Modificador constante a un valor. */

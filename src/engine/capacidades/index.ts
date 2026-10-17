@@ -4,6 +4,7 @@
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { CAPACIDADES_CONSTANTES } from './constantes.ts'
 import { CAPACIDADES_ESCENARIO } from './escenario.ts'
+import { CAPACIDADES_MISIONES } from './misiones.ts'
 
 const POR_CARTA = new Map<CartaId, Capacidad[]>()
 const POR_CLAVE = new Map<string, Capacidad>()
@@ -14,7 +15,7 @@ function registrar(cap: Capacidad): void {
   POR_CARTA.set(cap.carta, [...(POR_CARTA.get(cap.carta) ?? []), cap])
 }
 
-for (const cap of [...CAPACIDADES_CONSTANTES, ...CAPACIDADES_ESCENARIO]) registrar(cap)
+for (const cap of [...CAPACIDADES_CONSTANTES, ...CAPACIDADES_ESCENARIO, ...CAPACIDADES_MISIONES]) registrar(cap)
 
 /** Capacidades de una carta del catálogo. */
 export function capacidadesDe(id: CartaId): readonly Capacidad[] {

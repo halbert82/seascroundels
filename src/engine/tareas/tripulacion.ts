@@ -13,6 +13,7 @@ const MOTIVOS: Record<string, string> = {
   derrotado: 'se descarta a',
   descartado: 'se descarta a',
   desercion: 'deserta',
+  rehen: 'pierdes a',
   exceso: 'despides a',
 }
 
@@ -101,10 +102,11 @@ export const exceso: Manejador<'exceso'> = (s, _t, e) => {
 /**
  * El Barco se hunde: pierdes las Mejoras de barco (salvo las indestructibles), se reflota sin daño
  * y cada Tripulante sufre 1 herida. En puerto (al perder el Casco, D8) se aplica igual, sin la parte de la misión.
- * TODO fase 3: en una misión, además no la superas y vuelves a puerto.
  */
 export const hundirse: Manejador<'hundirse'> = (s) => {
-  anotar(s, 'aviso', '¡El Barco se hunde!')
+  anotar(s, 'aviso', '¡El Barco se hunde!', { tipo: 'hundimiento' })
+  // En una misión, no la superas y vuelves a puerto; lo que quede del recuadro se aplica igual (N8).
+  if (s.mision && !s.mision.fin) s.mision.fin = 'hundida'
   const perdidas = vinculadas(s, 'barco').filter((m) => !esIndestructible(copia(s, m).id))
   for (const m of perdidas) mover(s, m, 'descartesMuelle')
   if (perdidas.length > 0) anotar(s, 'efecto', `Pierdes tus Mejoras de barco: ${nombres(s, perdidas)}.`)

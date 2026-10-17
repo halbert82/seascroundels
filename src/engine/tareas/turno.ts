@@ -2,7 +2,8 @@
 
 import { capacidadesDe } from '../capacidades/index.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
-import type { NuevaTarea } from '../tipos.ts'
+import type { InstId, NuevaTarea } from '../tipos.ts'
+import { puedeZarpar } from './mision.ts'
 import { valor } from '../valores.ts'
 import { arriba, mover } from '../zonas.ts'
 import { robarCartas } from './cartas.ts'
@@ -69,14 +70,20 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
         return preguntar({
           tipo: 'elegirOpcion',
           motivo: { clave: 'quedarseOZarpar' },
-          // TODO fase 3: zarpar a una misión disponible.
-          opciones: [{ clave: 'quedarse', texto: 'Quedarte en puerto' }],
+          opciones: [
+            { clave: 'quedarse', texto: 'Quedarte en puerto' },
+            ...s.zonas.misionesDisponibles
+              .filter((m) => puedeZarpar(s, m))
+              .map((m) => ({ clave: `zarpar:${m}`, texto: `Zarpar a «${nombre(s, m)}»` })),
+          ],
         })
       }
       const clave = eleccionDe(e, 'opcion').clave
       if (clave === 'quedarse') {
         anotar(s, 'jugada', 'Te quedas en puerto.')
         encolar(s, { tipo: 'quedarseEnPuerto', elegidas: [] })
+      } else if (clave.startsWith('zarpar:')) {
+        encolar(s, { tipo: 'zarpar', mision: clave.slice('zarpar:'.length) as InstId })
       }
       t.paso = 'final'
       return 'sigue'

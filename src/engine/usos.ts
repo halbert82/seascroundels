@@ -4,16 +4,15 @@ import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
 import { tipoDe } from './catalogo.ts'
 import { claveUso, copia, encolar } from './estado.ts'
 import type { Capacidad, Coste, Estado, Evento, InstId, Uso, Ventana } from './tipos.ts'
-import { valor } from './valores.ts'
+import { mejoraActiva, valor } from './valores.ts'
 import { estaEn } from './zonas.ts'
 
 /** Cada capacidad con la carta que la da, según desde dónde funciona. */
 function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   for (const inst of s.zonas.tripulacion) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'juego') yield [cap, inst]
   for (const inst of s.zonas.mejoras) {
-    const c = copia(s, inst)
-    if (c.agotada) continue // Una Mejora agotada no aplica su texto.
-    for (const cap of capacidadesDe(c.id)) if (cap.desde === 'juego') yield [cap, inst]
+    if (!mejoraActiva(s, inst)) continue // Agotada o de un rehén: no aplica su texto.
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'juego') yield [cap, inst]
   }
   for (const inst of s.zonas.mano) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'mano') yield [cap, inst]
   for (const cap of capacidadesDe('barco')) if (cap.desde === 'barco') yield [cap, null]
@@ -36,6 +35,7 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
 
 /** ¿Se puede usar ahora esta capacidad de esta carta? (límite y coste; la ventana la decide quien pregunta) */
 export function sePuedeUsar(s: Estado, cap: Capacidad, fuente: InstId | null): boolean {
+  if (cap.requisito && !cap.requisito(s, fuente)) return false
   if (cap.limite) {
     const usadas = s.usos[claveUso(cap.limite.por, fuente, cap.clave)] ?? 0
     if (usadas >= cap.limite.veces) return false

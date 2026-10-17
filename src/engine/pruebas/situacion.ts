@@ -4,7 +4,7 @@
 // - comprobar los invariantes del estado tras cada paso.
 
 import { sembrar } from '../azar.ts'
-import { esUnica } from '../catalogo.ts'
+import { CATALOGO, esUnica } from '../catalogo.ts'
 import { DATOS, type Habilidad } from '../datos.ts'
 import { copia as copiaDe, encolar, estadoVacio } from '../estado.ts'
 import { ejecutar, responder } from '../motor.ts'
@@ -64,6 +64,25 @@ export interface OpcionesSituacion {
   mazoMisiones?: CartaId[]
   reputacion?: number
   temporales?: Temporal[]
+  /** Mazo de Peligros (arriba primero). Por defecto, vacío. */
+  mazoPeligros?: CartaId[]
+  descartesPeligros?: CartaId[]
+  /** Por defecto, «La Armada te persigue» y «Amigos en la costa». */
+  apartados?: CartaId[]
+  /** Por defecto, como en una partida nueva: capítulos II y III, Tesoros y mazos propios. */
+  mazoHistoria?: CartaId[]
+  /** Avance ya puesto en misiones disponibles (por identificador de misión). */
+  avance?: Record<CartaId, number>
+}
+
+function historiaCompleta(): CartaId[] {
+  const ids: CartaId[] = []
+  for (const e of CATALOGO) {
+    if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
+    if (e.tipo === 'tesoro') ids.push(e.id)
+    if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
+  }
+  return ids
 }
 
 function ponerCopia(s: Estado, entrada: CartaId | CopiaInicial, zona: Zona): InstId {
@@ -104,8 +123,16 @@ export function montar(op: OpcionesSituacion = {}): Estado {
       'mazoMisiones',
       op.mazoMisiones ?? [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras].map((m) => `${m}-I`),
     ],
+    ['mazoPeligros', op.mazoPeligros],
+    ['descartesPeligros', op.descartesPeligros],
+    ['apartados', op.apartados ?? DATOS.mazosPredefinidos.apartadosDePeligros],
+    ['mazoHistoria', op.mazoHistoria ?? historiaCompleta()],
   ]
   for (const [zona, ids] of zonas) for (const id of ids ?? []) crearCopia(s, id, zona)
+  for (const [id, n] of Object.entries(op.avance ?? {})) {
+    const m = s.zonas.misionesDisponibles.find((i) => s.cartas[i]?.id === id)
+    if (m) copiaDe(s, m).avance = n
+  }
   s.reputacion = op.reputacion ?? 0
   s.temporales = [...(op.temporales ?? [])]
 
@@ -322,6 +349,62 @@ export class Jugador {
       n[inst] = cantidad
     }
     return this.responder({ tipo: 'reparto', n })
+  }
+
+  /** Zarpa a una misión disponible (por su identificador, p. ej. «prueba-I»). */
+  zarpar(mision: CartaId): this {
+    if (this.decision.motivo.clave === 'jugarCartas') this.terminar()
+    return this.opcion(`zarpar:${this.inst(mision, ['misionesDisponibles'])}`)
+  }
+
+  /** Cubre la Distancia con estos Tripulantes y cartas (identificadores). */
+  cubrir(...ids: CartaId[]): this {
+    const d = this.decision
+    if (d.tipo !== 'cubrirDistancia') throw new Error(`Se esperaba cubrir la Distancia y la decisión es «${d.tipo}»`)
+    const usadas = new Set<InstId>()
+    const elegidas = ids.map((id) => {
+      const inst = [...d.tripulantes, ...d.cartas].find((c) => !usadas.has(c) && this.idDe(c) === id)
+      if (!inst) throw new Error(`«${id}» no sirve para cubrir la Distancia`)
+      usadas.add(inst)
+      return inst
+    })
+    return this.responder({ tipo: 'cartas', ids: elegidas })
+  }
+
+  /** Elige la opción de la Prueba (por su habilidad) y compromete Tripulantes y cartas (identificadores). */
+  comprometer(hab: 'NAV' | 'COM' | 'EXP', tripulantes: CartaId[] = [], cartas: CartaId[] = []): this {
+    const d = this.decision
+    if (d.tipo !== 'comprometer') throw new Error(`Se esperaba comprometer y la decisión es «${d.tipo}»`)
+    const opcion = d.opciones.findIndex((o) => o.hab === hab)
+    if (opcion < 0) throw new Error(`La Prueba no tiene opción de ${hab}`)
+    const buscar = (lista: readonly InstId[], ids: CartaId[]) => {
+      const usadas = new Set<InstId>()
+      return ids.map((id) => {
+        const inst = lista.find((c) => !usadas.has(c) && this.idDe(c) === id)
+        if (!inst) throw new Error(`«${id}» no se puede comprometer`)
+        usadas.add(inst)
+        return inst
+      })
+    }
+    return this.responder({ tipo: 'compromiso', opcion, tripulantes: buscar(d.tripulantes, tripulantes), cartas: buscar(d.cartas, cartas) })
+  }
+
+  reforzar(id: CartaId): this {
+    return this.accion((a) => a.tipo === 'reforzar' && this.idDe(a.carta) === id, `reforzar con ${id}`)
+  }
+
+  retirarse(): this {
+    return this.accion((a) => a.tipo === 'retirarse', 'retirarse')
+  }
+
+  /** En la ventana de la Prueba, resolverla; tras un encuentro, revelar la siguiente carta. */
+  seguir(): this {
+    return this.terminar()
+  }
+
+  /** Avance de una misión (disponible o en curso). */
+  avance(mision: CartaId): number {
+    return copiaDe(this.estado, this.inst(mision, ['misionesDisponibles', 'misionesSuperadas', 'mazoMisiones'])).avance
   }
 
   /** Atajo: termina Jugar cartas, se queda en puerto con dos opciones y no descarta nada al final. */

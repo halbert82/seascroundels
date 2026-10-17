@@ -2,7 +2,9 @@
 
 import { tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre } from '../estado.ts'
-import type { Estado, Evento, TareaDe } from '../tipos.ts'
+import { interpretarEfectos } from '../efectos.ts'
+import { encuentroDe } from '../peligros.ts'
+import type { Estado, Evento, NuevaTarea, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { capacidadDe, claveDe, encolarUso, usosDisparados, usosDisponibles } from '../usos.ts'
 import { estaEn, mover, zonaDe } from '../zonas.ts'
@@ -13,7 +15,30 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'inicioTurno':
     case 'finTurno':
     case 'reclutar':
-      return // Solo marcan el momento para las Respuestas.
+    case 'zarpar':
+    case 'revelarPeligro':
+    case 'comprometer':
+    case 'revelarDestino':
+      return // Solo marcan el momento para las Interrupciones y Respuestas.
+    case 'danoBarco': {
+      if (ev.cantidad <= 0) return
+      s.danoBarco += ev.cantidad
+      anotar(s, 'efecto', `El Barco recibe ${ev.cantidad} de daño (${s.danoBarco}).`)
+      return
+    }
+    case 'superarPrueba': {
+      const p = s.prueba
+      if (!p) return
+      const tareas: NuevaTarea[] = [
+        { tipo: 'aplicarEfectos', efectos: interpretarEfectos(encuentroDe(s, p.encuentro).textoExito ?? ''), contexto: 'exito' },
+      ]
+      if (p.preparaSiSuperas) tareas.push({ tipo: 'prepararUno', entre: [...p.comprometidos] })
+      encolar(s, ...tareas)
+      return
+    }
+    case 'fallarPrueba':
+      if (s.prueba) encolar(s, { tipo: 'aplicarFallo' })
+      return
     case 'heridas': {
       if (ev.cantidad <= 0 || !estaEn(s, ev.objetivo, 'tripulacion')) return
       copia(s, ev.objetivo).heridas += ev.cantidad
@@ -22,7 +47,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     }
     case 'derrota': {
       if (!estaEn(s, ev.carta, 'tripulacion')) return
-      anotar(s, 'aviso', `${nombre(s, ev.carta)} queda derrotado.`)
+      anotar(s, 'aviso', `${nombre(s, ev.carta)} queda derrotado.`, { tipo: 'derrota', carta: copia(s, ev.carta).id })
       if (ev.carta === s.capitan) {
         s.resultado = { gana: false, motivo: 'Tu Capitán ha quedado derrotado.' }
         return
@@ -34,7 +59,11 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
 }
 
 /** Ventana de un suceso: Obligadas solas; Interrupciones o Respuestas ofrecidas hasta que el jugador pase. */
+/** Sucesos de un encuentro: si la misión ya ha terminado, sus ventanas no se abren. */
+const DEL_ENCUENTRO = new Set<Evento['tipo']>(['revelarPeligro', 'comprometer', 'revelarDestino'])
+
 function ventana(s: Estado, t: TareaDe<'evento'>, e: Parameters<Manejador<'evento'>>[2]): Resultado | 'cerrada' {
+  if (s.mision?.fin && DEL_ENCUENTRO.has(t.ev.tipo)) return 'cerrada'
   const fase = t.fase === 'antes' ? 'antes' : 'despues'
   const obligadas = usosDisparados(s, 'obligada', t.ev, fase).filter((u) => !t.usadas.includes(claveDe(u)))
   if (obligadas.length > 0) {

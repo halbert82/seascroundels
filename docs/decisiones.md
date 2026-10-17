@@ -35,6 +35,15 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N3 · Una carta con munición entra en juego con su munición al máximo.** Lo normal es comprar en puerto y zarpar en el mismo turno; si entrara vacía, todo Cañón sería inútil en su primera misión. *Ejemplo:* adquieres los Cañones de bronce y zarpas contra los Piratas rivales (COM 4): ya puedes gastar 1 de munición para +2.
 - **N4 · La pausa del Inicio va al final del paso, después de preparar y recargar.** *Ejemplo:* el Carpintero de a bordo («Agotar: repara 1») no puede reparar en el Inicio, prepararse y volver a reparar en Jugar cartas: si lo usas en la pausa del Inicio, se queda agotado todo el turno.
 
+- **N5 · Agotar sin Tripulantes preparados suficientes.** Cada agotar que no se puede cumplir es 1 herida a un Tripulante a elección del jugador; «Todos agotar» sin nadie preparado no hace nada. *Ejemplo:* fallas «Espíritus de la selva» (2 agotar) con un solo Tripulante preparado: lo agotas y otro sufre 1 herida. Fallas el Kraken con todos comprometidos: «Todos agotar» no hace nada.
+- **N6 · Las heridas de un fallo se reparten libremente entre los comprometidos, también un «2 heridas».** *Ejemplo:* fallas el Tiburón tigre (2 heridas) con Diego y el Bucanero comprometidos: puedes dar 1 a cada uno.
+- **N7 · Si al fallar ya no queda ningún comprometido en juego, heridas y rehén se tratan como sin comprometidos** (rehén al azar entre los demás). *Ejemplo:* el Grumete (Vida 1) es el único comprometido contra Bandoleros; «Puñal escondido» lo derrota. Fallas: el rehén se elige al azar entre los demás Tripulantes.
+- **N8 · Si el Barco se hunde con el recuadro rojo a medias, el resto se aplica igual.** *Ejemplo:* fallas el Kraken (3 daños · todos agotar) con 3 daños: el Barco se hunde y después agotas a todos.
+- **N9 · El Destino se aplica después de su ventana; si se cancela o se cambia, no se aplica nada de él, tampoco su herida.** *Ejemplo:* el Viejo lobo está comprometido y sale «Zarpazo» (+1 y 1 herida al que más sume); lo descartas con el Viejo lobo antes de que nadie reciba la herida.
+- **N10 · «+ La Armada» y «+ Amigos» entran en el mazo de Peligros normal, aunque la misión use un mazo mezclado.** *Ejemplo:* en «El galeón rezagado» fallas la Patrulla española: la Armada se baraja en el mazo de Peligros, no en el de la Escolta.
+- **N11 · Rehén con solo el Capitán en juego: no pasa nada** (el Capitán no puede ser rehén). *Ejemplo:* fallas Bandoleros con Diego solo y comprometido: nadie es capturado.
+- **Reforzar solo si se comprometió a alguien** (reglamento, confirmado por Albert). *Ejemplo:* sin comprometidos no puedes descartar «¡Al abordaje!» tras el Destino para salvar la Prueba: la fallas y se aplica Sin oposición.
+
 ## Presentación de las cartas
 
 - **P1 · Isabela «Cuervo» Saldaña (011) lleva el texto apretado**, para que su frase de ambientación quepa en la caja (en la imagen de referencia se salía).
@@ -60,3 +69,4 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 - **Mazo de Escenario agotado:** no se rebaraja; se juega el último turno y se pierde (ver D12).
 - **Rehén:** el Capitán no puede ser rehén. *Ejemplo:* fallas Bandoleros con Diego y el Rufián comprometidos: el rehén es el Rufián.
 - **Barco hundido:** las Mejoras de barco que se pierden no activan efectos «al descartarse» (aún no hay ninguna carta así).
+- **N12 · Ejemplo del primer turno y el +1 NAV de La Sombra del Alba:** el ejemplo corregido dice que Diego (2) y el Bucanero (1) suman 3 contra Niebla espesa (NAV 4), pero el Barco da +1 a las Pruebas de NAV en el Mar: suman 4. *Por defecto:* la prueba del ejemplo sigue sus jugadas (refuerza con «Mano firme al timón») y comprueba «Total 6 contra 4»; falta que Albert diga cómo quiere redactar el ejemplo.
