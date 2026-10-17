@@ -1,0 +1,62 @@
+{
+ "capitan": {
+  "archivo": "assets/arte/diego.jpg",
+  "encuadre": "center top"
+ },
+ "filibustero": {
+  "archivo": "assets/arte/filibustero2.jpg",
+  "encuadre": "center"
+ },
+ "vigia": {
+  "archivo": "assets/arte/vigia3.jpg",
+  "encuadre": "center"
+ },
+ "bronce": {
+  "archivo": "assets/arte/canones.jpg",
+  "encuadre": "center"
+ },
+ "sable": {
+  "archivo": "assets/arte/sable.jpg",
+  "encuadre": "center"
+ },
+ "reflejos": {
+  "archivo": "assets/arte/reflejos.jpg",
+  "encuadre": "center"
+ },
+ "vendas": {
+  "archivo": "assets/arte/vendas.jpg",
+  "encuadre": "center"
+ },
+ "abordaje": {
+  "archivo": "assets/arte/abordaje.jpg",
+  "encuadre": "center"
+ },
+ "taberna": {
+  "archivo": "assets/arte/taberna.jpg",
+  "encuadre": "center"
+ },
+ "amuleto": {
+  "archivo": "assets/arte/amuleto.jpg",
+  "encuadre": "center"
+ },
+ "brujula": {
+  "archivo": "assets/arte/brujula.jpg",
+  "encuadre": "center"
+ },
+ "hamacas": {
+  "archivo": "assets/arte/hamacas.jpg",
+  "encuadre": "center"
+ },
+ "casco": {
+  "archivo": "assets/arte/casco.jpg",
+  "encuadre": "center 40%"
+ },
+ "templo-I": {
+  "archivo": "assets/arte/cap_isla.jpg",
+  "encuadre": "center"
+ },
+ "flota-II": {
+  "archivo": "assets/arte/cap_galeon.jpg",
+  "encuadre": "center"
+ }
+}

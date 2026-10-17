@@ -1,0 +1,2104 @@
+{
+ "Main": [
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "22px",
+   "nameCls": "",
+   "uq": true,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "n": "2",
+     "sc": "#24609A",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-com",
+     "n": "3",
+     "sc": "#8E2B23",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-exp",
+     "n": "1",
+     "sc": "#8A5E0F",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "74px",
+   "rtabs": [
+    {
+     "cls": "i-robar",
+     "n": "5",
+     "sc": "#2E5E63"
+    }
+   ],
+   "hm": "4",
+   "traits": [
+    {
+     "isText": true,
+     "t": "Bucanero. Oficial."
+    }
+   ],
+   "hasTraits": true,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Mientras Diego «Garra» Mendoza esté preparado, tus demás Tripulantes reciben "
+    },
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "i-nav",
+     "icolor": "#24609A"
+    },
+    {
+     "isText": true,
+     "t": ", "
+    },
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "i-com",
+     "icolor": "#8E2B23"
+    },
+    {
+     "isText": true,
+     "t": " y "
+    },
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "i-exp",
+     "icolor": "#8A5E0F"
+    },
+    {
+     "isText": true,
+     "t": "."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": true,
+   "mej": "2",
+   "mejTop": "170px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«El mar no perdona. Yo tampoco.»",
+   "meta": "Capitán · 1 copia · Mando 5",
+   "note": "Antes: Mientras esté preparado: tus demás Tripulantes tienen +1 en todas sus habilidades.",
+   "noteCls": "antes",
+   "rtTop": "106px",
+   "w": 378,
+   "h": 528,
+   "name": "Diego «Garra» Mendoza",
+   "type": "Capitán · Piratería",
+   "cc": "#2B2A33",
+   "artBg": "url(/_blob/a1f1ac445bb1270d1bc4fe670fc92b70) center top/cover no-repeat",
+   "artLabel": "",
+   "ilus": "Ilus. Midjourney",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 001",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "19px",
+   "nameCls": "",
+   "uq": true,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "n": "1",
+     "sc": "#24609A",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-com",
+     "n": "2",
+     "sc": "#8E2B23",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-exp",
+     "n": "3",
+     "sc": "#8A5E0F",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "74px",
+   "rtabs": [
+    {
+     "cls": "i-robar",
+     "n": "4",
+     "sc": "#2E5E63"
+    }
+   ],
+   "hm": "5",
+   "traits": [
+    {
+     "isText": true,
+     "t": "Contrabandista. Oficial."
+    }
+   ],
+   "hasTraits": true,
+   "rulesCls": "",
+   "text": [
+    {
+     "isIcT": true,
+     "cls": "i-agotar",
+     "color": "#2A2118",
+     "t": ":"
+    },
+    {
+     "isText": true,
+     "t": " Este turno, el próximo Tripulante que reclutes cuesta "
+    },
+    {
+     "isNum": true,
+     "t": "2",
+     "color": "#2A2118",
+     "cls": "",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": " menos."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": true,
+   "mej": "2",
+   "mejTop": "170px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«En Tortuga todos le deben algo. Ella siempre cobra en hombres.»",
+   "meta": "Capitán · 1 copia · Mando 4",
+   "note": "Antes: Agotar: el próximo Tripulante que reclutes este turno cuesta 2 menos.",
+   "noteCls": "antes",
+   "rtTop": "106px",
+   "w": 378,
+   "h": 528,
+   "name": "Catalina «la Enganchadora» Rojas",
+   "type": "Capitán · Piratería",
+   "cc": "#2B2A33",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #2B2A33, #fff 12%) 0%, color-mix(in srgb, #2B2A33, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 002",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "74px",
+   "rtabs": [
+    {
+     "cls": "i-dano",
+     "n": "5",
+     "sc": "#5A4532"
+    },
+    {
+     "cls": "i-capacidad",
+     "n": "4",
+     "sc": "#2E5E63"
+    },
+    {
+     "cls": "i-espacio",
+     "n": "5",
+     "sc": "#6B4A2B"
+    }
+   ],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Tus Pruebas de "
+    },
+    {
+     "isIc": true,
+     "cls": "i-nav",
+     "color": "#24609A"
+    },
+    {
+     "isText": true,
+     "t": " en "
+    },
+    {
+     "isIc": true,
+     "cls": "i-mar",
+     "color": "#1D5872"
+    },
+    {
+     "isText": true,
+     "t": " reciben "
+    },
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": "."
+    },
+    {
+     "isBr": true
+    },
+    {
+     "isBold": true,
+     "t": "Al zarpar hacia una misión lejana:"
+    },
+    {
+     "isText": true,
+     "t": " Distancia "
+    },
+    {
+     "isNum": true,
+     "t": "−1",
+     "color": "#3D6631",
+     "cls": "",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": "."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Sale con la última sombra y llega con la primera luz.»",
+   "meta": "Barco · 1 copia · Daño máximo 5, Capacidad 4, Espacio 5",
+   "note": "Antes: En el Mar y a la Distancia: +1 NAV.",
+   "noteCls": "antes",
+   "rtTop": "96px",
+   "w": 378,
+   "h": 528,
+   "name": "La Sombra del Alba",
+   "type": "Barco",
+   "cc": "#24405A",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #24405A, #fff 12%) 0%, color-mix(in srgb, #24405A, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 003",
+   "hasNote": true
+  }
+ ],
+ "TripPirateria": [
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "n": "0",
+     "sc": "#24609A",
+     "zero": "zero",
+     "mark": ""
+    },
+    {
+     "cls": "i-com",
+     "n": "2",
+     "sc": "#8E2B23",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-exp",
+     "n": "0",
+     "sc": "#8A5E0F",
+     "zero": "zero",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "1",
+   "traits": [
+    {
+     "isText": true,
+     "t": "Marinero."
+    }
+   ],
+   "hasTraits": true,
+   "rulesCls": "",
+   "text": [],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": true,
+   "cost": "1",
+   "hasMej": true,
+   "mej": "1",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Firma con una cruz y rema por diez.»",
+   "meta": "Piratería · 2 copias · 1 de 1 puntos",
+   "note": "",
+   "noteCls": "",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Rufián de cubierta",
+   "type": "Tripulante · Piratería",
+   "cc": "#7A2E22",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #7A2E22, #fff 12%) 0%, color-mix(in srgb, #7A2E22, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 004",
+   "hasNote": false
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "n": "1",
+     "sc": "#24609A",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-com",
+     "n": "1",
+     "sc": "#8E2B23",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-exp",
+     "n": "0",
+     "sc": "#8A5E0F",
+     "zero": "zero",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "1",
+   "traits": [
+    {
+     "isText": true,
+     "t": "Marinero."
+    }
+   ],
+   "hasTraits": true,
+   "rulesCls": "",
+   "text": [
+    {
+     "isBold": true,
+     "t": "Interrupción:"
+    },
+    {
+     "isText": true,
+     "t": " Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para reducirlas a 0."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": true,
+   "cost": "1",
+   "hasMej": true,
+   "mej": "0",
+   "mejTop": "150px",
+   "mejZero": "zero",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«¡Mi capitán, esa bala era para mí!»",
+   "meta": "Piratería · 2 copias · 1 de 1 puntos",
+   "note": "Antes: Cuando otro Tripulante vaya a sufrir heridas: descarta al Grumete para evitarlas.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Grumete leal",
+   "type": "Tripulante · Piratería",
+   "cc": "#7A2E22",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #7A2E22, #fff 12%) 0%, color-mix(in srgb, #7A2E22, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 005",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "n": "1",
+     "sc": "#24609A",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-com",
+     "n": "2",
+     "sc": "#8E2B23",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-exp",
+     "n": "0",
+     "sc": "#8A5E0F",
+     "zero": "zero",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "2",
+   "traits": [
+    {
+     "isText": true,
+     "t": "Bucanero. Marinero."
+    }
+   ],
+   "hasTraits": true,
+   "rulesCls": "",
+   "text": [],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": true,
+   "cost": "2",
+   "hasMej": true,
+   "mej": "1",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Tres galeones, dos naufragios y ni una cicatriz en la espalda.»",
+   "meta": "Piratería · 2 copias · 3 de 3 puntos",
+   "note": "",
+   "noteCls": "",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Bucanero veterano",
+   "type": "Tripulante · Piratería",
+   "cc": "#7A2E22",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #7A2E22, #fff 12%) 0%, color-mix(in srgb, #7A2E22, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 006",
+   "hasNote": false
+  }
+ ],
+ "MejBarco": [
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "big",
+   "text": [
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "i-dano",
+     "icolor": "#2A2118"
+    }
+   ],
+   "hasEsp": true,
+   "esp": "2",
+   "espSq": [
+    {
+     "i": 0
+    },
+    {
+     "i": 1
+    }
+   ],
+   "hasCost": true,
+   "cost": "2",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Doble forro de roble. Que vengan.»",
+   "meta": "1 copia",
+   "note": "Antes: +1 Daño máximo",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Casco reforzado",
+   "type": "Mejora de barco",
+   "cc": "#1D4E66",
+   "artBg": "url(/_blob/b548183fbba33ca27fcaa6e329918690) center 40%/cover no-repeat",
+   "artLabel": "",
+   "ilus": "Ilus. Midjourney",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 021",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isBold": true,
+     "t": "Al zarpar hacia una misión "
+    },
+    {
+     "isIcT": true,
+     "cls": "i-mar",
+     "color": "#1D5872",
+     "t": ":"
+    },
+    {
+     "isText": true,
+     "t": " Gana "
+    },
+    {
+     "isNum": true,
+     "t": "1",
+     "color": "#2A2118",
+     "cls": "i-avance",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": "."
+    }
+   ],
+   "hasEsp": true,
+   "esp": "1",
+   "espSq": [
+    {
+     "i": 0
+    }
+   ],
+   "hasCost": true,
+   "cost": "1",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Con buen trapo, el viento trabaja para ti.»",
+   "meta": "1 copia",
+   "note": "Antes: Al empezar una misión de Mar: +1 Avance.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Vela mayor",
+   "type": "Mejora de barco",
+   "cc": "#1D4E66",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #1D4E66, #fff 12%) 0%, color-mix(in srgb, #1D4E66, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 022",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "18.5px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "big",
+   "text": [
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "i-capacidad",
+     "icolor": "#2A2118"
+    }
+   ],
+   "hasEsp": true,
+   "esp": "1",
+   "espSq": [
+    {
+     "i": 0
+    }
+   ],
+   "hasCost": true,
+   "cost": "1",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Donde caben diez, caben doce.»",
+   "meta": "1 copia",
+   "note": "",
+   "noteCls": "",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Hamacas en el entrepuente",
+   "type": "Mejora de barco",
+   "cc": "#1D4E66",
+   "artBg": "url(/_blob/b9de730d6b8243333eaa7d4228147e91) center/cover no-repeat",
+   "artLabel": "",
+   "ilus": "Ilus. Midjourney",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 023",
+   "hasNote": false
+  }
+ ],
+ "Eventos": [
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-com",
+     "sc": "#8E2B23",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Busca una Mejora."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": true,
+   "cost": "0",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Bajo la tercera palmera. ¿O era la cuarta?»",
+   "meta": "1 copia",
+   "note": "Antes: Busca una Mejora en el mazo de muelle y ponla en el muelle.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Botín escondido",
+   "type": "Evento",
+   "cc": "#2E5E63",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #2E5E63, #fff 12%) 0%, color-mix(in srgb, #2E5E63, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 043",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-exp",
+     "sc": "#8A5E0F",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Otea 2."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": true,
+   "cost": "0",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Por un vaso de ron, el tabernero lo cuenta todo.»",
+   "meta": "1 copia",
+   "note": "Antes: Mira las 2 primeras cartas del mazo de Peligros y devuélvelas encima o al fondo, en el orden que quieras.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Rumores de taberna",
+   "type": "Evento",
+   "cc": "#2E5E63",
+   "artBg": "url(/_blob/be8f802b883b560eaa3cc7888eadaf1f) center/cover no-repeat",
+   "artLabel": "",
+   "ilus": "Ilus. Midjourney",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 044",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "sc": "#24609A",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "92px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "big",
+   "text": [
+    {
+     "isText": true,
+     "t": "Repara "
+    },
+    {
+     "isNum": true,
+     "t": "2",
+     "color": "#3D6631",
+     "cls": "i-dano",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": "."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": true,
+   "cost": "0",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«¡Tapad esa vía de agua! Ya rezaremos luego.»",
+   "meta": "1 copia",
+   "note": "Antes: Repara 2 daño.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Remiendo de urgencia",
+   "type": "Evento",
+   "cc": "#2E5E63",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #2E5E63, #fff 12%) 0%, color-mix(in srgb, #2E5E63, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "cst",
+   "slotW": "378px",
+   "num": "Caja básica · 045",
+   "hasNote": true
+  }
+ ],
+ "Habilidades": [
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "tall",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-com",
+     "sc": "#8E2B23",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-com",
+     "sc": "#8E2B23",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "74px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "center",
+   "text": [],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«¡Garfios a la borda, y que Dios reparta suerte!»",
+   "meta": "2 copias",
+   "note": "",
+   "noteCls": "",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "¡Al abordaje!",
+   "type": "Habilidad",
+   "cc": "#3B302A",
+   "artBg": "url(/_blob/6f9ed3602d18d8015dd37469b487612e) center/cover no-repeat",
+   "artLabel": "",
+   "ilus": "Ilus. Midjourney",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 066",
+   "hasNote": false
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "tall",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-nav",
+     "sc": "#24609A",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-nav",
+     "sc": "#24609A",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "74px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "center",
+   "text": [],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Ni ola ni ráfaga me mueven el rumbo.»",
+   "meta": "2 copias",
+   "note": "",
+   "noteCls": "",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Mano firme al timón",
+   "type": "Habilidad",
+   "cc": "#3B302A",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #3B302A, #fff 12%) 0%, color-mix(in srgb, #3B302A, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 067",
+   "hasNote": false
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "tall",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [
+    {
+     "cls": "i-exp",
+     "sc": "#8A5E0F",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    },
+    {
+     "cls": "i-exp",
+     "sc": "#8A5E0F",
+     "n": "",
+     "zero": "",
+     "mark": ""
+    }
+   ],
+   "tabsTop": "74px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "center",
+   "text": [],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«En el Caribe, el que parpadea pierde.»",
+   "meta": "2 copias",
+   "note": "",
+   "noteCls": "",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Ojo avizor",
+   "type": "Habilidad",
+   "cc": "#3B302A",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #3B302A, #fff 12%) 0%, color-mix(in srgb, #3B302A, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 068",
+   "hasNote": false
+  }
+ ],
+ "PelLeves": [
+  {
+   "kind": "haz",
+   "isHaz": true,
+   "w": 378,
+   "h": 528,
+   "encs": [
+    {
+     "hasEnt": true,
+     "entCls": "i-mar",
+     "entColor": "#1D5872",
+     "name": "Chubasco repentino",
+     "nameCls": "",
+     "kw": "Tormenta",
+     "av": "2",
+     "opts": [
+      {
+       "cls": "i-nav",
+       "color": "#24609A",
+       "n": "2",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "−1 Mando",
+       "cls": "",
+       "x": "txt"
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    },
+    {
+     "hasEnt": true,
+     "entCls": "i-nat",
+     "entColor": "#3D6631",
+     "name": "Lluvia torrencial",
+     "nameCls": "",
+     "kw": "Tormenta",
+     "av": "1",
+     "opts": [
+      {
+       "cls": "i-exp",
+       "color": "#8A5E0F",
+       "n": "1",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-descartar",
+       "x": ""
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    },
+    {
+     "hasEnt": true,
+     "entCls": "i-ciu",
+     "entColor": "#8A4F2E",
+     "name": "Tarde de lluvia",
+     "nameCls": "",
+     "kw": "",
+     "av": "1",
+     "opts": [],
+     "hasTest": false,
+     "noTest": true,
+     "win": [],
+     "winNone": false,
+     "fail": [],
+     "failNone": false,
+     "fx": [],
+     "fxNone": true
+    }
+   ],
+   "dFlavor": "«Agua del cielo, agua del mar. Lo de siempre.»",
+   "once": false,
+   "meta": "Chubasco · Leve · 2 copias",
+   "note": "",
+   "noteCls": "",
+   "num": "Caja básica · 077",
+   "dName": "Sin novedad",
+   "dMod": "+0",
+   "dBg": "#6A5640",
+   "dText": [],
+   "hasDestr": false,
+   "hasSo": false,
+   "so": [],
+   "slotW": "378px",
+   "hasNote": false
+  },
+  {
+   "kind": "haz",
+   "isHaz": true,
+   "w": 378,
+   "h": 528,
+   "encs": [
+    {
+     "hasEnt": true,
+     "entCls": "i-mar",
+     "entColor": "#1D5872",
+     "name": "Tiburones",
+     "nameCls": "",
+     "kw": "Bestia",
+     "av": "1",
+     "opts": [
+      {
+       "cls": "i-com",
+       "color": "#8E2B23",
+       "n": "2",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-herida",
+       "x": ""
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    },
+    {
+     "hasEnt": true,
+     "entCls": "i-nat",
+     "entColor": "#3D6631",
+     "name": "Serpientes",
+     "nameCls": "",
+     "kw": "Bestia",
+     "av": "2",
+     "opts": [
+      {
+       "cls": "i-exp",
+       "color": "#8A5E0F",
+       "n": "2",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-herida",
+       "x": ""
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    },
+    {
+     "hasEnt": true,
+     "entCls": "i-ciu",
+     "entColor": "#8A4F2E",
+     "name": "Ratas en el almacén",
+     "nameCls": "",
+     "kw": "Bestia",
+     "av": "1",
+     "opts": [
+      {
+       "cls": "i-exp",
+       "color": "#8A5E0F",
+       "n": "1",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-descartar",
+       "x": ""
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    }
+   ],
+   "dFlavor": "«Donde hay uno, hay diez.»",
+   "once": false,
+   "meta": "Fauna · Leve · 2 copias",
+   "note": "",
+   "noteCls": "",
+   "num": "Caja básica · 078",
+   "dName": "Refuerzos",
+   "dMod": "+1",
+   "dBg": "#8E2B23",
+   "dText": [],
+   "hasDestr": false,
+   "hasSo": false,
+   "so": [],
+   "slotW": "378px",
+   "hasNote": false
+  },
+  {
+   "kind": "haz",
+   "isHaz": true,
+   "w": 378,
+   "h": 528,
+   "encs": [
+    {
+     "hasEnt": true,
+     "entCls": "i-mar",
+     "entColor": "#1D5872",
+     "name": "Bajíos traicioneros",
+     "nameCls": "",
+     "kw": "Terreno",
+     "av": "2",
+     "opts": [
+      {
+       "cls": "i-nav",
+       "color": "#24609A",
+       "n": "2",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      },
+      {
+       "cls": "i-exp",
+       "color": "#8A5E0F",
+       "n": "3",
+       "sep": true,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-dano",
+       "x": ""
+      },
+      {
+       "n": "1",
+       "cls": "i-mejora",
+       "x": "brk"
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    },
+    {
+     "hasEnt": true,
+     "entCls": "i-nat",
+     "entColor": "#3D6631",
+     "name": "Barranco",
+     "nameCls": "",
+     "kw": "Terreno",
+     "av": "2",
+     "opts": [
+      {
+       "cls": "i-exp",
+       "color": "#8A5E0F",
+       "n": "2",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-herida",
+       "x": ""
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    },
+    {
+     "hasEnt": true,
+     "entCls": "i-ciu",
+     "entColor": "#8A4F2E",
+     "name": "Callejón sin salida",
+     "nameCls": "",
+     "kw": "Terreno",
+     "av": "1",
+     "opts": [
+      {
+       "cls": "i-exp",
+       "color": "#8A5E0F",
+       "n": "2",
+       "sep": false,
+       "alt": "",
+       "altR": ""
+      }
+     ],
+     "hasTest": true,
+     "noTest": false,
+     "win": [],
+     "winNone": true,
+     "fail": [
+      {
+       "n": "1",
+       "cls": "i-descartar",
+       "x": ""
+      }
+     ],
+     "failNone": false,
+     "fx": [],
+     "fxNone": false
+    }
+   ],
+   "dFlavor": "«Sondad el fondo, y despacio.»",
+   "once": false,
+   "meta": "Escollos · Leve · 2 copias",
+   "note": "",
+   "noteCls": "",
+   "num": "Caja básica · 079",
+   "dName": "Sin novedad",
+   "dMod": "+0",
+   "dBg": "#6A5640",
+   "dText": [],
+   "hasDestr": false,
+   "hasSo": false,
+   "so": [],
+   "slotW": "378px",
+   "hasNote": false
+  }
+ ],
+ "Mis_templo": [
+  {
+   "kind": "chap",
+   "isChap": true,
+   "w": 528,
+   "h": 378,
+   "slotW": "528px",
+   "hasDist": false,
+   "dist": "0",
+   "entTab": "",
+   "mission": "El templo perdido",
+   "num": "I",
+   "of": "III",
+   "name": "Rumbo a la isla",
+   "entCls": "i-mar",
+   "entColor": "#1D5872",
+   "av": "5",
+   "artCls": "",
+   "artBg": "url(/_blob/4aeaf00df04cb1e3e1e18b6b761b7fcf) center/cover no-repeat",
+   "rules": [
+    {
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Al zarpar:"
+      },
+      {
+       "isText": true,
+       "t": " Si tienes un "
+      },
+      {
+       "isRasgo": true,
+       "t": "Vigía"
+      },
+      {
+       "isText": true,
+       "t": " preparado, gana "
+      },
+      {
+       "isNum": true,
+       "t": "1",
+       "color": "#2A2118",
+       "cls": "i-avance",
+       "icolor": "#2A2118"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ],
+     "sep": false
+    },
+    {
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Al zarpar:"
+      },
+      {
+       "isText": true,
+       "t": " Agota a un "
+      },
+      {
+       "isRasgo": true,
+       "t": "Oficial"
+      },
+      {
+       "isText": true,
+       "t": " para ganar "
+      },
+      {
+       "isNum": true,
+       "t": "2",
+       "color": "#2A2118",
+       "cls": "i-avance",
+       "icolor": "#2A2118"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ],
+     "sep": true
+    }
+   ],
+   "flavor": "«Dicen que la isla no sale en ningún mapa. Por eso vamos.»",
+   "reward": [
+    {
+     "n": "+1",
+     "cls": "i-rep",
+     "x": ""
+    }
+   ],
+   "next": "Añade la carta 119 a Misiones",
+   "hasNext": true,
+   "foot": "Mazo de Misiones",
+   "code": "Caja básica · 118",
+   "meta": "Capítulo I de III · Mar 5",
+   "note": "Antes: Si llevas un Vigía preparado: empiezas con 1 Avance. Atajo: Agotar un Oficial → +2 Avance",
+   "noteCls": "antes",
+   "hasNote": true
+  },
+  {
+   "kind": "chap",
+   "isChap": true,
+   "w": 528,
+   "h": 378,
+   "slotW": "528px",
+   "hasDist": true,
+   "dist": "3",
+   "entTab": "entd",
+   "mission": "El templo perdido",
+   "num": "II",
+   "of": "III",
+   "name": "La selva",
+   "entCls": "i-nat",
+   "entColor": "#3D6631",
+   "av": "4",
+   "artCls": "ph",
+   "artBg": "",
+   "rules": [
+    {
+     "seg": [
+      {
+       "isText": true,
+       "t": "Tus Tripulantes reciben "
+      },
+      {
+       "isNum": true,
+       "t": "−1",
+       "color": "#8E2B23",
+       "cls": "i-com",
+       "icolor": "#8E2B23"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ],
+     "sep": false
+    }
+   ],
+   "flavor": "«Cada paso, un mosquito. Cada diez, una serpiente.»",
+   "reward": [
+    {
+     "n": "+2",
+     "cls": "i-rep",
+     "x": ""
+    }
+   ],
+   "next": "Añade la carta 120 a Misiones",
+   "hasNext": true,
+   "foot": "Mazo de historia",
+   "code": "Caja básica · 119",
+   "meta": "Capítulo II de III · Naturaleza 4 · Distancia 3",
+   "note": "Antes: Tus Tripulantes tienen −1 COM.",
+   "noteCls": "antes",
+   "hasNote": true
+  },
+  {
+   "kind": "chap",
+   "isChap": true,
+   "w": 528,
+   "h": 378,
+   "slotW": "528px",
+   "hasDist": true,
+   "dist": "3",
+   "entTab": "entd",
+   "mission": "El templo perdido",
+   "num": "III",
+   "of": "III",
+   "name": "El templo",
+   "entCls": "i-nat",
+   "entColor": "#3D6631",
+   "av": "5",
+   "artCls": "ph",
+   "artBg": "",
+   "rules": [
+    {
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Al zarpar:"
+      },
+      {
+       "isText": true,
+       "t": " Baraja el mazo del Templo con 6 cartas del mazo de Peligros. Durante esta misión, revela de ese mazo."
+      }
+     ],
+     "sep": false
+    },
+    {
+     "seg": [
+      {
+       "isText": true,
+       "t": "Cada efecto de fallo inflige además "
+      },
+      {
+       "isNum": true,
+       "t": "1",
+       "color": "#8E2B23",
+       "cls": "i-herida",
+       "icolor": "#8E2B23"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ],
+     "sep": true
+    }
+   ],
+   "flavor": "«Los sacerdotes nunca se fueron. Solo dejaron de respirar.»",
+   "reward": [
+    {
+     "n": "+4",
+     "cls": "i-rep",
+     "x": ""
+    }
+   ],
+   "next": "Tesoro · carta 121",
+   "hasNext": true,
+   "foot": "Mazo de historia",
+   "code": "Caja básica · 120",
+   "meta": "Capítulo III de III · Naturaleza 5 · Distancia 3",
+   "note": "Antes: Mazo del Templo: barájalo con 6 cartas de Peligros y revela de ahí. Cada efecto de fallo trae además 1 herida.",
+   "noteCls": "antes",
+   "hasNote": true
+  }
+ ],
+ "Escenario": [
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "74px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Revela 2 cartas más del mazo de muelle y añádelas al muelle."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Ha llegado la flota mercante: hay dinero en cada esquina.»",
+   "meta": "1 copia",
+   "note": "Antes: Revela 2 cartas más del mazo de muelle y añádelas al muelle.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Mercado próspero",
+   "type": "Escenario · El Caribe",
+   "cc": "#7A5418",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #7A5418, #fff 12%) 0%, color-mix(in srgb, #7A5418, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 097",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "74px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Repara "
+    },
+    {
+     "isNum": true,
+     "t": "2",
+     "color": "#3D6631",
+     "cls": "i-dano",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": "."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«Los calafates se aburren. Aprovéchalo.»",
+   "meta": "1 copia",
+   "note": "Antes: Repara 2 daño.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Astillero ocioso",
+   "type": "Escenario · El Caribe",
+   "cc": "#7A5418",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #7A5418, #fff 12%) 0%, color-mix(in srgb, #7A5418, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 098",
+   "hasNote": true
+  },
+  {
+   "kind": "player",
+   "isPlayer": true,
+   "variant": "",
+   "ns": "25px",
+   "nameCls": "two",
+   "uq": false,
+   "mandoL": "",
+   "mandoR": "",
+   "tabs": [],
+   "tabsTop": "74px",
+   "rtabs": [],
+   "hm": "",
+   "traits": [],
+   "hasTraits": false,
+   "rulesCls": "",
+   "text": [
+    {
+     "isText": true,
+     "t": "Pierde una Mejora."
+    }
+   ],
+   "hasEsp": false,
+   "esp": "",
+   "espSq": [],
+   "hasCost": false,
+   "cost": "",
+   "hasMej": false,
+   "mej": "",
+   "mejTop": "150px",
+   "mejZero": "",
+   "hand": [],
+   "hasHand": false,
+   "flavor": "«El gobernador también es pirata. Con peluca.»",
+   "meta": "1 copia",
+   "note": "Antes: Pierdes una Mejora; la eliges tú.",
+   "noteCls": "antes",
+   "rtTop": "254px",
+   "w": 378,
+   "h": 528,
+   "name": "Impuestos del gobernador",
+   "type": "Escenario · El Caribe",
+   "cc": "#7A5418",
+   "artBg": "linear-gradient(160deg, color-mix(in srgb, #7A5418, #fff 12%) 0%, color-mix(in srgb, #7A5418, #000 55%) 100%)",
+   "artLabel": "Ilustración pendiente",
+   "ilus": "Ilustración pendiente",
+   "plateCls": "",
+   "slotW": "378px",
+   "num": "Caja básica · 099",
+   "hasNote": true
+  }
+ ],
+ "Puertos": [
+  {
+   "kind": "pto",
+   "isPto": true,
+   "w": 528,
+   "h": 378,
+   "slotW": "528px",
+   "name": "Tortuga",
+   "sub": "Puerto · El Caribe",
+   "muelle": "4",
+   "abCls": "i-avance",
+   "abName": "Soplos de la Hermandad",
+   "abText": [
+    {
+     "isText": true,
+     "t": "Pon "
+    },
+    {
+     "isNum": true,
+     "t": "2",
+     "color": "#2A2118",
+     "cls": "i-avance",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": " en una misión disponible."
+    }
+   ],
+   "common": [
+    {
+     "cls": "i-dano",
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Astillero."
+      },
+      {
+       "isText": true,
+       "t": " Repara "
+      },
+      {
+       "isNum": true,
+       "t": "3",
+       "color": "#3D6631",
+       "cls": "i-dano",
+       "icolor": "#2A2118"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ]
+    },
+    {
+     "cls": "i-curar",
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Taberna."
+      },
+      {
+       "isText": true,
+       "t": " Cura "
+      },
+      {
+       "isNum": true,
+       "t": "3",
+       "color": "#3D6631",
+       "cls": "i-herida",
+       "icolor": "#8E2B23"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ]
+    },
+    {
+     "cls": "i-robar",
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Tablón de encargos."
+      },
+      {
+       "isText": true,
+       "t": " Pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón."
+      }
+     ]
+    }
+   ],
+   "flavor": "«En Tortuga todo se compra y todo se vende. Hasta tu nombre.»",
+   "foot": "Puerto · Caja básica",
+   "num": "Caja básica · 111",
+   "meta": "Puerto · 1 copia · muelle 4",
+   "note": "Antes: Pon 2 Avance sobre una misión a la vista. Cuando zarpes a ella, empiezas con ese Avance y las fichas se gastan.",
+   "noteCls": "antes",
+   "hasNote": true
+  },
+  {
+   "kind": "pto",
+   "isPto": true,
+   "w": 528,
+   "h": 378,
+   "slotW": "528px",
+   "name": "Nassau",
+   "sub": "Puerto · El Caribe",
+   "muelle": "3",
+   "abCls": "i-mejora",
+   "abName": "Entrenamiento",
+   "abText": [
+    {
+     "isText": true,
+     "t": "Pon una ficha de Entrenamiento en un Tripulante: "
+    },
+    {
+     "isNum": true,
+     "t": "+1",
+     "color": "#3D6631",
+     "cls": "",
+     "icolor": "#2A2118"
+    },
+    {
+     "isText": true,
+     "t": " a la habilidad que elijas. Ocupa un hueco de Mejora."
+    }
+   ],
+   "common": [
+    {
+     "cls": "i-dano",
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Astillero."
+      },
+      {
+       "isText": true,
+       "t": " Repara "
+      },
+      {
+       "isNum": true,
+       "t": "3",
+       "color": "#3D6631",
+       "cls": "i-dano",
+       "icolor": "#2A2118"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ]
+    },
+    {
+     "cls": "i-curar",
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Taberna."
+      },
+      {
+       "isText": true,
+       "t": " Cura "
+      },
+      {
+       "isNum": true,
+       "t": "3",
+       "color": "#3D6631",
+       "cls": "i-herida",
+       "icolor": "#8E2B23"
+      },
+      {
+       "isText": true,
+       "t": "."
+      }
+     ]
+    },
+    {
+     "cls": "i-robar",
+     "seg": [
+      {
+       "isBold": true,
+       "t": "Tablón de encargos."
+      },
+      {
+       "isText": true,
+       "t": " Pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón."
+      }
+     ]
+    }
+   ],
+   "flavor": "«Aquí no hay gobernador: hay doscientos capitanes y ninguno obedece.»",
+   "foot": "Puerto · Caja básica",
+   "num": "Caja básica · 112",
+   "meta": "Puerto · 1 copia · muelle 3",
+   "note": "Antes: Un Tripulante recibe una ficha de +1 en la habilidad que elijas. La ficha ocupa uno de sus huecos de Mejora.",
+   "noteCls": "antes",
+   "hasNote": true
+  }
+ ]
+}

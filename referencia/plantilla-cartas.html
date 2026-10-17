@@ -1,0 +1,165 @@
+<!-- Plantilla de las cartas (sintaxis del lienzo de diseño: sc-for / sc-if / {{c.campo}}).
+     Es la maquetación de referencia; los campos vienen de ejemplo-datos-render.json.
+     Úsala para portar las cartas a componentes React con estilo-cartas.css. -->
+<div class="board grid" style="width: 1294px; height: 700px">
+  <sc-for list="{{cards}}" as="c" hint-placeholder-count="3">
+    <div class="slot" style="width: {{c.slotW}}">
+      <sc-if value="{{c.isPlayer}}" hint-placeholder-val="{{true}}">
+      <div class="card {{c.variant}}" style="--cc: {{c.cc}}">
+        <div class="art" style="background: {{c.artBg}}">{{c.artLabel}}</div>
+        <div class="plate {{c.plateCls}}"><span class="name {{c.nameCls}}" style="font-size: {{c.ns}}"><sc-if value="{{c.uq}}" hint-placeholder-val="{{false}}"><span class="uq">★</span></sc-if>{{c.name}}</span></div>
+        <sc-if value="{{c.hasEsp}}" hint-placeholder-val="{{false}}"><div class="espq"><sc-for list="{{c.espSq}}" as="q" hint-placeholder-count="2"><span class="sq"></span></sc-for></div></sc-if>
+        <sc-if value="{{c.hasCost}}" hint-placeholder-val="{{false}}"><div class="costb"><b>{{c.cost}}</b></div></sc-if>
+        <div class="tabs" style="top: {{c.tabsTop}}">
+          <sc-for list="{{c.tabs}}" as="s" hint-placeholder-count="1">
+            <span class="tab {{s.zero}}" style="--sc: {{s.sc}}"><span class="ic {{s.cls}}"></span><sc-if value="{{s.n}}" hint-placeholder-val="{{true}}"><b>{{s.n}}</b></sc-if></span>
+          </sc-for>
+        </div>
+        <div class="tabs r" style="top: {{c.rtTop}}">
+          <sc-for list="{{c.rtabs}}" as="s" hint-placeholder-count="1">
+            <span class="tab" style="--sc: {{s.sc}}"><span class="ic {{s.cls}}"></span><b>{{s.n}}</b></span>
+          </sc-for>
+        </div>
+        <sc-if value="{{c.hasMej}}" hint-placeholder-val="{{false}}"><div class="tabs r" style="top: {{c.mejTop}}"><span class="tab mejt {{c.mejZero}}"><span class="ic i-saco"></span><b>{{c.mej}}</b></span></div></sc-if>
+        <sc-if value="{{c.hm}}" hint-placeholder-val="{{false}}"><div class="vida"><b>{{c.hm}}</b></div></sc-if>
+        <div class="ribbon">{{c.type}}</div>
+        <div class="tbox">
+          <sc-if value="{{c.hasTraits}}" hint-placeholder-val="{{true}}"><div class="traits"><sc-for list="{{c.traits}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></div><div class="rule"></div></sc-if>
+          <div class="rules {{c.rulesCls}}"><sc-for list="{{c.text}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></div>
+          <sc-if value="{{c.flavor}}" hint-placeholder-val="{{true}}"><div class="flavor">{{c.flavor}}</div></sc-if>
+        </div>
+        <div class="foot"><span>{{c.ilus}}</span><span>{{c.num}}</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{c.isHaz}}" hint-placeholder-val="{{false}}">
+      <div class="card enc">
+        <sc-for list="{{c.encs}}" as="e" hint-placeholder-count="3">
+          <div class="encp">
+            <sc-if value="{{e.hasEnt}}" hint-placeholder-val="{{true}}"><div class="ent" style="--ec: {{e.entColor}}"><span class="ic {{e.entCls}}"></span></div></sc-if>
+            <div class="encb">
+              <div class="ench">
+                <div style="display: flex; flex-direction: column; min-width: 0">
+                  <span class="encn {{e.nameCls}}">{{e.name}}</span>
+                  <span class="enck">{{e.kw}}</span>
+                </div>
+                <span class="av"><span class="ic i-avance"></span><b>{{e.av}}</b></span>
+              </div>
+              <sc-if value="{{e.hasTest}}" hint-placeholder-val="{{true}}">
+                <div class="test"><sc-for list="{{e.opts}}" as="o" hint-placeholder-count="1"><sc-if value="{{o.sep}}" hint-placeholder-val="{{false}}"><span class="sep">/</span></sc-if><span class="opt" style="color: {{o.color}}"><span class="ic {{o.cls}}"></span><b>{{o.n}}</b></span><sc-if value="{{o.alt}}" hint-placeholder-val="{{false}}"><span class="alt">({{o.alt}} <i>{{o.altR}}</i>)</span></sc-if></sc-for></div>
+                <div class="outs">
+                  <div class="out win"><sc-for list="{{e.win}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{e.winNone}}" hint-placeholder-val="{{false}}"><span class="none dash">—</span></sc-if></div>
+                  <div class="out fail"><sc-for list="{{e.fail}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{e.failNone}}" hint-placeholder-val="{{false}}"><span class="none dash">—</span></sc-if></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{e.noTest}}" hint-placeholder-val="{{false}}">
+                <div class="outs"><div class="out fx"><sc-for list="{{e.fx}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{e.fxNone}}" hint-placeholder-val="{{false}}"><span class="none dash">—</span></sc-if></div></div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <div class="dest">
+          <div class="desth"><span class="destn">{{c.dName}}</span><span class="mod" style="--dc: {{c.dBg}}">{{c.dMod}}</span></div>
+          <div class="destf">{{c.dFlavor}}</div>
+          <sc-if value="{{c.hasDestr}}" hint-placeholder-val="{{true}}"><div class="destr">
+            <span class="destt"><sc-for list="{{c.dText}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></span>
+            <sc-if value="{{c.hasSo}}" hint-placeholder-val="{{true}}"><span class="so"><span class="ic i-sinop"></span><sc-for list="{{c.so}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for></span></sc-if>
+          </div></sc-if>
+          <sc-if value="{{c.once}}" hint-placeholder-val="{{false}}"><div class="oncet">Entra en el mazo durante la partida</div></sc-if>
+        </div>
+        <div class="hznum">{{c.num}}</div>
+      </div>
+      </sc-if>
+      <sc-if value="{{c.isSolo}}" hint-placeholder-val="{{false}}">
+      <div class="card enc solo">
+        <div class="soloh">{{c.deck}}</div>
+        <div class="soloart" style="background: {{c.artBg}}"><span>Ilustración pendiente</span></div>
+        <sc-for list="{{c.encs}}" as="e" hint-placeholder-count="3">
+          <div class="encp">
+            <sc-if value="{{e.hasEnt}}" hint-placeholder-val="{{true}}"><div class="ent" style="--ec: {{e.entColor}}"><span class="ic {{e.entCls}}"></span></div></sc-if>
+            <div class="encb">
+              <div class="ench">
+                <div style="display: flex; flex-direction: column; min-width: 0">
+                  <span class="encn {{e.nameCls}}">{{e.name}}</span>
+                  <span class="enck">{{e.kw}}</span>
+                </div>
+                <span class="av"><span class="ic i-avance"></span><b>{{e.av}}</b></span>
+              </div>
+              <sc-if value="{{e.hasTest}}" hint-placeholder-val="{{true}}">
+                <div class="test"><sc-for list="{{e.opts}}" as="o" hint-placeholder-count="1"><sc-if value="{{o.sep}}" hint-placeholder-val="{{false}}"><span class="sep">/</span></sc-if><span class="opt" style="color: {{o.color}}"><span class="ic {{o.cls}}"></span><b>{{o.n}}</b></span><sc-if value="{{o.alt}}" hint-placeholder-val="{{false}}"><span class="alt">({{o.alt}} <i>{{o.altR}}</i>)</span></sc-if></sc-for></div>
+                <div class="outs">
+                  <div class="out win"><sc-for list="{{e.win}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{e.winNone}}" hint-placeholder-val="{{false}}"><span class="none dash">—</span></sc-if></div>
+                  <div class="out fail"><sc-for list="{{e.fail}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{e.failNone}}" hint-placeholder-val="{{false}}"><span class="none dash">—</span></sc-if></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{e.noTest}}" hint-placeholder-val="{{false}}">
+                <div class="outs"><div class="out fx"><sc-for list="{{e.fx}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{e.fxNone}}" hint-placeholder-val="{{false}}"><span class="none dash">—</span></sc-if></div></div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+        <div class="dest">
+          <div class="desth"><span class="destn">{{c.dName}}</span><span class="mod" style="--dc: {{c.dBg}}">{{c.dMod}}</span></div>
+          <div class="destf">{{c.dFlavor}}</div>
+          <sc-if value="{{c.hasDestr}}" hint-placeholder-val="{{true}}"><div class="destr">
+            <span class="destt"><sc-for list="{{c.dText}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></span>
+            <sc-if value="{{c.hasSo}}" hint-placeholder-val="{{true}}"><span class="so"><span class="ic i-sinop"></span><sc-for list="{{c.so}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for></span></sc-if>
+          </div></sc-if>
+          <sc-if value="{{c.once}}" hint-placeholder-val="{{false}}"><div class="oncet">Entra en el mazo durante la partida</div></sc-if>
+        </div>
+        <div class="hznum"><span>{{c.foot}}</span> · <span>{{c.num}}</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{c.isChap}}" hint-placeholder-val="{{false}}">
+      <div class="card wide chap">
+        <div class="chapp">
+          <div class="seal"><b>{{c.num}}</b><small>de {{c.of}}</small></div>
+          <div class="chapt"><span class="chapm">{{c.mission}}</span><span class="chapn">{{c.name}}</span></div>
+        </div>
+        <div class="chapart {{c.artCls}}" style="background: {{c.artBg}}"><sc-if value="{{c.artCls}}" hint-placeholder-val="{{true}}"><span>Ilustración<br>del capítulo</span></sc-if></div>
+        <div class="tabs"><span class="tab {{c.entTab}}" style="--sc: {{c.entColor}}"><span class="ic {{c.entCls}}"></span><sc-if value="{{c.hasDist}}" hint-placeholder-val="{{false}}"><span class="dst"><span class="ic i-nav"></span><b>{{c.dist}}</b></span></sc-if></span><span class="tab dark"><span class="ic i-avance"></span><b>{{c.av}}</b></span></div>
+        <div class="chapr">
+          <sc-for list="{{c.rules}}" as="r" hint-placeholder-count="2">
+            <sc-if value="{{r.sep}}" hint-placeholder-val="{{false}}"><div class="rule"></div></sc-if>
+            <div class="rules"><sc-for list="{{r.seg}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></div>
+          </sc-for>
+          <div class="flavor">{{c.flavor}}</div>
+          <div class="reward"><span class="lbl">Recompensa</span><sc-for list="{{c.reward}}" as="t" hint-placeholder-count="1"><span class="tk {{t.x}}"><b>{{t.n}}</b><sc-if value="{{t.cls}}" hint-placeholder-val="{{true}}"><span class="icw {{t.x}}"><span class="ic {{t.cls}}"></span></span></sc-if></span></sc-for><sc-if value="{{c.hasNext}}" hint-placeholder-val="{{true}}"><span class="next">{{c.next}}</span></sc-if></div>
+        </div>
+        <div class="foot"><span>{{c.foot}}</span><span>{{c.code}}</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{c.isPort}}" hint-placeholder-val="{{false}}">
+      <div class="card wide chap port">
+        <div class="chapp">
+          <div class="reto" style="--rc: {{c.rc}}"><small>RETO</small><b>{{c.reto}}</b></div>
+          <div class="chapt"><span class="chapm">Misión · El Caribe</span><span class="chapn">{{c.name}}</span></div>
+        </div>
+        <div class="chapart ph"><span>Ilustración<br>de la misión</span></div>
+        <div class="chapr">
+          <div class="intro">{{c.intro}}</div>
+          <div class="clist">
+            <sc-for list="{{c.chaps}}" as="k" hint-placeholder-count="3">
+              <div class="crow"><span class="cn">{{k.n}}</span><span class="ct">{{k.name}}</span><span class="ce"><span class="ic {{k.ent}}" style="color: {{k.entColor}}"></span><b>{{k.av}}</b></span><span class="cr"><b>{{k.rep}}</b><span class="ic i-rep"></span></span></div>
+            </sc-for>
+          </div>
+          <sc-if value="{{c.hasTes}}" hint-placeholder-val="{{true}}"><div class="reward"><span class="lbl">Tesoro</span><span class="rt">{{c.tesoro}}</span></div></sc-if>
+          <sc-if value="{{c.hasAyuda}}" hint-placeholder-val="{{false}}"><div class="reward"><span class="lbl">Además</span><span class="rt">{{c.ayuda}}</span></div></sc-if>
+        </div>
+        <div class="foot"><span>{{c.foot}}</span><span>{{c.num}}</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{c.isPto}}" hint-placeholder-val="{{false}}">
+      <div class="card wide pto2">
+        <div class="ptoh"><span class="chapm">{{c.sub}}</span><span class="chapn">{{c.name}}</span><div class="muelleb"><small>MUELLE</small><b>{{c.muelle}}</b></div></div>
+        <div class="ptoart"><span>Ilustración<br>del puerto</span><sc-if value="{{c.flavor}}" hint-placeholder-val="{{true}}"><div class="ptofl">{{c.flavor}}</div></sc-if></div>
+        <div class="ptor">
+          <sc-for list="{{c.common}}" as="o" hint-placeholder-count="3"><div class="opt"><span class="ot"><sc-for list="{{o.seg}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></span></div></sc-for>
+          <div class="ptoab"><div class="ptoabh"><span>{{c.abName}}</span></div><div class="rules"><sc-for list="{{c.abText}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isBr}}" hint-placeholder-val="{{false}}"><span class="br"></span></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{true}}"><span>{{g.t}}</span></sc-if><sc-if value="{{g.isBold}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800">{{g.t}}</span></sc-if><sc-if value="{{g.isRasgo}}" hint-placeholder-val="{{false}}"><span style="font-weight: 800; font-style: italic">{{g.t}}</span></sc-if><sc-if value="{{g.isNum}}" hint-placeholder-val="{{false}}"><span class="num" style="color: {{g.color}}">{{g.t}}<sc-if value="{{g.cls}}" hint-placeholder-val="{{false}}"> <span class="ic {{g.cls}}" style="color: {{g.icolor}}"></span></sc-if></span></sc-if><sc-if value="{{g.isKw}}" hint-placeholder-val="{{false}}"><span class="kw">{{g.t}}</span></sc-if><sc-if value="{{g.isIc}}" hint-placeholder-val="{{false}}"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span></sc-if><sc-if value="{{g.isIcT}}" hint-placeholder-val="{{false}}"><span style="white-space: nowrap; margin-right: .3em"><span class="ic {{g.cls}}" style="color: {{g.color}}"></span><span style="font-weight: 800">{{g.t}}</span></span></sc-if></sc-for></div></div>
+        </div>
+        <div class="foot"><span>{{c.foot}}</span><span>{{c.num}}</span></div>
+      </div>
+      </sc-if>
+      <div class="cap"><span class="cmeta">{{c.meta}}</span><sc-if value="{{c.hasNote}}" hint-placeholder-val="{{false}}"><span class="cnote {{c.noteCls}}">{{c.note}}</span></sc-if></div>
+    </div>
+  </sc-for>
+</div>

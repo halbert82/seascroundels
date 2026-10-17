@@ -1,0 +1,5149 @@
+{
+ "_leyenda": {
+  "marcado": "**negrita** = etiqueta (Acción:, Respuesta:…); [ICONO] = icono suelto; {N icono} = número con icono (flag g/r/k = color verde/rojo/tinta); _Rasgo_; #PalabraClave#; \\n = salto de párrafo.",
+  "iconos": "NAV, COM, EXP = habilidades · mar, nat, ciu = Entornos · herida, dano (daño del Barco), avance, municion, robar (carta), curar, agotar, descartar, rep (reputación), vida, mejora, capacidad, MAN (Mando).",
+  "fuente": "Textos v1.0 (la verdad). Los campos en inglés o abreviados (fx, win, al, ops, g, atajo, mix…) vienen del prototipo antiguo y sirven de ayuda para el motor: si chocan con el texto, manda el texto y el reglamento.",
+  "num": "Número de colección «Caja básica · NNN»; las recompensas de misión citan estos números."
+ },
+ "capitanes": [
+  {
+   "id": "capitan",
+   "num": 1,
+   "nombre": "Diego «Garra» Mendoza",
+   "rasgos": [
+    "Bucanero",
+    "Oficial"
+   ],
+   "NAV": 2,
+   "COM": 3,
+   "EXP": 1,
+   "vida": 4,
+   "mejoras": 2,
+   "mando": 5,
+   "texto": "Mientras Diego «Garra» Mendoza esté preparado, tus demás Tripulantes reciben {+1 NAV}, {+1 COM} y {+1 EXP}.",
+   "ambientacion": "«El mar no perdona. Yo tampoco.»"
+  },
+  {
+   "id": "capitan2",
+   "num": 2,
+   "nombre": "Catalina «la Enganchadora» Rojas",
+   "rasgos": [
+    "Contrabandista",
+    "Oficial"
+   ],
+   "NAV": 1,
+   "COM": 2,
+   "EXP": 3,
+   "vida": 5,
+   "mejoras": 2,
+   "mando": 4,
+   "texto": "[agotar]: Este turno, el próximo Tripulante que reclutes cuesta {2} menos.",
+   "ambientacion": "«En Tortuga todos le deben algo. Ella siempre cobra en hombres.»"
+  }
+ ],
+ "barco": {
+  "nombre": "La Sombra del Alba",
+  "capacidad": 4,
+  "danoMaximo": 5,
+  "espacio": 5,
+  "texto": "Tus Pruebas de [NAV] en [mar] reciben {+1}.\n**Al zarpar hacia una misión lejana:** Distancia {−1 g}.",
+  "ambientacion": "«Sale con la última sombra y llega con la primera luz.»",
+  "num": 3
+ },
+ "tripulantes": [
+  {
+   "id": "marinero_p",
+   "num": 4,
+   "nombre": "Rufián de cubierta",
+   "copias": 2,
+   "senda": "Piratería",
+   "rasgos": [
+    "Marinero"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 0,
+   "COM": 2,
+   "EXP": 0,
+   "vida": 1,
+   "mejoras": 1,
+   "texto": "",
+   "ambientacion": "«Firma con una cruz y rema por diez.»"
+  },
+  {
+   "id": "grumete",
+   "num": 5,
+   "nombre": "Grumete leal",
+   "copias": 2,
+   "senda": "Piratería",
+   "rasgos": [
+    "Marinero"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 1,
+   "COM": 1,
+   "EXP": 0,
+   "vida": 1,
+   "mejoras": 0,
+   "texto": "**Interrupción:** Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para reducirlas a 0.",
+   "ambientacion": "«¡Mi capitán, esa bala era para mí!»"
+  },
+  {
+   "id": "bucanero",
+   "num": 6,
+   "nombre": "Bucanero veterano",
+   "copias": 2,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero",
+    "Marinero"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 1,
+   "COM": 2,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "",
+   "ambientacion": "«Tres galeones, dos naufragios y ni una cicatriz en la espalda.»"
+  },
+  {
+   "id": "saqueador",
+   "num": 7,
+   "nombre": "Uñas largas",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 0,
+   "COM": 2,
+   "EXP": 0,
+   "vida": 1,
+   "mejoras": 0,
+   "texto": "**Respuesta:** Después de que superes una Prueba en la que participe Uñas largas, roba {1 robar}.",
+   "ambientacion": "«Con el garfio también se cuentan monedas.»"
+  },
+  {
+   "id": "contrabandista",
+   "num": 8,
+   "nombre": "Contrabandista del bajo Caribe",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Contrabandista",
+    "Marinero"
+   ],
+   "unico": false,
+   "coste": 3,
+   "NAV": 2,
+   "COM": 1,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "**Respuesta:** Después de que superes una Prueba de [NAV] en la que participe Contrabandista del bajo Caribe, gana {1 avance}.",
+   "ambientacion": "«Conozco cada cala adonde no llega el Rey.»"
+  },
+  {
+   "id": "filibustero",
+   "num": 9,
+   "nombre": "Filibustero borracho",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 3,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 0,
+   "texto": "Sufre {1 herida}: Filibustero borracho recibe {+2 COM} para esta Prueba. (Límite de una vez por turno.)",
+   "ambientacion": "«Dos tragos más y abordo yo solo ese galeón.»"
+  },
+  {
+   "id": "canonero",
+   "num": 10,
+   "nombre": "Cañonero",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Artillero"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 0,
+   "COM": 1,
+   "EXP": 0,
+   "vida": 1,
+   "mejoras": 1,
+   "texto": "[agotar]: Añade {1 municion} a un Cañón.",
+   "ambientacion": "«Dame pólvora seca y te hundo lo que quieras.»"
+  },
+  {
+   "id": "isabela",
+   "num": 11,
+   "nombre": "Isabela «Cuervo» Saldaña",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero",
+    "Oficial"
+   ],
+   "unico": true,
+   "coste": 3,
+   "NAV": 1,
+   "COM": 3,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "**Interrupción:** [agotar]: Cuando otro Tripulante vaya a quedar derrotado, en vez de eso reduce su Vida a {1 vida}.",
+   "ambientacion": "«Los cuervos llegan antes que la muerte. Yo, antes que los cuervos.»"
+  },
+  {
+   "id": "bartolome",
+   "num": 12,
+   "nombre": "Íñigo «Lince» Quintero",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Vigía"
+   ],
+   "unico": true,
+   "coste": 3,
+   "NAV": 0,
+   "COM": 3,
+   "EXP": 1,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "**Respuesta:** [agotar]: Después de que reveles una carta de Peligro, descártala sin resolverla y revela otra.",
+   "ambientacion": "«Lo vi antes de que él supiera que estaba ahí.»"
+  },
+  {
+   "id": "reinaldo",
+   "num": 13,
+   "nombre": "Rodrigo «Carnicero» Ortega",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero",
+    "Oficial"
+   ],
+   "unico": true,
+   "coste": 4,
+   "NAV": 1,
+   "COM": 4,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 2,
+   "texto": "Puedes comprometer a Rodrigo «Carnicero» Ortega en una Prueba de [COM] sin agotarlo. (Límite de una vez por turno.)",
+   "ambientacion": "«En el Estrecho no se pide clemencia. Se paga.»"
+  },
+  {
+   "id": "carpintero",
+   "num": 14,
+   "nombre": "Carpintero de a bordo",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Carpintero",
+    "Marinero"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 0,
+   "EXP": 1,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "[agotar]: Repara {1 dano g}.",
+   "ambientacion": "«Si flota, lo arreglo. Si no flota, también.»"
+  },
+  {
+   "id": "matasanos",
+   "num": 15,
+   "nombre": "Matasanos",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Cirujano"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 0,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "[agotar]: Cura {2 herida g} a un Tripulante.",
+   "ambientacion": "«Muerde el cuero y no mires.»"
+  },
+  {
+   "id": "espadachin",
+   "num": 16,
+   "nombre": "Espadachín errante",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Bucanero"
+   ],
+   "unico": false,
+   "coste": 3,
+   "NAV": 0,
+   "COM": 3,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "Si Espadachín errante es el único Tripulante que participa en una Prueba, recibe {+2 COM}.",
+   "ambientacion": "«Prefiero pelear solo. Así nadie me estorba.»"
+  },
+  {
+   "id": "vigia",
+   "num": 17,
+   "nombre": "Vigía inexperta",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Vigía"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 0,
+   "EXP": 2,
+   "vida": 1,
+   "mejoras": 1,
+   "texto": "[agotar]: Otea 1.",
+   "ambientacion": "«¡Vela a babor! …Creo.»"
+  },
+  {
+   "id": "viejo_lobo",
+   "num": 18,
+   "nombre": "Viejo lobo de mar",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Marinero",
+    "Oficial"
+   ],
+   "unico": false,
+   "coste": 3,
+   "NAV": 3,
+   "COM": 0,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "**Respuesta:** Después de que se revele el Destino de una Prueba en la que participe Viejo lobo de mar, descarta ese Destino y revela otro. (Límite de una vez por turno.)",
+   "ambientacion": "«El mar me ha mentido cuarenta años. Ya no le creo.»"
+  },
+  {
+   "id": "baqueano",
+   "num": 19,
+   "nombre": "Rastreador de la selva",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Explorador"
+   ],
+   "unico": false,
+   "coste": 3,
+   "NAV": 0,
+   "COM": 1,
+   "EXP": 3,
+   "vida": 1,
+   "mejoras": 1,
+   "texto": "**Respuesta:** Después de que superes una Prueba de [EXP] en la que participe Rastreador de la selva, gana {1 avance}.",
+   "ambientacion": "«La selva no es peligrosa. Lo peligroso es no saber leerla.»"
+  },
+  {
+   "id": "loro",
+   "num": 20,
+   "nombre": "Loro parlanchín",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Animal"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 0,
+   "COM": 0,
+   "EXP": 1,
+   "vida": 1,
+   "mejoras": 0,
+   "texto": "**Respuesta:** Después de que se revele el Destino de una Prueba, compromete a Loro parlanchín en ella.",
+   "ambientacion": "«¡Cuidado! ¡Cuidado! ¡Rrraaac!»"
+  }
+ ],
+ "mejorasBarco": [
+  {
+   "id": "casco",
+   "num": 21,
+   "nombre": "Casco reforzado",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "{+1 dano}",
+   "ambientacion": "«Doble forro de roble. Que vengan.»",
+   "bonificacion_vida": 1,
+   "espacio": 2,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "vela",
+   "num": 22,
+   "nombre": "Vela mayor",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "**Al zarpar hacia una misión [mar]:** Gana {1 avance}.",
+   "ambientacion": "«Con buen trapo, el viento trabaja para ti.»",
+   "espacio": 1,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "hamacas",
+   "num": 23,
+   "nombre": "Hamacas en el entrepuente",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "{+1 capacidad}",
+   "ambientacion": "«Donde caben diez, caben doce.»",
+   "bonificacion_capacidad": 1,
+   "espacio": 1,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "bandera",
+   "num": 24,
+   "nombre": "Bandera negra",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "Tus Pruebas de [COM] en [mar] reciben {+1}.",
+   "ambientacion": "«Al verla, la mitad se rinde. La otra mitad reza.»",
+   "espacio": 0,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "chalupa",
+   "num": 25,
+   "nombre": "Chalupa",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "**Al zarpar hacia una misión [nat] o [ciu]:** Gana {1 avance}.",
+   "ambientacion": "«Hasta la orilla a remo, y en silencio.»",
+   "espacio": 2,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "botica",
+   "num": 26,
+   "nombre": "Botica de a bordo",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "Descarta 1 carta de tu mano: Cura {1 herida g} a un Tripulante. (Límite de dos veces por turno.)",
+   "ambientacion": "«Láudano, ron y vendas limpias. Casi siempre limpias.»",
+   "espacio": 1,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "viveres",
+   "num": 27,
+   "nombre": "Víveres de reserva",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "**Acción:** Descarta Víveres de reserva: Prepara a todos tus Tripulantes.",
+   "ambientacion": "«Galleta, cecina y agua dulce. Pesa, pero da la vida.»",
+   "espacio": 1,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "cruz",
+   "num": 28,
+   "nombre": "La Cruz de Santa Bárbara",
+   "copias": 1,
+   "coste": 3,
+   "unico": true,
+   "texto": "Indestructible.\nCuando el Barco vaya a sufrir más de {2 dano} a la vez, en vez de eso sufre {2 dano}.",
+   "ambientacion": "«La patrona de los artilleros vela por el casco.»",
+   "espacio": 0,
+   "canon": false,
+   "municion": 0
+  },
+  {
+   "id": "bronce",
+   "num": 29,
+   "nombre": "Cañones de bronce",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "Gasta {1 municion}: Una Prueba de [COM] recibe {+2}.",
+   "ambientacion": "«Bronce de Sevilla: ni se oxida ni perdona.»",
+   "espacio": 2,
+   "canon": true,
+   "municion": 2
+  },
+  {
+   "id": "carronadas",
+   "num": 30,
+   "nombre": "Carronadas",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "Gasta {1 municion}: Supera automáticamente una Prueba de [COM] de dificultad 4 o menos, sin revelar Destino.",
+   "ambientacion": "«A quemarropa no hace falta apuntar.»",
+   "espacio": 2,
+   "canon": true,
+   "municion": 1
+  },
+  {
+   "id": "culebrina",
+   "num": 31,
+   "nombre": "Culebrina de proa",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "Gasta {1 municion}: Una Prueba de [NAV] en [mar] recibe {+2}.",
+   "ambientacion": "«Que nos persigan. Tenemos algo para su bauprés.»",
+   "espacio": 1,
+   "canon": true,
+   "municion": 2
+  },
+  {
+   "id": "pedrero",
+   "num": 32,
+   "nombre": "Pedrero de borda",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "**Respuesta:** Gasta {1 municion}: Después de que reveles una carta de Peligro con Prueba de [COM], descártala sin resolverla y revela otra.",
+   "ambientacion": "«Una andanada de metralla y se les quitan las ganas.»",
+   "espacio": 1,
+   "canon": true,
+   "municion": 2
+  },
+  {
+   "id": "velas_tormenta",
+   "num": 33,
+   "nombre": "Velas de tormenta",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "**Respuesta:** [agotar]: Después de que reveles una carta de Peligro con Prueba de [NAV], descártala sin resolverla y revela otra.",
+   "ambientacion": "«Recoge trapo, vira en redondo y que la tormenta pase de largo.»",
+   "espacio": 1,
+   "canon": false,
+   "municion": 0
+  }
+ ],
+ "mejorasTripulante": [
+  {
+   "id": "sable",
+   "num": 34,
+   "nombre": "Sable de abordaje",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "{+1 COM}",
+   "ambientacion": "«Corto, pesado y sin miramientos.»",
+   "bonificacion_COM": 1
+  },
+  {
+   "id": "brujula",
+   "num": 35,
+   "nombre": "Brújula de latón",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "{+1 NAV}",
+   "ambientacion": "«Siempre al norte. Aunque el capitán no.»",
+   "bonificacion_NAV": 1
+  },
+  {
+   "id": "catalejo",
+   "num": 36,
+   "nombre": "Catalejo de latón",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "{+1 EXP}",
+   "ambientacion": "«Lo que se ve de lejos se teme menos.»",
+   "bonificacion_EXP": 1
+  },
+  {
+   "id": "pistola",
+   "num": 37,
+   "nombre": "Pistola de chispa",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "[agotar]: Una Prueba de [COM] en la que participe el portador recibe {+2}.",
+   "ambientacion": "«Un solo tiro. Que sea el bueno.»"
+  },
+  {
+   "id": "escapulario",
+   "num": 38,
+   "nombre": "Escapulario del Carmen",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "**Interrupción:** [agotar]: Cuando se revele el Destino de una Prueba en la que participe el portador, cancélalo.",
+   "ambientacion": "«La Virgen del Carmen guarda a los marineros. Incluso a estos.»"
+  },
+  {
+   "id": "amuleto",
+   "num": 39,
+   "nombre": "Amuleto vudú",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "**Interrupción:** Descarta Amuleto vudú: Cuando el portador vaya a quedar derrotado, en vez de eso reduce su Vida a {1 vida}.",
+   "ambientacion": "«La vieja de Port-au-Prince dijo que no me lo quitara.»"
+  },
+  {
+   "id": "ron_reserva",
+   "num": 40,
+   "nombre": "Ron de la reserva",
+   "copias": 1,
+   "coste": 0,
+   "unico": false,
+   "texto": "**Acción:** Descarta Ron de la reserva: Prepara al portador y cúrale {1 herida g}.",
+   "ambientacion": "«Para emergencias. Como esta. Y como la de ayer.»"
+  },
+  {
+   "id": "patente",
+   "num": 41,
+   "nombre": "Patente de corso",
+   "copias": 1,
+   "coste": 2,
+   "unico": false,
+   "texto": "Solo puede llevarla el Capitán.\nLos encuentros #Militar# y #Guardia# reciben {−1 g} de dificultad.",
+   "ambientacion": "«Pirata con permiso del Rey: corsario, señor.»",
+   "soloCapitan": true
+  },
+  {
+   "id": "coleto",
+   "num": 42,
+   "nombre": "Coleto de cuero",
+   "copias": 1,
+   "coste": 1,
+   "unico": false,
+   "texto": "{+1 vida}",
+   "ambientacion": "«Cuero de búfalo, tres dedos de grueso. El sable resbala; la bala, no tanto.»",
+   "bonificacion_vida": 1
+  }
+ ],
+ "eventos": [
+  {
+   "id": "botin",
+   "num": 43,
+   "nombre": "Botín escondido",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "Busca una Mejora.",
+   "ambientacion": "«Bajo la tercera palmera. ¿O era la cuarta?»"
+  },
+  {
+   "id": "taberna",
+   "num": 44,
+   "nombre": "Rumores de taberna",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "Otea 2.",
+   "ambientacion": "«Por un vaso de ron, el tabernero lo cuenta todo.»"
+  },
+  {
+   "id": "reparacion",
+   "num": 45,
+   "nombre": "Remiendo de urgencia",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "Repara {2 dano g}.",
+   "ambientacion": "«¡Tapad esa vía de agua! Ya rezaremos luego.»"
+  },
+  {
+   "id": "vendas",
+   "num": 46,
+   "nombre": "Vendas y aguardiente",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "Cura {2 herida g}.",
+   "ambientacion": "«Un trago para la herida y otro para el herido.»"
+  },
+  {
+   "id": "ron_descanso",
+   "num": 47,
+   "nombre": "El capitán hace guardia",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Acción:** Agota a tu Capitán: Cura {1 herida g} a cada Tripulante.",
+   "ambientacion": "«Dormid, perros. Esta noche vigilo yo.»"
+  },
+  {
+   "id": "polvora_c",
+   "num": 48,
+   "nombre": "Pólvora de contrabando",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "Añade {1 municion} a un Cañón.",
+   "ambientacion": "«Holandesa, seca y sin papeles.»"
+  },
+  {
+   "id": "viento",
+   "num": 49,
+   "nombre": "¡A toda vela!",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Respuesta:** Después de que reveles una carta de Peligro en [mar], gana {2 avance}.",
+   "ambientacion": "«¡Largad todo el trapo, que el viento es nuestro!»"
+  },
+  {
+   "id": "mapa",
+   "num": 50,
+   "nombre": "Mapa robado",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "**Respuesta:** Después de zarpar, gana {1 avance} y roba {1 robar}.",
+   "ambientacion": "«Al cartógrafo del gobernador le faltará una hoja.»"
+  },
+  {
+   "id": "arriba",
+   "num": 51,
+   "nombre": "¡Arriba, perros!",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "**Acción:** Prepara a un Tripulante.",
+   "ambientacion": "«¡En pie! ¡Ya dormiréis en la tumba!»"
+  },
+  {
+   "id": "animo",
+   "num": 52,
+   "nombre": "Ánimo renovado",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Respuesta:** Después de que falles una Prueba, roba {2 robar}.",
+   "ambientacion": "«Una canción, una ronda y otra vez a la faena.»"
+  },
+  {
+   "id": "reflejos",
+   "num": 53,
+   "nombre": "Reflejos de gato",
+   "copias": 2,
+   "coste": 1,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "**Interrupción:** Cuando se revele un Destino, cancélalo.",
+   "ambientacion": "«Ni lo vi venir. Él tampoco.»"
+  },
+  {
+   "id": "sangre_fria",
+   "num": 54,
+   "nombre": "Sangre fría",
+   "copias": 1,
+   "coste": 2,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "**Respuesta:** Después de que reveles una carta de Peligro en [ciu], gana su [avance] y descártala sin resolverla.",
+   "ambientacion": "«Ni un músculo, ni un ruido. Y pasaron de largo.»"
+  },
+  {
+   "id": "cambio_rumbo",
+   "num": 55,
+   "nombre": "Cambio de rumbo",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Respuesta:** Después de que reveles una carta de Peligro en [mar], ponla al fondo del mazo de Peligros y revela otra.",
+   "ambientacion": "«¡Vira a estribor! Ese no es asunto nuestro.»"
+  },
+  {
+   "id": "soborno",
+   "num": 56,
+   "nombre": "Soborno",
+   "copias": 1,
+   "coste": 2,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "**Respuesta:** Después de que reveles una carta de Peligro con Prueba en [ciu], supera automáticamente esa Prueba, sin revelar Destino.",
+   "ambientacion": "«En Tortuga todo tiene precio. Hasta mirar hacia otro lado.»"
+  },
+  {
+   "id": "todos",
+   "num": 57,
+   "nombre": "¡Todos a una!",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "**Respuesta:** Después de que comprometas Tripulantes en una Prueba, suma {+1} por cada Tripulante comprometido.",
+   "ambientacion": "«Uno solo no levanta un ancla. Veinte, sí.»"
+  },
+  {
+   "id": "ni_hombre",
+   "num": 58,
+   "nombre": "Ni un hombre atrás",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "**Interrupción:** Cuando un Tripulante que participe en una Prueba vaya a sufrir heridas, elige a otro Tripulante que participe en esa Prueba. Ese Tripulante las sufre en su lugar.",
+   "ambientacion": "«¡Atrás! Esta es mía.»"
+  },
+  {
+   "id": "naufrago",
+   "num": 59,
+   "nombre": "Náufrago en la playa",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Acción:** Mira las 3 primeras cartas del mazo de muelle. Puedes reclutar a un Tripulante de entre ellas sin pagar su coste. Descarta las demás.\nAl final del turno, descarta a ese Tripulante.",
+   "ambientacion": "«Tres semanas a base de cocos. Os sigo adonde sea.»"
+  },
+  {
+   "id": "prisionero",
+   "num": 60,
+   "nombre": "Prisionero liberado",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "**Respuesta:** Después de que superes una Prueba de [COM], recluta del muelle un Tripulante de coste 2 o menos sin pagar su coste.",
+   "ambientacion": "«Sacadme de aquí y soy vuestro.»"
+  },
+  {
+   "id": "senda",
+   "num": 61,
+   "nombre": "Senda escondida",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "**Respuesta:** Después de zarpar hacia una misión [nat], gana {2 avance}.",
+   "ambientacion": "«Los cimarrones conocen caminos que no salen en ningún mapa.»"
+  },
+  {
+   "id": "espesura",
+   "num": 62,
+   "nombre": "Perdidos en la espesura",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "EXP"
+   ],
+   "texto": "**Interrupción:** Cuando vayas a aplicar los efectos de fallo de una Prueba en [nat], ignóralos.",
+   "ambientacion": "«Si no los vemos, ellos tampoco nos ven.»"
+  },
+  {
+   "id": "trampa",
+   "num": 63,
+   "nombre": "Trampa en la maleza",
+   "copias": 1,
+   "coste": 0,
+   "iconos": [
+    "COM"
+   ],
+   "texto": "**Acción:** Este turno, las Pruebas de [COM] en [nat] reciben {−1 g} de dificultad.",
+   "ambientacion": "«Un hoyo, unas estacas y un poco de paciencia.»"
+  },
+  {
+   "id": "leccion",
+   "num": 64,
+   "nombre": "Lección aprendida",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Respuesta:** Después de que falles una Prueba, pon una ficha de Entrenamiento de la habilidad de esa Prueba en un Tripulante que participara en ella.",
+   "ambientacion": "«Esa no nos la vuelven a hacer.»"
+  },
+  {
+   "id": "retirada",
+   "num": 65,
+   "nombre": "Retirada a tiempo",
+   "copias": 1,
+   "coste": 1,
+   "iconos": [
+    "NAV"
+   ],
+   "texto": "**Respuesta:** Después de que se revele el Destino de una Prueba, descarta la carta de Peligro sin resolverla.",
+   "ambientacion": "«¡Virad en redondo! Hoy no es día de morir.»"
+  }
+ ],
+ "habilidades": [
+  {
+   "id": "abordaje",
+   "num": 66,
+   "nombre": "¡Al abordaje!",
+   "copias": 2,
+   "iconos": [
+    "COM",
+    "COM"
+   ],
+   "ambientacion": "«¡Garfios a la borda, y que Dios reparta suerte!»"
+  },
+  {
+   "id": "timon",
+   "num": 67,
+   "nombre": "Mano firme al timón",
+   "copias": 2,
+   "iconos": [
+    "NAV",
+    "NAV"
+   ],
+   "ambientacion": "«Ni ola ni ráfaga me mueven el rumbo.»"
+  },
+  {
+   "id": "ojo",
+   "num": 68,
+   "nombre": "Ojo avizor",
+   "copias": 2,
+   "iconos": [
+    "EXP",
+    "EXP"
+   ],
+   "ambientacion": "«En el Caribe, el que parpadea pierde.»"
+  },
+  {
+   "id": "coraje",
+   "num": 69,
+   "nombre": "Coraje de ron",
+   "copias": 2,
+   "iconos": [
+    "COM",
+    "NAV"
+   ],
+   "ambientacion": "«Un trago, y no hay galeón grande.»"
+  },
+  {
+   "id": "emboscada",
+   "num": 70,
+   "nombre": "Emboscada",
+   "copias": 2,
+   "iconos": [
+    "COM",
+    "EXP"
+   ],
+   "ambientacion": "«Que vengan. Nosotros ya estamos aquí.»"
+  },
+  {
+   "id": "estrellas",
+   "num": 71,
+   "nombre": "Rumbo por las estrellas",
+   "copias": 2,
+   "iconos": [
+    "NAV",
+    "EXP"
+   ],
+   "ambientacion": "«La Polar no miente. Los mapas, a veces.»"
+  }
+ ],
+ "tesoros": [
+  {
+   "id": "espada",
+   "num": 121,
+   "nombre": "Espada del sacerdote",
+   "tipo": "Mejora de tripulante",
+   "texto": "{+2 COM}.\n**Interrupción:** Cuando se revele el Destino de una Prueba de [COM] en la que participe el portador, cancélalo. (Límite de una vez por misión.)",
+   "ambientacion": "«Fría al tacto, aunque el sol queme.»"
+  },
+  {
+   "id": "mascaron",
+   "num": 129,
+   "nombre": "Mascarón del galeón",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\n{+1 dano}.\n**Interrupción:** Cuando el Barco vaya a recibir daño, evítalo. (Límite de una vez por misión.)",
+   "ambientacion": "«La dama de madera ha visto mil batallas.»"
+  },
+  {
+   "id": "despachos",
+   "num": 138,
+   "nombre": "Los despachos del Rey",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\n**Respuesta:** Después de zarpar, otea 2.",
+   "ambientacion": "«Rutas, guarniciones y fechas: el Caribe en papel.»"
+  },
+  {
+   "id": "mapa_calas",
+   "num": 142,
+   "nombre": "Mapa de las calas",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\nTus misiones [nat] necesitan {−1 avance g}.",
+   "ambientacion": "«Cada cruz, un escondite. Cada escondite, una deuda.»"
+  },
+  {
+   "id": "polvora_rey",
+   "num": 146,
+   "nombre": "Pólvora del Rey",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\nTus Cañones reciben {+1 municion} de máximo.",
+   "ambientacion": "«Lleva el sello del Rey. Ahora lleva el nuestro.»"
+  },
+  {
+   "id": "farol",
+   "num": 150,
+   "nombre": "Farol de los ahogados",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\n**Respuesta:** Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)",
+   "ambientacion": "«No alumbra el camino. Alumbra los que no debes tomar.»"
+  }
+ ],
+ "peligros": [
+  {
+   "id": "racha",
+   "num": 72,
+   "nombre": "Buena racha",
+   "nivel": "Favorable",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Viento de popa",
+     "palabrasClave": [],
+     "avance": 3,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": ""
+    },
+    "nat": {
+     "nombre": "Manantial",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "heal",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "1 [curar]"
+    },
+    "ciu": {
+     "nombre": "Contacto en el puerto",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": ""
+    }
+   },
+   "destino": {
+    "nombre": "Viento a favor",
+    "modificador": -1,
+    "textoPrototipo": "−1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "no se aplica el efecto de fallo.",
+     "ops": [],
+     "ignoraFallo": true
+    },
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "«Viento de popa. Por una vez.»",
+    "textoSinOposicion": "Sin fallo"
+   }
+  },
+  {
+   "id": "hallazgo",
+   "num": 73,
+   "nombre": "Hallazgos",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Cofre a la deriva",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "draw",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "+1 [robar]"
+    },
+    "nat": {
+     "nombre": "Fruta y agua dulce",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "heal",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "1 [curar]"
+    },
+    "ciu": {
+     "nombre": "Rumores útiles",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "draw",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "+1 [robar]"
+    }
+   },
+   "destino": {
+    "nombre": "Golpe de suerte",
+    "modificador": 0,
+    "textoPrototipo": "+0. Si superas la Prueba, +1 Avance.",
+    "winAv": 1,
+    "sinOposicion": {
+     "texto": "robas 1 carta.",
+     "ops": [
+      [
+       "draw",
+       1
+      ]
+     ]
+    },
+    "texto": "Si superas la Prueba, gana {1 avance} más.",
+    "mod": "+0",
+    "ambientacion": "«Hoy la suerte lleva bandera negra.»",
+    "textoSinOposicion": "+1 [robar]"
+   }
+  },
+  {
+   "id": "calma",
+   "num": 74,
+   "nombre": "Remanso",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Mar en calma",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": ""
+    },
+    "nat": {
+     "nombre": "Claro tranquilo",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": ""
+    },
+    "ciu": {
+     "nombre": "Hora de la siesta",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": ""
+    }
+   },
+   "destino": {
+    "nombre": "Ánimo",
+    "modificador": 0,
+    "textoPrototipo": "+0. Si superas la Prueba, uno de los que mandaste vuelve a estar preparado.",
+    "spare": 1,
+    "texto": "Si superas la Prueba, prepara a uno de los Tripulantes comprometidos.",
+    "mod": "+0",
+    "ambientacion": "«Un respiro. El Caribe no suele darlos.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "encrucijada",
+   "num": 75,
+   "nombre": "Encrucijada",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Náufragos en un islote",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [
+      [
+       "recruit",
+       0
+      ]
+     ],
+     "siempre": [],
+     "nota": "Si los rescatas, uno puede unirse a ti: pon en juego un Tripulante del muelle pagando su coste.",
+     "textoFallo": "",
+     "textoExito": "Recluta"
+    },
+    "nat": {
+     "nombre": "Aldea indígena",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [
+      [
+       "heal",
+       1
+      ],
+      [
+       "addHz",
+       "amigos"
+      ]
+     ],
+     "siempre": [],
+     "nota": "Si os ganáis su confianza, os curan y os ayudarán más adelante.",
+     "textoFallo": "",
+     "textoExito": "1 [curar] · + «Amigos»"
+    },
+    "ciu": {
+     "nombre": "Un soplo en la taberna",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [
+      [
+       "draw",
+       2
+      ]
+     ],
+     "siempre": [],
+     "nota": "Si sabes escuchar, te llevas el soplo.",
+     "textoFallo": "",
+     "textoExito": "+2 [robar]"
+    }
+   },
+   "destino": {
+    "nombre": "Buen augurio",
+    "modificador": -1,
+    "textoPrototipo": "−1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "no se aplica el efecto de fallo.",
+     "ops": [],
+     "ignoraFallo": true
+    },
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "«Una gaviota en el palo mayor: buena señal.»",
+    "textoSinOposicion": "Sin fallo"
+   }
+  },
+  {
+   "id": "oportunidad",
+   "num": 76,
+   "nombre": "Oportunidades",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Navío a la deriva",
+     "palabrasClave": [
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [
+      [
+       "repair",
+       2
+      ]
+     ],
+     "siempre": [],
+     "nota": "Si lo alcanzas, aprovechas su madera. Si no, no pasa nada.",
+     "textoFallo": "",
+     "textoExito": "−2 [dano]"
+    },
+    "nat": {
+     "nombre": "Ruinas olvidadas",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [
+      [
+       "draw",
+       2
+      ]
+     ],
+     "siempre": [],
+     "nota": "Si no las encuentras, no pasa nada.",
+     "textoFallo": "",
+     "textoExito": "+2 [robar]"
+    },
+    "ciu": {
+     "nombre": "Timba en la taberna",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      },
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [
+      [
+       "draw",
+       2
+      ]
+     ],
+     "siempre": [],
+     "nota": "Si no ganas, no pasa nada.",
+     "textoFallo": "",
+     "textoExito": "+2 [robar]"
+    }
+   },
+   "destino": {
+    "nombre": "Ocasión",
+    "modificador": -1,
+    "textoPrototipo": "−1 a la dificultad.",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "«A veces el mar también da.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "chubasco",
+   "num": 77,
+   "nombre": "Chubasco",
+   "nivel": "Leve",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Chubasco repentino",
+     "palabrasClave": [
+      "Tormenta"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "flood",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no achicas a tiempo, entra agua en la bodega.",
+     "textoFallo": "−1 Mando",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Lluvia torrencial",
+     "palabrasClave": [
+      "Tormenta"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 1
+      }
+     ],
+     "fallo": [
+      [
+       "discard",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [descartar]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Tarde de lluvia",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": ""
+    }
+   },
+   "destino": {
+    "nombre": "Sin novedad",
+    "modificador": 0,
+    "textoPrototipo": "+0.",
+    "texto": "",
+    "mod": "+0",
+    "ambientacion": "«Agua del cielo, agua del mar. Lo de siempre.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "fauna",
+   "num": 78,
+   "nombre": "Fauna",
+   "nivel": "Leve",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Tiburones",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Serpientes",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Ratas en el almacén",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 1
+      }
+     ],
+     "fallo": [
+      [
+       "discard",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [descartar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Refuerzos",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad.",
+    "texto": "",
+    "mod": "+1",
+    "ambientacion": "«Donde hay uno, hay diez.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "escollos",
+   "num": 79,
+   "nombre": "Escollos",
+   "nivel": "Leve",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Bajíos traicioneros",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       1
+      ],
+      [
+       "breakUp",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si rozáis el fondo, algo se rompe.",
+     "textoFallo": "1 [dano] · 1 [mejora]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Barranco",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Callejón sin salida",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "discard",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [descartar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Sin novedad",
+    "modificador": 0,
+    "textoPrototipo": "+0.",
+    "texto": "",
+    "mod": "+0",
+    "ambientacion": "«Sondad el fondo, y despacio.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "niebla",
+   "num": 80,
+   "nombre": "Niebla",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Niebla espesa",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "avLoss",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "−1 [avance]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Bruma en la selva",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [agotar]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Sereno curioso",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 1
+      }
+     ],
+     "fallo": [
+      [
+       "discard",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no lo convences, le pagas su silencio.",
+     "textoFallo": "1 [descartar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Bruma",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Los Cañones no suman.",
+    "noGuns": 1,
+    "sinOposicion": {
+     "texto": "pierdes 1 de Avance.",
+     "ops": [
+      [
+       "avLoss",
+       1
+      ]
+     ]
+    },
+    "texto": "Los Cañones no suman.",
+    "mod": "+1",
+    "ambientacion": "«No se ve ni la proa.»",
+    "textoSinOposicion": "−1 [avance]"
+   }
+  },
+  {
+   "id": "percances",
+   "num": 81,
+   "nombre": "Percances",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Pólvora mojada",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [
+      [
+       "ammoLoss",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "−1 [municion]"
+    },
+    "nat": {
+     "nombre": "Mosquitos",
+     "palabrasClave": [
+      "Enfermedad"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "1 [agotar]"
+    },
+    "ciu": {
+     "nombre": "Carterista",
+     "palabrasClave": [],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "loseUp",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no lo pillas, se lleva una de tus Mejoras.",
+     "textoFallo": "−1 [mejora]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Contratiempo",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "pierdes 1 de Avance.",
+     "ops": [
+      [
+       "progLoss",
+       1
+      ]
+     ]
+    },
+    "texto": "",
+    "mod": "+1",
+    "ambientacion": "«Nada sale como en el mapa.»",
+    "textoSinOposicion": "−1 [avance]"
+   }
+  },
+  {
+   "id": "civiles",
+   "num": 82,
+   "nombre": "Gente de paz",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Mercante armado",
+     "palabrasClave": [
+      "Barco",
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       1
+      ]
+     ],
+     "exito": [
+      [
+       "draw",
+       1
+      ]
+     ],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [dano]",
+     "textoExito": "+1 [robar]"
+    },
+    "nat": {
+     "nombre": "Colonos recelosos",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [
+      [
+       "avLoss",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no los convences, das un rodeo.",
+     "textoFallo": "−1 [avance]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Comerciante estafador",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "loseUp",
+       1
+      ]
+     ],
+     "exito": [
+      [
+       "draw",
+       2
+      ]
+     ],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "−1 [mejora]",
+     "textoExito": "+2 [robar]"
+    }
+   },
+   "destino": {
+    "nombre": "Sin novedad",
+    "modificador": 0,
+    "textoPrototipo": "+0.",
+    "texto": "",
+    "mod": "+0",
+    "ambientacion": "«No todo el que navega es enemigo.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "ley",
+   "num": 83,
+   "nombre": "La ley del Rey",
+   "nivel": "Duro",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Patrulla española",
+     "palabrasClave": [
+      "Barco",
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       1
+      ],
+      [
+       "addHz",
+       "armada"
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si se te pega a la popa, la Armada te pone en su lista.",
+     "textoFallo": "1 [dano] · + «La Armada»",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Partida de soldados",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      },
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [agotar]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Ronda de la guardia",
+     "palabrasClave": [
+      "Guardia",
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "clock",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no te enfrentas, te retienen un día.",
+     "textoFallo": "−1 día",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Alarma",
+    "modificador": 1,
+    "textoPrototipo": "+2 si el encuentro es Militar o Guardia; si no, +1.",
+    "modKw": {
+     "kw": [
+      "Militar",
+      "Guardia"
+     ],
+     "n": 2
+    },
+    "sinOposicion": {
+     "texto": "agota a 1 Tripulante.",
+     "ops": [
+      [
+       "exhaust",
+       1
+      ]
+     ]
+    },
+    "texto": "Si el encuentro es #Militar# o #Guardia#, {+2} en su lugar.",
+    "mod": "+1",
+    "ambientacion": "«¡Tocad a rebato! ¡Piratas!»",
+    "textoSinOposicion": "1 [agotar]"
+   }
+  },
+  {
+   "id": "rivales",
+   "num": 84,
+   "nombre": "Rivales",
+   "nivel": "Duro",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Piratas rivales",
+     "palabrasClave": [
+      "Barco",
+      "Pirata"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       1
+      ],
+      [
+       "loseUp",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si te ganan el abordaje, te saquean una Mejora.",
+     "textoFallo": "1 [dano] · −1 [mejora]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Bandoleros",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "hostage",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si te ganan, se llevan a uno de los tuyos.",
+     "textoFallo": "1 [rehen]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Pelea de taberna",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [agotar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Puñal escondido",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Uno de los que mandaste sufre 1 herida.",
+    "sentWound": 1,
+    "sinOposicion": {
+     "texto": "además 1 herida.",
+     "ops": [
+      [
+       "wound",
+       1
+      ]
+     ]
+    },
+    "texto": "Uno de los Tripulantes comprometidos sufre {1 herida}.",
+    "mod": "+1",
+    "ambientacion": "«Sonríe, brinda… y lleva un puñal en la bota.»",
+    "textoSinOposicion": "1 [herida]"
+   }
+  },
+  {
+   "id": "temporal",
+   "num": 85,
+   "nombre": "Temporal",
+   "nivel": "Duro",
+   "copias": 2,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Tormenta tropical",
+     "palabrasClave": [
+      "Tormenta"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       2
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [dano] · 1 [herida]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Riada",
+     "palabrasClave": [
+      "Tormenta",
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Calles anegadas",
+     "palabrasClave": [
+      "Tormenta"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "discard",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no encuentras cobijo, se te mojan los pertrechos.",
+     "textoFallo": "2 [descartar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Racha de viento",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Los Cañones no suman.",
+    "noGuns": 1,
+    "sinOposicion": {
+     "texto": "además 1 daño al Barco (en tierra, 1 herida a un Tripulante).",
+     "ops": [
+      [
+       "shipOrWound",
+       1
+      ]
+     ]
+    },
+    "texto": "Los Cañones no suman.",
+    "mod": "+1",
+    "ambientacion": "«¡Arriad trapo, que nos desarbola!»",
+    "textoSinOposicion": "1 [dano] · / 1 [herida]"
+   }
+  },
+  {
+   "id": "bestias",
+   "num": 86,
+   "nombre": "Bestias",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Tiburón tigre",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Jaguar",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Perros de la guardia",
+     "palabrasClave": [
+      "Bestia",
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [agotar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Zarpazo",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. El más fuerte de los que mandaste sufre 1 herida.",
+    "strongWound": 1,
+    "sinOposicion": {
+     "texto": "tu Capitán sufre 1 herida.",
+     "ops": [
+      [
+       "woundCap",
+       1
+      ]
+     ]
+    },
+    "texto": "El Tripulante comprometido que más sume sufre {1 herida}.",
+    "mod": "+1",
+    "ambientacion": "«Algo se mueve entre los helechos.»",
+    "textoSinOposicion": "1 [herida] · Capitán"
+   }
+  },
+  {
+   "id": "fiebre",
+   "num": 87,
+   "nombre": "Fiebres",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Escorbuto",
+     "palabrasClave": [
+      "Enfermedad"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Cirujano",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [herida]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Fiebre amarilla",
+     "palabrasClave": [
+      "Enfermedad"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4,
+       "alternativa": {
+        "rasgo": "Cirujano",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Peste en el puerto",
+     "palabrasClave": [
+      "Enfermedad"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Cirujano",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [herida]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Fiebre",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Si fallas, además 1 herida.",
+    "failWound": 1,
+    "sinOposicion": {
+     "texto": "además 1 herida.",
+     "ops": [
+      [
+       "wound",
+       1
+      ]
+     ]
+    },
+    "texto": "Si fallas, sufre además {1 herida}.",
+    "mod": "+1",
+    "ambientacion": "«Primero el sudor, luego los delirios.»",
+    "textoSinOposicion": "1 [herida]"
+   }
+  },
+  {
+   "id": "vigilancia",
+   "num": 88,
+   "nombre": "Vigilancia",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Fortaleza costera",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      },
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [dano]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Puesto de vigía",
+     "palabrasClave": [
+      "Militar",
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [agotar]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Aduana",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "clock",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no burlas a los aduaneros, te retienen un día.",
+     "textoFallo": "−1 día",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Centinelas",
+    "modificador": 0,
+    "textoPrototipo": "+2 si el encuentro es Militar o Guardia; si no, +0.",
+    "modKw": {
+     "kw": [
+      "Militar",
+      "Guardia"
+     ],
+     "n": 2
+    },
+    "sinOposicion": {
+     "texto": "agota a 1 Tripulante.",
+     "ops": [
+      [
+       "exhaust",
+       1
+      ]
+     ]
+    },
+    "texto": "Si el encuentro es #Militar# o #Guardia#, {+2} en su lugar.",
+    "mod": "+0",
+    "ambientacion": "«Cada torre tiene ojos. Cada ojo, un mosquete.»",
+    "textoSinOposicion": "1 [agotar]"
+   }
+  },
+  {
+   "id": "sirenas",
+   "num": 89,
+   "nombre": "Encantamientos",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Canto de sirenas",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       1
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "1 [herida] · 1 [agotar]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Espíritus de la selva",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "exhaust",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [agotar]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Vidente callejera",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [
+      [
+       "discard",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [descartar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Mal fario",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Las cartas de la mano no suman.",
+    "noCards": 1,
+    "sinOposicion": {
+     "texto": "descartas 1 carta.",
+     "ops": [
+      [
+       "discard",
+       1
+      ]
+     ]
+    },
+    "texto": "Las cartas de tu mano no suman.",
+    "mod": "+1",
+    "ambientacion": "«Un gato negro a bordo. Nadie quiere tocarlo.»",
+    "textoSinOposicion": "1 [descartar]"
+   }
+  },
+  {
+   "id": "arrecifes",
+   "num": 90,
+   "nombre": "Aguas traicioneras",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Arrecife de los Ahorcados",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 4,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4,
+       "alternativa": {
+        "rasgo": "Vigía",
+        "dificultad": 2
+       }
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       3
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "3 [dano]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Ciénaga",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Puerto laberíntico",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Contrabandista",
+        "dificultad": 1
+       }
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "exhaust",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [agotar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Corriente traicionera",
+    "modificador": 1,
+    "textoPrototipo": "+2 si el encuentro se resuelve con NAV; si no, +1.",
+    "modHab": {
+     "hab": "NAV",
+     "n": 2
+    },
+    "sinOposicion": {
+     "texto": "además 1 daño al Barco (en tierra, 1 herida a un Tripulante).",
+     "ops": [
+      [
+       "shipOrWound",
+       1
+      ]
+     ]
+    },
+    "texto": "Si la Prueba es de [NAV], {+2} en su lugar.",
+    "mod": "+1",
+    "ambientacion": "«El mar tira hacia las rocas y el timón no responde.»",
+    "textoSinOposicion": "1 [dano] · / 1 [herida]"
+   }
+  },
+  {
+   "id": "leyenda",
+   "num": 91,
+   "nombre": "Bestias de leyenda",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Kraken",
+     "palabrasClave": [
+      "Monstruo",
+      "Sobrenatural"
+     ],
+     "avance": 4,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 6
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       3
+      ],
+      [
+       "exhaustAll"
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "3 [dano] · Todos [agotar]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Caimán gigante",
+     "palabrasClave": [
+      "Bestia",
+      "Monstruo"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       3
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "3 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Jauría en el mercado",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida] · 1 [agotar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Fallo",
+    "modificador": null,
+    "textoPrototipo": "Fallas la Prueba: se aplica su efecto de fallo.",
+    "fail": 1,
+    "sinOposicion": {
+     "texto": "además 2 heridas a un Tripulante.",
+     "ops": [
+      [
+       "wound",
+       2
+      ]
+     ]
+    },
+    "texto": "Fallas la Prueba.",
+    "mod": "✕",
+    "ambientacion": "«Los viejos lo contaban. Nadie les creía.»",
+    "textoSinOposicion": "2 [herida]"
+   }
+  },
+  {
+   "id": "cazadores",
+   "num": 92,
+   "nombre": "Cazadores",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Fragata cazadora",
+     "palabrasClave": [
+      "Barco",
+      "Militar"
+     ],
+     "avance": 4,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       3
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "3 [dano]",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Rastreadores",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida] · 1 [agotar]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Cazarrecompensas",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Traición",
+    "modificador": 2,
+    "textoPrototipo": "+2 a la dificultad. El más fuerte de los que mandaste sufre 1 herida.",
+    "strongWound": 1,
+    "sinOposicion": {
+     "texto": "tu Capitán sufre 1 herida y pierdes 1 de reputación.",
+     "ops": [
+      [
+       "woundCap",
+       1
+      ],
+      [
+       "repLoss",
+       1
+      ]
+     ]
+    },
+    "texto": "El Tripulante comprometido que más sume sufre {1 herida}.",
+    "mod": "+2",
+    "ambientacion": "«Tu cabeza vale más cada día. Y alguien a bordo lo sabe.»",
+    "textoSinOposicion": "1 [herida] · Capitán · −1 [rep]"
+   }
+  },
+  {
+   "id": "catastrofe",
+   "num": 93,
+   "nombre": "Catástrofe",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Huracán",
+     "palabrasClave": [
+      "Tormenta"
+     ],
+     "avance": 4,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 6
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       3
+      ],
+      [
+       "flood",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "3 [dano] · −1 Mando",
+     "textoExito": ""
+    },
+    "nat": {
+     "nombre": "Deslizamiento",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida] · 1 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Incendio en el puerto",
+     "palabrasClave": [],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      },
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "progAll"
+      ],
+      [
+       "exhaust",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si no apagas el fuego, salís huyendo.",
+     "textoFallo": "−Todo [avance] · 1 [agotar]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Fallo",
+    "modificador": null,
+    "textoPrototipo": "Fallas la Prueba: se aplica su efecto de fallo.",
+    "fail": 1,
+    "sinOposicion": {
+     "texto": "además 2 daños al Barco (en tierra, 2 heridas a Tripulantes).",
+     "ops": [
+      [
+       "shipOrWound",
+       2
+      ]
+     ]
+    },
+    "texto": "Fallas la Prueba.",
+    "mod": "✕",
+    "ambientacion": "«Cuando todo se tuerce, se tuerce de golpe.»",
+    "textoSinOposicion": "2 [dano] · / 2 [herida]"
+   }
+  },
+  {
+   "id": "asalto",
+   "num": 94,
+   "nombre": "Asalto",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "encuentros": {
+    "mar": {
+     "nombre": "Bergantín corsario",
+     "palabrasClave": [
+      "Barco",
+      "Pirata"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       2
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [
+      [
+       "rep",
+       1
+      ]
+     ],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [dano] · 1 [herida]",
+     "textoExito": "+1 [rep]"
+    },
+    "nat": {
+     "nombre": "Emboscada",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ],
+      [
+       "wound",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida] · 1 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Duelo al amanecer",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ]
+     ],
+     "exito": [
+      [
+       "rep",
+       1
+      ]
+     ],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida]",
+     "textoExito": "+1 [rep]"
+    }
+   },
+   "destino": {
+    "nombre": "Celada",
+    "modificador": 2,
+    "textoPrototipo": "+2 a la dificultad. Uno de los que mandaste sufre 1 herida.",
+    "sentWound": 1,
+    "sinOposicion": {
+     "texto": "además 2 heridas a un Tripulante.",
+     "ops": [
+      [
+       "wound",
+       2
+      ]
+     ]
+    },
+    "texto": "Uno de los Tripulantes comprometidos sufre {1 herida}.",
+    "mod": "+2",
+    "ambientacion": "«¡Nos estaban esperando!»",
+    "textoSinOposicion": "2 [herida]"
+   }
+  },
+  {
+   "id": "armada",
+   "num": 95,
+   "nombre": "La Armada te persigue",
+   "nivel": "Duro",
+   "copias": 0,
+   "entraDuranteLaPartida": true,
+   "encuentros": {
+    "mar": {
+     "nombre": "Navío de la Armada",
+     "palabrasClave": [
+      "Barco",
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      },
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [
+      [
+       "ship",
+       2
+      ],
+      [
+       "wound",
+       1
+      ],
+      [
+       "retira",
+       1
+      ]
+     ],
+     "exito": [
+      [
+       "retira",
+       1
+      ]
+     ],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [dano] · 1 [herida] · Se retira",
+     "textoExito": "Se retira"
+    },
+    "nat": {
+     "nombre": "Desembarco de casacas",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      },
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "wound",
+       2
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoFallo": "2 [herida]",
+     "textoExito": ""
+    },
+    "ciu": {
+     "nombre": "Tu cara en los pasquines",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [
+      [
+       "hostage",
+       1
+      ]
+     ],
+     "exito": [],
+     "siempre": [],
+     "nota": "Si te reconocen, prenden a uno de los tuyos.",
+     "textoFallo": "1 [rehen]",
+     "textoExito": ""
+    }
+   },
+   "destino": {
+    "nombre": "Velas en el horizonte",
+    "modificador": 1,
+    "textoPrototipo": "+2 si el encuentro es Militar o Guardia; si no, +1.",
+    "modKw": {
+     "kw": [
+      "Militar",
+      "Guardia"
+     ],
+     "n": 2
+    },
+    "sinOposicion": {
+     "texto": "agota a 1 Tripulante.",
+     "ops": [
+      [
+       "exhaust",
+       1
+      ]
+     ]
+    },
+    "texto": "Si el encuentro es #Militar# o #Guardia#, {+2} en su lugar.",
+    "mod": "+1",
+    "ambientacion": "«Bandera del Rey a barlovento. Y viene a por nosotros.»",
+    "textoSinOposicion": "1 [agotar]"
+   }
+  },
+  {
+   "id": "amigos",
+   "num": 96,
+   "nombre": "Amigos en la costa",
+   "nivel": "Favorable",
+   "copias": 0,
+   "entraDuranteLaPartida": true,
+   "encuentros": {
+    "mar": {
+     "nombre": "Contrabandistas amigos",
+     "palabrasClave": [],
+     "avance": 3,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "repair",
+       1
+      ],
+      [
+       "retira",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "−1 [dano] · Se retira"
+    },
+    "nat": {
+     "nombre": "Guías de la aldea",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 3,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "heal",
+       1
+      ],
+      [
+       "retira",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "1 [curar] · Se retira"
+    },
+    "ciu": {
+     "nombre": "Un viejo conocido",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [
+      [
+       "draw",
+       2
+      ],
+      [
+       "retira",
+       1
+      ]
+     ],
+     "nota": "",
+     "textoEfecto": "+2 [robar] · Se retira"
+    }
+   },
+   "destino": {
+    "nombre": "Ayuda inesperada",
+    "modificador": -2,
+    "textoPrototipo": "−2 a la dificultad.",
+    "sinOposicion": {
+     "texto": "no se aplica el efecto de fallo.",
+     "ops": [],
+     "ignoraFallo": true
+    },
+    "texto": "",
+    "mod": "−2",
+    "ambientacion": "«No todo el Caribe te quiere ver colgado.»",
+    "textoSinOposicion": "Sin fallo"
+   }
+  }
+ ],
+ "cartasDeMazoPropio": [
+  {
+   "id": "esqueleto",
+   "num": 122,
+   "nombre": "Guerreros esqueleto",
+   "nivel": "Duro",
+   "encuentro": {
+    "nombre": "Guerreros esqueleto",
+    "palabrasClave": [
+     "Sobrenatural"
+    ],
+    "avance": 2,
+    "prueba": [
+     {
+      "hab": "COM",
+      "dificultad": 4
+     }
+    ],
+    "fallo": [
+     [
+      "wound",
+      2
+     ]
+    ],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoFallo": "2 [herida]",
+    "textoExito": ""
+   },
+   "destino": {
+    "nombre": "Huesos que se levantan",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Uno de los que mandaste sufre 1 herida.",
+    "sentWound": 1,
+    "sinOposicion": {
+     "texto": "además 1 herida a un Tripulante.",
+     "ops": [
+      [
+       "wound",
+       1
+      ]
+     ]
+    },
+    "texto": "Uno de los Tripulantes comprometidos sufre {1 herida}.",
+    "mod": "+1",
+    "ambientacion": "«Siguen de guardia. Siglos después.»",
+    "textoSinOposicion": "1 [herida]"
+   }
+  },
+  {
+   "id": "dardos",
+   "num": 123,
+   "nombre": "Trampa de dardos",
+   "nivel": "Leve",
+   "encuentro": {
+    "nombre": "Trampa de dardos",
+    "palabrasClave": [
+     "Trampa"
+    ],
+    "avance": 1,
+    "prueba": [
+     {
+      "hab": "EXP",
+      "dificultad": 3,
+      "alternativa": {
+       "rasgo": "Explorador",
+       "dificultad": 2
+      }
+     }
+    ],
+    "fallo": [
+     [
+      "wound",
+      1
+     ],
+     [
+      "wound",
+      1
+     ]
+    ],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoFallo": "1 [herida] · 1 [herida]",
+    "textoExito": ""
+   },
+   "destino": {
+    "nombre": "Dardos desde el techo",
+    "modificador": 0,
+    "textoPrototipo": "+0. Uno de los que mandaste sufre 1 herida.",
+    "sentWound": 1,
+    "texto": "Uno de los Tripulantes comprometidos sufre {1 herida}.",
+    "mod": "+0",
+    "ambientacion": "«Un clic bajo el pie. Demasiado tarde.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "idolo",
+   "num": 124,
+   "nombre": "Ídolo maldito",
+   "nivel": "Duro",
+   "encuentro": {
+    "nombre": "Ídolo maldito",
+    "palabrasClave": [
+     "Sobrenatural"
+    ],
+    "avance": 1,
+    "prueba": [
+     {
+      "hab": "EXP",
+      "dificultad": 3
+     }
+    ],
+    "fallo": [
+     [
+      "wound",
+      1
+     ],
+     [
+      "loseUp",
+      1
+     ]
+    ],
+    "exito": [
+     [
+      "draw",
+      2
+     ]
+    ],
+    "siempre": [],
+    "nota": "Si no resistes su influjo, el ídolo se cobra algo tuyo.",
+    "textoFallo": "1 [herida] · −1 [mejora]",
+    "textoExito": "+2 [robar]"
+   },
+   "destino": {
+    "nombre": "Maldición del ídolo",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad. Las cartas de la mano no suman.",
+    "noCards": 1,
+    "sinOposicion": {
+     "texto": "descartas 1 carta.",
+     "ops": [
+      [
+       "discard",
+       1
+      ]
+     ]
+    },
+    "texto": "Las cartas de tu mano no suman.",
+    "mod": "+1",
+    "ambientacion": "«Oro puro. Nadie que lo tocó volvió a sonreír.»",
+    "textoSinOposicion": "1 [descartar]"
+   }
+  },
+  {
+   "id": "pasadizo",
+   "num": 125,
+   "nombre": "Pasadizo secreto",
+   "nivel": "Favorable",
+   "encuentro": {
+    "nombre": "Pasadizo secreto",
+    "palabrasClave": [],
+    "avance": 2,
+    "prueba": [],
+    "fallo": [],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": ""
+   },
+   "destino": {
+    "nombre": "Corriente de aire",
+    "modificador": -1,
+    "textoPrototipo": "−1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "no se aplica el efecto de fallo.",
+     "ops": [],
+     "ignoraFallo": true
+    },
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "«Una corriente de aire entre las piedras.»",
+    "textoSinOposicion": "Sin fallo"
+   }
+  },
+  {
+   "id": "galeon",
+   "num": 130,
+   "nombre": "Galeón de la plata",
+   "nivel": "Duro",
+   "encuentro": {
+    "nombre": "Galeón de la plata",
+    "palabrasClave": [
+     "Barco",
+     "Militar"
+    ],
+    "avance": 3,
+    "prueba": [
+     {
+      "hab": "COM",
+      "dificultad": 5
+     }
+    ],
+    "fallo": [
+     [
+      "ship",
+      2
+     ]
+    ],
+    "exito": [
+     [
+      "draw",
+      2
+     ]
+    ],
+    "siempre": [],
+    "nota": "",
+    "textoFallo": "2 [dano]",
+    "textoExito": "+2 [robar]"
+   },
+   "destino": {
+    "nombre": "Andanada de costado",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "además 1 daño al Barco (en tierra, 1 herida a un Tripulante).",
+     "ops": [
+      [
+       "shipOrWound",
+       1
+      ]
+     ]
+    },
+    "texto": "",
+    "mod": "+1",
+    "ambientacion": "«Treinta cañones por banda y la bodega llena.»",
+    "textoSinOposicion": "1 [dano] · / 1 [herida]"
+   }
+  },
+  {
+   "id": "escolta",
+   "num": 131,
+   "nombre": "Navío de escolta",
+   "nivel": "Duro",
+   "encuentro": {
+    "nombre": "Navío de escolta",
+    "palabrasClave": [
+     "Barco",
+     "Militar"
+    ],
+    "avance": 2,
+    "prueba": [
+     {
+      "hab": "NAV",
+      "dificultad": 4
+     },
+     {
+      "hab": "COM",
+      "dificultad": 5
+     }
+    ],
+    "fallo": [
+     [
+      "ship",
+      2
+     ]
+    ],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoFallo": "2 [dano]",
+    "textoExito": ""
+   },
+   "destino": {
+    "nombre": "Señales entre los mástiles",
+    "modificador": 1,
+    "textoPrototipo": "+2 si el encuentro es Barco; si no, +1.",
+    "modKw": {
+     "kw": [
+      "Barco"
+     ],
+     "n": 2
+    },
+    "texto": "Si el encuentro es #Barco#, {+2} en su lugar.",
+    "mod": "+1",
+    "ambientacion": "«La Armada no deja sola a su plata.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "cobertura",
+   "num": 132,
+   "nombre": "Fuego de cobertura",
+   "nivel": "Leve",
+   "encuentro": {
+    "nombre": "Fuego de cobertura",
+    "palabrasClave": [
+     "Barco"
+    ],
+    "avance": 1,
+    "prueba": [],
+    "fallo": [
+     [
+      "ship",
+      1
+     ]
+    ],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": "1 [dano]"
+   },
+   "destino": {
+    "nombre": "Humo de pólvora",
+    "modificador": 0,
+    "textoPrototipo": "+0. Los Cañones no suman.",
+    "noGuns": 1,
+    "texto": "Los Cañones no suman.",
+    "mod": "+0",
+    "ambientacion": "«Disparan para que no levantes la cabeza.»",
+    "textoSinOposicion": ""
+   }
+  },
+  {
+   "id": "naufragos_g",
+   "num": 133,
+   "nombre": "Marineros del galeón hundido",
+   "nivel": "Favorable",
+   "encuentro": {
+    "nombre": "Marineros del galeón hundido",
+    "palabrasClave": [
+     "Civil"
+    ],
+    "avance": 2,
+    "prueba": [
+     {
+      "hab": "NAV",
+      "dificultad": 2
+     }
+    ],
+    "fallo": [],
+    "exito": [
+     [
+      "draw",
+      1
+     ]
+    ],
+    "siempre": [],
+    "nota": "Si no llegas, no pasa nada.",
+    "textoFallo": "",
+    "textoExito": "+1 [robar]"
+   },
+   "destino": {
+    "nombre": "Viento largo",
+    "modificador": -1,
+    "textoPrototipo": "−1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "no se aplica el efecto de fallo.",
+     "ops": [],
+     "ignoraFallo": true
+    },
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "«Agarrados a un mástil, nos hacen señas.»",
+    "textoSinOposicion": "Sin fallo"
+   }
+  },
+  {
+   "id": "margruesa",
+   "num": 134,
+   "nombre": "Mar gruesa",
+   "nivel": "Leve",
+   "encuentro": {
+    "nombre": "Mar gruesa",
+    "palabrasClave": [
+     "Tormenta"
+    ],
+    "avance": 2,
+    "prueba": [
+     {
+      "hab": "NAV",
+      "dificultad": 3
+     }
+    ],
+    "fallo": [
+     [
+      "ship",
+      1
+     ],
+     [
+      "wound",
+      1
+     ]
+    ],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoFallo": "1 [dano] · 1 [herida]",
+    "textoExito": ""
+   },
+   "destino": {
+    "nombre": "Ola de costado",
+    "modificador": 1,
+    "textoPrototipo": "+1 a la dificultad.",
+    "sinOposicion": {
+     "texto": "además 1 daño al Barco (en tierra, 1 herida a un Tripulante).",
+     "ops": [
+      [
+       "shipOrWound",
+       1
+      ]
+     ]
+    },
+    "texto": "",
+    "mod": "+1",
+    "ambientacion": "«Olas como casas.»",
+    "textoSinOposicion": "1 [dano] · / 1 [herida]"
+   }
+  }
+ ],
+ "misiones": [
+  {
+   "id": "templo",
+   "nombre": "El templo perdido",
+   "reto": "Medio",
+   "intro": "Un mapa a medio quemar habla de un templo en una isla que no sale en ninguna carta náutica. Dicen que los sacerdotes que lo guardaban nunca se fueron.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 118,
+     "nombre": "Rumbo a la isla",
+     "entorno": "mar",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Vigía_ preparado, gana {1 avance}.",
+      "**Al zarpar:** Agota a un _Oficial_ para ganar {2 avance}."
+     ],
+     "ambientacion": "«Dicen que la isla no sale en ningún mapa. Por eso vamos.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 119 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Vigía preparado, empiezas con Avance 1.",
+       "startRasgo": {
+        "rasgo": "Vigía",
+        "av": 1
+       }
+      },
+      "atajo": {
+       "exh": "Oficial",
+       "av": 2,
+       "t": "Agota a un Oficial (el informante de Tortuga solo habla con oficiales): +2 Avance."
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 119,
+     "nombre": "La selva",
+     "entorno": "nat",
+     "avanceNecesario": 4,
+     "distancia": 3,
+     "reglas": [
+      "Tus Tripulantes reciben {−1 COM}."
+     ],
+     "ambientacion": "«Cada paso, un mosquito. Cada diez, una serpiente.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 120 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Todos tus Tripulantes tienen −1 COM.",
+       "statMod": {
+        "hab": "COM",
+        "n": -1
+       }
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 120,
+     "nombre": "El templo",
+     "entorno": "nat",
+     "avanceNecesario": 5,
+     "distancia": 3,
+     "reglas": [
+      "**Al zarpar:** Baraja el mazo del Templo con 6 cartas del mazo de Peligros. Durante esta misión, revela de ese mazo.",
+      "Cada efecto de fallo inflige además {1 herida}."
+     ],
+     "ambientacion": "«Los sacerdotes nunca se fueron. Solo dejaron de respirar.»",
+     "recompensa": {
+      "rep": 4,
+      "tesoro": "espada"
+     },
+     "textoSiguiente": "Tesoro · carta 121",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Cada efecto de fallo trae además 1 herida.",
+       "sufferWound": 1
+      },
+      "mix": {
+       "name": "mazo del Templo",
+       "deck": [
+        "esqueleto",
+        "esqueleto",
+        "dardos",
+        "dardos",
+        "idolo",
+        "pasadizo"
+       ],
+       "n": 6
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "flota",
+   "nombre": "La Flota de la Plata",
+   "reto": "Difícil",
+   "intro": "Cada año la Flota sale de La Habana cargada con la plata del Perú. Este año, la tormenta ha dejado atrás a un galeón.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 126,
+     "nombre": "El Paso de los Vientos",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "Los encuentros #Tormenta# reciben {+1 r} de dificultad.",
+      "**Al zarpar:** Agota a un _Marinero_ para ganar {3 avance}."
+     ],
+     "ambientacion": "«Entre Cuba y La Española, el viento manda.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 127 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Tormenta piden +1.",
+       "reqKw": {
+        "kw": [
+         "Tormenta"
+        ],
+        "n": 1
+       }
+      },
+      "atajo": {
+       "exh": "Marinero",
+       "av": 3,
+       "t": "Agota a un Marinero (conoce a un práctico de La Habana): +3 Avance."
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 127,
+     "nombre": "El galeón rezagado",
+     "entorno": "mar",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Baraja el mazo de la Escolta con 6 cartas del mazo de Peligros. Durante esta misión, revela de ese mazo.",
+      "**Al zarpar:** Si tienes 3 o más Tripulantes preparados, gana {2 avance}."
+     ],
+     "ambientacion": "«Se quedó atrás con una vía de agua… y con media plata de Potosí.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 128 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "¡Al abordaje!: si llevas 3 Tripulantes o más, empiezas con Avance 2.",
+       "startCrew": {
+        "n": 3,
+        "av": 2
+       }
+      },
+      "mix": {
+       "name": "mazo de la Escolta",
+       "deck": [
+        "galeon",
+        "escolta",
+        "escolta",
+        "cobertura",
+        "naufragos_g",
+        "margruesa"
+       ],
+       "n": 6
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 128,
+     "nombre": "La huida con la plata",
+     "entorno": "mar",
+     "avanceNecesario": 4,
+     "distancia": 0,
+     "reglas": [
+      "Los encuentros #Barco# reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«Ahora nos busca la Armada entera. Que busque.»",
+     "recompensa": {
+      "rep": 4,
+      "tesoro": "mascaron"
+     },
+     "textoSiguiente": "Tesoro · carta 129",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Barco piden +1.",
+       "reqKw": {
+        "kw": [
+         "Barco"
+        ],
+        "n": 1
+       }
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "espia",
+   "nombre": "El espía de Cádiz",
+   "reto": "Fácil",
+   "intro": "Un correo del Rey viaja de incógnito con despachos sellados: rutas, guarniciones y fechas de la Flota. Quien los tenga, tendrá el Caribe en la mano.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 135,
+     "nombre": "Un soplo en Port Royal",
+     "entorno": "ciu",
+     "avanceNecesario": 4,
+     "distancia": 2,
+     "reglas": [
+      "Los encuentros #Guardia# reciben {+1 r} de dificultad.",
+      "**Al zarpar:** Agota a un _Contrabandista_ para ganar {2 avance}."
+     ],
+     "ambientacion": "«Un hombre con acento de Cádiz pregunta demasiado.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 136 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Guardia piden +1.",
+       "reqKw": {
+        "kw": [
+         "Guardia"
+        ],
+        "n": 1
+       }
+      },
+      "atajo": {
+       "exh": "Contrabandista",
+       "av": 2,
+       "t": "Agota a un Contrabandista (el tabernero es de los suyos): +2 Avance."
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 136,
+     "nombre": "Seguirle por los muelles",
+     "entorno": "ciu",
+     "avanceNecesario": 4,
+     "distancia": 2,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Vigía_ preparado, gana {2 avance}.",
+      "**Al zarpar:** Descarta 2 cartas para ganar {2 avance}."
+     ],
+     "ambientacion": "«Capa gris, paso rápido. No lo pierdas.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 137 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Vigía preparado, empiezas con Avance 2.",
+       "startRasgo": {
+        "rasgo": "Vigía",
+        "av": 2
+       }
+      },
+      "atajo": {
+       "discard": 2,
+       "av": 2,
+       "t": "Descarta 2 cartas (sobornos y disfraces): +2 Avance."
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 137,
+     "nombre": "La goleta del correo",
+     "entorno": "mar",
+     "avanceNecesario": 4,
+     "distancia": 0,
+     "reglas": [
+      "Cada vez que superes una Prueba de [NAV], gana {1 avance} más."
+     ],
+     "ambientacion": "«Lleva el Caribe entero en una valija sellada.»",
+     "recompensa": {
+      "rep": 4,
+      "tesoro": "despachos"
+     },
+     "textoSiguiente": "Tesoro · carta 138",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Cada Prueba que superes con NAV te da +1 Avance.",
+       "bonusHab": {
+        "hab": "NAV",
+        "av": 1
+       }
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "maracaibo",
+   "nombre": "El cargamento de Maracaibo",
+   "reto": "Fácil",
+   "intro": "Un comerciante de Maracaibo paga bien por sacar cacao y tabaco sin pasar por la aduana del Rey. El lago está cerrado por una flotilla de guardacostas.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 139,
+     "nombre": "Los muelles de Maracaibo",
+     "entorno": "ciu",
+     "avanceNecesario": 4,
+     "distancia": 3,
+     "reglas": [
+      "Las Pruebas de [EXP] reciben {+1 r} de dificultad.",
+      "**Al zarpar:** Descarta 2 cartas para ganar {2 avance}."
+     ],
+     "ambientacion": "«Cacao en los sacos y tabaco en el fondo. El fondo, que no lo mire nadie.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 140 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Guardia piden +1.",
+       "reqKw": {
+        "kw": [
+         "Guardia"
+        ],
+        "n": 1
+       }
+      },
+      "atajo": {
+       "exh": "Contrabandista",
+       "av": 2,
+       "t": "Agota a un Contrabandista (sabe a quién no hay que mirar): +2 Avance."
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 140,
+     "nombre": "El bloqueo del lago",
+     "entorno": "mar",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "Los encuentros #Militar# reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«Tres guardacostas y una sola salida. Toca bailar.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 141 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Militar piden +1.",
+       "reqKw": {
+        "kw": [
+         "Militar"
+        ],
+        "n": 1
+       }
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 141,
+     "nombre": "La cala de los contrabandistas",
+     "entorno": "nat",
+     "avanceNecesario": 4,
+     "distancia": 2,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Contrabandista_ preparado, gana {2 avance}."
+     ],
+     "ambientacion": "«Aquí el Rey no ha puesto nunca el pie. Ni lo pondrá.»",
+     "recompensa": {
+      "rep": 4,
+      "tesoro": "mapa_calas"
+     },
+     "textoSiguiente": "Tesoro · carta 142",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Contrabandista preparado, empiezas con Avance 2.",
+       "startRasgo": {
+        "rasgo": "Contrabandista",
+        "av": 2
+       }
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "sanfelipe",
+   "nombre": "La fortaleza de San Felipe",
+   "reto": "Difícil",
+   "intro": "En los calabozos de San Felipe espera la horca un viejo amigo de Diego. Y en su polvorín hay pólvora para tres guerras.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 143,
+     "nombre": "Desembarco nocturno",
+     "entorno": "nat",
+     "avanceNecesario": 5,
+     "distancia": 3,
+     "reglas": [
+      "Tus Tripulantes reciben {−1 EXP}.",
+      "**Al zarpar:** Agota a un _Vigía_ para ganar {2 avance}."
+     ],
+     "ambientacion": "«Sin faroles, sin ruido y sin miedo. O con miedo, pero callados.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 144 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Es de noche: todos tus Tripulantes tienen −1 EXP.",
+       "statMod": {
+        "hab": "EXP",
+        "n": -1
+       }
+      },
+      "atajo": {
+       "exh": "Vigía",
+       "av": 2,
+       "t": "Agota a un Vigía (ha visto una cala sin centinelas): +2 Avance."
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 144,
+     "nombre": "Las murallas",
+     "entorno": "ciu",
+     "avanceNecesario": 5,
+     "distancia": 3,
+     "reglas": [
+      "Los encuentros #Militar# y #Guardia# reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«Treinta pies de piedra y un centinela dormido.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 145 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Militar y Guardia piden +1.",
+       "reqKw": {
+        "kw": [
+         "Militar",
+         "Guardia"
+        ],
+        "n": 1
+       }
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 145,
+     "nombre": "El polvorín",
+     "entorno": "ciu",
+     "avanceNecesario": 5,
+     "distancia": 3,
+     "reglas": [
+      "Cada efecto de fallo inflige además {1 herida}."
+     ],
+     "ambientacion": "«Una chispa y la fortaleza entera salta por los aires. Mejor que nos pille lejos.»",
+     "recompensa": {
+      "rep": 4,
+      "tesoro": "polvora_rey"
+     },
+     "textoSiguiente": "Tesoro · carta 146",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Cada efecto de fallo trae además 1 herida.",
+       "sufferWound": 1
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "fantasma",
+   "nombre": "El barco fantasma",
+   "reto": "Medio",
+   "intro": "Los pescadores de Cartagena hablan de un galeón que navega sin tripulación entre la niebla. Dicen que lleva las bodegas llenas.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 147,
+     "nombre": "Niebla en el estrecho",
+     "entorno": "mar",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "Los Cañones no suman."
+     ],
+     "ambientacion": "«La niebla huele a sal y a tumba.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 148 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Con esta niebla, los Cañones no suman.",
+       "noGuns": 1
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 148,
+     "nombre": "A bordo del fantasma",
+     "entorno": "mar",
+     "avanceNecesario": 4,
+     "distancia": 0,
+     "reglas": [
+      "Las Pruebas de [COM] reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«La mesa está puesta y la sopa, caliente. No hay nadie.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 149 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Las Pruebas de COM piden +1: el acero atraviesa a los muertos.",
+       "habMod": {
+        "hab": "COM",
+        "n": 1
+       }
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 149,
+     "nombre": "El camarote del capitán",
+     "entorno": "mar",
+     "avanceNecesario": 4,
+     "distancia": 0,
+     "reglas": [
+      "Todas las Pruebas reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«Sigue en su sillón, con la bitácora abierta. Lleva cien años escribiendo.»",
+     "recompensa": {
+      "rep": 4,
+      "tesoro": "farol"
+     },
+     "textoSiguiente": "Tesoro · carta 150",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Todas las Pruebas piden +1.",
+       "reqAll": 1
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "deuda",
+   "nombre": "Una deuda en Tortuga",
+   "reto": "Inicial",
+   "intro": "Un tabernero de Tortuga le debe a Diego una bolsa y un favor. Ha llegado la hora de cobrar las dos cosas.",
+   "inicial": true,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 113,
+     "nombre": "Cobrar la deuda",
+     "entorno": "ciu",
+     "avanceNecesario": 3,
+     "distancia": 0,
+     "reglas": [
+      "Los encuentros #Pirata# reciben {−1 g} de dificultad."
+     ],
+     "ambientacion": "«En Tortuga las deudas se pagan con oro o con sangre. Que elija él.»",
+     "recompensa": {
+      "rep": 1,
+      "search": "crew"
+     },
+     "textoSiguiente": "",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Aquí te conocen: los encuentros Pirata piden 1 menos.",
+       "reqKw": {
+        "kw": [
+         "Pirata"
+        ],
+        "n": -1
+       }
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "prueba",
+   "nombre": "Prueba de mar",
+   "reto": "Inicial",
+   "intro": "La Sombra del Alba sale de carena. Antes de jugarse el cuello, hay que ver cómo navega.",
+   "inicial": true,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 114,
+     "nombre": "Rumbo a mar abierto",
+     "entorno": "mar",
+     "avanceNecesario": 3,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Marinero_ preparado, gana {1 avance}."
+     ],
+     "ambientacion": "«A ver de qué está hecha esta vieja.»",
+     "recompensa": {
+      "rep": 1,
+      "search": "ship"
+     },
+     "textoSiguiente": "",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Marinero preparado, empiezas con Avance 1.",
+       "startRasgo": {
+        "rasgo": "Marinero",
+        "av": 1
+       }
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "aguada",
+   "nombre": "Aguada en la cala",
+   "reto": "Inicial",
+   "intro": "Sin agua dulce ni leña no se va a ninguna parte. Hay una cala al norte donde nadie hace preguntas.",
+   "inicial": true,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 115,
+     "nombre": "Agua y leña",
+     "entorno": "nat",
+     "avanceNecesario": 3,
+     "distancia": 1,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Explorador_ preparado, gana {1 avance}."
+     ],
+     "ambientacion": "«Agua dulce, leña seca y ni un alma. Casi demasiado fácil.»",
+     "recompensa": {
+      "rep": 1,
+      "draw": 2
+     },
+     "textoSiguiente": "",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Explorador preparado, empiezas con Avance 1.",
+       "startRasgo": {
+        "rasgo": "Explorador",
+        "av": 1
+       }
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "panama",
+   "nombre": "El saqueo de Panamá",
+   "reto": "Victoria",
+   "intro": "La ciudad más rica del Nuevo Mundo, al otro lado del istmo. Quien la saquee no tendrá que volver a navegar.",
+   "inicial": false,
+   "aventura": false,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 151,
+     "nombre": "El prisionero de Portobelo",
+     "entorno": "ciu",
+     "avanceNecesario": 5,
+     "distancia": 3,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Bucanero_ preparado, gana {1 avance}."
+     ],
+     "ambientacion": "«Un oficial español sabe el camino a Panamá. Lo canta todo por un tonel de ron.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "textoSiguiente": "Añade la carta 152 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Bucanero preparado, empiezas con Avance 1.",
+       "startRasgo": {
+        "rasgo": "Bucanero",
+        "av": 1
+       }
+      }
+     }
+    },
+    {
+     "capitulo": "II",
+     "num": 152,
+     "nombre": "Cruzar el istmo",
+     "entorno": "nat",
+     "avanceNecesario": 6,
+     "distancia": 2,
+     "reglas": [
+      "Las Pruebas de [EXP] reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«Nueve días de río, barro y hambre. Los que lleguen, llegarán con hambre de oro.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "Añade la carta 153 a Misiones",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Las Pruebas de EXP piden +1.",
+       "habMod": {
+        "hab": "EXP",
+        "n": 1
+       }
+      }
+     }
+    },
+    {
+     "capitulo": "III",
+     "num": 153,
+     "nombre": "Las puertas de Panamá",
+     "entorno": "ciu",
+     "avanceNecesario": 7,
+     "distancia": 4,
+     "reglas": [
+      "Solo puedes zarpar a esta misión si tienes {9 rep} o más.",
+      "Todas las Pruebas reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«La ciudad más rica del Nuevo Mundo. Y esta noche, la tuya.»",
+     "recompensa": {
+      "victoria": true
+     },
+     "textoSiguiente": "",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Todas las Pruebas piden +1.",
+       "reqAll": 1
+      },
+      "final": true,
+      "minRep": 9
+     }
+    }
+   ]
+  },
+  {
+   "id": "ladron",
+   "nombre": "El ladrón del puerto",
+   "reto": "Aventura",
+   "intro": "Alguien ha robado del barco la caja de la paga. Sigue en el puerto: aquí todo se vende antes de que se enfríe.",
+   "inicial": false,
+   "aventura": true,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 116,
+     "nombre": "El ladrón del puerto",
+     "entorno": "ciu",
+     "avanceNecesario": 4,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Si tienes un _Vigía_ preparado, gana {1 avance}."
+     ],
+     "ambientacion": "«Un garfio, un parche y una caja de caudales bajo el brazo. No debería ser difícil.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "textoSiguiente": "",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Si llevas un Vigía preparado, empiezas con Avance 1."
+      },
+      "final": true
+     }
+    }
+   ]
+  },
+  {
+   "id": "gobernador",
+   "nombre": "La casa del gobernador",
+   "reto": "Aventura",
+   "intro": "El gobernador de la isla da un baile esta noche. Su casa estará llena de invitados, de plata y de guardias distraídos.",
+   "inicial": false,
+   "aventura": true,
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 117,
+     "nombre": "La casa del gobernador",
+     "entorno": "ciu",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "Los encuentros #Guardia# y #Militar# reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«Música, pelucas y candelabros de plata. Los candelabros, para nosotros.»",
+     "recompensa": {
+      "rep": 2,
+      "search": "up"
+     },
+     "textoSiguiente": "",
+     "ayudaPrototipo": {
+      "g": {
+       "t": "Los encuentros Guardia y Militar piden +1."
+      },
+      "final": true
+     }
+    }
+   ]
+  }
+ ],
+ "ordenMisiones": {
+  "iniciales": [
+   "deuda",
+   "prueba",
+   "aguada"
+  ],
+  "aventuras": [
+   "ladron",
+   "gobernador"
+  ],
+  "travesias": [
+   "templo",
+   "flota",
+   "espia",
+   "maracaibo",
+   "sanfelipe",
+   "fantasma",
+   "panama"
+  ]
+ },
+ "escenario": [
+  {
+   "id": "mercado",
+   "num": 97,
+   "nombre": "Mercado próspero",
+   "texto": "Revela 2 cartas más del mazo de muelle y añádelas al muelle.",
+   "ambientacion": "«Ha llegado la flota mercante: hay dinero en cada esquina.»"
+  },
+  {
+   "id": "astillero",
+   "num": 98,
+   "nombre": "Astillero ocioso",
+   "texto": "Repara {2 dano g}.",
+   "ambientacion": "«Los calafates se aburren. Aprovéchalo.»"
+  },
+  {
+   "id": "impuestos",
+   "num": 99,
+   "nombre": "Impuestos del gobernador",
+   "texto": "Pierde una Mejora.",
+   "ambientacion": "«El gobernador también es pirata. Con peluca.»"
+  },
+  {
+   "id": "reclutas",
+   "num": 100,
+   "nombre": "Marineros sin barco",
+   "texto": "Busca un Tripulante.",
+   "ambientacion": "«Su barco se hundió; sus ganas, no.»"
+  },
+  {
+   "id": "noticias",
+   "num": 101,
+   "nombre": "Noticias de un botín",
+   "texto": "Roba {2 robar}.",
+   "ambientacion": "«Mañana zarpa un galeón cargado. Lo sabe medio puerto.»"
+  },
+  {
+   "id": "bando",
+   "num": 102,
+   "nombre": "Bando del virrey",
+   "texto": "Este turno, los encuentros #Militar# y #Guardia# reciben {+1 r} de dificultad.",
+   "ambientacion": "«Se busca. Vivo o muerto. Mejor muerto.»"
+  },
+  {
+   "id": "desercion",
+   "num": 103,
+   "nombre": "Deserción",
+   "texto": "Descarta a tu Tripulante de menor coste junto con sus Mejoras. No puede ser tu Capitán.",
+   "ambientacion": "«Una noche en tierra y uno menos al amanecer.»"
+  },
+  {
+   "id": "rumores",
+   "num": 104,
+   "nombre": "Rumores del tesoro",
+   "texto": "Si zarpas este turno, empiezas la misión con {1 avance}.",
+   "ambientacion": "«Todo el mundo tiene un mapa. Alguno será bueno.»"
+  },
+  {
+   "id": "escasez",
+   "num": 105,
+   "nombre": "Escasez de pertrechos",
+   "texto": "Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
+   "ambientacion": "«Ni pólvora, ni galleta, ni crédito.»"
+  },
+  {
+   "id": "ribera",
+   "num": 106,
+   "nombre": "Carpinteros de ribera",
+   "texto": "Busca una Mejora de barco.",
+   "ambientacion": "«Caoba recién cortada y manos que saben usarla.»"
+  },
+  {
+   "id": "huracanes",
+   "num": 107,
+   "nombre": "Temporada de huracanes",
+   "texto": "Este turno, las misiones [mar] necesitan {+1 avance r} y las Distancias son {+1 r} mayores.",
+   "ambientacion": "«El cielo se pone verde. Mal asunto.»"
+  },
+  {
+   "id": "alisios",
+   "num": 108,
+   "nombre": "Vientos alisios",
+   "texto": "Este turno, las misiones [mar] necesitan {−1 avance g} y las Distancias son {−1 g} menores.",
+   "ambientacion": "«Los alisios soplan hacia poniente. A favor.»"
+  },
+  {
+   "id": "feria",
+   "num": 109,
+   "nombre": "Feria en la isla",
+   "texto": "Roba {1 robar} y cura {1 herida g} a cada Tripulante.",
+   "ambientacion": "«Música, dados y bolsas descuidadas.»"
+  },
+  {
+   "id": "calma_ev",
+   "num": 110,
+   "nombre": "Días tranquilos",
+   "texto": "Cura {1 herida g} a cada Tripulante.",
+   "ambientacion": "«Hamacas, ron y nada que hacer. Por ahora.»"
+  }
+ ],
+ "puertos": [
+  {
+   "id": "tortuga",
+   "num": 111,
+   "nombre": "Tortuga",
+   "muelle": 4,
+   "habilidadPropia": {
+    "nombre": "Soplos de la Hermandad",
+    "texto": "Pon {2 avance} en una misión disponible."
+   },
+   "opcionesComunes": [
+    "**Astillero.** Repara {3 dano g}.",
+    "**Taberna.** Cura {3 herida g}.",
+    "**Tablón de encargos.** Pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón."
+   ],
+   "ambientacion": "«En Tortuga todo se compra y todo se vende. Hasta tu nombre.»"
+  },
+  {
+   "id": "nassau",
+   "num": 112,
+   "nombre": "Nassau",
+   "muelle": 3,
+   "habilidadPropia": {
+    "nombre": "Entrenamiento",
+    "texto": "Pon una ficha de Entrenamiento en un Tripulante: {+1} a la habilidad que elijas. Ocupa un hueco de Mejora."
+   },
+   "opcionesComunes": [
+    "**Astillero.** Repara {3 dano g}.",
+    "**Taberna.** Cura {3 herida g}.",
+    "**Tablón de encargos.** Pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón."
+   ],
+   "ambientacion": "«Aquí no hay gobernador: hay doscientos capitanes y ninguno obedece.»"
+  }
+ ],
+ "mazosPredefinidos": {
+  "mazoDelCapitan": [
+   "abordaje",
+   "abordaje",
+   "timon",
+   "timon",
+   "ojo",
+   "ojo",
+   "coraje",
+   "coraje",
+   "emboscada",
+   "emboscada",
+   "estrellas",
+   "estrellas",
+   "botin",
+   "taberna",
+   "reparacion",
+   "vendas",
+   "ron_descanso",
+   "polvora_c",
+   "viento",
+   "mapa",
+   "arriba",
+   "animo",
+   "reflejos",
+   "reflejos",
+   "sangre_fria",
+   "cambio_rumbo",
+   "soborno",
+   "todos",
+   "ni_hombre",
+   "naufrago",
+   "prisionero",
+   "senda",
+   "espesura",
+   "trampa",
+   "leccion",
+   "retirada"
+  ],
+  "mazoDeMuelle": [
+   "marinero_p",
+   "marinero_p",
+   "grumete",
+   "grumete",
+   "bucanero",
+   "bucanero",
+   "saqueador",
+   "contrabandista",
+   "filibustero",
+   "canonero",
+   "isabela",
+   "bartolome",
+   "reinaldo",
+   "carpintero",
+   "matasanos",
+   "espadachin",
+   "vigia",
+   "viejo_lobo",
+   "baqueano",
+   "casco",
+   "vela",
+   "hamacas",
+   "bandera",
+   "chalupa",
+   "botica",
+   "viveres",
+   "cruz",
+   "bronce",
+   "carronadas",
+   "culebrina",
+   "pedrero",
+   "velas_tormenta",
+   "sable",
+   "brujula",
+   "catalejo",
+   "pistola",
+   "escapulario",
+   "amuleto",
+   "ron_reserva",
+   "loro",
+   "patente",
+   "coleto"
+  ],
+  "mazoDePeligros": [
+   "racha",
+   "racha",
+   "hallazgo",
+   "calma",
+   "encrucijada",
+   "oportunidad",
+   "chubasco",
+   "chubasco",
+   "fauna",
+   "fauna",
+   "escollos",
+   "escollos",
+   "niebla",
+   "percances",
+   "civiles",
+   "ley",
+   "ley",
+   "rivales",
+   "rivales",
+   "temporal",
+   "temporal",
+   "bestias",
+   "fiebre",
+   "vigilancia",
+   "sirenas",
+   "arrecifes",
+   "leyenda",
+   "cazadores",
+   "catastrofe",
+   "asalto"
+  ],
+  "apartadosDePeligros": [
+   "armada",
+   "amigos"
+  ],
+  "capitanInicial": "capitan",
+  "puertoInicial": "tortuga",
+  "modo": "normal"
+ }
+}

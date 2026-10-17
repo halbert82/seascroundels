@@ -1,0 +1,408 @@
+body{margin:0}
+a{color:#8E2B23}a:hover{color:#6B1A1A}
+.ic{display:inline-block;width:1em;height:1em;background-color:currentColor;-webkit-mask:var(--m) center/contain no-repeat;mask:var(--m) center/contain no-repeat;flex:none}
+
+/* ---------- Mesa y pies de explicación ---------- */
+.board{box-sizing:border-box;padding:40px;background:#D9CBAE;display:flex;gap:40px;align-items:flex-start;font-family:'Alegreya Sans',Georgia,serif;color:#2A2118;font-variant-numeric:lining-nums}
+.slot{display:flex;flex-direction:column;gap:14px;flex:none}
+.cap{font-size:14px;line-height:1.32;color:#3A2C20}
+
+/* ---------- Carta: marco ---------- */
+.card{position:relative;width:378px;height:528px;box-sizing:border-box;border-radius:18px;overflow:hidden;flex:none;
+  background:radial-gradient(ellipse at 50% 115%,#3B2D22 0%,#1E1712 62%);
+  box-shadow:0 12px 26px rgba(45,28,12,.38),0 2px 4px rgba(45,28,12,.3);
+  font-family:'Alegreya Sans',Georgia,serif;color:#2A2118;font-variant-numeric:lining-nums}
+.card::after{content:'';position:absolute;inset:3px;border-radius:15px;border:1px solid rgba(214,180,110,.38);pointer-events:none;z-index:9}
+.card.wide{width:528px;height:378px}
+
+/* Ilustración: de borde a borde, bajo la placa del nombre */
+.art{position:absolute;left:0;right:0;top:56px;height:266px;display:flex;align-items:center;justify-content:center;color:#8C7658;font-style:italic;font-size:15px}
+.art::after{content:'';position:absolute;inset:0;box-shadow:inset 0 12px 14px -10px rgba(0,0,0,.6),inset 0 -22px 22px -16px rgba(0,0,0,.65)}
+.tall .art{height:344px}
+
+/* Placa del nombre */
+.plate{position:absolute;left:0;right:0;top:0;height:56px;z-index:2;box-sizing:border-box;padding:0 66px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cc),#fff 16%) 0%,var(--cc) 48%,color-mix(in srgb,var(--cc),#000 32%) 100%);
+  border-bottom:2px solid #C9A45C;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 3px 8px rgba(0,0,0,.5)}
+.name{font-family:'IM Fell English SC',Georgia,serif;font-size:25px;line-height:1;color:#FAF0DA;text-shadow:0 2px 2px rgba(0,0,0,.55);white-space:nowrap;text-align:center}
+
+/* Coste: un doblón */
+.coin{position:absolute;left:7px;top:5px;width:62px;height:62px;border-radius:50%;z-index:6;
+  background:repeating-conic-gradient(#76561A 0 5deg,#CFA84E 5deg 10deg);box-shadow:0 3px 7px rgba(0,0,0,.65)}
+.coin::before{content:'';position:absolute;inset:4px;border-radius:50%;
+  background:radial-gradient(circle at 34% 28%,#FCEBB0 0%,#E3BA58 36%,#B78C2F 70%,#7A571A 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(90,60,10,.6),inset 0 -4px 7px rgba(80,50,0,.4)}
+.coin::after{content:'';position:absolute;inset:10px;border-radius:50%;border:1.5px dotted rgba(105,70,14,.7)}
+.coin b{position:relative;z-index:1;display:flex;width:100%;height:100%;align-items:center;justify-content:center;
+  font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:33px;line-height:1;color:#3A2406;text-shadow:0 1px 0 rgba(255,238,175,.85)}
+
+/* Mando: escudo morado (a la derecha lo que ocupa, a la izquierda lo que da el Capitán) */
+.mando{position:absolute;top:4px;width:54px;height:64px;z-index:6;filter:drop-shadow(0 3px 3px rgba(0,0,0,.6))}
+.mando.r{right:8px}.mando.l{left:8px}
+.mando::before,.mando::after{content:'';position:absolute;clip-path:polygon(50% 0,100% 13%,100% 56%,50% 100%,0 56%,0 13%)}
+.mando::before{inset:0;background:#D9B866}
+.mando::after{inset:3px;background:linear-gradient(180deg,#7A5A96 0%,#5B3F73 55%,#3E2A50 100%)}
+.mando .ic{position:absolute;left:50%;top:7px;transform:translateX(-50%);font-size:22px;color:#F3E6C6;z-index:1}
+.mando b{position:absolute;left:0;right:0;top:25px;text-align:center;z-index:1;font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:26px;line-height:1;color:#FBF2DE;text-shadow:0 2px 2px rgba(0,0,0,.5)}
+
+/* Pestañas que salen del borde izquierdo: habilidades (con número) o iconos que suman (sin número) */
+.tabs{position:absolute;left:0;display:flex;flex-direction:column;gap:6px;z-index:4}
+.tabs.r{left:auto;right:0;align-items:flex-end}
+.tab{height:46px;box-sizing:border-box;padding:0 14px 0 9px;display:flex;align-items:center;gap:5px;color:#FBF2DE;
+  border-radius:0 23px 23px 0;border:2px solid #E2C783;border-left:0;box-shadow:2px 3px 7px rgba(0,0,0,.55);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--sc),#fff 18%) 0%,var(--sc) 52%,color-mix(in srgb,var(--sc),#000 28%) 100%)}
+.tabs.r .tab{border-radius:23px 0 0 23px;border:2px solid #E2C783;border-right:0;padding:0 9px 0 13px}
+.tab .ic{font-size:31px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.55))}
+.tab b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:32px;line-height:1;text-shadow:0 2px 2px rgba(0,0,0,.6)}
+.tab.zero{--sc:#857866}
+.tab.zero .ic,.tab.zero b{opacity:.75}
+
+/* Vida: corazón (la herida sigue siendo la gota) */
+.vida{position:absolute;right:13px;top:254px;width:58px;height:55px;z-index:4;filter:drop-shadow(0 3px 4px rgba(0,0,0,.65));--heart:url(../assets/iconos/vida.svg)}
+.vida::before,.vida::after{content:'';position:absolute;-webkit-mask:var(--heart) center/contain no-repeat;mask:var(--heart) center/contain no-repeat}
+.vida::before{inset:0;background:#E2C783}
+.vida::after{inset:3.5px;background:radial-gradient(circle at 38% 30%,#D9493C 0%,#A0261B 52%,#5E120B 100%)}
+.vida b{position:absolute;left:0;right:0;top:10px;z-index:1;text-align:center;font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:28px;line-height:1;color:#FFF4E2;text-shadow:0 2px 2px rgba(0,0,0,.55)}
+
+/* Cinta del tipo de carta, entre la ilustración y el texto */
+.ribbon{position:absolute;left:50%;transform:translateX(-50%);top:307px;height:30px;z-index:7;box-sizing:border-box;padding:0 28px;display:flex;align-items:center;white-space:nowrap;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--cc),#fff 6%) 0%,color-mix(in srgb,var(--cc),#000 38%) 100%);
+  box-shadow:inset 0 2px 0 #D2AE62,inset 0 -2px 0 #D2AE62;
+  clip-path:polygon(0 0,100% 0,calc(100% - 13px) 50%,100% 100%,0 100%,13px 50%);
+  font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:15px;letter-spacing:.14em;color:#F2DFA8}
+.tall .ribbon{top:385px}
+
+/* Caja de texto */
+.tbox{position:absolute;left:9px;right:9px;top:322px;bottom:25px;z-index:3;box-sizing:border-box;padding:24px 17px 11px;border-radius:3px 3px 12px 12px;
+  display:flex;flex-direction:column;gap:7px;
+  background:radial-gradient(ellipse at 50% 35%,#FBF5E7 0%,#F2E6CD 68%,#E6D6B4 100%);
+  box-shadow:inset 0 0 0 2px var(--cc),inset 0 0 0 4px #F2E6CD,inset 0 0 0 5px rgba(196,158,86,.95)}
+.tall .tbox{top:400px}
+.traits{text-align:center;word-spacing:.18em;font-weight:800;font-style:italic;font-size:16px;line-height:1.2;color:#33261B}
+.rule{position:relative;height:9px;margin:0 34px;flex:none}
+.rule::before{content:'';position:absolute;left:0;right:0;top:4px;height:1.2px;background:linear-gradient(90deg,transparent,#B08E50 20%,#B08E50 80%,transparent)}
+.rule::after{content:'';position:absolute;left:50%;top:1px;width:6px;height:6px;background:#B08E50;transform:translateX(-50%) rotate(45deg)}
+.rules{font-size:17px;line-height:1.36;color:#2A2118}
+.rules .ic{font-size:1.32em;vertical-align:-.3em}
+.rules .num{font-weight:900;font-size:1.08em;white-space:nowrap}
+.rules .num .ic{font-size:1.24em}
+.rules .kw{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:.9em;letter-spacing:.06em;color:#8E2B23}
+.rules.big{text-align:center;font-size:30px;line-height:1.1;margin-top:8px}
+.rules.big .ic{vertical-align:-.22em}
+.flavor{margin-top:auto;font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:14.5px;line-height:1.28;color:#6E5741;text-align:center;padding:0 6px}
+.note{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:15px;line-height:1.3;color:#5A4636;text-align:center}
+
+/* Pie de carta */
+.foot{position:absolute;left:18px;right:18px;bottom:7px;height:13px;z-index:3;display:flex;justify-content:space-between;align-items:center;
+  font-size:9.5px;font-weight:700;letter-spacing:.07em;color:#A99273;white-space:nowrap}
+.rules.center{text-align:center}
+.rules .note{font-size:16px}
+
+/* ---------- Cartas de Peligro: tres encuentros y un Destino ---------- */
+.card.enc{padding:8px;display:flex;flex-direction:column;gap:6px}
+.encp{position:relative;height:122px;flex:none;display:flex;border-radius:9px;overflow:hidden;
+  background:radial-gradient(ellipse at 60% 30%,#FBF5E7 0%,#F0E3C8 75%,#E4D2AE 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(196,158,86,.95),0 2px 4px rgba(0,0,0,.35)}
+.ent{width:46px;flex:none;display:flex;align-items:center;justify-content:center;color:#FBF2DE;font-size:32px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--ec),#fff 16%) 0%,var(--ec) 55%,color-mix(in srgb,var(--ec),#000 32%) 100%);
+  box-shadow:inset -2px 0 0 #D2AE62}
+.ent .ic{filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.encb{flex:1;min-width:0;padding:8px 10px 8px 12px;display:flex;flex-direction:column;gap:4px}
+.ench{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.encn{font-family:'IM Fell English SC',Georgia,serif;font-size:21px;line-height:1.02;color:#2A2118}
+.enck{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.1em;color:#7A6248;min-height:15px;line-height:1.2}
+.av{flex:none;display:flex;align-items:center;gap:4px;height:34px;box-sizing:border-box;padding:0 10px 0 8px;border-radius:7px;
+  background:linear-gradient(180deg,#3E3128,#1E1712);border:1.5px solid #C9A45C;color:#F2DFA8;box-shadow:0 2px 3px rgba(0,0,0,.35)}
+.av .ic{font-size:23px}
+.av b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:25px;line-height:1;color:#FBF2DE}
+.test{display:flex;align-items:center;gap:7px;min-height:28px}
+.opt{display:flex;align-items:center;gap:3px}
+.opt .ic{font-size:29px}
+.opt b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:29px;line-height:1}
+.sep{font-family:'Alegreya',Georgia,serif;font-size:24px;color:#9C8466}
+.outs{display:flex;gap:6px;margin-top:auto}
+.out{flex:1;min-width:0;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;gap:9px}
+.out.win{background:linear-gradient(180deg,#E5EED7,#CCDBB7);box-shadow:inset 0 0 0 1.5px #8FA873;color:#2F5426}
+.out.fail{background:linear-gradient(180deg,#F4E0D9,#E5C1B6);box-shadow:inset 0 0 0 1.5px #C08274;color:#80241C}
+.out.fx{background:linear-gradient(180deg,#EDE3CC,#DACAA4);box-shadow:inset 0 0 0 1.5px #B49A6B;color:#2A2118}
+.tk{display:flex;align-items:center;gap:2px}
+.tk b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:21px;line-height:1}
+.tk .ic{font-size:23px}
+.none{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:14.5px}
+.dest{flex:1;min-height:0;border-radius:9px;box-sizing:border-box;padding:9px 14px 10px;display:flex;flex-direction:column;justify-content:center;gap:6px;
+  background:radial-gradient(ellipse at 30% 0%,#4A3628 0%,#2A1E15 60%,#1C140E 100%);box-shadow:inset 0 0 0 1.5px #C9A45C,0 2px 4px rgba(0,0,0,.4);color:#F3E6C6}
+.desth{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.destn{font-family:'IM Fell English SC',Georgia,serif;font-size:24px;line-height:1;color:#F2DFA8;text-shadow:0 2px 2px rgba(0,0,0,.5)}
+.mod{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--dc),#fff 28%) 0%,var(--dc) 58%,color-mix(in srgb,var(--dc),#000 38%) 100%);
+  box-shadow:0 0 0 2.5px #D2AE62,0 3px 5px rgba(0,0,0,.6);font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:24px;line-height:1;color:#FFF4E2;text-shadow:0 2px 2px rgba(0,0,0,.5)}
+.destr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:30px}
+.destt{font-size:16px;line-height:1.25;color:#EADCBF}
+.so{display:flex;align-items:center;gap:7px;flex:none;color:#F3E6C6;background:rgba(0,0,0,.28);border-radius:7px;padding:4px 9px;box-shadow:inset 0 0 0 1px rgba(210,174,98,.55)}
+.so>.ic{font-size:22px}
+.so .tk b{font-size:19px}.so .tk .ic{font-size:20px}
+
+/* ---------- Capítulos (apaisadas) ---------- */
+.chapp{position:absolute;left:0;right:0;top:0;height:66px;z-index:2;box-sizing:border-box;padding:0 16px 0 12px;display:flex;align-items:center;gap:12px;
+  background:linear-gradient(180deg,#42342A 0%,#2A2018 50%,#1A130E 100%);border-bottom:2px solid #C9A45C;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 3px 8px rgba(0,0,0,.5)}
+.seal{width:50px;height:50px;flex:none;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 38% 30%,#CF4B3E 0%,#9A2118 55%,#5C0E08 100%);
+  box-shadow:0 0 0 2px #6E140C,0 3px 5px rgba(0,0,0,.65),inset 0 0 0 4px rgba(0,0,0,.2);color:#F8DFCF;text-shadow:0 1px 1px rgba(0,0,0,.6)}
+.seal b{font-family:'IM Fell English SC',Georgia,serif;font-weight:400;font-size:22px;line-height:.9}
+.seal small{font-size:9px;font-weight:800;letter-spacing:.08em;opacity:.85}
+.chapt{flex:1;min-width:0;display:flex;flex-direction:column}
+.chapm{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:13px;letter-spacing:.12em;color:#D9C08A}
+.chapn{font-family:'IM Fell English SC',Georgia,serif;font-size:29px;line-height:1;color:#FAF0DA;text-shadow:0 2px 2px rgba(0,0,0,.55)}
+.tags{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.tag{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:12px;letter-spacing:.1em;border:1.5px solid currentColor;border-radius:4px;padding:0 6px;line-height:1.35}
+.chapart{position:absolute;left:0;top:66px;bottom:0;width:214px;display:flex;align-items:center;justify-content:center;border-right:2px solid #C9A45C}
+.chapart::after{content:'';position:absolute;inset:0;box-shadow:inset 0 12px 14px -10px rgba(0,0,0,.6),inset -14px 0 16px -12px rgba(0,0,0,.55)}
+.chapart.ph{background:repeating-linear-gradient(135deg,#2E241C 0 10px,#271E17 10px 20px)}
+.chapart.ph span{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:15px;color:#9C8466;text-align:center;line-height:1.3;border:1.5px dashed rgba(201,164,92,.45);border-radius:8px;padding:10px 14px}
+.chap .tabs{top:84px}
+.tab.dark{--sc:#2A2118}
+.tab.dark .ic{color:#F2DFA8}
+.chapr{position:absolute;left:224px;right:9px;top:74px;bottom:25px}
+.chap .foot{left:232px}
+.chapr{border-radius:9px;box-sizing:border-box;padding:14px 16px 10px;display:flex;flex-direction:column;gap:8px;
+  background:radial-gradient(ellipse at 50% 35%,#FBF5E7 0%,#F2E6CD 68%,#E6D6B4 100%);box-shadow:inset 0 0 0 1.5px rgba(196,158,86,.95),0 2px 4px rgba(0,0,0,.35)}
+.chapr .rule{margin:0 30px}
+.chapr .rules{font-size:16px;line-height:1.34}
+.reward{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:12px;height:40px;border-radius:7px;
+  background:linear-gradient(180deg,#E5EED7,#CCDBB7);box-shadow:inset 0 0 0 1.5px #8FA873;color:#2F5426}
+.reward .lbl{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:14px;letter-spacing:.14em}
+.reward .tk b{font-size:24px}.reward .tk .ic{font-size:26px}
+
+/* Caja «Desde la mano» al pie del texto de los Tripulantes */
+.handbox{margin-top:auto;border-radius:7px;padding:6px 10px 7px;font-size:15.5px;line-height:1.3;color:#2A2118;
+  background:linear-gradient(180deg,rgba(122,98,72,.09),rgba(122,98,72,.17));box-shadow:inset 0 0 0 1px rgba(176,142,80,.6)}
+.hlbl{display:block;font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.13em;color:#7A5A2E;margin-bottom:1px}
+.handbox .ic{font-size:1.3em;vertical-align:-.3em}
+.handbox .num{font-weight:900;font-size:1.06em;white-space:nowrap}
+.handbox .num .ic{font-size:1.24em}
+/* Variante con caja «Desde la mano»: un poco menos de ilustración y más texto */
+.crew .art{height:250px}
+.crew .ribbon{top:291px}
+.crew .tbox{top:306px;padding-top:22px;gap:6px}
+.crew .rules{font-size:16px}
+.crew .vida{top:238px}
+.crew .handbox{font-size:15px}
+
+/* v4.1b: frase de ambiente en todas las cartas */
+.crew .flavor{margin-top:0}
+.tall .flavor{margin:auto 0;font-size:15.5px}
+.none.dash{font-style:normal;font-size:18px;opacity:.55}
+.destf{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:14px;line-height:1.25;color:#CDB78C;margin-top:-2px}
+.chapr .flavor{margin-top:auto;padding:0 10px}
+.chapr .flavor + .reward{margin-top:2px}
+.reward .next{font-family:'Alegreya Sans',sans-serif;font-weight:800;font-size:15px;padding:3px 9px;border-radius:5px;background:#2A2118;color:#F3EAD7;margin-left:4px}
+
+/* v4.2: icono de habilidad de los Tripulantes al descartarlos (maqueta A / B / C) */
+.tab{position:relative}
+.tab.mark{box-shadow:0 0 0 3px #F2D27A,2px 3px 7px rgba(0,0,0,.55)}
+.tab .mk{position:absolute;right:-13px;top:-9px;width:26px;height:26px;border-radius:50%;background:#F2D27A;color:#2A2118;border:1.5px solid #2A2118;
+  display:flex;align-items:center;justify-content:center;font:900 14px/1 'Alegreya',Georgia,serif;text-shadow:none;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.handbox{position:relative}
+.handbox.wchip{display:flex;align-items:center;gap:9px;padding-left:7px}
+.hchip{flex:none;width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#FBF2DE;border:1.5px solid #E2C783;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--sc),#fff 18%) 0%,var(--sc) 52%,color-mix(in srgb,var(--sc),#000 28%) 100%)}
+.handbox .hchip .ic{font-size:24px;vertical-align:0;filter:drop-shadow(0 1px 1px rgba(0,0,0,.55))}
+.handbox.wtab{padding-left:30px}
+.htab{position:absolute;left:-26px;top:50%;transform:translateY(-50%);height:40px;padding:0 9px 0 8px}
+.handbox .htab .ic{font-size:27px;vertical-align:0}
+
+/* v4.3: espacio que ocupa una Mejora de barco (arriba a la izquierda, donde iba la moneda) y Mejoras que lleva un Personaje (pestaña derecha) */
+.espb{position:absolute;left:8px;top:5px;width:54px;height:62px;z-index:6;box-sizing:border-box;border-radius:9px;border:2px solid #E2C783;
+  background:linear-gradient(180deg,#7A5C40 0%,#5A4532 55%,#3E2F22 100%);box-shadow:0 3px 5px rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;color:#FBF2DE}
+.espb .ic{font-size:22px;color:#F2DFA8;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.espb b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:26px;line-height:1;text-shadow:0 2px 2px rgba(0,0,0,.6)}
+.tab.mejt{--sc:#3B302A}
+.tab.mejt .ic{color:#F2DFA8}
+.tab.mejt.zero{--sc:#857866}
+/* Peligro que entra en el mazo y se retira tras girarlo */
+.oncet{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:12px;letter-spacing:.08em;color:#E2C783;border-top:1px dashed rgba(226,199,131,.45);padding-top:5px;text-align:center}
+
+.i-nav{--m:url(../assets/iconos/nav.svg)}
+.i-com{--m:url(../assets/iconos/com.svg)}
+.i-exp{--m:url(../assets/iconos/exp.svg)}
+.i-man{--m:url(../assets/iconos/man.svg)}
+.i-mar{--m:url(../assets/iconos/mar.svg)}
+.i-nat{--m:url(../assets/iconos/nat.svg)}
+.i-ciu{--m:url(../assets/iconos/ciu.svg)}
+.i-avance{--m:url(../assets/iconos/avance.svg)}
+.i-doblon{--m:url(../assets/iconos/doblon.svg)}
+.i-municion{--m:url(../assets/iconos/municion.svg)}
+.i-herida{--m:url(../assets/iconos/herida.svg)}
+.i-dano{--m:url(../assets/iconos/dano.svg)}
+.i-agotar{--m:url(../assets/iconos/agotar.svg)}
+.i-curar{--m:url(../assets/iconos/curar.svg)}
+.i-robar{--m:url(../assets/iconos/robar.svg)}
+.i-descartar{--m:url(../assets/iconos/descartar.svg)}
+.i-acampar{--m:url(../assets/iconos/acampar.svg)}
+.i-sinop{--m:url(../assets/iconos/sinop.svg)}
+.i-vida{--m:url(../assets/iconos/vida.svg)}
+.i-rep{--m:url(../assets/iconos/rep.svg)}
+.i-mejora{--m:url(../assets/iconos/mejora.svg)}
+.i-rehen{--m:url(../assets/iconos/rehen.svg)}
+.i-espacio{--m:url(../assets/iconos/espacio.svg)}
+
+
+/* ================= Caja básica: añadidos a la hoja común ================= */
+.i-saco{--m:url(../assets/iconos/saco.svg)}
+.board.grid{flex-wrap:wrap;align-content:flex-start;row-gap:40px}
+.cap{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.cmeta{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:14px;letter-spacing:.07em;color:#4A3A2C}
+.cnote{font-size:14px;font-weight:700;line-height:1.3;color:#FFF4E2;background:#8E2B23;border-radius:5px;padding:3px 9px}
+.cnote.nueva{background:#3D6631}
+
+/* Nombre: estrella de carta única y nombres largos a dos líneas */
+.uq{font-family:Georgia,serif;font-size:.78em;color:#F2D27A;margin-right:.28em;vertical-align:.1em;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.name.two{white-space:normal;font-size:21px !important;line-height:.98}
+.traits .kw{font-style:normal}
+
+/* Fichas: texto sin icono y Mejora rota */
+.tk .icw{position:relative;display:inline-flex}
+.tk .icw.brk::after{content:'';position:absolute;left:-3px;right:-3px;top:50%;height:3px;margin-top:-1.5px;background:#B3261E;border-radius:2px;transform:rotate(-38deg);box-shadow:0 0 0 1.2px #F4E0D9}
+.tk.txt b{font-family:'Alegreya Sans',sans-serif;font-weight:800;font-size:14.5px;line-height:1.1}
+.so .tk.txt b{font-size:13.5px}
+.reward .tk.txt b{font-size:15px}
+.alt{font-size:13px;font-weight:700;color:#5A4636;margin-left:-1px;white-space:nowrap}
+.alt i{font-weight:800}
+.destt .ic{font-size:1.25em;vertical-align:-.28em}
+.destt .num{font-weight:900;white-space:nowrap}
+.destt .num .ic{font-size:1.2em}
+.destt .kw{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:.92em;letter-spacing:.05em;color:#F2DFA8}
+.destt{font-size:15.5px}
+
+/* Peligro de un mazo propio: un solo encuentro, sin Entorno */
+.card.enc.solo{gap:6px}
+.soloh{height:30px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:7px;
+  background:linear-gradient(180deg,#42342A,#1A130E);box-shadow:inset 0 0 0 1.5px #C9A45C;
+  font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:14px;letter-spacing:.12em;color:#F2DFA8}
+.soloart{height:150px;flex:none;border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1.5px rgba(201,164,92,.55)}
+.soloart span{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:15px;color:#B8A27F}
+.solo .encb{padding-left:14px}
+.solof{position:absolute;left:0;right:0;bottom:-1px;height:0}
+.solo .dest{padding-bottom:12px}
+
+/* Portada de misión */
+.port .reto{flex:none;height:46px;min-width:78px;box-sizing:border-box;padding:0 10px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--rc),#fff 18%) 0%,var(--rc) 55%,color-mix(in srgb,var(--rc),#000 30%) 100%);
+  box-shadow:0 0 0 2px #D2AE62,0 3px 5px rgba(0,0,0,.5);color:#FFF4E2;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+.port .reto small{font-size:9px;font-weight:800;letter-spacing:.14em;opacity:.85}
+.port .reto b{font-family:'IM Fell English SC',Georgia,serif;font-weight:400;font-size:19px;line-height:1}
+.port .intro{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:14.5px;line-height:1.3;color:#3A2C20}
+.clist{display:flex;flex-direction:column;gap:5px;margin-top:auto}
+.crow{display:flex;align-items:center;gap:8px;min-height:30px;box-sizing:border-box;padding-top:2px;padding-bottom:2px;border-radius:6px;padding:0 9px 0 6px;background:rgba(122,98,72,.12);box-shadow:inset 0 0 0 1px rgba(176,142,80,.55)}
+.crow .cn{font-family:'IM Fell English SC',Georgia,serif;font-size:17px;min-width:26px;color:#8E2B23;text-align:center}
+.crow .ct{flex:1;min-width:0;font-weight:700;font-size:14px;line-height:1.08}
+.crow .ce{display:flex;align-items:center;gap:2px;font-family:'Alegreya',Georgia,serif;font-size:17px}
+.crow .ce .ic{font-size:20px}
+.crow .cr{display:flex;align-items:center;gap:2px;color:#2F5426;font-family:'Alegreya',Georgia,serif;font-size:16px}
+.crow .cr .ic{font-size:19px}
+.port .reward{margin-top:2px;height:34px}
+.port .clist + .reward{margin-top:6px}
+.reward .rt{font-weight:800;font-size:15.5px}
+.reward{flex-wrap:wrap;height:auto;min-height:40px;padding:3px 8px;box-sizing:border-box;row-gap:2px}
+
+/* Barco: datos en la línea de rasgos */
+.traits .num{font-style:normal}
+
+.encn.long{font-size:17.5px}
+/* Texto apretado: cartas con mucho texto */
+.tight .rules{font-size:15.5px;line-height:1.3}
+.crew.tight .rules{font-size:15px}
+.tight .handbox{font-size:14.5px !important;padding:5px 9px 6px}
+.tight .flavor{font-size:13.5px;line-height:1.22}
+.crew.tight .tbox{gap:5px}
+
+/* v4.5: coste en cartas (timón) arriba a la izquierda; el espacio de las Mejoras de barco pasa a la derecha */
+.costb{position:absolute;left:3px;top:1px;width:68px;height:68px;z-index:6;filter:drop-shadow(0 0 1px #3A2A1C) drop-shadow(0 0 1px #3A2A1C) drop-shadow(0 3px 3px rgba(0,0,0,.65))}
+.costb::before{content:'';position:absolute;inset:0;background:#E8C877;-webkit-mask:url(../assets/iconos/timon.svg) center/contain no-repeat;mask:url(../assets/iconos/timon.svg) center/contain no-repeat}
+.costb b{position:absolute;left:19px;top:19px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 40% 35%,#5A4532,#2A1E15);font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:23px;line-height:1;color:#FFF4E2;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.espb{left:auto;right:8px}
+
+/* v4.6: carta de puerto (apaisada): sello «elige 2», opciones comunes y propias */
+.seal.pto{background:radial-gradient(circle at 38% 30%,#3E8A96 0%,#1D5872 55%,#0E2E3D 100%);box-shadow:0 0 0 2px #0E2E3D,0 3px 5px rgba(0,0,0,.65),inset 0 0 0 4px rgba(0,0,0,.2);color:#E4F2F2}
+.seal.pto small{font-size:8px;letter-spacing:.1em;margin-bottom:1px}
+.seal.pto b{font-size:24px}
+.pto .chapr{gap:5px;padding:11px 12px 9px}
+.pto .chapr .rules.lead{font-size:14.5px;line-height:1.2;padding:0 2px}
+.pto .ogrp{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:11px;letter-spacing:.12em;color:#7A6248;margin:3px 0 -2px 3px}
+.opt{display:flex;align-items:center;gap:7px;padding:4px 8px 4px 5px;border-radius:6px;background:rgba(122,98,72,.10);box-shadow:inset 0 0 0 1px rgba(176,142,80,.5)}
+.opt.uni{background:rgba(214,176,98,.26);box-shadow:inset 0 0 0 1.5px #B08E50}
+.opt .oi{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#2A2118;color:#F2DFA8;font-size:19px}
+.opt.uni .oi{background:#7A5418}
+.opt .ot{flex:1;min-width:0;font-size:13.5px;line-height:1.17}
+.opt .ot .ic{font-size:1.2em;vertical-align:-.25em}
+.pto .chapr .flavor{margin-top:auto;padding:0 8px;font-size:13.5px;line-height:1.2}
+.ptofl{position:absolute;left:14px;right:14px;bottom:14px;z-index:1;font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:14px;line-height:1.25;color:#E9D9B6;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+.pto .opt .ot{font-size:13.5px}
+
+/* v4.6b: puerto en espejo de la misión: texto a la izquierda, ilustración a la derecha, sin reglas comunes */
+.pto2{background:linear-gradient(180deg,#2E241C,#1A130E)}
+.ptoh{position:absolute;left:0;right:0;top:0;height:66px;z-index:2;box-sizing:border-box;padding:0 16px;display:flex;flex-direction:column;justify-content:center;
+  background:linear-gradient(180deg,#24485A 0%,#163240 50%,#0C1E28 100%);border-bottom:2px solid #C9A45C;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 3px 8px rgba(0,0,0,.5)}
+.ptoh .chapm{color:#A9D0D6}
+.ptoart{position:absolute;right:0;top:66px;bottom:0;width:250px;display:flex;align-items:center;justify-content:center;border-left:2px solid #C9A45C;
+  background:repeating-linear-gradient(135deg,#1F3540 0 10px,#1A2D37 10px 20px)}
+.ptoart span{font-family:'Alegreya',Georgia,serif;font-style:italic;font-size:15px;color:#8FB0B8;text-align:center;line-height:1.3;border:1.5px dashed rgba(201,164,92,.45);border-radius:8px;padding:10px 14px}
+.ptor{position:absolute;left:9px;width:259px;top:76px;bottom:25px;border-radius:9px;box-sizing:border-box;padding:16px 14px 12px;display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(180deg,#F6ECD6,#E9DAB8);box-shadow:inset 0 0 0 1.5px #B08E50}
+.ptoab{border-radius:7px;padding:9px 10px 10px;background:rgba(214,176,98,.26);box-shadow:inset 0 0 0 1.5px #B08E50;display:flex;flex-direction:column;gap:6px}
+.ptoabh{display:flex;align-items:center;gap:8px;font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:16px;letter-spacing:.05em;color:#5A2A1E}
+.ptoabh .oi{flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#7A5418;color:#F2DFA8;font-size:20px}
+.ptoab .rules{font-size:15.5px;line-height:1.3}
+.ptoab .rules .ic{font-size:1.2em;vertical-align:-.25em}
+.ptor .flavor{margin-top:auto;font-size:14px;line-height:1.25;padding:0 4px}
+.pto2 .foot{left:16px;right:262px}
+
+/* v4.6c: comunes + propia; panel de texto más ancho */
+.ptoart{width:214px}
+.ptor{width:295px;padding:11px 11px 10px;gap:6px}
+.pto2 .foot{right:226px}
+.pto2 .opt .ot{font-size:13.5px;line-height:1.17}
+.ptoab{margin-top:auto;padding:7px 9px 8px;gap:4px}
+.ptoabh{font-size:15px}
+.ptoabh .oi{width:28px;height:28px;font-size:19px}
+.ptoab .rules{font-size:14.5px;line-height:1.25}
+
+/* v4.6: muelle del puerto */
+.muelleb{position:absolute;right:14px;top:9px;width:52px;height:48px;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#E8C877,#B08E50);box-shadow:0 0 0 1.5px #5A4532,0 2px 4px rgba(0,0,0,.5);color:#2A1E15}
+.muelleb small{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:9px;letter-spacing:.1em}
+.muelleb b{font-family:'IM Fell English SC',Georgia,serif;font-weight:400;font-size:26px;line-height:.9}
+
+/* v4.6: número de colección en las cartas de Peligro */
+.card.enc{position:relative}
+.hznum{position:absolute;right:16px;bottom:3px;font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:9px;letter-spacing:.08em;color:#CDB98F;z-index:3}
+.solof{display:none}
+.oncet{text-align:left !important;padding-left:2px}
+
+.i-capacidad{--m:url(../assets/iconos/capacidad.svg)}
+
+/* v4.6: el timón del coste, con aire arriba y abajo */
+.costb{left:9px;top:7px}
+.pto2 .opt{padding:6px 10px}
+.pto2 .opt .ot{font-size:14px;line-height:1.2}
+
+/* v4.6c: el título deja sitio al timón de coste */
+.plate.cst{padding-left:80px;padding-right:58px}
+/* v4.6c: el marcador de ilustración pendiente baja bajo las pestañas */
+.chapart.ph{align-items:flex-end;padding-bottom:34px;box-sizing:border-box}
+.chapart.ph span{font-size:13px;padding:7px 12px}
+/* v4.6d: la Distancia es una franja azul en la parte de abajo de la pestaña de Entorno */
+.tab.entd{flex-direction:column;height:auto;padding:0;gap:0;align-items:stretch;overflow:hidden}
+.tab.entd>.ic{padding:6px 14px 3px 9px}
+.tab.entd .dst{display:flex;align-items:center;justify-content:center;gap:3px;background:linear-gradient(180deg,#2F6FA8,#1E4C7A);border-top:1.5px solid #E2C783;padding:2px 10px 3px 6px;color:#FBF2DE}
+.tab.entd .dst .ic{font-size:18px;filter:none;color:#FBF2DE}
+.tab.entd .dst b{font-size:21px;text-shadow:0 1px 1px rgba(0,0,0,.5)}
+/* v4.6e: el Espacio de las Mejoras de barco son cuadros sin número, abajo a la derecha del título (como Earthborne); Espacio 0 no lleva placa */
+.espq{position:absolute;right:12px;top:47px;z-index:7;display:flex;gap:4px;padding:3px 6px;border-radius:5px;background:linear-gradient(180deg,color-mix(in srgb,var(--cc),#000 20%),color-mix(in srgb,var(--cc),#000 45%));border:1.5px solid #C9A45C;box-shadow:0 2px 4px rgba(0,0,0,.5)}
+.espq .sq{display:block;width:12px;height:12px;background:linear-gradient(135deg,#F7E3A6,#C9A24E);border:1.5px solid #3A2A1C;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35),0 1px 1px rgba(0,0,0,.5)}
+.plate.esp{padding-right:66px}
+/* v1.0: salto de párrafo dentro del texto de una carta */
+.rules .br{display:block;height:5px}
+.cnote.antes{background:#E9DDC4;color:#4A3A2A;font-weight:600;border:1px solid #BFA77E}
+
