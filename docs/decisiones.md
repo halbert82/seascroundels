@@ -43,6 +43,7 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N10 · «+ La Armada» y «+ Amigos» entran en el mazo de Peligros normal, aunque la misión use un mazo mezclado.** *Ejemplo:* en «El galeón rezagado» fallas la Patrulla española: la Armada se baraja en el mazo de Peligros, no en el de la Escolta.
 - **N11 · Rehén con solo el Capitán en juego: no pasa nada** (el Capitán no puede ser rehén). *Ejemplo:* fallas Bandoleros con Diego solo y comprometido: nadie es capturado.
 - **Reforzar solo si se comprometió a alguien** (reglamento, confirmado por Albert). *Ejemplo:* sin comprometidos no puedes descartar «¡Al abordaje!» tras el Destino para salvar la Prueba: la fallas y se aplica Sin oposición.
+- **N12 · El ejemplo del primer turno cuenta el +1 NAV en el Mar de La Sombra del Alba y su Destino pasa a ser «Corriente traicionera».** *Ejemplo:* Diego y el Bucanero suman 3, más 1 del Barco: 4; «Corriente traicionera» da +2 por ser de NAV y la Prueba pide 5; refuerza con «Mano firme al timón» y llega a 6. El Final no cambia.
 
 ## Presentación de las cartas
 
@@ -51,8 +52,8 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 ## Cambios aplicados al reglamento (docs/reglamento-v1.0.md)
 
 - Componentes: la Caja básica contiene 173 cartas (no 168).
-- Ejemplo de juego, «Niebla espesa»: Diego (NAV 2) y el Bucanero (NAV 1) suman 3; el Bucanero no recibe el +1 de Diego porque Diego se agota al comprometerse (D1a).
-- Ejemplo de juego, Destino: la Prueba pide 4 y Albert tiene 3; refuerza con «Mano firme al timón» (dos iconos de NAV), llega a 5 y la supera.
+- Ejemplo de juego, «Niebla espesa»: Diego (NAV 2) y el Bucanero (NAV 1) suman 3, y La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4; el Bucanero no recibe el +1 de Diego porque Diego se agota al comprometerse (D1a, N12).
+- Ejemplo de juego, Destino: «Corriente traicionera» (+1, o +2 si la Prueba es de NAV): la Prueba pide 5 y Albert tiene 4; refuerza con «Mano firme al timón» (dos iconos de NAV), llega a 6 y la supera (N12).
 - Ejemplo de juego, Final: Albert se queda con «¡Al abordaje!» y roba cuatro para tener cinco.
 - Referencia, entrada Comprometer: una capacidad «mientras esté preparado» deja de aplicarse en cuanto ese Tripulante se agota, también para los que se comprometen a la vez que él.
 
@@ -69,4 +70,3 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 - **Mazo de Escenario agotado:** no se rebaraja; se juega el último turno y se pierde (ver D12).
 - **Rehén:** el Capitán no puede ser rehén. *Ejemplo:* fallas Bandoleros con Diego y el Rufián comprometidos: el rehén es el Rufián.
 - **Barco hundido:** las Mejoras de barco que se pierden no activan efectos «al descartarse» (aún no hay ninguna carta así).
-- **N12 · Ejemplo del primer turno y el +1 NAV de La Sombra del Alba:** el ejemplo corregido dice que Diego (2) y el Bucanero (1) suman 3 contra Niebla espesa (NAV 4), pero el Barco da +1 a las Pruebas de NAV en el Mar: suman 4. *Por defecto:* la prueba del ejemplo sigue sus jugadas (refuerza con «Mano firme al timón») y comprueba «Total 6 contra 4»; falta que Albert diga cómo quiere redactar el ejemplo.

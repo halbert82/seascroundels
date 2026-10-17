@@ -1,6 +1,7 @@
 // Ejemplos del reglamento (docs/reglamento-v1.0.md) convertidos en pruebas.
 
 import { describe, expect, it } from 'vitest'
+import { totalPrueba } from './prueba.ts'
 import { Jugador } from './pruebas/situacion.ts'
 
 const MAZO = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada', 'estrellas', 'timon', 'ojo']
@@ -100,14 +101,14 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, Niebla espesa, «Refuerzos», refuerza, supera, busca los Cañones y roba cuatro', () => {
+  it('turno completo: zarpa, Niebla espesa, «Corriente traicionera», refuerza, supera, busca los Cañones y roba cuatro', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'calma_ev'],
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
       muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
       mazoMuelle: ['vela', 'casco', 'vigia', 'carpintero', 'bronce', 'hamacas'],
-      mazoPeligros: ['niebla', 'fauna', 'calma'],
+      mazoPeligros: ['niebla', 'arrecifes', 'calma'],
       mazoCapitan: ['coraje', 'emboscada', 'estrellas', 'ojo', 'timon'],
     })
     j.reclutar('bucanero').elegir('soborno', 'ojo')
@@ -120,14 +121,15 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.registro).toContain('Tienes un Marinero preparado: +1 de Avance (2/3).')
     expect(j.registro).toContain('Revelas «Niebla»: Niebla espesa (Mar).')
 
-    // Diego (NAV 2) y el Bucanero (NAV 1, sin el +1 de Diego porque Diego se agota al comprometerse).
+    // Diego (NAV 2) y el Bucanero (NAV 1, sin el +1 de Diego porque Diego se agota al comprometerse) suman 3,
+    // y La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4 (N12).
     j.comprometer('NAV', ['capitan', 'bucanero'])
-    expect(j.registro).toContain('Destino: «Refuerzos» (+1).')
-    // TODO(regla) N12: el ejemplo dice que suman 3, pero La Sombra del Alba da +1 a las Pruebas de NAV en el Mar:
-    // el motor suma 4 contra 4. Albert refuerza igualmente con «Mano firme al timón».
-    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 4 } })
+    expect(totalPrueba(j.estado)).toBe(4)
+    // «Corriente traicionera»: +1, o +2 si la Prueba es de NAV. La Prueba pide 5 y Albert tiene 4.
+    expect(j.registro.some((t) => t.startsWith('Destino: «Corriente traicionera»'))).toBe(true)
+    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 5 } })
     j.reforzar('timon').seguir()
-    expect(j.registro).toContain('Total 6 contra 4: superas la Prueba.')
+    expect(j.registro).toContain('Total 6 contra 5: superas la Prueba.')
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
     // Recompensa: 1 de reputación y busca una Mejora de barco: los Cañones de bronce.

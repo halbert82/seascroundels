@@ -355,9 +355,9 @@ Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y 
 
 **Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. «Rumores del tesoro» le da 1 ficha de Avance, y la capacidad Al zarpar de la misión le da otra porque tiene un Marinero preparado: empieza con 2.
 
-Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota.
+Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3, y La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota.
 
-Revela el Destino: «Refuerzos», +1 a la dificultad. La Prueba pide ahora 4 y Albert solo tiene 3. Refuerza descartando «Mano firme al timón», con dos iconos de NAV: llega a 5 y la supera. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
+Revela el Destino: «Corriente traicionera», +1 a la dificultad, o +2 si la Prueba es de NAV. Esta lo es, así que la Prueba pide ahora 5 y Albert tiene 4. Refuerza descartando «Mano firme al timón», con dos iconos de NAV: llega a 6 y la supera. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
 
 **Recompensa.** Gana 1 de reputación y busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. Devuelve las cartas de Peligro a su pila de descartes y vuelve a puerto.
 
