@@ -86,7 +86,7 @@ function ganar(s: Estado, n: number, motivo: string): void {
   if (!s.mision || n <= 0) return
   const m = copia(s, s.mision.carta)
   m.avance += n
-  anotar(s, 'efecto', `${motivo}: +${n} de Avance (${m.avance}/${valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta })}).`)
+  anotar(s, 'efecto', `${motivo}: +${n} de Avance (${m.avance}/${valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta })}).`, { tipo: 'avance', n, total: m.avance })
 }
 
 export const mision: Manejador<'mision'> = (s, t) => {

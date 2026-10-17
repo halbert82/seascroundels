@@ -75,7 +75,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       t.carta = carta
       const entorno = entornoActual(s)
       const lugar = porId(copia(s, carta).id).tipo === 'mazoPropio' ? '' : ` (${entorno ? NOMBRE_ENTORNO[entorno] : ''})`
-      anotar(s, 'revelar', `Revelas «${nombre(s, carta)}»: ${nombreDelEncuentro(s, carta)}${lugar}.`)
+      anotar(s, 'revelar', `Revelas «${nombre(s, carta)}»: ${nombreDelEncuentro(s, carta)}${lugar}.`, { tipo: 'revelado', inst: carta, como: 'encuentro' })
       encolar(s, evento({ tipo: 'revelarPeligro', carta }))
       t.paso = 'leer'
       return 'sigue'
@@ -110,7 +110,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       const mc = copia(s, m.carta)
       mc.avance += n
       m.cartasResueltas++
-      anotar(s, 'efecto', `Ganas ${n} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`)
+      anotar(s, 'efecto', `Ganas ${n} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`, { tipo: 'avance', n, total: mc.avance })
       descartarPeligro(s, carta)
       cerrarPrueba(s)
       t.paso = 'despues'
@@ -249,7 +249,7 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
       s.infoRevelada++
       p.destino = carta
       const d = destinoDe(copia(s, carta).id)
-      anotar(s, 'revelar', `Destino: «${d.nombre}» (${d.impreso}).`)
+      anotar(s, 'revelar', `Destino: «${d.nombre}» (${d.impreso}).`, { tipo: 'revelado', inst: carta, como: 'destino' })
       encolar(s, evento({ tipo: 'revelarDestino', carta }))
       return 'sigue'
     }

@@ -18,7 +18,8 @@ Esta aplicación web sirve para jugarlo y probarlo.
 - **Fase 4 (hecha):** capacidades de todas las cartas del jugador (Tripulantes, Mejoras, Eventos, Tesoros,
   Catalina y Nassau), con una prueba por carta. El jugador automático usa las capacidades, y el informe de
   equilibrio da datos por carta, también con mazos de muelle variados.
-- Fase siguiente: mesa de juego, animaciones, registro, guardado y deshacer (ver `CLAUDE.md`).
+- **Fase 5 (en curso):** la mesa de juego. Ya se juega entera con el ratón: portada, mesa, decisiones, Prueba con
+  desglose y Destino grande, animaciones, registro, guardado automático, deshacer, ayuda y fin de partida.
 
 ## Para trabajar en local
 
@@ -28,6 +29,8 @@ npm run dev          # servidor de desarrollo
 npm test             # pruebas (Vitest)
 npm run build        # compilación para publicar
 npm run equilibrio   # juega 3000 partidas automáticas (unos 5 min) y reescribe docs/informe-equilibrio.md
+npm run capturas:mesa  # capturas de la mesa (en puerto, Prueba, fin de misión) en capturas/mesa/
+npm run jugar:mesa     # juega una partida entera pulsando la interfaz (PARTIDAS=3 para más)
 ```
 
 ### Comprobar que las cartas son fieles al diseño

@@ -299,7 +299,7 @@ export const cambiarReputacion: Manejador<'cambiarReputacion'> = (s, t) => {
   s.reputacion = Math.max(0, s.reputacion + t.n)
   if (s.reputacion !== antes) {
     const cambio = s.reputacion - antes
-    anotar(s, 'efecto', `${cambio > 0 ? 'Ganas' : 'Pierdes'} ${Math.abs(cambio)} de reputación (${s.reputacion}).`)
+    anotar(s, 'efecto', `${cambio > 0 ? 'Ganas' : 'Pierdes'} ${Math.abs(cambio)} de reputación (${s.reputacion}).`, { tipo: 'reputacion', n: cambio })
   }
   return 'hecha'
 }

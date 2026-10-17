@@ -102,6 +102,12 @@ export type Suceso =
   | { tipo: 'usar'; carta: CartaId; clave: string }
   /** Cartas descartadas por sus iconos (comprometer, reforzar o cubrir la Distancia). */
   | { tipo: 'iconos'; cartas: CartaId[] }
+  // Para animar la mesa: qué copia concreta cambia.
+  | { tipo: 'revelado'; inst: InstId; como: 'encuentro' | 'destino' | 'escenario' }
+  | { tipo: 'avance'; n: number; total: number }
+  | { tipo: 'heridas'; inst: InstId; n: number }
+  | { tipo: 'dano'; n: number }
+  | { tipo: 'reputacion'; n: number }
 
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 

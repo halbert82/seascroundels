@@ -1,0 +1,144 @@
+// La mesa de juego: junta las zonas, el panel de decisión, la mano y los paneles, y responde al motor.
+
+import { LayoutGroup } from 'motion/react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { jugadorConCriterio } from '../../engine/pruebas/jugadores.ts'
+import { textoUso } from '../textos/decisiones.ts'
+import type { Decision, Estado } from '../../engine/tipos.ts'
+import { Contexto } from './contexto.tsx'
+import { claveDecision, interaccion, seleccionVacia, type Interaccion, type Objetivo, type OpcionCarta, type Seleccion } from './interaccion.ts'
+import { ALTO, ANCHO, Lienzo } from './Lienzo.tsx'
+import { PanelDecision } from './PanelDecision.tsx'
+import { Ayuda, FinDeMision, FinDePartida, Menu, MenuCarta, Registro, UltimoOcurrido } from './Paneles.tsx'
+import { useVelocidad } from './preferencias.ts'
+import { usePartida, type PartidaEnMesa } from './usePartida.ts'
+import { CapaZoom, ProveedorZoom } from './Zoom.tsx'
+import { BarraSuperior, Mano, Mazos, ZonaBarco, ZonaPuerto } from './Zonas.tsx'
+import { ZonaMision } from './ZonaMision.tsx'
+import './mesa.css'
+
+const VACIA: Interaccion = { marcas: new Map(), opciones: new Map(), numeros: new Map(), apartadas: [] }
+
+interface Props {
+  inicial: () => PartidaEnMesa
+  guardar: boolean
+  irA: (ruta: string) => void
+  nueva: () => PartidaEnMesa
+}
+
+export function Mesa({ inicial, guardar, irA, nueva }: Props) {
+  const juego = usePartida(inicial, guardar)
+  const s = juego.estado
+  const d = s.pendiente
+  const velocidad = useVelocidad()
+  const [sel, setSel] = useState<Seleccion | null>(null)
+  const [menuCarta, setMenuCarta] = useState<{ x: number; y: number; opciones: OpcionCarta[] } | null>(null)
+  const [panel, setPanel] = useState<'registro' | 'ayuda' | 'menu' | null>(null)
+  const [finVisto, setFinVisto] = useState<number>(-1)
+
+  // Para las pruebas de la interfaz (con «?pruebas» en la dirección): qué jugaría el jugador automático.
+  const estadoActual = useRef(s)
+  estadoActual.current = s
+  const jugadas = useRef(0)
+  jugadas.current = juego.partida.jugadas ?? 0
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has('pruebas')) return
+    const bot = jugadorConCriterio()
+    Object.assign(window, {
+      __mesa: {
+        estado: () => estadoActual.current,
+        jugadas: () => jugadas.current,
+        sugerencia: () => (estadoActual.current.pendiente ? bot(estadoActual.current, estadoActual.current.pendiente) : null),
+        etiquetaUso: (uso: Parameters<typeof textoUso>[1]) => textoUso(estadoActual.current, uso).carta,
+      },
+    })
+  }, [])
+
+  const actual = d && sel?.de === claveDecision(d) ? sel : d ? seleccionVacia(d) : null
+  const inter = useMemo(() => (d && actual ? interaccion(s, d, actual) : VACIA), [s, d, actual])
+
+  const ejecutar = (o: OpcionCarta) => {
+    setMenuCarta(null)
+    if (o.eleccion) {
+      setSel(null)
+      juego.elegir(o.eleccion)
+    } else if (o.seleccion) setSel(o.seleccion)
+  }
+
+  const pulsar = (objetivo: Objetivo, elemento: HTMLElement) => {
+    const opciones = inter.opciones.get(objetivo) ?? []
+    const unica = opciones[0]
+    if (opciones.length === 1 && unica) return ejecutar(unica)
+    if (opciones.length === 0) return
+    const lienzo = elemento.closest('.lienzo')?.getBoundingClientRect()
+    const caja = elemento.getBoundingClientRect()
+    const escala = lienzo ? lienzo.width / ANCHO : 1
+    const x = lienzo ? (caja.left - lienzo.left + caja.width / 2) / escala : 0
+    const y = lienzo ? (caja.top - lienzo.top) / escala : 0
+    setMenuCarta({ x: Math.min(ANCHO - 280, Math.max(10, x - 130)), y: Math.max(70, Math.min(ALTO - 220, y - 20)), opciones })
+  }
+
+  const elegir = (e: Parameters<typeof juego.elegir>[0]) => {
+    setSel(null)
+    juego.elegir(e)
+  }
+
+  const hayFinMision = s.registro.slice(juego.partida.desde).some((r) => r.dato?.tipo === 'finMision') && finVisto !== juego.partida.desde
+
+  const nuevaPartida = () => {
+    if (!s.resultado && !window.confirm('¿Empezar una partida nueva? Se perderá la que estás jugando.')) return
+    setPanel(null)
+    juego.reiniciar(nueva())
+  }
+
+  const botones = (
+    <div className="barra-botones">
+      <button type="button" className="icono-boton" onClick={juego.deshacer} disabled={!juego.puedeDeshacer} title="Deshacer la última decisión">
+        ↶<span>Deshacer</span>
+      </button>
+      <button type="button" className="icono-boton" onClick={() => setPanel(panel === 'registro' ? null : 'registro')} title="Registro de partida">
+        ☰<span>Registro</span>
+      </button>
+      <button type="button" className="icono-boton redondo" onClick={() => setPanel('ayuda')} title="Ayuda: secuencia del turno y de una Prueba">
+        ?
+      </button>
+      <button type="button" className="icono-boton" onClick={() => setPanel(panel === 'menu' ? null : 'menu')} title="Menú">
+        ⚙<span>Menú</span>
+      </button>
+    </div>
+  )
+
+  return (
+    <Lienzo>
+      <ProveedorZoom>
+        <Contexto.Provider value={{ s, inter, pulsar }}>
+          <LayoutGroup>
+            <div className={`mesa vel-${velocidad}`}>
+              <BarraSuperior botones={botones} />
+              <div className="col-izq">
+                <ZonaBarco />
+              </div>
+              <main className="centro">{s.mision ? <ZonaMision desde={juego.partida.desde} decision={d} sel={actual} /> : <ZonaPuerto />}</main>
+              <aside className="col-der">
+                <UltimoOcurrido s={s} desde={juego.partida.desde} />
+                <Mazos />
+              </aside>
+              {d && actual && <PanelDecision decision={d} sel={actual} setSel={setSel} elegir={elegir} />}
+              <Mano />
+              {juego.error && <div className="aviso-error">{juego.error}</div>}
+              {menuCarta && <MenuCarta {...menuCarta} alElegir={ejecutar} alCerrar={() => setMenuCarta(null)} />}
+              {panel === 'menu' && <Menu alCerrar={() => setPanel(null)} nuevaPartida={nuevaPartida} portada={() => irA('/')} galeria={() => irA('/galeria')} />}
+              {panel === 'registro' && <Registro s={s} alCerrar={() => setPanel(null)} />}
+              {panel === 'ayuda' && <Ayuda alCerrar={() => setPanel(null)} />}
+              {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} />}
+              {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva())} portada={() => irA('/')} />}
+              <CapaZoom />
+            </div>
+          </LayoutGroup>
+        </Contexto.Provider>
+      </ProveedorZoom>
+    </Lienzo>
+  )
+}
+
+export type { Decision, Estado }

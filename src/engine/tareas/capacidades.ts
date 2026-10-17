@@ -94,7 +94,7 @@ export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t) => {
   s.infoRevelada++
   p.destino = carta
   const d = destinoDe(copia(s, carta).id)
-  anotar(s, 'revelar', `Descartas «${viejo.nombre}». Nuevo Destino: «${d.nombre}» (${d.impreso}).`)
+  anotar(s, 'revelar', `Descartas «${viejo.nombre}». Nuevo Destino: «${d.nombre}» (${d.impreso}).`, { tipo: 'revelado', inst: carta, como: 'destino' })
   encolar(s, evento({ tipo: 'revelarDestino', carta }))
   return 'hecha'
 }

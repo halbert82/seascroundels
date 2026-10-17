@@ -1,0 +1,117 @@
+/* Portada */
+
+.portada {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background-size: cover;
+  background-position: center 40%;
+  font-family: 'Alegreya Sans', sans-serif;
+  color: var(--texto-claro);
+}
+
+.portada-velo {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 50%, rgba(10, 7, 5, 0.25), rgba(10, 7, 5, 0.86) 75%),
+    linear-gradient(180deg, rgba(10, 7, 5, 0.5), rgba(10, 7, 5, 0.2) 40%, rgba(10, 7, 5, 0.9));
+}
+
+.portada-contenido {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: 0 24px;
+}
+
+.portada-antetitulo {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.4em;
+  font-size: 15px;
+  color: var(--oro-viejo);
+}
+
+.portada h1 {
+  margin: 0;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(64px, 9vw, 128px);
+  line-height: 1;
+  color: #f2d998;
+  text-shadow:
+    0 4px 0 #6b4a1c,
+    0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.portada-lema {
+  margin: 4px 0 34px;
+  font-family: 'Alegreya', serif;
+  font-style: italic;
+  font-size: 21px;
+  color: var(--pergamino);
+}
+
+.portada-botones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(420px, 90vw);
+}
+
+.portada .boton {
+  border-radius: 12px;
+  border: 1px solid rgba(201, 164, 92, 0.7);
+  background: linear-gradient(180deg, rgba(61, 44, 29, 0.95), rgba(42, 30, 20, 0.95));
+  color: var(--pergamino);
+  font: 800 20px 'Alegreya Sans', sans-serif;
+  cursor: pointer;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: transform 0.12s;
+}
+
+.portada .boton small {
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--texto-tenue);
+}
+
+.portada .boton.principal {
+  background: linear-gradient(180deg, #f0d48a, #c9a45c);
+  border-color: #f6e0a6;
+  color: #2a1d10;
+  box-shadow:
+    0 3px 0 #8a6a2c,
+    0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.portada .boton.principal small {
+  color: #5a4220;
+}
+
+.portada .boton:hover {
+  transform: translateY(-1px);
+}
+
+.portada .enlace {
+  margin-top: 22px;
+  border: none;
+  background: none;
+  color: var(--texto-tenue);
+  font: 700 14px 'Alegreya Sans', sans-serif;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.portada .enlace:hover {
+  color: var(--oro);
+}

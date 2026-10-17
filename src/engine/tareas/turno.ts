@@ -45,7 +45,7 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       } else {
         mover(s, carta, 'escenarioEnCurso')
         s.infoRevelada++
-        anotar(s, 'revelar', `Escenario: «${nombre(s, carta)}».`)
+        anotar(s, 'revelar', `Escenario: «${nombre(s, carta)}».`, { tipo: 'revelado', inst: carta, como: 'escenario' })
         tareas.push({ tipo: 'aplicarEscenario', carta })
       }
       tareas.push(

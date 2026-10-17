@@ -1,0 +1,161 @@
+// Una carta sobre la mesa: la misma carta de la galería, escalada, con sus fichas encima,
+// girada si está agotada, volteada al revelarse y volando entre zonas (layoutId = su copia).
+
+import { motion } from 'motion/react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { porId } from '../../engine/catalogo.ts'
+import type { Entorno } from '../../engine/datos.ts'
+import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
+import { claseIcono } from '../cartas/TextoCarta.tsx'
+import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
+import { duracion, useVelocidad } from './preferencias.ts'
+import { useZoom } from './Zoom.tsx'
+
+export type Marca = 'legal' | 'elegida' | 'atenuada' | null
+
+export interface FichasCarta {
+  heridas?: number
+  vida?: number
+  municion?: number
+  avance?: number
+  entrenamiento?: string[]
+}
+
+export interface PropsCartaMesa {
+  /** Copia de la carta (o «barco», «puerto»…): es su identidad para volar entre zonas. */
+  inst: string
+  /** Sin vuelo entre zonas (para copias que se enseñan dos veces, como la última carta resuelta). */
+  sinVuelo?: boolean
+  id: string
+  escala: number
+  agotada?: boolean
+  marca?: Marca
+  /** Orden de elección (1, 2…), para las decisiones en que importa. */
+  numero?: number
+  fichas?: FichasCarta
+  /** Se da la vuelta desde el dorso al aparecer. */
+  revelar?: TipoDorso
+  /** En una carta de Peligro, el encuentro que se lee (los otros dos se atenúan). */
+  entorno?: Entorno | null
+  onClick?: (elemento: HTMLElement) => void
+  /** Texto de ayuda al pasar el ratón (qué pasa si la pulsas). */
+  ayuda?: string
+  children?: ReactNode
+}
+
+const ORDEN_ENTORNO: Entorno[] = ['mar', 'nat', 'ciu']
+
+export function CartaMesa(p: PropsCartaMesa) {
+  const entrada = porId(p.id)
+  const { ancho, alto } = dimensiones(entrada)
+  const velocidad = useVelocidad()
+  const zoom = useZoom()
+  const t = duracion(velocidad, 0.28)
+  const giro = p.agotada ? { rotate: 90, scale: Math.min(ancho, alto) / Math.max(ancho, alto) } : { rotate: 0, scale: 1 }
+
+  // Destello al sufrir heridas o perder munición.
+  const [golpe, setGolpe] = useState(0)
+  const heridasAntes = useRef(p.fichas?.heridas ?? 0)
+  useEffect(() => {
+    const ahora = p.fichas?.heridas ?? 0
+    if (ahora > heridasAntes.current) setGolpe((g) => g + 1)
+    heridasAntes.current = ahora
+  }, [p.fichas?.heridas])
+
+  const esPeligro = entrada.tipo === 'peligro' && p.entorno
+  const pulsable = Boolean(p.onClick)
+
+  return (
+    <motion.div
+      {...(p.sinVuelo ? {} : { layoutId: p.inst, layout: true })}
+      transition={{ duration: t, ease: [0.3, 0.7, 0.3, 1] }}
+      className={`carta-mesa${p.marca ? ` marca-${p.marca}` : ''}${pulsable ? ' pulsable' : ''}`}
+      data-inst={p.inst}
+      data-carta={p.id}
+      style={{ width: ancho * p.escala, height: alto * p.escala }}
+      onClick={p.onClick ? (e) => p.onClick?.(e.currentTarget) : undefined}
+      onPointerEnter={(e) => {
+        if (e.pointerType === 'mouse') zoom.mostrar(p.id, e.currentTarget)
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === 'mouse') zoom.ocultar()
+      }}
+      onContextMenu={(e) => {
+        e.preventDefault()
+        zoom.mostrar(p.id, e.currentTarget)
+      }}
+      title={p.ayuda}
+    >
+      <motion.div className="carta-giro" animate={giro} transition={{ duration: t }} initial={false}>
+        <motion.div
+          className="carta-volteo"
+          initial={p.revelar && t > 0 ? { rotateY: 180 } : false}
+          animate={{ rotateY: 0 }}
+          transition={{ duration: duracion(velocidad, 0.42), ease: 'easeOut' }}
+        >
+          <div className="cara frente">
+            <CartaEscalada entrada={entrada} escala={p.escala} />
+            {esPeligro && (
+              <div className="velos" style={{ transform: `scale(${p.escala})` }}>
+                {ORDEN_ENTORNO.map((e, i) =>
+                  e === p.entorno ? (
+                    <div key={e} className="velo activo" style={{ top: 8 + i * 128 }} />
+                  ) : (
+                    <div key={e} className="velo" style={{ top: 8 + i * 128 }} />
+                  ),
+                )}
+                <div className="velo velo-destino" title="El Destino de esta carta no se usa: el de la Prueba sale de la siguiente." />
+              </div>
+            )}
+          </div>
+          {p.revelar && t > 0 && (
+            <div className="cara dorso-cara">
+              <DorsoEscalado tipo={p.revelar} escala={p.escala} />
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+      {golpe > 0 && <div key={golpe} className="destello" style={{ '--t': `${duracion(velocidad, 0.45)}s` } as CSSProperties} />}
+      <Fichas fichas={p.fichas} abajo={p.agotada ? (alto * p.escala - (ancho * p.escala) ** 2 / (alto * p.escala)) / 2 + 4 : undefined} />
+      {p.numero !== undefined && <span className="numero-orden">{p.numero}</span>}
+      {p.marca === 'elegida' && p.numero === undefined && <span className="marca-check" />}
+      {p.children}
+    </motion.div>
+  )
+}
+
+function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | undefined }) {
+  if (!fichas) return null
+  const { heridas = 0, vida, municion, avance, entrenamiento = [] } = fichas
+  return (
+    <div className="fichas" style={abajo !== undefined ? { bottom: abajo } : undefined}>
+      {heridas > 0 && (
+        <span className="ficha ficha-herida" title={`${heridas} ${heridas === 1 ? 'herida' : 'heridas'}${vida ? ` de ${vida}` : ''}`}>
+          <span className={claseIcono('herida')} />
+          <b>
+            {heridas}
+            {vida ? <small>/{vida}</small> : null}
+          </b>
+        </span>
+      )}
+      {municion !== undefined && (
+        <span className="ficha ficha-municion" title={`${municion} de munición`}>
+          <span className={claseIcono('municion')} />
+          <b>{municion}</b>
+        </span>
+      )}
+      {avance !== undefined && avance > 0 && (
+        <span className="ficha ficha-avance" title={`${avance} de Avance`}>
+          <span className={claseIcono('avance')} />
+          <b>{avance}</b>
+        </span>
+      )}
+      {entrenamiento.map((h, i) => (
+        <span key={i} className={`ficha ficha-entrenamiento hab-${h.toLowerCase()}`} title={`Entrenamiento: +1 ${h}`}>
+          <span className={claseIcono(h as 'NAV')} />
+          <b>+1</b>
+        </span>
+      ))}
+    </div>
+  )
+}

@@ -24,7 +24,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'danoBarco': {
       if (ev.cantidad <= 0) return
       s.danoBarco += ev.cantidad
-      anotar(s, 'efecto', `El Barco recibe ${ev.cantidad} de daño (${s.danoBarco}).`)
+      anotar(s, 'efecto', `El Barco recibe ${ev.cantidad} de daño (${s.danoBarco}).`, { tipo: 'dano', n: ev.cantidad })
       return
     }
     case 'superarPrueba': {
@@ -43,7 +43,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'heridas': {
       if (ev.cantidad <= 0 || !estaEn(s, ev.objetivo, 'tripulacion')) return
       copia(s, ev.objetivo).heridas += ev.cantidad
-      anotar(s, 'efecto', `${nombre(s, ev.objetivo)} sufre ${ev.cantidad} ${ev.cantidad === 1 ? 'herida' : 'heridas'}.`)
+      anotar(s, 'efecto', `${nombre(s, ev.objetivo)} sufre ${ev.cantidad} ${ev.cantidad === 1 ? 'herida' : 'heridas'}.`, { tipo: 'heridas', inst: ev.objetivo, n: ev.cantidad })
       return
     }
     case 'derrota': {

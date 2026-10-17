@@ -13,7 +13,9 @@
     "capturas": "node scripts/capturar-cartas.mjs",
     "comparar": "node scripts/comparar-cartas.mjs",
     "capturas:galeria": "npm run build && node scripts/capturar-galeria.mjs",
-    "equilibrio": "INFORME=1 vitest run src/engine/equilibrio.informe.test.ts"
+    "equilibrio": "INFORME=1 vitest run src/engine/equilibrio.informe.test.ts",
+    "capturas:mesa": "npm run build && node scripts/capturar-mesa.mjs",
+    "jugar:mesa": "npm run build && node scripts/jugar-desde-mesa.mjs"
   },
   "dependencies": {
     "@fontsource/alegreya": "^5.3.0",

@@ -119,6 +119,17 @@ export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<In
   return Math.max(0, total)
 }
 
+/** Lo que aporta cada capacidad constante activa a una consulta (solo las que suman o restan algo). */
+export function aportaciones(s: Estado, c: Consulta): { carta: string; clave: string; inst: InstId | null; n: number }[] {
+  const ctx = contexto(s)
+  const lista: { carta: string; clave: string; inst: InstId | null; n: number }[] = []
+  for (const [cap, yo] of constantesActivas(s)) {
+    const n = cap.modifica?.(ctx, yo, c) ?? 0
+    if (n !== 0) lista.push({ carta: cap.carta, clave: cap.clave, inst: yo, n })
+  }
+  return lista
+}
+
 /** Suma de los modificadores activos de una consulta, sin número base ni mínimo. */
 export function modificadores(s: Estado, c: Consulta): number {
   const ctx = contexto(s)
