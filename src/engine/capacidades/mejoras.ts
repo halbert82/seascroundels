@@ -182,7 +182,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     efecto: () => [{ tipo: 'cambiarDestino', modo: 'cancelar' }],
   },
   // Amuleto vudú: «Interrupción: Descarta Amuleto vudú: Cuando el portador vaya a quedar derrotado, en vez de eso reduce su Vida a 1.»
-  // TODO(regla): «reduce su Vida a 1» = le queda 1 Vida (heridas = Vida − 1). Opción por defecto de CLAUDE.md.
+  // «Reduce su Vida a 1» = le queda 1 Vida restante (heridas = Vida − 1), confirmado por Albert.
   {
     clave: 'amuleto.salvar',
     carta: 'amuleto',

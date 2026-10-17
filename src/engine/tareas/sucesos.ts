@@ -1,7 +1,7 @@
 // Sucesos con sus ventanas, uso de capacidades, Eventos jugados y pausas para capacidades sin etiqueta.
 
 import { nombreDe, tipoDe } from '../catalogo.ts'
-import { anotar, buscarTarea, claveUso, copia, encolar, nombre } from '../estado.ts'
+import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada } from '../estado.ts'
 import { interpretarEfectos } from '../efectos.ts'
 import { encuentroDe } from '../peligros.ts'
 import type { Estado, Evento, NuevaTarea, TareaDe } from '../tipos.ts'
@@ -19,6 +19,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'revelarPeligro':
     case 'comprometer':
     case 'revelarDestino':
+    case 'descartada':
       return // Solo marcan el momento para las Interrupciones y Respuestas.
     case 'danoBarco': {
       if (ev.cantidad <= 0) return
@@ -152,7 +153,10 @@ export const usar: Manejador<'usar'> = (s, t) => {
   }
   const suceso = t.evento !== null ? (buscarTarea(s, t.evento) as TareaDe<'evento'>) : null
   const tareas = cap.efecto?.(s, fuente, suceso) ?? []
-  if (t.descartarAlFinal && fuente !== null && estaEn(s, fuente, 'mejoras')) mover(s, fuente, 'descartesMuelle')
+  if (t.descartarAlFinal && fuente !== null && estaEn(s, fuente, 'mejoras')) {
+    mover(s, fuente, 'descartesMuelle')
+    tareas.push(sucesoDescartada(fuente))
+  }
   encolar(s, ...tareas)
   return 'hecha'
 }

@@ -547,3 +547,20 @@ describe('N19 · El descuento de Catalina se gasta con el siguiente Tripulante q
     expect(j.valor({ tipo: 'coste', carta: j.inst('contrabandista') })).toBe(3)
   })
 })
+
+describe('Barco hundido: las Mejoras que se pierden activan sus efectos «después de que descartes esta carta»', () => {
+  it('se ofrece la Respuesta de la Mejora recién descartada (ninguna carta de la caja la tiene: capacidad de prueba)', () => {
+    quitar = registrarParaPruebas({
+      clave: 'prueba.alDescartarse',
+      carta: 'vela',
+      ventana: 'respuesta',
+      desde: 'descartada',
+      disparo: (_s, yo, ev) => ev.tipo === 'descartada' && ev.carta === yo,
+      efecto: () => [{ tipo: 'robar', n: 1 }],
+    })
+    const j = Jugador.en({ barco: { dano: 5, mejoras: ['vela'] }, mazoCapitan: ['ojo'] })
+    expect(j.zona('descartesMuelle')).toEqual(['vela'])
+    j.usar('prueba.alDescartarse')
+    expect(j.zona('mano')).toEqual(['ojo'])
+  })
+})

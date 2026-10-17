@@ -97,11 +97,13 @@ Recursos visuales:
 
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
-## Decisiones pendientes (usa la opción por defecto y márcala)
+## Decisiones de reglas
 
-- **Loro parlanchín:** si nadie se compromete a la Prueba, ¿puede unirse después del Destino? Por defecto: sí, tal como dice su texto.
-- **Isabela y el Amuleto vudú:** «reduce su Vida a 1» significa que queda con 1 Vida restante (heridas = Vida − 1), no que cambie su Vida impresa.
-- **Mazo de Escenario agotado:** no se rebaraja. Se juega el último turno y se pierde, como dice el reglamento.
-- **Rehén:** por defecto, el Capitán no puede ser rehén.
-- **Barco hundido:** las Mejoras de barco que se pierden no activan efectos «al descartarse» (aún no hay ninguna carta así).
-- Si aparece cualquier otro caso no cubierto, pregunta a Albert.
+Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y su prueba. Las que antes figuraban aquí como pendientes ya están confirmadas:
+
+- **Loro parlanchín:** si nadie se compromete a la Prueba, puede unirse después del Destino (N14).
+- **Isabela y el Amuleto vudú:** «reduce su Vida a 1» significa que queda con 1 Vida restante (heridas = Vida − 1).
+- **Mazo de Escenario agotado:** no se rebaraja. Se juega el último turno y se pierde (D12).
+- **Rehén:** el Capitán no puede ser rehén (N11).
+- **Barco hundido:** las Mejoras de barco que se pierden **sí** activan sus efectos «después de que descartes esta carta».
+- Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.

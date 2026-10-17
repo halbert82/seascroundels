@@ -64,7 +64,10 @@ export function usosDisponibles(s: Estado, ventanas: readonly Ventana[]): Uso[] 
 /** Usos que dispara un suceso (Interrupción antes, Respuesta después, u Obligada). */
 export function usosDisparados(s: Estado, ventana: Ventana, ev: Evento, fase: 'antes' | 'despues'): Uso[] {
   const usos: Uso[] = []
-  for (const [cap, fuente] of candidatas(s)) {
+  const fuentes: [Capacidad, InstId | null][] = [...candidatas(s)]
+  // «Después de que descartes esta carta»: la capacidad de la carta recién descartada.
+  if (ev.tipo === 'descartada') for (const cap of capacidadesDe(copia(s, ev.carta).id)) if (cap.desde === 'descartada') fuentes.push([cap, ev.carta])
+  for (const [cap, fuente] of fuentes) {
     if (cap.ventana !== ventana || !cap.disparo) continue
     if (!cap.disparo(s, fuente, ev, fase)) continue
     if (sePuedeUsar(s, cap, fuente)) usos.push({ fuente, clave: cap.clave })

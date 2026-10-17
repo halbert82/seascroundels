@@ -52,6 +52,10 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N18 · Son Cañones las cuatro Mejoras con munición** (Cañones de bronce, Carronadas, Culebrina y Pedrero), **y solo se usan en misiones de Mar**, también el Pedrero. *Ejemplo:* en «Cobrar la deuda» (Ciudad) revelas la Pelea de taberna (COM 3): no puedes descartarla con el Pedrero.
 - **N19 · El descuento de Catalina se gasta con el siguiente Tripulante que reclutes, aunque sea gratis.** *Ejemplo:* agotas a Catalina y juegas «Náufrago en la playa»: el Tripulante que reclutas gratis se lleva el descuento y el siguiente cuesta lo normal.
 - **Loro parlanchín: si nadie se compromete a la Prueba, puede unirse después del Destino**, tal como dice su texto (confirmado por Albert al responder N14). *Ejemplo:* no comprometes a nadie contra los Tiburones; después de revelar el Destino, el Loro se compromete a esa Prueba.
+- **Isabela y el Amuleto vudú: «reduce su Vida a 1» significa que el Tripulante queda con 1 de Vida restante** (heridas = Vida − 1), no que cambie su Vida impresa (confirmado por Albert). *Ejemplo:* el Bucanero (Vida 2) va a sufrir su 2.ª herida; Isabela lo evita y se queda con 1 herida.
+- **Mazo de Escenario agotado: no se rebaraja; se juega el último turno y se pierde** (confirmado por Albert, ver D12).
+- **El Capitán no puede ser rehén** (confirmado por Albert, ver N11). *Ejemplo:* fallas Bandoleros con Diego y el Rufián comprometidos: el rehén es el Rufián.
+- **Barco hundido: las Mejoras de barco que se pierden sí activan sus efectos «después de que descartes esta carta»** (decisión de Albert; cambia la opción por defecto de CLAUDE.md). Aún no hay ninguna carta así: el motor ya avisa de cada Mejora descartada (al hundirse, al perder una Mejora o al descartarse su portador) para que esas capacidades se ofrezcan. *Ejemplo:* si los Cañones de bronce dijeran «Después de que descartes esta carta, roba 1», al hundirse el Barco se ofrecería robar 1.
 - **Isabela puede salvar también al Capitán** («otro Tripulante»): es correcto según su texto; el informe de equilibrio dirá si es demasiado.
 
 ## Presentación de las cartas
@@ -72,10 +76,3 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 ## Correcciones del kit
 
 - **Mazo de muelle de inicio de Diego: 20 cartas** (el reglamento pide de 15 a 20; el kit traía las 42). Tripulantes (12): Rufián de cubierta, Grumete leal, Bucanero veterano ×2, Uñas largas, Contrabandista del bajo Caribe, Cañonero, Carpintero de a bordo, Matasanos, Vigía inexperta, Viejo lobo de mar y Rastreador de la selva. Mejoras (8): Cañones de bronce, Vela mayor, Hamacas en el entrepuente, Casco reforzado, Botica de a bordo, Sable de abordaje, Brújula de latón y Catalejo de latón. El mazo del capitán sigue con sus 36 cartas.
-
-## Pendientes de confirmar (se usa la opción por defecto de CLAUDE.md)
-
-- **Isabela y el Amuleto vudú:** «reduce su Vida a 1» significa que queda con 1 Vida restante (heridas = Vida − 1). *Ejemplo:* el Bucanero (Vida 2) va a sufrir su 2.ª herida; Isabela lo evita y se queda con 1 herida.
-- **Mazo de Escenario agotado:** no se rebaraja; se juega el último turno y se pierde (ver D12).
-- **Rehén:** el Capitán no puede ser rehén. *Ejemplo:* fallas Bandoleros con Diego y el Rufián comprometidos: el rehén es el Rufián.
-- **Barco hundido:** las Mejoras de barco que se pierden no activan efectos «al descartarse» (aún no hay ninguna carta así).

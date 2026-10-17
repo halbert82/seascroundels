@@ -2,7 +2,7 @@
 // y hundimiento del Barco.
 
 import { costeImpreso, esIndestructible, tipoDe } from '../catalogo.ts'
-import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
+import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { plazasOcupadas, valor } from '../valores.ts'
 import { estaEn, mover, vinculadas } from '../zonas.ts'
@@ -28,6 +28,7 @@ export const sacarTripulante: Manejador<'sacarTripulante'> = (s, t) => {
   const mejoras = suyas.filter((m) => !tesoros.includes(m))
   for (const m of mejoras) mover(s, m, t.destino)
   mover(s, t.carta, t.destino)
+  if (t.destino === 'descartesMuelle') encolar(s, ...mejoras.map(sucesoDescartada))
   const accion = MOTIVOS[t.motivo] ?? 'sale'
   const conMejoras = mejoras.length > 0 ? ` junto con ${nombres(s, mejoras)}` : ''
   anotar(s, 'efecto', `${accion.charAt(0).toUpperCase()}${accion.slice(1)} ${nombre(s, t.carta)}${conMejoras}.`)
@@ -114,8 +115,10 @@ export const hundirse: Manejador<'hundirse'> = (s) => {
   if (perdidas.length > 0) anotar(s, 'efecto', `Pierdes tus Mejoras de barco: ${nombres(s, perdidas)}.`)
   s.danoBarco = 0
   anotar(s, 'efecto', 'El Barco se reflota sin daño.')
+  // Las Mejoras perdidas al hundirse sí activan sus efectos «después de que descartes esta carta» (decisión de Albert).
   encolar(
     s,
+    ...perdidas.map(sucesoDescartada),
     ...s.zonas.tripulacion.map(
       (c): NuevaTarea => ({ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] }),
     ),

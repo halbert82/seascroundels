@@ -1,7 +1,7 @@
 // Primitivas con cartas: robar, perder un día, muelle, pagar, curar, reparar, perder Mejoras.
 
 import { esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
-import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
+import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
 import type { Estado, InstId, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { arriba, barajar, mover, rebarajar } from '../zonas.ts'
@@ -199,6 +199,7 @@ export const perderMejora: Manejador<'perderMejora'> = (s, _t, e) => {
   const perder = (m: InstId) => {
     mover(s, m, 'descartesMuelle')
     anotar(s, 'efecto', `Pierdes «${nombre(s, m)}».`)
+    encolar(s, sucesoDescartada(m))
   }
   if (candidatas.length === 0) {
     anotar(s, 'efecto', 'No tienes ninguna Mejora que se pueda perder.')

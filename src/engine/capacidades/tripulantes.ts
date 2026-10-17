@@ -104,7 +104,7 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
   },
 
   // Isabela: «Interrupción: Agotar: Cuando otro Tripulante vaya a quedar derrotado, en vez de eso reduce su Vida a 1.»
-  // TODO(regla): «reduce su Vida a 1» = le queda 1 Vida (heridas = Vida − 1). Opción por defecto de CLAUDE.md.
+  // «Reduce su Vida a 1» = le queda 1 Vida restante (heridas = Vida − 1), confirmado por Albert.
   {
     clave: 'isabela.salvar',
     carta: 'isabela',

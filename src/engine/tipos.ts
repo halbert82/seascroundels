@@ -216,6 +216,8 @@ export type Evento =
   | { tipo: 'revelarDestino'; carta: InstId }
   | { tipo: 'superarPrueba' }
   | { tipo: 'fallarPrueba' }
+  /** Una carta en juego acaba de descartarse (para los efectos «después de que descartes esta carta»). */
+  | { tipo: 'descartada'; carta: InstId }
 
 // ---------------------------------------------------------------------------
 // Tareas: pasos de reglas pendientes. Son datos, para que la partida se pueda guardar en cualquier momento.
@@ -456,7 +458,8 @@ export interface Capacidad {
   carta: CartaId
   ventana: Ventana
   /** Desde dónde funciona: carta en juego, en la mano, efecto temporal, el Barco o la carta de Escenario. */
-  desde: 'juego' | 'mano' | 'temporal' | 'barco' | 'escenario' | 'mision'
+  /** `descartada`: la carta acaba de descartarse («después de que descartes esta carta»). */
+  desde: 'juego' | 'mano' | 'temporal' | 'barco' | 'escenario' | 'mision' | 'descartada'
   /** Condición extra para poder usarla ahora (p. ej., «solo en Pruebas de COM en el Mar»). */
   requisito?: (s: Estado, yo: InstId | null) => boolean
   limite?: { veces: number; por: 'turno' | 'mision' }

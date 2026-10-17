@@ -79,6 +79,11 @@ export function pilaTiene(s: Estado, prueba: (t: Tarea) => boolean): boolean {
   return s.pila.some(prueba)
 }
 
+/** Suceso «se ha descartado esta carta» (para los efectos «después de que descartes esta carta»). */
+export function sucesoDescartada(carta: InstId): NuevaTarea {
+  return { tipo: 'evento', ev: { tipo: 'descartada', carta }, fase: 'despues', cancelado: false, usadas: [] }
+}
+
 /** Clave de un uso con límite: se reinicia por turno o por misión. */
 export function claveUso(periodo: 'turno' | 'mision', fuente: InstId | null, clave: string): string {
   return `${periodo}:${fuente ?? '-'}/${clave}`
