@@ -1,6 +1,6 @@
 // Sucesos con sus ventanas, uso de capacidades, Eventos jugados y pausas para capacidades sin etiqueta.
 
-import { tipoDe } from '../catalogo.ts'
+import { nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre } from '../estado.ts'
 import { interpretarEfectos } from '../efectos.ts'
 import { encuentroDe } from '../peligros.ts'
@@ -124,24 +124,35 @@ export const usar: Manejador<'usar'> = (s, t) => {
         encolar(s, { tipo: 'pagar', cantidad: coste.n, motivo: cap.carta })
         continue
       }
+      if (coste.tipo === 'agotarCapitan') {
+        copia(s, s.capitan).agotada = true
+        continue
+      }
       if (fuente === null) throw new Error(`La capacidad ${cap.clave} necesita una carta que pague su coste`)
       const c = copia(s, fuente)
       if (coste.tipo === 'agotarse') c.agotada = true
       else if (coste.tipo === 'municion') c.municion -= coste.n
-      else if (coste.tipo === 'herida') c.heridas += coste.n
+      // N13: una herida pagada como coste se puede evitar o desviar como cualquier otra (Grumete, «Ni un hombre
+      // atrás»); el coste se da por pagado igualmente.
+      else if (coste.tipo === 'herida') {
+        encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: fuente, cantidad: coste.n }, fase: 'antes', cancelado: false, usadas: [] })
+      }
       else if (coste.tipo === 'descartarse') {
         const zona = zonaDe(s, fuente)
-        if (zona === 'mano') mover(s, fuente, 'descartesCapitan')
+        if (zona === 'mejoras') t.descartarAlFinal = true
+        else if (zona === 'mano') mover(s, fuente, 'descartesCapitan')
         // Un Tripulante que se descarta a sí mismo (Grumete leal) sale con sus Mejoras; sus Tesoros pasan a otro.
         else if (zona === 'tripulacion') encolar(s, { tipo: 'sacarTripulante', carta: fuente, destino: 'descartesMuelle', motivo: 'descartado' })
         else mover(s, fuente, 'descartesMuelle')
       }
     }
-    if (fuente !== null) anotar(s, 'jugada', `Usas «${nombre(s, fuente)}».`)
+    if (fuente !== null) anotar(s, 'jugada', `Usas «${nombre(s, fuente)}».`, { tipo: 'usar', carta: copia(s, fuente).id, clave: cap.clave })
+    else anotar(s, 'jugada', `Usas «${nombreDe(cap.carta)}».`, { tipo: 'usar', carta: cap.carta, clave: cap.clave })
     return 'sigue'
   }
   const suceso = t.evento !== null ? (buscarTarea(s, t.evento) as TareaDe<'evento'>) : null
   const tareas = cap.efecto?.(s, fuente, suceso) ?? []
+  if (t.descartarAlFinal && fuente !== null && estaEn(s, fuente, 'mejoras')) mover(s, fuente, 'descartesMuelle')
   encolar(s, ...tareas)
   return 'hecha'
 }
@@ -151,16 +162,23 @@ export const jugarEvento: Manejador<'jugarEvento'> = (s, t) => {
   if (t.paso === 'pagar') {
     if (tipoDe(copia(s, t.carta).id) !== 'evento') throw new Error('Solo se pueden jugar Eventos')
     mover(s, t.carta, 'resolviendo')
-    anotar(s, 'jugada', `Juegas «${nombre(s, t.carta)}».`)
+    anotar(s, 'jugada', `Juegas «${nombre(s, t.carta)}».`, { tipo: 'usar', carta: copia(s, t.carta).id, clave: t.clave })
     t.paso = 'efecto'
     const coste = valor(s, { tipo: 'coste', carta: t.carta })
     if (coste > 0) encolar(s, { tipo: 'pagar', cantidad: coste, motivo: copia(s, t.carta).id })
+    // Además del número del timón, el coste de su capacidad («Agota a tu Capitán:»).
+    for (const c of capacidadDe({ fuente: t.carta, clave: t.clave }).coste ?? []) {
+      if (c.tipo === 'agotarCapitan') copia(s, s.capitan).agotada = true
+      else if (c.tipo === 'pagar') encolar(s, { tipo: 'pagar', cantidad: c.n, motivo: copia(s, t.carta).id })
+      else throw new Error(`Coste no previsto en un Evento: ${c.tipo}`)
+    }
     return 'sigue'
   }
   if (t.paso === 'efecto') {
     const cap = capacidadDe({ fuente: t.carta, clave: t.clave })
     t.paso = 'descartar'
-    encolar(s, ...(cap.efecto?.(s, t.carta, null) ?? []))
+    const suceso = t.evento !== null ? (buscarTarea(s, t.evento) as TareaDe<'evento'>) : null
+    encolar(s, ...(cap.efecto?.(s, t.carta, suceso) ?? []))
     return 'sigue'
   }
   if (estaEn(s, t.carta, 'resolviendo')) mover(s, t.carta, 'descartesCapitan')

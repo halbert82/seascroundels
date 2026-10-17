@@ -75,7 +75,7 @@ export function prevision(s: Estado, encuentro: InstId, opcion: number, tripulan
   if (!o) throw new Error(`Opción de Prueba inexistente: ${opcion}`)
   const supuestas = new Set(tripulantes)
   let total = 0
-  for (const c of tripulantes) total += valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }, supuestas)
+  for (const c of tripulantes) total += valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }, supuestas, tripulantes)
   for (const c of cartas) total += iconosDe(copia(s, c).id, o.hab)
   total += modificadores(s, { tipo: 'totalPrueba', hab: o.hab })
   const base = dificultadDeOpcion(s, encuentro, opcion)

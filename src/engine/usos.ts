@@ -8,7 +8,7 @@ import { mejoraActiva, valor } from './valores.ts'
 import { estaEn } from './zonas.ts'
 
 /** Cada capacidad con la carta que la da, según desde dónde funciona. */
-function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
+export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   for (const inst of s.zonas.tripulacion) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'juego') yield [cap, inst]
   for (const inst of s.zonas.mejoras) {
     if (!mejoraActiva(s, inst)) continue // Agotada o de un rehén: no aplica su texto.
@@ -30,6 +30,8 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
       return fuente !== null && copia(s, fuente).municion >= coste.n
     case 'herida':
       return fuente !== null && estaEn(s, fuente, 'tripulacion')
+    case 'agotarCapitan':
+      return estaEn(s, s.capitan, 'tripulacion') && !copia(s, s.capitan).agotada
   }
 }
 
@@ -88,7 +90,7 @@ export function capacidadDe(uso: Uso): Capacidad {
 export function encolarUso(s: Estado, uso: Uso, suceso: number | null): void {
   const cap = capacidadDe(uso)
   if (cap.desde === 'mano' && uso.fuente !== null && tipoDe(copia(s, uso.fuente).id) === 'evento') {
-    encolar(s, { tipo: 'jugarEvento', carta: uso.fuente, clave: uso.clave, paso: 'pagar' })
+    encolar(s, { tipo: 'jugarEvento', carta: uso.fuente, clave: uso.clave, evento: suceso, paso: 'pagar' })
   } else {
     encolar(s, { tipo: 'usar', uso, evento: suceso, paso: 'coste' })
   }

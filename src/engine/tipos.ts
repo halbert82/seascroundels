@@ -67,7 +67,9 @@ export type Modo = 'corta' | 'normal' | 'larga'
 export interface Temporal {
   clave: string
   fuente: CartaId
-  hasta: 'finTurno' | 'finMision'
+  hasta: 'finTurno' | 'finMision' | 'finPrueba'
+  /** La copia concreta a la que afecta (el Filibustero que se ha herido, el Tripulante del Náufrago…). */
+  inst?: InstId
 }
 
 export type TipoRegistro = 'turno' | 'revelar' | 'robar' | 'pagar' | 'jugada' | 'efecto' | 'aviso' | 'fin'
@@ -93,6 +95,13 @@ export type Suceso =
   | { tipo: 'entraEnMazo'; carta: CartaId }
   | { tipo: 'mazoMisionBarajado' }
   | { tipo: 'superadaAMitad' }
+  // Para el informe por carta.
+  | { tipo: 'reclutar'; carta: CartaId }
+  | { tipo: 'adquirir'; carta: CartaId }
+  /** Capacidad usada o Evento jugado por su efecto. */
+  | { tipo: 'usar'; carta: CartaId; clave: string }
+  /** Cartas descartadas por sus iconos (comprometer, reforzar o cubrir la Distancia). */
+  | { tipo: 'iconos'; cartas: CartaId[] }
 
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
@@ -106,6 +115,8 @@ export interface MisionEnCurso {
   fin: FinMision | null
   /** Cartas que «se retiran» del juego al descartarse. */
   retirar: InstId[]
+  /** Carta de Peligro cuya Prueba se superará automáticamente al leerla («Soborno»). */
+  automatica: InstId | null
 }
 
 export interface Bono {
@@ -137,9 +148,13 @@ export interface PruebaEnCurso {
   sinCartas: boolean
   sinCanones: boolean
   sinFallo: boolean
+  /** «Perdidos en la espesura»: se ignora el recuadro rojo (y con él, la herida extra de la misión). */
+  ignorarFallo: boolean
   heridaSiFallas: number
   avanceSiSuperas: number
   preparaSiSuperas: boolean
+  /** Se supera sin comprometer ni revelar Destino («Carronadas», «Soborno»). */
+  automatica: boolean
   resultado: 'superada' | 'fallada' | null
 }
 
@@ -216,11 +231,12 @@ export type Tarea = { id: number } & (
   | { tipo: 'ventanaJugar' }
   /** Pausa en la que solo se pueden usar capacidades sin etiqueta (N2). Se salta si no hay ninguna. */
   | { tipo: 'ventanaLibre'; momento: 'inicio' }
-  | { tipo: 'reclutar'; carta: InstId; paso: 'pagar' | 'entrar' }
+  | { tipo: 'reclutar'; carta: InstId; paso: 'pagar' | 'entrar'; gratis?: boolean }
   | { tipo: 'adquirir'; carta: InstId; destino: InstId | 'barco'; paso: 'pagar' | 'vincular' }
   | { tipo: 'despedir'; carta: InstId }
-  | { tipo: 'jugarEvento'; carta: InstId; clave: string; paso: 'pagar' | 'efecto' | 'descartar' }
-  | { tipo: 'usar'; uso: Uso; evento: number | null; paso: 'coste' | 'efecto' }
+  | { tipo: 'jugarEvento'; carta: InstId; clave: string; evento: number | null; paso: 'pagar' | 'efecto' | 'descartar' }
+  /** `descartarAlFinal`: una Mejora que se descarta como coste lo hace tras calcular su efecto (para saber su portador). */
+  | { tipo: 'usar'; uso: Uso; evento: number | null; paso: 'coste' | 'efecto'; descartarAlFinal?: boolean }
   | { tipo: 'pagar'; cantidad: number; motivo: CartaId }
   | { tipo: 'robar'; n: number }
   | { tipo: 'perderDia' }
@@ -228,10 +244,11 @@ export type Tarea = { id: number } & (
   | { tipo: 'revelarMuelle'; n: number }
   | { tipo: 'buscarMuelle'; filtro: 'tripulante' | 'mejoraBarco' | 'mejora' }
   | { tipo: 'perderMejora' }
-  | { tipo: 'curar'; n: number; modo: 'repartir' | 'cadaUno' }
+  /** «repartir»: como quieras; «cadaUno»: N a cada Tripulante; «uno»: N a un Tripulante (el indicado o el que elijas). */
+  | { tipo: 'curar'; n: number; modo: 'repartir' | 'cadaUno' | 'uno'; objetivo?: InstId }
   | { tipo: 'reparar'; n: number }
   | { tipo: 'desercion' }
-  | { tipo: 'sacarTripulante'; carta: InstId; destino: 'descartesMuelle' | 'fueraDeJuego'; motivo: string }
+  | { tipo: 'sacarTripulante'; carta: InstId; destino: 'descartesMuelle' | 'fueraDeJuego' | 'muelle'; motivo: string }
   | { tipo: 'reasignarTesoro'; tesoro: InstId }
   | { tipo: 'exceso' }
   | { tipo: 'hundirse' }
@@ -245,7 +262,7 @@ export type Tarea = { id: number } & (
   // Misiones (fase 3)
   | { tipo: 'zarpar'; mision: InstId }
   | { tipo: 'mision'; paso: 'inicio' | 'alZarpar' | 'encuentros' | 'terminar' }
-  | { tipo: 'ganarAvance'; n: number; si?: { rasgo: string } | { preparados: number } }
+  | { tipo: 'ganarAvance'; n: number; si?: { rasgo: string } | { preparados: number }; motivo?: string }
   | { tipo: 'alZarparOpcional'; coste: { tipo: 'agotarRasgo'; rasgo: string } | { tipo: 'descartar'; n: number }; n: number }
   | { tipo: 'mezclarMazoPropio'; n: number }
   | { tipo: 'encuentro'; carta: InstId | null; paso: 'revelar' | 'leer' | 'avance' | 'despues' }
@@ -268,6 +285,27 @@ export type Tarea = { id: number } & (
   | { tipo: 'fallarMision'; paso: 'rehenes' | 'conservar' }
   | { tipo: 'ponerTesoro'; carta: InstId }
   | { tipo: 'cerrarMision' }
+  // Capacidades de las cartas del jugador (fase 4)
+  /** Otear N: mira las N primeras del mazo de Peligros activo y deja cada una arriba o al fondo. */
+  | { tipo: 'otear'; n: number; cartas: InstId[]; arriba: InstId[]; fondo: InstId[] }
+  /** Quita la carta de Peligro revelada sin resolverla (no cuenta como resuelta, D5b). */
+  | { tipo: 'quitarEncuentro'; modo: 'descartar' | 'fondo'; avance: boolean }
+  /** Cancela el Destino revelado, o lo descarta y revela otro. */
+  | { tipo: 'cambiarDestino'; modo: 'cancelar' | 'otro' }
+  /** Las heridas de un participante las sufre otro participante («Ni un hombre atrás»). */
+  | { tipo: 'desviarHeridas'; suceso: number; entre: InstId[] }
+  /** Compromete a un Tripulante en la Prueba en curso, ya revelado el Destino (el Loro). */
+  | { tipo: 'comprometerUno'; carta: InstId }
+  | { tipo: 'prepararTripulantes' }
+  | { tipo: 'anadirMunicion'; n: number }
+  /** Recluta sin pagar un Tripulante del muelle de coste N o menos («Prisionero liberado»). */
+  | { tipo: 'reclutarGratis'; maxCoste: number }
+  /** «Náufrago en la playa»: mira las 3 primeras del mazo de muelle y recluta gratis a uno. */
+  | { tipo: 'naufrago'; n: number; cartas: InstId[] }
+  /** Ficha de Entrenamiento en uno de esos Tripulantes; si `hab` es null, eliges la habilidad. */
+  | { tipo: 'ponerEntrenamiento'; entre: InstId[]; hab: Habilidad | null; carta: InstId | null }
+  /** Volver al muelle: el Tripulante (no el Capitán) vuelve al muelle con sus Mejoras. */
+  | { tipo: 'volverAlMuelle'; carta: InstId }
   | {
       tipo: 'evento'
       ev: Evento
@@ -382,11 +420,15 @@ export type Consulta =
   | { tipo: 'avanceExtraPrueba'; hab: Habilidad }
   /** Mayor que 0: los Cañones no suman. */
   | { tipo: 'sinCanones' }
+  /** Mayor que 0: este Tripulante se compromete en esta Prueba sin agotarse (Rodrigo). */
+  | { tipo: 'sinAgotarAlComprometer'; carta: InstId; hab: Habilidad }
 
 /** Contexto de cálculo: permite suponer agotadas algunas cartas (agotarse a la vez, D1a). */
 export interface Contexto {
   s: Estado
   agotada: (carta: InstId) => boolean
+  /** Para prever una Prueba antes de comprometer: quiénes participarían (el Espadachín lo mira). */
+  participantes?: readonly InstId[]
 }
 
 export type Coste =
@@ -395,6 +437,7 @@ export type Coste =
   | { tipo: 'pagar'; n: number }
   | { tipo: 'municion'; n: number }
   | { tipo: 'herida'; n: number }
+  | { tipo: 'agotarCapitan' }
 
 export type Ventana =
   | 'constante'

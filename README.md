@@ -15,7 +15,10 @@ Esta aplicación web sirve para jugarlo y probarlo.
   encuentros, Pruebas con Destino y Sin oposición, heridas, daño, rehenes, hundimiento, retirarse, recompensas,
   mazo de historia, Tesoros y victoria. Con jugadores automáticos que juegan partidas enteras y un informe de
   equilibrio (`docs/informe-equilibrio.md`).
-- Fases siguientes: capacidades de las cartas del jugador y mesa de juego (ver `CLAUDE.md`).
+- **Fase 4 (hecha):** capacidades de todas las cartas del jugador (Tripulantes, Mejoras, Eventos, Tesoros,
+  Catalina y Nassau), con una prueba por carta. El jugador automático usa las capacidades, y el informe de
+  equilibrio da datos por carta, también con mazos de muelle variados.
+- Fase siguiente: mesa de juego, animaciones, registro, guardado y deshacer (ver `CLAUDE.md`).
 
 ## Para trabajar en local
 
@@ -24,7 +27,7 @@ npm install
 npm run dev          # servidor de desarrollo
 npm test             # pruebas (Vitest)
 npm run build        # compilación para publicar
-npm run equilibrio   # juega 1000 partidas automáticas y reescribe docs/informe-equilibrio.md
+npm run equilibrio   # juega 3000 partidas automáticas (unos 5 min) y reescribe docs/informe-equilibrio.md
 ```
 
 ### Comprobar que las cartas son fieles al diseño
@@ -45,6 +48,9 @@ del texto (las referencias se capturaron con medio píxel de desplazamiento).
   - Las reglas son una pila de tareas (`tareas/`); las capacidades de las cartas, un registro por carta (`capacidades/`).
   - Los textos impresos de encuentros, Destinos y misiones se interpretan (`efectos.ts`, `destinos.ts`,
     `capacidades/misiones.ts`): un cambio en `cartas.json` llega solo al motor.
+  - Las capacidades de las cartas del jugador están en `capacidades/` (`tripulantes.ts`, `mejoras.ts`, `eventos.ts`)
+    y leen sus números del texto. `capacidades/huellas.json` guarda cada texto sin números: si cambia la redacción
+    de una carta, una prueba avisa de que hay que revisar su capacidad.
   - `pruebas/situacion.ts` monta situaciones de prueba en una llamada; `docs/decisiones.md` recoge las decisiones de reglas.
   - `pruebas/jugadores.ts` tiene un jugador al azar y uno con criterio; `pruebas/equilibrio.ts` simula partidas y escribe el informe.
 - `src/ui/cartas/`: dibujo de las cartas. `cartas.css` es la maquetación original portada;

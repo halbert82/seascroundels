@@ -647,7 +647,7 @@ Algunas cartas, como los Cañones, tienen munición: su máximo se indica en una
 
 - «Gasta 1 munición» es un coste: quita 1 de munición de esa carta.
 - **Recarga:** al empezar cada turno, tus cartas con munición la recuperan hasta su máximo. Nunca pasa de su máximo, salvo que una carta lo diga.
-- Los Cañones solo se pueden usar en Pruebas de COM de misiones de Mar.
+- Los Cañones solo se pueden usar en misiones de Mar, y en las Pruebas que diga su texto.
 - **Pierdes N de munición:** tus cartas pierden N de munición en total, repartida como quieras.
 
 ### Nivel

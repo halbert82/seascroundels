@@ -21,3 +21,15 @@ export function numeroConIcono(texto: string, icono: string): number {
   if (!m?.[1]) throw new Error(`No hay ningún {N ${icono}} en: ${texto}`)
   return Number(m[1].replace('−', '-'))
 }
+
+/** Números entre llaves del marcado, en orden: «Gasta {1 municion}: … recibe {+2}» → [1, 2]. */
+export function numerosEntreLlaves(texto: string): number[] {
+  return [...texto.matchAll(/\{([+−-]?\d+)/g)].map((m) => Number((m[1] ?? '0').replace('−', '-')))
+}
+
+/** El número que sigue a unas palabras: «coste 2 o menos» con «coste» → 2. */
+export function numeroTras(texto: string, palabras: string): number {
+  const m = new RegExp(`${palabras} (\\d+)`).exec(texto)
+  if (!m?.[1]) throw new Error(`No hay ningún número tras «${palabras}» en: ${texto}`)
+  return Number(m[1])
+}

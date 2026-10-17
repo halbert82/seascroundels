@@ -15,6 +15,8 @@ const MOTIVOS: Record<string, string> = {
   desercion: 'deserta',
   rehen: 'pierdes a',
   exceso: 'despides a',
+  muelle: 'vuelve al muelle',
+  naufrago: 'se descarta a',
 }
 
 /** Saca a un Tripulante del juego con sus Mejoras. Sus Tesoros pasan a otro Tripulante (N1). */

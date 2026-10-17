@@ -65,17 +65,19 @@ export const ventanaJugar: Manejador<'ventanaJugar'> = (s, _t, e) => {
   }
 }
 
-/** Reclutar: paga su coste y el Tripulante entra en juego preparado. */
+/** Reclutar: paga su coste (salvo si es gratis) y el Tripulante entra en juego preparado. */
 export const reclutar: Manejador<'reclutar'> = (s, t) => {
   if (t.paso === 'pagar') {
     t.paso = 'entrar'
-    const coste = valor(s, { tipo: 'coste', carta: t.carta })
+    const coste = t.gratis ? 0 : valor(s, { tipo: 'coste', carta: t.carta })
     if (coste > 0) encolar(s, { tipo: 'pagar', cantidad: coste, motivo: copia(s, t.carta).id })
     return 'sigue'
   }
   mover(s, t.carta, 'tripulacion', 'abajo')
   copia(s, t.carta).agotada = false
-  anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}.`)
+  // Catalina: el descuento se gasta con el siguiente Tripulante que reclutes, aunque sea gratis (N19).
+  s.temporales = s.temporales.filter((x) => x.clave !== 'capitan2.descuento')
+  anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}${t.gratis ? ' sin pagar su coste' : ''}.`, { tipo: 'reclutar', carta: copia(s, t.carta).id })
   encolar(s, { tipo: 'evento', ev: { tipo: 'reclutar', carta: t.carta }, fase: 'antes', cancelado: false, usadas: [] })
   return 'hecha'
 }
@@ -94,7 +96,7 @@ export const adquirir: Manejador<'adquirir'> = (s, t) => {
   // Decisión N3: una carta con munición entra en juego con su munición al máximo.
   c.municion = valor(s, { tipo: 'municionMaxima', carta: t.carta })
   const destino = t.destino === 'barco' ? 'el Barco' : nombre(s, t.destino)
-  anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}.`)
+  anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}.`, { tipo: 'adquirir', carta: c.id })
   return 'hecha'
 }
 

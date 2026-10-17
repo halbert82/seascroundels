@@ -4,6 +4,7 @@ import { DATOS } from '../datos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { primerNumero } from '../textos.ts'
 import type { Estado, NuevaTarea, Opcion } from '../tipos.ts'
+import { huecosLibres } from '../valores.ts'
 import { arriba, mover } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
@@ -32,8 +33,16 @@ export function opcionesDelPuerto(s: Estado): OpcionPuerto[] {
   }
   if (puerto.id === 'tortuga') {
     opciones.push({ clave: 'propia', texto: `${puerto.habilidadPropia.nombre}: 2 de Avance en una misión`, tareas: [{ tipo: 'soplos' }] })
+  } else if (puerto.id === 'nassau') {
+    // «Entrenamiento»: una ficha de +1 a la habilidad que elijas en un Tripulante con hueco libre.
+    if (s.zonas.tripulacion.some((c) => huecosLibres(s, c) > 0)) {
+      opciones.push({
+        clave: 'propia',
+        texto: `${puerto.habilidadPropia.nombre}: ficha de +1 en un Tripulante`,
+        tareas: [{ tipo: 'ponerEntrenamiento', entre: [...s.zonas.tripulacion], hab: null, carta: null }],
+      })
+    }
   }
-  // TODO: Nassau (Entrenamiento) no se usa en la versión 0; se implementará si se elige ese puerto.
   return opciones
 }
 

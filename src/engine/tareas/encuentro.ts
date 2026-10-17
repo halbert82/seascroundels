@@ -4,12 +4,12 @@
 import { iconosDe, porId } from '../catalogo.ts'
 import { destinoDe } from '../destinos.ts'
 import { interpretarEfectos } from '../efectos.ts'
-import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
+import { anotar, claveUso, copia, encolar, nombre, nombres } from '../estado.ts'
 import { cartaDeArriba, descartarPeligro, encuentroDe, entornoActual } from '../peligros.ts'
 import { dificultadDeOpcion, dificultadPrueba, modificadorDeDestino, nombreDelEncuentro, pruebaEnCurso, totalPrueba } from '../prueba.ts'
 import type { Accion, Estado, InstId, NuevaTarea, PruebaEnCurso } from '../tipos.ts'
 import { encolarUso, usosDisponibles } from '../usos.ts'
-import { valor } from '../valores.ts'
+import { modificadores, valor } from '../valores.ts'
 import { mover } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
@@ -37,11 +37,20 @@ function nuevaPrueba(encuentro: InstId): PruebaEnCurso {
     sinCartas: false,
     sinCanones: false,
     sinFallo: false,
+    ignorarFallo: false,
     heridaSiFallas: 0,
     avanceSiSuperas: 0,
     preparaSiSuperas: false,
+    automatica: false,
     resultado: null,
   }
+}
+
+/** Termina la Prueba en curso: los Destinos revelados se descartan y caducan los efectos «para esta Prueba». */
+function cerrarPrueba(s: Estado): void {
+  for (const d of [...s.zonas.destino]) descartarPeligro(s, d)
+  s.temporales = s.temporales.filter((x) => x.hasta !== 'finPrueba')
+  s.prueba = null
 }
 
 /** La misión ha terminado (D5a, hundimiento o retirada): lo que quede se cierra sin resolverse. */
@@ -81,6 +90,9 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
         encolar(s, { tipo: 'aplicarEfectos', efectos: interpretarEfectos(enc.textoEfecto ?? ''), contexto: 'efecto' })
       } else {
         s.prueba = nuevaPrueba(carta)
+        // «Soborno»: esta Prueba se supera automáticamente, sin revelar Destino.
+        if (m.automatica === carta) s.prueba.automatica = true
+        m.automatica = null
         encolar(s, { tipo: 'prueba', paso: 'comprometer' })
       }
       return 'sigue'
@@ -88,7 +100,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
     case 'avance': {
       const carta = t.carta
       if (!carta || !s.zonas.encuentro.includes(carta)) {
-        s.prueba = null
+        cerrarPrueba(s)
         return 'hecha'
       }
       const enc = encuentroDe(s, carta)
@@ -100,8 +112,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       m.cartasResueltas++
       anotar(s, 'efecto', `Ganas ${n} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`)
       descartarPeligro(s, carta)
-      for (const d of [...s.zonas.destino]) descartarPeligro(s, d)
-      s.prueba = null
+      cerrarPrueba(s)
       t.paso = 'despues'
       return 'sigue'
     }
@@ -149,6 +160,9 @@ function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
     const maximo = Math.max(...valores)
     tareas.push({ tipo: 'herirUno', n: d.heridaMasFuerte, entre: comprometidos.filter((_, i) => valores[i] === maximo) })
   }
+  // N14: Sin oposición se mira al aplicar el Destino, después de su ventana (N9). Si el Loro se ha unido
+  // en ella, ya hay alguien comprometido y no se aplica.
+  p.sinOposicion = p.comprometidos.length === 0
   if (p.sinOposicion) tareas.push({ tipo: 'aplicarEfectos', efectos: d.sinOposicion, contexto: 'sinOposicion' })
   return tareas
 }
@@ -156,9 +170,35 @@ function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
 export const prueba: Manejador<'prueba'> = (s, t, e) => {
   if (terminada(s) || !s.prueba) return 'hecha'
   const p = pruebaEnCurso(s)
+  if (!s.zonas.encuentro.includes(p.encuentro)) {
+    // La carta de Peligro se ha quitado sin resolverla tras revelar el Destino («Retirada a tiempo»): no hay
+    // Prueba que resolver, pero el Destino ya revelado se aplica tras su ventana (N9, N16).
+    if (t.paso === 'aplicarDestino') encolar(s, ...aplicarDestino(s, p))
+    return 'hecha'
+  }
   const enc = encuentroDe(s, p.encuentro)
   switch (t.paso) {
     case 'comprometer': {
+      if (p.automatica) {
+        // «Carronadas» o «Soborno»: se supera sin comprometer ni revelar Destino. Si hay dos opciones, eliges (N17).
+        if (p.opcion === null) {
+          if (enc.prueba.length > 1 && !e) {
+            return preguntar({
+              tipo: 'elegirOpcion',
+              motivo: { clave: 'opcionAutomatica' },
+              opciones: enc.prueba.map((o, i) => ({ clave: String(i), texto: `${o.hab} ${o.dificultad}` })),
+            })
+          }
+          p.opcion = e ? Number(eleccionDe(e, 'opcion').clave) : 0
+        }
+        const o = enc.prueba[p.opcion]
+        if (!o) throw new Error('Opción de Prueba inexistente')
+        p.hab = o.hab
+        p.dificultadBase = dificultadDeOpcion(s, p.encuentro, p.opcion)
+        anotar(s, 'jugada', `Superas automáticamente la Prueba de ${o.hab}, sin revelar Destino.`)
+        t.paso = 'resolver'
+        return 'sigue'
+      }
       if (!e) {
         const habs = new Set(enc.prueba.map((o) => o.hab))
         return preguntar({
@@ -176,8 +216,18 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
       p.dificultadBase = dificultadDeOpcion(s, p.encuentro, c.opcion)
       p.opcion = c.opcion
       p.hab = opcion.hab
-      for (const x of c.tripulantes) copia(s, x).agotada = true
+      for (const x of c.tripulantes) {
+        // Rodrigo: en una Prueba de COM se compromete sin agotarse (una vez por turno).
+        if (modificadores(s, { tipo: 'sinAgotarAlComprometer', carta: x, hab: opcion.hab }) > 0) {
+          const clave = claveUso('turno', x, `${copia(s, x).id}.sinAgotar`)
+          s.usos[clave] = (s.usos[clave] ?? 0) + 1
+          anotar(s, 'jugada', `${nombre(s, x)} se compromete sin agotarse.`, { tipo: 'usar', carta: copia(s, x).id, clave: `${copia(s, x).id}.sinAgotar` })
+          continue
+        }
+        copia(s, x).agotada = true
+      }
       p.comprometidos = [...c.tripulantes]
+      if (c.cartas.length > 0) anotar(s, 'jugada', `Descartas por sus iconos: ${nombres(s, c.cartas)}.`, { tipo: 'iconos', cartas: c.cartas.map((x) => copia(s, x).id) })
       for (const x of c.cartas) mover(s, x, 'descartesCapitan')
       p.cartas = [...c.cartas]
       p.iconos = c.cartas.reduce((n, x) => n + iconosDe(copia(s, x).id, opcion.hab), 0)
@@ -231,7 +281,7 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         mover(s, accion.carta, 'descartesCapitan')
         p.cartas.push(accion.carta)
         p.iconos += iconosDe(copia(s, accion.carta).id, hab)
-        anotar(s, 'jugada', `Refuerzas con «${nombre(s, accion.carta)}».`)
+        anotar(s, 'jugada', `Refuerzas con «${nombre(s, accion.carta)}».`, { tipo: 'iconos', cartas: [copia(s, accion.carta).id] })
         return 'sigue'
       }
       if (accion.tipo === 'usar') {
@@ -244,10 +294,11 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
     case 'resolver': {
       const total = totalPrueba(s)
       const dificultad = dificultadPrueba(s)
-      const superada = !p.falla && p.comprometidos.length > 0 && total >= dificultad
+      const superada = p.automatica || (!p.falla && p.comprometidos.length > 0 && total >= dificultad)
       p.resultado = superada ? 'superada' : 'fallada'
       const motivo = p.falla ? ' (el Destino la hace fallar)' : p.comprometidos.length === 0 ? ' (nadie comprometido)' : ''
-      anotar(s, 'jugada', `Total ${total} contra ${dificultad}: ${superada ? 'superas' : 'fallas'} la Prueba${motivo}.`, {
+      const texto = p.automatica ? 'Prueba superada automáticamente.' : `Total ${total} contra ${dificultad}: ${superada ? 'superas' : 'fallas'} la Prueba${motivo}.`
+      anotar(s, 'jugada', texto, {
         tipo: 'prueba',
         peligro: copia(s, p.encuentro).id,
         encuentro: enc.nombre,

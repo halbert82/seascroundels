@@ -109,7 +109,9 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
     anotar(s, 'efecto', 'No se aplica el efecto de fallo.')
     return 'hecha'
   }
-  const efectos = interpretarEfectos(encuentroDe(s, p.encuentro).textoFallo ?? '')
+  // «Perdidos en la espesura»: sin recuadro rojo tampoco hay herida extra de la misión (D2c); la del Destino, sí (N15).
+  const efectos = p.ignorarFallo ? [] : interpretarEfectos(encuentroDe(s, p.encuentro).textoFallo ?? '')
+  if (p.ignorarFallo) anotar(s, 'efecto', 'Ignoras los efectos de fallo del encuentro.')
   const comprometidos = comprometidosEnJuego(s)
   const extraMision = efectos.length > 0 ? valor(s, { tipo: 'heridaExtraFallo' }) : 0
   const extras = [extraMision, p.heridaSiFallas].filter((n) => n > 0)

@@ -94,10 +94,15 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       encolar(s, { tipo: 'descartarFinal' })
       t.paso = 'robar'
       return 'sigue'
-    case 'robar':
-      encolar(s, { tipo: 'robarHastaMando' }, { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] })
+    case 'robar': {
+      // «Náufrago en la playa»: al final del turno, descarta al Tripulante que reclutaste con él.
+      const naufragos = s.temporales
+        .filter((x) => x.clave === 'naufrago.turno' && x.inst && s.zonas.tripulacion.includes(x.inst))
+        .map((x): NuevaTarea => ({ tipo: 'sacarTripulante', carta: x.inst as InstId, destino: 'descartesMuelle', motivo: 'naufrago' }))
+      encolar(s, { tipo: 'robarHastaMando' }, { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] }, ...naufragos)
       t.paso = 'cierre'
       return 'sigue'
+    }
     case 'cierre': {
       s.temporales = s.temporales.filter((x) => x.hasta !== 'finTurno')
       // Los límites «una vez por turno» vuelven a estar disponibles.

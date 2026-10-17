@@ -48,7 +48,7 @@ describe('Interrupciones', () => {
   it('se ofrecen antes de que ocurra algo y pueden evitarlo', () => {
     registrar({
       clave: 'prueba.interrupcion',
-      carta: 'carpintero',
+      carta: 'bucanero',
       ventana: 'interrupcion',
       desde: 'juego',
       disparo: (s, yo, ev) => ev.tipo === 'heridas' && ev.objetivo !== yo && s.zonas.tripulacion.includes(ev.objetivo),
@@ -58,13 +58,13 @@ describe('Interrupciones', () => {
       },
     })
     // El Barco empieza con el daño máximo: se hunde y cada Tripulante sufre 1 herida.
-    const j = Jugador.en({ barco: { dano: 5 }, tripulacion: ['carpintero', 'bucanero'] })
+    const j = Jugador.en({ barco: { dano: 5 }, tripulacion: ['bucanero', 'carpintero'] })
     expect(j.decision).toMatchObject({ tipo: 'ofrecer', motivo: { clave: 'interrupcion' } })
-    j.pasar() // Diego recibe su herida. Al Carpintero no se le ofrece protegerse a sí mismo.
-    j.usar('prueba.interrupcion') // El Carpintero se la evita al Bucanero.
+    j.pasar() // Diego recibe su herida. Al Bucanero no se le ofrece protegerse a sí mismo.
+    j.usar('prueba.interrupcion') // El Bucanero se la evita al Carpintero.
     expect(j.copia('capitan').heridas).toBe(1)
-    expect(j.copia('carpintero').heridas).toBe(1)
-    expect(j.copia('bucanero').heridas).toBe(0)
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.copia('carpintero').heridas).toBe(0)
     expect(j.decision.motivo.clave).toBe('jugarCartas')
   })
 })
@@ -102,7 +102,7 @@ describe('Obligadas', () => {
 describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de otro efecto', () => {
   const libre: Capacidad = {
     clave: 'prueba.libre',
-    carta: 'carpintero',
+    carta: 'marinero_p',
     ventana: 'libre',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
@@ -111,16 +111,16 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
 
   it('se ofrecen en la ventana de acción de Jugar cartas', () => {
     registrar(libre)
-    const j = Jugador.en({ tripulacion: ['carpintero'], barco: { dano: 2 } })
+    const j = Jugador.en({ tripulacion: ['marinero_p'], barco: { dano: 2 } })
     j.usar('prueba.libre')
     expect(j.estado.danoBarco).toBe(1)
-    expect(j.copia('carpintero').agotada).toBe(true)
+    expect(j.copia('marinero_p').agotada).toBe(true)
     expect(j.ofrece('usar', 'prueba.libre')).toBe(false)
   })
 
   it('el Inicio tiene su pausa después de aplicar el Escenario; si no hay nada que usar, no se pregunta', () => {
     registrar(libre)
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['astillero', 'calma_ev'], tripulacion: ['carpintero'], barco: { dano: 4 } })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['astillero', 'calma_ev'], tripulacion: ['marinero_p'], barco: { dano: 4 } })
     expect(j.estado.danoBarco).toBe(2) // Astillero ocioso ya aplicado.
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'pausa.inicio' } })
     j.usar('prueba.libre')
@@ -132,9 +132,9 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
 
   it('se ofrecen al decidir si te quedas o zarpas y en el Final, antes de robar', () => {
     registrar(libre)
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: ['carpintero'], barco: { dano: 3 }, escenario: ['calma_ev'] })
-    expect(j.decision.libres).toEqual([{ fuente: j.inst('carpintero'), clave: 'prueba.libre' }])
-    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['carpintero'], barco: { dano: 3 }, escenario: ['calma_ev'] })
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: ['marinero_p'], barco: { dano: 3 }, escenario: ['calma_ev'] })
+    expect(j.decision.libres).toEqual([{ fuente: j.inst('marinero_p'), clave: 'prueba.libre' }])
+    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['marinero_p'], barco: { dano: 3 }, escenario: ['calma_ev'] })
     expect(f.decision.motivo.clave).toBe('descartarFinal')
     f.usar('prueba.libre')
     expect(f.estado.danoBarco).toBe(2)
@@ -143,20 +143,20 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
 
   it('no se ofrecen en mitad de otro efecto (por ejemplo, mientras pagas o pierdes una Mejora)', () => {
     registrar(libre)
-    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bucanero'], tripulacion: ['carpintero'] })
+    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bucanero'], tripulacion: ['marinero_p'] })
     j.reclutar('bucanero')
     expect(j.decision.motivo.clave).toBe('pagar')
     expect(j.decision.libres).toBeUndefined()
-    const impuestos = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'calma_ev'], tripulacion: ['carpintero'], barco: { mejoras: ['vela', 'bandera'] } })
+    const impuestos = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'calma_ev'], tripulacion: ['marinero_p'], barco: { mejoras: ['vela', 'bandera'] } })
     expect(impuestos.decision.motivo.clave).toBe('perderMejora')
     expect(impuestos.decision.libres).toBeUndefined()
   })
 
   it('«Acción:» solo vale en las ventanas de acción, no en las demás pausas', () => {
     registrar({ ...libre, clave: 'prueba.accion', ventana: 'accion' })
-    const j = Jugador.en({ tripulacion: ['carpintero'], barco: { dano: 2 } })
+    const j = Jugador.en({ tripulacion: ['marinero_p'], barco: { dano: 2 } })
     expect(j.ofrece('usar', 'prueba.accion')).toBe(true)
-    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['carpintero'], barco: { dano: 2 }, escenario: ['calma_ev'] })
+    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['marinero_p'], barco: { dano: 2 }, escenario: ['calma_ev'] })
     expect(f.decision.libres).toBeUndefined()
   })
 

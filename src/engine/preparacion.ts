@@ -6,7 +6,8 @@ import { anotar, encolar, estadoVacio } from './estado.ts'
 import { ejecutar } from './motor.ts'
 import { robarCartas, revelarAlMuelle, tamanoMuelle } from './tareas/cartas.ts'
 import { sembrar } from './azar.ts'
-import type { Estado, Modo } from './tipos.ts'
+import { erroresDeMazos } from './mazos.ts'
+import type { CartaId, Estado, Modo } from './tipos.ts'
 import { valor } from './valores.ts'
 import { barajar, crearCopia, mover } from './zonas.ts'
 
@@ -20,11 +21,16 @@ export const MODOS: Record<Modo, { reputacion: number; escenario: number }> = {
 export interface OpcionesPartida {
   semilla: number | string
   modo?: Modo
+  /** Otro mazo de muelle (por defecto, el predefinido). Tiene que cumplir las reglas de construcción. */
+  mazoDeMuelle?: CartaId[]
 }
 
 /** Prepara una partida con los mazos predefinidos y la deja esperando el cambio de mano inicial. */
-export function nuevaPartida({ semilla, modo }: OpcionesPartida): Estado {
+export function nuevaPartida({ semilla, modo, mazoDeMuelle }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
+  const muelle = mazoDeMuelle ?? m.mazoDeMuelle
+  const errores = erroresDeMazos({ capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle })
+  if (errores.length > 0) throw new Error(`Mazos no válidos: ${errores.join(' ')}`)
   const s = estadoVacio(sembrar(semilla))
   s.modo = modo ?? m.modo
   s.reputacionObjetivo = MODOS[s.modo].reputacion
@@ -57,7 +63,7 @@ export function nuevaPartida({ semilla, modo }: OpcionesPartida): Estado {
   }
 
   // 6. Muelle.
-  for (const id of m.mazoDeMuelle) crearCopia(s, id, 'mazoMuelle')
+  for (const id of muelle) crearCopia(s, id, 'mazoMuelle')
   barajar(s, 'mazoMuelle')
   anotar(s, 'turno', 'Preparación de la partida')
   revelarAlMuelle(s, tamanoMuelle(s))

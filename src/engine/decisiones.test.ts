@@ -1,8 +1,8 @@
-// Una prueba por cada decisión de reglas de docs/decisiones.md. Las que dependen de mecánicas de las
-// fases 3 y 4 quedan como pendientes (aparecen en el informe de pruebas) hasta que llegue su mecánica.
+// Una prueba por cada decisión de reglas de docs/decisiones.md, con el ejemplo de juego de cada una.
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { registrarParaPruebas } from './capacidades/index.ts'
+import { totalPrueba } from './prueba.ts'
 import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
 
@@ -145,7 +145,19 @@ describe('N1 · Un Tesoro nunca acaba en el mazo de muelle', () => {
     expect(j.copia('espada').vinculadaA).toBe(j.inst('marinero_p'))
     expect(j.zona('descartesMuelle')).toEqual(['bucanero'])
   })
-  it.todo('N1 al volver al muelle (fase 4)')
+  it('al volver al muelle (ninguna carta de la caja lo hace: se prueba con una capacidad de prueba)', () => {
+    quitar = registrarParaPruebas({
+      clave: 'prueba.volver',
+      carta: 'marinero_p',
+      ventana: 'libre',
+      desde: 'juego',
+      efecto: (s) => [{ tipo: 'volverAlMuelle', carta: s.zonas.tripulacion.find((c) => s.cartas[c]?.id === 'bucanero') ?? s.capitan }],
+    })
+    const j = Jugador.en({ tripulacion: [{ id: 'bucanero', mejoras: ['espada', 'sable'] }, 'marinero_p'] })
+    j.usar('prueba.volver').elegir('capitan')
+    expect(j.zona('muelle')).toEqual(expect.arrayContaining(['bucanero', 'sable']))
+    expect(j.copia('espada').vinculadaA).toBe(j.estado.capitan)
+  })
 })
 
 describe('N3 · Una carta con munición entra en juego con su munición al máximo', () => {
@@ -157,7 +169,13 @@ describe('N3 · Una carta con munición entra en juego con su munición al máxi
     conPolvora.adquirir('bronce', 'barco').elegir('ojo', 'timon')
     expect(conPolvora.copia('bronce').municion).toBe(3)
   })
-  it.todo('N3 · adquieres los Cañones y zarpas contra los Piratas rivales (COM 4): gastas 1 de munición para +2 (fases 3 y 4)')
+  it('adquieres los Cañones y zarpas contra los Piratas rivales (COM 4): ya puedes gastar 1 de munición para +2', () => {
+    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'], misiones: ['prueba-I'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['calma_ev'] })
+    j.adquirir('bronce', 'barco').elegir('ojo', 'timon')
+    j.zarpar('prueba-I').comprometer('COM', ['capitan']).usar('bronce.disparar').seguir()
+    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
+    expect(j.copia('bronce').municion).toBe(1)
+  })
 })
 
 describe('N4 · La pausa del Inicio va al final del paso, después de preparar y recargar', () => {
@@ -183,6 +201,7 @@ describe('N4 · La pausa del Inicio va al final del paso, después de preparar y
 describe('D1b · La rebaja por Rasgo se mantiene aunque ese Tripulante se comprometa', () => {
   it('Arrecife de los Ahorcados (NAV 4, NAV 2 con un Vigía): comprometer a Íñigo deja la dificultad en 2', () => {
     const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bartolome'], mazoPeligros: ['arrecifes', 'chubasco', 'calma'] })
+    j.pasar() // No descarta el Arrecife con Íñigo.
     j.comprometer('NAV', ['bartolome']).seguir()
     // Íñigo: NAV 0 + 1 (Diego) + 1 (Barco en el Mar) = 2 contra 2.
     expect(j.registro).toContain('Total 2 contra 2: superas la Prueba.')
@@ -347,19 +366,184 @@ describe('D10 · Si se acaba el mazo mezclado de una misión, se barajan los des
 describe('N1 · Tesoro de un rehén perdido', () => {
   it('pasa a otro Tripulante', () => {
     const j = enMision({ misiones: ['aguada-I'], tripulacion: [{ id: 'grumete', mejoras: ['espada'] }], mazoPeligros: ['rivales', 'leyenda', 'calma'] })
-    j.comprometer('COM', ['grumete']).seguir().retirarse().opcion('dejar')
+    j.comprometer('COM', ['grumete']).pasar().seguir().retirarse().opcion('dejar') // no cancela el «Fallo» con la Espada
     expect(j.zona('fueraDeJuego')).toContain('grumete')
     expect(j.copia('espada').vinculadaA).toBe(j.estado.capitan)
   })
 })
 
-describe('Pendientes de su mecánica (fase 4)', () => {
-  it.todo('D1c · el Loro que se une tras el Destino con Diego ya agotado suma su EXP 1 sin el +1')
-  it.todo('D3 · un Destino «Fallo» en el Mar no se puede mandar al fondo con «Cambio de rumbo» ni da Avance con «¡A toda vela!»')
-  it.todo('D4 · la Patrulla española (COM 4 / NAV 4) se puede descartar con las Velas de tormenta y con el Pedrero')
-  it.todo('D5a · ejemplo exacto: «Rumbo a la isla» con 3 de Avance, el Kraken y «¡A toda vela!»')
-  it.todo('D5b · ejemplo exacto: la primera carta quitada con «Sangre fría» no cuenta')
-  it.todo('D6 · el Viejo lobo que cubrió la Distancia de «La selva» puede comprometerse tras «Víveres de reserva» y recibir heridas')
-  it.todo('D11 · «Lección aprendida» no puede poner la ficha en el Grumete leal (0 huecos)')
-  it.todo('N2 · Barco con 4 daños de 5, sale la Fragata cazadora: antes de comprometer, «Remiendo de urgencia» lo baja a 2')
+describe('Decisiones que dependen de cartas concretas', () => {
+  it('D1c · el Loro que se une tras el Destino con Diego ya agotado suma su EXP 1, sin el +1', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['loro'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    j.comprometer('EXP', ['capitan']).usar('loro.unirse')
+    expect(totalPrueba(j.estado)).toBe(1 + 1)
+  })
+
+  it('D3 · un Destino «Fallo» en el Mar no se puede mandar al fondo con «Cambio de rumbo» ni da Avance con «¡A toda vela!»', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], mano: ['cambio_rumbo', 'viento', 'ojo', 'timon'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
+    expect(j.ofreceCapacidad('cambio_rumbo.jugar') && j.ofreceCapacidad('viento.jugar')).toBe(true) // al revelar los Tiburones, sí
+    j.pasar().comprometer('COM', ['capitan'])
+    expect(j.decision.motivo.clave).toBe('ventanaPrueba') // revelado el Destino, no se ofrece ninguna
+  })
+
+  it('D4 · la Patrulla española (COM 4 / NAV 4) se puede descartar con las Velas de tormenta y con el Pedrero', () => {
+    const velas = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['velas_tormenta'] }, mazoPeligros: ['ley', 'calma', 'calma'] })
+    expect(velas.ofreceCapacidad('velas_tormenta.esquivar')).toBe(true)
+    const pedrero = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'pedrero', municion: 1 }] }, mazoPeligros: ['ley', 'calma', 'calma'] })
+    expect(pedrero.ofreceCapacidad('pedrero.disparar')).toBe(true)
+  })
+
+  it('D5a · «Rumbo a la isla» (Mar 5): resuelta una carta y con 3, revelas el Kraken y «¡A toda vela!» la supera sin resolverlo', () => {
+    const j = Jugador.enMision({ misiones: ['templo-I'], avance: { 'templo-I': 1 }, mano: ['viento', 'ojo'], mazoPeligros: ['calma', 'leyenda', 'chubasco'] })
+    j.ninguna() // no agota a Diego (Oficial) para ganar 2
+    j.pasar() // no juega «¡A toda vela!» con el Mar en calma
+    expect(j.avance('templo-I')).toBe(3)
+    j.seguir() // revela el Kraken
+    j.usar('viento.jugar').elegir('ojo')
+    expect(j.registro).toContain('Reúnes el Avance a mitad del encuentro: lo dejas sin resolver.')
+    expect(j.zona('misionesSuperadas')).toContain('templo-I')
+  })
+
+  it('D5b · empiezas «Un soplo en Port Royal» (Ciudad 4) con 4 y quitas la primera carta con «Sangre fría»: hay que resolver otra', () => {
+    const j = Jugador.enMision({ misiones: ['espia-I'], avance: { 'espia-I': 4 }, mano: ['sangre_fria', 'ojo', 'timon'], mazoPeligros: ['rivales', 'calma', 'calma'], cubrir: ['capitan'] })
+    j.usar('sangre_fria.jugar').elegir('ojo', 'timon')
+    // Con 6 de 4 no se supera aún: hay que revelar y resolver otra carta (la Hora de la siesta).
+    const r = j.registro
+    const sangre = r.indexOf('«Pelea de taberna»: +2 de Avance (6/4).')
+    const siesta = r.findIndex((t) => t.endsWith(': Hora de la siesta (Ciudad).'))
+    const superada = r.indexOf('¡Superas «Un soplo en Port Royal»!')
+    expect(sangre).toBeGreaterThanOrEqual(0)
+    expect(siesta).toBeGreaterThan(sangre)
+    expect(superada).toBeGreaterThan(siesta)
+  })
+
+  it('D6 · el Viejo lobo cubre la Distancia de «La selva», se prepara con Víveres y se compromete en el segundo encuentro', () => {
+    const j = Jugador.enMision({
+      misiones: ['templo-II'],
+      tripulacion: ['viejo_lobo'],
+      barco: { mejoras: ['viveres'] },
+      mazoPeligros: ['calma', 'fauna', 'leyenda', 'calma'],
+      cubrir: ['viejo_lobo'],
+    })
+    expect(j.copia('viejo_lobo').agotada).toBe(true)
+    j.usar('viveres.preparar').seguir() // tras el Claro tranquilo
+    j.comprometer('EXP', ['viejo_lobo']).pasar().seguir() // Serpientes con el Destino «Fallo»: 1 herida
+    expect(j.copia('viejo_lobo').heridas).toBe(1)
+  })
+
+  it('D11 · «Lección aprendida» no puede poner la ficha en el Grumete leal (0 huecos)', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], mano: ['leccion', 'ojo'], tripulacion: ['grumete'], mazoPeligros: ['chubasco', 'leyenda', 'calma'] })
+    j.comprometer('NAV', ['grumete']).seguir()
+    expect(j.ofreceCapacidad('leccion.jugar')).toBe(false)
+  })
+
+  it('N2 · Barco con 4 daños de 5, sale la Fragata cazadora: antes de comprometer, «Remiendo de urgencia» lo baja a 2', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { dano: 4 }, mano: ['reparacion'], mazoPeligros: ['cazadores', 'chubasco', 'calma'] })
+    expect(j.decision.tipo).toBe('comprometer')
+    j.usar('reparacion.jugar')
+    expect(j.estado.danoBarco).toBe(2)
+    expect(j.decision.tipo).toBe('comprometer')
+  })
+})
+
+describe('N13 · Una herida pagada como coste se puede evitar o desviar', () => {
+  it('el Filibustero paga su herida; el Grumete la reduce a 0 y el Filibustero conserva el +2', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['filibustero', 'grumete'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
+    j.comprometer('COM', ['filibustero']).usar('filibustero.furia').usar('grumete.salvar')
+    expect(j.copia('filibustero').heridas).toBe(0)
+    expect(totalPrueba(j.estado)).toBe(6)
+  })
+
+  it('también se desvía con «Ni un hombre atrás»', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], mano: ['ni_hombre', 'ojo'], tripulacion: ['filibustero', 'bucanero'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
+    j.comprometer('COM', ['filibustero', 'bucanero']).usar('filibustero.furia').usar('ni_hombre.jugar').elegir('ojo')
+    expect([j.copia('filibustero').heridas, j.copia('bucanero').heridas]).toEqual([0, 1])
+  })
+
+  it('si esa herida lo derrota, Isabela lo salva', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: [{ id: 'filibustero', heridas: 1 }, 'isabela'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
+    j.comprometer('COM', ['filibustero']).usar('filibustero.furia').usar('isabela.salvar')
+    expect(j.copia('filibustero').heridas).toBe(1)
+    expect(totalPrueba(j.estado)).toBe(6)
+  })
+})
+
+describe('N14 · El Loro que se une a una Prueba sin comprometidos anula Sin oposición', () => {
+  it('Espíritus de la selva (EXP 3) con «Contratiempo»: no pierdes Avance, pide 4 y llegas con el Loro y dos cartas', () => {
+    const j = Jugador.enMision({
+      misiones: ['aguada-I'],
+      avance: { 'aguada-I': 1 },
+      capitan: { agotada: true },
+      tripulacion: ['loro'],
+      mano: ['ojo', 'estrellas'],
+      mazoPeligros: ['sirenas', 'percances', 'calma'],
+    })
+    j.comprometer('EXP', []).usar('loro.unirse')
+    expect(j.registro.some((t) => t.startsWith('Pierdes'))).toBe(false)
+    j.reforzar('ojo').reforzar('estrellas').seguir()
+    expect(j.registro).toContain('Total 4 contra 4: superas la Prueba.')
+  })
+})
+
+describe('N15 · «Perdidos en la espesura» ignora el recuadro rojo y la herida extra de la misión, no la del Destino', () => {
+  // «El templo»: cada efecto de fallo inflige además 1 herida. Mazo mezclado solo con Fiebres: el encuentro
+  // es la Fiebre amarilla (1 herida · 1 herida, como la Trampa de dardos) y el Destino, «Fiebre».
+  const fiebres = ['fiebre', 'fiebre', 'fiebre', 'fiebre', 'fiebre', 'fiebre']
+  const montarTemplo = (mano: string[]) =>
+    Jugador.enMision({ misiones: ['templo-III'], tripulacion: ['viejo_lobo'], capitan: { heridas: 0 }, mano, mazoHistoria: [], mazoPeligros: fiebres, cubrir: ['viejo_lobo'] })
+
+  it('sin la carta, 4 heridas; con ella, 1 (la de «Fiebre»)', () => {
+    const sin = montarTemplo([])
+    sin.comprometer('EXP', ['capitan']).seguir()
+    expect(sin.copia('capitan').heridas).toBe(4)
+    const con = montarTemplo(['espesura', 'ojo'])
+    con.comprometer('EXP', ['capitan']).seguir().usar('espesura.jugar').elegir('ojo')
+    expect(con.copia('capitan').heridas).toBe(1)
+  })
+})
+
+describe('N16 · «Retirada a tiempo» quita el encuentro, pero el Destino ya revelado se aplica', () => {
+  it('la Patrulla española con «Celada»: el Bucanero sufre la herida, pero te ahorras el fallo', () => {
+    const j = Jugador.enMision({ misiones: ['prueba-I'], mano: ['retirada', 'ojo'], tripulacion: ['bucanero'], mazoPeligros: ['ley', 'asalto', 'calma', 'calma'] })
+    j.comprometer('COM', ['bucanero']).usar('retirada.jugar').elegir('ojo')
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.estado.danoBarco).toBe(0)
+    expect(j.zona('apartados')).toContain('armada') // sin el fallo, la Armada no entra
+  })
+})
+
+describe('N17 · Una Prueba superada automáticamente cuenta como superada, sin participantes', () => {
+  it('«Soborno» ante «Perros de la guardia» (COM 3 o EXP 3): eliges COM y puedes jugar «Prisionero liberado»; Uñas largas no roba', () => {
+    const j = Jugador.enMision({
+      mano: ['soborno', 'prisionero', 'ojo', 'timon', 'coraje'],
+      tripulacion: ['saqueador'],
+      muelle: ['grumete'],
+      mazoPeligros: ['bestias', 'leyenda', 'calma'],
+    })
+    j.usar('soborno.jugar').elegir('ojo', 'timon')
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'opcionAutomatica' } })
+    j.opcion('0')
+    expect(j.ofreceCapacidad('prisionero.jugar')).toBe(true)
+    expect(j.ofreceCapacidad('saqueador.superar')).toBe(false)
+    j.usar('prisionero.jugar').elegir('coraje').elegir('grumete')
+    expect(j.zona('tripulacion')).toContain('grumete')
+  })
+})
+
+describe('N18 · Son Cañones las cuatro Mejoras con munición, y solo se usan en el Mar', () => {
+  it('el Pedrero no se usa en Ciudad; «Los Cañones no suman» anula también la Culebrina', () => {
+    const tierra = Jugador.enMision({ barco: { mejoras: [{ id: 'pedrero', municion: 2 }] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
+    expect(tierra.ofreceCapacidad('pedrero.disparar')).toBe(false)
+    const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    niebla.comprometer('NAV', ['capitan']).usar('culebrina.disparar')
+    expect(totalPrueba(niebla.estado)).toBe(2 + 1)
+  })
+})
+
+describe('N19 · El descuento de Catalina se gasta con el siguiente Tripulante que reclutes, aunque sea gratis', () => {
+  it('agotas a Catalina y reclutas gratis con «Náufrago en la playa»: el siguiente cuesta lo normal', () => {
+    const j = Jugador.en({ capitanId: 'capitan2', mano: ['naufrago', 'ojo', 'timon'], mazoMuelle: ['bucanero', 'sable', 'vela'], muelle: ['contrabandista'] })
+    j.usar('capitan2.agotar').usar('naufrago.jugar').elegir('ojo').elegir('bucanero')
+    expect(j.valor({ tipo: 'coste', carta: j.inst('contrabandista') })).toBe(3)
+  })
 })

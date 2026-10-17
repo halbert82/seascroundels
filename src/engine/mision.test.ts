@@ -169,23 +169,23 @@ describe('Destinos', () => {
 
   it('«Corriente traicionera»: +2 si la Prueba es de NAV; si no, +1', () => {
     const nav = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'arrecifes', 'calma'] })
-    nav.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).seguir()
+    nav.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).pasar().seguir() // pasa del Viejo lobo
     // Niebla espesa NAV 3 + 2. Viejo lobo 3 + 1 (Diego) + 1 (Barco, NAV en el Mar) = 5.
     expect(nav.registro).toContain('Total 5 contra 5: superas la Prueba.')
   })
 
   it('«Golpe de suerte»: si superas, 1 de Avance más; «Ánimo»: si superas, prepara a un comprometido', () => {
     const golpe = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'hallazgo', 'calma'] })
-    golpe.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).seguir()
+    golpe.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).pasar().seguir()
     expect(golpe.avance('fantasma-I')).toBe(3)
     const animo = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'calma', 'racha'] })
-    animo.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).seguir()
+    animo.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).pasar().seguir()
     expect(animo.copia('viejo_lobo').agotada).toBe(false)
   })
 
   it('«Fallo» (✕): fallas la Prueba aunque sumes más', () => {
     const j = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'leyenda', 'calma'] })
-    j.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).seguir()
+    j.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).pasar().seguir()
     expect(j.registro.some((t) => t.includes('fallas la Prueba (el Destino la hace fallar)'))).toBe(true)
     expect(j.avance('fantasma-I')).toBe(2) // Niebla espesa: −1 de Avance al fallar (sin Avance aún), +2 del encuentro
   })
@@ -223,7 +223,7 @@ describe('Rehenes', () => {
       mazoPeligros: ['rivales', 'leyenda', 'calma'],
     })
     j.zarpar('aguada-I')
-    j.comprometer('COM', ['grumete']).seguir() // Destino «Fallo»: fallas; el Grumete es capturado
+    j.comprometer('COM', ['grumete']).pasar().seguir() // Destino «Fallo» (no lo cancela con la Espada): fallas; el Grumete es capturado
     expect(j.zona('rehenes')).toEqual(['grumete'])
     j.retirarse().opcion('dejar')
     expect(j.estado.reputacion).toBe(1)

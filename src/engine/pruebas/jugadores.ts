@@ -5,12 +5,13 @@
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
 import { costeImpreso, iconosDe, porId } from '../catalogo.ts'
 import { DATOS } from '../datos.ts'
+import { destinoDe } from '../destinos.ts'
 import { interpretarEfectos } from '../efectos.ts'
 import { copia } from '../estado.ts'
-import { encuentroDe } from '../peligros.ts'
-import { dificultadPrueba, prevision, totalPrueba } from '../prueba.ts'
-import type { Accion, Decision, Eleccion, Estado, InstId } from '../tipos.ts'
-import { navParaDistancia, valor } from '../valores.ts'
+import { encuentroDe, entornoActual } from '../peligros.ts'
+import { dificultadPrueba, modificadorDeDestino, prevision, totalPrueba } from '../prueba.ts'
+import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
+import { navParaDistancia, plazasLibres, valor } from '../valores.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
 
@@ -90,7 +91,8 @@ function valorTripulante(s: Estado, c: InstId): number {
 
 function puntuacionTripulanteEnMuelle(id: string): number {
   const e = porId(id)
-  return e.tipo === 'tripulante' ? e.carta.NAV + e.carta.COM + e.carta.EXP + e.carta.vida * 0.4 - e.carta.coste * 0.6 : -99
+  if (e.tipo !== 'tripulante') return -99
+  return e.carta.NAV + e.carta.COM + e.carta.EXP + e.carta.vida * 0.4 - e.carta.coste * 0.6 + (CAPACIDAD_TRIPULANTE[id] ?? 0)
 }
 
 const MEJORAS_PREFERIDAS: Record<string, number> = {
@@ -101,8 +103,40 @@ const MEJORAS_PREFERIDAS: Record<string, number> = {
   sable: 3,
   brujula: 3,
   catalejo: 3,
+  bandera: 3,
+  cruz: 3,
+  carronadas: 3,
+  velas_tormenta: 3,
+  pistola: 3,
+  escapulario: 3,
   bronce: 2,
+  culebrina: 2,
+  pedrero: 2,
+  viveres: 2,
+  amuleto: 2,
+  patente: 2,
+  coleto: 2,
   botica: 1,
+  ron_reserva: 1,
+}
+
+/** Lo que vale de más un Tripulante por su capacidad, para reclutarlo. */
+const CAPACIDAD_TRIPULANTE: Record<string, number> = {
+  isabela: 2.5,
+  bartolome: 2,
+  viejo_lobo: 1.5,
+  matasanos: 1.5,
+  reinaldo: 1.5,
+  espadachin: 1,
+  contrabandista: 1,
+  baqueano: 1,
+  carpintero: 1,
+  grumete: 1,
+  saqueador: 0.5,
+  filibustero: 0.5,
+  canonero: 0.5,
+  vigia: 0.5,
+  loro: 0.5,
 }
 
 /** Lo que vale para el jugador la victoria de «Las puertas de Panamá», en puntos de reputación. */
@@ -128,16 +162,7 @@ function puntuacionMision(s: Estado, m: InstId): number {
 }
 
 function peligroDeFallo(s: Estado, carta: InstId): number {
-  const efectos = interpretarEfectos(encuentroDe(s, carta).textoFallo ?? '')
-  let peligro = 0
-  for (const e of efectos) {
-    if (e.tipo === 'heridas') peligro += e.n * 1.5
-    else if (e.tipo === 'dano') peligro += e.n * 1.2
-    else if (e.tipo === 'rehen') peligro += 3
-    else if (e.tipo === 'perderAvance') peligro += e.n === 'todo' ? 3 : e.n
-    else peligro += 0.5
-  }
-  return peligro
+  return peligroDe(interpretarEfectos(encuentroDe(s, carta).textoFallo ?? ''))
 }
 
 /** Mejor compromiso: el grupo más barato que llega a la dificultad con margen, o nadie si no compensa. */
@@ -215,6 +240,17 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'portadorTesoro':
     case 'preparar':
       return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, 1) }
+    case 'ordenarOteo':
+      return { tipo: 'cartas', ids: por((c) => riesgoDelEncuentro(s, c)) }
+    case 'naufrago':
+    case 'reclutarGratis':
+      return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id)).slice(0, 1) }
+    case 'desviarHeridas':
+      return { tipo: 'cartas', ids: por((c) => (c === s.capitan ? 50 : 0) - vidaRestante(s, c)).slice(0, 1) }
+    case 'curarUno':
+      return { tipo: 'cartas', ids: por((c) => (c === s.capitan && vidaRestante(s, c) <= 2 ? -50 : 0) - copia(s, c).heridas).slice(0, 1) }
+    case 'entrenamiento':
+      return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, 1) }
     default:
       return { tipo: 'cartas', ids: d.candidatas.slice(0, n) }
   }
@@ -262,6 +298,24 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     }
     case 'alZarparDescartar':
       return elegir(s.zonas.mano.length >= 4 ? 'si' : 'no')
+    case 'otear': {
+      const tarea = tareaDe(s, d)
+      const carta = tarea?.tipo === 'otear' ? tarea.cartas[0] : undefined
+      return elegir(carta && riesgoDelEncuentro(s, carta) >= 1.5 ? 'fondo' : 'arriba')
+    }
+    case 'opcionAutomatica': {
+      const enc = s.prueba ? encuentroDe(s, s.prueba.encuentro) : null
+      const com = enc ? enc.prueba.findIndex((o) => o.hab === 'COM') : -1
+      return elegir(String(Math.max(0, com)))
+    }
+    case 'habilidadEntrenamiento': {
+      const tarea = tareaDe(s, d)
+      const quien = tarea?.tipo === 'ponerEntrenamiento' ? tarea.carta : null
+      if (!quien) return elegir(claves[0]!)
+      const habs = ['NAV', 'COM', 'EXP'] as const
+      const mejor = [...habs].sort((a, b) => valor(s, { tipo: 'habilidad', carta: quien, hab: b }) - valor(s, { tipo: 'habilidad', carta: quien, hab: a }))[0]!
+      return elegir(mejor)
+    }
     case 'conservarMision':
       return elegir('dejar')
     default:
@@ -359,17 +413,253 @@ function encuentroEnMar(s: Estado): boolean {
   return e.tipo === 'capitulo' && e.carta.entorno === 'mar'
 }
 
+
+// ---------------------------------------------------------------------------
+// Capacidades: cuándo le sale a cuenta usar cada una
+
+function peligroDe(efectos: ReturnType<typeof interpretarEfectos>): number {
+  let peligro = 0
+  for (const e of efectos) {
+    if (e.tipo === 'heridas') peligro += e.n * 1.5
+    else if (e.tipo === 'dano') peligro += e.n * 1.2
+    else if (e.tipo === 'rehen') peligro += 3
+    else if (e.tipo === 'perderAvance') peligro += e.n === 'todo' ? 3 : e.n
+    else if (e.tipo === 'robar' || e.tipo === 'curar' || e.tipo === 'reparar' || e.tipo === 'recluta' || e.tipo === 'sinFallo' || e.tipo === 'seRetira') peligro += 0
+    else peligro += 0.5
+  }
+  return peligro
+}
+
+/** Lo que puede costar una carta de Peligro revelada: 0 si es fácil o inofensiva. */
+function riesgoDelEncuentro(s: Estado, carta: InstId): number {
+  if (!s.mision) return 0
+  const enc = encuentroDe(s, carta)
+  if (enc.prueba.length === 0) return peligroDe(interpretarEfectos(enc.textoEfecto ?? ''))
+  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
+  let margen = -99
+  for (let i = 0; i < enc.prueba.length; i++) {
+    const o = enc.prueba[i]!
+    const cartas = s.zonas.mano.filter((c) => iconos(s, c, o.hab) > 0)
+    const { total, dificultad } = prevision(s, carta, i, preparados, cartas)
+    margen = Math.max(margen, total - dificultad)
+  }
+  // Superarla comprometiendo a todos también cuesta: deja a la tripulación agotada para lo que venga.
+  const peligro = peligroDe(interpretarEfectos(enc.textoFallo ?? ''))
+  if (preparados.length === 0 || margen < 1) return peligro
+  if (margen < 3) return peligro * 0.6
+  return 0
+}
+
+/** ¿El Destino revelado (aún sin aplicar) estropea la Prueba o hiere a alguien? */
+function destinoMalo(s: Estado): boolean {
+  const p = s.prueba
+  if (!p?.destino || !p.hab || p.destinoCancelado) return false
+  const mod = modificadorDeDestino(s, p.destino, p.encuentro, p.hab)
+  if (mod === 'fallo') return true
+  const d = destinoDe(copia(s, p.destino).id)
+  const comprometidos = participantesDe(s)
+  if ((d.heridaComprometido || d.heridaMasFuerte) && comprometidos.length > 0) return true
+  if (comprometidos.length === 0 && d.sinOposicion.length > 0 && peligroDe(d.sinOposicion) > 0) return true
+  const total = totalPrueba(s)
+  const sinDestino = dificultadPrueba(s)
+  return mod >= 2 || (total >= sinDestino && total < sinDestino + mod)
+}
+
+function participantesDe(s: Estado): InstId[] {
+  return s.prueba ? s.prueba.comprometidos.filter((c) => s.zonas.tripulacion.includes(c)) : []
+}
+
+function sucesoPendiente(s: Estado, d: Decision) {
+  const tarea = s.pila.find((x) => x.id === d.tarea)
+  return tarea?.tipo === 'evento' ? tarea.ev : null
+}
+
+function heridosTotales(s: Estado): number {
+  return s.zonas.tripulacion.reduce((n, c) => n + copia(s, c).heridas, 0)
+}
+
+function faltaAvance(s: Estado): number {
+  if (!s.mision) return 0
+  return valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta }) - copia(s, s.mision.carta).avance
+}
+
+/** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
+function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
+  const p = s.prueba
+  const ev = sucesoPendiente(s, d)
+  const mano = s.zonas.mano.length
+  const fuente = uso.fuente
+  const enMision = s.mision !== null && !s.mision.fin
+  const trasEncuentro = d.motivo.clave === 'trasEncuentro'
+  const enPruebaAbierta = p !== null && p.hab !== null && !p.automatica
+  const carta = s.zonas.encuentro[0]
+  switch (uso.clave) {
+    // Curar y reparar
+    case 'carpintero.reparar':
+      return s.danoBarco > 0 ? 2 : 0
+    case 'reparacion.jugar':
+      return s.danoBarco >= 2 ? 2 : 0
+    case 'matasanos.curar':
+      return heridosTotales(s) > 0 ? 2 : 0
+    case 'vendas.jugar':
+      return heridosTotales(s) >= 2 || vidaRestante(s, s.capitan) <= 2 ? 2 : 0
+    case 'botica.curar':
+      return heridosTotales(s) > 0 && (vidaRestante(s, s.capitan) <= 2 || mano >= 4) ? 1 : 0
+    case 'ron_descanso.jugar':
+      return d.motivo.clave === 'jugarCartas' && heridosTotales(s) >= 3 ? 1 : 0
+    case 'ron_reserva.beber': {
+      const portador = fuente ? copia(s, fuente).vinculadaA : null
+      if (!portador || portador === 'barco') return 0
+      return (trasEncuentro && copia(s, portador).agotada && faltaAvance(s) > 0) || vidaRestante(s, portador) <= 1 ? 1 : 0
+    }
+    // Munición
+    case 'canonero.municion':
+    case 'polvora_c.jugar':
+      return 1
+    // Otear y preparar
+    case 'vigia.otear':
+    case 'taberna.jugar':
+      return enMision && trasEncuentro ? 1 : 0
+    case 'despachos.otear':
+      return 1
+    case 'viveres.preparar':
+      return trasEncuentro && faltaAvance(s) > 0 && s.zonas.tripulacion.filter((c) => copia(s, c).agotada).length >= 2 ? 2 : 0
+    case 'arriba.jugar':
+      return trasEncuentro && faltaAvance(s) > 0 ? 2 : 0
+    case 'trampa.jugar':
+      return enMision && entornoActual(s) === 'nat' ? 1 : 0
+    // En puerto
+    case 'botin.jugar':
+      return d.motivo.clave === 'jugarCartas' && mano >= 3 ? 1 : 0
+    case 'naufrago.jugar':
+      return d.motivo.clave === 'jugarCartas' && plazasLibres(s) >= 1 && mano >= 3 ? 1 : 0
+    case 'capitan2.agotar':
+      return d.motivo.clave === 'jugarCartas' && plazasLibres(s) >= 1 && s.zonas.muelle.some((c) => porId(copia(s, c).id).tipo === 'tripulante') ? 1 : 0
+    // Sumar en la Prueba (solo si hace falta)
+    case 'filibustero.furia': {
+      if (!enPruebaAbierta || p?.hab !== 'COM' || !fuente || !participantesDe(s).includes(fuente) || p.falla) return 0
+      const total = totalPrueba(s)
+      const dificultad = dificultadPrueba(s)
+      return total < dificultad && total + 2 >= dificultad && vidaRestante(s, fuente) >= 2 ? 3 : 0
+    }
+    case 'bronce.disparar':
+    case 'culebrina.disparar':
+    case 'pistola.disparar': {
+      if (!enPruebaAbierta || !p || p.falla) return 0
+      if (uso.clave !== 'pistola.disparar' && (p.sinCanones || valor(s, { tipo: 'sinCanones' }) > 0)) return 0
+      const total = totalPrueba(s)
+      const dificultad = dificultadPrueba(s)
+      return total < dificultad ? (total + 2 >= dificultad ? 3 : 1) : 0
+    }
+    case 'carronadas.disparar':
+      return 3
+    case 'todos.jugar':
+      return p && participantesDe(s).length >= 2 && totalPrueba(s) < dificultadPrueba(s) + 1 ? 2 : 0
+    // Heridas, daño y derrotas
+    case 'grumete.salvar':
+    case 'ni_hombre.jugar': {
+      if (ev?.tipo !== 'heridas') return 0
+      const muere = vidaRestante(s, ev.objetivo) <= ev.cantidad
+      const capitan = ev.objetivo === s.capitan
+      if (uso.clave === 'grumete.salvar') {
+        const grumete = fuente ? valorTripulante(s, fuente) : 0
+        return (muere && valorTripulante(s, ev.objetivo) > grumete) || (capitan && vidaRestante(s, s.capitan) <= ev.cantidad + 1) ? 5 : 0
+      }
+      const otro = participantesDe(s).some((c) => c !== ev.objetivo && c !== s.capitan && vidaRestante(s, c) > ev.cantidad)
+      return (muere || capitan) && otro ? 4 : 0
+    }
+    case 'isabela.salvar':
+    case 'amuleto.salvar':
+      return 10
+    case 'mascaron.evitar':
+      return ev?.tipo === 'danoBarco' && (ev.cantidad >= 2 || s.danoBarco + ev.cantidad >= valor(s, { tipo: 'danoMaximo' }) - 1) ? 4 : 0
+    // Respuestas que solo dan ventaja
+    case 'saqueador.superar':
+    case 'contrabandista.superar':
+    case 'baqueano.superar':
+    case 'animo.jugar':
+      return 3
+    case 'mapa.jugar':
+    case 'senda.jugar':
+    case 'leccion.jugar':
+      return mano >= 2 ? 2 : 0
+    case 'viento.jugar':
+      return mano >= 2 && faltaAvance(s) > 0 ? 2 : 0
+    case 'prisionero.jugar':
+      return mano >= 2 ? 2 : 0
+    // Destinos
+    case 'loro.unirse': {
+      if (!p?.hab || !fuente) return 0
+      if (participantesDe(s).length === 0) return 2
+      return totalPrueba(s) < dificultadPrueba(s) + 1 && valor(s, { tipo: 'habilidad', carta: fuente, hab: p.hab }) > 0 ? 2 : 0
+    }
+    case 'viejo_lobo.destino':
+    case 'farol.destino':
+    case 'escapulario.cancelar':
+    case 'espada.cancelar':
+      return destinoMalo(s) ? 3 : 0
+    case 'reflejos.jugar':
+      return mano >= 2 && destinoMalo(s) ? 3 : 0
+    case 'retirada.jugar': {
+      if (!p?.destino || !p.hab || mano < 2) return 0
+      const mod = modificadorDeDestino(s, p.destino, p.encuentro, p.hab)
+      const hab = p.hab
+      const posibles = participantesDe(s).length > 0 ? s.zonas.mano.reduce((n, c) => n + iconos(s, c, hab), 0) : 0
+      const perdida = mod === 'fallo' || participantesDe(s).length === 0 || totalPrueba(s) + posibles < dificultadPrueba(s) + mod
+      return perdida && peligroDeFallo(s, p.encuentro) >= 2 ? 3 : 0
+    }
+    // Encuentros que conviene quitar
+    case 'bartolome.descartar':
+    case 'velas_tormenta.esquivar':
+    case 'pedrero.disparar':
+      return carta && riesgoDelEncuentro(s, carta) >= 2 ? 3 : 0
+    case 'cambio_rumbo.jugar':
+      return carta && mano >= 2 && riesgoDelEncuentro(s, carta) >= 2 ? 3 : 0
+    case 'sangre_fria.jugar':
+      return carta && mano >= 3 && riesgoDelEncuentro(s, carta) >= 2 ? 3 : 0
+    case 'soborno.jugar':
+      return carta && mano >= 3 && riesgoDelEncuentro(s, carta) >= 1 ? 3 : 0
+    case 'espesura.jugar':
+      return p && mano >= 2 && peligroDeFallo(s, p.encuentro) >= 1.5 ? 3 : 0
+    default:
+      return 0
+  }
+}
+
+/** La capacidad que más le conviene usar ahora, si alguna le conviene. */
+function mejorUso(s: Estado, usos: readonly Uso[], d: Decision): Uso | null {
+  let mejor: { puntos: number; uso: Uso } | null = null
+  for (const uso of usos) {
+    const puntos = puntuarUso(s, uso, d)
+    if (puntos > 0 && (!mejor || puntos > mejor.puntos)) mejor = { puntos, uso }
+  }
+  return mejor?.uso ?? null
+}
+
+function tareaDe(s: Estado, d: Decision) {
+  return s.pila.find((x) => x.id === d.tarea)
+}
+
 export function jugadorConCriterio(): JugadorAutomatico {
   return (s, d) => {
+    // En las pausas, las capacidades sin etiqueta que le convengan.
+    const libre = d.libres ? mejorUso(s, d.libres, d) : null
+    if (libre) return { tipo: 'usar', uso: libre }
     switch (d.tipo) {
-      case 'ventanaAccion':
+      case 'ventanaAccion': {
+        const usos = d.acciones.filter((a): a is Extract<Accion, { tipo: 'usar' }> => a.tipo === 'usar').map((a) => a.uso)
+        const uso = mejorUso(s, usos, d)
+        if (uso) return { tipo: 'accion', accion: { tipo: 'usar', uso } }
         return ventana(s, d)
+      }
       case 'elegirCartas':
         return elegirCartas(s, d)
       case 'elegirOpcion':
         return elegirOpcion(s, d)
-      case 'ofrecer':
-        return { tipo: 'pasar' }
+      case 'ofrecer': {
+        const uso = mejorUso(s, d.usos, d)
+        return uso ? { tipo: 'usar', uso } : { tipo: 'pasar' }
+      }
       case 'repartir':
         return repartir(s, d)
       case 'cubrirDistancia':

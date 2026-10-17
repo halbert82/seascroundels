@@ -3,7 +3,7 @@
 // que el jugador con criterio gana partidas y que en la simulación ocurre de todo.
 
 import { describe, expect, it } from 'vitest'
-import { jugarPartida } from './pruebas/equilibrio.ts'
+import { capacidadesDelJugador, jugarPartida, mazoDeMuelleAlAzar } from './pruebas/equilibrio.ts'
 import { jugadorAlAzar, jugadorConCriterio } from './pruebas/jugadores.ts'
 
 describe('Prueba masiva: jugador al azar', () => {
@@ -56,3 +56,19 @@ describe('Prueba masiva: jugador con criterio', () => {
     expect(todas.some((p) => !p.gana && p.motivo.startsWith('Tu Capitán'))).toBe(true)
   })
 })
+
+describe('Prueba masiva: mazos de muelle variados', () => {
+  it('con mazos al azar (las 42 cartas del muelle de la caja), cada capacidad del jugador se usa al menos una vez', { timeout: 300_000 }, () => {
+    const criterio = jugadorConCriterio()
+    const usadas = new Set<string>()
+    for (let i = 0; i < 500; i++) {
+      const semilla = 5000 + i
+      const mazoDeMuelle = mazoDeMuelleAlAzar(semilla)
+      const jugador = i % 2 === 0 ? jugadorAlAzar(semilla) : criterio
+      const p = jugarPartida(semilla, jugador, { invariantes: i < 40, mazoDeMuelle })
+      for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
+    }
+    expect(capacidadesDelJugador().filter((c) => !usadas.has(c))).toEqual([])
+  })
+})
+

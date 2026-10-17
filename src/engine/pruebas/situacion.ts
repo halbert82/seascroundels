@@ -55,6 +55,10 @@ export interface OpcionesSituacion {
   escenario?: CartaId[]
   descartesEscenario?: CartaId[]
   capitan?: Omit<CopiaInicial, 'id'>
+  /** Otro Capitán (por defecto, Diego). */
+  capitanId?: CartaId
+  /** Otro puerto (por defecto, Tortuga). */
+  puerto?: CartaId
   /** Tripulantes además del Capitán. */
   tripulacion?: (CartaId | CopiaInicial)[]
   barco?: { dano?: number; mejoras?: (CartaId | MejoraInicial)[] }
@@ -99,7 +103,8 @@ function ponerCopia(s: Estado, entrada: CartaId | CopiaInicial, zona: Zona): Ins
 /** Monta una partida en una situación concreta y la deja esperando la primera decisión. */
 export function montar(op: OpcionesSituacion = {}): Estado {
   const s = estadoVacio(sembrar(op.semilla ?? 1))
-  s.capitan = ponerCopia(s, { id: DATOS.mazosPredefinidos.capitanInicial, ...op.capitan }, 'tripulacion')
+  s.capitan = ponerCopia(s, { id: op.capitanId ?? DATOS.mazosPredefinidos.capitanInicial, ...op.capitan }, 'tripulacion')
+  s.puerto = op.puerto ?? DATOS.mazosPredefinidos.puertoInicial
   for (const t of op.tripulacion ?? []) ponerCopia(s, t, 'tripulacion')
   for (const m of op.barco?.mejoras ?? []) {
     const datos = typeof m === 'string' ? { id: m } : m
@@ -236,6 +241,18 @@ export class Jugador {
     return new Jugador(montar(op))
   }
 
+  /**
+   * Zarpa a la primera misión de `misiones` (por defecto, «Cobrar la deuda»), cubriendo la Distancia con
+   * `cubrir` si hace falta, y se para en la primera decisión de la misión.
+   */
+  static enMision(op: OpcionesSituacion & { cubrir?: CartaId[] }): Jugador {
+    const { cubrir, ...resto } = op
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto })
+    j.zarpar(resto.misiones?.[0] ?? 'deuda-I')
+    if (cubrir) j.cubrir(...cubrir)
+    return j
+  }
+
   get decision(): Decision {
     const d = this.estado.pendiente
     if (!d) throw new Error(`No hay decisión pendiente (resultado: ${JSON.stringify(this.estado.resultado)})`)
@@ -337,6 +354,21 @@ export class Jugador {
 
   pasar(): this {
     return this.responder({ tipo: 'pasar' })
+  }
+
+  /** Pasa todas las Interrupciones y Respuestas que se ofrezcan ahora, hasta la siguiente decisión de otro tipo. */
+  pasarOfertas(): this {
+    while (this.estado.pendiente?.tipo === 'ofrecer') this.pasar()
+    return this
+  }
+
+  /** ¿Se ofrece ahora esta capacidad (como Interrupción, Respuesta, capacidad libre o acción)? */
+  ofreceCapacidad(clave: string): boolean {
+    const d = this.estado.pendiente
+    if (!d) return false
+    const usos = [...(d.tipo === 'ofrecer' ? d.usos : []), ...(d.libres ?? [])]
+    if (d.tipo === 'ventanaAccion') for (const a of d.acciones) if (a.tipo === 'usar') usos.push(a.uso)
+    return usos.some((u) => u.clave === clave)
   }
 
   repartir(reparto: Record<CartaId, number>): this {

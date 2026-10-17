@@ -8,8 +8,10 @@ import { copia } from './estado.ts'
 import type { Capacidad, Consulta, Contexto, Estado, InstId } from './tipos.ts'
 import { vinculadas } from './zonas.ts'
 
-export function contexto(s: Estado, supuestasAgotadas?: ReadonlySet<InstId>): Contexto {
-  return { s, agotada: (inst) => copia(s, inst).agotada || (supuestasAgotadas?.has(inst) ?? false) }
+export function contexto(s: Estado, supuestasAgotadas?: ReadonlySet<InstId>, participantes?: readonly InstId[]): Contexto {
+  const ctx: Contexto = { s, agotada: (inst) => copia(s, inst).agotada || (supuestasAgotadas?.has(inst) ?? false) }
+  if (participantes) ctx.participantes = participantes
+  return ctx
 }
 
 /**
@@ -43,7 +45,7 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   }
   for (const t of s.temporales) {
     const cap = capacidadPorClave(t.clave)
-    if (cap) yield [cap, null]
+    if (cap) yield [cap, t.inst ?? null]
   }
   for (const cap of capacidadesDe('barco')) {
     if (cap.ventana === 'constante' && cap.desde === 'barco') yield [cap, null]
@@ -91,6 +93,7 @@ function base(s: Estado, c: Consulta): number {
     case 'heridaExtraFallo':
     case 'avanceExtraPrueba':
     case 'sinCanones':
+    case 'sinAgotarAlComprometer':
       return 0
     case 'distancia':
     case 'avanceNecesario': {
@@ -104,12 +107,13 @@ function base(s: Estado, c: Consulta): number {
 /**
  * Valor actual de algo: número impreso + modificadores activos, nunca por debajo de 0.
  * `supuestasAgotadas`: calcula como si esas cartas ya estuvieran agotadas (agotarse a la vez, D1a).
+ * `participantes`: para prever una Prueba, quiénes participarían en ella.
  */
-export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<InstId>): number {
+export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<InstId>, participantes?: readonly InstId[]): number {
   const b = base(s, c)
   // D7: una misión sin Distancia (de Mar o en tu isla) sigue en 0 pase lo que pase.
   if (c.tipo === 'distancia' && b === 0) return 0
-  const ctx = contexto(s, supuestasAgotadas)
+  const ctx = contexto(s, supuestasAgotadas, participantes)
   let total = b
   for (const [cap, yo] of constantesActivas(s)) total += cap.modifica?.(ctx, yo, c) ?? 0
   return Math.max(0, total)

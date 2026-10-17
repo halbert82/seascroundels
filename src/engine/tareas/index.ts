@@ -14,6 +14,19 @@ import {
   robar,
   robarHastaMando,
 } from './cartas.ts'
+import {
+  anadirMunicion,
+  cambiarDestino,
+  comprometerUno,
+  desviarHeridas,
+  naufrago,
+  otear,
+  ponerEntrenamiento,
+  prepararTripulantes,
+  quitarEncuentro,
+  reclutarGratis,
+  volverAlMuelle,
+} from './capacidades.ts'
 import type { Manejador } from './comun.ts'
 import {
   agotarMejora,
@@ -109,6 +122,17 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   fallarMision,
   ponerTesoro,
   cerrarMision,
+  otear,
+  quitarEncuentro,
+  cambiarDestino,
+  desviarHeridas,
+  comprometerUno,
+  prepararTripulantes,
+  anadirMunicion,
+  reclutarGratis,
+  naufrago,
+  ponerEntrenamiento,
+  volverAlMuelle,
 }
 
 /**

@@ -1,6 +1,7 @@
 // Zarpar, empezar la misión, recorrer sus cartas de Peligro y cerrarla (superada, retirada o hundida).
 
 import { capacidadesDe } from '../capacidades/index.ts'
+import { candidatas, sePuedeUsar } from '../usos.ts'
 import { reputacionMinima } from '../capacidades/misiones.ts'
 import { CATALOGO, iconosDe, porId, rasgosDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
@@ -41,7 +42,7 @@ export function puedeZarpar(s: Estado, mision: InstId): boolean {
 }
 
 function empezar(s: Estado, mision: InstId): void {
-  s.mision = { carta: mision, cartasResueltas: 0, mazoMezclado: false, fin: null, retirar: [] }
+  s.mision = { carta: mision, cartasResueltas: 0, mazoMezclado: false, fin: null, retirar: [], automatica: null }
   s.paso = 'mision'
   anotar(s, 'jugada', `Zarpas a «${nombre(s, mision)}».`, { tipo: 'zarpar', mision: copia(s, mision).id })
   encolar(s, { tipo: 'mision', paso: 'inicio' })
@@ -67,6 +68,7 @@ export const zarpar: Manejador<'zarpar'> = (s, t, e) => {
     for (const c of cartas) mover(s, c, 'descartesCapitan')
     const partes = [tripulantes.length > 0 ? `agotas a ${nombres(s, tripulantes)}` : '', cartas.length > 0 ? `descartas ${nombres(s, cartas)}` : '']
     anotar(s, 'jugada', `Cubres la Distancia ${distancia}: ${partes.filter(Boolean).join(' y ')}.`)
+    if (cartas.length > 0) anotar(s, 'jugada', `Descartas por sus iconos: ${nombres(s, cartas)}.`, { tipo: 'iconos', cartas: cartas.map((c) => copia(s, c).id) })
   }
   empezar(s, t.mision)
   return 'hecha'
@@ -74,6 +76,11 @@ export const zarpar: Manejador<'zarpar'> = (s, t, e) => {
 
 // ---------------------------------------------------------------------------
 // La misión
+
+/** Gana N de Avance en la misión en curso. */
+export function ganarAvanceMision(s: Estado, n: number, motivo: string): void {
+  ganar(s, n, motivo)
+}
 
 function ganar(s: Estado, n: number, motivo: string): void {
   if (!s.mision || n <= 0) return
@@ -93,7 +100,11 @@ export const mision: Manejador<'mision'> = (s, t) => {
       for (const cap of capacidadesDe(copia(s, m.carta).id)) {
         if (cap.ventana === 'alZarpar' && cap.desde === 'mision') tareas.push(...(cap.efecto?.(s, m.carta, null) ?? []))
       }
-      // «Después de zarpar…»: Respuestas de las cartas del jugador (fase 4).
+      // Las capacidades «Al zarpar» de tus cartas (Vela mayor, Chalupa) se aplican en el mismo momento.
+      for (const [cap, fuente] of candidatas(s)) {
+        if (cap.ventana === 'alZarpar' && sePuedeUsar(s, cap, fuente)) tareas.push({ tipo: 'usar', uso: { fuente, clave: cap.clave }, evento: null, paso: 'coste' })
+      }
+      // «Después de zarpar…»: Respuestas de las cartas del jugador.
       tareas.push({ tipo: 'evento', ev: { tipo: 'zarpar', mision: m.carta }, fase: 'antes', cancelado: false, usadas: [] })
       encolar(s, ...tareas)
       t.paso = 'encuentros'
@@ -124,7 +135,7 @@ export const ganarAvance: Manejador<'ganarAvance'> = (s, t) => {
     if (preparados(s).length < si.preparados) return 'hecha'
     ganar(s, t.n, `Tienes ${si.preparados} o más Tripulantes preparados`)
   } else {
-    ganar(s, t.n, 'Al zarpar')
+    ganar(s, t.n, t.motivo ?? 'Al zarpar')
   }
   return 'hecha'
 }
@@ -290,7 +301,7 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   devolverPeligros(s)
   s.mision = null
   s.prueba = null
-  s.temporales = s.temporales.filter((x) => x.hasta !== 'finMision')
+  s.temporales = s.temporales.filter((x) => x.hasta !== 'finMision' && x.hasta !== 'finPrueba')
   for (const clave of Object.keys(s.usos)) if (clave.startsWith('mision:')) delete s.usos[clave]
   s.paso = 'quedarseOZarpar'
   anotar(s, 'efecto', 'Vuelves a puerto.')

@@ -150,9 +150,21 @@ export const reparar: Manejador<'reparar'> = (s, t) => {
   return 'hecha'
 }
 
-/** Curar N: «cadaUno» cura N a cada Tripulante; «repartir» reparte N como quiera el jugador. */
+/** Curar N: «cadaUno» cura N a cada Tripulante; «repartir» reparte N como quiera el jugador; «uno», N a un Tripulante. */
 export const curar: Manejador<'curar'> = (s, t, e) => {
   const heridos = s.zonas.tripulacion.filter((c) => copia(s, c).heridas > 0)
+  if (t.modo === 'uno') {
+    const candidatos = t.objetivo ? heridos.filter((c) => c === t.objetivo) : heridos
+    if (candidatos.length === 0) return 'hecha'
+    if (candidatos.length > 1 && !e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'curarUno', n: t.n }, candidatas: candidatos, min: 1, max: 1 })
+    const objetivo = candidatos.length === 1 ? candidatos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
+    if (!objetivo) return 'hecha'
+    const c = copia(s, objetivo)
+    const curadas = Math.min(t.n, c.heridas)
+    c.heridas -= curadas
+    anotar(s, 'efecto', `Curas ${curadas} a ${nombre(s, objetivo)}.`)
+    return 'hecha'
+  }
   if (t.modo === 'cadaUno') {
     for (const c of heridos) copia(s, c).heridas = Math.max(0, copia(s, c).heridas - t.n)
     if (heridos.length > 0) anotar(s, 'efecto', `Curas ${t.n} a cada Tripulante.`)

@@ -156,6 +156,12 @@ export function costeImpreso(id: string): number {
   return 'coste' in c && typeof c.coste === 'number' ? c.coste : 0
 }
 
+/** Cañones: las Mejoras de barco con munición (N18). */
+export function esCanon(id: string): boolean {
+  const e = porId(id)
+  return e.tipo === 'mejoraBarco' && e.carta.canon
+}
+
 /** Una carta indestructible no se puede perder ni agotar. Los Tesoros tampoco. */
 export function esIndestructible(id: string): boolean {
   const e = porId(id)
