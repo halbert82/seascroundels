@@ -7,13 +7,15 @@ import { textoUso } from '../textos/decisiones.ts'
 import type { Decision, Estado } from '../../engine/tipos.ts'
 import { Contexto } from './contexto.tsx'
 import { claveDecision, interaccion, seleccionVacia, type Interaccion, type Objetivo, type OpcionCarta, type Seleccion } from './interaccion.ts'
-import { ALTO, ANCHO, Lienzo } from './Lienzo.tsx'
+import { enLienzo } from './disposicion.ts'
+import { ALTO, Lienzo, useLienzo } from './Lienzo.tsx'
 import { PanelDecision } from './PanelDecision.tsx'
 import { Ayuda, FinDeMision, FinDePartida, Menu, MenuCarta, Registro, UltimoOcurrido } from './Paneles.tsx'
 import { useVelocidad } from './preferencias.ts'
 import { usePartida, type PartidaEnMesa } from './usePartida.ts'
 import { CapaZoom, ProveedorZoom } from './Zoom.tsx'
-import { BarraSuperior, Mano, Mazos, ZonaBarco, ZonaPuerto } from './Zonas.tsx'
+import { ALTO_ZONAS, ARRIBA, DER, HUECO, IZQ, MARGEN, anchoCentro } from './disposicion.ts'
+import { BarraSuperior, BloqueBarco, Mano, Mazos, ZonaPuerto, ZonaTripulacion } from './Zonas.tsx'
 import { ZonaMision } from './ZonaMision.tsx'
 import './mesa.css'
 
@@ -26,7 +28,16 @@ interface Props {
   nueva: () => PartidaEnMesa
 }
 
-export function Mesa({ inicial, guardar, irA, nueva }: Props) {
+export function Mesa(props: Props) {
+  return (
+    <Lienzo>
+      <MesaEnLienzo {...props} />
+    </Lienzo>
+  )
+}
+
+function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
+  const { ancho } = useLienzo()
   const juego = usePartida(inicial, guardar)
   const s = juego.estado
   const d = s.pendiente
@@ -70,12 +81,8 @@ export function Mesa({ inicial, guardar, irA, nueva }: Props) {
     const unica = opciones[0]
     if (opciones.length === 1 && unica) return ejecutar(unica)
     if (opciones.length === 0) return
-    const lienzo = elemento.closest('.lienzo')?.getBoundingClientRect()
-    const caja = elemento.getBoundingClientRect()
-    const escala = lienzo ? lienzo.width / ANCHO : 1
-    const x = lienzo ? (caja.left - lienzo.left + caja.width / 2) / escala : 0
-    const y = lienzo ? (caja.top - lienzo.top) / escala : 0
-    setMenuCarta({ x: Math.min(ANCHO - 280, Math.max(10, x - 130)), y: Math.max(70, Math.min(ALTO - 220, y - 20)), opciones })
+    const p = enLienzo(elemento)
+    setMenuCarta({ x: Math.min(p.anchoLienzo - 280, Math.max(10, p.x + p.ancho / 2 - 130)), y: Math.max(70, Math.min(ALTO - 220, p.y - 20)), opciones })
   }
 
   const elegir = (e: Parameters<typeof juego.elegir>[0]) => {
@@ -108,19 +115,22 @@ export function Mesa({ inicial, guardar, irA, nueva }: Props) {
     </div>
   )
 
+  const zona = { top: ARRIBA, height: ALTO_ZONAS }
   return (
-    <Lienzo>
-      <ProveedorZoom>
+    <ProveedorZoom>
         <Contexto.Provider value={{ s, inter, pulsar }}>
           <LayoutGroup>
-            <div className={`mesa vel-${velocidad}`}>
+            <div className={`mesa vel-${velocidad}`} style={{ width: ancho }}>
               <BarraSuperior botones={botones} />
-              <div className="col-izq">
-                <ZonaBarco />
+              <div className="col-izq" style={{ ...zona, left: MARGEN, width: IZQ }}>
+                <ZonaTripulacion />
               </div>
-              <main className="centro">{s.mision ? <ZonaMision desde={juego.partida.desde} decision={d} sel={actual} /> : <ZonaPuerto />}</main>
-              <aside className="col-der">
+              <main className="centro" style={{ ...zona, left: MARGEN + IZQ + HUECO, width: anchoCentro(ancho) }}>
+                {s.mision ? <ZonaMision desde={juego.partida.desde} decision={d} sel={actual} /> : <ZonaPuerto />}
+              </main>
+              <aside className="col-der" style={{ ...zona, right: MARGEN, width: DER }}>
                 <UltimoOcurrido s={s} desde={juego.partida.desde} />
+                <BloqueBarco />
                 <Mazos />
               </aside>
               {d && actual && <PanelDecision decision={d} sel={actual} setSel={setSel} elegir={elegir} />}
@@ -136,8 +146,7 @@ export function Mesa({ inicial, guardar, irA, nueva }: Props) {
             </div>
           </LayoutGroup>
         </Contexto.Provider>
-      </ProveedorZoom>
-    </Lienzo>
+    </ProveedorZoom>
   )
 }
 

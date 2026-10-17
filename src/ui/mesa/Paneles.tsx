@@ -2,7 +2,8 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, type ReactNode } from 'react'
-import { nombreDe, porId } from '../../engine/catalogo.ts'
+import { nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
+import { partesDeRecompensa } from '../textos/decisiones.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { resumenDePartida } from '../../engine/resumen.ts'
 import type { EntradaRegistro, Estado } from '../../engine/tipos.ts'
@@ -33,7 +34,7 @@ function Linea({ r }: { r: EntradaRegistro }) {
 export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
   const velocidad = useVelocidad()
   const nuevas = s.registro.slice(desde).filter((r) => r.tipo !== 'turno')
-  const anteriores = nuevas.length === 0 ? s.registro.slice(-4).filter((r) => r.tipo !== 'turno') : []
+  const anteriores = nuevas.length === 0 ? s.registro.filter((r) => r.tipo !== 'turno').slice(-3) : []
   return (
     <section className="zona ultimo">
       <h2 className="rotulo">
@@ -41,7 +42,7 @@ export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
       </h2>
       <ol className="lineas">
         <AnimatePresence initial={false}>
-          {(nuevas.length > 0 ? nuevas.slice(-9) : anteriores).map((r, i) => (
+          {(nuevas.length > 0 ? nuevas.slice(-5) : anteriores).map((r, i) => (
             <motion.div
               key={`${desde}-${i}-${r.texto}`}
               initial={duracion(velocidad, 1) > 0 ? { opacity: 0, x: 12 } : false}
@@ -53,6 +54,7 @@ export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
           ))}
         </AnimatePresence>
       </ol>
+      {nuevas.length > 5 && <span className="mas-en-registro">y {nuevas.length - 5} más en el registro</span>}
     </section>
   )
 }
@@ -204,30 +206,79 @@ const RESULTADO_MISION = {
   hundida: { titulo: 'El Barco se hunde', clase: 'mal' },
 } as const
 
-/** Panel con el resultado de una misión recién terminada (de las líneas del registro desde tu última decisión). */
+/** Cifras de una misión, del registro entre el zarpe y su final. */
+function cifrasDeMision(s: Estado, fin: number) {
+  let inicio = fin
+  while (inicio > 0 && s.registro[inicio]?.dato?.tipo !== 'zarpar') inicio--
+  const cifras = { heridas: 0, dano: 0, cartas: 0 }
+  for (const r of s.registro.slice(inicio, fin)) {
+    const d = r.dato
+    if (d?.tipo === 'heridas') cifras.heridas += d.n
+    else if (d?.tipo === 'dano') cifras.dano += d.n
+    else if (d?.tipo === 'pago') cifras.cartas += d.n
+    else if (d?.tipo === 'iconos') cifras.cartas += d.cartas.length
+    else if (d?.tipo === 'usar' && tipoDe(d.carta) === 'evento') cifras.cartas += 1
+  }
+  return cifras
+}
+
+function frase(partes: string[]): string {
+  if (partes.length <= 1) return partes[0] ?? ''
+  return `${partes.slice(0, -1).join(', ')} y ${partes[partes.length - 1]}`
+}
+
+/** Panel con el resultado de una misión recién terminada: recompensa completa y resumen de la misión. */
 export function FinDeMision({ s, desde, alCerrar }: { s: Estado; desde: number; alCerrar: () => void }) {
-  const nuevas = s.registro.slice(desde)
-  const i = nuevas.findIndex((r) => r.dato?.tipo === 'finMision')
-  const fin = nuevas[i]?.dato
+  const i = s.registro.findIndex((r, k) => k >= desde && r.dato?.tipo === 'finMision')
+  const fin = s.registro[i]?.dato
   if (i < 0 || fin?.tipo !== 'finMision') return null
   const r = RESULTADO_MISION[fin.resultado]
-  const vuelta = nuevas.findIndex((x, j) => j > i && x.texto === 'Vuelves a puerto.')
-  const lineas = nuevas.slice(i + 1, vuelta < 0 ? undefined : vuelta).filter((x) => x.tipo !== 'turno')
+  const cifras = cifrasDeMision(s, i)
+  const pendiente = s.pendiente?.motivo.clave
+  const eliges = pendiente === 'buscar' || pendiente === 'portadorTesoro'
+  const recompensa = fin.resultado === 'superada' ? frase(partesDeRecompensa(fin.mision)) : ''
   return (
     <Capa alCerrar={alCerrar} clase={`fin-mision ${r.clase}`}>
       <div className="fin-mision-cuerpo">
         <div className="fin-mision-carta">
           <CartaEscalada entrada={porId(fin.mision)} escala={0.5} />
         </div>
-        <div>
+        <div className="fin-mision-texto">
           <span className="fin-rotulo">{r.titulo}</span>
           <h2>{nombreDe(fin.mision)}</h2>
-          <ol className="lineas">
-            {lineas.map((x, k) => (
-              <Linea key={k} r={x} />
-            ))}
-            {lineas.length === 0 && <li className="linea vacio">Sin recompensa: vuelves a puerto.</li>}
-          </ol>
+          {fin.resultado === 'superada' ? (
+            <p className="fin-recompensa">
+              <b>Recompensa:</b> {recompensa}
+              {eliges && <em> Lo eliges al pulsar «Seguir».</em>}
+            </p>
+          ) : (
+            <p className="fin-recompensa mal">Sin recompensa: pierdes el Avance de la misión y vuelves a puerto.</p>
+          )}
+          <dl className="fin-cifras">
+            <div>
+              <dt>Avance</dt>
+              <dd>
+                {fin.avance ?? 0}
+                <small>/{fin.necesario ?? '?'}</small>
+              </dd>
+            </div>
+            <div>
+              <dt>Peligros resueltos</dt>
+              <dd>{fin.resueltas ?? 0}</dd>
+            </div>
+            <div>
+              <dt>Heridas</dt>
+              <dd>{cifras.heridas}</dd>
+            </div>
+            <div>
+              <dt>Daño al Barco</dt>
+              <dd>{cifras.dano}</dd>
+            </div>
+            <div>
+              <dt>Cartas gastadas</dt>
+              <dd>{cifras.cartas}</dd>
+            </div>
+          </dl>
         </div>
       </div>
       <div className="capa-botones">

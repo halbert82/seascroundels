@@ -87,7 +87,7 @@ export interface EntradaRegistro {
 export type Suceso =
   | { tipo: 'zarpar'; mision: CartaId }
   | { tipo: 'prueba'; peligro: CartaId; encuentro: string; superada: boolean }
-  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision }
+  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision; resueltas?: number; avance?: number; necesario?: number }
   | { tipo: 'hundimiento' }
   | { tipo: 'derrota'; carta: CartaId }
   | { tipo: 'rehenPerdido'; carta: CartaId }
@@ -108,6 +108,8 @@ export type Suceso =
   | { tipo: 'heridas'; inst: InstId; n: number }
   | { tipo: 'dano'; n: number }
   | { tipo: 'reputacion'; n: number }
+  /** Cartas de la mano descartadas para pagar un coste. */
+  | { tipo: 'pago'; n: number }
 
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
@@ -161,6 +163,8 @@ export interface PruebaEnCurso {
   preparaSiSuperas: boolean
   /** Se supera sin comprometer ni revelar Destino («Carronadas», «Soborno»). */
   automatica: boolean
+  /** Cartas agotadas para pagar capacidades durante esta Prueba (para distinguirlas en la mesa). */
+  agotadas: InstId[]
   resultado: 'superada' | 'fallada' | null
 }
 

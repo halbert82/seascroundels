@@ -131,7 +131,10 @@ export const usar: Manejador<'usar'> = (s, t) => {
       }
       if (fuente === null) throw new Error(`La capacidad ${cap.clave} necesita una carta que pague su coste`)
       const c = copia(s, fuente)
-      if (coste.tipo === 'agotarse') c.agotada = true
+      if (coste.tipo === 'agotarse') {
+        c.agotada = true
+        if (s.prueba && !s.prueba.agotadas.includes(fuente)) s.prueba.agotadas.push(fuente)
+      }
       else if (coste.tipo === 'municion') c.municion -= coste.n
       // N13: una herida pagada como coste se puede evitar o desviar como cualquier otra (Grumete, «Ni un hombre
       // atrás»); el coste se da por pagado igualmente.

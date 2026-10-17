@@ -32,6 +32,8 @@ export interface PropsCartaMesa {
   marca?: Marca
   /** Orden de elección (1, 2…), para las decisiones en que importa. */
   numero?: number
+  /** Participa en la Prueba en curso (comprometido) o se ha agotado para pagar algo en ella. */
+  participa?: boolean
   fichas?: FichasCarta
   /** Se da la vuelta desde el dorso al aparecer. */
   revelar?: TipoDorso
@@ -51,7 +53,8 @@ export function CartaMesa(p: PropsCartaMesa) {
   const velocidad = useVelocidad()
   const zoom = useZoom()
   const t = duracion(velocidad, 0.28)
-  const giro = p.agotada ? { rotate: 90, scale: Math.min(ancho, alto) / Math.max(ancho, alto) } : { rotate: 0, scale: 1 }
+  // Agotada: girada 90° sin encogerse (el hueco de la carta ya tiene sitio para ella).
+  const giro = p.agotada ? { rotate: 90 } : { rotate: 0 }
 
   // Destello al sufrir heridas o perder munición.
   const [golpe, setGolpe] = useState(0)
@@ -69,7 +72,7 @@ export function CartaMesa(p: PropsCartaMesa) {
     <motion.div
       {...(p.sinVuelo ? {} : { layoutId: p.inst, layout: true })}
       transition={{ duration: t, ease: [0.3, 0.7, 0.3, 1] }}
-      className={`carta-mesa${p.marca ? ` marca-${p.marca}` : ''}${pulsable ? ' pulsable' : ''}`}
+      className={`carta-mesa${p.marca ? ` marca-${p.marca}` : ''}${pulsable ? ' pulsable' : ''}${p.participa ? ' participa' : ''}${p.agotada ? ' agotada' : ''}`}
       data-inst={p.inst}
       data-carta={p.id}
       style={{ width: ancho * p.escala, height: alto * p.escala }}
@@ -116,7 +119,12 @@ export function CartaMesa(p: PropsCartaMesa) {
         </motion.div>
       </motion.div>
       {golpe > 0 && <div key={golpe} className="destello" style={{ '--t': `${duracion(velocidad, 0.45)}s` } as CSSProperties} />}
-      <Fichas fichas={p.fichas} abajo={p.agotada ? (alto * p.escala - (ancho * p.escala) ** 2 / (alto * p.escala)) / 2 + 4 : undefined} />
+      <Fichas fichas={p.fichas} abajo={p.agotada ? (alto * p.escala - ancho * p.escala) / 2 + 4 : undefined} />
+      {p.participa && (
+        <span className="sello-participa" style={p.agotada ? { top: (alto * p.escala - ancho * p.escala) / 2 - 10 } : undefined}>
+          En la Prueba
+        </span>
+      )}
       {p.numero !== undefined && <span className="numero-orden">{p.numero}</span>}
       {p.marca === 'elegida' && p.numero === undefined && <span className="marca-check" />}
       {p.children}

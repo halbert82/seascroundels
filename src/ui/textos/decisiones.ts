@@ -6,6 +6,7 @@ import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
 import { encuentroDe } from '../../engine/peligros.ts'
 import { textoDe } from '../../engine/textos.ts'
+import type { Efecto } from '../../engine/efectos.ts'
 import type { Decision, Estado, Evento, InstId, Uso } from '../../engine/tipos.ts'
 
 export interface TextoDecision {
@@ -220,4 +221,85 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
 export function nombreEncuentro(s: Estado, inst: InstId): string {
   const e = porId(copia(s, inst).id)
   return e.tipo === 'peligro' || e.tipo === 'mazoPropio' ? encuentroDe(s, inst).nombre : nombreDe(e.id)
+}
+
+// ---------------------------------------------------------------------------
+// Efectos y recompensas en palabras
+
+const n2 = (n: number, uno: string, varios: string) => `${n} ${n === 1 ? uno : varios}`
+
+/** Un efecto de recuadro o de línea Sin oposición, en palabras: «2 heridas», «1 daño al Barco (en tierra, 1 herida)». */
+export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): string | null {
+  switch (e.tipo) {
+    case 'heridas':
+      if (e.soloEnTierra) return null // va junto al daño
+      return `${n2(e.n, 'herida', 'heridas')}${e.capitan ? ' al Capitán' : ''}`
+    case 'dano': {
+      const alternativa = todos.find((x) => x.tipo === 'heridas' && x.soloEnTierra)
+      const enTierra = alternativa && alternativa.tipo === 'heridas' ? ` (en tierra, ${n2(alternativa.n, 'herida', 'heridas')})` : ''
+      return `${n2(e.n, 'daño', 'daños')} al Barco${enTierra}`
+    }
+    case 'reparar':
+      return `reparas ${e.n}`
+    case 'agotar':
+      return e.n === 'todos' ? 'agotas a todos tus Tripulantes' : `agotas a ${n2(e.n, 'Tripulante', 'Tripulantes')}`
+    case 'descartar':
+      return `descartas ${n2(e.n, 'carta', 'cartas')}`
+    case 'robar':
+      return `robas ${n2(e.n, 'carta', 'cartas')}`
+    case 'curar':
+      return `curas ${e.n}`
+    case 'perderAvance':
+      return e.n === 'todo' ? 'pierdes todo el Avance' : `pierdes ${e.n} de Avance`
+    case 'perderMunicion':
+      return `pierdes ${e.n} de munición`
+    case 'perderMejora':
+      return e.n === 1 ? 'pierdes una Mejora' : `pierdes ${e.n} Mejoras`
+    case 'agotarMejora':
+      return 'agotas una Mejora'
+    case 'rehen':
+      return 'te capturan un rehén'
+    case 'reputacion':
+      return e.n < 0 ? `pierdes ${-e.n} de reputación` : `ganas ${e.n} de reputación`
+    case 'menosMando':
+      return '−1 Mando este turno'
+    case 'perderDia':
+      return 'pierdes un día'
+    case 'entraEnMazo':
+      return `«${nombreDe(e.carta)}» entra en el mazo de Peligros`
+    case 'seRetira':
+      return 'la carta se retira del juego'
+    case 'recluta':
+      return 'puedes reclutar'
+    case 'sinFallo':
+      return 'no se aplica el efecto de fallo'
+  }
+}
+
+export function describirEfectos(efectos: readonly Efecto[]): string {
+  return efectos
+    .map((e) => describirEfecto(e, efectos))
+    .filter((x): x is string => Boolean(x))
+    .join(' y ')
+}
+
+/** Las partes de la recompensa de una misión, en palabras. */
+export function partesDeRecompensa(misionId: string): string[] {
+  const e = porId(misionId)
+  if (e.tipo !== 'capitulo') return []
+  const r = e.carta.recompensa
+  const partes: string[] = []
+  if (r.victoria) partes.push('¡ganas la partida!')
+  if (r.rep) partes.push(`+${r.rep} de reputación`)
+  if (r.search === 'crew') partes.push('buscas un Tripulante en el mazo de muelle')
+  else if (r.search === 'ship') partes.push('buscas una Mejora de barco en el mazo de muelle')
+  else if (r.search) partes.push('buscas una Mejora en el mazo de muelle')
+  if (r.draw) partes.push(`robas ${n2(r.draw, 'carta', 'cartas')}`)
+  if (r.tesoro) partes.push(`ganas el Tesoro «${nombreDe(r.tesoro)}»`)
+  const siguiente = /carta (\d+)/.exec(e.carta.textoSiguiente)?.[1]
+  if (siguiente && !r.tesoro) {
+    const capitulo = e.mision.capitulos.find((c) => c.num === Number(siguiente))
+    partes.push(capitulo ? `«${capitulo.nombre}» entra en el mazo de Misiones` : `la carta ${siguiente} entra en el mazo de Misiones`)
+  }
+  return partes
 }

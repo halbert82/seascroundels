@@ -202,7 +202,14 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   if (!m) return 'hecha'
   const e = porId(copia(s, m.carta).id)
   if (e.tipo !== 'capitulo') return 'hecha'
-  anotar(s, 'fin', `¡Superas «${e.carta.nombre}»!`, { tipo: 'finMision', mision: e.id, resultado: 'superada' })
+  anotar(s, 'fin', `¡Superas «${e.carta.nombre}»!`, {
+    tipo: 'finMision',
+    mision: e.id,
+    resultado: 'superada',
+    resueltas: m.cartasResueltas,
+    avance: copia(s, m.carta).avance,
+    necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
+  })
   for (const h of [...s.zonas.rehenes]) {
     mover(s, h, 'tripulacion', 'abajo')
     anotar(s, 'efecto', `Rescatas a ${nombre(s, h)}.`)
@@ -265,7 +272,14 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
   if (t.paso === 'rehenes') {
     const id = copia(s, m.carta).id
     const textos = { retirada: 'Te retiras de', hundida: 'El Barco se hunde: no superas', superada: '' }
-    anotar(s, 'fin', `${textos[m.fin ?? 'retirada']} «${nombre(s, m.carta)}».`, { tipo: 'finMision', mision: id, resultado: m.fin ?? 'retirada' })
+    anotar(s, 'fin', `${textos[m.fin ?? 'retirada']} «${nombre(s, m.carta)}».`, {
+      tipo: 'finMision',
+      mision: id,
+      resultado: m.fin ?? 'retirada',
+      resueltas: m.cartasResueltas,
+      avance: copia(s, m.carta).avance,
+      necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
+    })
     copia(s, m.carta).avance = 0
     const tareas: NuevaTarea[] = []
     for (const h of [...s.zonas.rehenes]) {

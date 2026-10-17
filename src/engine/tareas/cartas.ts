@@ -139,7 +139,7 @@ export const pagar: Manejador<'pagar'> = (s, t, e) => {
   }
   const ids = eleccionDe(e, 'cartas').ids
   for (const c of ids) mover(s, c, 'descartesCapitan')
-  anotar(s, 'pagar', `Pagas ${ids.length} por «${nombreDe(t.motivo)}»: ${nombres(s, ids)}.`)
+  anotar(s, 'pagar', `Pagas ${ids.length} por «${nombreDe(t.motivo)}»: ${nombres(s, ids)}.`, { tipo: 'pago', n: ids.length })
   return 'hecha'
 }
 

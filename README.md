@@ -18,8 +18,9 @@ Esta aplicación web sirve para jugarlo y probarlo.
 - **Fase 4 (hecha):** capacidades de todas las cartas del jugador (Tripulantes, Mejoras, Eventos, Tesoros,
   Catalina y Nassau), con una prueba por carta. El jugador automático usa las capacidades, y el informe de
   equilibrio da datos por carta, también con mazos de muelle variados.
-- **Fase 5 (en curso):** la mesa de juego. Ya se juega entera con el ratón: portada, mesa, decisiones, Prueba con
-  desglose y Destino grande, animaciones, registro, guardado automático, deshacer, ayuda y fin de partida.
+- **Fase 5 (hecha):** la mesa de juego. Se juega entera con el ratón: portada, mesa que se adapta al ancho de la
+  pantalla, decisiones, Prueba con desglose y Destino grande, Tripulantes con hueco fijo (girados al agotarse),
+  animaciones, registro, guardado automático, deshacer, ayuda, fin de misión y fin de partida.
 
 ## Para trabajar en local
 

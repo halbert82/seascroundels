@@ -63,7 +63,8 @@ function Encuentro({ e }: { e: VistaEncuentro }) {
   )
 }
 
-function Destino({ d, entraDuranteLaPartida }: { d: VistaDestino; entraDuranteLaPartida: boolean }) {
+/** La franja del Destino (también se usa sola, ampliada, en la mesa). */
+export function Destino({ d, entraDuranteLaPartida }: { d: VistaDestino; entraDuranteLaPartida: boolean }) {
   const conLinea = d.texto.length > 0 || d.sinOposicion.length > 0
   return (
     <div className="dest">

@@ -42,6 +42,7 @@ function nuevaPrueba(encuentro: InstId): PruebaEnCurso {
     avanceSiSuperas: 0,
     preparaSiSuperas: false,
     automatica: false,
+    agotadas: [],
     resultado: null,
   }
 }

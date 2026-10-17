@@ -1,4 +1,4 @@
-// Zonas de la mesa: barra superior, Barco y tripulación, puerto y muelle, misión, mano y mazos.
+// Zonas de la mesa: barra superior, tripulación, Barco, puerto y muelle, mano y mazos.
 
 import { motion } from 'motion/react'
 import type { CSSProperties, ReactNode } from 'react'
@@ -14,7 +14,9 @@ import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, fichasDe, useMesa } from './contexto.tsx'
+import { IZQ, anchoCentro, escalaPara } from './disposicion.ts'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
+import { useLienzo } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
 import { useZoom } from './Zoom.tsx'
 
@@ -70,8 +72,10 @@ function pasoActual(s: Estado): number {
 
 export function BarraSuperior({ botones }: { botones: ReactNode }) {
   const { s } = useMesa()
+  const zoom = useZoom()
   const paso = pasoActual(s)
   const escenario = s.zonas.escenarioEnCurso[0]
+  const idEscenario = escenario ? copia(s, escenario).id : null
   const dias = s.zonas.mazoEscenario.length
   return (
     <header className="barra">
@@ -92,13 +96,17 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
         </div>
       )}
       <div className="barra-derecha">
-        <div className="reloj" title="Cada turno se revela una carta de Escenario. Cuando no quedan, es tu último turno.">
-          {escenario && <CartaDe inst={escenario} escala={0.1} revelar="escenario" />}
-          <div className="reloj-texto">
-            <span className="reloj-n">{s.ultimoTurno ? 'Último turno' : `${dias} ${dias === 1 ? 'día' : 'días'}`}</span>
-            <span className="reloj-sub">{escenario ? nombreDe(copia(s, escenario).id) : 'Escenario'}</span>
-          </div>
-        </div>
+        <button
+          type="button"
+          className="reloj"
+          title="Cada turno se revela una carta de Escenario; cuando no quedan, es tu último turno. Pulsa para ver la carta de este turno."
+          onClick={(e) => idEscenario && zoom.mostrar(idEscenario, e.currentTarget, true)}
+          onPointerLeave={() => zoom.ocultar()}
+        >
+          <Icono id="acampar" />
+          <span className="reloj-n">{s.ultimoTurno ? 'Último turno' : `${dias} ${dias === 1 ? 'día' : 'días'}`}</span>
+          {idEscenario && <span className="reloj-sub">· {nombreDe(idEscenario)}</span>}
+        </button>
         <div className="reputacion" title={`Reputación: ganas al llegar a ${s.reputacionObjetivo}`}>
           <Icono id="rep" />
           <Numero valor={s.reputacion} />
@@ -116,7 +124,7 @@ function entornoIcono(s: Estado, mision: InstId): IconoId {
 }
 
 // ---------------------------------------------------------------------------
-// Barco y tripulación
+// Tripulación y Barco
 
 function Marcas({ n, maximo, clase }: { n: number; maximo: number; clase: string }) {
   return (
@@ -128,7 +136,7 @@ function Marcas({ n, maximo, clase }: { n: number; maximo: number; clase: string
   )
 }
 
-/** Mejora (o Tesoro) en pequeño, bajo su portador: nombre, munición y si está agotada. */
+/** Mejora (o Tesoro) en pequeño, bajo su portador: nombre, munición y si está agotada (y si se agotó ahora). */
 function Chip({ inst }: { inst: InstId }) {
   const { s, inter, pulsar } = useMesa()
   const zoom = useZoom()
@@ -138,11 +146,12 @@ function Chip({ inst }: { inst: InstId }) {
   const marca = inter.marcas.get(inst)
   const f = fichasDe(s, inst)
   const tesoro = e.tipo === 'tesoro'
+  const ahora = c.agotada && (s.prueba?.agotadas.includes(inst) ?? false)
   return (
     <motion.button
       layoutId={inst}
       type="button"
-      className={`chip${tesoro ? ' tesoro' : ''}${c.agotada ? ' agotada' : ''}${marca ? ` marca-${marca}` : ''}`}
+      className={`chip${tesoro ? ' tesoro' : ''}${c.agotada ? ' agotada' : ''}${ahora ? ' ahora' : ''}${marca ? ` marca-${marca}` : ''}`}
       data-inst={inst}
       data-carta={c.id}
       onClick={(ev) => opciones.length > 0 && pulsar(inst, ev.currentTarget)}
@@ -152,7 +161,7 @@ function Chip({ inst }: { inst: InstId }) {
         ev.preventDefault()
         zoom.mostrar(c.id, ev.currentTarget)
       }}
-      title={opciones.map((o) => o.etiqueta).join(' · ') || undefined}
+      title={[nombreDe(c.id), c.agotada ? (ahora ? 'agotada en esta Prueba' : 'agotada') : '', ...opciones.map((o) => o.etiqueta)].filter(Boolean).join(' · ')}
     >
       <Icono id={tesoro ? 'doblon' : 'mejora'} />
       <span className="chip-nombre">{nombreDe(c.id)}</span>
@@ -162,45 +171,73 @@ function Chip({ inst }: { inst: InstId }) {
           {f.municion}
         </span>
       )}
-      {c.agotada && <span className="chip-estado">agotada</span>}
+      {c.agotada && <Icono id="agotar" className="chip-agotada" />}
     </motion.button>
   )
 }
 
-function Tripulante({ inst, escala }: { inst: InstId; escala: number }) {
+/** Hueco fijo de un Tripulante: cabe la carta derecha y la carta girada, así nada se mueve al agotar o preparar. */
+function Tripulante({ inst, escala, rehen }: { inst: InstId; escala: number; rehen?: boolean }) {
   const { s } = useMesa()
+  const lado = 528 * escala
   const mejoras = vinculadas(s, inst)
   return (
-    <div className="tripulante">
-      <CartaDe inst={inst} escala={escala} />
-      {mejoras.length > 0 && (
-        <div className="chips">
-          {mejoras.map((m) => (
-            <Chip key={m} inst={m} />
-          ))}
-        </div>
-      )}
+    <div className={`tripulante${rehen ? ' rehen' : ''}`} style={{ width: lado }}>
+      <div className="hueco" style={{ width: lado, height: lado }}>
+        <CartaDe inst={inst} escala={escala} />
+        {rehen && (
+          <span className="rehen-marca">
+            <Icono id="rehen" /> Rehén
+          </span>
+        )}
+      </div>
+      <div className="chips una-fila">
+        {mejoras.map((m) => (
+          <Chip key={m} inst={m} />
+        ))}
+      </div>
     </div>
   )
 }
 
-export function ZonaBarco() {
+export function ZonaTripulacion() {
+  const { s } = useMesa()
+  const total = s.zonas.tripulacion.length + s.zonas.rehenes.length
+  // Tres huecos por fila; si hay más de seis, se achican para que quepan tres filas.
+  const porFila = 3
+  const filas = Math.max(2, Math.ceil(total / porFila))
+  const ladoPorAncho = Math.floor((IZQ - 30 - (porFila - 1) * 12) / porFila)
+  const ladoPorAlto = (548 - 22 - 30 - (filas - 1) * 10) / filas - 28
+  const escala = Math.min(ladoPorAncho, ladoPorAlto) / 528
+  return (
+    <section className="zona zona-tripulacion">
+      <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{valor(s, { tipo: 'capacidad' })} · el Capitán no cuenta</span>}>Tripulación</Rotulo>
+      <div className="tripulacion">
+        {s.zonas.tripulacion.map((c) => (
+          <Tripulante key={c} inst={c} escala={escala} />
+        ))}
+        {s.zonas.rehenes.map((c) => (
+          <Tripulante key={c} inst={c} escala={escala} rehen />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+export function BloqueBarco() {
   const { s, inter, pulsar } = useMesa()
   const danoMax = valor(s, { tipo: 'danoMaximo' })
   const espacio = valor(s, { tipo: 'espacio' })
-  const capacidad = valor(s, { tipo: 'capacidad' })
   const mejoras = vinculadas(s, 'barco')
-  const tripulacion = s.zonas.tripulacion
-  const muchos = tripulacion.length > 4
   const opcionesBarco = inter.opciones.get('barco') ?? []
   return (
     <section className="zona zona-barco">
-      <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{capacidad}</span>}>Tu Barco</Rotulo>
+      <Rotulo>Tu Barco</Rotulo>
       <div className="barco">
         <CartaMesa
           inst="barco"
           id="barco"
-          escala={0.27}
+          escala={0.2}
           marca={inter.marcas.get('barco') ?? null}
           {...(opcionesBarco.length > 0 ? { onClick: (el: HTMLElement) => pulsar('barco', el) } : {})}
         />
@@ -223,20 +260,6 @@ export function ZonaBarco() {
           </div>
         </div>
       </div>
-      <Rotulo extra={s.zonas.rehenes.length > 0 ? <span className="dato rojo">{s.zonas.rehenes.length} rehén</span> : undefined}>Tripulación</Rotulo>
-      <div className={`tripulacion${muchos ? ' apretada' : ''}`}>
-        {tripulacion.map((c) => (
-          <Tripulante key={c} inst={c} escala={muchos ? 0.24 : 0.27} />
-        ))}
-        {s.zonas.rehenes.map((c) => (
-          <div key={c} className="tripulante rehen" title="Rehén: lo rescatas si superas la misión.">
-            <CartaDe inst={c} escala={0.2} />
-            <span className="rehen-marca">
-              <Icono id="rehen" /> Rehén
-            </span>
-          </div>
-        ))}
-      </div>
     </section>
   )
 }
@@ -244,7 +267,7 @@ export function ZonaBarco() {
 // ---------------------------------------------------------------------------
 // Puerto
 
-function Mision({ inst }: { inst: InstId }) {
+function Mision({ inst, escala }: { inst: InstId; escala: number }) {
   const { s } = useMesa()
   const id = copia(s, inst).id
   const distancia = valor(s, { tipo: 'distancia', mision: inst })
@@ -252,7 +275,7 @@ function Mision({ inst }: { inst: InstId }) {
   const minima = reputacionMinima(id)
   return (
     <div className="mision">
-      <CartaDe inst={inst} escala={0.4} />
+      <CartaDe inst={inst} escala={escala} />
       <div className="mision-datos">
         <span title="Avance que pide la misión">
           <Icono id="avance" /> {copia(s, inst).avance > 0 ? `${copia(s, inst).avance}/` : ''}
@@ -275,35 +298,39 @@ function Mision({ inst }: { inst: InstId }) {
 
 export function ZonaPuerto() {
   const { s } = useMesa()
+  const { ancho } = useLienzo()
+  const centro = anchoCentro(ancho) - 26
   const n = s.zonas.muelle.length
-  // El muelle ocupa unos 510 px: las cartas se achican si hay más de cuatro.
-  const escalaMuelle = n <= 4 ? 0.32 : Math.max(0.2, (510 - (n - 1) * 9) / n / 378)
+  // Alto disponible para el muelle y las misiones, quitando rótulos, huecos y la fila de abajo (puerto y Escenario).
+  const altoCartas = 548 - 24 - 3 * 24 - 2 * 12 - 104 - 22
+  const escalaMuelle = Math.min(escalaPara(centro, Math.max(4, n), 378, 9, 0.2, 0.4), 0.33)
+  const escalaMisiones = Math.min(escalaPara(centro, 3, 528, 14, 0.3, 0.5), (altoCartas - 528 * escalaMuelle) / 378)
   return (
     <section className="zona zona-puerto">
-      <div className="puerto-fila">
-        <div className="bloque crece">
-          <Rotulo extra={<span className="dato">Se repone al terminar Jugar cartas</span>}>Muelle</Rotulo>
-          <div className="fila-cartas muelle">
-            {s.zonas.muelle.map((c) => (
-              <CartaDe key={c} inst={c} escala={escalaMuelle} />
-            ))}
-            {n === 0 && <span className="vacio">El muelle está vacío</span>}
-          </div>
-        </div>
-        <div className="bloque">
-          <Rotulo>Puerto</Rotulo>
-          <CartaMesa inst="puerto" id={s.puerto} escala={0.3} />
+      <div className="bloque">
+        <Rotulo extra={<span className="dato">Se repone al terminar Jugar cartas</span>}>Muelle</Rotulo>
+        <div className="fila-cartas muelle">
+          {s.zonas.muelle.map((c) => (
+            <CartaDe key={c} inst={c} escala={escalaMuelle} />
+          ))}
+          {n === 0 && <span className="vacio">El muelle está vacío</span>}
         </div>
       </div>
       <div className="bloque">
         <Rotulo extra={<span className="dato">{s.zonas.mazoMisiones.length} en el mazo de Misiones</span>}>Misiones disponibles</Rotulo>
         <div className="fila-cartas misiones">
           {s.zonas.misionesDisponibles.map((m) => (
-            <Mision key={m} inst={m} />
+            <Mision key={m} inst={m} escala={escalaMisiones} />
           ))}
         </div>
       </div>
-      <EsteTurno />
+      <div className="puerto-abajo">
+        <div className="bloque">
+          <Rotulo>Puerto</Rotulo>
+          <CartaMesa inst="puerto" id={s.puerto} escala={0.2} />
+        </div>
+        <EsteTurno />
+      </div>
     </section>
   )
 }
@@ -322,7 +349,7 @@ function EsteTurno() {
   const id = copia(s, escenario).id
   return (
     <div className="este-turno">
-      <CartaMesa inst={`este-turno-${escenario}`} sinVuelo id={id} escala={0.2} />
+      <CartaDe inst={escenario} escala={0.16} revelar="escenario" />
       <div className="este-turno-texto">
         <span className="rotulo-pequeno">Este turno</span>
         <span className="este-turno-nombre">{nombreDe(id)}</span>
@@ -369,25 +396,27 @@ function Origenes({ s, zona, escala }: { s: Estado; zona: Zona; escala: number }
   )
 }
 
-function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes: Zona; dorso: TipoDorso; nombre: string }) {
+const ESCALA_PILA = 0.13
+
+function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona; dorso: TipoDorso; nombre: string }) {
   const { s } = useMesa()
-  const escala = 0.15
-  const arriba = s.zonas[descartes][0]
+  const arriba = descartes ? s.zonas[descartes][0] : undefined
+  const hueco = <div className="pila-vacia" style={{ width: 378 * ESCALA_PILA, height: 528 * ESCALA_PILA }} />
   return (
     <div className="pila">
-      <div className="pila-mazo">
-        <div className="pila-cartas" title={`${nombre}: ${s.zonas[zona].length} cartas`}>
-          {s.zonas[zona].length > 0 ? <DorsoEscalado tipo={dorso} escala={escala} /> : <div className="pila-vacia" style={{ width: 378 * escala, height: 528 * escala }} />}
-          <Origenes s={s} zona={zona} escala={escala} />
+      <div className="pila-mazo" title={`${nombre}: ${s.zonas[zona].length} cartas`}>
+        <div className="pila-cartas">
+          {s.zonas[zona].length > 0 ? <DorsoEscalado tipo={dorso} escala={ESCALA_PILA} /> : hueco}
+          <Origenes s={s} zona={zona} escala={ESCALA_PILA} />
         </div>
         <span className="pila-n">{s.zonas[zona].length}</span>
       </div>
-      <div className="pila-mazo">
-        <div className="pila-cartas" title={`Descartes: ${s.zonas[descartes].length} cartas`}>
-          {arriba ? <CartaMesa inst={arriba} id={copia(s, arriba).id} escala={escala} /> : <div className="pila-vacia" style={{ width: 378 * escala, height: 528 * escala }} />}
+      {descartes && (
+        <div className="pila-mazo" title={`Descartes: ${s.zonas[descartes].length} cartas`}>
+          <div className="pila-cartas">{arriba ? <CartaMesa inst={arriba} id={copia(s, arriba).id} escala={ESCALA_PILA} /> : hueco}</div>
+          <span className="pila-n">{s.zonas[descartes].length}</span>
         </div>
-        <span className="pila-n">{s.zonas[descartes].length}</span>
-      </div>
+      )}
       <span className="pila-nombre">{nombre}</span>
     </div>
   )
@@ -398,20 +427,10 @@ export function Mazos() {
   const peligros = mazoActivo(s)
   return (
     <section className="zona mazos">
-      <Rotulo>Mazos</Rotulo>
       <Pila zona={peligros.mazo} descartes={peligros.descartes} dorso="peligros" nombre={peligros.mazo === 'mazoMision' ? 'Mazo de la misión' : 'Peligros'} />
       <Pila zona="mazoCapitan" descartes="descartesCapitan" dorso="capitan" nombre="Mazo del capitán" />
       <Pila zona="mazoMuelle" descartes="descartesMuelle" dorso="muelle" nombre="Mazo de muelle" />
-      <div className="pila pila-escenario">
-        <div className="pila-mazo">
-          <div className="pila-cartas">
-            {s.zonas.mazoEscenario.length > 0 ? <DorsoEscalado tipo="escenario" escala={0.15} /> : <div className="pila-vacia" style={{ width: 57, height: 79 }} />}
-            <Origenes s={s} zona="mazoEscenario" escala={0.15} />
-          </div>
-          <span className="pila-n">{s.zonas.mazoEscenario.length}</span>
-        </div>
-        <span className="pila-nombre">Escenario</span>
-      </div>
+      <Pila zona="mazoEscenario" dorso="escenario" nombre="Escenario" />
     </section>
   )
 }

@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
 import { porId } from '../../engine/catalogo.ts'
 import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
-import { ANCHO } from './Lienzo.tsx'
+import { enLienzo } from './disposicion.ts'
 
 interface CartaAmpliada {
   id: string
@@ -12,7 +12,7 @@ interface CartaAmpliada {
 }
 
 interface ContextoZoom {
-  mostrar: (id: string, elemento: HTMLElement) => void
+  mostrar: (id: string, elemento: HTMLElement, inmediata?: boolean) => void
   ocultar: () => void
   ampliada: CartaAmpliada | null
 }
@@ -22,14 +22,11 @@ const Contexto = createContext<ContextoZoom | null>(null)
 export function ProveedorZoom({ children }: { children: ReactNode }) {
   const [ampliada, setAmpliada] = useState<CartaAmpliada | null>(null)
   const temporizador = useRef<number | null>(null)
-  const mostrar = useCallback((id: string, elemento: HTMLElement) => {
+  const mostrar = useCallback((id: string, elemento: HTMLElement, inmediata = false) => {
     if (temporizador.current) window.clearTimeout(temporizador.current)
-    const lienzo = elemento.closest('.lienzo')
-    const caja = elemento.getBoundingClientRect()
-    const base = lienzo?.getBoundingClientRect()
-    const escala = base ? base.width / ANCHO : 1
-    const centro = base ? (caja.left + caja.width / 2 - base.left) / escala : 0
-    temporizador.current = window.setTimeout(() => setAmpliada({ id, lado: centro < ANCHO / 2 ? 'izquierda' : 'derecha' }), 180)
+    const p = enLienzo(elemento)
+    const centro = p.x + p.ancho / 2
+    temporizador.current = window.setTimeout(() => setAmpliada({ id, lado: centro < p.anchoLienzo / 2 ? 'izquierda' : 'derecha' }), inmediata ? 0 : 180)
   }, [])
   const ocultar = useCallback(() => {
     if (temporizador.current) window.clearTimeout(temporizador.current)

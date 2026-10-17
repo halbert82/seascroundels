@@ -8,7 +8,11 @@ import { encuentroDe } from '../../engine/peligros.ts'
 import { desgloseDificultad, desgloseTotal, dificultadPrueba, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
 import type { Decision, Estado, InstId } from '../../engine/tipos.ts'
 import { valor } from '../../engine/valores.ts'
-import { CartaEscalada } from '../cartas/Carta.tsx'
+import { Destino } from '../cartas/CartaPeligro.tsx'
+import { vistaDeCarta } from '../cartas/vista.ts'
+import { describirEfectos } from '../textos/decisiones.ts'
+import { anchoCentro } from './disposicion.ts'
+import { useLienzo } from './Lienzo.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, useMesa } from './contexto.tsx'
 import { DorsoEscalado } from './Dorso.tsx'
@@ -54,10 +58,14 @@ function ultimaRevelada(s: Estado, desde: number): InstId | null {
 
 export function ZonaMision({ desde, decision, sel }: { desde: number; decision: Decision | null; sel: Seleccion | null }) {
   const { s } = useMesa()
+  const { ancho } = useLienzo()
   const m = s.mision
   if (!m) return null
   const necesario = valor(s, { tipo: 'avanceNecesario', mision: m.carta })
   const enc = s.zonas.encuentro[0]
+  const centro = anchoCentro(ancho) - 26
+  const escalaPeligro = Math.max(0.46, Math.min(0.62, (centro * 0.32) / 378))
+  const anchoPanel = centro - 378 * escalaPeligro - 16
   const resuelta = !enc ? ultimaRevelada(s, desde) : null
   return (
     <section className="zona zona-mision">
@@ -77,17 +85,17 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
       <div className="mision-cuerpo">
         <div className="hueco-encuentro">
           {enc ? (
-            <CartaDe inst={enc} escala={0.52} revelar="peligros" />
+            <CartaDe inst={enc} escala={escalaPeligro} revelar="peligros" />
           ) : resuelta && s.cartas[resuelta] ? (
             <div className="resuelta">
-              <CartaMesa inst={`resuelta-${resuelta}`} sinVuelo id={copia(s, resuelta).id} escala={0.52} marca="atenuada" />
+              <CartaMesa inst={`resuelta-${resuelta}`} sinVuelo id={copia(s, resuelta).id} escala={escalaPeligro} marca="atenuada" />
               <span className="sello">Resuelta</span>
             </div>
           ) : (
-            <DorsoEscalado tipo="peligros" escala={0.52} />
+            <DorsoEscalado tipo="peligros" escala={escalaPeligro} />
           )}
         </div>
-        <PanelPrueba decision={decision} sel={sel} />
+        <PanelPrueba decision={decision} sel={sel} ancho={anchoPanel} />
       </div>
     </section>
   )
@@ -108,7 +116,7 @@ function Partes({ partes }: { partes: ParteDesglose[] }) {
 }
 
 /** Panel de la Prueba en curso (o la previsión mientras comprometes). */
-function PanelPrueba({ decision, sel }: { decision: Decision | null; sel: Seleccion | null }) {
+function PanelPrueba({ decision, sel, ancho }: { decision: Decision | null; sel: Seleccion | null; ancho: number }) {
   const { s } = useMesa()
   const p = s.prueba
   if (!p) return <div className="panel-prueba vacio">Sin Prueba en curso</div>
@@ -157,7 +165,7 @@ function PanelPrueba({ decision, sel }: { decision: Decision | null; sel: Selecc
           <Partes partes={desgloseDificultad(s)} />
         </div>
       </div>
-      {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} />}
+      {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={Math.min(ancho, 400)} />}
     </div>
   )
 }
@@ -210,28 +218,37 @@ function Marcador(p: { total: number; dificultad: number; prevision?: boolean; n
   )
 }
 
-/** La franja del Destino de su carta, ampliada. */
-function DestinoGrande({ inst, cancelado }: { inst: InstId; cancelado: boolean }) {
+/** El Destino revelado, ampliado, con su línea Sin oposición en palabras (tachada si hay alguien comprometido). */
+function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: boolean; ancho: number }) {
   const { s } = useMesa()
   const id = copia(s, inst).id
-  const entrada = porId(id)
-  const escala = 0.86
+  const vista = vistaDeCarta(porId(id))
   const d = destinoDe(id)
+  const escala = Math.min(1.05, ancho / 362)
+  const conSinOposicion = d.sinOposicion.length > 0
+  const hayComprometidos = (s.prueba?.comprometidos ?? []).some((c) => s.zonas.tripulacion.includes(c))
+  const velocidad = useVelocidad()
+  if (vista.forma !== 'peligro' && vista.forma !== 'mazoPropio') return null
   return (
     <motion.div
       key={inst}
-      className={`destino-grande${cancelado ? ' cancelado' : ''}`}
-      initial={{ rotateX: 90, opacity: 0 }}
+      className={`destino-grande${cancelado ? ' cancelado' : ''}${conSinOposicion && hayComprometidos ? ' so-no-aplica' : ''}`}
+      initial={duracion(velocidad, 1) > 0 ? { rotateX: 90, opacity: 0 } : false}
       animate={{ rotateX: 0, opacity: 1 }}
-      transition={{ duration: 0.35 }}
-      title={`Destino «${d.nombre}»`}
+      transition={{ duration: duracion(velocidad, 0.35) }}
     >
       <span className="destino-rotulo">Destino</span>
-      <div className="destino-ventana" style={{ width: 362 * escala, height: 130 * escala }}>
-        <div style={{ position: 'absolute', left: -8 * escala, top: -391 * escala }}>
-          <CartaEscalada entrada={entrada} escala={escala} />
+      <div className="destino-ventana" style={{ width: 362 * escala, height: 132 * escala }}>
+        <div className="destino-solo" style={{ transform: `scale(${escala})` }}>
+          <Destino d={vista.destino} entraDuranteLaPartida={false} />
         </div>
       </div>
+      {conSinOposicion && (
+        <p className="sin-oposicion">
+          <span className="so-etiqueta">Sin oposición:</span> <span className="so-efecto">{describirEfectos(d.sinOposicion)}</span>
+          <span className="so-estado">{cancelado ? 'cancelado' : hayComprometidos ? 'no se aplica: hay Tripulantes comprometidos' : 'se aplica: no hay nadie comprometido'}</span>
+        </p>
+      )}
       {cancelado && <span className="sello cancelado">Cancelado</span>}
     </motion.div>
   )

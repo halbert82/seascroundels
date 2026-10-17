@@ -67,28 +67,13 @@
   z-index: 20;
 }
 
-.col-izq {
+.col-izq,
+.centro,
+.col-der {
   position: absolute;
-  left: 14px;
-  top: 70px;
-  width: 384px;
-  height: 520px;
-}
-
-.centro {
-  position: absolute;
-  left: 410px;
-  top: 70px;
-  width: 724px;
-  height: 520px;
 }
 
 .col-der {
-  position: absolute;
-  left: 1146px;
-  top: 70px;
-  width: 280px;
-  height: 520px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -1192,8 +1177,8 @@
 /* ------------------------------------------------------------------ Columna derecha */
 
 .ultimo {
-  flex: 1;
-  min-height: 0;
+  flex: none;
+  height: 168px;
   overflow: hidden;
 }
 
@@ -1252,10 +1237,12 @@
 }
 
 .mazos {
-  flex: none;
+  flex: 1;
+  min-height: 0;
   height: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  align-content: center;
   gap: 8px 10px;
 }
 
@@ -1323,7 +1310,7 @@
   position: absolute;
   left: 14px;
   right: 14px;
-  top: 600px;
+  top: 622px;
   min-height: 76px;
   display: flex;
   align-items: center;
@@ -1568,8 +1555,8 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 684px;
-  height: 216px;
+  top: 706px;
+  height: 194px;
 }
 
 .mano-carta {
@@ -2088,4 +2075,294 @@
   background: linear-gradient(180deg, rgba(10, 7, 5, 0.94), rgba(22, 15, 10, 0.82));
   border-bottom: 1px solid rgba(201, 164, 92, 0.35);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+}
+
+/* ------------------------------------------------------------------ Pulido tras el punto de control */
+
+.reloj {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 9px;
+  color: var(--pergamino);
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.reloj:hover {
+  background: rgba(232, 200, 119, 0.12);
+}
+
+.reloj > .ic {
+  font-size: 18px;
+  color: var(--oro);
+  align-self: center;
+}
+
+.reloj-sub {
+  font-size: 13.5px;
+  max-width: 200px;
+}
+
+.zona-tripulacion .tripulacion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+}
+
+.tripulante {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hueco {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.18), transparent 70%);
+}
+
+.tripulante.rehen .hueco {
+  opacity: 0.85;
+}
+
+.tripulante .rehen-marca {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #4a120c;
+  border: 1px solid #f0a08e;
+}
+
+.chips.una-fila {
+  flex-wrap: nowrap;
+  min-height: 22px;
+}
+
+.chips.una-fila .chip {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.chip-agotada {
+  font-size: 12px;
+  color: var(--texto-tenue);
+  transform: rotate(90deg);
+}
+
+.chip.ahora {
+  opacity: 1;
+  border-color: #f2d998;
+  box-shadow:
+    0 0 0 1.5px rgba(242, 217, 152, 0.9),
+    0 0 12px rgba(255, 210, 120, 0.55);
+}
+
+.chip.ahora .chip-agotada {
+  color: var(--oro-claro);
+}
+
+/* Comprometido en la Prueba en curso (o agotado para pagar algo en ella): brillo dorado sobre la carta, girada o no. */
+.carta-mesa.participa .carta-giro {
+  filter: drop-shadow(0 0 2px #fff0bd) drop-shadow(0 0 9px rgba(255, 205, 110, 0.85));
+}
+
+.sello-participa {
+  position: absolute;
+  left: 50%;
+  top: -9px;
+  transform: translateX(-50%);
+  z-index: 8;
+  padding: 1px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #f0d48a, #c9a45c);
+  color: #2a1d10;
+  font: 900 10.5px 'Alegreya Sans', sans-serif;
+  letter-spacing: 0.04em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.zona-barco {
+  flex: none;
+  height: auto;
+}
+
+.zona-barco .barco {
+  margin-bottom: 0;
+}
+
+.zona-barco .barco-datos .chips {
+  margin-top: 2px;
+}
+
+.mazos .pila {
+  justify-content: center;
+}
+
+.mazos .pila-nombre {
+  text-align: center;
+}
+
+.destino-solo {
+  width: 362px;
+  height: 132px;
+  display: flex;
+  flex-direction: column;
+  transform-origin: 0 0;
+}
+
+.sin-oposicion {
+  margin: 7px 0 0;
+  max-width: 400px;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.so-etiqueta {
+  font-weight: 900;
+  color: var(--oro-claro);
+}
+
+.so-estado {
+  display: block;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--texto-tenue);
+}
+
+.so-no-aplica .so-etiqueta,
+.so-no-aplica .so-efecto {
+  text-decoration: line-through;
+  text-decoration-color: rgba(240, 138, 117, 0.9);
+  opacity: 0.6;
+}
+
+.so-no-aplica .destino-ventana .so {
+  position: relative;
+  opacity: 0.45;
+}
+
+.so-no-aplica .destino-ventana .so::after {
+  content: '';
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  top: 50%;
+  border-top: 2.5px solid rgba(240, 120, 100, 0.95);
+  transform: rotate(-10deg);
+}
+
+.fin-mision-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.fin-recompensa {
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.fin-recompensa b {
+  color: var(--oro-claro);
+}
+
+.fin-recompensa em {
+  display: block;
+  margin-top: 4px;
+  color: var(--oro-claro);
+}
+
+.fin-recompensa.mal {
+  color: #f3b3a4;
+}
+
+.fin-cifras {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.fin-cifras div {
+  padding: 8px 6px;
+  border-radius: 10px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(232, 200, 119, 0.22);
+}
+
+.fin-cifras dt {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--texto-tenue);
+}
+
+.fin-cifras dd {
+  margin: 2px 0 0;
+  font-family: 'Alegreya', serif;
+  font-weight: 900;
+  font-size: 26px;
+  color: var(--oro-claro);
+}
+
+.fin-cifras dd small {
+  font-size: 15px;
+  color: var(--texto-tenue);
+}
+
+.mas-en-registro {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--texto-tenue);
+}
+
+.zona-puerto {
+  gap: 12px;
+}
+
+.puerto-abajo {
+  margin-top: auto;
+  display: flex;
+  gap: 14px;
+  align-items: flex-end;
+}
+
+.puerto-abajo .este-turno {
+  flex: 1;
+  margin-top: 0;
+  height: 86px;
+  padding: 6px 12px;
+}
+
+.zona-barco .dato-fila {
+  gap: 5px;
+  font-size: 12.5px;
+}
+
+.zona-barco .dato-fila > span:nth-child(2) {
+  width: 44px;
+}
+
+.zona-barco .marca {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+}
+
+.zona-barco .marcas {
+  gap: 3px;
 }

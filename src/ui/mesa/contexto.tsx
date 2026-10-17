@@ -45,12 +45,14 @@ export function CartaDe({ inst, escala, revelar, girar = true }: { inst: InstId;
   const opciones = inter.opciones.get(inst) ?? []
   const numero = inter.numeros.get(inst)
   const esPeligro = porId(c.id).tipo === 'peligro' && s.zonas.encuentro.includes(inst)
+  const participa = Boolean(s.prueba && (s.prueba.comprometidos.includes(inst) || s.prueba.agotadas.includes(inst)) && s.zonas.tripulacion.includes(inst))
   return (
     <CartaMesa
       inst={inst}
       id={c.id}
       escala={escala}
       agotada={girar && c.agotada}
+      participa={participa}
       marca={inter.marcas.get(inst) ?? null}
       {...(numero !== undefined && numero > 0 ? { numero } : {})}
       fichas={fichasDe(s, inst)}
