@@ -33,8 +33,9 @@ export function tamanoNombre(num: number): TamanoNombre {
   return { tam: ajuste?.tam ?? TAM_NORMAL, dosLineas: ajuste?.dosLineas ?? false }
 }
 
-/** Cartas con mucho texto: letra algo menor («texto apretado»). */
-const TEXTO_APRETADO = new Set<number>([18, 59])
+/** Cartas con mucho texto: letra algo menor («texto apretado»).
+ *  La 011 no lo lleva en la referencia (su frase se salía de la caja); se aprieta por decisión de Albert. */
+const TEXTO_APRETADO = new Set<number>([11, 18, 59])
 
 /** Cartas cuyo texto corto va grande y centrado, aunque no sea una cifra sola. */
 const TEXTO_GRANDE = new Set<number>([45, 46])

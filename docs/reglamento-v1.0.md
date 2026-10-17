@@ -34,7 +34,7 @@ Pierdes la partida si tu Capitán queda derrotado, si se acaba el tiempo o si no
 
 ### Componentes
 
-La Caja básica contiene 168 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica contiene 173 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 **Cartas del jugador**
 
@@ -355,13 +355,13 @@ Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y 
 
 **Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. «Rumores del tesoro» le da 1 ficha de Avance, y la capacidad Al zarpar de la misión le da otra porque tiene un Marinero preparado: empieza con 2.
 
-Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1, más 1 por Diego): suman 4. Ambos quedan agotados.
+Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota.
 
-Revela el Destino: «Refuerzos», +1 a la dificultad. La Prueba pide ahora 4 y Albert tiene justo 4: la supera sin necesidad de reforzar. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
+Revela el Destino: «Refuerzos», +1 a la dificultad. La Prueba pide ahora 4 y Albert solo tiene 3. Refuerza descartando «Mano firme al timón», con dos iconos de NAV: llega a 5 y la supera. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
 
 **Recompensa.** Gana 1 de reputación y busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. Devuelve las cartas de Peligro a su pila de descartes y vuelve a puerto.
 
-**Final.** Albert se queda con sus dos cartas y roba tres para tener cinco. El turno siguiente podrá adquirir los Cañones de bronce, que siguen esperando en el muelle.
+**Final.** Albert se queda con «¡Al abordaje!» y roba cuatro para tener cinco. El turno siguiente podrá adquirir los Cañones de bronce, que siguen esperando en el muelle.
 
 ### Construir tu mazo
 
@@ -463,7 +463,7 @@ Cada Capitán y cada carta de jugador pertenece a una Clase o es Neutral. Al con
 
 ### Comprometer
 
-Asignar Tripulantes preparados a una Prueba. Los Tripulantes comprometidos se agotan y suman su habilidad, con las bonificaciones constantes de sus Mejoras. Solo puedes comprometer Tripulantes en el primer paso de la Prueba. Las cartas dicen que los Tripulantes comprometidos participan en la Prueba.
+Asignar Tripulantes preparados a una Prueba. Los Tripulantes comprometidos se agotan y suman su habilidad, con las bonificaciones constantes de sus Mejoras. Solo puedes comprometer Tripulantes en el primer paso de la Prueba. Una capacidad que funciona «mientras esté preparado», como la de Diego, deja de aplicarse en el momento en que ese Tripulante se agota, también para los que se comprometen a la vez que él. Las cartas dicen que los Tripulantes comprometidos participan en la Prueba.
 
 *Consulta también:* Prueba.
 
