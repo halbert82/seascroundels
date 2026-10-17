@@ -1,0 +1,308 @@
+/* Galería de cartas */
+
+.gal,
+.gal-cabecera,
+.gal-cabecera *,
+.gal-rejilla,
+.gal-item,
+.gal-item figcaption,
+.gal-zoom {
+  box-sizing: border-box;
+}
+
+.gal {
+  min-height: 100vh;
+  padding: 0 0 64px;
+}
+
+.gal-cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px 28px;
+  padding: 14px 32px;
+  background: linear-gradient(180deg, rgba(26, 19, 14, 0.96), rgba(20, 14, 10, 0.92));
+  border-bottom: 1px solid var(--borde-panel);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.gal-marca h1 {
+  margin: 0;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--oro);
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.6);
+  white-space: nowrap;
+}
+
+.gal-marca p {
+  margin: 4px 0 0;
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 12.5px;
+  letter-spacing: 0.12em;
+  color: var(--texto-tenue);
+  white-space: nowrap;
+}
+
+.gal-filtros {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 10px 0 12px;
+  border-radius: 15px;
+  border: 1px solid rgba(201, 164, 92, 0.35);
+  background: rgba(255, 244, 226, 0.04);
+  color: var(--texto-claro);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    background var(--rapido),
+    border-color var(--rapido),
+    color var(--rapido);
+}
+
+.gal-chip:hover {
+  border-color: rgba(232, 200, 119, 0.7);
+  background: rgba(232, 200, 119, 0.08);
+}
+
+.gal-chip.activo {
+  background: linear-gradient(180deg, #e8c877, #b08e50);
+  border-color: #e8c877;
+  color: #2a1e15;
+}
+
+.gal-cuenta {
+  min-width: 22px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.35);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--texto-claro);
+}
+
+.gal-chip.activo .gal-cuenta {
+  background: rgba(42, 30, 21, 0.85);
+  color: #f2dfa8;
+}
+
+.gal-controles {
+  display: flex;
+  gap: 10px;
+  justify-self: end;
+}
+
+.gal-segmentos {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(201, 164, 92, 0.3);
+}
+
+.gal-segmentos button {
+  height: 28px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--texto-tenue);
+  cursor: pointer;
+  transition:
+    background var(--rapido),
+    color var(--rapido);
+}
+
+.gal-segmentos button:hover {
+  color: var(--texto-claro);
+}
+
+.gal-segmentos button.activo {
+  background: #3b2d22;
+  color: #f2dfa8;
+  box-shadow: inset 0 0 0 1px rgba(232, 200, 119, 0.55);
+}
+
+.gal-aviso {
+  margin: 18px 32px 0;
+  font-family: 'Alegreya', Georgia, serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--texto-tenue);
+}
+
+.gal-rejilla {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px 26px;
+  padding: 26px 32px;
+}
+
+.gal-item {
+  width: min-content;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: zoom-in;
+}
+
+.gal-pareja {
+  display: flex;
+  gap: 10px;
+}
+
+.gal-marco {
+  position: relative;
+  border-radius: 12px;
+  transition:
+    transform var(--rapido) ease-out,
+    filter var(--rapido) ease-out;
+}
+
+.gal-item:hover .gal-marco:first-child {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.5));
+}
+
+.gal-ref {
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.gal-marco-ref {
+  outline: 1px dashed rgba(201, 164, 92, 0.45);
+  outline-offset: 4px;
+}
+
+.gal-sobre {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+.gal-sobre .gal-ref {
+  box-shadow: none;
+}
+
+.gal-item figcaption {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+  max-width: 100%;
+  padding: 0 4px;
+}
+
+.gal-num {
+  grid-row: span 2;
+  align-self: start;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(201, 164, 92, 0.4);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: #f2dfa8;
+}
+
+.gal-nombre {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.15;
+  color: var(--texto-claro);
+}
+
+.gal-meta {
+  font-size: 13px;
+  color: var(--texto-tenue);
+}
+
+/* Ampliación al pasar el ratón (a un lado) o al tocar (centrada, con fondo). */
+.gal-zoom {
+  position: fixed;
+  z-index: 50;
+  top: calc(var(--alto-cabecera, 120px) + 12px);
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.gal-zoom[data-lado='derecha'] {
+  right: 24px;
+}
+
+.gal-zoom[data-lado='izquierda'] {
+  left: 24px;
+}
+
+.gal-zoom.fijada {
+  inset: 0;
+  background: rgba(10, 7, 5, 0.78);
+  backdrop-filter: blur(3px);
+  pointer-events: auto;
+  cursor: zoom-out;
+}
+
+.gal-zoom-pareja {
+  display: flex;
+  gap: 18px;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6));
+}
+
+.gal-zoom-ayuda {
+  margin: 0;
+  font-size: 14px;
+  color: var(--texto-tenue);
+}
+
+/* Pantallas estrechas */
+@media (max-width: 760px) {
+  .gal-cabecera {
+    grid-template-columns: 1fr;
+    padding: 12px 16px;
+  }
+
+  .gal-controles {
+    justify-self: start;
+    flex-wrap: wrap;
+  }
+
+  .gal-rejilla {
+    padding: 20px 16px;
+  }
+
+  .gal-aviso {
+    margin: 14px 16px 0;
+  }
+}

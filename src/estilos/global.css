@@ -1,0 +1,53 @@
+/* Estilos generales de la aplicación (no de las cartas). */
+
+:root {
+  --tinta: #2a2118;
+  --oro: #e8c877;
+  --oro-viejo: #c9a45c;
+  --pergamino: #f2e6cd;
+  --texto-claro: #eadcbf;
+  --texto-tenue: #a99273;
+  --fondo: #17110d;
+  --panel: rgba(30, 22, 16, 0.86);
+  --borde-panel: rgba(201, 164, 92, 0.38);
+  --sombra: 0 12px 30px rgba(0, 0, 0, 0.45);
+  --rapido: 180ms;
+
+  color-scheme: dark;
+  font-family: 'Alegreya Sans', Georgia, serif;
+  font-variant-numeric: lining-nums;
+  color: var(--texto-claro);
+  background-color: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ojo: sin «* { box-sizing: border-box }». Las cartas usan el modelo de caja por defecto,
+   como la maquetación original; la interfaz lo declara en sus propias clases. */
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+/* Mesa: tablones de cubierta oscuros con grano sutil. */
+body {
+  background-color: var(--fondo);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232, 200, 119, 0.12), transparent 70%),
+    radial-gradient(ellipse 120% 80% at 50% 120%, rgba(0, 0, 0, 0.55), transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.55' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.55  0 0 0 0 0.40  0 0 0 0 0.26  0 0 0 0.16 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.32) 0 2px, transparent 2px 172px),
+    linear-gradient(180deg, #2a1f17 0%, #1a130e 55%, #140e0a 100%);
+  background-attachment: fixed;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--oro);
+  outline-offset: 2px;
+}
