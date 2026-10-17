@@ -23,10 +23,12 @@ export interface OpcionesPartida {
   modo?: Modo
   /** Otro mazo de muelle (por defecto, el predefinido). Tiene que cumplir las reglas de construcción. */
   mazoDeMuelle?: CartaId[]
+  /** Cartas de Peligro de más en el mazo de Peligros (las de prueba de la fase 6, ya registradas). */
+  peligrosExtra?: CartaId[]
 }
 
 /** Prepara una partida con los mazos predefinidos y la deja esperando el cambio de mano inicial. */
-export function nuevaPartida({ semilla, modo, mazoDeMuelle }: OpcionesPartida): Estado {
+export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
   const errores = erroresDeMazos({ capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle })
@@ -47,7 +49,7 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle }: OpcionesPartida): 
   s.puerto = m.puertoInicial
 
   // 4. Mazo de Peligros, con las cartas que solo entran si una carta lo indica, aparte.
-  for (const id of m.mazoDePeligros) crearCopia(s, id, 'mazoPeligros')
+  for (const id of [...m.mazoDePeligros, ...(peligrosExtra ?? [])]) crearCopia(s, id, 'mazoPeligros')
   barajar(s, 'mazoPeligros')
   for (const id of m.apartadosDePeligros) crearCopia(s, id, 'apartados')
 

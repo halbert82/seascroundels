@@ -19,6 +19,14 @@ let fallo = null
 
 async function pulsarCarta(pagina, inst, etiqueta) {
   const carta = pagina.locator(`[data-inst="${inst}"]`).first()
+  if (!(await carta.count())) {
+    const donde = await pagina.evaluate((i) => {
+      const s = window.__mesa.estado()
+      const zona = Object.entries(s.zonas).find(([, l]) => l.includes(i))?.[0]
+      return `${s.cartas[i]?.id} en ${zona} (decisión «${s.pendiente?.motivo.clave}»)`
+    }, inst)
+    throw new Error(`No está en la mesa la carta ${inst}: ${donde}`)
+  }
   await carta.dispatchEvent('click')
   const menu = pagina.locator('.menu-carta')
   if (await menu.count()) {

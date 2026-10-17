@@ -1,10 +1,10 @@
 // Mazo de Peligros activo (el normal o el mezclado de una misión), encuentros y descartes.
 
-import { porId, tipoDe } from './catalogo.ts'
+import { costeImpreso, porId, tipoDe } from './catalogo.ts'
 import type { EncuentroDatos, Entorno } from './datos.ts'
-import { anotar, copia } from './estado.ts'
+import { anotar, copia, encolar } from './estado.ts'
 import type { Estado, InstId, Zona } from './tipos.ts'
-import { arriba, mover, rebarajar } from './zonas.ts'
+import { mover, moverA, rebarajar } from './zonas.ts'
 
 export function mazoActivo(s: Estado): { mazo: Zona; descartes: Zona } {
   return s.mision?.mazoMezclado ? { mazo: 'mazoMision', descartes: 'descartesMision' } : { mazo: 'mazoPeligros', descartes: 'descartesPeligros' }
@@ -17,13 +17,26 @@ export function entornoActual(s: Estado): Entorno | null {
   return e.tipo === 'capitulo' ? e.carta.entorno : null
 }
 
+/** La carta que «persigue», si sigue esperando en un mazo de Peligros para ser el siguiente encuentro. */
+export function persigueVigente(s: Estado): InstId | null {
+  const p = s.persigue
+  if (!p) return null
+  if (s.zonas.mazoPeligros.includes(p) || s.zonas.mazoMision.includes(p)) return p
+  s.persigue = null
+  return null
+}
+
 /**
  * Carta de arriba del mazo activo, para revelarla. Si se acaba, se baraja su pila de descartes
  * (en una misión con mazo mezclado, solo los descartes de esa misión: D10).
+ * Una carta que «persigue» es siempre el siguiente encuentro, y nunca sale como Destino.
  */
-export function cartaDeArriba(s: Estado): InstId | null {
+export function cartaDeArriba(s: Estado, para: 'encuentro' | 'destino' = 'encuentro'): InstId | null {
+  const persigue = persigueVigente(s)
+  if (para === 'encuentro' && persigue) return persigue
   const { mazo, descartes } = mazoActivo(s)
-  if (s.zonas[mazo].length === 0 && s.zonas[descartes].length > 0) {
+  const disponibles = () => s.zonas[mazo].filter((c) => c !== persigue)
+  if (disponibles().length === 0 && s.zonas[descartes].length > 0) {
     rebarajar(s, descartes, mazo)
     anotar(
       s,
@@ -32,7 +45,7 @@ export function cartaDeArriba(s: Estado): InstId | null {
       mazo === 'mazoMision' ? { tipo: 'mazoMisionBarajado' } : undefined,
     )
   }
-  return arriba(s, mazo) ?? null
+  return disponibles()[0] ?? null
 }
 
 /** El encuentro que se lee: el del Entorno de la misión, o el único de una carta de mazo propio. */
@@ -55,9 +68,72 @@ export function descartarPeligro(s: Estado, carta: InstId): void {
   mover(s, carta, mazoActivo(s).descartes)
 }
 
-/** Al terminar una misión: el mazo propio vuelve al mazo de historia y el resto de Peligros a su pila de descartes. */
+/** La carta que persigue se pone encima del mazo de Peligros (el activo): será el siguiente encuentro. */
+export function ponerAPerseguir(s: Estado, carta: InstId): void {
+  mover(s, carta, mazoActivo(s).mazo, 'arriba')
+  s.persigue = carta
+  anotar(s, 'aviso', `«${porId(copia(s, carta).id).carta.nombre}» te persigue: será el siguiente encuentro.`)
+}
+
+/**
+ * Termina la Prueba en curso: los Destinos revelados se descartan (salvo el que persigue, que vuelve encima del
+ * mazo) y caducan los efectos «para esta Prueba».
+ */
+export function cerrarPrueba(s: Estado): void {
+  const p = s.prueba
+  for (const d of [...s.zonas.destino]) {
+    // «Persigue»: pasa por su suceso (una Interrupción puede mandarla al fondo del mazo).
+    if (p?.persigue && p.destino === d && !p.destinoCancelado) {
+      encolar(s, { tipo: 'evento', ev: { tipo: 'persigue', carta: d }, fase: 'antes', cancelado: false, usadas: [] })
+    } else descartarPeligro(s, d)
+  }
+  s.temporales = s.temporales.filter((x) => x.hasta !== 'finPrueba')
+  s.prueba = null
+}
+
+/**
+ * La carta de Peligro ocupa el muelle: sustituye a la carta de coste más alto (si empatan, la de más a la
+ * izquierda), que se descarta. Se quita pagando `coste` cartas en Jugar cartas.
+ */
+export function ponerEnMuelle(s: Estado, carta: InstId, coste: number): void {
+  const muelle = s.zonas.muelle
+  let indice = -1
+  let maximo = -1
+  muelle.forEach((c, i) => {
+    if (s.peligrosEnMuelle?.[c] !== undefined) return
+    const n = costeImpreso(copia(s, c).id)
+    if (n > maximo) {
+      maximo = n
+      indice = i
+    }
+  })
+  const sustituida = indice >= 0 ? muelle[indice] : undefined
+  if (sustituida) mover(s, sustituida, 'descartesMuelle')
+  moverA(s, carta, 'muelle', indice >= 0 ? indice : muelle.length)
+  s.peligrosEnMuelle = { ...(s.peligrosEnMuelle ?? {}), [carta]: coste }
+  const nombreCarta = porId(copia(s, carta).id).carta.nombre
+  anotar(s, 'aviso', `«${nombreCarta}» ocupa el muelle${sustituida ? ` en lugar de «${porId(copia(s, sustituida).id).carta.nombre}», que se descarta` : ''}.`)
+}
+
+/** Peligros que ocupan el muelle. */
+export function peligrosDelMuelle(s: Estado): InstId[] {
+  return s.zonas.muelle.filter((c) => s.peligrosEnMuelle?.[c] !== undefined)
+}
+
+/**
+ * Al terminar una misión: el mazo propio vuelve al mazo de historia y el resto de Peligros (también los que se
+ * quedaron en juego) a su pila de descartes. La carta que persigue se queda encima del mazo de Peligros normal.
+ */
 export function devolverPeligros(s: Estado): void {
-  const zonas: Zona[] = ['encuentro', 'destino', 'mazoMision', 'descartesMision']
+  const p = s.prueba
+  if (p?.persigue && p.destino && !p.destinoCancelado && s.zonas.destino.includes(p.destino)) {
+    // Si la misión termina, la carta que persigue se queda encima del mazo de Peligros (normal) y sale en la siguiente.
+    mover(s, p.destino, 'mazoPeligros', 'arriba')
+    s.persigue = p.destino
+  }
+  const persigue = persigueVigente(s)
+  if (persigue && s.zonas.mazoMision.includes(persigue)) mover(s, persigue, 'mazoPeligros', 'arriba')
+  const zonas: Zona[] = ['encuentro', 'destino', 'peligrosEnJuego', 'mazoMision', 'descartesMision']
   for (const zona of zonas) {
     for (const carta of [...s.zonas[zona]]) {
       if (s.mision?.retirar.includes(carta)) mover(s, carta, 'fueraDeJuego')

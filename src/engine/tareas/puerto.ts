@@ -21,10 +21,29 @@ export function opcionesDelPuerto(s: Estado): OpcionPuerto[] {
     const titulo = /\*\*(.+?)\.\*\*/.exec(texto)?.[1] ?? ''
     if (titulo === 'Astillero') {
       const n = primerNumero(texto)
-      opciones.push({ clave: 'astillero', texto: `Astillero: repara ${n}`, tareas: [{ tipo: 'reparar', n }] })
+      // Fase 6: el Astillero quita además Velas rotas y Pólvora mojada.
+      // TODO(regla): P5 · Pólvora mojada se quita con el Astillero.
+      opciones.push({
+        clave: 'astillero',
+        texto: `Astillero: repara ${n}`,
+        tareas: [
+          { tipo: 'reparar', n },
+          { tipo: 'quitarEstadoBarco', estado: 'velasRotas' },
+          { tipo: 'quitarEstadoBarco', estado: 'polvoraMojada' },
+        ],
+      })
     } else if (titulo === 'Taberna') {
       const n = primerNumero(texto)
-      opciones.push({ clave: 'taberna', texto: `Taberna: cura ${n}`, tareas: [{ tipo: 'curar', n, modo: 'repartir' }] })
+      // Fase 6: la Taberna quita además la Fiebre a todos.
+      // TODO(regla): P3 · la Taberna quita la Fiebre a todos tus Tripulantes.
+      opciones.push({
+        clave: 'taberna',
+        texto: `Taberna: cura ${n}`,
+        tareas: [
+          { tipo: 'curar', n, modo: 'repartir' },
+          { tipo: 'quitarEstado', estado: 'fiebre', de: 'todos' },
+        ],
+      })
     } else if (titulo === 'Tablón de encargos') {
       opciones.push({ clave: 'tablon', texto: 'Tablón de encargos: cambia misiones', tareas: [{ tipo: 'tablon' }] })
     } else {

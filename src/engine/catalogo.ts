@@ -18,6 +18,7 @@ import {
   type TesoroDatos,
   type TripulanteDatos,
 } from './datos.ts'
+import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from './infoEstados.ts'
 
 export type EntradaCatalogo =
   | { tipo: 'capitan'; num: number; id: string; copias: number; carta: CapitanDatos }
@@ -133,6 +134,28 @@ export function codigoColeccion(num: number): string {
 
 const POR_ID = new Map<string, EntradaCatalogo>(CATALOGO.map((e) => [e.id, e]))
 
+/**
+ * Cartas que no son de la Caja básica (las de Peligro de prueba, y más adelante las rediseñadas mientras no
+ * estén en cartas.json). Se pueden consultar por identificador, pero no aparecen en el catálogo ni en la galería.
+ */
+export function registrarCartasExtra(...entradas: EntradaCatalogo[]): void {
+  for (const e of entradas) {
+    const ya = POR_ID.get(e.id)
+    if (ya && ya !== e && CATALOGO.includes(ya)) throw new Error(`La carta «${e.id}» ya está en la Caja básica`)
+    POR_ID.set(e.id, e)
+  }
+}
+
+/** Fuentes de capacidades que no son cartas: las fichas de Estado y la carta de Peligro que ocupa el muelle. */
+function nombreDeFuente(id: string): string | null {
+  if (id.startsWith('estado:')) {
+    const info = INFO_ESTADO[id.slice('estado:'.length) as EstadoTripulante | EstadoBarco]
+    return info ? info.nombre : null
+  }
+  if (id === 'peligroEnMuelle') return 'Peligro en el muelle'
+  return null
+}
+
 /** Entrada del catálogo de una carta por su identificador. */
 export function porId(id: string): EntradaCatalogo {
   const entrada = POR_ID.get(id)
@@ -140,8 +163,21 @@ export function porId(id: string): EntradaCatalogo {
   return entrada
 }
 
+/** ¿Es una carta (de la caja o registrada aparte)? Las fichas de Estado, por ejemplo, no lo son. */
+export function esCarta(id: string): boolean {
+  return POR_ID.has(id)
+}
+
+/** ¿Es una carta del jugador (no de Peligro, misión, Escenario ni puerto)? */
+export function esCartaDelJugador(id: string): boolean {
+  const e = POR_ID.get(id)
+  return e !== undefined && ['capitan', 'barco', 'tripulante', 'mejoraBarco', 'mejoraTripulante', 'evento', 'habilidad', 'tesoro'].includes(e.tipo)
+}
+
 /** Nombre impreso de la carta. */
 export function nombreDe(id: string): string {
+  const fuente = nombreDeFuente(id)
+  if (fuente) return fuente
   const e = porId(id)
   return e.tipo === 'peligro' || e.tipo === 'mazoPropio' || 'nombre' in e.carta ? e.carta.nombre : id
 }

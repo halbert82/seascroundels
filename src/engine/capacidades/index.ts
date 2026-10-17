@@ -4,7 +4,9 @@
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { CAPACIDADES_CONSTANTES } from './constantes.ts'
 import { CAPACIDADES_ESCENARIO } from './escenario.ts'
+import { CAPACIDADES_ESTADOS } from './estados.ts'
 import { CAPACIDADES_EVENTOS } from './eventos.ts'
+import { CAPACIDADES_JUGADOR2 } from './jugador2.ts'
 import { CAPACIDADES_MEJORAS } from './mejoras.ts'
 import { CAPACIDADES_MISIONES } from './misiones.ts'
 import { CAPACIDADES_TRIPULANTES } from './tripulantes.ts'
@@ -25,6 +27,8 @@ for (const cap of [
   ...CAPACIDADES_TRIPULANTES,
   ...CAPACIDADES_MEJORAS,
   ...CAPACIDADES_EVENTOS,
+  ...CAPACIDADES_ESTADOS,
+  ...CAPACIDADES_JUGADOR2,
 ]) {
   registrar(cap)
 }
@@ -36,6 +40,17 @@ export function capacidadesDe(id: CartaId): readonly Capacidad[] {
 
 export function capacidadPorClave(clave: string): Capacidad | undefined {
   return POR_CLAVE.get(clave)
+}
+
+/** Registra capacidades nuevas (las que salen de las reglas de las cartas de Peligro nuevas). */
+export function registrarCapacidades(...caps: Capacidad[]): void {
+  for (const cap of caps) registrar(cap)
+}
+
+/** Quita todas las capacidades de una carta (para volver a registrarla). */
+export function quitarCapacidadesDe(id: CartaId): void {
+  for (const cap of POR_CARTA.get(id) ?? []) POR_CLAVE.delete(cap.clave)
+  POR_CARTA.delete(id)
 }
 
 /** Solo para pruebas: registra capacidades de mentira y devuelve cómo quitarlas. */

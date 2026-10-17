@@ -8,7 +8,7 @@ import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
 import { huecosLibres, plazasLibres } from '../valores.ts'
-import { canonesSinCargar, destinoVigente, enEntorno, hayAgotados, hayHeridos, participantes, peligroRevelado, reclutablesGratis } from './comun.ts'
+import { canonesSinCargar, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroRevelado, reclutablesGratis } from './comun.ts'
 
 const texto = (id: CartaId) => textoDe(id)
 
@@ -34,7 +34,7 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
   }),
   evento('reparacion', 'libre', {
     // «Repara 2 daño.»
-    requisito: (s) => s.danoBarco > 0,
+    requisito: hayQueReparar,
     efecto: () => [{ tipo: 'reparar', n: numeroConIcono(texto('reparacion'), 'dano') }],
   }),
   evento('vendas', 'libre', {

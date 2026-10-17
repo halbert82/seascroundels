@@ -109,6 +109,19 @@ export interface Opcion {
   dificultad: number
   /** «1 con» + «Cirujano» */
   alternativa?: { texto: string; rasgo: string }
+  /** La dificultad es «X». */
+  variable?: boolean
+}
+
+/** Textos completos de un encuentro de los Peligros 2.0. */
+export interface TextosEncuentro {
+  etiquetas: string[]
+  nota: Segmento[]
+  texto: Segmento[]
+  exito: Segmento[]
+  fallo: Segmento[]
+  /** Cuánto texto lleva (para repartir el alto de la carta). */
+  peso: number
 }
 
 export interface VistaEncuentro {
@@ -121,6 +134,8 @@ export interface VistaEncuentro {
   exito: Ficha[]
   fallo: Ficha[]
   efecto: Ficha[]
+  /** Peligros 2.0: textos completos en vez de fichas. */
+  textos?: TextosEncuentro
 }
 
 export interface VistaDestino {
@@ -130,6 +145,8 @@ export interface VistaDestino {
   ambientacion: string
   texto: Segmento[]
   sinOposicion: Ficha[]
+  /** Peligros 2.0: la línea Sin oposición en texto. */
+  sinOposicionTexto?: Segmento[]
 }
 
 export interface VistaPeligro {
@@ -139,6 +156,8 @@ export interface VistaPeligro {
   encuentros: VistaEncuentro[]
   destino: VistaDestino
   entraDuranteLaPartida: boolean
+  /** Peligros 2.0: maquetación con los textos completos. */
+  v2?: boolean
 }
 
 export interface VistaMazoPropio {
@@ -216,26 +235,47 @@ function base(entrada: EntradaCatalogo): Omit<VistaJugador, 'nombre' | 'color' |
   }
 }
 
-function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno): VistaEncuentro {
-  const vista: VistaEncuentro = {
-    nombre: e.nombre,
-    claves: e.palabrasClave.join(' · '),
-    avance: e.avance,
-    opciones: e.prueba.map((p) => {
-      const opcion: Opcion = { hab: p.hab, dificultad: p.dificultad }
-      if (p.alternativa) opcion.alternativa = { texto: `${p.alternativa.dificultad} con`, rasgo: p.alternativa.rasgo }
-      return opcion
-    }),
-    conPrueba: e.prueba.length > 0,
-    exito: parsearFichas(e.textoExito ?? ''),
-    fallo: parsearFichas(e.textoFallo ?? ''),
-    efecto: parsearFichas(e.textoEfecto ?? ''),
-  }
+function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): VistaEncuentro {
+  const opciones = e.prueba.map((p) => {
+    const opcion: Opcion = { hab: p.hab, dificultad: p.dificultad }
+    if (p.alternativa) opcion.alternativa = { texto: `${p.alternativa.dificultad} ${p.alternativa.comprometido ? 'si comprometes un' : 'con'}`, rasgo: p.alternativa.rasgo }
+    if (p.variable) opcion.variable = true
+    return opcion
+  })
+  const vista: VistaEncuentro = v2
+    ? {
+        nombre: e.nombre,
+        claves: e.palabrasClave.join(' · '),
+        avance: e.avance,
+        opciones,
+        conPrueba: e.prueba.length > 0,
+        exito: [],
+        fallo: [],
+        efecto: [],
+        textos: {
+          etiquetas: e.etiquetas ?? [],
+          nota: parsearTexto(e.notaPrueba ?? ''),
+          texto: parsearTexto(e.textoEfecto ?? ''),
+          exito: parsearTexto(e.textoExito ?? ''),
+          fallo: parsearTexto(e.textoFallo ?? ''),
+          peso: 130 + (e.notaPrueba ?? '').length + (e.textoEfecto ?? '').length + (e.textoExito ?? '').length + (e.textoFallo ?? '').length,
+        },
+      }
+    : {
+        nombre: e.nombre,
+        claves: e.palabrasClave.join(' · '),
+        avance: e.avance,
+        opciones,
+        conPrueba: e.prueba.length > 0,
+        exito: parsearFichas(e.textoExito ?? ''),
+        fallo: parsearFichas(e.textoFallo ?? ''),
+        efecto: parsearFichas(e.textoEfecto ?? ''),
+      }
   if (entorno) vista.entorno = entorno
   return vista
 }
 
-function vistaDestino(d: DestinoDatos): VistaDestino {
+function vistaDestino(d: DestinoDatos, v2 = false): VistaDestino {
   const colorMod = COLOR_MOD[d.mod]
   if (!colorMod) throw new Error(`Modificador de Destino desconocido: ${d.mod}`)
   return {
@@ -244,7 +284,8 @@ function vistaDestino(d: DestinoDatos): VistaDestino {
     colorMod,
     ambientacion: d.ambientacion,
     texto: parsearTexto(d.texto, { masEsMalo: true }),
-    sinOposicion: parsearFichas(d.textoSinOposicion),
+    sinOposicion: v2 ? [] : parsearFichas(d.textoSinOposicion),
+    ...(v2 ? { sinOposicionTexto: parsearTexto(d.textoSinOposicion, { masEsMalo: true }) } : {}),
   }
 }
 
@@ -408,9 +449,10 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
         forma: 'peligro',
         num: entrada.num,
         codigo: codigoColeccion(entrada.num),
-        encuentros: ORDEN_ENTORNOS.map((ent) => vistaEncuentro(c.encuentros[ent], ent)),
-        destino: vistaDestino(c.destino),
+        encuentros: ORDEN_ENTORNOS.map((ent) => vistaEncuentro(c.encuentros[ent], ent, c.version === 2)),
+        destino: vistaDestino(c.destino, c.version === 2),
         entraDuranteLaPartida: c.entraDuranteLaPartida,
+        ...(c.version === 2 ? { v2: true } : {}),
       }
     }
     case 'mazoPropio': {

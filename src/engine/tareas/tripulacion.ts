@@ -17,11 +17,12 @@ const MOTIVOS: Record<string, string> = {
   exceso: 'despides a',
   muelle: 'vuelve al muelle',
   naufrago: 'se descarta a',
+  incautado: 'pierdes a',
 }
 
 /** Saca a un Tripulante del juego con sus Mejoras. Sus Tesoros pasan a otro Tripulante (N1). */
 export const sacarTripulante: Manejador<'sacarTripulante'> = (s, t) => {
-  if (!estaEn(s, t.carta, 'tripulacion') && !estaEn(s, t.carta, 'rehenes')) return 'hecha'
+  if (!estaEn(s, t.carta, 'tripulacion') && !estaEn(s, t.carta, 'rehenes') && !estaEn(s, t.carta, 'incautadas')) return 'hecha'
   if (t.carta === s.capitan) throw new Error('El Capitán no puede salir del juego así')
   const suyas = vinculadas(s, t.carta)
   const tesoros = suyas.filter((m) => tipoDe(copia(s, m).id) === 'tesoro')

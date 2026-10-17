@@ -58,6 +58,38 @@ import {
 } from './mision.ts'
 import { adquirir, despedir, reclutar, ventanaJugar } from './jugar.ts'
 import { quedarseEnPuerto, reponerMisiones, soplos, tablon } from './puerto.ts'
+import {
+  agotarParaPagar,
+  contador,
+  descartarArriba,
+  descartarDelMuelle,
+  descartarPeligroEnJuego,
+  elegirEncuentro,
+  estadosFinTurno,
+  incautar,
+  mirarPeligros,
+  ocuparMuelle,
+  peligroDeMas,
+  ponerEstadoBarco_,
+  ponerEstado_,
+  pruebaSuelta,
+  quedarEnJuego,
+  quitarEstadoBarco_,
+  quitarEstado_,
+} from './peligrosNuevos.ts'
+import {
+  aQuien,
+  agotarPago,
+  descartarAzar,
+  descartarMayorCoste,
+  elegirEfectos,
+  especial,
+  gratisDelMuelle,
+  prepararN,
+  quitarPeligroEnJuego,
+  quitarUnEstado,
+  recuperarDescarte,
+} from './peligros2.ts'
 import { evento, jugarEvento, usar, ventanaLibre } from './sucesos.ts'
 import { desercion, exceso, hundirse, reasignarTesoro, sacarTripulante } from './tripulacion.ts'
 import { aplicarEscenario, cambioMano, descartarFinal, prepararTodo, recargar, turno } from './turno.ts'
@@ -133,6 +165,34 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   naufrago,
   ponerEntrenamiento,
   volverAlMuelle,
+  elegirEncuentro,
+  pruebaSuelta,
+  quedarEnJuego,
+  descartarPeligroEnJuego,
+  contador,
+  ponerEstado: ponerEstado_,
+  ponerEstadoBarco: ponerEstadoBarco_,
+  quitarEstado: quitarEstado_,
+  quitarEstadoBarco: quitarEstadoBarco_,
+  estadosFinTurno,
+  incautar,
+  ocuparMuelle,
+  descartarDelMuelle,
+  mirarPeligros,
+  descartarArriba,
+  agotarParaPagar,
+  peligroDeMas,
+  aQuien,
+  elegirEfectos,
+  especial,
+  prepararN,
+  descartarAzar,
+  descartarMayorCoste,
+  agotarPago,
+  gratisDelMuelle,
+  recuperarDescarte,
+  quitarUnEstado,
+  quitarPeligroEnJuego,
 }
 
 /**

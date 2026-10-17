@@ -1,7 +1,8 @@
 // Interpreta los recuadros de efecto de los Peligros y las líneas Sin oposición tal y como se
 // imprimen (iconos separados por « · »): «2 [herida] · 1 [agotar]», «1 [dano] · / 1 [herida]»…
 
-import { DATOS } from './datos.ts'
+import { DATOS, type Entorno, type Habilidad } from './datos.ts'
+import type { EstadoBarco, EstadoTripulante } from './infoEstados.ts'
 import type { CartaId } from './tipos.ts'
 
 export type Efecto =
@@ -13,7 +14,8 @@ export type Efecto =
   | { tipo: 'agotar'; n: number | 'todos' }
   | { tipo: 'descartar'; n: number }
   | { tipo: 'robar'; n: number }
-  | { tipo: 'curar'; n: number }
+  /** Curar N: repartidas (por defecto), N a cada comprometido, a cada Tripulante, a cada herido, o a uno. */
+  | { tipo: 'curar'; n: number; modo?: 'repartir' | 'cadaComprometido' | 'cadaUno' | 'cadaHerido' | 'uno' }
   | { tipo: 'perderAvance'; n: number | 'todo' }
   | { tipo: 'perderMunicion'; n: number }
   | { tipo: 'perderMejora'; n: number }
@@ -26,6 +28,163 @@ export type Efecto =
   | { tipo: 'seRetira' }
   | { tipo: 'recluta' }
   | { tipo: 'sinFallo' }
+  // Efectos de los Peligros nuevos (fase 6). No salen de los iconos impresos: los da el registro de reglas de cada carta.
+  /** Ficha de Estado a un Tripulante: el que elijas, uno de los comprometidos, todos o el Capitán. */
+  | { tipo: 'estado'; estado: EstadoTripulante; a: 'uno' | 'comprometido' | 'todos' | 'capitan' }
+  | { tipo: 'estadoBarco'; estado: EstadoBarco }
+  /** Quita un Estado: al Tripulante de la carta que lo dice, a uno que elijas o a todos. */
+  | { tipo: 'quitarEstado'; estado: EstadoTripulante; a: 'fuente' | 'uno' | 'todos' }
+  | { tipo: 'quitarEstadoBarco'; estado: EstadoBarco }
+  /** Cartas de la mano, una Mejora o un Tripulante van debajo de la carta de misión. */
+  | { tipo: 'incautar'; que: 'mano' | 'mejora' | 'tripulante'; n: number }
+  /** La carta del encuentro ocupa el muelle; en Jugar cartas se descarta pagando `coste` cartas. */
+  | { tipo: 'ocuparMuelle'; coste: number }
+  /** «La siguiente Prueba de esta misión recibe ±X» (a su dificultad). */
+  | { tipo: 'modSiguientePrueba'; n: number }
+  | { tipo: 'mirarPeligros'; n: number }
+  | { tipo: 'descartarArriba'; n: number }
+  | { tipo: 'noRetirarse' }
+  | { tipo: 'retirarse' }
+  /** La carta de Peligro en juego que lo dice se descarta. */
+  | { tipo: 'descartarEsta' }
+  /** Lee la mesa: Rasgos, Mejoras, heridas, munición, Estados… */
+  | { tipo: 'si'; condicion: Condicion; entonces: Efecto[]; sino?: Efecto[] }
+  /** «1 herida por cada Mejora» (con un mínimo y un máximo, si lo dice). */
+  | { tipo: 'porCada'; medida: Medida; efectos: Efecto[]; maximo?: number; minimo?: number }
+  // Peligros 2.0
+  | { tipo: 'ganarAvance'; n: number }
+  | { tipo: 'ganarMunicion'; n: number }
+  /** Prepara a N Tripulantes (a tu elección), a todos o a los comprometidos. */
+  | { tipo: 'preparar'; n: number | 'todos' | 'comprometidos' }
+  /** A quién le pasa algo: «el comprometido con más EXP queda Buscado», «cada Tripulante agotado sufre 1 herida»… */
+  | { tipo: 'aQuien'; quien: Selector; hacer: AccionSobre }
+  | { tipo: 'descartarAzar'; n: number }
+  /** Descarta la carta de mayor coste de tu mano (si empatan, eliges). */
+  | { tipo: 'descartarMayorCoste' }
+  /** Pago de «Elige»: agota N Tripulantes preparados, o 1 con ese Rasgo. */
+  | { tipo: 'agotarPago'; n: number; oRasgo?: string }
+  /** Mira las N de arriba del mazo de Peligros: «ordénalas» (fondo: no), «pon 1 al fondo» (una) o como quieras (libre). */
+  | { tipo: 'mirarOrdenar'; n: number; fondo: 'no' | 'una' | 'libre' }
+  /** «El siguiente encuentro #Guardia# de esta misión recibe −2», «la siguiente Prueba recibe +1», «no da Avance»… */
+  | { tipo: 'siguiente'; mod: ModSiguiente }
+  /** Esta carta va al fondo del mazo de Peligros (en vez de a los descartes) al terminar. */
+  | { tipo: 'alFondo' }
+  /** El jugador elige una de las opciones (las que se pueden pagar enteras). */
+  | { tipo: 'elegir'; opciones: OpcionEfectos[] }
+  /** Recluta o adquiere gratis una carta del muelle de coste N o menos (si no hay ninguna, `siNo`). */
+  | { tipo: 'gratisDelMuelle'; maxCoste: number; que: 'tripulante' | 'mejora' | 'cualquiera'; rasgo?: string; siNo?: Efecto[] }
+  /** Rescata a todos los rehenes de esta misión (si no hay ninguno, `siNo`). `preparados`: vuelven preparados. */
+  | { tipo: 'rescatarRehenes'; siNo?: Efecto[]; preparados?: boolean }
+  /** Lo incautado vuelve ya. */
+  | { tipo: 'recuperarIncautadas' }
+  /** Recupera N cartas de tu pila de descartes a la mano (eliges). */
+  | { tipo: 'recuperarDescarte'; n: number }
+  /** Pon N fichas en esta carta (la que está en juego). */
+  | { tipo: 'ficha'; n: number }
+  /** La Prueba se supera sin hacerla. */
+  | { tipo: 'superarSinPrueba' }
+  /** Lo que no cabe en lo anterior: una función registrada por carta. */
+  | { tipo: 'codigo'; clave: string }
+
+/** Una opción de «Elige» de un recuadro (o de un Destino). `si`: solo se ofrece si se cumple. */
+export interface OpcionEfectos {
+  texto: string
+  efectos: Efecto[]
+  si?: Condicion
+}
+
+/** «La siguiente Prueba / el siguiente encuentro (con estas claves o de esta habilidad) de esta misión…» */
+export interface ModSiguiente {
+  de: 'prueba' | 'encuentro'
+  /** Cambio a la dificultad de esa Prueba. */
+  n?: number
+  /** Ese encuentro no da Avance. */
+  sinAvance?: boolean
+  /** En esa Prueba se revelan 2 Destinos y se aplica el peor. */
+  dosDestinos?: boolean
+  claves?: string[]
+  hab?: Habilidad
+}
+
+/** A quién se aplica algo. Si hay empate en el criterio, elige el jugador. */
+export interface Selector {
+  de: 'comprometidos' | 'tripulacion' | 'preparados' | 'agotados' | 'noComprometidos' | 'noComprometidosPreparados' | 'heridos' | 'capitan'
+  /** Criterio: el número impreso de esa habilidad («prueba»: la de la Prueba en curso), la Vida, las heridas, el coste… */
+  por?: 'eleccion' | 'azar' | { mas: Habilidad | 'prueba' } | { menos: Habilidad | 'prueba' } | 'menosVida' | 'masHeridas' | 'menorCoste'
+  /** A todos los que cumplan (hasta `maximo`, eligiendo tú si hay más). */
+  cada?: boolean
+  maximo?: number
+  sinCapitan?: boolean
+  rasgo?: string
+  conEstado?: EstadoTripulante
+}
+
+/** Lo que le pasa al elegido. */
+export type AccionSobre =
+  | { tipo: 'heridas'; n: number }
+  | { tipo: 'estado'; estado: EstadoTripulante }
+  | { tipo: 'quitarEstado'; estado: EstadoTripulante }
+  | { tipo: 'rehen' }
+  | { tipo: 'preparar' }
+  | { tipo: 'agotar' }
+  | { tipo: 'curar'; n: number }
+  /** Vuelve al muelle con sus Mejoras (nunca el Capitán). */
+  | { tipo: 'alMuelle' }
+  /** No se prepara: en tu próximo Inicio, hasta el final de la misión, hasta que superes otra Prueba o mientras esta carta siga en juego. */
+  | { tipo: 'noPrepara'; hasta: 'inicio' | 'finMision' | 'superarPrueba' | 'carta' }
+  /** No puede comprometerse: en esta Prueba o mientras esta carta siga en juego. */
+  | { tipo: 'noCompromete'; hasta: 'finPrueba' | 'carta' }
+  /** No suma en esta Prueba. */
+  | { tipo: 'noSuma' }
+  /** Varias cosas al mismo Tripulante («queda Borracho y Aguerrido»). */
+  | { tipo: 'varios'; acciones: AccionSobre[] }
+
+/** Lo que una carta puede preguntar a la mesa. */
+export type Condicion =
+  | { tipo: 'rasgoPreparado'; rasgo: string }
+  | { tipo: 'rasgoEnJuego'; rasgo: string }
+  | { tipo: 'mejoras'; minimo: number }
+  | { tipo: 'heridas'; minimo: number }
+  | { tipo: 'municion'; minimo: number }
+  | { tipo: 'estado'; estado: EstadoTripulante }
+  | { tipo: 'estadoBarco'; estado: EstadoBarco }
+  | { tipo: 'no'; condicion: Condicion }
+  // Peligros 2.0
+  /** Número de Tripulantes comprometidos en la Prueba en curso. */
+  | { tipo: 'comprometidos'; minimo?: number; maximo?: number }
+  | { tipo: 'comprometidoRasgo'; rasgo: string }
+  | { tipo: 'comprometidoEstado'; estado: EstadoTripulante }
+  | { tipo: 'comprometidoCapitan' }
+  /** Una carta concreta en juego (la Bandera negra, el Amuleto…). */
+  | { tipo: 'cartaEnJuego'; id: CartaId }
+  | { tipo: 'reputacion'; minimo: number }
+  | { tipo: 'danoBarco'; minimo: number }
+  | { tipo: 'mano'; minimo: number }
+  /** La Prueba en curso es de esta habilidad. */
+  | { tipo: 'hab'; hab: Habilidad }
+  | { tipo: 'claves'; claves: string[] }
+  | { tipo: 'entorno'; entorno: Entorno }
+  | { tipo: 'superadaPor'; minimo: number }
+  | { tipo: 'falladaPor'; minimo: number }
+  | { tipo: 'todas'; condiciones: Condicion[] }
+  | { tipo: 'alguna'; condiciones: Condicion[] }
+
+/** Lo que se cuenta en «por cada». `margen`: puntos por los que superas; `faltan`: los que te faltan. */
+export type Medida =
+  | 'mejoras'
+  | 'mejorasBarco'
+  | 'heridas'
+  | 'municion'
+  | 'tripulantes'
+  | 'peligrosEnJuego'
+  | 'margen'
+  | 'faltan'
+  | 'dano'
+  | 'mano'
+  | 'heridos'
+  | 'comprometidos'
+  | { rasgo: string }
+  | { estado: EstadoTripulante }
 
 function numero(texto: string): number {
   return Number(texto.replace('−', '-').replace('+', ''))

@@ -120,8 +120,10 @@ export interface TesoroDatos {
 export interface OpcionPrueba {
   hab: Habilidad
   dificultad: number
-  /** «NAV 4, NAV 2 con un Vigía» */
-  alternativa?: { rasgo: string; dificultad: number }
+  /** «NAV 4, NAV 2 con un Vigía» (`comprometido`: solo si comprometes a uno: «2 si comprometes a un Marinero»). */
+  alternativa?: { rasgo: string; dificultad: number; comprometido?: boolean }
+  /** La dificultad es «X» (la calcula la carta; `dificultad` es la mínima). */
+  variable?: boolean
 }
 
 export interface EncuentroDatos {
@@ -139,6 +141,10 @@ export interface EncuentroDatos {
   textoFallo?: string
   /** Recuadro verde. */
   textoExito?: string
+  /** Peligros 2.0: aclaración de la dificultad («X = 2 + tus Mejoras de barco…», «+1 por cada…»). */
+  notaPrueba?: string
+  /** Peligros 2.0: «Elige», «Sin ayuda», «Se queda en juego», «Incautado». */
+  etiquetas?: string[]
 }
 
 export interface DestinoDatos {
@@ -174,6 +180,8 @@ export interface PeligroDatos {
   nivel: NivelPeligro
   copias: number
   entraDuranteLaPartida: boolean
+  /** 2: Peligros 2.0 (textos completos; lo que hacen está en sus reglas, no en los iconos). */
+  version?: 2
   encuentros: Record<Entorno, EncuentroDatos>
   destino: DestinoDatos
 }

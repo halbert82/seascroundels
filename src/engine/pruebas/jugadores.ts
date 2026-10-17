@@ -6,10 +6,12 @@ import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
 import { costeImpreso, iconosDe, porId } from '../catalogo.ts'
 import { DATOS } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
-import { interpretarEfectos } from '../efectos.ts'
+import type { Efecto } from '../efectos.ts'
 import { copia } from '../estado.ts'
-import { encuentroDe, entornoActual } from '../peligros.ts'
-import { dificultadPrueba, modificadorDeDestino, prevision, totalPrueba } from '../prueba.ts'
+import { entornoActual } from '../peligros.ts'
+import { definicionEncuentro } from '../definiciones.ts'
+import { definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
+import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor } from '../valores.ts'
 
@@ -37,7 +39,7 @@ export function jugadorAlAzar(semilla: number | string): JugadorAutomatico {
       case 'elegirOpcion':
         return { tipo: 'opcion', clave: d.opciones[entero(azar, d.opciones.length)]!.clave }
       case 'ofrecer':
-        return aleatorio(azar) < 0.5 || d.usos.length === 0 ? { tipo: 'pasar' } : { tipo: 'usar', uso: d.usos[0]! }
+        return aleatorio(azar) < 0.5 || d.usos.length === 0 ? { tipo: 'pasar' } : { tipo: 'usar', uso: d.usos[entero(azar, d.usos.length)]! }
       case 'repartir':
         return { tipo: 'reparto', n: repartoAlAzar(azar, d.cantidad, d.maximos) }
       case 'cubrirDistancia':
@@ -48,7 +50,10 @@ export function jugadorAlAzar(semilla: number | string): JugadorAutomatico {
         const hab = d.opciones[opcion]!.hab
         const tripulantes = d.tripulantes.filter(() => aleatorio(azar) < 0.6)
         const cartas = tripulantes.length > 0 ? d.cartas.filter((c) => iconos(_s, c, hab) > 0 && aleatorio(azar) < 0.3) : []
-        return { tipo: 'compromiso', opcion, tripulantes, cartas }
+        // Si el compromiso no vale (Asustado solo, Borracho, Sin ayuda…), prueba con uno solo o con nadie.
+        if (problemaCompromiso(_s, definicionActual(_s), hab, tripulantes, cartas) === null) return { tipo: 'compromiso', opcion, tripulantes, cartas }
+        const uno = d.tripulantes.find((c) => problemaCompromiso(_s, definicionActual(_s), hab, [c], []) === null)
+        return { tipo: 'compromiso', opcion, tripulantes: uno && aleatorio(azar) < 0.7 ? [uno] : [], cartas: [] }
       }
     }
   }
@@ -123,6 +128,10 @@ const MEJORAS_PREFERIDAS: Record<string, number> = {
 /** Lo que vale de más un Tripulante por su capacidad, para reclutarlo. */
 const CAPACIDAD_TRIPULANTE: Record<string, number> = {
   isabela: 2.5,
+  herbolaria: 1,
+  practico: 1,
+  lengua: 0.5,
+  fiador: 1,
   bartolome: 2,
   viejo_lobo: 1.5,
   matasanos: 1.5,
@@ -162,7 +171,7 @@ function puntuacionMision(s: Estado, m: InstId): number {
 }
 
 function peligroDeFallo(s: Estado, carta: InstId): number {
-  return peligroDe(interpretarEfectos(encuentroDe(s, carta).textoFallo ?? ''))
+  return peligroDe(s.prueba?.encuentro === carta ? definicionActual(s).fallo : definicionEncuentro(s, carta).fallo)
 }
 
 /** Mejor compromiso: el grupo más barato que llega a la dificultad con margen, o nadie si no compensa. */
@@ -177,6 +186,7 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
     const cartas = d.cartas.filter((c) => iconos(s, c, hab) > 0).sort((a, b) => iconos(s, b, hab) - iconos(s, a, hab))
     for (let mascara = 1; mascara < 1 << tripulantes.length; mascara++) {
       const grupo = tripulantes.filter((_, i) => mascara & (1 << i))
+      if (problemaCompromiso(s, definicionActual(s), hab, grupo, []) !== null) continue
       const sinCartas = prevision(s, encuentro, opcion, grupo, [])
       const objetivo = sinCartas.dificultad + 1 // margen para el Destino
       let total = sinCartas.total
@@ -196,7 +206,16 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
   // No llega: si el fallo es suave, no compromete a nadie; si duele, lo intenta con todo.
   if (peligroDeFallo(s, encuentro) < 2) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   const hab = d.opciones[0]!.hab
-  return { tipo: 'compromiso', opcion: 0, tripulantes: [...tripulantes], cartas: tripulantes.length > 0 ? d.cartas.filter((c) => iconos(s, c, hab) > 0) : [] }
+  const def = definicionActual(s)
+  let todos = [...tripulantes]
+  // Con todo lo que valga: si no se puede con todos (Sin ayuda, «como mucho 2»…), con el mejor que se pueda.
+  if (problemaCompromiso(s, def, hab, todos, []) !== null) {
+    const mejores = [...tripulantes].sort((a, b) => valor(s, { tipo: 'habilidad', carta: b, hab }) - valor(s, { tipo: 'habilidad', carta: a, hab }))
+    todos = []
+    for (const c of mejores) if (problemaCompromiso(s, def, hab, [...todos, c], []) === null) todos.push(c)
+  }
+  if (todos.length === 0) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
+  return { tipo: 'compromiso', opcion: 0, tripulantes: todos, cartas: d.cartas.filter((c) => iconos(s, c, hab) > 0) }
 }
 
 function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>): Eleccion {
@@ -242,6 +261,8 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
       return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, 1) }
     case 'ordenarOteo':
       return { tipo: 'cartas', ids: por((c) => riesgoDelEncuentro(s, c)) }
+    case 'alFondo':
+      return { tipo: 'cartas', ids: por((c) => -riesgoDelEncuentro(s, c)).slice(0, n) }
     case 'naufrago':
     case 'reclutarGratis':
       return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id)).slice(0, 1) }
@@ -250,6 +271,27 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'curarUno':
       return { tipo: 'cartas', ids: por((c) => (c === s.capitan && vidaRestante(s, c) <= 2 ? -50 : 0) - copia(s, c).heridas).slice(0, 1) }
     case 'entrenamiento':
+    case 'prepararN':
+      return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, Math.max(n, 1)) }
+    // Peligros 2.0
+    case 'aQuien':
+      // Lo malo, a quien más vida le quede (sin el Capitán); lo bueno, al mejor.
+      if (d.motivo.texto?.startsWith('sufre')) return { tipo: 'cartas', ids: por((c) => (c === s.capitan ? 50 : 0) - vidaRestante(s, c)).slice(0, n) }
+      if (/prepara|cura/.test(d.motivo.texto ?? '')) return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, n) }
+      return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
+    case 'ponerEstado':
+    case 'contagio':
+    case 'agotarParaPagar':
+    case 'agotarPago':
+      return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
+    case 'incautar':
+    case 'descartarMayorCoste':
+      return { tipo: 'cartas', ids: por((c) => (porId(copia(s, c).id).tipo === 'tripulante' ? valorTripulante(s, c) : iconosTotales(s, c))).slice(0, n) }
+    case 'gratisDelMuelle':
+      return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id) - (MEJORAS_PREFERIDAS[copia(s, c).id] ?? 0)).slice(0, 1) }
+    case 'recuperarDescarte':
+      return { tipo: 'cartas', ids: por((c) => -iconosTotales(s, c)).slice(0, n) }
+    case 'portadorGratis':
       return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, 1) }
     default:
       return { tipo: 'cartas', ids: d.candidatas.slice(0, n) }
@@ -304,10 +346,28 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
       return elegir(carta && riesgoDelEncuentro(s, carta) >= 1.5 ? 'fondo' : 'arriba')
     }
     case 'opcionAutomatica': {
-      const enc = s.prueba ? encuentroDe(s, s.prueba.encuentro) : null
-      const com = enc ? enc.prueba.findIndex((o) => o.hab === 'COM') : -1
+      const def = s.prueba ? definicionActual(s) : null
+      const com = def ? def.opciones.findIndex((o) => o.hab === 'COM') : -1
       return elegir(String(Math.max(0, com)))
     }
+    // Peligros 2.0
+    case 'elige': {
+      // La Prueba si se llega con margen; si no, el pago (la primera opción que no es la Prueba).
+      const carta = s.zonas.encuentro[0]
+      const def = carta ? definicionEncuentro(s, carta) : null
+      const indicePrueba = def?.elige?.findIndex((o) => o.prueba) ?? -1
+      const prueba = claves.find((c) => Number(c) === indicePrueba)
+      const pago = claves.find((c) => Number(c) !== indicePrueba)
+      if (!carta || !def || !prueba) return elegir(pago ?? claves[0]!)
+      if (!pago) return elegir(prueba)
+      const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
+      const margen = def.opciones.length > 0 ? Math.max(...def.opciones.map((o) => preparados.reduce((n, c) => n + valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }), 0) - o.dificultad)) : -9
+      return elegir(margen >= 2 ? prueba : pago)
+    }
+    case 'vendaval':
+      return elegir(claves.find((c) => c === 'descartar' && s.zonas.mano.length >= 3) ?? claves.find((c) => c === 'agotar') ?? claves[0]!)
+    case 'agotarPago':
+      return elegir(claves.includes('rasgo') ? 'rasgo' : claves[0]!)
     case 'habilidadEntrenamiento': {
       const tarea = tareaDe(s, d)
       const quien = tarea?.tipo === 'ponerEntrenamiento' ? tarea.carta : null
@@ -417,14 +477,21 @@ function encuentroEnMar(s: Estado): boolean {
 // ---------------------------------------------------------------------------
 // Capacidades: cuándo le sale a cuenta usar cada una
 
-function peligroDe(efectos: ReturnType<typeof interpretarEfectos>): number {
+function peligroDe(efectos: readonly Efecto[]): number {
   let peligro = 0
   for (const e of efectos) {
     if (e.tipo === 'heridas') peligro += e.n * 1.5
     else if (e.tipo === 'dano') peligro += e.n * 1.2
     else if (e.tipo === 'rehen') peligro += 3
     else if (e.tipo === 'perderAvance') peligro += e.n === 'todo' ? 3 : e.n
-    else if (e.tipo === 'robar' || e.tipo === 'curar' || e.tipo === 'reparar' || e.tipo === 'recluta' || e.tipo === 'sinFallo' || e.tipo === 'seRetira') peligro += 0
+    else if (e.tipo === 'aQuien') peligro += e.hacer.tipo === 'heridas' ? e.hacer.n * 1.5 : e.hacer.tipo === 'rehen' || e.hacer.tipo === 'alMuelle' ? 3 : e.hacer.tipo === 'estado' ? 1 : 0.5
+    else if (e.tipo === 'estado' || e.tipo === 'estadoBarco' || e.tipo === 'incautar' || e.tipo === 'ocuparMuelle' || e.tipo === 'retirarse') peligro += 1.5
+    else if (e.tipo === 'si' || e.tipo === 'porCada') peligro += peligroDe(e.tipo === 'si' ? e.entonces : e.efectos) * (e.tipo === 'porCada' ? 1.5 : 1)
+    else if (e.tipo === 'elegir') peligro += Math.min(...e.opciones.map((o) => peligroDe(o.efectos)), 3)
+    else if (
+      ['robar', 'curar', 'reparar', 'recluta', 'sinFallo', 'seRetira', 'ganarAvance', 'ganarMunicion', 'preparar', 'gratisDelMuelle', 'rescatarRehenes', 'recuperarIncautadas', 'recuperarDescarte', 'mirarOrdenar', 'quitarEstado', 'quitarEstadoBarco', 'alFondo'].includes(e.tipo)
+    )
+      peligro += 0
     else peligro += 0.5
   }
   return peligro
@@ -433,18 +500,19 @@ function peligroDe(efectos: ReturnType<typeof interpretarEfectos>): number {
 /** Lo que puede costar una carta de Peligro revelada: 0 si es fácil o inofensiva. */
 function riesgoDelEncuentro(s: Estado, carta: InstId): number {
   if (!s.mision) return 0
-  const enc = encuentroDe(s, carta)
-  if (enc.prueba.length === 0) return peligroDe(interpretarEfectos(enc.textoEfecto ?? ''))
+  const enc = definicionEncuentro(s, carta)
+  if (enc.queda) return 2
+  if (enc.opciones.length === 0) return peligroDe(enc.efecto)
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
   let margen = -99
-  for (let i = 0; i < enc.prueba.length; i++) {
-    const o = enc.prueba[i]!
+  for (let i = 0; i < enc.opciones.length; i++) {
+    const o = enc.opciones[i]!
     const cartas = s.zonas.mano.filter((c) => iconos(s, c, o.hab) > 0)
     const { total, dificultad } = prevision(s, carta, i, preparados, cartas)
     margen = Math.max(margen, total - dificultad)
   }
   // Superarla comprometiendo a todos también cuesta: deja a la tripulación agotada para lo que venga.
-  const peligro = peligroDe(interpretarEfectos(enc.textoFallo ?? ''))
+  const peligro = peligroDe(enc.fallo) + (enc.abordaje ? 3 : 0)
   if (preparados.length === 0 || margen < 1) return peligro
   if (margen < 3) return peligro * 0.6
   return 0
@@ -572,7 +640,8 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'amuleto.salvar':
       return 10
     case 'mascaron.evitar':
-      return ev?.tipo === 'danoBarco' && (ev.cantidad >= 2 || s.danoBarco + ev.cantidad >= valor(s, { tipo: 'danoMaximo' }) - 1) ? 4 : 0
+      // Una vez por misión: mejor gastarlo que guardarlo.
+      return ev?.tipo === 'danoBarco' ? 4 : 0
     // Respuestas que solo dan ventaja
     case 'saqueador.superar':
     case 'contrabandista.superar':
@@ -621,8 +690,36 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return carta && mano >= 3 && riesgoDelEncuentro(s, carta) >= 1 ? 3 : 0
     case 'espesura.jugar':
       return p && mano >= 2 && peligroDeFallo(s, p.encuentro) >= 1.5 ? 3 : 0
-    default:
+    // Fase 6: Estados y cartas de Peligro en juego o en el muelle.
+    case 'estado:incendio.apagar':
+      return 3
+    // Cartas de jugador 2.0
+    case 'herbolaria.quitar':
+    case 'practico.barco':
+    case 'fiador.rehen':
+    case 'virar.jugar':
+      return 3
+    case 'cataplasma.jugar':
+      return 2
+    case 'cortar.jugar':
+      return trasEncuentro && mano >= 4 ? 2 : 0
+    case 'a_por_ellos.jugar':
+      return trasEncuentro && s.zonas.rehenes.length > 0 && s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? 3 : 0
+    case 'ron_valientes.jugar':
+      return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
+    case 'estado:encadenado.liberar':
+      return d.motivo.clave === 'jugarCartas' || trasEncuentro ? 1 : 0
+    case 'peligroEnMuelle.descartar':
+      return fuente && mano >= (s.peligrosEnMuelle?.[fuente] ?? 0) + 2 ? 1 : 0
+    default: {
+      // Quitar una carta de Peligro en juego (o sus Acciones): si estorba y se puede pagar sin quedarse sin nadie.
+      const cap = capacidadDe(uso)
+      if (cap.desde === 'peligroEnJuego' && cap.ventana === 'accion') {
+        const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
+        return trasEncuentro && (preparados >= 2 || mano >= 4) ? 2 : 0
+      }
       return 0
+    }
   }
 }
 

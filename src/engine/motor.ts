@@ -8,6 +8,10 @@ import type { Decision, Eleccion, Estado, Tarea } from './tipos.ts'
 import { encolarUso, mismoUso, usosDisponibles } from './usos.ts'
 import { iconosDe } from './catalogo.ts'
 import { navParaDistancia, plazasOcupadas, valor } from './valores.ts'
+import { impideSuperar } from './definiciones.ts'
+// Reglas de las cartas de Peligro 2.0 (se registran al cargar).
+import './peligros2/index.ts'
+import { definicionActual, problemaCompromiso } from './prueba.ts'
 
 /** Pasos máximos sin decisión del jugador: si se superan, hay un bucle en las reglas. */
 const MAXIMO_PASOS = 20000
@@ -33,8 +37,16 @@ function procesar(s: Estado, t: Tarea, e: Eleccion | null): void {
   }
 }
 
+/** Los efectos «mientras esta carta siga en juego» se acaban en cuanto la carta sale. */
+function limpiarTemporales(s: Estado): void {
+  if (s.temporales.some((t) => t.hasta === 'carta' && (!t.carta || !s.zonas.peligrosEnJuego.includes(t.carta)))) {
+    s.temporales = s.temporales.filter((t) => !(t.hasta === 'carta' && (!t.carta || !s.zonas.peligrosEnJuego.includes(t.carta))))
+  }
+}
+
 /** Comprobaciones que se resuelven en el momento entre paso y paso (D8). Devuelve true si ha encolado algo. */
 function comprobar(s: Estado): boolean {
+  limpiarTemporales(s)
   if (s.reputacion >= s.reputacionObjetivo) {
     s.resultado = { gana: true, motivo: `Has llegado a ${s.reputacion} de reputación.` }
     anotar(s, 'fin', '¡Has ganado la partida!')
@@ -53,7 +65,8 @@ function comprobar(s: Estado): boolean {
     return true
   }
   // D5a: en cuanto reúnes el Avance, superas la misión; pero la primera carta de Peligro se resuelve siempre.
-  if (s.mision && !s.mision.fin && s.mision.cartasResueltas >= 1) {
+  // Una carta en juego que «impide superar la misión» lo retrasa hasta que se quite.
+  if (s.mision && !s.mision.fin && s.mision.cartasResueltas >= 1 && !impideSuperar(s)) {
     const avance = copia(s, s.mision.carta).avance
     if (avance >= valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta })) {
       s.mision.fin = 'superada'
@@ -164,6 +177,8 @@ export function validarEleccion(s: Estado, d: Decision, e: Eleccion): void {
         invalida(`alguna carta no tiene iconos de ${opcion.hab}`)
       }
       if (e.tripulantes.length === 0 && e.cartas.length > 0) invalida('sin comprometer a nadie no puedes añadir cartas')
+      const problema = problemaCompromiso(s, definicionActual(s), opcion.hab, e.tripulantes, e.cartas)
+      if (problema) invalida(problema)
       return
     }
   }

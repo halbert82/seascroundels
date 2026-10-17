@@ -2,6 +2,9 @@
 
 import { capacidadesDe } from '../capacidades/index.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
+import { esCanon } from '../catalogo.ts'
+import { tieneEstadoBarco } from '../estados.ts'
+import { puedePrepararse } from './peligros2.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { puedeZarpar } from './mision.ts'
 import { valor } from '../valores.ts'
@@ -99,7 +102,14 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       const naufragos = s.temporales
         .filter((x) => x.clave === 'naufrago.turno' && x.inst && s.zonas.tripulacion.includes(x.inst))
         .map((x): NuevaTarea => ({ tipo: 'sacarTripulante', carta: x.inst as InstId, destino: 'descartesMuelle', motivo: 'naufrago' }))
-      encolar(s, { tipo: 'robarHastaMando' }, { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] }, ...naufragos)
+      encolar(
+        s,
+        { tipo: 'robarHastaMando' },
+        { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] },
+        // Estados al final del turno: Envenenado hiere, Fiebre se contagia, Borracho se pasa.
+        { tipo: 'estadosFinTurno', paso: 'veneno', pendientes: [] },
+        ...naufragos,
+      )
       t.paso = 'cierre'
       return 'sigue'
     }
@@ -127,15 +137,26 @@ export const aplicarEscenario: Manejador<'aplicarEscenario'> = (s, t) => {
   return 'hecha'
 }
 
-/** Prepara todas tus cartas agotadas. */
+/** Prepara todas tus cartas agotadas (menos las que «no se preparan»). Se acaban los «en tu próximo Inicio». */
 export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
-  for (const c of [...s.zonas.tripulacion, ...s.zonas.mejoras]) copia(s, c).agotada = false
+  for (const c of [...s.zonas.tripulacion, ...s.zonas.mejoras]) {
+    if (!puedePrepararse(s, c)) {
+      if (copia(s, c).agotada) anotar(s, 'efecto', `${nombre(s, c)} no se prepara.`)
+      continue
+    }
+    copia(s, c).agotada = false
+  }
+  s.temporales = s.temporales.filter((x) => x.hasta !== 'inicio')
   return 'hecha'
 }
 
 /** Recarga: las cartas con munición la recuperan hasta su máximo (sin bajar si una carta la subió más). */
 export const recargar: Manejador<'recargar'> = (s) => {
+  // Pólvora mojada: los Cañones no recargan en el Inicio.
+  const mojada = tieneEstadoBarco(s, 'polvoraMojada')
+  if (mojada && s.zonas.mejoras.some((c) => esCanon(copia(s, c).id))) anotar(s, 'aviso', 'Pólvora mojada: los Cañones no recargan.')
   for (const c of s.zonas.mejoras) {
+    if (mojada && esCanon(copia(s, c).id)) continue
     const maximo = valor(s, { tipo: 'municionMaxima', carta: c })
     if (maximo > 0) copia(s, c).municion = Math.max(copia(s, c).municion, maximo)
   }

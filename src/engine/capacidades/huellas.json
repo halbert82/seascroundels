@@ -67,5 +67,14 @@
  "mapa_calas": "Indestructible.\nTus misiones [nat] necesitan {N avance g}.",
  "polvora_rey": "Indestructible.\nTus Cañones reciben {N municion} de máximo.",
  "farol": "Indestructible.\n**Respuesta:** Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)",
- "barco": "Tus Pruebas de [NAV] en [mar] reciben {N}.\n**Al zarpar hacia una misión lejana:** Distancia {N g}."
+ "barco": "Tus Pruebas de [NAV] en [mar] reciben {N}.\n**Al zarpar hacia una misión lejana:** Distancia {N g}.",
+ "herbolaria": "[agotar]: Quita **Envenenado**, **Fiebre** o **Sangrando** a un Tripulante.",
+ "practico": "**Respuesta:** Después de que superes una Prueba de [NAV] en la que participe Práctico del puerto, quita **Vía de agua** o **Velas rotas** del Barco.",
+ "lengua": "Los encuentros #Civil# en los que participe La Lengua reciben {N g} de dificultad.",
+ "fiador": "**Interrupción:** Cuando otro Tripulante vaya a quedar rehén, Fiador de la Hermandad queda rehén en su lugar. Si lo rescatas, roba {N robar}.",
+ "cataplasma": "Quita **Envenenado** o **Sangrando** a un Tripulante y cúrale {N herida g}.",
+ "cortar": "**Acción:** Descarta N cartas de tu mano: Descarta una carta de Peligro que se quede en juego, salvo si es de nivel Terrible.",
+ "a_por_ellos": "**Acción:** Haz una Prueba de [COM] N. Si la superas, rescata a todos los rehenes de esta misión: vuelven preparados.",
+ "ron_valientes": "**Acción:** Un Tripulante queda **Borracho** y **Aguerrido**.",
+ "virar": "**Interrupción:** Gasta {N municion}: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar."
 }

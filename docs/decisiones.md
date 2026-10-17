@@ -76,3 +76,41 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 ## Correcciones del kit
 
 - **Mazo de muelle de inicio de Diego: 20 cartas** (el reglamento pide de 15 a 20; el kit traía las 42). Tripulantes (12): Rufián de cubierta, Grumete leal, Bucanero veterano ×2, Uñas largas, Contrabandista del bajo Caribe, Cañonero, Carpintero de a bordo, Matasanos, Vigía inexperta, Viejo lobo de mar y Rastreador de la selva. Mejoras (8): Cañones de bronce, Vela mayor, Hamacas en el entrepuente, Casco reforzado, Botica de a bordo, Sable de abordaje, Brújula de latón y Catalejo de latón. El mazo del capitán sigue con sus 36 cartas.
+
+## Fase 6: Peligros 2.0 y cartas de jugador 2.0
+
+### Decididas por Albert (fase 6)
+
+- **Se queda en juego:** la carta queda junto a la misión con su texto activo hasta que se cumple lo que dice para quitarla; sin límite de cartas; al terminar la misión (superada, retirada o hundida) se descarta; puede llevar un contador que siempre sube o impedir superar la misión. **Su Avance impreso se gana al revelarla.**
+- **La Prueba de una Acción es una Prueba normal:** se compromete, sale Destino y, si no hay nadie, Sin oposición.
+- **Persigue:** tras aplicar el Destino, la carta va encima del mazo de Peligros y es el siguiente encuentro; si la misión termina, sigue encima y sale en la siguiente.
+- **«El comprometido con más/menos HAB»** usa el número impreso; si empatan, elige el jugador. En los Destinos, «la habilidad más alta/baja» es la de esa Prueba.
+- **Rasgo Piloto:** lo lleva el Viejo lobo de mar (y el Práctico del puerto).
+- **Mazos predefinidos:** muelle de 20 (entran Herbolaria, Práctico del puerto, La Lengua y Fiador; salen un Bucanero veterano, el Rufián de cubierta, la Brújula y el Sable); capitán de 40 (entran los cinco Eventos nuevos; sale una de las dos copias de Reflejos de gato).
+- **Números de colección:** los Peligros 2.0 del Grupo A llevan del 154 al 164; las cartas de jugador 2.0, del 165 al 173. Los demás grupos seguirán desde el 174, para que la colección no tenga huecos.
+
+### Opciones por defecto, pendientes de confirmar (marcadas con TODO(regla) en el código)
+
+- **P1 · Una carta que se queda en juego cuenta como carta resuelta** (para poder superar la misión, D5a). *Ejemplo:* la primera carta de «Rumbo a la isla» es «Bajamar»: cuenta como resuelta, aunque mientras esté no puedes superar la misión.
+- **P2 · No se puede hacer la Prueba de una Acción durante otra Prueba** (sí en Jugar cartas y tras un encuentro). *Ejemplo:* en la ventana de la Prueba de «Niebla» no puedes intentar liberar a tu Encadenado.
+- **P3 · Fiebre:** al final del turno contagia a quien elijas (si hay varios con Fiebre, contagia cada uno); la Taberna la quita a todos; el Matasanos, en puerto, al Tripulante que cura. *Ejemplo:* el Bucanero y la Vigía tienen Fiebre: al final del turno, cada uno contagia a otro distinto.
+- **P4 · Incendio a bordo hace daño en cualquier Entorno** (no solo en el Mar), y si acaba la misión sin apagarlo pierdes una Mejora de barco y la ficha sigue. *Ejemplo:* en «Cobrar la deuda» (Ciudad), cada carta revelada hace 1 daño.
+- **P5 · Pólvora mojada se quita con el Astillero** (como Velas rotas).
+- **P6 · Perseguido:** la carta de más se resuelve entera antes de la primera, sin ventana para retirarte entre las dos; cuenta como resuelta y da su Avance.
+- **P7 · Sin ayuda: los Eventos tampoco suman por sus iconos** al comprometer o reforzar; solo las Habilidades.
+- **P8 · Abordaje y «por cada punto que te falte»:** si fallas, te falta al menos 1 punto (aunque fallaras por un Destino «Fallas la Prueba»); sin comprometidos, las heridas van a un Tripulante que eliges y el rehén es al azar (como N7).
+- **P9 · Incautado:** las cartas de la mano las eliges tú; lo perdido va fuera del juego; un Tripulante incautado sigue ocupando su plaza y va con sus Mejoras; una Mejora recuperada vuelve a su portador (si ya no está, se descarta).
+- **P11 · En «Elige», una opción de pago que no puedes pagar entera no se ofrece.** *Ejemplo:* en «Calma chicha» sin 2 Tripulantes preparados ni un Marinero, solo queda «Esperar el viento».
+- **P12 · «Al revelarse» se aplica antes de las Respuestas** a la revelación de la carta.
+- **P13 · Curar quita primero las fichas** (Envenenado y luego Sangrando) y después las heridas.
+- **P14 · Aguerrido evita 1 herida**, no todas las de ese golpe.
+- **P15 · Maldito se quita al superar cualquier encuentro Sobrenatural**, participe o no.
+- **P16 · Encadenado bloquea las capacidades que se usan de su carta** (Acción, sin etiqueta, Respuesta, Interrupción); sus capacidades constantes y sus Mejoras siguen; se puede agotar como coste de otra carta.
+- **P18 · Una carta de Peligro que ocupa el muelle no se descarta al reponerlo:** ocupa un hueco hasta que pagas para descartarla.
+- **P19 · Las cartas nuevas que dañan el Barco fuera del Mar no hacen nada** (regla general: el Barco solo recibe daño en el Mar). *Ejemplo:* «Vendaval» Sin oposición en Ciudad: «2 daños al Barco» no cuesta nada, así que lo eliges siempre.
+- **P20 · «El Tripulante con menos Vida» usa la Vida impresa**, no la que le queda.
+- **P21 · «Estrella polar»: no puedes reforzar** después del Destino; las cartas que añadiste al comprometer siguen sumando.
+- **P22 · «La ola»: el Capitán no vuelve al muelle**; si es el único preparado sin comprometer, cuenta como que no había ninguno (1 daño más).
+- **P23 · Cataplasma solo se juega si alguien tiene Envenenado o Sangrando**, y la curación sigue P13.
+- **P24 · Cortar por lo sano cuesta 3 cartas en total** (1 del timón más las 2 de su capacidad).
+- **P27 · «El siguiente encuentro … recibe ±N»: si ese encuentro no tiene Prueba, se gasta igualmente.**

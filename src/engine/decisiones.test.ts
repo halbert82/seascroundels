@@ -118,6 +118,8 @@ describe('D12 · Una partida normal dura 12 turnos', () => {
         const d = j.decision
         if (d.tipo === 'elegirCartas') j.responder({ tipo: 'cartas', ids: d.candidatas.slice(0, d.min) })
         else if (d.tipo === 'elegirOpcion') j.opcion(d.opciones[0]?.clave ?? '')
+        else if (d.tipo === 'ofrecer') j.pasar()
+        else if (d.tipo === 'ventanaAccion') j.terminar()
         else break
       }
       if (j.estado.resultado) break

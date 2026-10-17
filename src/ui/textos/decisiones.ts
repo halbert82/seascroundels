@@ -1,12 +1,17 @@
 // Textos en español de lo que pide el motor en cada momento: decisiones, sucesos y capacidades.
 // La interfaz solo dibuja: todo lo que dice sale de aquí.
 
+import { capacidadPorClave } from '../../engine/capacidades/index.ts'
 import { nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
+import { quedaDe, type FormaDeQuitar } from '../../engine/definiciones.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
-import { encuentroDe } from '../../engine/peligros.ts'
+import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from '../../engine/infoEstados.ts'
+import { nombreDelEncuentro } from '../../engine/prueba.ts'
 import { textoDe } from '../../engine/textos.ts'
-import type { Efecto } from '../../engine/efectos.ts'
+import type { AccionSobre, Condicion, Efecto, Medida, Selector } from '../../engine/efectos.ts'
+import { textoModSiguiente } from '../../engine/tareas/efectos.ts'
+import type { OpcionPrueba } from '../../engine/datos.ts'
 import type { Decision, Estado, Evento, InstId, Uso } from '../../engine/tipos.ts'
 
 export interface TextoDecision {
@@ -46,11 +51,46 @@ export function textoPlano(id: string): string {
     .replace(/\*\*(.+?)\*\*/g, '$1')
     .replace(/_(.+?)_/g, '$1')
     .replace(/#(.+?)#/g, '$1')
+    .replace(/~(.+?)~/g, '$1')
     .replace(/\\n|\n/g, ' ')
+}
+
+/** «COM 3 o EXP 3» */
+export function textoOpciones(opciones: readonly OpcionPrueba[]): string {
+  return opciones.map((o) => `${o.hab} ${o.dificultad}${o.alternativa ? ` (${o.alternativa.dificultad} con un ${o.alternativa.rasgo})` : ''}`).join(' o ')
+}
+
+/** Cómo se quita una carta de Peligro en juego, en palabras. */
+export function textoFormaDeQuitar(f: FormaDeQuitar): string {
+  switch (f.tipo) {
+    case 'prueba':
+      return `Prueba de ${textoOpciones(f.opciones)}`
+    case 'agotarRasgo':
+      return f.rasgo ? `Agota a un ${f.rasgo}` : 'Agota a un Tripulante'
+    case 'pagar':
+      return `Paga ${plural(f.n, 'carta', 'cartas')}`
+  }
 }
 
 /** Lo que dice una capacidad ofrecida: la carta y su texto. */
 export function textoUso(s: Estado, uso: Uso): { carta: string; texto: string } {
+  const cap = capacidadPorClave(uso.clave)
+  if (cap?.desde === 'estado' || cap?.desde === 'estadoBarco') {
+    if (uso.clave === 'estado:encadenado.liberar' && uso.fuente) {
+      return { carta: `Liberar a ${nombre(s, uso.fuente)}`, texto: 'Prueba de COM o EXP 3 para quitarle Encadenado.' }
+    }
+    if (uso.clave === 'estado:incendio.apagar') return { carta: 'Apagar el Incendio a bordo', texto: 'Agota a un Tripulante.' }
+    const estado = cap.carta.slice('estado:'.length) as EstadoTripulante | EstadoBarco
+    return { carta: `Usar «${INFO_ESTADO[estado].nombre}»`, texto: INFO_ESTADO[estado].texto }
+  }
+  if (cap?.desde === 'peligroEnMuelle' && uso.fuente) {
+    return { carta: `Descartar «${nombre(s, uso.fuente)}» del muelle`, texto: `Paga ${plural(s.peligrosEnMuelle?.[uso.fuente] ?? 0, 'carta', 'cartas')}.` }
+  }
+  if (cap?.desde === 'peligroEnJuego' && uso.fuente) {
+    const i = Number(/\.quitar(\d+)$/.exec(uso.clave)?.[1] ?? -1)
+    const forma = quedaDe(s, uso.fuente)?.quitar[i]
+    return { carta: `Quitar «${nombre(s, uso.fuente)}»`, texto: forma ? `${textoFormaDeQuitar(forma)}.` : '' }
+  }
   const id = uso.fuente ? copia(s, uso.fuente).id : (uso.clave.split('.')[0] ?? '')
   const esEvento = tipoDe(id) === 'evento'
   return { carta: `${esEvento ? 'Jugar' : 'Usar'} «${nombreDe(id)}»`, texto: textoPlano(id) }
@@ -67,9 +107,17 @@ export function textoSuceso(s: Estado, ev: Evento, fase: 'antes' | 'despues'): s
     case 'danoBarco':
       return `El Barco ${antes ? 'va a recibir' : 'ha recibido'} ${ev.cantidad} de daño.`
     case 'revelarPeligro': {
-      const enc = s.zonas.encuentro.includes(ev.carta) ? `: ${encuentroDe(s, ev.carta).nombre}` : ''
+      const enc = s.zonas.encuentro.includes(ev.carta) ? `: ${nombreDelEncuentro(s, ev.carta)}` : ''
       return `Has revelado «${nombre(s, ev.carta)}»${enc}.`
     }
+    case 'cartaResuelta':
+      return `Has terminado con «${nombre(s, ev.carta)}».`
+    case 'rehen':
+      return `${nombre(s, ev.carta)} ${antes ? 'va a quedar' : 'ha quedado'} rehén.`
+    case 'rescatado':
+      return `Has rescatado a ${nombre(s, ev.carta)}.`
+    case 'persigue':
+      return `«${nombre(s, ev.carta)}» ${antes ? 'va a ponerse' : 'se ha puesto'} encima del mazo de Peligros.`
     case 'revelarDestino': {
       const d = destinoDe(copia(s, ev.carta).id)
       return `Se revela el Destino «${d.nombre}» (${d.impreso}).`
@@ -161,17 +209,58 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
         titulo: `Cubre la Distancia ${n} de «${nombreCarta(m.carta)}»`,
         ayuda: 'Agota Tripulantes cuya NAV sume al menos ese número y, si hace falta, descarta cartas con iconos de NAV.',
       }
-    case 'comprometer': {
-      const enc = s.prueba ? encuentroDe(s, s.prueba.encuentro).nombre : ''
+    case 'comprometer':
+    case 'comprometerAccion': {
+      const enc = s.prueba ? nombreDelEncuentro(s, s.prueba.encuentro) : ''
+      const sinAyuda = d.tipo === 'comprometer' && d.sinAyuda
       return {
-        titulo: `Prueba: ${enc}`,
-        ayuda: 'Compromete Tripulantes preparados y añade cartas de tu mano con iconos de la habilidad. También puedes no comprometer a nadie.',
+        titulo: `Prueba: ${enc}${sinAyuda ? ' · Sin ayuda' : ''}`,
+        ayuda: sinAyuda
+          ? 'Sin ayuda: compromete a un solo Tripulante. Solo suman las Habilidades de tu mano, y no puedes jugar Eventos.'
+          : 'Compromete Tripulantes preparados y añade cartas de tu mano con iconos de la habilidad. También puedes no comprometer a nadie.',
       }
     }
+    case 'elige':
+      return { titulo: `«${nombreCarta(m.carta)}»: elige`, ayuda: 'Haz la Prueba o paga lo que pide la carta.' }
+    case 'ponerEstado': {
+      const info = m.carta ? INFO_ESTADO[m.carta.slice('estado:'.length) as EstadoTripulante] : undefined
+      return { titulo: `¿Quién queda ${info?.nombre ?? ''}?`, ayuda: info?.texto }
+    }
+    case 'quitarEstado': {
+      const info = m.carta ? INFO_ESTADO[m.carta.slice('estado:'.length) as EstadoTripulante] : undefined
+      return { titulo: `¿A quién le quitas ${info?.nombre ?? 'el Estado'}?` }
+    }
+    case 'contagio':
+      return { titulo: `${nombreCarta(m.carta)} contagia la Fiebre`, ayuda: 'Elige a quién: a un Tripulante sin Fiebre.' }
+    case 'incautar':
+      return { titulo: `Te incautan ${plural(n, 'carta', 'cartas')}`, ayuda: 'Van debajo de la misión. Si la superas, las recuperas; si no, las pierdes.' }
+    case 'agotarParaPagar':
+      return { titulo: m.carta ? `Agota a un ${m.carta} para pagar` : 'Agota a un Tripulante para pagar' }
+    // Peligros 2.0
+    case 'elegirEfectos':
+      return { titulo: m.carta ? `«${nombreCarta(m.carta)}»: elige` : 'Elige', ayuda: 'Solo se ofrece lo que puedes pagar entero.' }
+    case 'aQuien':
+      return { titulo: `¿Quién ${m.texto ?? 'es'}?`, ayuda: n > 1 ? `Elige ${n}.` : 'Hay empate: eliges tú.' }
+    case 'prepararN':
+      return { titulo: `Prepara a ${plural(n, 'Tripulante', 'Tripulantes')}` }
+    case 'descartarMayorCoste':
+      return { titulo: 'Descarta la carta de mayor coste de tu mano', ayuda: 'Hay empate: eliges cuál.' }
+    case 'agotarPago':
+      return d.tipo === 'elegirOpcion' ? { titulo: '¿Cómo pagas?' } : { titulo: `Agota a ${plural(n, 'Tripulante', 'Tripulantes')} para pagar` }
+    case 'gratisDelMuelle':
+      return { titulo: 'Gratis del muelle', ayuda: `Puedes poner en juego sin pagar una carta del muelle de coste ${n} o menos (o ninguna).` }
+    case 'portadorGratis':
+      return { titulo: `¿Quién lleva «${nombreCarta(m.carta)}»?` }
+    case 'recuperarDescarte':
+      return { titulo: `Recupera ${plural(n, 'carta', 'cartas')} de tu descarte` }
+    case 'vendaval':
+      return { titulo: 'Vendaval: fallas la Prueba…', ayuda: '…salvo que descartes 2 cartas o agotes a otro Tripulante preparado con NAV 2 o más; entonces el Destino es +2.' }
     case 'ventanaPrueba':
       return { titulo: 'Antes de resolver la Prueba', ayuda: 'Puedes reforzar con más cartas de tu mano o usar capacidades.' }
     case 'trasEncuentro':
-      return { titulo: 'Carta resuelta', ayuda: 'Sigue con la misión revelando otra carta, o retírate a puerto (pierdes el Avance).' }
+      return s.mision?.sinRetirada
+        ? { titulo: 'Carta resuelta', ayuda: 'Sigue con la misión revelando otra carta. No puedes retirarte de esta misión.' }
+        : { titulo: 'Carta resuelta', ayuda: 'Sigue con la misión revelando otra carta, o retírate a puerto (pierdes el Avance).' }
     case 'interrupcion':
     case 'respuesta': {
       const suceso = sucesoDe(s, d)
@@ -182,6 +271,8 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: 'Varias capacidades obligadas a la vez', ayuda: 'Elige cuál se aplica primero.' }
     case 'otear':
       return { titulo: `Oteas «${nombreCarta(m.carta)}»`, ayuda: '¿La dejas arriba del mazo o la pones al fondo?' }
+    case 'alFondo':
+      return { titulo: n === 1 ? 'Elige la carta que va al fondo del mazo' : `Elige las ${n} cartas que van al fondo del mazo` }
     case 'ordenarOteo':
       return { titulo: 'Ordena las cartas que dejas arriba', ayuda: 'La primera que elijas queda encima.' }
     case 'alZarparAgotar':
@@ -219,8 +310,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
 
 /** Nombre del encuentro de una carta de Peligro revelada (para el panel de la Prueba). */
 export function nombreEncuentro(s: Estado, inst: InstId): string {
-  const e = porId(copia(s, inst).id)
-  return e.tipo === 'peligro' || e.tipo === 'mazoPropio' ? encuentroDe(s, inst).nombre : nombreDe(e.id)
+  return nombreDelEncuentro(s, inst)
 }
 
 // ---------------------------------------------------------------------------
@@ -273,7 +363,177 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       return 'puedes reclutar'
     case 'sinFallo':
       return 'no se aplica el efecto de fallo'
+    case 'estado': {
+      const quien = { uno: 'un Tripulante', comprometido: 'uno de los comprometidos', todos: 'todos tus Tripulantes', capitan: 'tu Capitán' }[e.a]
+      return `${quien} ${e.a === 'todos' ? 'quedan' : 'queda'} ${INFO_ESTADO[e.estado].nombre}`
+    }
+    case 'estadoBarco':
+      return `el Barco: ${INFO_ESTADO[e.estado].nombre}`
+    case 'quitarEstado':
+      return `quitas ${INFO_ESTADO[e.estado].nombre}${e.a === 'todos' ? ' a todos' : ''}`
+    case 'quitarEstadoBarco':
+      return `el Barco ya no tiene ${INFO_ESTADO[e.estado].nombre}`
+    case 'incautar':
+      return e.que === 'mano' ? `te incautan ${n2(e.n, 'carta', 'cartas')} de la mano` : e.que === 'mejora' ? 'te incautan una Mejora' : 'te incautan un Tripulante'
+    case 'ocuparMuelle':
+      return `la carta ocupa el muelle (pagas ${n2(e.coste, 'carta', 'cartas')} para descartarla)`
+    case 'modSiguientePrueba':
+      return `la siguiente Prueba de esta misión recibe ${e.n > 0 ? '+' : ''}${e.n}`
+    case 'mirarPeligros':
+      return `miras ${e.n === 1 ? 'la carta' : `las ${e.n} cartas`} de arriba del mazo de Peligros`
+    case 'descartarArriba':
+      return `descartas ${e.n === 1 ? 'la carta' : `las ${e.n} cartas`} de arriba del mazo de Peligros sin resolverla${e.n === 1 ? '' : 's'}`
+    case 'noRetirarse':
+      return 'no puedes retirarte de esta misión'
+    case 'retirarse':
+      return 'te retiras de la misión'
+    case 'descartarEsta':
+      return 'descartas esta carta'
+    case 'si': {
+      const entonces = describirEfectos(e.entonces)
+      const sino = e.sino ? describirEfectos(e.sino) : ''
+      return `si ${describirCondicion(e.condicion)}, ${entonces}${sino ? `; si no, ${sino}` : ''}`
+    }
+    case 'porCada':
+      return `${describirEfectos(e.efectos)} por cada ${describirMedida(e.medida)}${e.maximo !== undefined ? ` (máximo ${e.maximo})` : ''}`
+    case 'ganarAvance':
+      return `+${e.n} de Avance`
+    case 'ganarMunicion':
+      return `ganas ${e.n} de munición`
+    case 'preparar':
+      return e.n === 'todos' ? 'preparas a todos tus Tripulantes' : e.n === 'comprometidos' ? 'preparas a los comprometidos' : `preparas a ${n2(e.n, 'Tripulante', 'Tripulantes')}`
+    case 'aQuien':
+      return describirAQuien(e.quien, e.hacer)
+    case 'descartarAzar':
+      return `descartas ${n2(e.n, 'carta', 'cartas')} al azar`
+    case 'descartarMayorCoste':
+      return 'descartas la carta de mayor coste de tu mano'
+    case 'agotarPago':
+      return `agotas a ${n2(e.n, 'Tripulante', 'Tripulantes')}${e.oRasgo ? ` (o a 1 ${e.oRasgo})` : ''}`
+    case 'mirarOrdenar':
+      return `miras las ${e.n} de arriba del mazo de Peligros${e.fondo === 'una' ? ' y pones 1 al fondo' : e.fondo === 'no' ? ' y las ordenas' : ''}`
+    case 'siguiente':
+      return textoModSiguiente(e.mod).replace(/\.$/, '').toLowerCase()
+    case 'alFondo':
+      return 'esta carta va al fondo del mazo de Peligros'
+    case 'elegir':
+      return `eliges: ${e.opciones.map((o) => o.texto).join(' o ')}`
+    case 'gratisDelMuelle':
+      return `pones en juego gratis una carta del muelle de coste ${e.maxCoste} o menos`
+    case 'rescatarRehenes':
+      return 'rescatas a los rehenes'
+    case 'recuperarIncautadas':
+      return 'recuperas lo incautado'
+    case 'recuperarDescarte':
+      return `recuperas ${n2(e.n, 'carta', 'cartas')} de tu descarte`
+    case 'ficha':
+      return `pones ${n2(e.n, 'ficha', 'fichas')} en esta carta`
+    case 'superarSinPrueba':
+      return 'superas sin Prueba'
+    case 'codigo':
+      return null
   }
+}
+
+const NOMBRE_DE: Record<Selector['de'], string> = {
+  comprometidos: 'comprometido',
+  tripulacion: 'Tripulante',
+  preparados: 'Tripulante preparado',
+  agotados: 'Tripulante agotado',
+  noComprometidos: 'Tripulante no comprometido',
+  noComprometidosPreparados: 'Tripulante preparado no comprometido',
+  heridos: 'Tripulante herido',
+  capitan: 'Capitán',
+}
+
+function describirAQuien(q: Selector, a: AccionSobre): string {
+  const quien = q.de === 'capitan' ? 'el Capitán' : `${q.cada ? 'cada' : 'el'} ${NOMBRE_DE[q.de]}`
+  const por = !q.por || q.por === 'eleccion' || q.por === 'azar' ? '' : q.por === 'menosVida' ? ' con menos Vida' : q.por === 'masHeridas' ? ' con más heridas' : q.por === 'menorCoste' ? ' de menor coste' : 'mas' in q.por ? ` con más ${q.por.mas === 'prueba' ? 'habilidad' : q.por.mas}` : ` con menos ${q.por.menos === 'prueba' ? 'habilidad' : q.por.menos}`
+  const que: Record<AccionSobre['tipo'], string> = {
+    heridas: 'heridas' in a || a.tipo === 'heridas' ? `sufre ${'n' in a ? n2(a.n, 'herida', 'heridas') : ''}` : '',
+    estado: a.tipo === 'estado' ? `queda ${INFO_ESTADO[a.estado].nombre}` : '',
+    quitarEstado: a.tipo === 'quitarEstado' ? `pierde ${INFO_ESTADO[a.estado].nombre}` : '',
+    rehen: 'queda rehén',
+    preparar: 'se prepara',
+    agotar: 'se agota',
+    curar: 'n' in a ? `se cura ${a.n}` : '',
+    alMuelle: 'vuelve al muelle',
+    noPrepara: 'no se prepara',
+    noCompromete: 'no puede comprometerse',
+    noSuma: 'no suma',
+    varios: a.tipo === 'varios' ? a.acciones.map((x) => describirAQuien({ de: 'capitan' }, x).replace(/^el Capitán /, '')).join(' y ') : '',
+  }
+  return `${quien}${por}${q.por === 'azar' ? ' al azar' : ''} ${que[a.tipo]}`
+}
+
+function describirCondicion(c: Condicion): string {
+  switch (c.tipo) {
+    case 'rasgoPreparado':
+      return `tienes un ${c.rasgo} preparado`
+    case 'rasgoEnJuego':
+      return `tienes un ${c.rasgo}`
+    case 'mejoras':
+      return `tienes ${c.minimo} o más Mejoras`
+    case 'heridas':
+      return `tu tripulación tiene ${c.minimo} o más heridas`
+    case 'municion':
+      return `tienes ${c.minimo} o más de munición`
+    case 'estado':
+      return `alguien está ${INFO_ESTADO[c.estado].nombre}`
+    case 'estadoBarco':
+      return `el Barco tiene ${INFO_ESTADO[c.estado].nombre}`
+    case 'no':
+      return `no ${describirCondicion(c.condicion)}`
+    case 'comprometidos':
+      return c.maximo === 1 ? 'comprometiste a uno solo' : `comprometiste a ${c.minimo ?? 0} o más`
+    case 'comprometidoRasgo':
+      return `comprometiste a un ${c.rasgo}`
+    case 'comprometidoEstado':
+      return `algún comprometido está ${INFO_ESTADO[c.estado].nombre}`
+    case 'comprometidoCapitan':
+      return 'el Capitán está comprometido'
+    case 'cartaEnJuego':
+      return `tienes «${nombreDe(c.id)}»`
+    case 'reputacion':
+      return `tienes ${c.minimo} o más de reputación`
+    case 'danoBarco':
+      return `el Barco tiene ${c.minimo} o más daños`
+    case 'mano':
+      return `tienes ${c.minimo} o más cartas en la mano`
+    case 'hab':
+      return `la Prueba es de ${c.hab}`
+    case 'claves':
+      return `el encuentro es ${c.claves.join(' o ')}`
+    case 'entorno':
+      return `estás en ${c.entorno === 'mar' ? 'el Mar' : c.entorno === 'nat' ? 'Naturaleza' : 'Ciudad'}`
+    case 'superadaPor':
+      return `superas por ${c.minimo} o más`
+    case 'falladaPor':
+      return `fallas por ${c.minimo} o más`
+    case 'todas':
+      return c.condiciones.map(describirCondicion).join(' y ')
+    case 'alguna':
+      return c.condiciones.map(describirCondicion).join(' o ')
+  }
+}
+
+function describirMedida(m: Medida): string {
+  if (typeof m === 'object') return 'rasgo' in m ? m.rasgo : `Tripulante ${INFO_ESTADO[m.estado].nombre}`
+  const nombres: Record<Exclude<Medida, object>, string> = {
+    mejoras: 'Mejora',
+    mejorasBarco: 'Mejora de barco',
+    heridas: 'herida de tu tripulación',
+    municion: 'munición',
+    tripulantes: 'Tripulante',
+    peligrosEnJuego: 'carta de Peligro en juego',
+    margen: 'punto que superes',
+    faltan: 'punto que te falte',
+    dano: 'daño del Barco',
+    mano: 'carta de tu mano',
+    heridos: 'Tripulante herido',
+    comprometidos: 'Tripulante comprometido',
+  }
+  return nombres[m]
 }
 
 export function describirEfectos(efectos: readonly Efecto[]): string {

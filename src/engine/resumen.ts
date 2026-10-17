@@ -1,6 +1,6 @@
 // Resumen de una partida a partir de su registro, para la pantalla final.
 
-import { nombreDe, tipoDe } from './catalogo.ts'
+import { esCartaDelJugador, nombreDe, tipoDe } from './catalogo.ts'
 import { copia } from './estado.ts'
 import type { CartaId, Estado } from './tipos.ts'
 
@@ -67,7 +67,7 @@ export function resumenDePartida(s: Estado): ResumenPartida {
         r.adquiridas++
         break
       case 'usar':
-        if (tipoDe(dato.carta) !== 'barco') usos.set(dato.carta, (usos.get(dato.carta) ?? 0) + 1)
+        if (esCartaDelJugador(dato.carta) && tipoDe(dato.carta) !== 'barco') usos.set(dato.carta, (usos.get(dato.carta) ?? 0) + 1)
         break
       default:
         break

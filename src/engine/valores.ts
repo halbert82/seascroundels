@@ -5,6 +5,7 @@ import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
 import { porId } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 import { copia } from './estado.ts'
+import { cartaDeEstado } from './infoEstados.ts'
 import type { Capacidad, Consulta, Contexto, Estado, InstId } from './tipos.ts'
 import { vinculadas } from './zonas.ts'
 
@@ -22,6 +23,12 @@ export function mejoraActiva(s: Estado, inst: InstId): boolean {
   const c = copia(s, inst)
   if (c.agotada) return false
   return c.vinculadaA === 'barco' || (c.vinculadaA !== null && s.zonas.tripulacion.includes(c.vinculadaA))
+}
+
+/** La carta cuyo Destino se aplica en la Prueba en curso (revelado y sin cancelar). */
+export function destinoVigente(s: Estado): InstId | null {
+  const p = s.prueba
+  return p?.destino && !p.destinoCancelado && s.zonas.destino.includes(p.destino) ? p.destino : null
 }
 
 /** Capacidades constantes activas, con la carta que las da (null para temporales y Barco). */
@@ -49,6 +56,25 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   }
   for (const cap of capacidadesDe('barco')) {
     if (cap.ventana === 'constante' && cap.desde === 'barco') yield [cap, null]
+  }
+  // Fase 6: el encuentro que se resuelve, el Destino de la Prueba, cartas de Peligro en juego y fichas de Estado.
+  for (const inst of s.zonas.encuentro) {
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'encuentro') yield [cap, inst]
+  }
+  const destino = destinoVigente(s)
+  if (destino) {
+    for (const cap of capacidadesDe(copia(s, destino).id)) if (cap.ventana === 'constante' && cap.desde === 'destino') yield [cap, destino]
+  }
+  for (const inst of s.zonas.peligrosEnJuego) {
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'peligroEnJuego') yield [cap, inst]
+  }
+  for (const inst of s.zonas.tripulacion) {
+    for (const e of copia(s, inst).estados ?? []) {
+      for (const cap of capacidadesDe(cartaDeEstado(e))) if (cap.ventana === 'constante' && cap.desde === 'estado') yield [cap, inst]
+    }
+  }
+  for (const e of s.estadosBarco ?? []) {
+    for (const cap of capacidadesDe(cartaDeEstado(e))) if (cap.ventana === 'constante' && cap.desde === 'estadoBarco') yield [cap, null]
   }
 }
 
@@ -94,6 +120,8 @@ function base(s: Estado, c: Consulta): number {
     case 'avanceExtraPrueba':
     case 'sinCanones':
     case 'sinAgotarAlComprometer':
+    case 'noSuma':
+    case 'sinNavBarco':
       return 0
     case 'distancia':
     case 'avanceNecesario': {
@@ -115,15 +143,26 @@ export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<In
   if (c.tipo === 'distancia' && b === 0) return 0
   const ctx = contexto(s, supuestasAgotadas, participantes)
   let total = b
-  for (const [cap, yo] of constantesActivas(s)) total += cap.modifica?.(ctx, yo, c) ?? 0
+  const sinMejoras = deLaPrueba(s, c)
+  for (const [cap, yo] of constantesActivas(s)) {
+    if (sinMejoras && yo !== null && s.zonas.mejoras.includes(yo)) continue
+    total += cap.modifica?.(ctx, yo, c) ?? 0
+  }
   return Math.max(0, total)
+}
+
+/** «Las Mejoras no suman en esta Prueba»: no cuentan para las habilidades ni para el total. */
+function deLaPrueba(s: Estado, c: Consulta): boolean {
+  return (s.prueba?.sinMejoras ?? false) && (c.tipo === 'habilidad' || c.tipo === 'totalPrueba')
 }
 
 /** Lo que aporta cada capacidad constante activa a una consulta (solo las que suman o restan algo). */
 export function aportaciones(s: Estado, c: Consulta): { carta: string; clave: string; inst: InstId | null; n: number }[] {
   const ctx = contexto(s)
   const lista: { carta: string; clave: string; inst: InstId | null; n: number }[] = []
+  const sinMejoras = deLaPrueba(s, c)
   for (const [cap, yo] of constantesActivas(s)) {
+    if (sinMejoras && yo !== null && s.zonas.mejoras.includes(yo)) continue
     const n = cap.modifica?.(ctx, yo, c) ?? 0
     if (n !== 0) lista.push({ carta: cap.carta, clave: cap.clave, inst: yo, n })
   }
@@ -134,7 +173,11 @@ export function aportaciones(s: Estado, c: Consulta): { carta: string; clave: st
 export function modificadores(s: Estado, c: Consulta): number {
   const ctx = contexto(s)
   let total = 0
-  for (const [cap, yo] of constantesActivas(s)) total += cap.modifica?.(ctx, yo, c) ?? 0
+  const sinMejoras = deLaPrueba(s, c)
+  for (const [cap, yo] of constantesActivas(s)) {
+    if (sinMejoras && yo !== null && s.zonas.mejoras.includes(yo)) continue
+    total += cap.modifica?.(ctx, yo, c) ?? 0
+  }
   return total
 }
 
@@ -166,9 +209,11 @@ export function huecosLibres(s: Estado, tripulante: InstId): number {
   return valor(s, { tipo: 'huecos', carta: tripulante }) - huecosOcupados(s, tripulante)
 }
 
-/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los rehenes. */
+/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los rehenes y los incautados. */
 export function plazasOcupadas(s: Estado): number {
-  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.rehenes.length
+  // TODO(regla): P9 · un Tripulante incautado sigue ocupando su plaza.
+  const incautados = s.zonas.incautadas.filter((c) => porId(copia(s, c).id).tipo === 'tripulante').length
+  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.rehenes.length + incautados
 }
 
 export function plazasLibres(s: Estado): number {

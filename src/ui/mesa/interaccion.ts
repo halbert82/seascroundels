@@ -57,6 +57,8 @@ const ZONAS_A_LA_VISTA: ReadonlySet<Zona> = new Set<Zona>([
   'encuentro',
   'destino',
   'escenarioEnCurso',
+  'peligrosEnJuego',
+  'incautadas',
 ])
 
 function zonaDe(s: Estado, inst: InstId): Zona | null {
@@ -66,6 +68,14 @@ function zonaDe(s: Estado, inst: InstId): Zona | null {
 
 function aLaVista(s: Estado, inst: InstId): boolean {
   const z = zonaDe(s, inst)
+  // Durante una misión, la mesa no enseña el muelle ni las misiones disponibles (la misión ocupa su sitio);
+  // en puerto, no hay cartas en juego junto a la misión ni incautadas.
+  if (s.mision && (z === 'muelle' || (z === 'misionesDisponibles' && inst !== s.mision.carta))) return false
+  // Las Mejoras de un Tripulante incautado no se ven (van con él debajo de la misión).
+  if (z === 'mejoras') {
+    const v = s.cartas[inst]?.vinculadaA
+    if (v && v !== 'barco' && !s.zonas.tripulacion.includes(v) && !s.zonas.rehenes.includes(v)) return false
+  }
   return z !== null && ZONAS_A_LA_VISTA.has(z)
 }
 

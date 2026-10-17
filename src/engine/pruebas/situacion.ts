@@ -23,6 +23,7 @@ import {
   type Zona,
 } from '../tipos.ts'
 import { valor } from '../valores.ts'
+import type { EstadoBarco, EstadoTripulante } from '../infoEstados.ts'
 import { crearCopia, zonaDe } from '../zonas.ts'
 
 export interface CopiaInicial {
@@ -32,6 +33,7 @@ export interface CopiaInicial {
   /** Mejoras de tripulante (o Tesoros) que lleva. */
   mejoras?: CartaId[]
   entrenamiento?: Habilidad[]
+  estados?: EstadoTripulante[]
 }
 
 export interface MejoraInicial {
@@ -61,7 +63,7 @@ export interface OpcionesSituacion {
   puerto?: CartaId
   /** Tripulantes además del Capitán. */
   tripulacion?: (CartaId | CopiaInicial)[]
-  barco?: { dano?: number; mejoras?: (CartaId | MejoraInicial)[] }
+  barco?: { dano?: number; mejoras?: (CartaId | MejoraInicial)[]; estados?: EstadoBarco[] }
   /** Misiones disponibles (por defecto, las tres iniciales). */
   misiones?: CartaId[]
   /** Mazo de Misiones (por defecto, los capítulos I y las aventuras, sin barajar). */
@@ -96,6 +98,7 @@ function ponerCopia(s: Estado, entrada: CartaId | CopiaInicial, zona: Zona): Ins
   c.heridas = datos.heridas ?? 0
   c.agotada = datos.agotada ?? false
   c.entrenamiento = [...(datos.entrenamiento ?? [])]
+  if (datos.estados && datos.estados.length > 0) c.estados = [...datos.estados]
   for (const m of datos.mejoras ?? []) copiaDe(s, crearCopia(s, m, 'mejoras')).vinculadaA = inst
   return inst
 }
@@ -114,6 +117,7 @@ export function montar(op: OpcionesSituacion = {}): Estado {
     c.agotada = datos.agotada ?? false
   }
   s.danoBarco = op.barco?.dano ?? 0
+  if (op.barco?.estados && op.barco.estados.length > 0) s.estadosBarco = [...op.barco.estados]
   const zonas: [Zona, CartaId[] | undefined][] = [
     ['mano', op.mano],
     ['mazoCapitan', op.mazoCapitan],
@@ -214,7 +218,8 @@ export function comprobarInvariantes(s: Estado, { json = true }: { json?: boolea
   for (const m of s.zonas.mejoras) {
     const v = s.cartas[m]?.vinculadaA
     const reasignando = s.pila.some((t) => t.tipo === 'reasignarTesoro' && t.tesoro === m)
-    if (v !== 'barco' && !(v && (s.zonas.tripulacion.includes(v) || s.zonas.rehenes.includes(v))) && !reasignando) {
+    const portadorEnJuego = v && v !== 'barco' && (s.zonas.tripulacion.includes(v) || s.zonas.rehenes.includes(v) || s.zonas.incautadas.includes(v))
+    if (v !== 'barco' && !portadorEnJuego && !reasignando) {
       throw new Error(`La Mejora ${m} no está vinculada a nada`)
     }
   }
@@ -481,6 +486,15 @@ export class Jugador {
 
   valor(c: Consulta): number {
     return valor(this.estado, c)
+  }
+
+  /** Fichas de Estado de un Tripulante. */
+  estados(id: CartaId): string[] {
+    return [...(this.copia(id).estados ?? [])]
+  }
+
+  get estadosBarco(): string[] {
+    return [...(this.estado.estadosBarco ?? [])]
   }
 
   get registro(): string[] {

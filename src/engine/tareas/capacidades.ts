@@ -12,6 +12,9 @@ import { huecosLibres, valor } from '../valores.ts'
 import { arriba, mover, rebarajar } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { ganarAvanceMision } from './mision.ts'
+import { alComprometerse } from './encuentro.ts'
+import { puedePrepararse } from './peligros2.ts'
+import { definicionActual, problemaCompromiso } from '../prueba.ts'
 
 function evento(ev: Extract<NuevaTarea, { tipo: 'evento' }>['ev']): NuevaTarea {
   return { tipo: 'evento', ev, fase: 'antes', cancelado: false, usadas: [] }
@@ -26,6 +29,18 @@ export const otear: Manejador<'otear'> = (s, t, e) => {
     if (t.cartas.length === 0) return 'hecha'
     s.infoRevelada++
     anotar(s, 'revelar', `Oteas: ${nombres(s, t.cartas)}.`)
+    return 'sigue'
+  }
+  // «Ordénalas como quieras» (ninguna al fondo) o «pon N al fondo»: se decide de una vez.
+  if (t.cartas.length > 0 && t.fondoMax !== undefined && (t.fondoMax === 0 || t.fondoMax === t.fondoMin)) {
+    const n = Math.min(t.fondoMax, t.cartas.length)
+    if (n > 0) {
+      if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'alFondo', n }, candidatas: [...t.cartas], min: n, max: n })
+      const fondo = eleccionDe(e, 'cartas').ids
+      t.fondo.push(...fondo)
+      t.arriba.push(...t.cartas.filter((c) => !fondo.includes(c)))
+    } else t.arriba.push(...t.cartas)
+    t.cartas = []
     return 'sigue'
   }
   const siguiente = t.cartas[0]
@@ -85,7 +100,7 @@ export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t) => {
   descartarPeligro(s, p.destino)
   p.destino = null
   p.destinoCancelado = false
-  const carta = cartaDeArriba(s)
+  const carta = cartaDeArriba(s, 'destino')
   if (!carta) {
     anotar(s, 'aviso', `Descartas el Destino «${viejo.nombre}» y no quedan cartas para revelar otro.`)
     return 'hecha'
@@ -121,15 +136,22 @@ export const desviarHeridas: Manejador<'desviarHeridas'> = (s, t, e) => {
 export const comprometerUno: Manejador<'comprometerUno'> = (s, t) => {
   const p = s.prueba
   if (!p || !s.zonas.tripulacion.includes(t.carta) || copia(s, t.carta).agotada || p.comprometidos.includes(t.carta)) return 'hecha'
-  copia(s, t.carta).agotada = true
+  if (p.hab) {
+    const problema = problemaCompromiso(s, definicionActual(s), p.hab, [...p.comprometidos.filter((c) => s.zonas.tripulacion.includes(c)), t.carta], [])
+    if (problema) {
+      anotar(s, 'aviso', `${problema}.`)
+      return 'hecha'
+    }
+  }
   p.comprometidos.push(t.carta)
   anotar(s, 'jugada', `${nombre(s, t.carta)} se compromete en la Prueba.`)
+  alComprometerse(s, p, t.carta, true)
   return 'hecha'
 }
 
 /** Prepara a todos tus Tripulantes («Víveres de reserva»). */
 export const prepararTripulantes: Manejador<'prepararTripulantes'> = (s) => {
-  const agotados = s.zonas.tripulacion.filter((c) => copia(s, c).agotada)
+  const agotados = s.zonas.tripulacion.filter((c) => copia(s, c).agotada && puedePrepararse(s, c))
   for (const c of agotados) copia(s, c).agotada = false
   if (agotados.length > 0) anotar(s, 'efecto', `Preparas a ${nombres(s, agotados)}.`)
   return 'hecha'

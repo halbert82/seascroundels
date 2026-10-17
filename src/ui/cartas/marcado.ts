@@ -4,6 +4,7 @@
 //   {N icono f}      número con icono opcional; f = g/r/k (verde/rojo/tinta)
 //   _Rasgo_          Rasgo en negrita cursiva
 //   #Clave#          palabra clave de encuentro
+//   ~ambiente~       frase de ambiente dentro de un texto (Peligros 2.0), en cursiva
 //   \n               salto de párrafo
 
 export const ICONOS = [
@@ -46,12 +47,13 @@ export type Segmento =
   | { tipo: 'texto'; texto: string; negrita: boolean }
   | { tipo: 'rasgo'; texto: string }
   | { tipo: 'clave'; texto: string }
+  | { tipo: 'ambiente'; texto: string }
   /** `pegado`: texto en negrita que va justo detrás del icono, sin espacio (p. ej. «:»). */
   | { tipo: 'icono'; icono: IconoId; negrita: boolean; pegado?: string }
   | { tipo: 'numero'; valor: string; icono?: IconoId; color: ColorNumero }
   | { tipo: 'parrafo' }
 
-const PATRON = /\*\*|\[([A-Za-z]+)\]|\{([^}]*)\}|_([^_]+)_|#([^#]+)#|\n/g
+const PATRON = /\*\*|\[([A-Za-z]+)\]|\{([^}]*)\}|_([^_]+)_|#([^#]+)#|~([^~]+)~|\n/g
 
 /** Opciones de interpretación. En la franja de Destino, un «+N» sin marca sube la dificultad: va en rojo. */
 export interface OpcionesTexto {
@@ -125,6 +127,8 @@ export function parsearTexto(texto: string, opciones: OpcionesTexto = {}): Segme
       segmentos.push({ tipo: 'rasgo', texto: m[3] })
     } else if (m[4] !== undefined) {
       segmentos.push({ tipo: 'clave', texto: m[4] })
+    } else if (m[5] !== undefined) {
+      segmentos.push({ tipo: 'ambiente', texto: m[5] })
     }
   }
   empujarTexto(texto.slice(ultimo))

@@ -4,13 +4,14 @@ import { motion } from 'motion/react'
 import { iconosDe, porId } from '../../engine/catalogo.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
-import { encuentroDe } from '../../engine/peligros.ts'
-import { desgloseDificultad, desgloseTotal, dificultadPrueba, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
+import { desgloseDificultad, desgloseTotal, dificultadPrueba, nombreDelEncuentro, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
 import type { Decision, Estado, InstId } from '../../engine/tipos.ts'
 import { valor } from '../../engine/valores.ts'
 import { Destino } from '../cartas/CartaPeligro.tsx'
 import { vistaDeCarta } from '../cartas/vista.ts'
 import { describirEfectos } from '../textos/decisiones.ts'
+import { impideRetirarse, impideSuperar } from '../../engine/definiciones.ts'
+import { textoModSiguiente } from '../../engine/tareas/efectos.ts'
 import { anchoCentro } from './disposicion.ts'
 import { useLienzo } from './Lienzo.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
@@ -79,8 +80,33 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
             </span>
             {m.cartasResueltas === 0 && <span className="aviso">Hay que resolver al menos una carta para superarla</span>}
             {m.mazoMezclado && <span>Revelas del mazo de la misión</span>}
+            {impideSuperar(s) && <span className="aviso">Una carta en juego te impide superarla</span>}
+            {(m.sinRetirada || impideRetirarse(s)) && <span className="aviso">No puedes retirarte</span>}
+            {(m.modsSiguientes ?? []).map((x, i) => (
+              <span key={i} className="pendiente">
+                {textoModSiguiente(x)}
+              </span>
+            ))}
           </div>
+          {s.zonas.incautadas.length > 0 && (
+            <div className="incautadas" title="Debajo de la misión: si la superas, lo recuperas; si no, lo pierdes.">
+              <span className="incautadas-rotulo">Incautado</span>
+              {s.zonas.incautadas.map((c) => (
+                <CartaDe key={c} inst={c} escala={0.16} girar={false} />
+              ))}
+            </div>
+          )}
         </div>
+        {s.zonas.peligrosEnJuego.length > 0 && (
+          <div className="en-juego" title="Cartas de Peligro que se quedan en juego junto a la misión hasta que se quitan.">
+            <span className="en-juego-rotulo">En juego</span>
+            <div className="en-juego-cartas">
+              {s.zonas.peligrosEnJuego.map((c) => (
+                <CartaDe key={c} inst={c} escala={0.26} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       <div className="mision-cuerpo">
         <div className="hueco-encuentro">
@@ -116,11 +142,11 @@ function Partes({ partes }: { partes: ParteDesglose[] }) {
 }
 
 /** Panel de la Prueba en curso (o la previsión mientras comprometes). */
-function PanelPrueba({ decision, sel, ancho }: { decision: Decision | null; sel: Seleccion | null; ancho: number }) {
+export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | null; sel: Seleccion | null; ancho: number }) {
   const { s } = useMesa()
   const p = s.prueba
   if (!p) return <div className="panel-prueba vacio">Sin Prueba en curso</div>
-  const enc = encuentroDe(s, p.encuentro)
+  const enc = { nombre: nombreDelEncuentro(s, p.encuentro) }
 
   // Comprometiendo: previsión con lo elegido en la mesa.
   if (decision?.tipo === 'comprometer') {

@@ -2,13 +2,23 @@
 
 import { nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada } from '../estado.ts'
-import { interpretarEfectos } from '../efectos.ts'
-import { encuentroDe } from '../peligros.ts'
+import { agotar, quitarEstado, quitarEstadoAnotado } from '../estados.ts'
+import { definicionActual } from '../prueba.ts'
+import { reglasDe } from '../definiciones.ts'
+import { mazoActivo, ponerAPerseguir } from '../peligros.ts'
 import type { Estado, Evento, NuevaTarea, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { capacidadDe, claveDe, encolarUso, usosDisparados, usosDisponibles } from '../usos.ts'
 import { estaEn, mover, zonaDe } from '../zonas.ts'
 import { preguntar, type Manejador, type Resultado } from './comun.ts'
+
+/** «Si superas…» / «Si fallas…» del Destino de la Prueba en curso (si no se ha cancelado). */
+function efectosDelDestino(s: Estado, cuando: 'siSuperas' | 'siFallas'): NuevaTarea[] {
+  const p = s.prueba
+  if (!p?.destino || p.destinoCancelado) return []
+  const efectos = reglasDe(copia(s, p.destino).id)?.destino?.[cuando]
+  return efectos && efectos.length > 0 ? [{ tipo: 'aplicarEfectos', efectos, contexto: cuando === 'siSuperas' ? 'exito' : 'fallo', fuente: p.destino }] : []
+}
 
 function aplicarSuceso(s: Estado, ev: Evento): void {
   switch (ev.tipo) {
@@ -20,7 +30,23 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'comprometer':
     case 'revelarDestino':
     case 'descartada':
+    case 'cartaResuelta':
+    case 'rescatado':
       return // Solo marcan el momento para las Interrupciones y Respuestas.
+    case 'rehen': {
+      if (ev.carta === s.capitan || !estaEn(s, ev.carta, 'tripulacion')) return
+      mover(s, ev.carta, 'rehenes', 'abajo')
+      anotar(s, 'aviso', `${nombre(s, ev.carta)} es capturado como rehén.`)
+      return
+    }
+    case 'persigue': {
+      if (!estaEn(s, ev.carta, 'destino')) return
+      if (ev.alFondo) {
+        mover(s, ev.carta, mazoActivo(s).mazo, 'abajo')
+        anotar(s, 'efecto', `«${nombre(s, ev.carta)}» va al fondo del mazo de Peligros en vez de perseguirte.`)
+      } else ponerAPerseguir(s, ev.carta)
+      return
+    }
     case 'danoBarco': {
       if (ev.cantidad <= 0) return
       s.danoBarco += ev.cantidad
@@ -30,20 +56,38 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'superarPrueba': {
       const p = s.prueba
       if (!p) return
-      const tareas: NuevaTarea[] = [
-        { tipo: 'aplicarEfectos', efectos: interpretarEfectos(encuentroDe(s, p.encuentro).textoExito ?? ''), contexto: 'exito' },
-      ]
+      const def = definicionActual(s)
+      const tareas: NuevaTarea[] = [{ tipo: 'aplicarEfectos', efectos: def.exito, contexto: 'exito', fuente: p.encuentro }]
       if (p.preparaSiSuperas) tareas.push({ tipo: 'prepararUno', entre: [...p.comprometidos] })
+      // Lo que el Destino de esta Prueba hace si la superas.
+      tareas.push(...efectosDelDestino(s, 'siSuperas'))
+      // «Hasta que superes otra Prueba» se acaba aquí.
+      s.temporales = s.temporales.filter((x) => x.hasta !== 'superarPrueba')
+      // Asustado se quita al superar una Prueba en la que participe.
+      for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'asustado', 'supera la Prueba')
+      // Maldito se quita al superar un encuentro Sobrenatural.
+      // TODO(regla): P15 · Maldito se quita al superar cualquier encuentro Sobrenatural, participe o no.
+      if (p.origen !== 'accion' && def.palabrasClave.includes('Sobrenatural')) {
+        for (const c of s.zonas.tripulacion) quitarEstadoAnotado(s, c, 'maldito', 'superas un encuentro Sobrenatural')
+      }
       encolar(s, ...tareas)
       return
     }
     case 'fallarPrueba':
-      if (s.prueba) encolar(s, { tipo: 'aplicarFallo' })
+      if (s.prueba) encolar(s, { tipo: 'aplicarFallo' }, ...efectosDelDestino(s, 'siFallas'))
       return
     case 'heridas': {
       if (ev.cantidad <= 0 || !estaEn(s, ev.objetivo, 'tripulacion')) return
-      copia(s, ev.objetivo).heridas += ev.cantidad
-      anotar(s, 'efecto', `${nombre(s, ev.objetivo)} sufre ${ev.cantidad} ${ev.cantidad === 1 ? 'herida' : 'heridas'}.`, { tipo: 'heridas', inst: ev.objetivo, n: ev.cantidad })
+      let n = ev.cantidad
+      // Aguerrido evita la próxima herida.
+      // TODO(regla): P14 · Aguerrido evita 1 herida (no todas las de ese golpe).
+      if (quitarEstado(s, ev.objetivo, 'aguerrido')) {
+        n -= 1
+        anotar(s, 'efecto', `${nombre(s, ev.objetivo)} está Aguerrido: evita 1 herida.`)
+      }
+      if (n <= 0) return
+      copia(s, ev.objetivo).heridas += n
+      anotar(s, 'efecto', `${nombre(s, ev.objetivo)} sufre ${n} ${n === 1 ? 'herida' : 'heridas'}.`, { tipo: 'heridas', inst: ev.objetivo, n })
       return
     }
     case 'derrota': {
@@ -126,13 +170,25 @@ export const usar: Manejador<'usar'> = (s, t) => {
         continue
       }
       if (coste.tipo === 'agotarCapitan') {
-        copia(s, s.capitan).agotada = true
+        agotar(s, s.capitan)
+        continue
+      }
+      if (coste.tipo === 'agotarTripulante') {
+        encolar(s, { tipo: 'agotarParaPagar', rasgo: coste.rasgo })
+        continue
+      }
+      if (coste.tipo === 'gastarMunicion') {
+        encolar(s, { tipo: 'perderMunicion', n: coste.n })
+        continue
+      }
+      if (coste.tipo === 'agotarVarios') {
+        encolar(s, coste.oRasgo ? { tipo: 'agotarPago', n: coste.n, oRasgo: coste.oRasgo } : { tipo: 'agotarPago', n: coste.n })
         continue
       }
       if (fuente === null) throw new Error(`La capacidad ${cap.clave} necesita una carta que pague su coste`)
       const c = copia(s, fuente)
       if (coste.tipo === 'agotarse') {
-        c.agotada = true
+        agotar(s, fuente)
         if (s.prueba && !s.prueba.agotadas.includes(fuente)) s.prueba.agotadas.push(fuente)
       }
       else if (coste.tipo === 'municion') c.municion -= coste.n
@@ -150,7 +206,14 @@ export const usar: Manejador<'usar'> = (s, t) => {
         else mover(s, fuente, 'descartesMuelle')
       }
     }
-    if (fuente !== null) anotar(s, 'jugada', `Usas «${nombre(s, fuente)}».`, { tipo: 'usar', carta: copia(s, fuente).id, clave: cap.clave })
+    // Lo que hacen solas las cartas de Peligro (contadores, «cada vez que…») no se anota como «Usas»: lo cuentan sus efectos.
+    const sola = cap.ventana === 'obligada' && ['peligroEnJuego', 'encuentro', 'destino', 'estadoBarco', 'estado'].includes(cap.desde)
+    if (sola) {
+      // nada
+    } else if (fuente !== null && (cap.desde === 'estado' || cap.desde === 'estadoBarco')) {
+      // La Acción de una ficha de Estado (liberar a un Encadenado): la da el Estado, no la carta.
+      anotar(s, 'jugada', `Usas «${nombreDe(cap.carta)}» de ${nombre(s, fuente)}.`, { tipo: 'usar', carta: cap.carta, clave: cap.clave })
+    } else if (fuente !== null) anotar(s, 'jugada', `Usas «${nombre(s, fuente)}».`, { tipo: 'usar', carta: copia(s, fuente).id, clave: cap.clave })
     else anotar(s, 'jugada', `Usas «${nombreDe(cap.carta)}».`, { tipo: 'usar', carta: cap.carta, clave: cap.clave })
     return 'sigue'
   }
@@ -172,13 +235,16 @@ export const jugarEvento: Manejador<'jugarEvento'> = (s, t) => {
     anotar(s, 'jugada', `Juegas «${nombre(s, t.carta)}».`, { tipo: 'usar', carta: copia(s, t.carta).id, clave: t.clave })
     t.paso = 'efecto'
     const coste = valor(s, { tipo: 'coste', carta: t.carta })
-    if (coste > 0) encolar(s, { tipo: 'pagar', cantidad: coste, motivo: copia(s, t.carta).id })
-    // Además del número del timón, el coste de su capacidad («Agota a tu Capitán:»).
+    const pagos: NuevaTarea[] = []
+    if (coste > 0) pagos.push({ tipo: 'pagar', cantidad: coste, motivo: copia(s, t.carta).id })
+    // Además del número del timón, el coste de su capacidad («Agota a tu Capitán:», «Descarta 2 cartas:»).
     for (const c of capacidadDe({ fuente: t.carta, clave: t.clave }).coste ?? []) {
-      if (c.tipo === 'agotarCapitan') copia(s, s.capitan).agotada = true
-      else if (c.tipo === 'pagar') encolar(s, { tipo: 'pagar', cantidad: c.n, motivo: copia(s, t.carta).id })
+      if (c.tipo === 'agotarCapitan') agotar(s, s.capitan)
+      else if (c.tipo === 'pagar') pagos.push({ tipo: 'pagar', cantidad: c.n, motivo: copia(s, t.carta).id })
+      else if (c.tipo === 'gastarMunicion') pagos.push({ tipo: 'perderMunicion', n: c.n })
       else throw new Error(`Coste no previsto en un Evento: ${c.tipo}`)
     }
+    encolar(s, ...pagos)
     return 'sigue'
   }
   if (t.paso === 'efecto') {

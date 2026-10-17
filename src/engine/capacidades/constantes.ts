@@ -3,9 +3,11 @@
 
 import { DATOS } from '../datos.ts'
 import { copia } from '../estado.ts'
+import { tieneEstadoBarco } from '../estados.ts'
 import { numeroConIcono, textoDe } from '../textos.ts'
 import type { Capacidad, Contexto, Consulta, InstId } from '../tipos.ts'
 import { estaEn } from '../zonas.ts'
+import { modificadores } from '../valores.ts'
 import { entornoDeMision } from './comun.ts'
 
 function portador(ctx: Contexto, yo: InstId | null): InstId | 'barco' | null {
@@ -72,13 +74,18 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
         : 0,
   },
   {
-    // «Tus Pruebas de NAV en el Mar reciben +1».
+    // «Tus Pruebas de NAV en el Mar reciben +1». Con «Velas rotas», no.
     clave: 'barco.nav',
     carta: 'barco',
     ventana: 'constante',
     desde: 'barco',
     modifica: (ctx, _yo, c) =>
-      c.tipo === 'totalPrueba' && c.hab === 'NAV' && ctx.s.mision !== null && entornoDeMision(ctx.s, ctx.s.mision.carta) === 'mar'
+      c.tipo === 'totalPrueba' &&
+      c.hab === 'NAV' &&
+      ctx.s.mision !== null &&
+      entornoDeMision(ctx.s, ctx.s.mision.carta) === 'mar' &&
+      !tieneEstadoBarco(ctx.s, 'velasRotas') &&
+      modificadores(ctx.s, { tipo: 'sinNavBarco' }) <= 0
         ? NAV_BARCO
         : 0,
   },

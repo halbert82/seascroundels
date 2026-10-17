@@ -31,7 +31,7 @@ describe('Preparación de la partida', () => {
     expect(j.zona('tripulacion')).toEqual(['capitan'])
     expect(j.copia('capitan').agotada).toBe(false)
     // 4. Peligros: 30 en el mazo; la Armada y Amigos, aparte.
-    expect(j.zona('mazoPeligros')).toHaveLength(30)
+    expect(j.zona('mazoPeligros')).toHaveLength(DATOS.mazosPredefinidos.mazoDePeligros.length)
     expect(j.zona('apartados').sort()).toEqual(['amigos', 'armada'])
     // 5. Misiones.
     expect(j.zona('misionesDisponibles')).toEqual(['deuda-I', 'prueba-I', 'aguada-I'])
@@ -46,7 +46,7 @@ describe('Preparación de la partida', () => {
     expect(j.zona('mazoMuelle')).toHaveLength(20 - 4)
     // 7. Mano inicial: tantas cartas como el Mando (5).
     expect(j.zona('mano')).toHaveLength(5)
-    expect(j.zona('mazoCapitan')).toHaveLength(36 - 5)
+    expect(j.zona('mazoCapitan')).toHaveLength(40 - 5)
     expect(j.decision.motivo.clave).toBe('cambiarMano')
   })
 
@@ -74,7 +74,7 @@ describe('Preparación de la partida', () => {
     j.elegir(a, b)
     expect(j.zona('mano')).toHaveLength(5)
     expect(j.zona('descartesCapitan').sort()).toEqual([a, b].sort())
-    expect(j.zona('mazoCapitan')).toHaveLength(29)
+    expect(j.zona('mazoCapitan')).toHaveLength(33)
     expect(j.estado.turno).toBe(1)
     expect(j.estado.pila.some((t) => t.tipo === 'cambioMano')).toBe(false)
   })

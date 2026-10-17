@@ -26,6 +26,7 @@ const AJUSTES_NOMBRE: Record<number, Partial<TamanoNombre>> = {
   107: { tam: 21 },
   138: { tam: 21 },
   150: { tam: 21 },
+  168: { tam: 21 },
 }
 
 export function tamanoNombre(num: number): TamanoNombre {

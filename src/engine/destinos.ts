@@ -4,6 +4,7 @@ import { porId } from './catalogo.ts'
 import type { DestinoDatos, Habilidad } from './datos.ts'
 import { interpretarEfectos, type Efecto } from './efectos.ts'
 import type { CartaId } from './tipos.ts'
+import { reglasDe, tieneReglas } from './definiciones.ts'
 
 export interface Destino {
   nombre: string
@@ -22,6 +23,8 @@ export interface Destino {
   preparaSiSuperas?: boolean
   sinCanones?: boolean
   sinCartas?: boolean
+  /** «Persigue»: después de aplicar el Destino, la carta vuelve encima del mazo de Peligros (siguiente encuentro). */
+  persigue?: boolean
   sinOposicion: Efecto[]
 }
 
@@ -36,7 +39,12 @@ export function interpretarDestino(d: DestinoDatos): Destino {
     modificador: d.mod === '✕' ? 'fallo' : numero(d.mod),
     sinOposicion: interpretarEfectos(d.textoSinOposicion),
   }
-  const texto = d.texto.trim()
+  let texto = d.texto.trim()
+  // «Persigue.» va como frase aparte (sola o junto al resto del texto).
+  if (/(^|\s)Persigue\.(\s|$)/.test(texto)) {
+    destino.persigue = true
+    texto = texto.replace(/(^|\s)Persigue\.(\s|$)/, ' ').trim()
+  }
   if (!texto) return destino
   let m: RegExpExecArray | null
   if ((m = /^Si el encuentro es (.+), \{([+−-]?\d+)\} en su lugar\.$/.exec(texto))) {
@@ -70,5 +78,18 @@ export function interpretarDestino(d: DestinoDatos): Destino {
 export function destinoDe(id: CartaId): Destino {
   const e = porId(id)
   if (e.tipo !== 'peligro' && e.tipo !== 'mazoPropio') throw new Error(`${id} no es una carta de Peligro`)
-  return interpretarDestino(e.carta.destino)
+  const d = e.carta.destino
+  // Peligros 2.0: el texto es solo para leerlo; lo que hace está en sus reglas.
+  if (tieneReglas(id)) {
+    const r = reglasDe(id)?.destino
+    const destino: Destino = {
+      nombre: d.nombre,
+      impreso: d.mod,
+      modificador: d.mod === '✕' ? 'fallo' : numero(d.mod),
+      sinOposicion: r?.sinOposicion ?? [],
+    }
+    if (r?.persigue) destino.persigue = true
+    return destino
+  }
+  return interpretarDestino(d)
 }

@@ -18,6 +18,8 @@ export interface FichasCarta {
   vida?: number
   municion?: number
   avance?: number
+  /** Fichas del contador de una carta de Peligro en juego. */
+  contador?: number
   entrenamiento?: string[]
 }
 
@@ -66,6 +68,8 @@ export function CartaMesa(p: PropsCartaMesa) {
   }, [p.fichas?.heridas])
 
   const esPeligro = entrada.tipo === 'peligro' && p.entorno
+  // Peligros 2.0: los encuentros miden lo que su texto; se atenúan los que no se leen con una clase, no con velos.
+  const v2 = entrada.tipo === 'peligro' && entrada.carta.version === 2
   const pulsable = Boolean(p.onClick)
 
   return (
@@ -75,6 +79,7 @@ export function CartaMesa(p: PropsCartaMesa) {
       className={`carta-mesa${p.marca ? ` marca-${p.marca}` : ''}${pulsable ? ' pulsable' : ''}${p.participa ? ' participa' : ''}${p.agotada ? ' agotada' : ''}`}
       data-inst={p.inst}
       data-carta={p.id}
+      {...(esPeligro && v2 && p.entorno ? { 'data-entorno': p.entorno } : {})}
       style={{ width: ancho * p.escala, height: alto * p.escala }}
       onClick={p.onClick ? (e) => p.onClick?.(e.currentTarget) : undefined}
       onPointerEnter={(e) => {
@@ -98,7 +103,7 @@ export function CartaMesa(p: PropsCartaMesa) {
         >
           <div className="cara frente">
             <CartaEscalada entrada={entrada} escala={p.escala} />
-            {esPeligro && (
+            {esPeligro && !v2 && (
               <div className="velos" style={{ transform: `scale(${p.escala})` }}>
                 {ORDEN_ENTORNO.map((e, i) =>
                   e === p.entorno ? (
@@ -134,7 +139,7 @@ export function CartaMesa(p: PropsCartaMesa) {
 
 function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | undefined }) {
   if (!fichas) return null
-  const { heridas = 0, vida, municion, avance, entrenamiento = [] } = fichas
+  const { heridas = 0, vida, municion, avance, contador, entrenamiento = [] } = fichas
   return (
     <div className="fichas" style={abajo !== undefined ? { bottom: abajo } : undefined}>
       {heridas > 0 && (
@@ -156,6 +161,12 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
         <span className="ficha ficha-avance" title={`${avance} de Avance`}>
           <span className={claseIcono('avance')} />
           <b>{avance}</b>
+        </span>
+      )}
+      {contador !== undefined && (
+        <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha' : 'fichas'} en esta carta`}>
+          <b>{contador}</b>
+          <small>{contador === 1 ? 'ficha' : 'fichas'}</small>
         </span>
       )}
       {entrenamiento.map((h, i) => (

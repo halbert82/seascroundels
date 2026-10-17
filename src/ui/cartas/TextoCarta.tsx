@@ -59,6 +59,12 @@ export function TextoCarta({ segmentos, tema = 'claro' }: { segmentos: Segmento[
             {s.texto}
           </span>
         )
+      case 'ambiente':
+        return (
+          <span key={i} className="amb">
+            {s.texto}
+          </span>
+        )
       case 'numero':
         return (
           <span key={i} className="num" style={{ color: COLOR_NUMERO[tema][s.color] }}>

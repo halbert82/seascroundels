@@ -2366,3 +2366,127 @@
 .zona-barco .marcas {
   gap: 3px;
 }
+
+/* ---------- Fase 6: Estados, cartas en juego, incautado, Peligro en el muelle ---------- */
+.estados {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  z-index: 6;
+  pointer-events: auto;
+}
+.zona-barco .estados {
+  position: static;
+  margin: 2px 0;
+}
+.estado-ficha {
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  padding: 0 5px;
+  border-radius: 999px;
+  cursor: help;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.estado-ficha.malo {
+  background: #5e1a12;
+  color: #f8d3c6;
+  border: 1px solid #e0897a;
+}
+.estado-ficha.bueno {
+  background: #23431c;
+  color: #d8f0c8;
+  border: 1px solid #8fc276;
+}
+.estado-ficha.aviso {
+  background: #3a3126;
+  color: var(--oro-claro);
+  border: 1px dashed var(--oro-viejo);
+}
+.mision-notas .pendiente {
+  color: #d8c49a;
+  font-style: italic;
+}
+.en-juego {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 46%;
+}
+.en-juego-rotulo,
+.incautadas-rotulo {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  color: var(--oro-viejo);
+}
+.en-juego-cartas {
+  display: flex;
+  gap: 6px;
+}
+.incautadas {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ficha-contador {
+  background: #2a1e15;
+  color: var(--oro-claro);
+  border: 1px solid var(--oro);
+}
+.ficha-contador small {
+  margin-left: 2px;
+  font-size: 0.75em;
+  font-weight: 700;
+}
+.peligro-muelle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.peligro-muelle-nota {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #4a120c;
+  color: #f8d3c6;
+  border: 1px solid #e0897a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+.prueba-en-puerto {
+  margin: 8px 0;
+}
+/* Peligros 2.0 en la mesa: se atenúan los encuentros que no se leen y el Destino */
+.carta-mesa[data-entorno] .card.enc.v2 .dest.v2 {
+  opacity: 0.45;
+}
+.carta-mesa[data-entorno='mar'] .card.enc.v2 .encp.v2:not(:nth-child(1)),
+.carta-mesa[data-entorno='nat'] .card.enc.v2 .encp.v2:not(:nth-child(2)),
+.carta-mesa[data-entorno='ciu'] .card.enc.v2 .encp.v2:not(:nth-child(3)) {
+  opacity: 0.38;
+  filter: saturate(0.5);
+}
+.carta-mesa[data-entorno='mar'] .card.enc.v2 .encp.v2:nth-child(1),
+.carta-mesa[data-entorno='nat'] .card.enc.v2 .encp.v2:nth-child(2),
+.carta-mesa[data-entorno='ciu'] .card.enc.v2 .encp.v2:nth-child(3) {
+  box-shadow: inset 0 0 0 2.5px #f2d27a, 0 0 14px rgba(242, 210, 122, 0.55);
+}

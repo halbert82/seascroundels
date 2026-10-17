@@ -2,7 +2,7 @@
 
 import { barajarLista, sembrar } from '../azar.ts'
 import { capacidadesDe } from '../capacidades/index.ts'
-import { CATALOGO, nombreDe, porId, tipoDe } from '../catalogo.ts'
+import { CATALOGO, esCartaDelJugador, nombreDe, porId, tipoDe } from '../catalogo.ts'
 import { DATOS } from '../datos.ts'
 import { copia } from '../estado.ts'
 import { LIMITES } from '../mazos.ts'
@@ -142,6 +142,7 @@ export function jugarPartida(
           break
         case 'usar':
           p.capacidades[dato.clave] = (p.capacidades[dato.clave] ?? 0) + 1
+          if (!esCartaDelJugador(dato.carta)) break
           if (tipoDe(dato.carta) === 'evento') usoDe(p, dato.carta).jugada++
           else usoDe(p, dato.carta).capacidad++
           break

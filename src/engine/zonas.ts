@@ -5,7 +5,8 @@ import { copia } from './estado.ts'
 import { ZONAS, type CartaId, type Estado, type InstId, type Zona } from './tipos.ts'
 
 /** Zonas en las que una carta está «en juego»: al salir de ellas pierde fichas y estado. */
-const EN_JUEGO: ReadonlySet<Zona> = new Set<Zona>(['tripulacion', 'mejoras', 'rehenes'])
+/** Lo incautado (debajo de la misión) conserva su estado por si se recupera. */
+const EN_JUEGO: ReadonlySet<Zona> = new Set<Zona>(['tripulacion', 'mejoras', 'rehenes', 'incautadas'])
 
 /** Crea una copia física de una carta en una zona. */
 export function crearCopia(s: Estado, id: CartaId, zona: Zona, donde: 'arriba' | 'abajo' = 'abajo'): InstId {
@@ -36,7 +37,10 @@ export function mover(s: Estado, inst: InstId, destino: Zona, donde: 'arriba' | 
     c.municion = 0
     c.vinculadaA = null
     c.entrenamiento = []
+    delete c.estados
   }
+  // Una carta de Peligro que deja de estar en juego pierde sus fichas.
+  if (origen === 'peligrosEnJuego') delete c.fichas
   if (origen === 'misionesDisponibles' && destino !== 'misionesDisponibles') c.avance = 0
   if (donde === 'arriba') s.zonas[destino].unshift(inst)
   else s.zonas[destino].push(inst)
@@ -52,6 +56,14 @@ export function barajar(s: Estado, zona: Zona): void {
 export function rebarajar(s: Estado, descartes: Zona, mazo: Zona): void {
   for (const inst of [...s.zonas[descartes]]) mover(s, inst, mazo, 'abajo')
   barajar(s, mazo)
+}
+
+/** Mueve una copia a una posición concreta de otra zona (0 = arriba o a la izquierda). */
+export function moverA(s: Estado, inst: InstId, destino: Zona, indice: number): void {
+  mover(s, inst, destino, 'abajo')
+  const lista = s.zonas[destino].filter((x) => x !== inst)
+  lista.splice(Math.max(0, Math.min(indice, lista.length)), 0, inst)
+  s.zonas[destino] = lista
 }
 
 export function arriba(s: Estado, zona: Zona): InstId | undefined {

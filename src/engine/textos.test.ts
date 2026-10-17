@@ -10,13 +10,14 @@ import { interpretarEfectos, type Efecto } from './efectos.ts'
 
 function encuentros(): [string, EncuentroDatos][] {
   const lista: [string, EncuentroDatos][] = []
-  for (const p of DATOS.peligros) for (const [ent, e] of Object.entries(p.encuentros)) lista.push([`${p.id}.${ent}`, e])
+  // Los Peligros 2.0 no se leen de los iconos: tienen sus reglas registradas (peligros2/).
+  for (const p of DATOS.peligros.filter((x) => x.version !== 2)) for (const [ent, e] of Object.entries(p.encuentros)) lista.push([`${p.id}.${ent}`, e])
   for (const c of DATOS.cartasDeMazoPropio) lista.push([c.id, c.encuentro])
   return lista
 }
 
 function destinos(): [string, DestinoDatos][] {
-  return [...DATOS.peligros.map((p): [string, DestinoDatos] => [p.id, p.destino]), ...DATOS.cartasDeMazoPropio.map((c): [string, DestinoDatos] => [c.id, c.destino])]
+  return [...DATOS.peligros.filter((x) => x.version !== 2).map((p): [string, DestinoDatos] => [p.id, p.destino]), ...DATOS.cartasDeMazoPropio.map((c): [string, DestinoDatos] => [c.id, c.destino])]
 }
 
 /** Traduce una operación del prototipo a lo que debería entender el motor del texto. */

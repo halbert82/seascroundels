@@ -12,6 +12,8 @@ import { vinculadas } from '../../engine/zonas.ts'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
+import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from '../../engine/infoEstados.ts'
+import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, fichasDe, useMesa } from './contexto.tsx'
 import { IZQ, anchoCentro, escalaPara } from './disposicion.ts'
@@ -176,6 +178,37 @@ function Chip({ inst }: { inst: InstId }) {
   )
 }
 
+/** Fichas de Estado (y lo que dura «no se prepara», «no puede comprometerse»). */
+export function FichasEstado({ estados, extra = [] }: { estados: readonly (EstadoTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: string }[] }) {
+  if (estados.length === 0 && extra.length === 0) return null
+  return (
+    <div className="estados">
+      {estados.map((e) => (
+        <span key={e} className={`estado-ficha ${INFO_ESTADO[e].bueno ? 'bueno' : 'malo'}`} title={`${INFO_ESTADO[e].nombre}: ${INFO_ESTADO[e].texto}`}>
+          {INFO_ESTADO[e].nombre}
+        </span>
+      ))}
+      {extra.map((x) => (
+        <span key={x.texto} className="estado-ficha aviso" title={x.ayuda}>
+          {x.texto}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+/** «No se prepara» y «no puede comprometerse» de un Tripulante, por las cartas de Peligro. */
+function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: string }[] {
+  const lista: { texto: string; ayuda: string }[] = []
+  for (const t of s.temporales) {
+    if (t.inst !== inst) continue
+    const de = t.carta && s.cartas[t.carta] ? ` («${nombreDe(copia(s, t.carta).id)}»)` : ''
+    if (t.clave === 'noPrepara') lista.push({ texto: 'No se prepara', ayuda: `No se prepara${t.hasta === 'inicio' ? ' en tu próximo Inicio' : ''}${de}.` })
+    if (t.clave === 'noCompromete') lista.push({ texto: 'No compromete', ayuda: `No puede comprometerse${de}.` })
+  }
+  return lista
+}
+
 /** Hueco fijo de un Tripulante: cabe la carta derecha y la carta girada, así nada se mueve al agotar o preparar. */
 function Tripulante({ inst, escala, rehen }: { inst: InstId; escala: number; rehen?: boolean }) {
   const { s } = useMesa()
@@ -185,6 +218,7 @@ function Tripulante({ inst, escala, rehen }: { inst: InstId; escala: number; reh
     <div className={`tripulante${rehen ? ' rehen' : ''}`} style={{ width: lado }}>
       <div className="hueco" style={{ width: lado, height: lado }}>
         <CartaDe inst={inst} escala={escala} />
+        <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />
         {rehen && (
           <span className="rehen-marca">
             <Icono id="rehen" /> Rehén
@@ -252,6 +286,7 @@ export function BloqueBarco() {
             <span>Espacio</span>
             <Marcas n={espacioOcupado(s)} maximo={espacio} clase="espacio" />
           </div>
+          <FichasEstado estados={s.estadosBarco ?? []} />
           <div className="chips">
             {mejoras.length === 0 && <span className="vacio">Sin Mejoras de barco</span>}
             {mejoras.map((m) => (
@@ -310,27 +345,45 @@ export function ZonaPuerto() {
       <div className="bloque">
         <Rotulo extra={<span className="dato">Se repone al terminar Jugar cartas</span>}>Muelle</Rotulo>
         <div className="fila-cartas muelle">
-          {s.zonas.muelle.map((c) => (
-            <CartaDe key={c} inst={c} escala={escalaMuelle} />
-          ))}
+          {s.zonas.muelle.map((c) =>
+            s.peligrosEnMuelle?.[c] !== undefined ? (
+              <div key={c} className="peligro-muelle">
+                <CartaDe inst={c} escala={escalaMuelle} />
+                <span className="peligro-muelle-nota" title={`Ocupa el muelle. En Jugar cartas puedes pagar ${s.peligrosEnMuelle[c]} cartas para descartarla.`}>
+                  Ocupa el muelle · paga {s.peligrosEnMuelle[c]}
+                </span>
+              </div>
+            ) : (
+              <CartaDe key={c} inst={c} escala={escalaMuelle} />
+            ),
+          )}
           {n === 0 && <span className="vacio">El muelle está vacío</span>}
         </div>
       </div>
-      <div className="bloque">
-        <Rotulo extra={<span className="dato">{s.zonas.mazoMisiones.length} en el mazo de Misiones</span>}>Misiones disponibles</Rotulo>
-        <div className="fila-cartas misiones">
-          {s.zonas.misionesDisponibles.map((m) => (
-            <Mision key={m} inst={m} escala={escalaMisiones} />
-          ))}
+      {s.prueba ? (
+        // Una Prueba en puerto (la Acción de una carta): ocupa el sitio de las misiones mientras dura.
+        <div className="bloque prueba-en-puerto">
+          <PanelPrueba decision={s.pendiente} sel={null} ancho={Math.min(560, centro)} />
         </div>
-      </div>
-      <div className="puerto-abajo">
+      ) : (
         <div className="bloque">
-          <Rotulo>Puerto</Rotulo>
-          <CartaMesa inst="puerto" id={s.puerto} escala={0.2} />
+          <Rotulo extra={<span className="dato">{s.zonas.mazoMisiones.length} en el mazo de Misiones</span>}>Misiones disponibles</Rotulo>
+          <div className="fila-cartas misiones">
+            {s.zonas.misionesDisponibles.map((m) => (
+              <Mision key={m} inst={m} escala={escalaMisiones} />
+            ))}
+          </div>
         </div>
-        <EsteTurno />
-      </div>
+      )}
+      {!s.prueba && (
+        <div className="puerto-abajo">
+          <div className="bloque">
+            <Rotulo>Puerto</Rotulo>
+            <CartaMesa inst="puerto" id={s.puerto} escala={0.2} />
+          </div>
+          <EsteTurno />
+        </div>
+      )}
     </section>
   )
 }

@@ -3,8 +3,9 @@ import { CATALOGO, codigoColeccion } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 
 describe('catálogo de la Caja básica', () => {
-  it('tiene una carta por cada número de colección del 1 al 153', () => {
-    expect(CATALOGO.map((c) => c.num)).toEqual(Array.from({ length: 153 }, (_, i) => i + 1))
+  it('tiene una carta por cada número de colección, sin huecos ni repetidos (los Peligros 2.0 siguen desde el 154)', () => {
+    const nums = CATALOGO.map((c) => c.num)
+    expect(nums).toEqual(Array.from({ length: nums.length }, (_, i) => i + 1))
   })
 
   it('asigna cada carta de mazo propio a su mazo', () => {
@@ -16,7 +17,7 @@ describe('catálogo de la Caja básica', () => {
 
   it('cumple con los mazos predefinidos de la versión 0', () => {
     const m = DATOS.mazosPredefinidos
-    expect(m.mazoDelCapitan).toHaveLength(36)
+    expect(m.mazoDelCapitan).toHaveLength(40)
     expect(m.mazoDeMuelle).toHaveLength(20)
     expect(m.capitanInicial).toBe('capitan')
     expect(m.puertoInicial).toBe('tortuga')

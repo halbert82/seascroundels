@@ -18,6 +18,7 @@ Juego de cartas cooperativo en solitario, al estilo de los LCG (Arkham Horror, E
 1. `docs/reglamento-v1.0.md`: el reglamento completo. Tiene una parte para aprender a jugar, una referencia de la A a la Z y una referencia rápida al final.
 2. `data/cartas.json`: todas las cartas de la caja básica (153, con su número de colección). El campo `texto` es la versión 1.0, la buena. La sección `_leyenda` explica el marcado de los textos.
 3. Los campos de ayuda que vienen del prototipo antiguo: `fallo`, `exito`, `siempre`, `ops`, `ayudaPrototipo`, `textoPrototipo`. Sirven al motor como pista, pero **si chocan con el texto o el reglamento, mandan el texto y el reglamento**.
+4. **Fase 6:** `docs/peligros-2.0.md` (las 55 cartas de Peligro nuevas, que sustituyen a las 25 antiguas) y `docs/jugador-2.0.md` (9 cartas de jugador nuevas). En `cartas.json` llevan `"version": 2` (los Peligros) y sus textos completos son solo para leerlos: lo que hacen está escrito a mano por carta en `src/engine/peligros2/` (reglas) y `src/engine/capacidades/jugador2.ts`.
 
 Recursos visuales:
 - `referencia/cartas/NNN.webp`: imagen de cada carta tal y como está diseñada; el nombre es su número de colección. Es la referencia visual que hay que igualar.
@@ -29,7 +30,7 @@ Recursos visuales:
 ## Alcance de la versión 0
 
 - **Una partida jugable de principio a fin**, en solitario. Sin cuentas ni servidor, y sin menús más allá de una portada con «Nueva partida» y «Continuar».
-- **Todo predefinido** (`mazosPredefinidos` en `cartas.json`): capitán Diego «Garra» Mendoza, puerto Tortuga, modo normal (18 de reputación y 11 cartas de Escenario), el mazo del capitán con 36 cartas y el mazo de muelle con 20 (corregido por Albert: el reglamento pide de 15 a 20).
+- **Todo predefinido** (`mazosPredefinidos` en `cartas.json`): capitán Diego «Garra» Mendoza, puerto Tortuga, modo normal (18 de reputación y 11 cartas de Escenario), el mazo del capitán con 40 cartas (36 hasta la fase 6) y el mazo de muelle con 20 (corregido por Albert: el reglamento pide de 15 a 20).
 - **Todas las reglas del reglamento implementadas:**
   - preparación;
   - el turno en 4 pasos;
@@ -94,6 +95,7 @@ Recursos visuales:
 3. **Motor, segunda parte:** misiones, Peligros, Pruebas, Destino, heridas, daño, recompensas, historia, ganar y perder, con sus pruebas.
 4. **Capacidades de todas las cartas**, con sus pruebas.
 5. **Mesa de juego y pulido visual:** animaciones, registro, guardado y deshacer.
+6. **Peligros 2.0:** reglas nuevas (se queda en juego, Estados, Elige, Sin ayuda, Abordaje, Persigue, Incautado, ocupar el muelle), las 55 cartas nuevas en lugar de las antiguas y 9 cartas de jugador nuevas. Punto de control con el Grupo A (cartas 1–11) y entrega final con todas y el informe de equilibrio.
 
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
@@ -107,3 +109,4 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - **Rehén:** el Capitán no puede ser rehén (N11).
 - **Barco hundido:** las Mejoras de barco que se pierden **sí** activan sus efectos «después de que descartes esta carta».
 - Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.
+- **Fase 6:** las dudas pendientes (P1–P27) están en `docs/decisiones.md`, sección «Fase 6».

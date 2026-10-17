@@ -2,6 +2,7 @@
 
 import { esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
+import { curable, curarTripulante, quitarEstadoAnotado, quitarEstadoBarco, tieneEstado } from '../estados.ts'
 import type { Estado, InstId, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { arriba, barajar, mover, rebarajar } from '../zonas.ts'
@@ -81,12 +82,17 @@ export const perderDia: Manejador<'perderDia'> = (s) => {
   return 'hecha'
 }
 
-/** Al terminar el paso de Jugar cartas: se descarta el muelle entero y se repone. */
+/**
+ * Al terminar el paso de Jugar cartas: se descarta el muelle entero y se repone. Una carta de Peligro que
+ * ocupa el muelle se queda (ocupando su hueco) hasta que pagues para descartarla.
+ */
+// TODO(regla): P18 · la carta de Peligro del muelle no se descarta al reponerlo: sigue ocupando un hueco hasta que pagas.
 export const reponerMuelle: Manejador<'reponerMuelle'> = (s) => {
-  const restos = [...s.zonas.muelle]
+  const peligros = s.zonas.muelle.filter((c) => s.peligrosEnMuelle?.[c] !== undefined)
+  const restos = s.zonas.muelle.filter((c) => !peligros.includes(c))
   for (const c of restos) mover(s, c, 'descartesMuelle')
   if (restos.length > 0) anotar(s, 'efecto', `Se descartan del muelle: ${nombres(s, restos)}.`)
-  revelarAlMuelle(s, tamanoMuelle(s))
+  revelarAlMuelle(s, tamanoMuelle(s) - peligros.length)
   return 'hecha'
 }
 
@@ -143,59 +149,71 @@ export const pagar: Manejador<'pagar'> = (s, t, e) => {
   return 'hecha'
 }
 
+/** Reparar N. Con «Vía de agua», el primer punto quita la ficha en vez del daño. */
 export const reparar: Manejador<'reparar'> = (s, t) => {
+  let n = t.n
+  if (n > 0 && quitarEstadoBarco(s, 'viaDeAgua')) {
+    n--
+    anotar(s, 'efecto', 'Tapas la Vía de agua.')
+  }
   const antes = s.danoBarco
-  s.danoBarco = Math.max(0, s.danoBarco - t.n)
-  if (antes > 0) anotar(s, 'efecto', `Reparas ${antes - s.danoBarco}: el Barco queda con ${s.danoBarco} de daño.`)
+  s.danoBarco = Math.max(0, s.danoBarco - n)
+  if (antes > s.danoBarco) anotar(s, 'efecto', `Reparas ${antes - s.danoBarco}: el Barco queda con ${s.danoBarco} de daño.`)
   return 'hecha'
 }
 
-/** Curar N: «cadaUno» cura N a cada Tripulante; «repartir» reparte N como quiera el jugador; «uno», N a un Tripulante. */
+/**
+ * Curar N: «cadaUno» cura N a cada Tripulante; «repartir» reparte N como quiera el jugador; «uno», N a un Tripulante.
+ * Curar quita primero las fichas de Envenenado y Sangrando (P13). Con `fiebre` (el Matasanos, en puerto), además
+ * quita la Fiebre al curado.
+ */
 export const curar: Manejador<'curar'> = (s, t, e) => {
-  const heridos = s.zonas.tripulacion.filter((c) => copia(s, c).heridas > 0)
+  const heridos = s.zonas.tripulacion.filter((c) => curable(s, c) > 0)
+  const conFiebre = t.fiebre && !s.mision ? s.zonas.tripulacion.filter((c) => tieneEstado(s, c, 'fiebre')) : []
   if (t.modo === 'uno') {
-    const candidatos = t.objetivo ? heridos.filter((c) => c === t.objetivo) : heridos
+    const posibles = [...new Set([...heridos, ...conFiebre])]
+    const candidatos = t.objetivo ? posibles.filter((c) => c === t.objetivo) : posibles
     if (candidatos.length === 0) return 'hecha'
     if (candidatos.length > 1 && !e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'curarUno', n: t.n }, candidatas: candidatos, min: 1, max: 1 })
     const objetivo = candidatos.length === 1 ? candidatos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
     if (!objetivo) return 'hecha'
-    const c = copia(s, objetivo)
-    const curadas = Math.min(t.n, c.heridas)
-    c.heridas -= curadas
-    anotar(s, 'efecto', `Curas ${curadas} a ${nombre(s, objetivo)}.`)
+    const texto = curarTripulante(s, objetivo, t.n)
+    if (texto) anotar(s, 'efecto', `Curas a ${texto}.`)
+    // TODO(regla): P3 · el Matasanos en puerto quita la Fiebre al Tripulante que cura.
+    if (conFiebre.includes(objetivo)) quitarEstadoAnotado(s, objetivo, 'fiebre', nombreDe('matasanos'))
     return 'hecha'
   }
   if (t.modo === 'cadaUno') {
-    for (const c of heridos) copia(s, c).heridas = Math.max(0, copia(s, c).heridas - t.n)
-    if (heridos.length > 0) anotar(s, 'efecto', `Curas ${t.n} a cada Tripulante.`)
+    const textos = heridos.map((c) => curarTripulante(s, c, t.n)).filter(Boolean)
+    if (textos.length > 0) anotar(s, 'efecto', `Curas ${t.n} a cada Tripulante: ${textos.join('; ')}.`)
     return 'hecha'
   }
-  const total = heridos.reduce((n, c) => n + copia(s, c).heridas, 0)
+  const total = heridos.reduce((n, c) => n + curable(s, c), 0)
   if (total === 0) return 'hecha'
   if (total <= t.n) {
-    for (const c of heridos) copia(s, c).heridas = 0
-    anotar(s, 'efecto', `Curas todas las heridas (${total}).`)
+    const textos = heridos.map((c) => curarTripulante(s, c, curable(s, c))).filter(Boolean)
+    anotar(s, 'efecto', `Curas todo (${total}): ${textos.join('; ')}.`)
     return 'hecha'
   }
   if (!e) {
     const maximos: Partial<Record<InstId, number>> = {}
-    for (const c of heridos) maximos[c] = copia(s, c).heridas
+    for (const c of heridos) maximos[c] = curable(s, c)
     return preguntar({ tipo: 'repartir', motivo: { clave: 'curar', n: t.n }, cantidad: t.n, maximos })
   }
   const reparto = eleccionDe(e, 'reparto').n
   const partes: string[] = []
   for (const [inst, n] of Object.entries(reparto) as [InstId, number][]) {
     if (!n) continue
-    copia(s, inst).heridas -= n
-    partes.push(`${n} a ${nombre(s, inst)}`)
+    const texto = curarTripulante(s, inst, n)
+    if (texto) partes.push(texto)
   }
-  anotar(s, 'efecto', `Curas ${t.n}: ${partes.join(', ')}.`)
+  anotar(s, 'efecto', `Curas ${t.n}: ${partes.join('; ')}.`)
   return 'hecha'
 }
 
-/** Pierdes una Mejora: eliges una del Barco o de un Tripulante (ni Tesoros ni indestructibles). */
-export const perderMejora: Manejador<'perderMejora'> = (s, _t, e) => {
-  const candidatas = s.zonas.mejoras.filter((m) => !esIndestructible(copia(s, m).id))
+/** Pierdes una Mejora: eliges una del Barco o de un Tripulante (ni Tesoros ni indestructibles). `soloBarco`: de barco. */
+export const perderMejora: Manejador<'perderMejora'> = (s, t, e) => {
+  const candidatas = s.zonas.mejoras.filter((m) => !esIndestructible(copia(s, m).id) && (!t.soloBarco || copia(s, m).vinculadaA === 'barco'))
   const perder = (m: InstId) => {
     mover(s, m, 'descartesMuelle')
     anotar(s, 'efecto', `Pierdes «${nombre(s, m)}».`)
