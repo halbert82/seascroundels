@@ -204,7 +204,7 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
   },
 
   // Loro parlanchín: «Respuesta: Después de que se revele el Destino de una Prueba, compromete a Loro parlanchín en ella.»
-  // TODO(regla): puede unirse aunque nadie se haya comprometido (opción por defecto de CLAUDE.md).
+  // Puede unirse aunque nadie se haya comprometido (confirmado por Albert con N14).
   {
     clave: 'loro.unirse',
     carta: 'loro',

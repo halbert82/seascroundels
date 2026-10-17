@@ -51,6 +51,7 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N17 · Una Prueba superada automáticamente («Carronadas», «Soborno») cuenta como superada, sin participantes.** Se activan «Prisionero liberado» y las reglas de misión de «al superar»; no se activan Uñas largas, el Contrabandista ni el Rastreador. Si el encuentro tiene dos opciones, eliges cuál superas. *Ejemplo:* juegas «Soborno» ante «Perros de la guardia» (COM 3 o EXP 3): eliges COM y luego puedes jugar «Prisionero liberado».
 - **N18 · Son Cañones las cuatro Mejoras con munición** (Cañones de bronce, Carronadas, Culebrina y Pedrero), **y solo se usan en misiones de Mar**, también el Pedrero. *Ejemplo:* en «Cobrar la deuda» (Ciudad) revelas la Pelea de taberna (COM 3): no puedes descartarla con el Pedrero.
 - **N19 · El descuento de Catalina se gasta con el siguiente Tripulante que reclutes, aunque sea gratis.** *Ejemplo:* agotas a Catalina y juegas «Náufrago en la playa»: el Tripulante que reclutas gratis se lleva el descuento y el siguiente cuesta lo normal.
+- **Loro parlanchín: si nadie se compromete a la Prueba, puede unirse después del Destino**, tal como dice su texto (confirmado por Albert al responder N14). *Ejemplo:* no comprometes a nadie contra los Tiburones; después de revelar el Destino, el Loro se compromete a esa Prueba.
 - **Isabela puede salvar también al Capitán** («otro Tripulante»): es correcto según su texto; el informe de equilibrio dirá si es demasiado.
 
 ## Presentación de las cartas
@@ -74,7 +75,6 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 
 ## Pendientes de confirmar (se usa la opción por defecto de CLAUDE.md)
 
-- **Loro parlanchín:** si nadie se compromete a la Prueba, puede unirse después del Destino, tal como dice su texto. *Ejemplo:* no comprometes a nadie contra los Tiburones; después de revelar el Destino, el Loro se compromete a esa Prueba.
 - **Isabela y el Amuleto vudú:** «reduce su Vida a 1» significa que queda con 1 Vida restante (heridas = Vida − 1). *Ejemplo:* el Bucanero (Vida 2) va a sufrir su 2.ª herida; Isabela lo evita y se queda con 1 herida.
 - **Mazo de Escenario agotado:** no se rebaraja; se juega el último turno y se pierde (ver D12).
 - **Rehén:** el Capitán no puede ser rehén. *Ejemplo:* fallas Bandoleros con Diego y el Rufián comprometidos: el rehén es el Rufián.
