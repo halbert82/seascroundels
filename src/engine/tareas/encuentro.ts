@@ -47,6 +47,11 @@ export function empezarPrueba(s: Estado, carta: InstId, extra: number, origen: '
   p.origen = origen
   const m = s.mision
   if (extra !== 0) p.modExtra = extra
+  // Lo que el texto del encuentro cambia en su Prueba («las Mejoras no suman», «invierte el Destino»…).
+  if (origen === 'encuentro') {
+    const cambios = definicionEncuentro(s, carta).prueba
+    if (cambios) Object.assign(p, cambios)
+  }
   s.prueba = p
   // «Soborno»: esta Prueba se supera automáticamente, sin revelar Destino.
   if (origen === 'encuentro' && m) {
@@ -89,7 +94,7 @@ function salidaDelEncuentro(s: Estado, carta: InstId): void {
 }
 
 /** Gasta los «el siguiente encuentro … de esta misión» que le tocan a este encuentro; devuelve la dificultad de más. */
-// TODO(regla): P27 · si ese siguiente encuentro no tiene Prueba, el «recibe ±N» se gasta igualmente (no espera al siguiente).
+// Si ese siguiente encuentro no tiene Prueba, el «recibe ±N» se gasta igualmente (no espera al siguiente) (P27).
 function gastarModsDeEncuentro(s: Estado, t: { sinAvance?: boolean }, claves: readonly string[]): number {
   const m = s.mision
   if (!m?.modsSiguientes) return 0
@@ -123,7 +128,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       const alcance = perseguia ? ' Te ha alcanzado.' : ''
       anotar(s, 'revelar', `Revelas «${nombre(s, carta)}»: ${nombreDelEncuentro(s, carta)}${lugar}.${alcance}`, { tipo: 'revelado', inst: carta, como: 'encuentro' })
       // «Al revelarse»: se aplica antes de las Respuestas a la revelación.
-      // TODO(regla): P12 · «al revelarse» se aplica antes de las Respuestas a la revelación de la carta.
+      // «Al revelarse» se aplica antes de las Respuestas a la revelación de la carta (P12).
       const alRevelarse = definicionEncuentro(s, carta).alRevelarse ?? []
       encolar(s, ...(alRevelarse.length > 0 ? [aplicar(alRevelarse, 'efecto', carta)] : []), evento({ tipo: 'revelarPeligro', carta }))
       t.paso = 'leer'
@@ -204,11 +209,40 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
   }
 }
 
+/** Revela el Destino de la Prueba (con «revela 2 Destinos y aplica el peor», si toca). */
+function revelarDestino(s: Estado, p: PruebaEnCurso): void {
+  let carta = cartaDeArriba(s, 'destino')
+  if (!carta) return
+  mover(s, carta, 'destino')
+  s.infoRevelada++
+  // Mal agüero: se revelan 2 Destinos y se aplica el peor (el otro se descarta).
+  if (p.dosDestinos && p.hab) {
+    const otra = cartaDeArriba(s, 'destino')
+    if (otra) {
+      mover(s, otra, 'destino')
+      const valorDe = (d: InstId) => {
+        const m2 = modificadorDeDestino(s, d, p.encuentro, p.hab ?? 'NAV')
+        return m2 === 'fallo' ? Infinity : p.invertirDestino ? -m2 : m2
+      }
+      const [peor, mejor] = valorDe(otra) > valorDe(carta) ? [otra, carta] : [carta, otra]
+      anotar(s, 'revelar', `Revelas 2 Destinos: «${destinoDe(copia(s, carta).id).nombre}» y «${destinoDe(copia(s, otra).id).nombre}». Se aplica el peor.`)
+      descartarPeligro(s, mejor)
+      carta = peor
+    }
+  }
+  p.destino = carta
+  const d = destinoDe(copia(s, carta).id)
+  anotar(s, 'revelar', `Destino: «${d.nombre}» (${d.impreso}).`, { tipo: 'revelado', inst: carta, como: 'destino' })
+  encolar(s, evento({ tipo: 'revelarDestino', carta }))
+}
+
 /** Aplica el Destino revelado (si no se ha cancelado): modificador, efecto añadido y Sin oposición (N9). */
 function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
   if (!p.destino || p.destinoCancelado || !p.hab) return []
   const d = destinoDe(copia(s, p.destino).id)
-  const mod = modificadorDeDestino(s, p.destino, p.encuentro, p.hab)
+  const impreso = modificadorDeDestino(s, p.destino, p.encuentro, p.hab)
+  // «La Madre de agua»: el modificador se invierte («Fallas la Prueba» no cambia).
+  const mod = impreso !== 'fallo' && p.invertirDestino ? -impreso : impreso
   if (mod === 'fallo') p.falla = true
   else p.modDestino = mod
   p.sinCartas = p.sinCartas || (d.sinCartas ?? false)
@@ -288,6 +322,11 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         t.paso = 'resolver'
         return 'sigue'
       }
+      // «La echadora de cartas»: revela el Destino antes de comprometer a nadie (se aplica después, como siempre).
+      if (p.destinoAntes && !p.destino && !e) {
+        revelarDestino(s, p)
+        if (p.destino) return 'sigue'
+      }
       if (!e) {
         const habs = new Set(def.opciones.map((o) => o.hab))
         const pregunta = {
@@ -347,30 +386,10 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
     }
     case 'destino': {
       p.sinOposicion = p.comprometidos.length === 0
-      let carta = cartaDeArriba(s, 'destino')
       t.paso = 'aplicarDestino'
-      if (!carta) return 'sigue'
-      mover(s, carta, 'destino')
-      s.infoRevelada++
-      // Mal agüero: se revelan 2 Destinos y se aplica el peor (el otro se descarta).
-      if (p.dosDestinos && p.hab) {
-        const otra = cartaDeArriba(s, 'destino')
-        if (otra) {
-          mover(s, otra, 'destino')
-          const valorDe = (d: InstId) => {
-            const m2 = modificadorDeDestino(s, d, p.encuentro, p.hab ?? 'NAV')
-            return m2 === 'fallo' ? Infinity : m2
-          }
-          const [peor, mejor] = valorDe(otra) > valorDe(carta) ? [otra, carta] : [carta, otra]
-          anotar(s, 'revelar', `Revelas 2 Destinos: «${destinoDe(copia(s, carta).id).nombre}» y «${destinoDe(copia(s, otra).id).nombre}». Se aplica el peor.`)
-          descartarPeligro(s, mejor)
-          carta = peor
-        }
-      }
-      p.destino = carta
-      const d = destinoDe(copia(s, carta).id)
-      anotar(s, 'revelar', `Destino: «${d.nombre}» (${d.impreso}).`, { tipo: 'revelado', inst: carta, como: 'destino' })
-      encolar(s, evento({ tipo: 'revelarDestino', carta }))
+      // «La echadora de cartas»: el Destino ya se reveló antes de comprometer (no se revela otro).
+      if (p.destino) return 'sigue'
+      revelarDestino(s, p)
       return 'sigue'
     }
     case 'aplicarDestino':
@@ -384,28 +403,11 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         return 'sigue'
       }
       if (!e) {
-        // Reforzar solo si se comprometió a alguien.
-        const reforzar: Accion[] =
-          p.comprometidos.length > 0 && !p.sinReforzar
-            ? s.zonas.mano
-                .filter((c) => iconosDe(copia(s, c).id, hab) > 0 && (!def.sinAyuda || tipoDe(copia(s, c).id) === 'habilidad'))
-                .map((carta) => ({ tipo: 'reforzar' as const, carta }))
-            : []
-        const acciones: Accion[] = [
-          ...reforzar,
-          ...usosDisponibles(s, ['accion', 'libre']).map((uso) => ({ tipo: 'usar' as const, uso })),
-          { tipo: 'terminarPaso' },
-        ]
+        // Sin refuerzo: en la ventana de acción solo se usan capacidades (de cartas en juego y Eventos con su momento).
+        const acciones: Accion[] = [...usosDisponibles(s, ['accion', 'libre']).map((uso) => ({ tipo: 'usar' as const, uso })), { tipo: 'terminarPaso' }]
         return preguntar({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: dificultadPrueba(s) }, acciones })
       }
       const accion = eleccionDe(e, 'accion').accion
-      if (accion.tipo === 'reforzar') {
-        mover(s, accion.carta, 'descartesCapitan')
-        p.cartas.push(accion.carta)
-        p.iconos += iconosDe(copia(s, accion.carta).id, hab)
-        anotar(s, 'jugada', `Refuerzas con «${nombre(s, accion.carta)}».`, { tipo: 'iconos', cartas: [copia(s, accion.carta).id] })
-        return 'sigue'
-      }
       if (accion.tipo === 'usar') {
         encolarUso(s, accion.uso, null)
         return 'sigue'

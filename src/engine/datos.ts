@@ -182,6 +182,8 @@ export interface PeligroDatos {
   entraDuranteLaPartida: boolean
   /** 2: Peligros 2.0 (textos completos; lo que hacen está en sus reglas, no en los iconos). */
   version?: 2
+  /** Peligro antiguo, fuera del mazo desde la fase 6: solo se conserva para las pruebas (no sale en la galería). */
+  retirada?: boolean
   encuentros: Record<Entorno, EncuentroDatos>
   destino: DestinoDatos
 }

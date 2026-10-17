@@ -471,7 +471,7 @@ describe('N13 · Una herida pagada como coste se puede evitar o desviar', () => 
 })
 
 describe('N14 · El Loro que se une a una Prueba sin comprometidos anula Sin oposición', () => {
-  it('Espíritus de la selva (EXP 3) con «Contratiempo»: no pierdes Avance, pide 4 y llegas con el Loro y dos cartas', () => {
+  it('Espíritus de la selva (EXP 3) con «Contratiempo»: no pierdes Avance; el Loro se une solo, sin cartas de la mano (ya no hay refuerzo)', () => {
     const j = Jugador.enMision({
       misiones: ['aguada-I'],
       avance: { 'aguada-I': 1 },
@@ -482,8 +482,10 @@ describe('N14 · El Loro que se une a una Prueba sin comprometidos anula Sin opo
     })
     j.comprometer('EXP', []).usar('loro.unirse')
     expect(j.registro.some((t) => t.startsWith('Pierdes'))).toBe(false)
-    j.reforzar('ojo').reforzar('estrellas').seguir()
-    expect(j.registro).toContain('Total 4 contra 4: superas la Prueba.')
+    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba' } })
+    j.seguir()
+    expect(j.registro).toContain('Total 1 contra 4: fallas la Prueba.')
+    expect(j.zona('mano')).toEqual(['ojo', 'estrellas'])
   })
 })
 

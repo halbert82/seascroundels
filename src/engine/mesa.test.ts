@@ -29,7 +29,7 @@ function partidaCompleta(semilla: number): { final: Estado; estados: Estado[] } 
 describe('Desglose de la Prueba', () => {
   it('ejemplo: Niebla espesa con «Corriente traicionera»: Diego 2 · Bucanero 1 · Barco +1 · Mano firme +2 = 6 contra 3 + 2 = 5', () => {
     const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['bucanero'], mano: ['timon'], mazoPeligros: ['niebla', 'arrecifes', 'calma'] })
-    j.comprometer('NAV', ['capitan', 'bucanero']).reforzar('timon')
+    j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
     const total = desgloseTotal(j.estado)
     expect(total.map((p) => [p.etiqueta, p.n])).toEqual([
       ['Diego «Garra» Mendoza', 2],

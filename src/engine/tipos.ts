@@ -1,7 +1,7 @@
 // Tipos del motor de reglas. Todo el estado de la partida es JSON simple: se guarda y se recupera tal cual.
 
 import type { Habilidad } from './datos.ts'
-import type { AccionSobre, Efecto, ModSiguiente, OpcionEfectos, Selector } from './efectos.ts'
+import type { AccionSobre, Efecto, Incautar, ModSiguiente, OpcionEfectos, Selector } from './efectos.ts'
 import type { DefinicionPrueba } from './definiciones.ts'
 import type { EstadoBarco, EstadoTripulante } from './estados.ts'
 
@@ -64,7 +64,7 @@ export interface Copia {
   vinculadaA: InstId | 'barco' | null
   /** Fichas de Entrenamiento (+1 a una habilidad; ocupan hueco de Mejora). */
   entrenamiento: Habilidad[]
-  /** Fichas de Estado de un Tripulante (Envenenado, Fiebre…). Nunca dos iguales. */
+  /** Fichas de Estado de un Tripulante (Envenenado, Borracho…). Nunca dos iguales. */
   estados?: EstadoTripulante[]
   /** Contador de fichas de una carta de Peligro en juego (siempre cuenta hacia arriba). */
   fichas?: number
@@ -86,6 +86,8 @@ export interface Temporal {
   inst?: InstId
   /** Para `hasta: 'carta'`: la carta de Peligro en juego de la que depende. */
   carta?: InstId
+  /** Solo cuenta a partir de ese turno («−1 Mando en tu próximo turno»). */
+  desdeTurno?: number
 }
 
 export type TipoRegistro = 'turno' | 'revelar' | 'robar' | 'pagar' | 'jugada' | 'efecto' | 'aviso' | 'fin'
@@ -116,7 +118,7 @@ export type Suceso =
   | { tipo: 'adquirir'; carta: CartaId }
   /** Capacidad usada o Evento jugado por su efecto. */
   | { tipo: 'usar'; carta: CartaId; clave: string }
-  /** Cartas descartadas por sus iconos (comprometer, reforzar o cubrir la Distancia). */
+  /** Cartas descartadas por sus iconos (al comprometer o al cubrir la Distancia). */
   | { tipo: 'iconos'; cartas: CartaId[] }
   // Para animar la mesa: qué copia concreta cambia.
   | { tipo: 'revelado'; inst: InstId; como: 'encuentro' | 'destino' | 'escenario' }
@@ -124,6 +126,10 @@ export type Suceso =
   | { tipo: 'heridas'; inst: InstId; n: number }
   | { tipo: 'dano'; n: number }
   | { tipo: 'reputacion'; n: number }
+  /** Un Tripulante queda rehén. */
+  | { tipo: 'capturado'; carta: CartaId }
+  /** Se pierde Avance de la misión. */
+  | { tipo: 'avancePerdido'; n: number }
   /** Cartas de la mano descartadas para pagar un coste. */
   | { tipo: 'pago'; n: number }
 
@@ -153,6 +159,8 @@ export interface MisionEnCurso {
   marcas?: Partial<Record<string, number>>
   /** Palabras clave de cada encuentro ya resuelto en esta misión. */
   resueltas?: string[][]
+  /** Lo que pasa además si superas la misión y recuperas lo incautado («las recuperas y robas 2»). */
+  alRecuperar?: Efecto[]
 }
 
 export interface Bono {
@@ -170,7 +178,7 @@ export interface PruebaEnCurso {
   /** Dificultad de la opción congelada al comprometer, con la rebaja por Rasgo (D1b). */
   dificultadBase: number
   comprometidos: InstId[]
-  /** Cartas de la mano añadidas al comprometer y al reforzar, y sus iconos de la habilidad. */
+  /** Cartas de la mano añadidas al comprometer, y sus iconos de la habilidad. */
   cartas: InstId[]
   iconos: number
   bonos: Bono[]
@@ -210,7 +218,12 @@ export interface PruebaEnCurso {
   sinCapTripulantes?: boolean
   sinCapMejoras?: boolean
   sinEventos?: boolean
-  sinReforzar?: boolean
+  /** «Las Mejoras no suman» (pero se pueden usar). */
+  mejorasNoSuman?: boolean
+  /** «Invierte el modificador del Destino» (La Madre de agua). «Fallas la Prueba» no cambia. */
+  invertirDestino?: boolean
+  /** «Revela el Destino antes de comprometer a nadie» (La echadora de cartas). */
+  destinoAntes?: boolean
   /** Se revelan 2 Destinos y se aplica el peor. */
   dosDestinos?: boolean
   /** Total y dificultad al resolver (para «si fallas por 3 o más» y «por cada punto que superes»). */
@@ -255,7 +268,7 @@ export interface Estado {
   /** Cartas de Peligro que ocupan el muelle y lo que cuesta descartarlas. */
   peligrosEnMuelle?: Partial<Record<InstId, number>>
   /** De dónde salió cada carta incautada, para devolverla si superas la misión. */
-  incautadas?: Partial<Record<InstId, { zona: 'mano' | 'mejoras' | 'tripulacion'; portador?: InstId | 'barco' }>>
+  incautadas?: Partial<Record<InstId, { zona: 'mano' | 'mejoras' | 'tripulacion'; portador?: InstId | 'barco'; siPierdes?: 'descartar' }>>
   /** Usos de capacidades con límite: «iN/clave» → veces este turno o misión. */
   usos: Record<string, number>
   /** Pila de tareas: la última es la que se está resolviendo. */
@@ -321,10 +334,9 @@ export type Tarea = { id: number } & (
   | { tipo: 'reponerMuelle' }
   | { tipo: 'revelarMuelle'; n: number }
   | { tipo: 'buscarMuelle'; filtro: 'tripulante' | 'mejoraBarco' | 'mejora' }
-  | { tipo: 'perderMejora'; soloBarco?: boolean }
+  | { tipo: 'perderMejora'; soloBarco?: boolean; portadores?: InstId[] }
   /** «repartir»: como quieras; «cadaUno»: N a cada Tripulante; «uno»: N a un Tripulante (el indicado o el que elijas). */
-  /** `fiebre`: en puerto, además quita la Fiebre al curado (el Matasanos). */
-  | { tipo: 'curar'; n: number; modo: 'repartir' | 'cadaUno' | 'uno'; objetivo?: InstId; fiebre?: boolean }
+  | { tipo: 'curar'; n: number; modo: 'repartir' | 'cadaUno' | 'uno'; objetivo?: InstId }
   | { tipo: 'reparar'; n: number }
   | { tipo: 'desercion' }
   | { tipo: 'sacarTripulante'; carta: InstId; destino: 'descartesMuelle' | 'fueraDeJuego' | 'muelle'; motivo: string }
@@ -404,16 +416,16 @@ export type Tarea = { id: number } & (
   | { tipo: 'ponerEstadoBarco'; estado: EstadoBarco }
   | { tipo: 'quitarEstado'; estado: EstadoTripulante; de: InstId[] | 'todos' }
   | { tipo: 'quitarEstadoBarco'; estado: EstadoBarco }
-  /** Estados al final del turno: Envenenado hiere, Fiebre se contagia, Borracho se pasa. */
-  | { tipo: 'estadosFinTurno'; paso: 'veneno' | 'fiebre' | 'borracho'; pendientes: InstId[] }
-  | { tipo: 'incautar'; que: 'mano' | 'mejora' | 'tripulante'; n: number }
+  /** Estados al final del turno: Envenenado hiere, Borracho se pasa. */
+  | { tipo: 'estadosFinTurno'; paso: 'veneno' | 'borracho'; pendientes: InstId[] }
+  | ({ tipo: 'incautar' } & Incautar)
   /** La carta de Peligro (la del encuentro) ocupa el muelle en lugar de la carta de coste más alto. */
   | { tipo: 'ocuparMuelle'; carta: InstId; coste: number }
   | { tipo: 'descartarDelMuelle'; carta: InstId }
   | { tipo: 'mirarPeligros'; n: number }
   | { tipo: 'descartarArriba'; n: number }
   /** Agotar a un Tripulante preparado (con un Rasgo, si se pide) para pagar un coste. */
-  | { tipo: 'agotarParaPagar'; rasgo: string | null }
+  | { tipo: 'agotarParaPagar'; rasgo: string | null; rasgos?: string[] }
   /** Al empezar una misión de Mar con el Barco «Perseguido»: una carta de Peligro de más. */
   | { tipo: 'peligroDeMas' }
   // Peligros 2.0
@@ -433,6 +445,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'quitarUnEstado'; estados: EstadoTripulante[]; carta?: InstId; curar?: number }
   /** Descarta una de estas cartas de Peligro en juego (eliges cuál). */
   | { tipo: 'quitarPeligroEnJuego'; candidatas: InstId[] }
+  /** Descarta una carta del muelle (la de más a la izquierda, o la Mejora más cara) y, si lo dice, repón el hueco. */
+  | { tipo: 'descartarMuelle'; cual: 'izquierda' | 'mejoraMasCara'; reponer?: boolean }
   | {
       tipo: 'evento'
       ev: Evento
@@ -467,8 +481,6 @@ export type Accion =
   | { tipo: 'despedir'; carta: InstId }
   /** Usar una capacidad o jugar un Evento de la mano. */
   | { tipo: 'usar'; uso: Uso }
-  /** Descartar una carta de la mano por sus iconos para sumar a la Prueba (solo con comprometidos). */
-  | { tipo: 'reforzar'; carta: InstId }
   | { tipo: 'retirarse' }
   | { tipo: 'terminarPaso' }
 
@@ -571,8 +583,8 @@ export type Coste =
   | { tipo: 'municion'; n: number }
   | { tipo: 'herida'; n: number }
   | { tipo: 'agotarCapitan' }
-  /** Agota a un Tripulante preparado (con ese Rasgo, si lo hay). */
-  | { tipo: 'agotarTripulante'; rasgo: string | null }
+  /** Agota a un Tripulante preparado (con ese Rasgo, si lo hay; o con uno de esos Rasgos). */
+  | { tipo: 'agotarTripulante'; rasgo: string | null; rasgos?: string[] }
   /** Agota a N Tripulantes preparados, o a 1 con ese Rasgo («agota 2 Tripulantes (o 1 Marinero)»). */
   | { tipo: 'agotarVarios'; n: number; oRasgo?: string }
   /** Gasta N de munición de tus Cañones (eliges de cuál). */
@@ -611,8 +623,12 @@ export interface Capacidad {
     | 'estadoBarco'
     | 'encuentro'
     | 'destino'
+    /** Un Tripulante marcado por una carta («se pierde», «atrapado», «señalado»): la capacidad es de esa marca. */
+    | 'marca'
   /** Condición extra para poder usarla ahora (p. ej., «solo en Pruebas de COM en el Mar»). */
   requisito?: (s: Estado, yo: InstId | null) => boolean
+  /** Lo que dice, para la mesa, cuando no sale del texto de una carta del jugador (capacidades de los Peligros). */
+  texto?: string
   limite?: { veces: number; por: 'turno' | 'mision' }
   coste?: Coste[]
   /** Modificador constante a un valor. */

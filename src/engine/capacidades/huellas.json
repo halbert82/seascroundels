@@ -68,7 +68,7 @@
  "polvora_rey": "Indestructible.\nTus Cañones reciben {N municion} de máximo.",
  "farol": "Indestructible.\n**Respuesta:** Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)",
  "barco": "Tus Pruebas de [NAV] en [mar] reciben {N}.\n**Al zarpar hacia una misión lejana:** Distancia {N g}.",
- "herbolaria": "[agotar]: Quita **Envenenado**, **Fiebre** o **Sangrando** a un Tripulante.",
+ "herbolaria": "[agotar]: Quita **Envenenado**, **Sangrando**, **Aturdido** o **Asustado** a un Tripulante.",
  "practico": "**Respuesta:** Después de que superes una Prueba de [NAV] en la que participe Práctico del puerto, quita **Vía de agua** o **Velas rotas** del Barco.",
  "lengua": "Los encuentros #Civil# en los que participe La Lengua reciben {N g} de dificultad.",
  "fiador": "**Interrupción:** Cuando otro Tripulante vaya a quedar rehén, Fiador de la Hermandad queda rehén en su lugar. Si lo rescatas, roba {N robar}.",

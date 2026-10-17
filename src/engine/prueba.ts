@@ -115,7 +115,7 @@ function sinCanones(s: Estado, p: PruebaEnCurso): boolean {
 /** Un bono no cuenta si es de un Cañón y los Cañones no suman, o si es de una Mejora y las Mejoras no suman. */
 function bonoAnulado(s: Estado, p: PruebaEnCurso, b: Bono): boolean {
   if (b.canon && sinCanones(s, p)) return true
-  if (!p.sinMejoras) return false
+  if (!p.sinMejoras && !p.mejorasNoSuman) return false
   const tipo = b.fuente.startsWith('estado:') ? null : tipoDe(b.fuente)
   return tipo === 'mejoraBarco' || tipo === 'mejoraTripulante' || tipo === 'tesoro'
 }
@@ -209,7 +209,7 @@ export function problemaCompromiso(
   if (unico && tieneEstado(s, unico, 'asustado')) return `${nombreDe(copia(s, unico).id)} está Asustado: no puede comprometerse solo`
   if (def.sinAyuda) {
     if (tripulantes.length > 1) return 'Sin ayuda: solo puede comprometerse un Tripulante'
-    // TODO(regla): P7 · Sin ayuda: los Eventos tampoco suman por sus iconos; solo las Habilidades.
+    // Sin ayuda: los Eventos tampoco suman por sus iconos; solo las Habilidades (P7).
     if (cartas.some((c) => tipoDe(copia(s, c).id) !== 'habilidad')) return 'Sin ayuda: solo suman las Habilidades de tu mano'
   }
   return null

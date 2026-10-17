@@ -51,6 +51,8 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
     }
   }
   for (const t of s.temporales) {
+    // «En tu próximo turno»: aún no cuenta.
+    if (t.desdeTurno !== undefined && t.desdeTurno > s.turno) continue
     const cap = capacidadPorClave(t.clave)
     if (cap) yield [cap, t.inst ?? null]
   }
@@ -153,7 +155,7 @@ export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<In
 
 /** «Las Mejoras no suman en esta Prueba»: no cuentan para las habilidades ni para el total. */
 function deLaPrueba(s: Estado, c: Consulta): boolean {
-  return (s.prueba?.sinMejoras ?? false) && (c.tipo === 'habilidad' || c.tipo === 'totalPrueba')
+  return (s.prueba?.sinMejoras || s.prueba?.mejorasNoSuman || false) && (c.tipo === 'habilidad' || c.tipo === 'totalPrueba')
 }
 
 /** Lo que aporta cada capacidad constante activa a una consulta (solo las que suman o restan algo). */
@@ -211,7 +213,7 @@ export function huecosLibres(s: Estado, tripulante: InstId): number {
 
 /** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los rehenes y los incautados. */
 export function plazasOcupadas(s: Estado): number {
-  // TODO(regla): P9 · un Tripulante incautado sigue ocupando su plaza.
+  // Un Tripulante incautado sigue ocupando su plaza (P9).
   const incautados = s.zonas.incautadas.filter((c) => porId(copia(s, c).id).tipo === 'tripulante').length
   return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.rehenes.length + incautados
 }

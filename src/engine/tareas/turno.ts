@@ -106,7 +106,7 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
         s,
         { tipo: 'robarHastaMando' },
         { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] },
-        // Estados al final del turno: Envenenado hiere, Fiebre se contagia, Borracho se pasa.
+        // Estados al final del turno: Envenenado hiere y Borracho se pasa.
         { tipo: 'estadosFinTurno', paso: 'veneno', pendientes: [] },
         ...naufragos,
       )
@@ -114,7 +114,8 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       return 'sigue'
     }
     case 'cierre': {
-      s.temporales = s.temporales.filter((x) => x.hasta !== 'finTurno')
+      // Lo que dura «este turno» se acaba; lo de «tu próximo turno» empieza a contar ahora.
+      s.temporales = s.temporales.filter((x) => x.hasta !== 'finTurno' || (x.desdeTurno ?? 0) > s.turno)
       // Los límites «una vez por turno» vuelven a estar disponibles.
       for (const clave of Object.keys(s.usos)) if (clave.startsWith('turno:')) delete s.usos[clave]
       for (const c of [...s.zonas.escenarioEnCurso]) mover(s, c, 'descartesEscenario')

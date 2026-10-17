@@ -60,6 +60,10 @@ export function cumple(s: Estado, c: Condicion): boolean {
       return s.danoBarco >= c.minimo
     case 'mano':
       return s.zonas.mano.length >= c.minimo
+    case 'plazasLibres':
+      return plazasLibres(s) >= c.minimo
+    case 'preparados':
+      return s.zonas.tripulacion.filter((x) => !copia(s, x).agotada).length >= c.minimo
     case 'hab':
       return s.prueba?.hab === c.hab
     case 'claves':
@@ -92,7 +96,7 @@ export function margen(s: Estado): number {
 }
 
 /** Puntos que te faltaron en la Prueba en curso: al menos 1 si la fallaste (P8). */
-// TODO(regla): P8 · si fallas, te faltan al menos 1 punto (aunque fallaras por un Destino «Fallas la Prueba»).
+// Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino «Fallas la Prueba» (P8).
 export function faltan(s: Estado): number {
   const p = s.prueba
   if (!p || p.resultado !== 'fallada') return 0
@@ -146,7 +150,7 @@ function escalar(e: Efecto, k: number): Efecto[] {
  * ¿Se puede pagar entero? Para las opciones de pago de «Elige»: una opción que no puedes pagar entera no se
  * ofrece (P11). Lo que no se puede «no pagar» (heridas, daño) siempre se puede.
  */
-// TODO(regla): P11 · en «Elige», una opción de pago que no puedes pagar entera no se ofrece.
+// En «Elige», una opción de pago que no puedes pagar entera no se ofrece (P11).
 export function sePuedePagarEntero(s: Estado, efectos: readonly Efecto[]): boolean {
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
   let mano = 0
@@ -177,6 +181,16 @@ export function sePuedePagarEntero(s: Estado, efectos: readonly Efecto[]): boole
         break
       case 'agotarMejora':
         if (!s.zonas.mejoras.some((m) => mejoraActiva(s, m) && !esIndestructible(copia(s, m).id))) return false
+        break
+      case 'porCada': {
+        const k = Math.max(e.minimo ?? 0, Math.min(medir(s, e.medida), e.maximo ?? Infinity))
+        const descartes = e.efectos.reduce((n, x) => n + (x.tipo === 'descartar' ? x.n : 0), 0) * k
+        mano += descartes
+        if (!sePuedePagarEntero(s, e.efectos.filter((x) => x.tipo !== 'descartar').flatMap((x) => escalar(x, k)))) return false
+        break
+      }
+      case 'si':
+        if (!sePuedePagarEntero(s, cumple(s, e.condicion) ? e.entonces : (e.sino ?? []))) return false
         break
       case 'rehen':
         if (!s.zonas.tripulacion.some((c) => c !== s.capitan)) return false
@@ -214,8 +228,9 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         tareas.push({ tipo: 'herirUno', n: e.n, entre: e.capitan ? [s.capitan] : [...s.zonas.tripulacion] })
         break
       case 'dano':
-        // El Barco solo recibe daño en el Mar; en tierra se aplica la alternativa («/ 1 herida»), si la hay.
-        if (enMar) tareas.push(suceso({ tipo: 'danoBarco', cantidad: e.n }))
+        // El Barco solo recibe daño en el Mar; en tierra se aplica la alternativa («/ 1 herida»), si la hay, salvo que la
+        // carta diga expresamente que lo daña en tierra (P19).
+        if (enMar || e.enTierra) tareas.push(suceso({ tipo: 'danoBarco', cantidad: e.n }))
         break
       case 'reparar':
         tareas.push({ tipo: 'reparar', n: e.n })
@@ -243,7 +258,7 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         tareas.push({ tipo: 'perderMunicion', n: e.n })
         break
       case 'perderMejora':
-        for (let i = 0; i < e.n; i++) tareas.push({ tipo: 'perderMejora' })
+        for (let i = 0; i < e.n; i++) tareas.push(e.deComprometidos ? { tipo: 'perderMejora', portadores: comprometidosEnJuego(s) } : { tipo: 'perderMejora' })
         break
       case 'agotarMejora':
         tareas.push({ tipo: 'agotarMejora' })
@@ -255,7 +270,11 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         tareas.push({ tipo: 'cambiarReputacion', n: e.n })
         break
       case 'menosMando':
-        tareas.push({ tipo: 'anadirTemporal', temporal: { clave: 'menosMando', fuente: 'regla', hasta: 'finTurno' } })
+        // «En tu próximo turno»: cuenta desde el turno siguiente y se acaba al final de ese turno.
+        tareas.push({
+          tipo: 'anadirTemporal',
+          temporal: e.proximo ? { clave: 'menosMando', fuente: 'regla', hasta: 'finTurno', desdeTurno: s.turno + 1 } : { clave: 'menosMando', fuente: 'regla', hasta: 'finTurno' },
+        })
         break
       case 'perderDia':
         tareas.push({ tipo: 'perderDia' })
@@ -290,9 +309,11 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
       case 'quitarEstadoBarco':
         tareas.push({ tipo: 'quitarEstadoBarco', estado: e.estado })
         break
-      case 'incautar':
-        tareas.push({ tipo: 'incautar', que: e.que, n: e.n })
+      case 'incautar': {
+        const { tipo: _tipo, ...resto } = e
+        tareas.push({ tipo: 'incautar', ...resto })
         break
+      }
       case 'ocuparMuelle': {
         const carta = fuente ?? s.zonas.encuentro[0]
         if (carta) tareas.push({ tipo: 'ocuparMuelle', carta, coste: e.coste })
@@ -402,6 +423,22 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
       case 'codigo':
         tareas.push(...ejecutarCodigo(s, e.clave, fuente))
         break
+      case 'quitarUnEstado':
+        tareas.push(e.curar ? { tipo: 'quitarUnEstado', estados: [...e.estados], curar: e.curar } : { tipo: 'quitarUnEstado', estados: [...e.estados] })
+        break
+      case 'descartarMuelle':
+        tareas.push(e.reponer ? { tipo: 'descartarMuelle', cual: e.cual, reponer: true } : { tipo: 'descartarMuelle', cual: e.cual })
+        break
+      case 'sobre':
+        tareas.push({ tipo: 'aQuien', quien: { de: 'tripulacion', inst: e.carta }, hacer: e.hacer, ...(fuente ? { fuente } : {}) })
+        break
+      case 'herirComprometido': {
+        // Maldito: cuando un Destino hiere a «uno de los comprometidos», tiene que ser él. Sin comprometidos, a quien elijas.
+        const comprometidos = comprometidosEnJuego(s)
+        const malditos = comprometidos.filter((c) => tieneEstado(s, c, 'maldito'))
+        tareas.push({ tipo: 'herirUno', n: e.n, entre: malditos.length > 0 ? malditos : comprometidos.length > 0 ? comprometidos : [...s.zonas.tripulacion] })
+        break
+      }
     }
   }
   return tareas
@@ -470,7 +507,7 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
     }
   }
   // Abordaje: 1 herida por cada punto que falte (máximo 3); si faltan 3 o más, además un comprometido queda rehén.
-  // TODO(regla): P8 · faltan max(1, dificultad − total) puntos; sin comprometidos, las heridas van a quien elijas y el rehén es al azar.
+  // Faltan max(1, dificultad − total) puntos; sin comprometidos, las heridas van a quien elijas y el rehén es al azar (P8).
   let rehenAbordaje = false
   if (def.abordaje && !p.ignorarFallo) {
     const faltan = Math.max(1, dificultadPrueba(s) - totalPrueba(s))
@@ -587,7 +624,7 @@ export const perderAvance: Manejador<'perderAvance'> = (s, t) => {
   const m = copia(s, s.mision.carta)
   const antes = m.avance
   m.avance = t.n === 'todo' ? 0 : Math.max(0, m.avance - t.n)
-  if (antes > m.avance) anotar(s, 'efecto', `Pierdes ${antes - m.avance} de Avance.`)
+  if (antes > m.avance) anotar(s, 'efecto', `Pierdes ${antes - m.avance} de Avance.`, { tipo: 'avancePerdido', n: antes - m.avance })
   return 'hecha'
 }
 

@@ -397,7 +397,7 @@
    "EXP": 2,
    "vida": 1,
    "mejoras": 1,
-   "texto": "[agotar]: Quita **Envenenado**, **Fiebre** o **Sangrando** a un Tripulante.",
+   "texto": "[agotar]: Quita **Envenenado**, **Sangrando**, **Aturdido** o **Asustado** a un Tripulante.",
    "ambientacion": "«Para cada veneno, una hoja. Para cada hoja, un precio.»"
   },
   {
@@ -1023,7 +1023,7 @@
    "num": 170,
    "nombre": "Cortar por lo sano",
    "copias": 1,
-   "coste": 1,
+   "coste": 0,
    "iconos": [
     "COM"
    ],
@@ -1248,7 +1248,8 @@
     "mod": "−1",
     "ambientacion": "«Viento de popa. Por una vez.»",
     "textoSinOposicion": "Sin fallo"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "hallazgo",
@@ -1325,7 +1326,8 @@
     "mod": "+0",
     "ambientacion": "«Hoy la suerte lleva bandera negra.»",
     "textoSinOposicion": "+1 [robar]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "calma",
@@ -1378,7 +1380,8 @@
     "mod": "+0",
     "ambientacion": "«Un respiro. El Caribe no suele darlos.»",
     "textoSinOposicion": ""
-   }
+   },
+   "retirada": true
   },
   {
    "id": "encrucijada",
@@ -1476,7 +1479,8 @@
     "mod": "−1",
     "ambientacion": "«Una gaviota en el palo mayor: buena señal.»",
     "textoSinOposicion": "Sin fallo"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "oportunidad",
@@ -1567,7 +1571,8 @@
     "mod": "−1",
     "ambientacion": "«A veces el mar también da.»",
     "textoSinOposicion": ""
-   }
+   },
+   "retirada": true
   },
   {
    "id": "chubasco",
@@ -1645,7 +1650,8 @@
     "mod": "+0",
     "ambientacion": "«Agua del cielo, agua del mar. Lo de siempre.»",
     "textoSinOposicion": ""
-   }
+   },
+   "retirada": true
   },
   {
    "id": "fauna",
@@ -1736,7 +1742,8 @@
     "mod": "+1",
     "ambientacion": "«Donde hay uno, hay diez.»",
     "textoSinOposicion": ""
-   }
+   },
+   "retirada": true
   },
   {
    "id": "escollos",
@@ -1835,7 +1842,8 @@
     "mod": "+0",
     "ambientacion": "«Sondad el fondo, y despacio.»",
     "textoSinOposicion": ""
-   }
+   },
+   "retirada": true
   },
   {
    "id": "niebla",
@@ -1936,7 +1944,8 @@
     "mod": "+1",
     "ambientacion": "«No se ve ni la proa.»",
     "textoSinOposicion": "−1 [avance]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "percances",
@@ -2020,7 +2029,8 @@
     "mod": "+1",
     "ambientacion": "«Nada sale como en el mapa.»",
     "textoSinOposicion": "−1 [avance]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "civiles",
@@ -2122,7 +2132,8 @@
     "mod": "+0",
     "ambientacion": "«No todo el que navega es enemigo.»",
     "textoSinOposicion": ""
-   }
+   },
+   "retirada": true
   },
   {
    "id": "ley",
@@ -2247,7 +2258,8 @@
     "mod": "+1",
     "ambientacion": "«¡Tocad a rebato! ¡Piratas!»",
     "textoSinOposicion": "1 [agotar]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "rivales",
@@ -2357,7 +2369,8 @@
     "mod": "+1",
     "ambientacion": "«Sonríe, brinda… y lleva un puñal en la bota.»",
     "textoSinOposicion": "1 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "temporal",
@@ -2475,7 +2488,8 @@
     "mod": "+1",
     "ambientacion": "«¡Arriad trapo, que nos desarbola!»",
     "textoSinOposicion": "1 [dano] · / 1 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "bestias",
@@ -2585,7 +2599,8 @@
     "mod": "+1",
     "ambientacion": "«Algo se mueve entre los helechos.»",
     "textoSinOposicion": "1 [herida] · Capitán"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "fiebre",
@@ -2710,7 +2725,8 @@
     "mod": "+1",
     "ambientacion": "«Primero el sudor, luego los delirios.»",
     "textoSinOposicion": "1 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "vigilancia",
@@ -2826,7 +2842,8 @@
     "mod": "+0",
     "ambientacion": "«Cada torre tiene ojos. Cada ojo, un mosquete.»",
     "textoSinOposicion": "1 [agotar]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "sirenas",
@@ -2935,7 +2952,8 @@
     "mod": "+1",
     "ambientacion": "«Un gato negro a bordo. Nadie quiere tocarlo.»",
     "textoSinOposicion": "1 [descartar]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "arrecifes",
@@ -3055,7 +3073,8 @@
     "mod": "+1",
     "ambientacion": "«El mar tira hacia las rocas y el timón no responde.»",
     "textoSinOposicion": "1 [dano] · / 1 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "leyenda",
@@ -3169,7 +3188,8 @@
     "mod": "✕",
     "ambientacion": "«Los viejos lo contaban. Nadie les creía.»",
     "textoSinOposicion": "2 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "cazadores",
@@ -3279,7 +3299,8 @@
     "mod": "+2",
     "ambientacion": "«Tu cabeza vale más cada día. Y alguien a bordo lo sabe.»",
     "textoSinOposicion": "1 [herida] · Capitán · −1 [rep]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "catastrofe",
@@ -3393,7 +3414,8 @@
     "mod": "✕",
     "ambientacion": "«Cuando todo se tuerce, se tuerce de golpe.»",
     "textoSinOposicion": "2 [dano] · / 2 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "asalto",
@@ -3517,7 +3539,8 @@
     "mod": "+2",
     "ambientacion": "«¡Nos estaban esperando!»",
     "textoSinOposicion": "2 [herida]"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "armada",
@@ -4601,6 +4624,3571 @@
     "mod": "+2",
     "ambientacion": "",
     "textoSinOposicion": "El Capitán sufre 1 herida."
+   }
+  },
+  {
+   "id": "p2_tortugas",
+   "num": 174,
+   "nombre": "Tortugas",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Tortugas dormidas",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Flotan dormidas al sol; hay que arponearlas desde la chalupa.~",
+     "textoExito": "~Carne viva en la bodega para semanas.~ Prepara a los Tripulantes que comprometiste.",
+     "textoFallo": "~Se hunden antes del arpón.~ Agota 1 Tripulante preparado (remó en balde)."
+    },
+    "nat": {
+     "nombre": "Desove en la playa",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Huevos a cientos bajo la arena.~ Cura 2 heridas repartidas. Si tienes un _Animal_ o un _Explorador_, además prepara 1 Tripulante (saben dónde escarbar)."
+    },
+    "ciu": {
+     "nombre": "Concha de carey",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El platero del puerto compra carey para peines y cajitas.~",
+     "textoExito": "~Vale su peso en plata.~ Robas 2.",
+     "textoFallo": "~Te engaña con la balanza.~ Descarta 1 carta."
+    }
+   },
+   "destino": {
+    "nombre": "Concha dura",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "Si superas la Prueba, el comprometido con la habilidad más alta queda **Aguerrido** (se cubre como la tortuga).",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Pierdes 1 Avance (a paso de tortuga)."
+   }
+  },
+  {
+   "id": "p2_sol",
+   "num": 175,
+   "nombre": "Sol de justicia",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "La brea hierve",
+     "palabrasClave": [
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Carpintero",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El sol derrite la brea de las costuras; hay que baldear la cubierta sin parar.~",
+     "textoExito": "~La cubierta aguanta y la gente se refresca.~ Prepara 1 Tripulante.",
+     "textoFallo": "~Las costuras se abren al sol.~ El Barco queda con **Vía de agua**."
+    },
+    "nat": {
+     "nombre": "Sed en la trocha",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Elige:** volvéis al último arroyo (pierdes 1 Avance), o buscáis agua por delante: Prueba de [EXP] 3.",
+     "textoExito": "~Un manantial entre las rocas.~ Cura 1 herida a cada Tripulante comprometido.",
+     "textoFallo": "~Ni una gota.~ Cada Tripulante comprometido queda **Aturdido**.",
+     "etiquetas": [
+      "Elige"
+     ]
+    },
+    "ciu": {
+     "nombre": "La hora de la siesta",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~A mediodía la ciudad duerme, y los guardias también. Solo hay que no hacer ruido: cuanta más gente, más ruido.~",
+     "textoExito": "~Entráis y salís sin que nadie despierte.~ Robas 2.",
+     "textoFallo": "~Alguien tropieza con un cántaro.~ El comprometido con más [EXP] queda **Buscado**.",
+     "notaPrueba": "+1 por cada Tripulante comprometido después del primero."
+    }
+   },
+   "destino": {
+    "nombre": "Mediodía",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si la Prueba es de [COM] (con este calor no hay quien pelee).",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Capitán sufre 1 herida (insolación)."
+   }
+  },
+  {
+   "id": "p2_hambre",
+   "num": 176,
+   "nombre": "El hambre",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Escorbuto",
+     "palabrasClave": [
+      "Enfermedad"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Cirujano",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Semanas de galleta y cecina; sangran las encías y se abren las cicatrices.~",
+     "textoExito": "~Limas olvidadas en un barril.~ Cura 1 herida a cada Tripulante herido.",
+     "textoFallo": "~Las heridas viejas se abren.~ Cada Tripulante que ya tenga heridas sufre 1 herida más (máximo 3 heridas en total)."
+    },
+    "nat": {
+     "nombre": "Manzanillas de la muerte",
+     "palabrasClave": [
+      "Enfermedad",
+      "Terreno"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Explorador",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~La tripulación tiene hambre y la selva está llena de fruta. Alguna mata.~",
+     "textoExito": "~Guayabas y mameyes de verdad.~ Prepara 2 Tripulantes.",
+     "textoFallo": "~Alguien muerde la manzanita del manzanillo.~ El Tripulante con menos Vida sufre 2 heridas."
+    },
+    "ciu": {
+     "nombre": "Carestía",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de [EXP] 3.",
+     "textoExito": "~Compras barato y sobra.~ Robas 1 y cura 1 herida.",
+     "textoFallo": "~Os vais con la tripa vacía.~ −1 Mando en tu próximo turno.",
+     "etiquetas": [
+      "Elige"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Ración corta",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "El comprometido con la habilidad más alta no se prepara en tu próximo Inicio (no le quedan fuerzas).",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta 1 carta (se comen las provisiones)."
+   }
+  },
+  {
+   "id": "p2_sinrumbo",
+   "num": 177,
+   "nombre": "Sin rumbo",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Laberinto de cayos",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Vigía",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Cien cayos iguales, todos con el mismo manglar.~",
+     "textoExito": "~Encuentras el canal.~ Mira las 2 de arriba del mazo de Peligros y pon 1 al fondo.",
+     "textoFallo": "~Dais vueltas al mismo cayo.~ El siguiente encuentro de esta misión no da Avance."
+    },
+    "nat": {
+     "nombre": "La trocha se borra",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Bajo las copas no se ve el sol; solo queda la aguja de marear.~",
+     "textoExito": "~Marcáis los árboles al pasar.~ +1 Avance.",
+     "textoFallo": "~Alguien se queda atrás.~ El comprometido con más [NAV] se pierde: no se prepara hasta el final de la misión. **Acción:** agota un _Vigía_ o un _Explorador_ para encontrarlo y prepararlo.",
+     "notaPrueba": "1 si un Tripulante comprometido lleva una Brújula."
+    },
+    "ciu": {
+     "nombre": "Callejas del arrabal",
+     "palabrasClave": [
+      "Terreno",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Os orientáis por el campanario, como por una estrella.~",
+     "textoExito": "~Un atajo hasta el muelle.~ La siguiente Prueba de esta misión recibe −1.",
+     "textoFallo": "~Acabáis en un mal barrio.~ Descarta 1 carta al azar."
+    }
+   },
+   "destino": {
+    "nombre": "Aguja de marear",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "−2 en su lugar si comprometiste un _Vigía_ o un _Explorador_.",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Pierdes 1 Avance (nadie guiaba)."
+   }
+  },
+  {
+   "id": "p2_serpientes",
+   "num": 178,
+   "nombre": "Serpientes",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Culebra en la bodega",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Subió a bordo con la leña.~ Si tienes un _Animal_ (el gato del barco), superas sin Prueba.",
+     "textoExito": "~La echáis por la borda en un saco, y entre los fardos aparece el ron que alguien escondía.~ Robas 1.",
+     "textoFallo": "~Muerde al que dormía abajo.~ El Tripulante no comprometido con menos Vida sufre 2 heridas (si no queda ninguno, el comprometido con menos [EXP])."
+    },
+    "nat": {
+     "nombre": "Barba amarilla",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Hay que matarla a machetazos antes de que salte.~",
+     "textoExito": "~La cortáis en dos y seguís sin miedo.~ +1 Avance.",
+     "textoFallo": "~Muerde al que iba el último.~ El comprometido con menos [COM] queda **Envenenado**."
+    },
+    "ciu": {
+     "nombre": "El culebrero",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un charlatán vende remedios con una serpiente al cuello. Hay que saber si el suyo es bueno.~",
+     "textoExito": "~El remedio funciona.~ Quita a un Tripulante un Estado malo (**Envenenado**, **Sangrando**, **Aturdido** o **Asustado**), o cura 2 heridas.",
+     "textoFallo": "~Aceite de culebra y agua de pozo.~ Descarta 2 cartas."
+    }
+   },
+   "destino": {
+    "nombre": "Colmillo",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "Si fallas, el comprometido con la habilidad más alta queda **Envenenado**.",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante preparado con menos Vida sufre 1 herida (estaba entre la maleza)."
+   }
+  },
+  {
+   "id": "p2_fiebre",
+   "num": 179,
+   "nombre": "Fiebre amarilla",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Bandera amarilla",
+     "palabrasClave": [
+      "Enfermedad"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Los Tripulantes con **Fiebre** no pueden comprometerse (están aislados en el castillo de proa).",
+     "textoExito": "~Una cala tranquila para desembarcar a los enfermos al sol.~ Quita la **Fiebre** a todos los Tripulantes; si nadie tenía, +1 Avance.",
+     "textoFallo": "~Con la bandera amarilla izada, nadie os deja tocar tierra.~ No puedes retirarte de esta misión."
+    },
+    "nat": {
+     "nombre": "Nube de mosquitos",
+     "palabrasClave": [
+      "Enfermedad",
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4,
+       "alternativa": {
+        "rasgo": "Cirujano",
+        "dificultad": 2
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Hay que hacer humo con hojas verdes y no parar de andar.~",
+     "textoExito": "~Encontráis corteza de quina.~ Quita la **Fiebre** a un Tripulante, o cura 2 heridas.",
+     "textoFallo": "El Tripulante comprometido con menos Vida queda con **Fiebre** (y al final del turno se contagia)."
+    },
+    "ciu": {
+     "nombre": "El lazareto",
+     "palabrasClave": [
+      "Enfermedad",
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~La ciudad ha cerrado las calles; el cordón de guardias busca caras amarillas.~",
+     "textoExito": "~Cruzáis el cordón por los patios.~ +1 Avance.",
+     "textoFallo": "~El cordón se lleva a uno.~ El comprometido con más [EXP] queda rehén en el lazareto; si tenía **Fiebre**, allí se la quitan.",
+     "notaPrueba": "+1 por cada Tripulante con **Fiebre** (máx. 5)."
+    }
+   },
+   "destino": {
+    "nombre": "Vómito negro",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si algún Tripulante comprometido tiene **Fiebre**.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Capitán queda con **Fiebre**."
+   }
+  },
+  {
+   "id": "p2_tiburones",
+   "num": 180,
+   "nombre": "Tiburones",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Aletas en la estela",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Si ningún Tripulante está herido, ganas el Avance sin Prueba (no hay sangre en el agua).",
+     "textoExito": "~Pescáis uno para la cena.~ Cura 2 heridas repartidas.",
+     "textoFallo": "~Van a por el que sangra.~ El Tripulante con más heridas sufre 2 heridas.",
+     "notaPrueba": "+1 por cada Tripulante herido (máx. 5)."
+    },
+    "nat": {
+     "nombre": "Tiburones de agua dulce",
+     "palabrasClave": [
+      "Bestia",
+      "Terreno"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El río San Juan sube hasta el lago, y los tiburones con él. Hay que cruzar en balsa.~ Los Tripulantes heridos no pueden comprometerse (nadie mete una herida abierta en esa agua).",
+     "textoExito": "~El río queda entre vosotros y lo que os seguía.~ Descarta la de arriba del mazo de Peligros sin resolverla.",
+     "textoFallo": "~La balsa vuelca.~ Cada Tripulante comprometido sufre 1 herida."
+    },
+    "ciu": {
+     "nombre": "El Tiburón del muelle",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El usurero huele la necesidad.~ **Al revelarse:** pon bajo la misión 1 carta al azar de tu mano por cada Tripulante herido (mín. 1, máx. 3): son sus prendas (**Incautado**).",
+     "textoExito": "~Plantas cara a sus cobradores y se achantan.~ Recupera ahora las prendas y robas 1.",
+     "textoFallo": "~Las prendas se quedan con él.~ Solo las recuperas si superas la misión.",
+     "etiquetas": [
+      "Incautado"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Sangre en el agua",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si algún Tripulante está herido, el que tenga más heridas sufre 1 herida más, esté comprometido o no.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante con menos Vida sufre 1 herida (la primera sangre los atrae)."
+   }
+  },
+  {
+   "id": "p2_murcielagos",
+   "num": 181,
+   "nombre": "Murciélagos vampiro",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Alas sobre el fondeadero",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Cada noche salen de la costa y vuelven al barco fondeado; hay que espantarlos a golpes de lona.~",
+     "textoExito": "~Los ahuyentáis con antorchas y zarpáis antes del alba.~ +1 Avance.",
+     "textoFallo": "~Nadie pega ojo.~ Los Tripulantes comprometidos no se preparan en tu próximo Inicio."
+    },
+    "nat": {
+     "nombre": "La colonia sale de caza",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Siguen el rastro de la sangre. Hay que dormir lejos de la cueva y con fuego.~",
+     "textoExito": "~Dais con la cueva y su guano: salitre para la pólvora.~ Ganas 1 munición.",
+     "textoFallo": "~Os sangran mientras dormís.~ El Tripulante comprometido con menos Vida queda **Sangrando**.",
+     "notaPrueba": "+1 si algún Tripulante está **Sangrando**."
+    },
+    "ciu": {
+     "nombre": "Por la ventana de la posada",
+     "palabrasClave": [
+      "Bestia",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Os han seguido hasta el pueblo. Hay que echarlos a escobazos, a oscuras.~",
+     "textoExito": "~El posadero os da cama sin cobrar.~ Cura 1 herida a cada Tripulante comprometido.",
+     "textoFallo": "~Entran por la ventana del Capitán, que dormía en la mejor cama.~ El Capitán sufre 1 herida y descartas 1 carta (pagas al barbero)."
+    }
+   },
+   "destino": {
+    "nombre": "Alas en la noche",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "**Persigue:** después de aplicar este Destino, pon esta carta encima del mazo de Peligros: os siguen hasta el próximo encuentro.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante agotado con menos Vida sufre 1 herida (le muerden dormido)."
+   }
+  },
+  {
+   "id": "p2_arenas",
+   "num": 182,
+   "nombre": "Arenas movedizas",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Fango del estuario",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Con la marea baja, la boca del río es una sopa de fango. Cuanto más pesa el barco, más se hunde.~",
+     "textoExito": "~La marea os saca a tiempo.~ +1 Avance.",
+     "textoFallo": "~La quilla se clava.~ El Barco sufre 1 daño por cada punto que te falte (máx. 3).",
+     "notaPrueba": "+1 por cada 2 Mejoras de barco (máx. 5)."
+    },
+    "nat": {
+     "nombre": "Arenas movedizas",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Se queda en juego. El Tripulante preparado (o el Capitán) con más [EXP] iba delante y queda atrapado: no puede comprometerse ni prepararse mientras esta carta siga en juego. **Obligado:** cada vez que reveles otro Peligro, pon 1 ficha de barro sobre esta carta. Con 3 fichas, lo sacáis medio ahogado: sufre 2 heridas y descarta esta carta. **Acción:** agota tantos Tripulantes preparados como fichas tenga esta carta, más 1: lo sacáis a pulso; descarta esta carta.",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    },
+    "ciu": {
+     "nombre": "El almacén se hunde",
+     "palabrasClave": [
+      "Terreno",
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Marinero",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El puerto se construyó sobre arena, y un almacén se la está tragando. Hay que sacar los fardos con poleas y aparejos, como en la jarcia.~",
+     "textoExito": "~Entre los fardos rescatados hay algo útil.~ Añade gratis una Mejora del muelle.",
+     "textoFallo": "~La arena se traga lo que llevabais encima.~ Pierdes 1 Mejora de un Tripulante comprometido."
+    }
+   },
+   "destino": {
+    "nombre": "Cuanto más peso",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+1 más por cada Tripulante comprometido después del segundo (máx. +3 en total).",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Agota 1 Tripulante (se queda atascado)."
+   }
+  },
+  {
+   "id": "p2_jaguar",
+   "num": 183,
+   "nombre": "El jaguar",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "La fiera en la bodega",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El jaguar que llevabais para la casa de fieras del gobernador ha roto la jaula.~ **Sin ayuda** (en la bodega a oscuras solo cabe uno con un farol).",
+     "textoExito": "~Vuelve a la jaula y el gobernador pagará bien.~ Robas 3.",
+     "textoFallo": "~El zarpazo llega antes que el farol.~ El Tripulante sufre 2 heridas y queda **Asustado**.",
+     "etiquetas": [
+      "Sin ayuda"
+     ]
+    },
+    "nat": {
+     "nombre": "Ojos amarillos en la espesura",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~No da la cara; se lleva al que se queda atrás.~ Se queda en juego. **Obligado:** al final de cada encuentro siguiente de esta misión, el Tripulante agotado con menos Vida sufre 1 herida. **Acción:** agota a un Tripulante preparado para cazarlo: Prueba de [COM] 5 solo con él ([EXP] 3 si es un _Explorador_). Si superas, robas 2 (la piel vale oro) y descarta esta carta. Si fallas, ese Tripulante sufre 1 herida.",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    },
+    "ciu": {
+     "nombre": "La casa de fieras",
+     "palabrasClave": [
+      "Bestia",
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El jaguar del gobernador anda suelto por el mercado.~ Si tienes un _Animal_, la Prueba recibe +1 (lo huele y va a por él).",
+     "textoExito": "~Lo devuelves a la jaula delante de toda la plaza.~ +1 reputación.",
+     "textoFallo": "~El mercado queda destrozado.~ El comprometido con más [COM] sufre 2 heridas y se descarta la carta de más a la izquierda del muelle (los tenderos huyen)."
+    }
+   },
+   "destino": {
+    "nombre": "Salto desde la rama",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "El ataque llega por el flanco: si algún Tripulante preparado no está comprometido, el de menos Vida sufre 1 herida.",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante con menos Vida sufre 2 heridas."
+   }
+  },
+  {
+   "id": "p2_caiman",
+   "num": 184,
+   "nombre": "El caimán",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Caimán en el estuario",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 6
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** el caimán vuelca la chalupa: el Tripulante preparado con menos Vida cae al agua y no puede comprometerse. ~Hay que llegar hasta él antes que la bestia.~",
+     "textoExito": "~Lo subís a bordo de un tirón; el caimán se queda con el remo.~ Ese Tripulante se prepara y queda **Aguerrido**.",
+     "textoFallo": "~Lo arrastra al fondo.~ Ese Tripulante sufre 2 heridas, y la chalupa se pierde: el Barco sufre 1 daño."
+    },
+    "nat": {
+     "nombre": "El Viejo del manglar",
+     "palabrasClave": [
+      "Bestia",
+      "Terreno"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Con el barro a la cintura, las Mejoras no suman.",
+     "textoExito": "~Abatís al Viejo. Su piel y sus dientes valen una fortuna.~ Robas 2 y +1 Avance.",
+     "textoFallo": "~El giro de la muerte.~ Si tienes un _Animal_, el caimán se lo lleva: vuelve al muelle. Si no, el comprometido con más [COM] sufre 3 heridas."
+    },
+    "ciu": {
+     "nombre": "El foso de la muralla",
+     "palabrasClave": [
+      "Bestia",
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El gobernador echa caimanes al foso. Hay que cruzarlo a nado de noche.~",
+     "textoExito": "~Entráis por donde nadie vigila.~ La siguiente Prueba #Guardia# o #Militar# de esta misión recibe −2.",
+     "textoFallo": "El comprometido con más [NAV] sale del agua a medias. **Elige:** sufre 2 heridas (escapa mordido) o queda rehén (lo pescan los guardias)."
+    }
+   },
+   "destino": {
+    "nombre": "Giro de la muerte",
+    "modificador": null,
+    "textoPrototipo": "",
+    "texto": "Fallas la Prueba, salvo que el comprometido con la habilidad más alta sufra 2 heridas (se suelta de las fauces); entonces es +1.",
+    "mod": "✕",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante con menos Vida sufre 2 heridas."
+   }
+  },
+  {
+   "id": "p2_desertores",
+   "num": 185,
+   "nombre": "Desertores del rey",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Bote de desertores",
+     "palabrasClave": [
+      "Militar",
+      "Civil"
+     ],
+     "avance": 3,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Han huido de un navío del rey con la pólvora del pañol.~ Gana 2 munición."
+    },
+    "nat": {
+     "nombre": "Soldado perdido en la manigua",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2,
+       "alternativa": {
+        "rasgo": "Oficial",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoExito": "~Os lleva por la senda de las mulas.~ +1 Avance.",
+     "textoFallo": "~Os toma por cazadores de desertores, dispara y huye.~ El comprometido con más [EXP] sufre 1 herida.",
+     "notaPrueba": "~Se cuadra ante un galón.~"
+    },
+    "ciu": {
+     "nombre": "El cabo del portillo",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Os debe unas copas. Abre la puerta de la muralla y os da el santo y seña.~ El siguiente encuentro #Guardia# o #Militar# de esta misión recibe −2."
+    }
+   },
+   "destino": {
+    "nombre": "Chivatazo del desertor",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "−2 en su lugar si el encuentro es #Militar# o #Guardia#. Si aun así fallas, el desertor era un espía: el Barco queda **Perseguido**.",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "+1 en su lugar (no se fía de un capitán que no da la cara)."
+   }
+  },
+  {
+   "id": "p2_sebusca",
+   "num": 186,
+   "nombre": "Se busca",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El guardacostas os reconoce",
+     "palabrasClave": [
+      "Militar",
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Si llevas la _Bandera negra_, +1 (esa bandera la conoce todo el Caribe).",
+     "textoExito": "~Izáis la bandera de Su Majestad y os saluda al pasar.~ Nada más.",
+     "textoFallo": "~Os sigue de lejos y pasa vuestras señas.~ El Barco queda **Perseguido**."
+    },
+    "nat": {
+     "nombre": "Cazadores con perros",
+     "palabrasClave": [
+      "Guardia",
+      "Bestia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Los perros siguen la sangre.~ +1 si algún Tripulante comprometido tiene heridas.",
+     "textoExito": "~Los despistáis en el arroyo y os quedáis con su cecina.~ Cura 1 herida.",
+     "textoFallo": "~Los perros acorralan al más lento.~ El Tripulante comprometido con menos Vida sufre 1 herida y queda **Buscado** (los cazadores ya tienen su cara)."
+    },
+    "ciu": {
+     "nombre": "Tu cara en el muelle",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoExito": "~Os escurrís entre el gentío leyendo cuánto ofrecen por vosotros.~ Nada más.",
+     "textoFallo": "~El cartel se queda clavado en el muelle y nadie se enrola con una cabeza a precio.~ **Ocupa el muelle:** pon esta carta en el muelle en lugar de la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En el paso de Jugar cartas puedes pagar 2 cartas para descartarla.",
+     "notaPrueba": "3 si tienes 9 o más de reputación (cuanto más famoso, más te miran)."
+    }
+   },
+   "destino": {
+    "nombre": "Precio por tu cabeza",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si algún comprometido está **Buscado** o el Barco está **Perseguido** (ya saben quién eres).",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Un cazador te encuentra solo: el Capitán sufre 1 herida."
+   }
+  },
+  {
+   "id": "p2_aduana",
+   "num": 187,
+   "nombre": "La aduana del rey",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Registro del guardacostas",
+     "palabrasClave": [
+      "Guardia",
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** **Incautado:** pon 2 cartas de tu mano debajo de la carta de misión (la carga que revisan); con la _Patente de corso_, solo 1. Si superas la misión, las recuperas.",
+     "textoExito": "~Los papeles cuadran.~ Recupera ya las cartas incautadas y roba 1.",
+     "textoFallo": "~Decomisan también la pólvora.~ Pierdes 1 munición.",
+     "etiquetas": [
+      "Incautado"
+     ]
+    },
+    "nat": {
+     "nombre": "Guardas del estanco",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Vigilan el río por donde baja el tabaco. Bajáis en canoa y en la canoa solo caben dos.~ No puedes comprometer más de 2 Tripulantes.",
+     "textoExito": "~La corriente os deja lejos, con los fardos.~ Nada más.",
+     "textoFallo": "~Volcáis en los rápidos.~ Pierdes 1 munición (pólvora mojada) y el comprometido con más [NAV] sufre 1 herida."
+    },
+    "ciu": {
+     "nombre": "El aduanero tiene precio",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Contrabandista",
+        "dificultad": 1
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Elige:** le untas la mano (descarta 2 cartas y gana el Avance sin Prueba), o pasas el género por tu cuenta: Prueba de [EXP] 3 (1 con un _Contrabandista_).",
+     "textoExito": "~Lo vendes bajo sus narices.~ +1 Avance y roba 1.",
+     "textoFallo": "~Te lo requisan y te multan.~ Descarta 2 cartas al azar.",
+     "etiquetas": [
+      "Elige"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Doble fondo",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "−1 en su lugar si comprometiste un _Contrabandista_. Si fallas, descarta 1 carta (la multa).",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "Por no declarar, descarta 1 carta al azar."
+   }
+  },
+  {
+   "id": "p2_ojos",
+   "num": 188,
+   "nombre": "Ojos del gobernador",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Espejos en la costa",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Vigía",
+        "dificultad": 2
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un espía en el acantilado hace señales al fuerte con un espejo.~",
+     "textoExito": "~Subís al acantilado y os quedáis su espejo y su catalejo.~ El comprometido con más [NAV] queda **Inspirado**.",
+     "textoFallo": "~El fuerte ya sabe vuestro rumbo.~ La siguiente Prueba de esta misión recibe +1."
+    },
+    "nat": {
+     "nombre": "Guía vendido",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El gobernador le paga por llevaros a la boca del lobo. Solo el sol os dice si miente.~",
+     "textoExito": "~Lo pilláis y lo obligáis a llevaros por el buen camino.~ +2 Avance.",
+     "textoFallo": "~Os lleva en círculos.~ Pierdes 1 Avance y agota 1 Tripulante."
+    },
+    "ciu": {
+     "nombre": "El soplón pide su parte",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Elige:** le pagas por callar (descarta 2 cartas), o no le pagas y la Prueba sube +2 (vuelve con los alguaciles).",
+     "textoExito": "~Lo arrinconáis y le vaciáis la bolsa del gobernador.~ Roba 2.",
+     "textoFallo": "~Te ha vendido.~ El Capitán queda **Buscado**.",
+     "etiquetas": [
+      "Elige"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Oídos en la pared",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "No puedes jugar Eventos en esta Prueba (os estaban esperando).",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El espía se lleva tus notas: robas 1 menos al final de este turno."
+   }
+  },
+  {
+   "id": "p2_grilletes",
+   "num": 189,
+   "nombre": "Los grilletes del rey",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Galera de forzados",
+     "palabrasClave": [
+      "Militar",
+      "Barco"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoExito": "~Abordáis y rompéis las cadenas de los remeros.~ Si tienes Capacidad, recluta gratis un _Marinero_ del muelle; si no, roba 1.",
+     "textoFallo": "~Os embiste con el espolón.~ El Barco sufre 2 daños."
+    },
+    "nat": {
+     "nombre": "Cuerda de presos",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Llevan a los presos encadenados a las minas, monte arriba.~",
+     "textoExito": "~Soltáis la cuerda en un descuido de la escolta y los presos os enseñan el atajo.~ +1 Avance.",
+     "textoFallo": "~Os toman por fugados y os atan a la cuerda.~ Los Tripulantes comprometidos no se preparan en tu próximo Inicio."
+    },
+    "ciu": {
+     "nombre": "Leva forzosa",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoExito": "~Echáis a la leva de la taberna y los marineros del puerto os invitan a una ronda.~ Prepara 2 Tripulantes.",
+     "textoFallo": "La leva se lleva al Tripulante comprometido con menos Vida. Queda rehén."
+    }
+   },
+   "destino": {
+    "nombre": "Grilletes en los tobillos",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "En esta Prueba no se pueden usar capacidades de Tripulantes.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Un Tripulante preparado queda **Encadenado**."
+   }
+  },
+  {
+   "id": "p2_santooficio",
+   "num": 190,
+   "nombre": "El Santo Oficio",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Visita de navío",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El comisario del Santo Oficio sube a bordo a buscar libros prohibidos y cartas de marear de herejes.~",
+     "textoExito": "~No encuentra nada y bendice el barco.~ Repara 1 daño.",
+     "textoFallo": "~Requisa vuestras cartas de marear holandesas.~ Hasta el final de la misión, el Barco no da su +1 de [NAV]."
+    },
+    "nat": {
+     "nombre": "La curandera en la hoguera",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Los familiares del Santo Oficio queman por bruja a la curandera de la aldea.~",
+     "textoExito": "~La salváis y os cura con sus hierbas.~ Cura 2 heridas.",
+     "textoFallo": "~Os rechazan a punta de pica.~ 1 herida a cada Tripulante comprometido (máx. 3)."
+    },
+    "ciu": {
+     "nombre": "Requisa del Santo Oficio",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** **Incautado:** una Mejora a tu elección va debajo de la carta de misión; si llevas el _Amuleto_, tiene que ser él (cosa de brujas). Si superas la misión, la recuperas.",
+     "textoExito": "~Juráis por los Evangelios.~ Recupera ya la Mejora y el comprometido con más [EXP] queda **Aguerrido** (sale bendecido).",
+     "textoFallo": "~Te sacan en procesión con el sambenito.~ −1 reputación.",
+     "etiquetas": [
+      "Incautado"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Agua bendita",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si un comprometido lleva el _Amuleto_; +0 si lleva el _Escapulario_.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Quien calla, otorga: descarta 2 cartas."
+   }
+  },
+  {
+   "id": "p2_rebato",
+   "num": 191,
+   "nombre": "Toque a rebato",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Lanchas de la guarnición",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Acuden de todo el puerto.~ +1 por cada encuentro #Militar# o #Guardia# que ya hayas resuelto en esta misión (máx. +2).",
+     "textoExito": "~Hundís la lancha del capitán y las demás se retiran.~ Nada más.",
+     "textoFallo": "~Os acribillan desde las lanchas.~ El Barco sufre 1 daño y el comprometido con más [COM] sufre 1 herida."
+    },
+    "nat": {
+     "nombre": "La hoguera de la atalaya",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El centinela corre a encender la hoguera de aviso. Hay que llegar antes, de noche y por la loma, guiándoos por las estrellas.~",
+     "textoExito": "~Llegáis antes y le quitáis el pedernal y la pólvora.~ Gana 1 munición.",
+     "textoFallo": "~La humareda se ve desde la costa.~ El Barco queda **Perseguido**."
+    },
+    "ciu": {
+     "nombre": "Campanas a rebato",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Se queda en juego junto a la misión. Al terminar cada encuentro de esta misión, pon 1 ficha. Con 3, llega la guarnición: el Tripulante agotado con menos Vida queda rehén y descartas esta carta. **Acción:** agota a un _Oficial_ (con una casaca robada, manda callar al campanero), o supera una Prueba de [COM] 3 (subís al campanario y cortáis la cuerda), para descartar esta carta.",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Falsa alarma",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "Pero todos saltan de la hamaca: agota 1 Tripulante no comprometido.",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Agota 2 en lugar de 1."
+   }
+  },
+  {
+   "id": "p2_quinto",
+   "num": 192,
+   "nombre": "El quinto del rey",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Patache de los oficiales reales",
+     "palabrasClave": [
+      "Militar",
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Viene a cobrar el quinto de vuestras presas.~ +1 si tienes 3 o más munición (ve la bodega llena y trae más gente).",
+     "textoExito": "~Lo apresáis con lo recaudado.~ Gana 1 munición y roba 1.",
+     "textoFallo": "~Cobra con creces.~ Pierdes 2 munición."
+    },
+    "nat": {
+     "nombre": "Portazgo del Camino Real",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~La garita cobra el paso según la carga.~ **Al revelarse:** si tienes 5 o más cartas en la mano, +1.",
+     "textoExito": "~Os quedáis la caja del portazgo.~ Roba 2.",
+     "textoFallo": "~Os cobran en sangre y en tiempo.~ El comprometido con más [COM] sufre 1 herida y pierdes 1 Avance."
+    },
+    "ciu": {
+     "nombre": "Embargo del recaudador",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4,
+       "alternativa": {
+        "rasgo": "Oficial",
+        "dificultad": 2
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoExito": "~Le coláis papeles falsos.~ El comprometido con más [EXP] queda **Inspirado**.",
+     "textoFallo": "~Embarga en tu nombre lo mejor del muelle.~ **Ocupa el muelle:** pon esta carta en el muelle en lugar de la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En el paso de Jugar cartas puedes pagar 3 cartas para descartarla.",
+     "notaPrueba": "~Sabe leer un libro de cuentas.~"
+    }
+   },
+   "destino": {
+    "nombre": "La parte del rey",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "Si superas, el rey cobra su quinto: descarta 1 carta (con la _Patente de corso_, no pagas).",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "Pierdes 1 munición."
+   }
+  },
+  {
+   "id": "p2_morro",
+   "num": 193,
+   "nombre": "Bajo los cañones del Morro",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "La cadena de la bocana",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Se queda en juego. Mientras esté, no puedes superar la misión. **Acción:** haz una Prueba de [COM] 5 (4 con un _Carpintero_) para cortarla a hachazos bajo el fuego del castillo. Si superas, descarta esta carta y gana 1 Avance. Si fallas, el Barco sufre 2 daños.",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    },
+    "nat": {
+     "nombre": "El fortín del río",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 6,
+       "alternativa": {
+        "rasgo": "Artillero",
+        "dificultad": 4
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoExito": "~Tomáis el fortín y su polvorín.~ Gana 2 munición.",
+     "textoFallo": "~Os barren desde las troneras.~ 3 heridas repartidas entre los comprometidos.",
+     "notaPrueba": "~Un tiro con estopa encendida prende los techos de palma.~"
+    },
+    "ciu": {
+     "nombre": "Los calabozos del Morro",
+     "palabrasClave": [
+      "Guardia",
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Entráis en bote por la galería que da al mar.~",
+     "textoExito": "Rescata a todos los rehenes de esta misión. Si no había ninguno, un preso agradecido os cuenta el camino: +1 Avance.",
+     "textoFallo": "~El carcelero os coge en la ronda.~ El comprometido con más [NAV] queda **Encadenado** y sufre 1 herida."
+    }
+   },
+   "destino": {
+    "nombre": "Las baterías del castillo",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "+4 en su lugar salvo que descartes 2 cartas (os ponéis a cubierto).",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "El Barco sufre 1 daño."
+   }
+  },
+  {
+   "id": "p2_horca",
+   "num": 194,
+   "nombre": "La horca",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Punta de los Ahorcados",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Pasáis de noche bajo la batería y las jaulas con los piratas colgados.~ Cada _Marinero_ comprometido suma 1 menos (son supersticiosos).",
+     "textoExito": "~En una jaula cuelga un viejo compañero, con su mapa.~ Roba 2.",
+     "textoFallo": "~La batería de la punta os encuentra.~ El Barco sufre 2 daños y pierdes 1 munición."
+    },
+    "nat": {
+     "nombre": "El árbol de los ahorcados",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "+2 si algún Tripulante está **Buscado** (su nombre está en la lista de la patrulla).",
+     "textoExito": "~Cortáis las sogas y un colgado aún respira; os guía por el monte.~ +1 Avance.",
+     "textoFallo": "~La patrulla vuelve a por más.~ El Tripulante comprometido con menos Vida queda rehén."
+    },
+    "ciu": {
+     "nombre": "Ahorcan a uno de los vuestros",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 6
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** el Tripulante preparado de menor coste está en el patíbulo y no puede comprometerse. −2 si tienes 12 o más de reputación (el gentío está de tu parte).",
+     "textoExito": "~Cortáis la soga a tiempo y el gentío os vitorea.~ +1 reputación.",
+     "textoFallo": "~El verdugo hace su trabajo.~ Ese Tripulante sufre 3 heridas (si sobrevive, la soga se rompió: milagro)."
+    }
+   },
+   "destino": {
+    "nombre": "La soga",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "Si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén (para el patíbulo).",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "El Capitán queda **Buscado**."
+   }
+  },
+  {
+   "id": "p2_armada",
+   "num": 195,
+   "nombre": "La Armada de Barlovento",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Fragata a popa",
+     "palabrasClave": [
+      "Militar",
+      "Barco"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 6
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "+2 si el Barco tiene **Velas rotas**.",
+     "textoExito": "~Le ganáis el barlovento y se queda atrás.~ Si el Barco estaba **Perseguido**, quita esa ficha.",
+     "textoFallo": "~Os da alcance y os aborda.~ **Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén."
+    },
+    "nat": {
+     "nombre": "Dragones tras el rastro",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Dragones a caballo siguen vuestras huellas desde la playa.~",
+     "textoExito": "~Les tendéis una celada en el vado y os quedáis sus monturas.~ Prepara a los Tripulantes comprometidos.",
+     "textoFallo": "~Os cargan en campo abierto.~ 2 heridas repartidas entre los comprometidos y pierdes 1 Avance (huis hacia atrás)."
+    },
+    "ciu": {
+     "nombre": "Alguaciles pisándoos los talones",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Huis por los tejados, saltando como en la jarcia.~",
+     "textoExito": "~Les cerráis una trampilla en las narices.~ Nada más.",
+     "textoFallo": "~Para correr más, soltáis lo que lleváis.~ Descarta 3 cartas al azar."
+    }
+   },
+   "destino": {
+    "nombre": "La Armada os da caza",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "**Persigue:** después de aplicar este Destino, pon esta carta encima del mazo de Peligros.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Os cortan el paso: pierdes 1 Avance."
+   }
+  },
+  {
+   "id": "p2_hermanos",
+   "num": 196,
+   "nombre": "Hermanos de la Costa",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Balandra de la Hermandad",
+     "palabrasClave": [
+      "Pirata",
+      "Barco"
+     ],
+     "avance": 3,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Una balandra amiga se abarloa y os presta lo que le sobra.~ Gana 1 munición y repara 1 daño. Si tienes un _Bucanero_, gana 1 munición más (es de su cofradía)."
+    },
+    "nat": {
+     "nombre": "Bucán en la playa",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Los bucaneros asan reses en el bucán y os sientan a su fuego.~ Cura 2 heridas, repartidas como quieras. Si no tenías heridas, prepara 1 Tripulante."
+    },
+    "ciu": {
+     "nombre": "Pulso en el muelle",
+     "palabrasClave": [
+      "Pirata",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un bucanero sin barco reta a los tuyos a un pulso. Si pierde, se enrola.~",
+     "textoExito": "Recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad).",
+     "textoFallo": "~Pagas la ronda.~ Descarta 1 carta."
+    }
+   },
+   "destino": {
+    "nombre": "Código de la Costa",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "−2 en su lugar si el encuentro es #Pirata# y comprometiste a un _Bucanero_.",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Pierdes 1 munición (la Hermandad no fía a quien no da la cara)."
+   }
+  },
+  {
+   "id": "p2_barril",
+   "num": 197,
+   "nombre": "Barril de ron",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Barril a la deriva",
+     "palabrasClave": [
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Lo subís a bordo y nadie espera a abrirlo.~ Prepara a todos tus Tripulantes. El Tripulante con más [COM] queda **Borracho**."
+    },
+    "nat": {
+     "nombre": "Alijo de ron",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Unos contrabandistas enterraron aquí su mercancía.~",
+     "textoExito": "~Desentierras ron y pólvora.~ Gana 1 munición y prepara 1 Tripulante.",
+     "textoFallo": "~Sus dueños vuelven antes de tiempo.~ 1 herida al comprometido con más [EXP]."
+    },
+    "ciu": {
+     "nombre": "Lenguas sueltas",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Invitas a ron en el mesón y te enteras de quién busca barco.~ Mira las 3 de arriba del mazo de muelle: pon 1 en el muelle en lugar de la carta de más a la izquierda (que se descarta) y las otras al fondo."
+    }
+   },
+   "destino": {
+    "nombre": "Valor de barril",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "−2 en su lugar si comprometiste a un Tripulante **Borracho**.",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante preparado con más [NAV] queda **Borracho** (se ha bebido la guardia)."
+   }
+  },
+  {
+   "id": "p2_sangre",
+   "num": 198,
+   "nombre": "Sangre caliente",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Bronca en el sollado",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Tus dos Tripulantes con más [COM] (sin contar al Capitán) se están pegando: no pueden comprometerse. Cada _Oficial_ comprometido suma +1 (los separa a gritos).",
+     "textoExito": "~El contramaestre los castiga juntos a las bombas.~ Repara 1 daño.",
+     "textoFallo": "~Los dos se rompen la cara.~ Cada uno sufre 1 herida."
+    },
+    "nat": {
+     "nombre": "La última cantimplora",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Queda agua para uno y todos la quieren.~",
+     "textoExito": "~Encontráis un arroyo y se acaba la pelea.~ Cura 1 herida a dos Tripulantes distintos.",
+     "textoFallo": "~Se la queda el más fuerte.~ Tu Tripulante con más [COM] cura 1 herida y tu Tripulante con menos Vida sufre 1 herida."
+    },
+    "ciu": {
+     "nombre": "Pelea de taberna",
+     "palabrasClave": [
+      "Pirata",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Tus hombres y los de otro barco se lían a botellazos.~",
+     "textoExito": "~Los vencidos pagan la ronda y sueltan su ruta.~ +1 Avance y robas 1.",
+     "textoFallo": "~Un taburete en la cabeza.~ El comprometido con más [COM] queda **Aturdido** y descartas 1 carta (los destrozos)."
+    }
+   },
+   "destino": {
+    "nombre": "Echarse la culpa",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si fallas y comprometiste a dos o más Tripulantes, el comprometido con la habilidad más alta y el comprometido con la habilidad más baja sufren 1 herida cada uno.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Agota 1 Tripulante preparado (se queda discutiendo)."
+   }
+  },
+  {
+   "id": "p2_tahur",
+   "num": 199,
+   "nombre": "El tahúr",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Carrera apostada",
+     "palabrasClave": [
+      "Pirata",
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un capitán rival se juega su bolsa a que llega antes al cayo.~ Antes de comprometer, puedes doblar la apuesta: la Prueba recibe +2.",
+     "textoExito": "~Ganas la bolsa.~ Robas 2 (4 si doblaste).",
+     "textoFallo": "~Pagas la apuesta.~ Descarta 2 cartas; si doblaste, además 1 daño al Barco (forzaste el aparejo)."
+    },
+    "nat": {
+     "nombre": "Tiro al blanco",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Los bucaneros del monte apuestan su pólvora contra vuestro ron.~",
+     "textoExito": "~Ganas su pólvora.~ Gana 2 munición.",
+     "textoFallo": "~Pagáis con trabajo.~ Agota 1 Tripulante preparado (le toca desollar sus reses)."
+    },
+    "ciu": {
+     "nombre": "La última mano",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Sin ayuda.** ~Un tahúr reta a uno de los tuyos a una partida a vida o muerte.~ Cada carta de tu mano que comprometas suma +1 más (aquí se gana con naipes).",
+     "textoExito": "~Te llevas la banca.~ Robas 3.",
+     "textoFallo": "~El tahúr cobra con la navaja.~ Tu jugador sufre 2 heridas.",
+     "etiquetas": [
+      "Sin ayuda"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Dados cargados",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "Descarta la carta de arriba de tu mazo. Si tiene icono [COM], +2 en su lugar (te pillan la trampa); si no, y tiene [EXP], −1 en su lugar.",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta 2 cartas más de arriba de tu mazo (las pierdes a los dados)."
+   }
+  },
+  {
+   "id": "p2_paga",
+   "num": 200,
+   "nombre": "Paga atrasada",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Murmullos en el sollado",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Se queda en juego. Cada vez que reveles otra carta de Peligro en esta misión, pon 1 ficha de Descontento sobre esta carta. Con 3 fichas, sabotean el barco: el Barco sufre 2 daños y descartas esta carta. **Respuesta:** después de superar una Prueba por 2 o más, quita 1 ficha (ganar calma los ánimos). **Acción:** descarta 2 cartas: descarta esta carta (adelantas la paga).",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    },
+    "nat": {
+     "nombre": "Petates revueltos",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Sin paga, alguien se cobra de los petates de sus compañeros.~",
+     "textoExito": "~Pillas al ladrón y lo atas al sol. Los demás trabajan con ganas.~ +1 Avance.",
+     "textoFallo": "~Todos acusan al último en llegar.~ Tu Tripulante de menor coste queda **Encadenado**."
+    },
+    "ciu": {
+     "nombre": "El reparto",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Tus hombres no dan un paso más sin su parte.~ **Elige:** pagas (descarta 1 carta por cada Tripulante que tengas, máx. 3) o te plantas: Prueba de [COM] 3, +1 por cada _Bucanero_ que tengas (máx. +2; son los más codiciosos).",
+     "textoExito": "~Los convences a tu manera y te quedas la parte del capitán.~ Robas 2.",
+     "textoFallo": "~Te la cobran igual, y a golpes.~ Descarta 2 cartas y el Capitán sufre 1 herida.",
+     "etiquetas": [
+      "Elige"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Demasiadas voces",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si comprometiste a 3 o más Tripulantes (todos mandan y nadie obedece).",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "−1 Mando en tu próximo turno."
+   }
+  },
+  {
+   "id": "p2_sueldo",
+   "num": 201,
+   "nombre": "A sueldo",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Peaje del corsario",
+     "palabrasClave": [
+      "Pirata",
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un corsario con patente os corta el paso. Le enseñas papeles falsos.~ **Elige** antes de comprometer: le das 2 munición (si no las tienes, no puedes), o la Prueba recibe +2 (no se fía y abre las portas).",
+     "textoExito": "~Se cree tus papeles y te escolta un trecho.~ +1 Avance.",
+     "textoFallo": "~Descubre el engaño.~ 1 daño al Barco y pierdes 1 munición.",
+     "etiquetas": [
+      "Elige"
+     ]
+    },
+    "nat": {
+     "nombre": "Práctico del río",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un práctico os sube por el río a cambio de una parte. Conoce dos canales: el bueno y el de sus amigos.~",
+     "textoExito": "~Lees el río mejor que él y ahora trabaja para ti.~ La siguiente Prueba de esta misión recibe −1.",
+     "textoFallo": "~Os mete en el canal de sus amigos.~ Pierdes 1 Avance y el comprometido con más [NAV] sufre 1 herida."
+    },
+    "ciu": {
+     "nombre": "Matones del armador",
+     "palabrasClave": [
+      "Pirata",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un armador rival paga a unos matones para quedarse tu carga. Hay que sacarla en el bote antes de que lleguen.~",
+     "textoExito": "~Te llevas también la suya.~ Gana 1 munición.",
+     "textoFallo": "**Incautado:** las 2 cartas de más coste de tu mano van debajo de la carta de misión. Si superas la misión, las recuperas y robas 1; si no, se descartan."
+    }
+   },
+   "destino": {
+    "nombre": "Lealtad comprada",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "Si comprometiste a dos o más Tripulantes, el de menor coste no suma (alguien le pagó más).",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta 2 cartas."
+   }
+  },
+  {
+   "id": "p2_bastian",
+   "num": 202,
+   "nombre": "La sombra de Bastián",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Velas a popa",
+     "palabrasClave": [
+      "Pirata",
+      "Barco"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El bergantín de Bastián el Tuerto lleva días a tu estela, esperando a que aflojes.~ Si el Barco tiene 2 o más daños, +1 (te ve cojear).",
+     "textoExito": "~Lo pierdes entre los cayos.~ +1 Avance. Si superas por 2 o más, encalla en un bajío: esta carta Se retira.",
+     "textoFallo": "~Te gana el barlovento y te cañonea.~ 1 daño al Barco y el Barco queda **Perseguido**."
+    },
+    "nat": {
+     "nombre": "Huellas sobre las tuyas",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Sus hombres pisan vuestras huellas para llegar antes al botín.~",
+     "textoExito": "~Les borras el rastro.~ +1 Avance y prepara 1 Tripulante.",
+     "textoFallo": "~Os adelantan por otra trocha.~ Pierdes 2 Avance."
+    },
+    "ciu": {
+     "nombre": "Pasos a tu espalda",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Sus espías te siguen de calle en calle.~",
+     "textoExito": "~Acorralas a uno en un portal y canta.~ +1 Avance.",
+     "textoFallo": "~Te esperan en la próxima esquina.~ La siguiente Prueba de esta misión recibe +2."
+    }
+   },
+   "destino": {
+    "nombre": "A tu estela",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "**Persigue:** después de aplicar este Destino, pon esta carta encima del mazo de Peligros.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Pierdes 1 Avance (Bastián se adelanta)."
+   }
+  },
+  {
+   "id": "p2_curazao",
+   "num": 203,
+   "nombre": "Los holandeses de Curazao",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Al abordaje del filibote",
+     "palabrasClave": [
+      "Pirata",
+      "Barco"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Antes de comprometer, puedes gastar 1 munición: −1, o −2 si comprometes a un _Artillero_ (metralla a su cubierta).",
+     "textoExito": "~El filibote es tuyo.~ Gana 2 munición y robas 2.",
+     "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén."
+    },
+    "nat": {
+     "nombre": "La aguada de los holandeses",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Llenan barriles en el único manantial de la isla y no piensan compartir.~",
+     "textoExito": "~El manantial es vuestro.~ Cura 1 herida a cada Tripulante comprometido (máx. 3).",
+     "textoFallo": "~Os echan a tiros.~ 1 herida a cada Tripulante comprometido (máx. 3)."
+    },
+    "ciu": {
+     "nombre": "Te roban el barco",
+     "palabrasClave": [
+      "Pirata",
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Mientras estáis en tierra, los holandeses sueltan tus amarras y se lo llevan.~",
+     "textoExito": "~Los alcanzas en la bocana y te quedas su bote.~ Repara 1 daño y gana 1 munición.",
+     "textoFallo": "~Lo encuentras varado y saqueado.~ 2 daños al Barco y descarta 1 carta."
+    }
+   },
+   "destino": {
+    "nombre": "Cuerpo a cuerpo",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si la Prueba es de [COM], el comprometido con la habilidad más alta sufre 1 herida, superes o no.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "1 herida a un Tripulante preparado."
+   }
+  },
+  {
+   "id": "p2_cuentas",
+   "num": 204,
+   "nombre": "Viejas cuentas",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Duelo en el bauprés",
+     "palabrasClave": [
+      "Pirata"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Sin ayuda.** ~El Vizcaíno, tu antiguo contramaestre y hoy capitán rival, reta a tu Capitán a sable.~ Puedes mandar a otro Tripulante en su lugar, pero entonces la Prueba recibe +1 (sus hombres se ríen y los tuyos dudan).",
+     "textoExito": "~Su gente paga por recuperarlo vivo.~ Gana 2 munición y tu duelista queda **Inspirado**.",
+     "textoFallo": "Tu duelista sufre 2 heridas y queda **Sangrando**.",
+     "etiquetas": [
+      "Sin ayuda"
+     ]
+    },
+    "nat": {
+     "nombre": "El tesoro que enterrasteis",
+     "palabrasClave": [
+      "Pirata",
+      "Terreno"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Lo enterrasteis juntos hace años. Él llegó antes y lo dejó lleno de trampas.~ Si comprometes al Capitán, −2 (recuerda dónde pisabais).",
+     "textoExito": "~Encuentras la mitad que a él se le pasó.~ Robas 2.",
+     "textoFallo": "~Salta su trampa.~ 2 heridas al comprometido con más [EXP]."
+    },
+    "ciu": {
+     "nombre": "La vieja deuda",
+     "palabrasClave": [
+      "Pirata",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Aún guarda tu pagaré de una partida de dados en Tortuga, y viene a cobrarlo.~",
+     "textoExito": "~Le ganas la revancha y la deuda queda saldada.~ Recupera 1 carta de tu descarte a la mano.",
+     "textoFallo": "**Ocupa el muelle:** pon esta carta en el muelle en lugar de la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En el paso de Jugar cartas puedes pagar 3 cartas para descartarla."
+    }
+   },
+   "destino": {
+    "nombre": "El que te conoce",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si el Capitán está comprometido (se sabe todas tus fintas).",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Capitán sufre 1 herida."
+   }
+  },
+  {
+   "id": "p2_motin",
+   "num": 205,
+   "nombre": "Motín",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Motín en cubierta",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Solo pueden comprometerse el Capitán y los _Oficiales_. La Prueba recibe +1 por cada Tripulante preparado que no sea _Oficial_ (se han unido a los amotinados; máx. +3).",
+     "textoExito": "~Cuelgas al cabecilla del palo mayor y el resto vuelve al trabajo.~ Prepara a todos tus Tripulantes.",
+     "textoFallo": "~Los amotinados toman el timón y vuelven a puerto.~ Te retiras de la misión y el Capitán sufre 1 herida."
+    },
+    "nat": {
+     "nombre": "Se llevan la piragua",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un grupo se separa de noche y baja el río en la piragua con todos los víveres.~",
+     "textoExito": "~Los alcanzas en el recodo y vuelven con lo robado.~ Cura 2 heridas repartidas y +1 Avance.",
+     "textoFallo": "~Sin víveres, la marcha se hace eterna.~ Pierdes 2 Avance y sufres 2 heridas repartidas."
+    },
+    "ciu": {
+     "nombre": "No vuelven de la taberna",
+     "palabrasClave": [
+      "Tripulación"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Se queda en juego. **Al revelarse:** agota a todos tus Tripulantes que no sean _Oficiales_: están en la taberna y no se preparan mientras esta carta siga en juego. **Acción:** agota a un _Oficial_: prepara a uno de ellos, que queda **Borracho** (lo sacas a rastras). **Acción:** descarta 3 cartas: descarta esta carta (pagas la cuenta y vuelven todos).",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Puñal en la espalda",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "+4 en su lugar si no has comprometido a ningún _Oficial_.",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "2 heridas repartidas."
+   }
+  },
+  {
+   "id": "p2_cazador",
+   "num": 206,
+   "nombre": "El cazador de piratas",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El falso mercante",
+     "palabrasClave": [
+      "Militar",
+      "Barco"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 5,
+       "alternativa": {
+        "rasgo": "Vigía",
+        "dificultad": 4,
+        "comprometido": true
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Parece una presa fácil, lenta y cargada hasta la borda, pero lleva las portas pintadas y cien soldados tumbados en cubierta. Quiere piratas vivos para la horca.~",
+     "textoExito": "~Veis la trampa a tiempo y le cruzáis la popa a cañonazos.~ Gana 2 munición.",
+     "textoFallo": "~Os abarloáis confiados y salen de debajo de las lonas.~ **Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén."
+    },
+    "nat": {
+     "nombre": "El cebo",
+     "palabrasClave": [
+      "Militar",
+      "Pirata"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un pirata atado a una palmera pide auxilio a gritos. Los mosquetes esperan en la espesura.~",
+     "textoExito": "~Lo desatáis bajo el fuego y se une a vosotros.~ Recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad); si no, robas 2.",
+     "textoFallo": "~La red cae sobre el que fue a desatarlo.~ El comprometido con más [COM] queda rehén."
+    },
+    "ciu": {
+     "nombre": "Pasquines del cazador",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Ha pegado tu cara en cada esquina y paga bien a quien hable.~",
+     "textoExito": "~Le vendes un soplo falso y cobras tú la recompensa.~ Robas 2.",
+     "textoFallo": "~Te venden.~ El comprometido con más [EXP] queda rehén y + La Armada."
+    }
+   },
+   "destino": {
+    "nombre": "Recompensa",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "Si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén.",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "+ La Armada."
+   }
+  },
+  {
+   "id": "p2_estrella",
+   "num": 207,
+   "nombre": "Buena estrella",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Viento a favor",
+     "palabrasClave": [],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Se queda en juego junto a la misión. Mientras esté, cada Prueba de [NAV] que superes da 1 Avance más. **Respuesta:** después de revelar el Destino de una Prueba de [NAV], descarta esta carta: esa Prueba recibe −2 (aprovecháis la última racha). Se descarta también si fallas una Prueba o si se revela un encuentro #Tormenta# (el viento rola).",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    },
+    "nat": {
+     "nombre": "Agua dulce",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~De pura suerte, dais con un manantial en una isla sin nombre.~ Cura 1 herida a cada Tripulante y quita **Envenenado** de todos."
+    },
+    "ciu": {
+     "nombre": "La lotería del virrey",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Puedes comprar un billete: descarta 1 carta y revela la carta de arriba del mazo de Peligros. Si su Destino es favorable (−1 o −2), te toca: robas 3. Si no, nada. Después, descarta la carta revelada."
+    }
+   },
+   "destino": {
+    "nombre": "Estrella fugaz",
+    "modificador": -2,
+    "textoPrototipo": "",
+    "texto": "Pero la siguiente Prueba de esta misión recibe +1 (la suerte se gasta).",
+    "mod": "−2",
+    "ambientacion": "",
+    "textoSinOposicion": "Nadie pide el deseo: la siguiente Prueba recibe +2 en vez de +1."
+   }
+  },
+  {
+   "id": "p2_restos",
+   "num": 208,
+   "nombre": "Restos del naufragio",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Pecio en aguas someras",
+     "palabrasClave": [
+      "Barco"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Bajan a bucear todos los comprometidos.~",
+     "textoExito": "Robas 1 por cada Tripulante comprometido (máx. 3). ~Cuantos más bajan, más suben.~",
+     "textoFallo": "~El aire no llega para todos.~ Cada Tripulante comprometido después del primero sufre 1 herida."
+    },
+    "nat": {
+     "nombre": "Barriles en la playa",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~La marea trae la carga del galeón.~ A tu elección: abrís el de ron (prepara a todos los Tripulantes agotados, pero quedan **Borrachos**) o el de pólvora (ganas 2 munición)."
+    },
+    "ciu": {
+     "nombre": "Subasta del naufragio",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Solo un marino sabe qué jarcia vale algo y cuál está podrida.~",
+     "textoExito": "Pon en juego una Mejora del muelle pagando 2 cartas menos de su coste.",
+     "textoFallo": "~Otro capitán puja más alto.~ Descarta del muelle la Mejora más cara (se repone)."
+    }
+   },
+   "destino": {
+    "nombre": "Madera del pecio",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "Si superas, repara 1 daño al Barco (tablas del galeón hundido).",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "Alguien rapiña vuestra propia madera: el Barco sufre 1 daño."
+   }
+  },
+  {
+   "id": "p2_presa",
+   "num": 209,
+   "nombre": "Presa fácil",
+   "nivel": "Favorable",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Mercante sin escolta",
+     "palabrasClave": [
+      "Barco",
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "Si tienes una _Bandera negra_, arría su pabellón al verla: superas sin Prueba.",
+     "textoExito": "A tu elección: saqueas la bodega (robas 2) o la santabárbara (ganas 2 munición).",
+     "textoFallo": "~Escapa y su cañón de popa os alcanza.~ El Barco sufre 1 daño."
+    },
+    "nat": {
+     "nombre": "Piraguas del Chagres",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Bajan por el río cargadas de mercancía de Panamá, sin un solo soldado.~",
+     "textoExito": "Robas 3. Pero la plata pesa: la siguiente Prueba de [EXP] de esta misión recibe +1.",
+     "textoFallo": "~Se os escapan río abajo.~ Pierdes 1 Avance."
+    },
+    "ciu": {
+     "nombre": "Casa del mercader en fiestas",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 2,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Toda la ciudad está en la procesión del santo, y el mercader con ella.~ Puedes colarte en su casa: recupera a la mano 2 cartas de tu descarte (lo que te vendió caro). Si lo haces, un Tripulante a tu elección queda **Buscado** (alguien os vio salir por la ventana)."
+    }
+   },
+   "destino": {
+    "nombre": "Bolsa sin dueño",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "Si superas, robas 1 (2 si comprometiste a un _Contrabandista_).",
+    "mod": "+0",
+    "ambientacion": "",
+    "textoSinOposicion": "La bolsa que vuela es la tuya: descarta 1 carta al azar."
+   }
+  },
+  {
+   "id": "p2_santelmo",
+   "num": 210,
+   "nombre": "Fuego de San Telmo",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Luces en los mástiles",
+     "palabrasClave": [
+      "Sobrenatural",
+      "Tormenta"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3,
+       "alternativa": {
+        "rasgo": "Marinero",
+        "dificultad": 2,
+        "comprometido": true
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~La tormenta prende fuego azul en las vergas. El marinero viejo sabe leerlo.~",
+     "textoExito": "~Es el santo, que os guarda.~ El comprometido con más [NAV] queda **Inspirado**.",
+     "textoFallo": "~Mal agüero.~ En la siguiente Prueba de esta misión, revela 2 Destinos y aplica el peor."
+    },
+    "nat": {
+     "nombre": "Fuegos fatuos",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Hay que guiarse por las estrellas, no por las luces.~ Un _Vigía_ comprometido suma +2 (las ve por encima de la bruma).",
+     "textoExito": "~Las luces se posan donde hay algo enterrado.~ Busca una Mejora en tu mazo y añádela a tu mano.",
+     "textoFallo": "~Las seguís hasta la ciénaga.~ Pierdes 2 Avance."
+    },
+    "ciu": {
+     "nombre": "La cofradía de San Telmo",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Los mareantes del santo solo ayudan a gente de mar.~ Si tienes un _Marinero_ preparado, superas sin Prueba.",
+     "textoExito": "~Os echan una mano.~ Recluta gratis un _Marinero_ del muelle de coste 3 o menos. Si no hay ninguno o no tienes Capacidad, robas 2.",
+     "textoFallo": "~Os toman por gente de tierra.~ Descarta 1 carta (la limosna para el santo)."
+    }
+   },
+   "destino": {
+    "nombre": "Fuego del santo",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "En esta Prueba no se pueden usar capacidades de Tripulantes ni de Mejoras: el santo lo hace todo.",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "El santo no ayuda a quien no rema: +1 en vez de −1."
+   }
+  },
+  {
+   "id": "p2_sirena",
+   "num": 211,
+   "nombre": "La sirena",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Canto de sirena",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** el Tripulante preparado con menos [EXP] oye el canto y va hacia la borda. **Elige:** lo atáis al palo mayor (agótalo a él y a otro Tripulante preparado), o le dejas saltar y vas tras él en el bote (Prueba de [NAV] 3).",
+     "textoExito": "~Lo sacáis del agua con las joyas que ella le regaló.~ Robas 3.",
+     "textoFallo": "~Lo sacáis del agua sin joyas y medio ahogado.~ Sufre 2 heridas y queda **Asustado**.",
+     "notaPrueba": "Si vas tras él.",
+     "etiquetas": [
+      "Elige"
+     ]
+    },
+    "nat": {
+     "nombre": "La Madre de agua",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Sus huellas van al revés.~ En esta Prueba, invierte el modificador del Destino: −1 cuenta como +1 y +2 como −2. «Fallas la Prueba» no cambia.",
+     "textoExito": "~Os lleva a un remanso.~ Cura 1 herida a cada Tripulante comprometido.",
+     "textoFallo": "El comprometido con menos [EXP] se va tras ella. Aparece al alba, medio ahogado: sufre 2 heridas."
+    },
+    "ciu": {
+     "nombre": "La cantante del puerto",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Hay que sacar a los tuyos a rastras de la taberna.~ Embobados con su voz, no pensáis: en esta Prueba, las cartas de la mano no suman.",
+     "textoExito": "~Le caéis en gracia y canta solo para vosotros.~ Un Tripulante comprometido queda **Inspirado**.",
+     "textoFallo": "~Mientras mirabais, os vaciaron la bolsa.~ Descarta 2 cartas al azar."
+    }
+   },
+   "destino": {
+    "nombre": "Canto lejano",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "El comprometido con la habilidad más baja no suma: se ha quedado escuchando.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El Tripulante preparado con menos [EXP] se tira al agua: sufre 1 herida."
+   }
+  },
+  {
+   "id": "p2_presagio",
+   "num": 212,
+   "nombre": "Mal presagio",
+   "nivel": "Leve",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Albatros muerto",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** el Tripulante preparado con más [COM] lo mató de un tiro. Lleva el pájaro colgado al cuello y no puede comprometerse en esta Prueba.",
+     "textoExito": "~Lo arrojáis al mar y vuelve el viento.~ +1 Avance.",
+     "textoFallo": "~Calma chicha y agua podrida.~ −1 Mando en tu próximo turno."
+    },
+    "nat": {
+     "nombre": "La lechuza canta tres veces",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 1,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** elige un Tripulante al azar: la lechuza canta su nombre. Se queda en juego con 1 ficha. Cada vez que reveles un nuevo encuentro, pon 1 ficha. Con 3, el presagio se cumple: ese Tripulante sufre 2 heridas y queda **Maldito**; descarta esta carta. **Acción:** agota a un _Vigía_, o supera una Prueba de [EXP] 3, para espantarla: descarta esta carta y el Tripulante señalado queda **Aguerrido** (la muerte pasó de largo).",
+     "etiquetas": [
+      "Se queda en juego"
+     ]
+    },
+    "ciu": {
+     "nombre": "La echadora de cartas",
+     "palabrasClave": [
+      "Civil",
+      "Sobrenatural"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Te lee el sino.~ Revela el Destino antes de comprometer a nadie (no reveles otro después).",
+     "textoExito": "~Te cuenta lo que viene.~ Mira las 3 de arriba del mazo de Peligros y ordénalas.",
+     "textoFallo": "~No te gusta lo que oyes.~ El comprometido con más [EXP] queda **Asustado**."
+    }
+   },
+   "destino": {
+    "nombre": "Mal agüero",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si fallas, la siguiente Prueba de esta misión recibe +1: el presagio se cumple.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Nadie pega ojo: agota 1 Tripulante."
+   }
+  },
+  {
+   "id": "p2_bokor",
+   "num": 213,
+   "nombre": "La maldición del bokor",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Zombis en la jarcia",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Los muertos del bokor huelen la sangre.~ Cada Tripulante comprometido que tenga heridas suma 1 menos.",
+     "textoExito": "~Les llenáis la boca de sal y caen para siempre.~ Esta carta Se retira.",
+     "textoFallo": "El comprometido con más [COM] sufre 1 herida y queda **Maldito** (lo han mordido)."
+    },
+    "nat": {
+     "nombre": "Tambores en la noche",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Nadie duerme mientras suenan. Hay que dar con el claro donde tocan.~",
+     "textoExito": "~Rompéis los tambores y por fin dormís.~ Prepara a todos tus Tripulantes.",
+     "textoFallo": "~Noche en vela.~ Agota a 2 Tripulantes preparados; no se preparan en tu próximo Inicio."
+    },
+    "ciu": {
+     "nombre": "La mambo del mercado",
+     "palabrasClave": [
+      "Civil",
+      "Sobrenatural"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Ella sabe quién os ha echado el mal, y cobra por deshacerlo.~ **Elige:** le pagas (descarta 3 cartas; 2 si llevas un _Amuleto_): quita **Maldito** de todos tus Tripulantes y uno de ellos queda **Aguerrido** (te cuelga un gris-gris). O buscas tú el muñeco: Prueba de [EXP] 4.",
+     "textoExito": "~Lo encuentras y lo quemas.~ Quita **Maldito** de todos tus Tripulantes y robas 2.",
+     "textoFallo": "~El bokor te ha visto rondar.~ El Capitán queda **Maldito** y descartas 1 carta.",
+     "notaPrueba": "Si buscas tú el muñeco.",
+     "etiquetas": [
+      "Elige"
+     ]
+    }
+   },
+   "destino": {
+    "nombre": "Alfiler en el muñeco",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si fallas, uno de los comprometidos sufre 1 herida.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "El bokor clava el alfiler en el Capitán: sufre 1 herida."
+   }
+  },
+  {
+   "id": "p2_oro",
+   "num": 214,
+   "nombre": "El oro de los muertos",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Cofre a la deriva",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Flota contra el viento, derecho hacia vosotros.~",
+     "textoExito": "~Lo subís a bordo.~ Robas 3. Pero ya nadie quiere volver sin el resto: no puedes retirarte de esta misión.",
+     "textoFallo": "~Al abarloarlo, golpea el casco como una roca.~ El Barco sufre 2 daños."
+    },
+    "nat": {
+     "nombre": "La cueva del cofre",
+     "palabrasClave": [
+      "Sobrenatural",
+      "Terreno"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** **Incautado:** el cofre pide su ofrenda: pon bajo la carta de misión una Mejora de uno de tus Tripulantes o 2 cartas de la mano. Si superas la misión, la recuperas y robas 2 (el cofre paga su deuda). Si no, se queda en la cueva.",
+     "textoExito": "~Sorteáis las trampas y dais con otra salida.~ +1 Avance.",
+     "textoFallo": "~Cae la losa.~ El comprometido con más [EXP] sufre 2 heridas.",
+     "etiquetas": [
+      "Incautado"
+     ]
+    },
+    "ciu": {
+     "nombre": "El dueño del oro",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un desconocido que huele a salitre os pide sus monedas. Encuentra antes a los que llevan su marca.~",
+     "textoExito": "~Lo echáis al mar del que salió.~ Robas 2 (sus monedas ya son vuestras).",
+     "textoFallo": "~Se cobra lo suyo.~ Descarta 2 cartas, y cada Tripulante **Maldito** sufre 1 herida.",
+     "notaPrueba": "+1 por cada Tripulante **Maldito** (máx. 5)."
+    }
+   },
+   "destino": {
+    "nombre": "Oro de los muertos",
+    "modificador": -2,
+    "textoPrototipo": "",
+    "texto": "Pero el comprometido con la habilidad más alta queda **Maldito**.",
+    "mod": "−2",
+    "ambientacion": "",
+    "textoSinOposicion": "El oro busca dueño: el Capitán queda **Maldito**."
+   }
+  },
+  {
+   "id": "p2_serpiente_marina",
+   "num": 215,
+   "nombre": "La serpiente marina",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "La serpiente marina",
+     "palabrasClave": [
+      "Bestia",
+      "Sobrenatural"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Se enrosca al casco.~ Cada _Artillero_ comprometido suma +1 (cañonazo a quemarropa).",
+     "textoExito": "~Suelta el casco y se hunde herida.~ Ganas 2 munición (grasa de serpiente para las mechas).",
+     "textoFallo": "~Aprieta.~ El Barco sufre 2 daños. Si ya tenía 2 o más daños, además queda con **Velas rotas** (le parte el palo)."
+    },
+    "nat": {
+     "nombre": "La boa del río",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "**Al revelarse:** se traga entero al Tripulante preparado con menos Vida: no puede comprometerse. Si tienes un _Animal_ (el Loro, por ejemplo), os avisa a tiempo y no se traga a nadie.",
+     "textoExito": "~Le abrís la panza y sale vivo, con el anillo de otro que se tragó antes.~ Robas 2.",
+     "textoFallo": "El tragado (o, si no hubo, el comprometido con más [COM]) sufre 2 heridas antes de que lo escupa."
+    },
+    "ciu": {
+     "nombre": "Se ha escapado la serpiente",
+     "palabrasClave": [
+      "Bestia",
+      "Civil"
+     ],
+     "avance": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El feriante juraba que era la serpiente marina. Ahora anda suelta por el mercado, y alguien dice que la soltasteis vosotros.~",
+     "textoExito": "~La atrapáis y el feriante os paga la captura.~ Robas 2.",
+     "textoFallo": "~Se come el perro del gobernador.~ −1 reputación."
+    }
+   },
+   "destino": {
+    "nombre": "Coletazo",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si la Prueba es de [COM], el comprometido con la habilidad más alta sufre 1 herida aunque superes.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Se lleva a quien no miraba: el Tripulante preparado con menos Vida sufre 2 heridas."
+   }
+  },
+  {
+   "id": "p2_compana",
+   "num": 216,
+   "nombre": "La Santa Compaña",
+   "nivel": "Duro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Luces sobre el agua",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4,
+       "alternativa": {
+        "rasgo": "Vigía",
+        "dificultad": 3,
+        "comprometido": true
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Una hilera de velas camina sobre las olas hacia el barco. El Vigía la ve venir de lejos.~",
+     "textoExito": "~Viráis a tiempo y su estela os empuja.~ +1 Avance.",
+     "textoFallo": "~Sus velas prenden las vuestras.~ El Barco queda con **Incendio a bordo**."
+    },
+    "nat": {
+     "nombre": "El círculo en el suelo",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~A quien está dentro de un círculo no lo pueden llamar.~ Los Tripulantes con _Escapulario_ suman +2.",
+     "textoExito": "~Al alba, el guía dejó caer su vela: es de oro.~ Robas 2.",
+     "textoFallo": "El comprometido con menos [EXP] salió del círculo: queda **Asustado** y sufre 1 herida."
+    },
+    "ciu": {
+     "nombre": "Procesión de ánimas",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Llena la calle a medianoche. Nadie debe cruzarse con ella: hay que rodearla por los tejados, como quien sube a la jarcia.~",
+     "textoExito": "~La veis pasar por debajo y nadie os mira.~ El comprometido con más [NAV] queda **Aguerrido**: ya ha visto lo peor.",
+     "textoFallo": "El comprometido con más [NAV] se cruza con el que lleva la cruz y tiene que cogerla: queda rehén de la procesión (lo recuperas si superas la misión)."
+    }
+   },
+   "destino": {
+    "nombre": "La Compaña",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "Si fallas, uno de los comprometidos queda **Asustado**: ha visto una cara conocida en la procesión.",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "Pasa por donde dormíais: el Tripulante con más heridas sufre 1 herida y queda **Asustado**."
+   }
+  },
+  {
+   "id": "p2_holandes",
+   "num": 217,
+   "nombre": "El Holandés errante",
+   "nivel": "Terrible",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El barco fantasma",
+     "palabrasClave": [
+      "Sobrenatural",
+      "Barco"
+     ],
+     "avance": 4,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 6
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Las balas lo atraviesan.~ Los Cañones y la munición no suman. Si un Tripulante comprometido lleva un _Escapulario_, −2.",
+     "textoExito": "~Lo mandáis al fondo otros siete años.~ +1 reputación y esta carta Se retira.",
+     "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén (pasa a su tripulación de muertos)."
+    },
+    "nat": {
+     "nombre": "Sus ahogados en la playa",
+     "palabrasClave": [
+      "Sobrenatural"
+     ],
+     "avance": 3,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Salen del agua por todas partes.~ Antes de resolver, cada Tripulante preparado que no hayas comprometido sufre 1 herida (los que se quedaron atrás).",
+     "textoExito": "~Los devolvéis al mar. Llevaban encima el oro del Holandés.~ Robas 2.",
+     "textoFallo": "~Os arrastran hacia la orilla.~ 3 heridas repartidas entre los comprometidos."
+    },
+    "ciu": {
+     "nombre": "El marinero que lo vio",
+     "palabrasClave": [
+      "Civil",
+      "Sobrenatural"
+     ],
+     "avance": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 5,
+       "alternativa": {
+        "rasgo": "Marinero",
+        "dificultad": 4,
+        "comprometido": true
+       }
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Jura en la taberna que vio al Holandés y os vende la ruta. Solo otro marino entiende su jerga.~",
+     "textoExito": "~La ruta es buena.~ Mira las 5 de arriba del mazo de Peligros; pon las que quieras al fondo y el resto encima, en el orden que quieras.",
+     "textoFallo": "~Quien oye su historia queda marcado.~ El Barco queda **Perseguido**, y descarta 2 cartas (lo que le pagaste)."
+    }
+   },
+   "destino": {
+    "nombre": "El Holandés errante",
+    "modificador": null,
+    "textoPrototipo": "",
+    "texto": "Fallas la Prueba, solo en el Mar. En Naturaleza y Ciudad, +1 en su lugar: el Holandés no puede tocar tierra.",
+    "mod": "✕",
+    "ambientacion": "",
+    "textoSinOposicion": "Os ha visto: el Barco queda **Perseguido**."
    }
   }
  ],
@@ -6096,36 +9684,6 @@
    "fiador"
   ],
   "mazoDePeligros": [
-   "racha",
-   "racha",
-   "hallazgo",
-   "calma",
-   "encrucijada",
-   "oportunidad",
-   "chubasco",
-   "chubasco",
-   "fauna",
-   "fauna",
-   "escollos",
-   "escollos",
-   "niebla",
-   "percances",
-   "civiles",
-   "ley",
-   "ley",
-   "rivales",
-   "rivales",
-   "temporal",
-   "temporal",
-   "bestias",
-   "fiebre",
-   "vigilancia",
-   "sirenas",
-   "arrecifes",
-   "leyenda",
-   "cazadores",
-   "catastrofe",
-   "asalto",
    "p2_corriente",
    "p2_cielo",
    "p2_calma",
@@ -6136,7 +9694,50 @@
    "p2_broma",
    "p2_turbonada",
    "p2_huracan",
-   "p2_maremoto"
+   "p2_maremoto",
+   "p2_tortugas",
+   "p2_sol",
+   "p2_hambre",
+   "p2_sinrumbo",
+   "p2_serpientes",
+   "p2_tiburones",
+   "p2_murcielagos",
+   "p2_arenas",
+   "p2_jaguar",
+   "p2_caiman",
+   "p2_desertores",
+   "p2_sebusca",
+   "p2_aduana",
+   "p2_ojos",
+   "p2_grilletes",
+   "p2_santooficio",
+   "p2_rebato",
+   "p2_quinto",
+   "p2_morro",
+   "p2_horca",
+   "p2_armada",
+   "p2_hermanos",
+   "p2_barril",
+   "p2_sangre",
+   "p2_tahur",
+   "p2_paga",
+   "p2_sueldo",
+   "p2_bastian",
+   "p2_curazao",
+   "p2_cuentas",
+   "p2_motin",
+   "p2_cazador",
+   "p2_estrella",
+   "p2_restos",
+   "p2_presa",
+   "p2_santelmo",
+   "p2_sirena",
+   "p2_presagio",
+   "p2_bokor",
+   "p2_oro",
+   "p2_serpiente_marina",
+   "p2_compana",
+   "p2_holandes"
   ],
   "apartadosDePeligros": [
    "armada",

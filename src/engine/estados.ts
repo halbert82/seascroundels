@@ -84,7 +84,7 @@ export function curable(s: Estado, inst: InstId): number {
  * Cura N a un Tripulante. Cada punto quita primero la ficha de Envenenado, luego la de Sangrando, y después
  * las heridas. Devuelve lo que ha hecho, para el registro.
  */
-// TODO(regla): P13 · curar quita primero las fichas (Envenenado y luego Sangrando) y después las heridas.
+// Curar quita primero las fichas (Envenenado y luego Sangrando) y después las heridas (P13).
 export function curarTripulante(s: Estado, inst: InstId, n: number): string {
   const partes: string[] = []
   let resto = n

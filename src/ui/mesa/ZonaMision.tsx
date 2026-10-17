@@ -1,6 +1,7 @@
 // La misión en curso: su carta y su Avance, la carta de Peligro revelada y el panel de la Prueba.
 
 import { motion } from 'motion/react'
+import { useEffect, useRef } from 'react'
 import { iconosDe, porId } from '../../engine/catalogo.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
@@ -108,7 +109,8 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
           </div>
         )}
       </div>
-      <div className="mision-cuerpo">
+      {/* Con scroll propio (layoutScroll: las cartas que vuelan miden bien aunque se haya bajado). */}
+      <motion.div layoutScroll className="mision-cuerpo">
         <div className="hueco-encuentro">
           {enc ? (
             <CartaDe inst={enc} escala={escalaPeligro} revelar="peligros" />
@@ -122,7 +124,7 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
           )}
         </div>
         <PanelPrueba decision={decision} sel={sel} ancho={anchoPanel} />
-      </div>
+      </motion.div>
     </section>
   )
 }
@@ -159,7 +161,12 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
       <div className="panel-prueba">
         <Cabecera titulo={enc.nombre} hab={hab} />
         <Marcador total={pv.total} dificultad={pv.dificultad} prevision nadie={tripulantes.length === 0} />
-        <p className="prueba-nota">Previsión antes del Destino. Pulsa Tripulantes y cartas de tu mano para comprometerlos.</p>
+        <p className="prueba-nota">
+          {p.destino
+            ? 'El Destino ya está a la vista (se aplica al comprometer). Pulsa Tripulantes y cartas de tu mano para comprometerlos.'
+            : 'Previsión antes del Destino. Pulsa Tripulantes y cartas de tu mano para comprometerlos.'}
+        </p>
+        {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={Math.min(ancho, 400)} />}
       </div>
     )
   }
@@ -178,7 +185,7 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
   const total = totalPrueba(s)
   const dificultad = dificultadPrueba(s)
   return (
-    <div className="panel-prueba">
+    <div className={`panel-prueba${p.destino ? ' con-destino' : ''}`}>
       <Cabecera titulo={enc.nombre} hab={p.hab} />
       <Marcador total={total} dificultad={dificultad} nadie={p.comprometidos.length === 0} falla={p.falla} resultado={p.resultado} />
       <div className="desglose">
@@ -250,13 +257,27 @@ function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: bo
   const id = copia(s, inst).id
   const vista = vistaDeCarta(porId(id))
   const d = destinoDe(id)
-  const escala = Math.min(1.05, ancho / 362)
+  const escala = Math.min(0.95, ancho / 362)
   const conSinOposicion = d.sinOposicion.length > 0
   const hayComprometidos = (s.prueba?.comprometidos ?? []).some((c) => s.zonas.tripulacion.includes(c))
   const velocidad = useVelocidad()
+  const ref = useRef<HTMLDivElement>(null)
+  // Al revelarse, el centro baja lo justo para que el Destino se vea entero (no queda bajo la barra de acciones).
+  useEffect(() => {
+    const el = ref.current
+    const marco = el?.closest<HTMLElement>('.mision-cuerpo, .prueba-en-puerto')
+    if (!el || !marco) return
+    const t = window.setTimeout(() => {
+      const sobra = el.getBoundingClientRect().bottom - marco.getBoundingClientRect().bottom
+      const escalaLienzo = marco.getBoundingClientRect().height / (marco.offsetHeight || 1)
+      if (sobra > 0) marco.scrollTo({ top: marco.scrollTop + sobra / (escalaLienzo || 1) + 6, behavior: 'smooth' })
+    }, duracion(velocidad, 0.36) * 1000)
+    return () => window.clearTimeout(t)
+  }, [inst, velocidad])
   if (vista.forma !== 'peligro' && vista.forma !== 'mazoPropio') return null
   return (
     <motion.div
+      ref={ref}
       key={inst}
       className={`destino-grande${cancelado ? ' cancelado' : ''}${conSinOposicion && hayComprometidos ? ' so-no-aplica' : ''}`}
       initial={duracion(velocidad, 1) > 0 ? { rotateX: 90, opacity: 0 } : false}

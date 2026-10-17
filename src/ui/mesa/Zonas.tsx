@@ -94,7 +94,7 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
       </div>
       {s.mision && (
         <div className="barra-mision">
-          <Icono id={entornoIcono(s, s.mision.carta)} /> {nombreDe(copia(s, s.mision.carta).id)}
+          <Icono id={entornoIcono(s, s.mision.carta)} /> <span className="barra-mision-nombre">{nombreDe(copia(s, s.mision.carta).id)}</span>
         </div>
       )}
       <div className="barra-derecha">

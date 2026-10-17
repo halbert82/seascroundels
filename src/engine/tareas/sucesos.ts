@@ -36,7 +36,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'rehen': {
       if (ev.carta === s.capitan || !estaEn(s, ev.carta, 'tripulacion')) return
       mover(s, ev.carta, 'rehenes', 'abajo')
-      anotar(s, 'aviso', `${nombre(s, ev.carta)} es capturado como rehén.`)
+      anotar(s, 'aviso', `${nombre(s, ev.carta)} es capturado como rehén.`, { tipo: 'capturado', carta: copia(s, ev.carta).id })
       return
     }
     case 'persigue': {
@@ -65,10 +65,9 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
       s.temporales = s.temporales.filter((x) => x.hasta !== 'superarPrueba')
       // Asustado se quita al superar una Prueba en la que participe.
       for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'asustado', 'supera la Prueba')
-      // Maldito se quita al superar un encuentro Sobrenatural.
-      // TODO(regla): P15 · Maldito se quita al superar cualquier encuentro Sobrenatural, participe o no.
+      // Maldito se quita solo a quien participa en la Prueba del encuentro Sobrenatural que se supera (P15).
       if (p.origen !== 'accion' && def.palabrasClave.includes('Sobrenatural')) {
-        for (const c of s.zonas.tripulacion) quitarEstadoAnotado(s, c, 'maldito', 'superas un encuentro Sobrenatural')
+        for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'maldito', 'supera un encuentro Sobrenatural')
       }
       encolar(s, ...tareas)
       return
@@ -79,8 +78,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'heridas': {
       if (ev.cantidad <= 0 || !estaEn(s, ev.objetivo, 'tripulacion')) return
       let n = ev.cantidad
-      // Aguerrido evita la próxima herida.
-      // TODO(regla): P14 · Aguerrido evita 1 herida (no todas las de ese golpe).
+      // Aguerrido evita la próxima herida: 1, no todas las de ese golpe (P14).
       if (quitarEstado(s, ev.objetivo, 'aguerrido')) {
         n -= 1
         anotar(s, 'efecto', `${nombre(s, ev.objetivo)} está Aguerrido: evita 1 herida.`)
@@ -174,7 +172,7 @@ export const usar: Manejador<'usar'> = (s, t) => {
         continue
       }
       if (coste.tipo === 'agotarTripulante') {
-        encolar(s, { tipo: 'agotarParaPagar', rasgo: coste.rasgo })
+        encolar(s, coste.rasgos ? { tipo: 'agotarParaPagar', rasgo: coste.rasgo, rasgos: coste.rasgos } : { tipo: 'agotarParaPagar', rasgo: coste.rasgo })
         continue
       }
       if (coste.tipo === 'gastarMunicion') {

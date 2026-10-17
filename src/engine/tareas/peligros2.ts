@@ -49,7 +49,7 @@ export function habilidadImpresa(s: Estado, c: InstId, hab: Habilidad): number {
 }
 
 /** Vida impresa. */
-// TODO(regla): P20 · «el Tripulante con menos Vida» usa la Vida impresa (no la que le queda), como las habilidades.
+// «El Tripulante con menos Vida» usa la Vida impresa (no la que le queda), como las habilidades (P20).
 export function vidaImpresa(s: Estado, c: InstId): number {
   const e = porId(copia(s, c).id)
   return e.tipo === 'capitan' || e.tipo === 'tripulante' ? e.carta.vida : 0
@@ -88,11 +88,13 @@ export function baseDelSelector(s: Estado, q: Selector, hacer?: AccionSobre): In
       base = enJuego.includes(s.capitan) ? [s.capitan] : []
       break
   }
+  if (q.inst) base = base.filter((c) => c === q.inst)
   const sinCapitan = q.sinCapitan || hacer?.tipo === 'rehen' || hacer?.tipo === 'alMuelle'
   return base.filter(
     (c) =>
       !(sinCapitan && c === s.capitan) &&
       (!q.rasgo || rasgosDe(copia(s, c).id).includes(q.rasgo)) &&
+      (!q.sinRasgo || !rasgosDe(copia(s, c).id).includes(q.sinRasgo)) &&
       (!q.conEstado || tieneEstado(s, c, q.conEstado)),
   )
 }
@@ -141,6 +143,10 @@ function textoAccion(a: AccionSobre): string {
       return 'no suma'
     case 'varios':
       return a.acciones.map(textoAccion).join(' y ')
+    case 'marcar':
+      return 'queda señalado'
+    case 'elegir':
+      return a.opciones.map((o) => o.texto).join(' o ')
   }
 }
 
@@ -210,7 +216,23 @@ export function aplicarAccion(s: Estado, c: InstId, a: AccionSobre, fuente?: Ins
     case 'varios':
       for (const x of a.acciones) aplicarAccion(s, c, x, fuente)
       return
+    case 'marcar':
+      // Queda señalado por esta carta hasta el final de la misión (lo que diga después: «ese Tripulante…»).
+      s.temporales.push({ clave: a.clave, fuente: id, hasta: 'finMision', inst: c, ...(fuente ? { carta: fuente } : {}) })
+      return
+    case 'elegir':
+      encolar(s, {
+        tipo: 'elegirEfectos',
+        opciones: a.opciones.map((o) => ({ texto: `${nombre(s, c)}: ${o.texto}`, efectos: [{ tipo: 'sobre', carta: c, hacer: o.accion }] })),
+        ...(fuente ? { fuente } : {}),
+      })
+      return
   }
+}
+
+/** El Tripulante señalado por esta carta («ese Tripulante…»), si sigue en juego. */
+export function marcado(s: Estado, clave: string, carta?: InstId): InstId | undefined {
+  return s.temporales.find((t) => t.clave === clave && t.inst && (carta === undefined || t.carta === carta) && s.zonas.tripulacion.includes(t.inst))?.inst
 }
 
 export const aQuien: Manejador<'aQuien'> = (s, t, e) => {

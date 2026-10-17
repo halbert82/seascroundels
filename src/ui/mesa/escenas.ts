@@ -71,7 +71,7 @@ function muelleOcupado(): PartidaEnMesa {
     escenario: ['rumores', 'rumores', 'rumores'],
     muelle: ['marinero_p', 'reinaldo', 'bucanero', 'vigia'],
     mazoMuelle: ['carpintero', 'matasanos', 'grumete', 'saqueador', 'canonero', 'vela', 'hamacas'],
-    tripulacion: [{ id: 'carpintero', estados: ['encadenado'] }, { id: 'bucanero', estados: ['fiebre'] }],
+    tripulacion: [{ id: 'carpintero', estados: ['encadenado'] }, { id: 'bucanero', estados: ['sangrando'] }],
   })
   j.comprometer('NAV', []).seguir().retirarse().opcion('dejar')
   while (j.estado.pendiente && j.decision.motivo.clave !== 'jugarCartas') {

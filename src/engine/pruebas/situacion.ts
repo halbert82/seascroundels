@@ -426,10 +426,6 @@ export class Jugador {
     return this.responder({ tipo: 'compromiso', opcion, tripulantes: buscar(d.tripulantes, tripulantes), cartas: buscar(d.cartas, cartas) })
   }
 
-  reforzar(id: CartaId): this {
-    return this.accion((a) => a.tipo === 'reforzar' && this.idDe(a.carta) === id, `reforzar con ${id}`)
-  }
-
   retirarse(): this {
     return this.accion((a) => a.tipo === 'retirarse', 'retirarse')
   }

@@ -1,5 +1,5 @@
 // Lo que hacen las fichas de Estado mientras están puestas, como capacidades del registro: modificadores
-// (Fiebre, Borracho, Buscado, Velas rotas), Obligadas (Incendio a bordo, Vía de agua) y Acciones para quitarlas
+// (Borracho, Buscado, Velas rotas), Obligadas (Incendio a bordo, Vía de agua) y Acciones para quitarlas
 // (Encadenado, Incendio a bordo). Lo que pasa al final del turno, al curar, al reparar o al comprometerse lo
 // resuelven las tareas correspondientes.
 // También está aquí la carta de Peligro que ocupa el muelle: pagar para descartarla.
@@ -20,12 +20,6 @@ function deBarco(e: EstadoBarco, resto: Omit<Capacidad, 'carta' | 'desde' | 'cla
 const unDano: NuevaTarea = { tipo: 'evento', ev: { tipo: 'danoBarco', cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] }
 
 export const CAPACIDADES_ESTADOS: Capacidad[] = [
-  // Fiebre: −1 a todas sus habilidades.
-  deTripulante('fiebre', {
-    clave: 'habilidades',
-    ventana: 'constante',
-    modifica: (_ctx, yo, c) => (c.tipo === 'habilidad' && c.carta === yo ? -1 : 0),
-  }),
   // Borracho: +1 COM (no poder comprometerse a NAV ni EXP lo comprueba el compromiso).
   deTripulante('borracho', {
     clave: 'com',
@@ -45,8 +39,7 @@ export const CAPACIDADES_ESTADOS: Capacidad[] = [
         ? 1
         : 0,
   }),
-  // Encadenado: «Prueba de COM o EXP 3 en una ventana de acción para quitarlo».
-  // TODO(regla): P2 · una Prueba de una Acción no se puede hacer durante otra Prueba.
+  // Encadenado: «Prueba de COM o EXP 3 en una ventana de acción para quitarlo». No durante otra Prueba (P2).
   deTripulante('encadenado', {
     clave: 'liberar',
     ventana: 'accion',
@@ -79,12 +72,11 @@ export const CAPACIDADES_ESTADOS: Capacidad[] = [
     ventana: 'constante',
     modifica: (_ctx, _yo, c) => (c.tipo === 'distancia' ? 1 : 0),
   }),
-  // Incendio a bordo: al revelar cada carta de Peligro, 1 daño.
-  // TODO(regla): P4 · el Incendio hace daño en cualquier Entorno, no solo en el Mar.
+  // Incendio a bordo: al revelar cada carta de Peligro, 1 daño, solo en misiones de Mar como Vía de agua (P4).
   deBarco('incendio', {
     clave: 'dano',
     ventana: 'obligada',
-    disparo: (_s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'revelarPeligro',
+    disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'revelarPeligro' && enEntorno(s, 'mar'),
     efecto: () => [unDano],
   }),
   // Incendio a bordo: se apaga agotando a un Tripulante en una ventana de acción.

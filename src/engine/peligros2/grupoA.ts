@@ -73,10 +73,8 @@ registrarPeligro('p2_cielo', {
     // Éxito: el comprometido con más EXP queda Inspirado y robas 1. Fallo: descarta 1 carta.
     ciu: { exito: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'inspirado' }), robar(1)], fallo: [descartar(1)] },
   },
-  // −1. No puedes jugar cartas de tu mano para sumar a esta Prueba. Sin oposición: +1 en su lugar.
-  // TODO(regla): P21 · «no puedes jugar cartas de tu mano para sumar»: no se puede reforzar después del Destino; las
-  // que añadiste al comprometer siguen sumando.
-  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1), prueba: { sinReforzar: true } },
+  // −1. Las cartas de tu mano no suman en esta Prueba (las que se comprometieron no cuentan). Sin oposición: +1 en su lugar.
+  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1), prueba: { sinCartas: true } },
 })
 
 // 3. Calma chicha · Leve
@@ -169,7 +167,8 @@ registrarPeligro('p2_arrecife', {
       fallo: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia', 'Militar'], n: 2 } }],
     },
   },
-  // +1; +0 en su lugar si comprometiste a un Vigía. Sin oposición: 1 daño al Barco.
+  // +1; +0 en su lugar si comprometiste a un Vigía. Sin oposición: 1 daño al Barco (solo en el Mar, P19).
+  // PENDIENTE(documento): Albert ha rehecho «Coral bajo la quilla» para que diga qué hace en cada Entorno; falta su texto.
   destino: { modificador: (s) => (comprometidosDe(s).some((c) => tieneRasgo(s, c, 'Vigía')) ? 0 : 1), sinOposicion: [dano(1)] },
 })
 
@@ -248,7 +247,8 @@ registrarPeligro('p2_broma', {
     },
     ciu: { exito: [robar(2)], fallo: [{ tipo: 'descartarMayorCoste' }] },
   },
-  // +0. Las Mejoras no suman ni se pueden usar en esta Prueba. Sin oposición: 1 daño al Barco.
+  // +0. Las Mejoras no suman ni se pueden usar en esta Prueba. Sin oposición: 1 daño al Barco (solo en el Mar, P19).
+  // PENDIENTE(documento): Albert ha rehecho «Carcoma» para que diga qué hace en cada Entorno; falta su texto.
   destino: { prueba: { sinMejoras: true }, sinOposicion: [dano(1)] },
 })
 
@@ -345,7 +345,8 @@ registrarPeligro('p2_huracan', {
   },
   // Fallas la Prueba, salvo que descartes 2 cartas o agotes a otro Tripulante preparado con NAV 2 o más: entonces +2.
   // Sin oposición: 2 daños al Barco o 2 heridas repartidas (tú eliges).
-  // TODO(regla): P19 · fuera del Mar el Barco no recibe daño, así que «2 daños al Barco» no hace nada en tierra.
+  // El Barco solo recibe daño en el Mar (P19).
+  // PENDIENTE(documento): el Destino «Vendaval» dice ahora qué hace en cada Entorno; falta su texto nuevo.
   destino: {
     efectos: [codigo('p2_huracan.vendaval')],
     sinOposicion: [
@@ -361,8 +362,8 @@ registrarPeligro('p2_huracan', {
 })
 
 // 11. Maremoto · Terrible
-// TODO(regla): P22 · si el único Tripulante preparado sin comprometer es el Capitán (que no puede volver al muelle),
-// cuenta como «no había ninguno»: 1 daño más.
+// Si el único Tripulante preparado sin comprometer es el Capitán (que no puede volver al muelle), cuenta como «no había
+// ninguno»: 1 daño más (P22).
 registrarCodigo('p2_maremoto.ola', (s) => {
   const comprometidos = s.prueba?.comprometidos ?? []
   const fuera = s.zonas.tripulacion.filter((c) => c !== s.capitan && !copia(s, c).agotada && !comprometidos.includes(c))

@@ -5,7 +5,7 @@
 import { nombreDe, porId } from '../catalogo.ts'
 import { registrarReglasPeligro, type CapacidadDeCarta, type Disparo, type ReglasPeligro } from '../definiciones.ts'
 import { encuentroDe, entornoActual } from '../peligros.ts'
-import type { Capacidad, CartaId, Estado, Evento, InstId } from '../tipos.ts'
+import type { Capacidad, CartaId, Estado, Evento, InstId, NuevaTarea } from '../tipos.ts'
 import { destinoVigente } from '../valores.ts'
 
 /** Envuelve una capacidad escrita en las reglas para que solo funcione cuando toca (`activa`). */
@@ -73,12 +73,18 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
       caps.push(accion)
     })
 
+    // Lo que pasa además al quitarla con una de sus formas (antes de que salga del juego).
+    const alQuitar = q.alQuitar ?? []
+    const quitarla = (yo: InstId): NuevaTarea[] => [
+      ...(alQuitar.length > 0 ? [{ tipo: 'aplicarEfectos' as const, efectos: alQuitar, contexto: 'efecto' as const, fuente: yo }] : []),
+      { tipo: 'descartarPeligroEnJuego', carta: yo },
+    ]
     q.quitar.forEach((forma, i) => {
       const clave = `${base}.quitar${i}`
       switch (forma.tipo) {
         case 'prueba':
           // La Prueba de una Acción es una Prueba normal: se compromete, sale Destino y Sin oposición si no hay nadie.
-          // TODO(regla): P2 · no se puede hacer durante otra Prueba.
+          // No se puede hacer durante otra Prueba (P2).
           caps.push({
             clave,
             carta: id,
@@ -96,7 +102,7 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
                         nombre: `Quitar «${nombreDe(id)}»`,
                         palabrasClave: encuentroDe(s, yo).palabrasClave,
                         opciones: forma.opciones,
-                        exito: [{ tipo: 'descartarEsta' }],
+                        exito: [...alQuitar, ...(forma.exito ?? []), { tipo: 'descartarEsta' }],
                         fallo: forma.fallo ?? [],
                       },
                     },
@@ -112,7 +118,7 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
             desde: 'peligroEnJuego',
             coste: [{ tipo: 'agotarTripulante', rasgo: forma.rasgo }],
             requisito: activa,
-            efecto: (_s, yo) => (yo ? [{ tipo: 'descartarPeligroEnJuego', carta: yo }] : []),
+            efecto: (_s, yo) => (yo ? quitarla(yo) : []),
           })
           return
         case 'pagar':
@@ -123,7 +129,7 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
             desde: 'peligroEnJuego',
             coste: [{ tipo: 'pagar', n: forma.n }],
             requisito: activa,
-            efecto: (_s, yo) => (yo ? [{ tipo: 'descartarPeligroEnJuego', carta: yo }] : []),
+            efecto: (_s, yo) => (yo ? quitarla(yo) : []),
           })
           return
       }

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO, codigoColeccion } from './catalogo.ts'
 import { DATOS } from './datos.ts'
+import { tieneReglas } from './definiciones.ts'
+import './motor.ts'
 
 describe('catálogo de la Caja básica', () => {
   it('tiene una carta por cada número de colección, sin huecos ni repetidos (los Peligros 2.0 siguen desde el 154)', () => {
@@ -26,6 +28,20 @@ describe('catálogo de la Caja básica', () => {
     for (const id of [...m.mazoDelCapitan, ...m.mazoDeMuelle, ...m.mazoDePeligros, ...m.apartadosDePeligros]) {
       expect(ids.has(id), id).toBe(true)
     }
+  })
+
+  it('el mazo de Peligros son los Peligros 2.0 (sin los antiguos), uno de cada y todos con sus reglas', () => {
+    const mazo = DATOS.mazosPredefinidos.mazoDePeligros
+    // 55 cartas; «Fiebre amarilla» espera su texto rehecho (sin Fiebre) y de momento no entra.
+    expect(mazo).toHaveLength(54)
+    expect(new Set(mazo).size).toBe(mazo.length)
+    for (const id of mazo) {
+      const p = DATOS.peligros.find((c) => c.id === id)
+      expect(p?.version, id).toBe(2)
+      expect(tieneReglas(id), id).toBe(true)
+    }
+    // Los antiguos se quedan solo para las pruebas.
+    expect(DATOS.peligros.filter((c) => c.retirada).every((c) => !mazo.includes(c.id))).toBe(true)
   })
 
   it('las recompensas de los capítulos citan cartas que existen', () => {

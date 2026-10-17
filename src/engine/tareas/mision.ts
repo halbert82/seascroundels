@@ -218,9 +218,12 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
     necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
   })
   for (const h of [...s.zonas.rehenes]) rescatarRehen(s, h)
+  const habiaIncautadas = s.zonas.incautadas.length > 0
   recuperarIncautadas(s)
   const r = e.carta.recompensa
   const tareas: NuevaTarea[] = []
+  // «Si superas la misión, las recuperas y robas 2».
+  if (habiaIncautadas && m.alRecuperar && m.alRecuperar.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: m.alRecuperar, contexto: 'efecto' })
   if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
   if (r.search) tareas.push({ tipo: 'buscarMuelle', filtro: r.search === 'crew' ? 'tripulante' : r.search === 'ship' ? 'mejoraBarco' : 'mejora' })
   if (r.draw) tareas.push({ tipo: 'robar', n: r.draw })
@@ -313,7 +316,7 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
   return 'hecha'
 }
 
-// TODO(regla): P9 · lo incautado: las cartas de la mano las eliges tú; si superas la misión vuelven (una Mejora,
+// Lo incautado (P9): las cartas de la mano las eliges tú; si superas la misión vuelven (una Mejora,
 // a su portador; si ya no está, se descarta); si no, van fuera del juego. Un Tripulante incautado va con sus Mejoras.
 
 /** Superaste la misión (o lo dice una carta): lo incautado vuelve a su sitio. */
@@ -334,10 +337,15 @@ export function recuperarIncautadas(s: Estado): void {
   }
 }
 
-/** No superaste la misión: lo incautado se pierde (fuera del juego). */
+/** No superaste la misión: lo incautado se pierde (fuera del juego, o a los descartes si la carta lo dice). */
 function perderIncautadas(s: Estado): NuevaTarea[] {
   const tareas: NuevaTarea[] = []
   for (const c of [...s.zonas.incautadas]) {
+    if (s.incautadas?.[c]?.siPierdes === 'descartar' && s.incautadas[c]?.zona === 'mano') {
+      mover(s, c, 'descartesCapitan')
+      anotar(s, 'aviso', `«${nombre(s, c)}», que estaba incautada, se descarta.`)
+      continue
+    }
     if (s.incautadas?.[c]?.zona === 'tripulacion') {
       anotar(s, 'aviso', `Pierdes a ${nombre(s, c)}, que estaba incautado.`)
       tareas.push({ tipo: 'sacarTripulante', carta: c, destino: 'fueraDeJuego', motivo: 'incautado' })
@@ -356,8 +364,7 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   if (m.fin === 'superada' && s.zonas.misionesDisponibles.includes(m.carta)) mover(s, m.carta, 'misionesSuperadas', 'abajo')
   devolverPeligros(s)
   delete s.incautadas
-  // Incendio a bordo sin apagar al acabar la misión: pierdes una Mejora de barco (y la ficha sigue).
-  // TODO(regla): P4 · al acabar la misión con Incendio pierdes una Mejora de barco y la ficha se queda.
+  // Al acabar la misión con Incendio, en cualquier Entorno, pierdes una Mejora de barco y la ficha se queda (P4).
   if (tieneEstadoBarco(s, 'incendio')) {
     anotar(s, 'aviso', 'El Incendio a bordo sigue sin apagar al acabar la misión: pierdes una Mejora de barco.')
     encolar(s, { tipo: 'perderMejora', soloBarco: true })

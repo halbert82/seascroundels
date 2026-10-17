@@ -16,18 +16,18 @@ function alguienCon(s: Estado, estados: readonly EstadoTripulante[]): boolean {
   return s.zonas.tripulacion.some((c) => estados.some((e) => tieneEstado(s, c, e)))
 }
 
-const VENENOS: EstadoTripulante[] = ['envenenado', 'fiebre', 'sangrando']
+const MALES: EstadoTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
 
 export const CAPACIDADES_JUGADOR2: Capacidad[] = [
-  // Herbolaria: «Agotar: Quita Envenenado, Fiebre o Sangrando a un Tripulante.»
+  // Herbolaria: «Agotar: Quita Envenenado, Sangrando, Aturdido o Asustado a un Tripulante.»
   {
     clave: 'herbolaria.quitar',
     carta: 'herbolaria',
     ventana: 'libre',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    requisito: (s) => alguienCon(s, VENENOS),
-    efecto: () => [{ tipo: 'quitarUnEstado', estados: [...VENENOS] }],
+    requisito: (s) => alguienCon(s, MALES),
+    efecto: () => [{ tipo: 'quitarUnEstado', estados: [...MALES] }],
   },
 
   // Práctico del puerto: «Respuesta: Después de que superes una Prueba de NAV en la que participe, quita Vía de
@@ -97,8 +97,8 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
   },
 
   // Cataplasma: «Quita Envenenado o Sangrando a un Tripulante y cúrale 1 herida.»
-  // TODO(regla): P23 · solo se puede jugar si algún Tripulante tiene Envenenado o Sangrando (no para curar sin más), y
-  // la herida se cura como cualquier curación (si le queda la otra ficha, se quita esa primero, P13).
+  // Solo se juega si algún Tripulante tiene Envenenado o Sangrando (P23), y la herida se cura como cualquier curación:
+  // si le queda la otra ficha, se quita esa primero (P13).
   evento('cataplasma', 'libre', {
     requisito: (s) => alguienCon(s, ['envenenado', 'sangrando']),
     efecto: () => [{ tipo: 'quitarUnEstado', estados: ['envenenado', 'sangrando'], curar: 1 }],
@@ -106,7 +106,7 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
 
   // Cortar por lo sano: «Acción: Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego,
   // salvo si es de nivel Terrible.»
-  // TODO(regla): P24 · además de su coste de 1: 3 cartas en total.
+  // Coste 0: solo cuesta las 2 cartas de su capacidad.
   evento('cortar', 'accion', {
     coste: [{ tipo: 'pagar', n: 2 }],
     requisito: (s) => cortables(s).length > 0,

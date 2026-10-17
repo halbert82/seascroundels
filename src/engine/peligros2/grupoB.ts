@@ -1,0 +1,457 @@
+// Peligros 2.0 · Grupo B: Bestias, naturaleza y enfermedades (cartas 12–22).
+// La 17, «Fiebre amarilla», está rehecha sin Fiebre y aún no tengo su texto: no está en el mazo ni tiene reglas.
+
+import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarCodigo } from '../tareas/efectos.ts'
+import { marcado, porCriterio, registrarEspecial } from '../tareas/peligros2.ts'
+import { registrarCapacidades } from '../capacidades/index.ts'
+import { eleccionDe, preguntar } from '../tareas/comun.ts'
+import { anotar, copia, encolar, nombre } from '../estado.ts'
+import { agotar as agotarCarta } from '../estados.ts'
+import type { EstadoTripulante } from '../infoEstados.ts'
+import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
+import { vinculadas } from '../zonas.ts'
+import {
+  agotar,
+  avance,
+  cadaComprometido,
+  codigo,
+  comprometidoCon,
+  dano,
+  descartar,
+  dificultad,
+  heridas,
+  mas,
+  mejorasDeBarco,
+  menos,
+  municion,
+  participantesCtx,
+  pierdesAvance,
+  preparar,
+  reputacion,
+  robar,
+  tieneRasgo,
+} from './comun.ts'
+
+const tripulantesHeridos = (s: Estado) => s.zonas.tripulacion.filter((c) => copia(s, c).heridas > 0).length
+
+// 12. Tortugas · Favorable
+registrarPeligro('p2_tortugas', {
+  encuentros: {
+    // Éxito: prepara a los comprometidos. Fallo: agota 1 Tripulante preparado.
+    mar: { exito: [preparar('comprometidos')], fallo: [agotar(1)] },
+    // Sin Prueba: cura 2 heridas repartidas; si tienes un Animal o un Explorador, además prepara 1 Tripulante.
+    nat: {
+      efecto: [
+        { tipo: 'curar', n: 2 },
+        {
+          tipo: 'si',
+          condicion: { tipo: 'alguna', condiciones: [{ tipo: 'rasgoEnJuego', rasgo: 'Animal' }, { tipo: 'rasgoEnJuego', rasgo: 'Explorador' }] },
+          entonces: [preparar(1)],
+        },
+      ],
+    },
+    ciu: { exito: [robar(2)], fallo: [descartar(1)] },
+  },
+  // −1. Si superas, el comprometido con la habilidad más alta queda Aguerrido. Sin oposición: pierdes 1 Avance.
+  destino: { siSuperas: [comprometidoCon(mas('prueba'), { tipo: 'estado', estado: 'aguerrido' })], sinOposicion: [pierdesAvance(1)] },
+})
+
+// 13. Sol de justicia · Leve
+registrarPeligro('p2_sol', {
+  encuentros: {
+    // NAV 3 (1 con un Carpintero, en los datos). Éxito: prepara 1. Fallo: Vía de agua.
+    mar: { exito: [preparar(1)], fallo: [{ tipo: 'estadoBarco', estado: 'viaDeAgua' }] },
+    // Elige: volver al último arroyo (pierdes 1 Avance) o buscar agua por delante (Prueba de EXP 3).
+    nat: {
+      elige: [
+        { texto: 'Volver al último arroyo: pierdes 1 Avance', efectos: [pierdesAvance(1)] },
+        { texto: 'Buscar agua por delante: Prueba de EXP 3', prueba: true },
+      ],
+      exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }],
+      fallo: [cadaComprometido({ tipo: 'estado', estado: 'aturdido' })],
+    },
+    // EXP 2, +1 por cada Tripulante comprometido después del primero.
+    ciu: {
+      capacidades: [dificultad('ruido', (ctx) => Math.max(0, participantesCtx(ctx).length - 1))],
+      exito: [robar(2)],
+      fallo: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'buscado' })],
+    },
+  },
+  // +1; +2 en su lugar si la Prueba es de COM. Sin oposición: el Capitán sufre 1 herida.
+  destino: { modificador: (_s, p) => (p.hab === 'COM' ? 2 : 1), sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
+})
+
+// 14. El hambre · Leve
+registrarPeligro('p2_hambre', {
+  encuentros: {
+    // EXP 3 (1 con un Cirujano). Éxito: cura 1 a cada herido. Fallo: cada herido sufre 1 más (máximo 3 heridas en total).
+    mar: {
+      exito: [{ tipo: 'curar', n: 1, modo: 'cadaHerido' }],
+      fallo: [{ tipo: 'aQuien', quien: { de: 'heridos', cada: true, maximo: 3 }, hacer: { tipo: 'heridas', n: 1 } }],
+    },
+    // EXP 3 (1 con un Explorador). Éxito: prepara 2. Fallo: el Tripulante con menos Vida sufre 2 heridas.
+    nat: {
+      exito: [preparar(2)],
+      fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }],
+    },
+    // Elige: pagas lo que piden (descarta 2 cartas) o regateas (Prueba de EXP 3).
+    ciu: {
+      elige: [
+        { texto: 'Pagar lo que piden: descarta 2 cartas', efectos: [descartar(2)] },
+        { texto: 'Regatear: Prueba de EXP 3', prueba: true },
+      ],
+      exito: [robar(1), { tipo: 'curar', n: 1 }],
+      // TODO(regla): P29 · «−1 Mando en tu próximo turno»: robas una carta menos al final de tu próximo turno (no
+      // al final de este, como el −1 Mando de siempre).
+      fallo: [{ tipo: 'menosMando', proximo: true }],
+    },
+  },
+  // +0. El comprometido con la habilidad más alta no se prepara en tu próximo Inicio. Sin oposición: descarta 1 carta.
+  destino: { efectos: [comprometidoCon(mas('prueba'), { tipo: 'noPrepara', hasta: 'inicio' })], sinOposicion: [descartar(1)] },
+})
+
+// 15. Sin rumbo · Leve
+const lleva = (s: Estado, c: InstId, id: string) => vinculadas(s, c).some((m) => copia(s, m).id === id)
+registrarPeligro('p2_sinrumbo', {
+  encuentros: {
+    // NAV 3 (1 con un Vigía). Éxito: mira las 2 de arriba y pon 1 al fondo. Fallo: el siguiente encuentro no da Avance.
+    mar: { exito: [{ tipo: 'mirarOrdenar', n: 2, fondo: 'una' }], fallo: [{ tipo: 'siguiente', mod: { de: 'encuentro', sinAvance: true } }] },
+    // NAV 3 (1 si un comprometido lleva una Brújula). Fallo: el comprometido con más NAV se pierde (no se prepara hasta
+    // el final de la misión); Acción: agota un Vigía o un Explorador para encontrarlo y prepararlo.
+    nat: {
+      capacidades: [dificultad('brujula', (ctx) => (participantesCtx(ctx).some((c) => lleva(ctx.s, c, 'brujula')) ? -2 : 0))],
+      exito: [avance(1)],
+      fallo: [comprometidoCon(mas('NAV'), { tipo: 'noPrepara', hasta: 'finMision' })],
+    },
+    // NAV 2. Éxito: la siguiente Prueba −1. Fallo: descarta 1 carta al azar.
+    ciu: { exito: [{ tipo: 'siguiente', mod: { de: 'prueba', n: -1 } }], fallo: [{ tipo: 'descartarAzar', n: 1 }] },
+  },
+  // −1; −2 en su lugar si comprometiste a un Vigía o un Explorador. Sin oposición: pierdes 1 Avance.
+  destino: {
+    modificador: (s, p) => (p.comprometidos.some((c) => tieneRasgo(s, c, 'Vigía') || tieneRasgo(s, c, 'Explorador')) ? -2 : -1),
+    sinOposicion: [pierdesAvance(1)],
+  },
+})
+
+// Acción (del Tripulante perdido): agota a un Vigía o a un Explorador para encontrarlo y prepararlo.
+const perdido = (s: Estado, yo: InstId | null) =>
+  yo !== null && s.temporales.some((t) => t.fuente === 'p2_sinrumbo' && t.clave === 'noPrepara' && t.inst === yo)
+registrarCapacidades({
+  clave: 'p2_sinrumbo.encontrar',
+  carta: 'p2_sinrumbo',
+  ventana: 'accion',
+  desde: 'marca',
+  texto: 'Agota a un Vigía o a un Explorador para encontrarlo y prepararlo.',
+  coste: [{ tipo: 'agotarTripulante', rasgo: null, rasgos: ['Vigía', 'Explorador'] }],
+  requisito: perdido,
+  efecto: (s, yo) => {
+    if (!yo) return []
+    s.temporales = s.temporales.filter((t) => !(t.fuente === 'p2_sinrumbo' && t.clave === 'noPrepara' && t.inst === yo))
+    anotar(s, 'efecto', `Encontráis a ${nombre(s, yo)}.`)
+    return [{ tipo: 'aQuien', quien: { de: 'tripulacion', inst: yo }, hacer: { tipo: 'preparar' } }]
+  },
+})
+
+// 16. Serpientes · Leve
+const MALES: EstadoTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
+registrarCodigo('p2_serpientes.muerde', (s): NuevaTarea[] => {
+  // El no comprometido con menos Vida; si no queda ninguno, el comprometido con menos EXP.
+  const comp = s.prueba?.comprometidos ?? []
+  if (s.zonas.tripulacion.some((c) => !comp.includes(c))) {
+    return [{ tipo: 'aQuien', quien: { de: 'noComprometidos', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }]
+  }
+  return [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: { menos: 'EXP' } }, hacer: { tipo: 'heridas', n: 2 } }]
+})
+registrarPeligro('p2_serpientes', {
+  encuentros: {
+    // EXP 2. Si tienes un Animal, superas sin Prueba.
+    mar: { superaSi: { tipo: 'rasgoEnJuego', rasgo: 'Animal' }, exito: [robar(1)], fallo: [codigo('p2_serpientes.muerde')] },
+    nat: { exito: [avance(1)], fallo: [comprometidoCon(menos('COM'), { tipo: 'estado', estado: 'envenenado' })] },
+    // Éxito: quita a un Tripulante un Estado malo, o cura 2 heridas.
+    ciu: {
+      exito: [
+        {
+          tipo: 'elegir',
+          opciones: [
+            {
+              texto: 'Quitar a un Tripulante Envenenado, Sangrando, Aturdido o Asustado',
+              efectos: [{ tipo: 'quitarUnEstado', estados: MALES }],
+              si: { tipo: 'alguna', condiciones: MALES.map((estado) => ({ tipo: 'estado' as const, estado })) },
+            },
+            { texto: 'Curar 2 heridas', efectos: [{ tipo: 'curar', n: 2 }] },
+          ],
+        },
+      ],
+      fallo: [descartar(2)],
+    },
+  },
+  // +0. Si fallas, el comprometido con la habilidad más alta queda Envenenado. Sin oposición: el preparado con menos
+  // Vida sufre 1 herida.
+  destino: {
+    siFallas: [comprometidoCon(mas('prueba'), { tipo: 'estado', estado: 'envenenado' })],
+    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
+  },
+})
+
+// 18. Tiburones · Duro
+registrarCodigo('p2_tiburones.prendas', (s): NuevaTarea[] => {
+  // 1 carta al azar de tu mano por cada Tripulante herido (mín. 1, máx. 3).
+  const n = Math.max(1, Math.min(3, tripulantesHeridos(s)))
+  return [{ tipo: 'incautar', que: 'mano', n, criterio: 'azar' }]
+})
+registrarPeligro('p2_tiburones', {
+  encuentros: {
+    // COM 3, +1 por cada Tripulante herido (máx. 5). Si nadie está herido, ganas el Avance sin Prueba.
+    mar: {
+      sinPruebaSi: { tipo: 'no', condicion: { tipo: 'heridas', minimo: 1 } },
+      capacidades: [dificultad('sangre', (ctx) => Math.min(5, 3 + tripulantesHeridos(ctx.s)) - 3)],
+      exito: [{ tipo: 'curar', n: 2 }],
+      fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'masHeridas' }, hacer: { tipo: 'heridas', n: 2 } }],
+    },
+    // Los Tripulantes heridos no pueden comprometerse.
+    nat: {
+      restriccion: { veto: (s, c) => (copia(s, c).heridas > 0 ? `${nombre(s, c)} está herido: no puede comprometerse` : null) },
+      exito: [{ tipo: 'descartarArriba', n: 1 }],
+      fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
+    },
+    // Al revelarse, Incautado: 1 carta al azar por cada herido (mín. 1, máx. 3). Éxito: recupéralas ya y robas 1.
+    ciu: { alRevelarse: [codigo('p2_tiburones.prendas')], exito: [{ tipo: 'recuperarIncautadas' }, robar(1)] },
+  },
+  // +1. Si algún Tripulante está herido, el que tenga más heridas sufre 1 más (comprometido o no). Sin oposición: el
+  // Tripulante con menos Vida sufre 1 herida.
+  destino: {
+    efectos: [{ tipo: 'aQuien', quien: { de: 'heridos', por: 'masHeridas' }, hacer: { tipo: 'heridas', n: 1 } }],
+    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
+  },
+})
+
+// 19. Murciélagos vampiro · Duro
+registrarPeligro('p2_murcielagos', {
+  encuentros: {
+    mar: { exito: [avance(1)], fallo: [cadaComprometido({ tipo: 'noPrepara', hasta: 'inicio' })] },
+    // EXP 3, +1 si algún Tripulante está Sangrando.
+    nat: {
+      capacidades: [dificultad('sangre', (ctx) => (ctx.s.zonas.tripulacion.some((c) => copia(ctx.s, c).estados?.includes('sangrando')) ? 1 : 0))],
+      exito: [municion(1)],
+      fallo: [comprometidoCon('menosVida', { tipo: 'estado', estado: 'sangrando' })],
+    },
+    ciu: { exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }], fallo: [{ tipo: 'heridas', n: 1, capitan: true }, descartar(1)] },
+  },
+  // +1. Persigue. Sin oposición: el agotado con menos Vida sufre 1 herida.
+  destino: {
+    persigue: true,
+    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
+  },
+})
+
+// 20. Arenas movedizas · Duro
+registrarCodigo('p2_arenas.atrapa', (s, fuente): NuevaTarea[] => {
+  // TODO(regla): P28 · «el Tripulante preparado (o el Capitán) con más EXP»: el Capitán cuenta como uno más entre los
+  // preparados; si no hay nadie preparado, queda atrapado el Capitán.
+  const hacer = {
+    tipo: 'varios' as const,
+    acciones: [
+      { tipo: 'noCompromete' as const, hasta: 'carta' as const },
+      { tipo: 'noPrepara' as const, hasta: 'carta' as const },
+      { tipo: 'marcar' as const, clave: 'p2_arenas.atrapado' },
+    ],
+  }
+  const hayPreparados = s.zonas.tripulacion.some((c) => !copia(s, c).agotada)
+  const quien = hayPreparados ? { de: 'preparados' as const, por: { mas: 'EXP' as const } } : { de: 'capitan' as const }
+  return [{ tipo: 'aQuien', quien, hacer, ...(fuente ? { fuente } : {}) }]
+})
+registrarCodigo('p2_arenas.ahogado', (s, fuente): NuevaTarea[] => {
+  const c = marcado(s, 'p2_arenas.atrapado', fuente)
+  if (!c) return []
+  anotar(s, 'aviso', `Sacáis a ${nombre(s, c)} medio ahogado.`)
+  return [{ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 2 }, fase: 'antes', cancelado: false, usadas: [] }]
+})
+registrarCodigo('p2_arenas.sacar', (s, fuente): NuevaTarea[] => {
+  if (!fuente) return []
+  const n = (copia(s, fuente).fichas ?? 0) + 1
+  return [
+    { tipo: 'agotarPago', n },
+    { tipo: 'descartarPeligroEnJuego', carta: fuente },
+  ]
+})
+registrarPeligro('p2_arenas', {
+  encuentros: {
+    // NAV 4, +1 por cada 2 Mejoras de barco (máx. 5). Fallo: 1 daño por cada punto que te falte (máx. 3).
+    mar: {
+      capacidades: [dificultad('peso', (ctx) => Math.min(5, 4 + Math.floor(mejorasDeBarco(ctx.s) / 2)) - 4)],
+      exito: [avance(1)],
+      fallo: [{ tipo: 'porCada', medida: 'faltan', efectos: [dano(1)], maximo: 3 }],
+    },
+    // Se queda en juego: el preparado con más EXP queda atrapado (ni se compromete ni se prepara mientras siga en juego).
+    // Obligado: cada otro Peligro revelado, 1 ficha; con 3, sufre 2 heridas y se descarta. Acción: agota tantos
+    // preparados como fichas tenga, más 1, para descartarla.
+    nat: {
+      efecto: [codigo('p2_arenas.atrapa')],
+      queda: {
+        quitar: [],
+        acciones: [
+          {
+            texto: 'Agota tantos Tripulantes preparados como fichas tenga, más 1: lo sacáis a pulso',
+            requisito: (s, yo) => s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length >= (copia(s, yo).fichas ?? 0) + 1,
+            efectos: [codigo('p2_arenas.sacar')],
+          },
+        ],
+        contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [codigo('p2_arenas.ahogado')], despues: 'descartar' },
+      },
+    },
+    // NAV 3 (1 con un Marinero). Éxito: añade gratis una Mejora del muelle. Fallo: pierdes 1 Mejora de un comprometido.
+    ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 99, que: 'mejora' }], fallo: [{ tipo: 'perderMejora', n: 1, deComprometidos: true }] },
+  },
+  // +1, +1 más por cada Tripulante comprometido después del segundo (máx. +3 en total). Sin oposición: agota 1.
+  destino: { modificador: (_s, p) => Math.min(3, 1 + Math.max(0, p.comprometidos.length - 2)), sinOposicion: [agotar(1)] },
+})
+
+// 21. El jaguar · Terrible
+registrarEspecial('p2_jaguar.cazar', (s, t, e) => {
+  const carta = t.fuente
+  if (!carta || !s.zonas.peligrosEnJuego.includes(carta) || s.prueba) return 'hecha'
+  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
+  if (preparados.length === 0) return 'hecha'
+  const cazador = preparados.length === 1 ? preparados[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
+  if (!cazador) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'cazador' }, candidatas: preparados, min: 1, max: 1 })
+  anotar(s, 'pagar', `Agotas a ${nombre(s, cazador)} para cazar al jaguar.`)
+  agotarCarta(s, cazador)
+  const explorador = tieneRasgo(s, cazador, 'Explorador')
+  encolar(s, {
+    tipo: 'pruebaSuelta',
+    fuente: carta,
+    paso: 'empezar',
+    definicion: {
+      nombre: 'Cazar al jaguar',
+      palabrasClave: ['Bestia'],
+      opciones: [explorador ? { hab: 'EXP', dificultad: 3 } : { hab: 'COM', dificultad: 5 }],
+      exito: [robar(2), { tipo: 'descartarEsta' }],
+      fallo: [heridas(1)],
+      soloCon: cazador,
+    },
+  })
+  return 'hecha'
+})
+registrarCodigo('p2_jaguar.cazar', (_s, fuente): NuevaTarea[] => [{ tipo: 'especial', clave: 'p2_jaguar.cazar', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
+registrarPeligro('p2_jaguar', {
+  encuentros: {
+    // Sin ayuda. Fallo: el Tripulante sufre 2 heridas y queda Asustado.
+    mar: { sinAyuda: true, exito: [robar(3)], fallo: [heridas(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'asustado' })] },
+    // Se queda en juego. Obligado: al final de cada encuentro siguiente, el agotado con menos Vida sufre 1 herida.
+    // Acción: agota a un preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador).
+    nat: {
+      queda: {
+        quitar: [],
+        acciones: [
+          {
+            texto: 'Agota a un Tripulante preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador)',
+            requisito: (s) => s.prueba === null && s.zonas.tripulacion.some((c) => !copia(s, c).agotada),
+            efectos: [codigo('p2_jaguar.cazar')],
+          },
+        ],
+        disparos: [{ cuando: 'cartaResuelta', efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] }],
+      },
+    },
+    // COM 5, +1 si tienes un Animal. Fallo: el comprometido con más COM sufre 2 heridas y se descarta la carta de más a
+    // la izquierda del muelle.
+    ciu: {
+      capacidades: [dificultad('animal', (ctx) => (ctx.s.zonas.tripulacion.some((c) => tieneRasgo(ctx.s, c, 'Animal')) ? 1 : 0))],
+      exito: [reputacion(1)],
+      fallo: [comprometidoCon(mas('COM'), { tipo: 'heridas', n: 2 }), { tipo: 'descartarMuelle', cual: 'izquierda' }],
+    },
+  },
+  // +2. Si algún preparado no está comprometido, el de menos Vida sufre 1 herida. Sin oposición: el Tripulante con
+  // menos Vida sufre 2 heridas.
+  destino: {
+    efectos: [{ tipo: 'aQuien', quien: { de: 'noComprometidosPreparados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
+    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }],
+  },
+})
+
+// 22. El caimán · Terrible
+registrarCodigo('p2_caiman.rescatado', (s, fuente): NuevaTarea[] => {
+  const c = marcado(s, 'p2_caiman.agua', fuente)
+  return c ? [{ tipo: 'aQuien', quien: { de: 'tripulacion', inst: c }, hacer: { tipo: 'varios', acciones: [{ tipo: 'preparar' }, { tipo: 'estado', estado: 'aguerrido' }] } }] : []
+})
+registrarCodigo('p2_caiman.arrastrado', (s, fuente): NuevaTarea[] => {
+  const c = marcado(s, 'p2_caiman.agua', fuente)
+  return c ? [{ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 2 }, fase: 'antes', cancelado: false, usadas: [] }] : []
+})
+registrarEspecial('p2_caiman.giro', (s, _t, e) => {
+  const p = s.prueba
+  if (!p?.hab) return 'hecha'
+  const comprometidos = p.comprometidos.filter((c) => s.zonas.tripulacion.includes(c))
+  if (comprometidos.length === 0) return 'hecha'
+  const fuertes = porCriterio(s, comprometidos, { mas: 'prueba' })
+  if (!e) {
+    return preguntar({
+      tipo: 'elegirOpcion',
+      motivo: { clave: 'giroDeLaMuerte' },
+      opciones: [
+        ...fuertes.map((c) => ({ clave: c, texto: `${nombre(s, c)} sufre 2 heridas: el Destino es +1` })),
+        { clave: 'fallar', texto: 'Fallar la Prueba' },
+      ],
+    })
+  }
+  const clave = eleccionDe(e, 'opcion').clave
+  if (clave === 'fallar') return 'hecha'
+  const c = fuertes.find((x) => x === clave)
+  if (!c) return 'hecha'
+  p.falla = false
+  p.modDestino = 1
+  anotar(s, 'jugada', `${nombre(s, c)} se suelta de las fauces: el Destino es +1.`)
+  encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 2 }, fase: 'antes', cancelado: false, usadas: [] })
+  return 'hecha'
+})
+registrarCodigo('p2_caiman.giro', (): NuevaTarea[] => [{ tipo: 'especial', clave: 'p2_caiman.giro', datos: {}, paso: 0 }])
+registrarPeligro('p2_caiman', {
+  encuentros: {
+    // Al revelarse, el preparado con menos Vida cae al agua y no puede comprometerse. Éxito: se prepara y queda
+    // Aguerrido. Fallo: sufre 2 heridas y el Barco sufre 1 daño.
+    mar: {
+      alRevelarse: [
+        {
+          tipo: 'aQuien',
+          quien: { de: 'preparados', por: 'menosVida' },
+          hacer: { tipo: 'varios', acciones: [{ tipo: 'noCompromete', hasta: 'finPrueba' }, { tipo: 'marcar', clave: 'p2_caiman.agua' }] },
+        },
+      ],
+      exito: [codigo('p2_caiman.rescatado')],
+      fallo: [codigo('p2_caiman.arrastrado'), dano(1)],
+    },
+    // Las Mejoras no suman. Fallo: si tienes un Animal, vuelve al muelle; si no, el comprometido con más COM sufre 3.
+    nat: {
+      prueba: { mejorasNoSuman: true },
+      exito: [robar(2), avance(1)],
+      fallo: [
+        {
+          tipo: 'si',
+          condicion: { tipo: 'rasgoEnJuego', rasgo: 'Animal' },
+          entonces: [{ tipo: 'aQuien', quien: { de: 'tripulacion', rasgo: 'Animal' }, hacer: { tipo: 'alMuelle' } }],
+          sino: [comprometidoCon(mas('COM'), { tipo: 'heridas', n: 3 })],
+        },
+      ],
+    },
+    // Éxito: la siguiente Prueba #Guardia# o #Militar# −2. Fallo: el comprometido con más NAV sufre 2 heridas o queda
+    // rehén (tú eliges).
+    ciu: {
+      exito: [{ tipo: 'siguiente', mod: { de: 'prueba', claves: ['Guardia', 'Militar'], n: -2 } }],
+      fallo: [
+        comprometidoCon(mas('NAV'), {
+          tipo: 'elegir',
+          opciones: [
+            { texto: 'sufre 2 heridas (escapa mordido)', accion: { tipo: 'heridas', n: 2 } },
+            { texto: 'queda rehén (lo pescan los guardias)', accion: { tipo: 'rehen' } },
+          ],
+        }),
+      ],
+    },
+  },
+  // Fallas la Prueba, salvo que el comprometido con la habilidad más alta sufra 2 heridas: entonces es +1. Sin
+  // oposición: el Tripulante con menos Vida sufre 2 heridas.
+  destino: {
+    efectos: [codigo('p2_caiman.giro')],
+    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }],
+  },
+})

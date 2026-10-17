@@ -18,7 +18,7 @@ Juego de cartas cooperativo en solitario, al estilo de los LCG (Arkham Horror, E
 1. `docs/reglamento-v1.0.md`: el reglamento completo. Tiene una parte para aprender a jugar, una referencia de la A a la Z y una referencia rápida al final.
 2. `data/cartas.json`: todas las cartas de la caja básica (153, con su número de colección). El campo `texto` es la versión 1.0, la buena. La sección `_leyenda` explica el marcado de los textos.
 3. Los campos de ayuda que vienen del prototipo antiguo: `fallo`, `exito`, `siempre`, `ops`, `ayudaPrototipo`, `textoPrototipo`. Sirven al motor como pista, pero **si chocan con el texto o el reglamento, mandan el texto y el reglamento**.
-4. **Fase 6:** `docs/peligros-2.0.md` (las 55 cartas de Peligro nuevas, que sustituyen a las 25 antiguas) y `docs/jugador-2.0.md` (9 cartas de jugador nuevas). En `cartas.json` llevan `"version": 2` (los Peligros) y sus textos completos son solo para leerlos: lo que hacen está escrito a mano por carta en `src/engine/peligros2/` (reglas) y `src/engine/capacidades/jugador2.ts`.
+4. **Fase 6:** `docs/peligros-2.0.md` (las 55 cartas de Peligro nuevas, que sustituyen a las 25 antiguas: estas se quedan en los datos marcadas `retirada`, solo para las pruebas) y `docs/jugador-2.0.md` (9 cartas de jugador nuevas). En `cartas.json` llevan `"version": 2` (los Peligros) y sus textos completos son solo para leerlos: lo que hacen está escrito a mano por carta en `src/engine/peligros2/` (reglas) y `src/engine/capacidades/jugador2.ts`.
 
 Recursos visuales:
 - `referencia/cartas/NNN.webp`: imagen de cada carta tal y como está diseñada; el nombre es su número de colección. Es la referencia visual que hay que igualar.
@@ -38,7 +38,7 @@ Recursos visuales:
   - pagar descartando cartas, reclutar y adquirir;
   - zarpar y Distancia;
   - revelar Peligros y leer el encuentro del Entorno que toca;
-  - Pruebas: comprometer, Destino, Sin oposición, ventana de acción, reforzar y resolver;
+  - Pruebas: comprometer (con las cartas de la mano), Destino, Sin oposición, ventana de acción y resolver;
   - Avance, retirarse y recompensas;
   - mazo de historia y Tesoros;
   - heridas, daño y hundimiento;
@@ -109,4 +109,4 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - **Rehén:** el Capitán no puede ser rehén (N11).
 - **Barco hundido:** las Mejoras de barco que se pierden **sí** activan sus efectos «después de que descartes esta carta».
 - Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.
-- **Fase 6:** las dudas pendientes (P1–P27) están en `docs/decisiones.md`, sección «Fase 6».
+- **Fase 6:** las dudas pendientes (P25–P47) están en `docs/decisiones.md`, sección «Fase 6». Reforzar ya no existe: las cartas de la mano solo suman al comprometer.

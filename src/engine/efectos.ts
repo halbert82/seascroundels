@@ -3,13 +3,16 @@
 
 import { DATOS, type Entorno, type Habilidad } from './datos.ts'
 import type { EstadoBarco, EstadoTripulante } from './infoEstados.ts'
-import type { CartaId } from './tipos.ts'
+import type { CartaId, InstId } from './tipos.ts'
 
 export type Efecto =
   /** Heridas a un Tripulante. `capitan`: al Capitán. `soloEnTierra`: alternativa al daño fuera del Mar. */
   | { tipo: 'heridas'; n: number; capitan?: boolean; soloEnTierra?: boolean }
-  /** Daño al Barco (solo en el Mar). `soloEnMar`: tiene alternativa en tierra. */
-  | { tipo: 'dano'; n: number; soloEnMar?: boolean }
+  /**
+   * Daño al Barco (solo en el Mar). `soloEnMar`: tiene alternativa en tierra. `enTierra`: la carta dice expresamente que
+   * daña el Barco fuera del Mar («Te roban el barco», en Ciudad): la carta manda sobre la regla (P19).
+   */
+  | { tipo: 'dano'; n: number; soloEnMar?: boolean; enTierra?: boolean }
   | { tipo: 'reparar'; n: number }
   | { tipo: 'agotar'; n: number | 'todos' }
   | { tipo: 'descartar'; n: number }
@@ -18,11 +21,13 @@ export type Efecto =
   | { tipo: 'curar'; n: number; modo?: 'repartir' | 'cadaComprometido' | 'cadaUno' | 'cadaHerido' | 'uno' }
   | { tipo: 'perderAvance'; n: number | 'todo' }
   | { tipo: 'perderMunicion'; n: number }
-  | { tipo: 'perderMejora'; n: number }
+  /** Pierdes N Mejoras (`deComprometidos`: de un Tripulante comprometido). */
+  | { tipo: 'perderMejora'; n: number; deComprometidos?: boolean }
   | { tipo: 'agotarMejora' }
   | { tipo: 'rehen' }
   | { tipo: 'reputacion'; n: number }
-  | { tipo: 'menosMando' }
+  /** −1 Mando: este turno, o en tu próximo turno (`proximo`). */
+  | { tipo: 'menosMando'; proximo?: boolean }
   | { tipo: 'perderDia' }
   | { tipo: 'entraEnMazo'; carta: CartaId }
   | { tipo: 'seRetira' }
@@ -36,7 +41,7 @@ export type Efecto =
   | { tipo: 'quitarEstado'; estado: EstadoTripulante; a: 'fuente' | 'uno' | 'todos' }
   | { tipo: 'quitarEstadoBarco'; estado: EstadoBarco }
   /** Cartas de la mano, una Mejora o un Tripulante van debajo de la carta de misión. */
-  | { tipo: 'incautar'; que: 'mano' | 'mejora' | 'tripulante'; n: number }
+  | ({ tipo: 'incautar' } & Incautar)
   /** La carta del encuentro ocupa el muelle; en Jugar cartas se descarta pagando `coste` cartas. */
   | { tipo: 'ocuparMuelle'; coste: number }
   /** «La siguiente Prueba de esta misión recibe ±X» (a su dificultad). */
@@ -83,8 +88,32 @@ export type Efecto =
   | { tipo: 'ficha'; n: number }
   /** La Prueba se supera sin hacerla. */
   | { tipo: 'superarSinPrueba' }
+  /** Quita uno de estos Estados a un Tripulante (eliges a quién y cuál) y, si lo dice, cúrale N. */
+  | { tipo: 'quitarUnEstado'; estados: EstadoTripulante[]; curar?: number }
+  /** Descarta una carta del muelle: la de más a la izquierda o la Mejora más cara (y, si lo dice, repón el hueco). */
+  | { tipo: 'descartarMuelle'; cual: 'izquierda' | 'mejoraMasCara'; reponer?: boolean }
+  /** Le pasa algo a este Tripulante concreto. */
+  | { tipo: 'sobre'; carta: InstId; hacer: AccionSobre }
+  /** «Uno de los comprometidos sufre N heridas» desde un Destino: si hay un Maldito comprometido, tiene que ser él. */
+  | { tipo: 'herirComprometido'; n: number }
   /** Lo que no cabe en lo anterior: una función registrada por carta. */
   | { tipo: 'codigo'; clave: string }
+
+/** Cómo se incauta: qué, cuántas, cómo se eligen y qué pasa al recuperarlo o perderlo. */
+export interface Incautar {
+  que: 'mano' | 'mejora' | 'tripulante'
+  n: number
+  /** Cómo se eligen: tú (por defecto), al azar, o las de mayor coste (si empatan, eliges). */
+  criterio?: 'azar' | 'mayorCoste'
+  /** Solo Mejoras de un Tripulante (no del Barco). */
+  deTripulantes?: boolean
+  /** Si tienes alguna de estas cartas, tiene que ser ella («si llevas el Amuleto, tiene que ser él»). */
+  obligadas?: CartaId[]
+  /** Si superas la misión y lo recuperas, además… («y robas 2»). */
+  alRecuperar?: Efecto[]
+  /** Si no superas la misión: fuera del juego (por defecto) o a los descartes. */
+  siPierdes?: 'descartar'
+}
 
 /** Una opción de «Elige» de un recuadro (o de un Destino). `si`: solo se ofrece si se cumple. */
 export interface OpcionEfectos {
@@ -116,7 +145,11 @@ export interface Selector {
   maximo?: number
   sinCapitan?: boolean
   rasgo?: string
+  /** Solo los que no tengan este Rasgo («los que no sean Oficiales»). */
+  sinRasgo?: string
   conEstado?: EstadoTripulante
+  /** Solo este Tripulante concreto. */
+  inst?: InstId
 }
 
 /** Lo que le pasa al elegido. */
@@ -132,6 +165,10 @@ export type AccionSobre =
   | { tipo: 'alMuelle' }
   /** No se prepara: en tu próximo Inicio, hasta el final de la misión, hasta que superes otra Prueba o mientras esta carta siga en juego. */
   | { tipo: 'noPrepara'; hasta: 'inicio' | 'finMision' | 'superarPrueba' | 'carta' }
+  /** Queda señalado por esta carta (para lo que diga después: «ese Tripulante…»), hasta el final de la misión. */
+  | { tipo: 'marcar'; clave: string }
+  /** El jugador elige qué le pasa («sufre 2 heridas o queda rehén»). */
+  | { tipo: 'elegir'; opciones: { texto: string; accion: AccionSobre }[] }
   /** No puede comprometerse: en esta Prueba o mientras esta carta siga en juego. */
   | { tipo: 'noCompromete'; hasta: 'finPrueba' | 'carta' }
   /** No suma en esta Prueba. */
@@ -160,6 +197,10 @@ export type Condicion =
   | { tipo: 'reputacion'; minimo: number }
   | { tipo: 'danoBarco'; minimo: number }
   | { tipo: 'mano'; minimo: number }
+  /** Te quedan al menos N plazas libres de Capacidad. */
+  | { tipo: 'plazasLibres'; minimo: number }
+  /** Tienes al menos N Tripulantes preparados. */
+  | { tipo: 'preparados'; minimo: number }
   /** La Prueba en curso es de esta habilidad. */
   | { tipo: 'hab'; hab: Habilidad }
   | { tipo: 'claves'; claves: string[] }

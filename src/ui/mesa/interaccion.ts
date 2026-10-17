@@ -146,13 +146,6 @@ export function interaccion(s: Estado, d: Decision, sel: Seleccion): Interaccion
             legal(objetivoDeUso(a.uso))
             anadir(opciones, objetivoDeUso(a.uso), opcionUso(s, a.uso, true))
             break
-          case 'reforzar': {
-            legal(a.carta)
-            const hab = s.prueba?.hab
-            const n = hab ? iconosDe(copia(s, a.carta).id, hab) : 0
-            anadir(opciones, a.carta, { etiqueta: `Reforzar (+${n})`, eleccion: { tipo: 'accion', accion: a } })
-            break
-          }
           case 'retirarse':
           case 'terminarPaso':
             break

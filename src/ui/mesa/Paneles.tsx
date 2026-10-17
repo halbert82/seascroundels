@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, type ReactNode } from 'react'
-import { nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
+import { esCarta, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { partesDeRecompensa } from '../textos/decisiones.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { resumenDePartida } from '../../engine/resumen.ts'
@@ -131,9 +131,9 @@ export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
         <section>
           <h3>Resolver una Prueba</h3>
           <ol>
-            <li>Compromete a tu tripulación (o a nadie) y añade cartas.</li>
+            <li>Compromete a tu tripulación (o a nadie) y añade cartas de tu mano: es tu única ocasión.</li>
             <li>Revela el Destino y aplícalo; si no comprometiste a nadie, también Sin oposición.</li>
-            <li>Ventana de acción: capacidades y, si comprometiste a alguien, reforzar.</li>
+            <li>Ventana de acción: capacidades de tus cartas en juego y Eventos con su momento.</li>
             <li>Resuelve la Prueba.</li>
             <li>Gana el Avance del encuentro.</li>
           </ol>
@@ -217,7 +217,8 @@ function cifrasDeMision(s: Estado, fin: number) {
     else if (d?.tipo === 'dano') cifras.dano += d.n
     else if (d?.tipo === 'pago') cifras.cartas += d.n
     else if (d?.tipo === 'iconos') cifras.cartas += d.cartas.length
-    else if (d?.tipo === 'usar' && tipoDe(d.carta) === 'evento') cifras.cartas += 1
+    // (Las Acciones de las fichas de Estado, «estado:encadenado», no son cartas.)
+    else if (d?.tipo === 'usar' && esCarta(d.carta) && tipoDe(d.carta) === 'evento') cifras.cartas += 1
   }
   return cifras
 }

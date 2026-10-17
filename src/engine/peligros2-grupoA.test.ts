@@ -85,11 +85,12 @@ describe('2 · Cielo estrellado', () => {
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
   })
 
-  it('Destino «Estrella polar»: −1 y no se puede reforzar con cartas de la mano', () => {
+  it('Destino «Estrella polar»: −1 y las cartas de tu mano no suman (las comprometidas no cuentan)', () => {
     const j = en('mar', ['chubasco', 'p2_cielo', 'calma'], { mano: ['timon', 'coraje'] })
-    j.comprometer('NAV', ['capitan'])
+    const sinEstrella = totalPrueba(j.comprometer('NAV', ['capitan'], ['timon']).estado)
     expect(dificultadPrueba(j.estado)).toBe(1)
-    expect(j.ofrece('reforzar')).toBe(false)
+    expect(sinEstrella).toBe(3) // Diego 2 + Barco 1: «Mano firme al timón» no suma
+    expect(j.zona('descartesCapitan')).toContain('timon')
   })
 })
 

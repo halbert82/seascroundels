@@ -10,17 +10,17 @@ import { Jugador } from './pruebas/situacion.ts'
 registrarPeligro('percances', { encuentros: { mar: { queda: { quitar: [] } } } })
 
 describe('Herbolaria', () => {
-  it('Agotar: quita Envenenado, Fiebre o Sangrando a un Tripulante (si tiene varios, eliges cuál)', () => {
-    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['envenenado', 'fiebre'] }] })
+  it('Agotar: quita Envenenado, Sangrando, Aturdido o Asustado a un Tripulante (si tiene varios, eliges cuál)', () => {
+    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['envenenado', 'asustado'] }] })
     j.usar('herbolaria.quitar')
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'cualEstado' } })
-    j.opcion('envenenado')
-    expect(j.estados('bucanero')).toEqual(['fiebre'])
+    j.opcion('asustado')
+    expect(j.estados('bucanero')).toEqual(['envenenado'])
     expect(j.copia('herbolaria').agotada).toBe(true)
   })
 
   it('no se ofrece si nadie tiene esos Estados', () => {
-    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['buscado'] }] })
+    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['buscado', 'borracho'] }] })
     expect(j.ofreceCapacidad('herbolaria.quitar')).toBe(false)
   })
 })
@@ -76,15 +76,16 @@ describe('Cataplasma', () => {
 })
 
 describe('Cortar por lo sano', () => {
-  it('Acción: descarta 2 cartas (más su coste de 1) para descartar una carta de Peligro en juego que no sea Terrible', () => {
+  it('Acción: descarta 2 cartas (su coste es 0) para descartar una carta de Peligro en juego que no sea Terrible', () => {
     const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
     expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
-    j.usar('cortar.jugar').elegir('ojo').elegir('timon', 'coraje')
+    j.usar('cortar.jugar').elegir('timon', 'coraje')
     expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('mano')).toEqual(['ojo'])
   })
 
-  it('no se puede jugar sin 3 cartas más en la mano', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon'] })
+  it('no se puede jugar sin 2 cartas más en la mano', () => {
+    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo'] })
     expect(j.ofreceCapacidad('cortar.jugar')).toBe(false)
   })
 })

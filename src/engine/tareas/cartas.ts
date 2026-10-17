@@ -2,7 +2,7 @@
 
 import { esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
-import { curable, curarTripulante, quitarEstadoAnotado, quitarEstadoBarco, tieneEstado } from '../estados.ts'
+import { curable, curarTripulante, quitarEstadoBarco } from '../estados.ts'
 import type { Estado, InstId, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { arriba, barajar, mover, rebarajar } from '../zonas.ts'
@@ -86,7 +86,7 @@ export const perderDia: Manejador<'perderDia'> = (s) => {
  * Al terminar el paso de Jugar cartas: se descarta el muelle entero y se repone. Una carta de Peligro que
  * ocupa el muelle se queda (ocupando su hueco) hasta que pagues para descartarla.
  */
-// TODO(regla): P18 · la carta de Peligro del muelle no se descarta al reponerlo: sigue ocupando un hueco hasta que pagas.
+// La carta de Peligro del muelle no se descarta al reponerlo: sigue ocupando un hueco hasta que pagas (P18).
 export const reponerMuelle: Manejador<'reponerMuelle'> = (s) => {
   const peligros = s.zonas.muelle.filter((c) => s.peligrosEnMuelle?.[c] !== undefined)
   const restos = s.zonas.muelle.filter((c) => !peligros.includes(c))
@@ -164,23 +164,18 @@ export const reparar: Manejador<'reparar'> = (s, t) => {
 
 /**
  * Curar N: «cadaUno» cura N a cada Tripulante; «repartir» reparte N como quiera el jugador; «uno», N a un Tripulante.
- * Curar quita primero las fichas de Envenenado y Sangrando (P13). Con `fiebre` (el Matasanos, en puerto), además
- * quita la Fiebre al curado.
+ * Curar quita primero las fichas de Envenenado y Sangrando (P13).
  */
 export const curar: Manejador<'curar'> = (s, t, e) => {
   const heridos = s.zonas.tripulacion.filter((c) => curable(s, c) > 0)
-  const conFiebre = t.fiebre && !s.mision ? s.zonas.tripulacion.filter((c) => tieneEstado(s, c, 'fiebre')) : []
   if (t.modo === 'uno') {
-    const posibles = [...new Set([...heridos, ...conFiebre])]
-    const candidatos = t.objetivo ? posibles.filter((c) => c === t.objetivo) : posibles
+    const candidatos = t.objetivo ? heridos.filter((c) => c === t.objetivo) : heridos
     if (candidatos.length === 0) return 'hecha'
     if (candidatos.length > 1 && !e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'curarUno', n: t.n }, candidatas: candidatos, min: 1, max: 1 })
     const objetivo = candidatos.length === 1 ? candidatos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
     if (!objetivo) return 'hecha'
     const texto = curarTripulante(s, objetivo, t.n)
     if (texto) anotar(s, 'efecto', `Curas a ${texto}.`)
-    // TODO(regla): P3 · el Matasanos en puerto quita la Fiebre al Tripulante que cura.
-    if (conFiebre.includes(objetivo)) quitarEstadoAnotado(s, objetivo, 'fiebre', nombreDe('matasanos'))
     return 'hecha'
   }
   if (t.modo === 'cadaUno') {
@@ -213,7 +208,13 @@ export const curar: Manejador<'curar'> = (s, t, e) => {
 
 /** Pierdes una Mejora: eliges una del Barco o de un Tripulante (ni Tesoros ni indestructibles). `soloBarco`: de barco. */
 export const perderMejora: Manejador<'perderMejora'> = (s, t, e) => {
-  const candidatas = s.zonas.mejoras.filter((m) => !esIndestructible(copia(s, m).id) && (!t.soloBarco || copia(s, m).vinculadaA === 'barco'))
+  const candidatas = s.zonas.mejoras.filter((m) => {
+    const v = copia(s, m).vinculadaA
+    if (esIndestructible(copia(s, m).id)) return false
+    if (t.soloBarco && v !== 'barco') return false
+    // «Pierdes 1 Mejora de un Tripulante comprometido».
+    return !t.portadores || (v !== null && v !== 'barco' && t.portadores.includes(v))
+  })
   const perder = (m: InstId) => {
     mover(s, m, 'descartesMuelle')
     anotar(s, 'efecto', `Pierdes «${nombre(s, m)}».`)

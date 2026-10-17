@@ -2490,3 +2490,87 @@
 .carta-mesa[data-entorno='ciu'] .card.enc.v2 .encp.v2:nth-child(3) {
   box-shadow: inset 0 0 0 2.5px #f2d27a, 0 0 14px rgba(242, 210, 122, 0.55);
 }
+
+/* ------------------------------------------------------------------ Que nada quede tapado (fase 6) */
+
+/* Barra superior: nada se parte en dos líneas; el nombre de la misión se recorta si no cabe. */
+.turno,
+.pasos li,
+.reloj-n,
+.reputacion {
+  white-space: nowrap;
+}
+.barra-turno {
+  flex: none;
+}
+.barra-mision {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.barra-mision-nombre {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.barra-derecha {
+  flex: none;
+}
+
+/* El centro hace scroll propio: la zona no crece por debajo de la barra de acciones. */
+.centro > .zona {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.mision-cabecera {
+  flex: none;
+}
+.mision-cuerpo,
+.prueba-en-puerto {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 164, 92, 0.55) transparent;
+}
+.mision-cuerpo {
+  /* Sitio para el brillo de las cartas resaltadas. */
+  margin: 8px -8px 0;
+  padding: 6px 8px 8px;
+}
+.prueba-en-puerto {
+  margin: 0 -8px;
+  padding: 2px 8px 6px;
+}
+.mision-cuerpo::-webkit-scrollbar,
+.prueba-en-puerto::-webkit-scrollbar {
+  width: 7px;
+}
+.mision-cuerpo::-webkit-scrollbar-thumb,
+.prueba-en-puerto::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgba(201, 164, 92, 0.55);
+}
+
+/* Con el Destino revelado, el marcador y el Destino se compactan. */
+.panel-prueba.con-destino {
+  gap: 7px;
+}
+.panel-prueba.con-destino .marcador {
+  padding: 4px 16px;
+}
+.panel-prueba.con-destino .cifra {
+  font-size: 46px;
+}
+.panel-prueba.con-destino .contra {
+  font-size: 16px;
+}
+.panel-prueba.con-destino .desglose {
+  gap: 3px;
+}
+.panel-prueba.con-destino .destino-rotulo {
+  margin-bottom: 2px;
+}

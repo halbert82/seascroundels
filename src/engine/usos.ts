@@ -18,7 +18,7 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   const sinTripulantes = s.prueba?.sinCapTripulantes ?? false
   const sinMejoras = (s.prueba?.sinCapMejoras || s.prueba?.sinMejoras) ?? false
   for (const inst of s.zonas.tripulacion) {
-    // TODO(regla): P16 · Encadenado bloquea las capacidades de su carta que se usan (no las constantes ni las de sus Mejoras).
+    // Encadenado bloquea las capacidades de su carta que se usan (no las constantes ni las de sus Mejoras) (P16).
     const bloqueada = tieneEstado(s, inst, 'encadenado') || sinTripulantes
     for (const cap of capacidadesDe(copia(s, inst).id)) {
       if (cap.desde === 'juego' && !(bloqueada && SE_USAN.has(cap.ventana))) yield [cap, inst]
@@ -43,6 +43,13 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
     for (const e of estadosDe(s, inst)) for (const cap of capacidadesDe(cartaDeEstado(e))) if (cap.desde === 'estado') yield [cap, inst]
   }
   for (const e of s.estadosBarco ?? []) for (const cap of capacidadesDe(cartaDeEstado(e))) if (cap.desde === 'estadoBarco') yield [cap, null]
+  // Un Tripulante marcado por una carta («se pierde»…): las capacidades de esa marca, con el Tripulante como fuente.
+  const vistas = new Set<string>()
+  for (const t of s.temporales) {
+    if (!t.inst || !s.zonas.tripulacion.includes(t.inst) || vistas.has(`${t.fuente}/${t.inst}`)) continue
+    vistas.add(`${t.fuente}/${t.inst}`)
+    for (const cap of capacidadesDe(t.fuente)) if (cap.desde === 'marca') yield [cap, t.inst]
+  }
 }
 
 function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
@@ -59,8 +66,10 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
       return fuente !== null && estaEn(s, fuente, 'tripulacion')
     case 'agotarCapitan':
       return estaEn(s, s.capitan, 'tripulacion') && !copia(s, s.capitan).agotada
-    case 'agotarTripulante':
-      return s.zonas.tripulacion.some((c) => !copia(s, c).agotada && (coste.rasgo === null || rasgosDe(copia(s, c).id).includes(coste.rasgo)))
+    case 'agotarTripulante': {
+      const rasgos = coste.rasgos ?? (coste.rasgo === null ? null : [coste.rasgo])
+      return s.zonas.tripulacion.some((c) => !copia(s, c).agotada && (rasgos === null || rasgos.some((r) => rasgosDe(copia(s, c).id).includes(r))))
+    }
     case 'gastarMunicion':
       return s.zonas.mejoras.reduce((n, m) => n + copia(s, m).municion, 0) >= coste.n
     case 'agotarVarios': {

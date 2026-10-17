@@ -8,7 +8,6 @@ import { numeroConIcono, numerosEntreLlaves, primerNumero, textoDe } from '../te
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { canonesSinCargar, destinoVigente, hayHeridos, hayQueReparar, participa, participantes, peligroRevelado } from './comun.ts'
-import { conEstado } from '../estados.ts'
 import { definicionActual, problemaCompromiso } from '../prueba.ts'
 
 const texto = (id: CartaId) => textoDe(id)
@@ -158,15 +157,15 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
     efecto: () => [{ tipo: 'reparar', n: numeroConIcono(texto('carpintero'), 'dano') }],
   },
 
-  // Matasanos: «Agotar: Cura 2 heridas a un Tripulante.» En puerto, además quita la Fiebre al curado (fase 6).
+  // Matasanos: «Agotar: Cura 2 heridas a un Tripulante.»
   {
     clave: 'matasanos.curar',
     carta: 'matasanos',
     ventana: 'libre',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    requisito: (s) => hayHeridos(s) || (!s.mision && conEstado(s, 'fiebre').length > 0),
-    efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('matasanos'), 'herida'), modo: 'uno', fiebre: true }],
+    requisito: (s) => hayHeridos(s),
+    efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('matasanos'), 'herida'), modo: 'uno' }],
   },
 
   // Espadachín errante: «Si es el único Tripulante que participa en una Prueba, recibe +2 COM.» (en vivo)

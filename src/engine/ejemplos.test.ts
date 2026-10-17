@@ -101,7 +101,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, Niebla espesa, «Corriente traicionera», refuerza, supera, busca los Cañones y roba cuatro', () => {
+  it('turno completo: zarpa, Niebla espesa, compromete con «Mano firme al timón», «Corriente traicionera», supera, busca los Cañones y roba cuatro', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'calma_ev'],
@@ -122,13 +122,14 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.registro).toContain('Revelas «Niebla»: Niebla espesa (Mar).')
 
     // Diego (NAV 2) y el Bucanero (NAV 1, sin el +1 de Diego porque Diego se agota al comprometerse) suman 3,
-    // y La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4 (N12).
-    j.comprometer('NAV', ['capitan', 'bucanero'])
-    expect(totalPrueba(j.estado)).toBe(4)
-    // «Corriente traicionera»: +1, o +2 si la Prueba es de NAV. La Prueba pide 5 y Albert tiene 4.
+    // «Mano firme al timón» añade sus 2 iconos de NAV antes del Destino y La Sombra del Alba da +1 a las Pruebas de
+    // NAV en el Mar: 6 (N12).
+    j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
+    expect(totalPrueba(j.estado)).toBe(6)
+    // «Corriente traicionera»: +1, o +2 si la Prueba es de NAV. La Prueba pide 5 y Albert tiene 6.
     expect(j.registro.some((t) => t.startsWith('Destino: «Corriente traicionera»'))).toBe(true)
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 5 } })
-    j.reforzar('timon').seguir()
+    j.seguir()
     expect(j.registro).toContain('Total 6 contra 5: superas la Prueba.')
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
@@ -144,7 +145,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
 })
 
 describe('Ejemplo · Resolver una Prueba (Diego contra el Jaguar)', () => {
-  it('«Zarpazo»: +1 y Diego se lleva la herida; descarta «¡Al abordaje!» y llega a 5', () => {
+  it('Diego compromete con «¡Al abordaje!» (5); «Zarpazo»: +1 y Diego se lleva la herida; 5 contra 4', () => {
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
       escenario: ['calma_ev'],
@@ -155,10 +156,10 @@ describe('Ejemplo · Resolver una Prueba (Diego contra el Jaguar)', () => {
     })
     j.zarpar('aguada-I')
     expect(j.registro).toContain('Revelas «Bestias»: Jaguar (Naturaleza).')
-    j.comprometer('COM', ['capitan'])
+    j.comprometer('COM', ['capitan'], ['abordaje'])
     expect(j.registro).toContain('Destino: «Zarpazo» (+1).')
     expect(j.copia('capitan').heridas).toBe(1)
-    j.reforzar('abordaje').seguir()
+    j.seguir()
     expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
   })
 })

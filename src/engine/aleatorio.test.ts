@@ -70,10 +70,7 @@ describe('Prueba masiva: mazos de muelle variados', () => {
       const p = jugarPartida(semilla, jugador, { invariantes: i < 40, mazoDeMuelle })
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }
-    // Herbolaria y Cataplasma quitan Envenenado, Fiebre o Sangrando: hasta que entren los Peligros 2.0 que los ponen
-    // (grupos B a E), no tienen a quién quitárselos.
-    const aun = new Set(['herbolaria.quitar', 'cataplasma.jugar'])
-    expect(capacidadesDelJugador().filter((c) => !usadas.has(c) && !aun.has(c))).toEqual([])
+    expect(capacidadesDelJugador().filter((c) => !usadas.has(c))).toEqual([])
   })
 })
 

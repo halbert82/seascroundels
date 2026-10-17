@@ -3,7 +3,10 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CATALOGO, type EntradaCatalogo, type TipoCarta } from '../../engine/catalogo.ts'
+import { CATALOGO as TODAS, type EntradaCatalogo, type TipoCarta } from '../../engine/catalogo.ts'
+
+/** Las cartas de la caja: sin los Peligros antiguos, que solo se conservan para las pruebas del motor. */
+const CATALOGO = TODAS.filter((e) => !(e.tipo === 'peligro' && e.carta.retirada))
 import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
 import './galeria.css'
 

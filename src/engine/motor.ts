@@ -37,11 +37,14 @@ function procesar(s: Estado, t: Tarea, e: Eleccion | null): void {
   }
 }
 
-/** Los efectos «mientras esta carta siga en juego» se acaban en cuanto la carta sale. */
+/**
+ * Los efectos «mientras esta carta siga en juego» se acaban en cuanto la carta sale. (Mientras se lee su encuentro,
+ * antes de quedarse en juego, aún cuenta.)
+ */
 function limpiarTemporales(s: Estado): void {
-  if (s.temporales.some((t) => t.hasta === 'carta' && (!t.carta || !s.zonas.peligrosEnJuego.includes(t.carta)))) {
-    s.temporales = s.temporales.filter((t) => !(t.hasta === 'carta' && (!t.carta || !s.zonas.peligrosEnJuego.includes(t.carta))))
-  }
+  const fuera = (t: Estado['temporales'][number]) =>
+    t.hasta === 'carta' && (!t.carta || !(s.zonas.peligrosEnJuego.includes(t.carta) || s.zonas.encuentro.includes(t.carta)))
+  if (s.temporales.some(fuera)) s.temporales = s.temporales.filter((t) => !fuera(t))
 }
 
 /** Comprobaciones que se resuelven en el momento entre paso y paso (D8). Devuelve true si ha encolado algo. */

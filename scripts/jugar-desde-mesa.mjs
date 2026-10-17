@@ -76,7 +76,6 @@ async function jugarUna(n) {
         else if (a.tipo === 'retirarse') await boton(pagina, 'Retirarte a puerto')
         else if (a.tipo === 'reclutar') await pulsarCarta(pagina, a.carta, 'Reclutar')
         else if (a.tipo === 'despedir') await pulsarCarta(pagina, a.carta, 'Despedir')
-        else if (a.tipo === 'reforzar') await pulsarCarta(pagina, a.carta, 'Reforzar')
         else if (a.tipo === 'adquirir') {
           await pulsarCarta(pagina, a.carta, 'Adquirir')
           const esperando = await pagina.evaluate(() => document.querySelector('.panel-decision .pd-aviso')?.textContent?.includes('Pulsa quién lleva') ?? false)

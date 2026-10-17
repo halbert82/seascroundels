@@ -36,27 +36,6 @@ describe('Estados de los Tripulantes', () => {
     expect(j.copia('bucanero').heridas).toBe(0)
   })
 
-  it('Fiebre: −1 a todas sus habilidades y al final del turno se contagia a otro Tripulante sin Fiebre', () => {
-    const j = alFinal({ tripulacion: [{ id: 'bucanero', estados: ['fiebre'] }, 'carpintero', 'vigia'] })
-    // El Bucanero: COM 2 + 1 de Diego − 1 por la Fiebre.
-    expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })).toBe(2)
-    j.ninguna()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'contagio' } })
-    j.elegir('vigia')
-    expect(j.estados('vigia')).toEqual(['fiebre'])
-    expect(j.estados('carpintero')).toEqual([])
-  })
-
-  it('Fiebre: la Taberna la quita a todos; el Matasanos, en puerto, al que cura', () => {
-    const j = Jugador.en({ tripulacion: [{ id: 'bucanero', estados: ['fiebre'] }, { id: 'vigia', estados: ['fiebre'] }] })
-    j.pasarTurnoEnPuerto(['taberna', 'tablon'])
-    expect(j.estados('bucanero')).toEqual([])
-    expect(j.estados('vigia')).toEqual([])
-    const k = Jugador.en({ tripulacion: ['matasanos', { id: 'bucanero', estados: ['fiebre'] }] })
-    k.usar('matasanos.curar')
-    expect(k.estados('bucanero')).toEqual([])
-  })
-
   it('Borracho: +1 COM, no puede comprometerse a NAV ni EXP, y se quita al final del turno', () => {
     const j = mision('maracaibo-II', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['borracho'] }] })
     expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })).toBe(4)
@@ -99,14 +78,19 @@ describe('Estados de los Tripulantes', () => {
     expect(dificultadPrueba(k.estado)).toBe(3)
   })
 
-  it('Maldito: cuando un Destino hiere a «uno de los comprometidos», tiene que ser él; se quita al superar un encuentro Sobrenatural', () => {
+  it('Maldito: cuando un Destino hiere a «uno de los comprometidos», tiene que ser él; se quita solo si participa en la Prueba Sobrenatural que se supera (P15)', () => {
     const j = mision('maracaibo-II', ['chubasco', 'rivales', 'calma'], { tripulacion: ['viejo_lobo', { id: 'bucanero', estados: ['maldito'] }] })
     j.comprometer('NAV', ['viejo_lobo', 'bucanero']).pasarOfertas()
     expect(j.copia('bucanero').heridas).toBe(1)
     expect(j.copia('viejo_lobo').heridas).toBe(0)
+    // No participa: sigue Maldito.
     const k = mision('ladron-I', ['sirenas', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['maldito'] }] })
     k.comprometer('EXP', ['baqueano']).pasarOfertas().seguir().pasarOfertas()
-    expect(k.estados('bucanero')).toEqual([])
+    expect(k.estados('bucanero')).toEqual(['maldito'])
+    // Participa: se le quita.
+    const m = mision('ladron-I', ['sirenas', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['maldito'] }] })
+    m.comprometer('EXP', ['baqueano', 'bucanero']).pasarOfertas().seguir().pasarOfertas()
+    expect(m.estados('bucanero')).toEqual([])
   })
 
   it('Encadenado: no puede comprometerse ni usar capacidades; una Prueba de COM o EXP 3 en una ventana de acción lo libera', () => {
@@ -165,6 +149,18 @@ describe('Estados del Barco', () => {
     expect(j.copia('bucanero').agotada).toBe(true)
     j.seguir()
     expect(j.estado.danoBarco).toBe(1)
+  })
+
+  it('Incendio a bordo: fuera del Mar no hace daño (P4)', () => {
+    const j = mision('ladron-I', ['calma', 'calma', 'calma'], { barco: { estados: ['incendio'] } })
+    expect(j.estado.danoBarco).toBe(0)
+  })
+
+  it('Incendio a bordo: en tierra, si acaba la misión sin apagarlo, también pierdes una Mejora de barco (P4)', () => {
+    const j = mision('ladron-I', ['calma', 'calma'], { barco: { estados: ['incendio'], mejoras: ['vela', 'hamacas'] } })
+    j.retirarse()
+    j.opcion('dejar')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'perderMejora' } })
   })
 
   it('Incendio a bordo: si no se apaga antes de acabar la misión, pierdes una Mejora de barco (y la ficha sigue)', () => {

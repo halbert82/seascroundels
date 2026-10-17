@@ -211,7 +211,7 @@ Para **pagar un coste**, descarta de tu mano tantas cartas como indique el timó
 
 Cuando reclutas o adquieres una carta del muelle, su hueco se queda vacío. Al terminar este paso, descarta todas las cartas que queden en el muelle y revela otras nuevas hasta llenarlo. Así, las cartas nuevas se quedan disponibles mientras resuelves la misión y podrás adquirirlas el turno siguiente.
 
-> *Ejemplo:* tienes 5 cartas en la mano. En el muelle están el Bucanero veterano (coste 2) y los Cañones de bronce (coste 2). Si coges los dos, pagas 4 cartas y zarpas con 1 en la mano. Si solo reclutas al Bucanero, zarpas con 3 cartas para reforzar Pruebas, pero los Cañones se descartan al reponer el muelle.
+> *Ejemplo:* tienes 5 cartas en la mano. En el muelle están el Bucanero veterano (coste 2) y los Cañones de bronce (coste 2). Si coges los dos, pagas 4 cartas y zarpas con 1 en la mano. Si solo reclutas al Bucanero, zarpas con 3 cartas para añadir a tus Pruebas, pero los Cañones se descartan al reponer el muelle.
 
 #### 3. Quedarte o zarpar
 
@@ -262,15 +262,15 @@ Cada encuentro te da su Avance, pase lo que pase. Un **encuentro sin Prueba** so
 
 Una Prueba indica una habilidad y una dificultad («COM 3»). Resuélvela con estos pasos:
 
-1. **Compromete a tu tripulación.** Si la Prueba ofrece dos opciones, elige una. Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad de todos ellos, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: cada icono suma 1. También puedes no comprometer a nadie.
+1. **Compromete a tu tripulación.** Si la Prueba ofrece dos opciones, elige una. Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad de todos ellos, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: cada icono suma 1. Es el único momento en que las cartas de tu mano suman por sus iconos: después de revelar el Destino ya no se pueden añadir. También puedes no comprometer a nadie.
 2. **Revela el Destino.** Revela la carta de arriba del mazo de Peligros, lee solo su franja de Destino y aplícala: cambia la dificultad o añade un efecto. Si no comprometiste a nadie, aplica también su línea Sin oposición, si la tiene.
-3. **Ventana de acción.** Antes de resolver la Prueba puedes usar capacidades, como gastar munición de tus Cañones. Si comprometiste a alguien, también puedes **reforzar**: descarta más cartas de tu mano con iconos de esa habilidad.
+3. **Ventana de acción.** Antes de resolver la Prueba puedes usar las capacidades de tus cartas en juego (Tripulantes, Mejoras, Cañones…), como gastar munición de tus Cañones, y jugar los Eventos que tienen su propio momento escrito, como «Reflejos de gato». Aquí ya no se descartan cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, superas la Prueba y aplicas el recuadro verde. Si no, o si no comprometiste a nadie, la fallas y aplicas el recuadro rojo.
 5. **Gana el Avance** del encuentro: ponlo en fichas sobre la carta de misión.
 
 Algunos encuentros ofrecen **dos opciones** («EXP 3 / NAV 4»). Otros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»).
 
-> *Ejemplo:* comprometes a Diego (COM 3) contra el Jaguar (COM 3). El Destino es «Zarpazo»: +1 a la dificultad, y el que más sume de los comprometidos sufre 1 herida. Diego se lleva la herida y ahora necesitas 4. Descartas «¡Al abordaje!», que tiene dos iconos de COM, y llegas a 5: superas la Prueba.
+> *Ejemplo:* comprometes a Diego (COM 3) contra el Jaguar (COM 3) y, por si el Destino se tuerce, añades «¡Al abordaje!», que tiene dos iconos de COM: sumas 5. El Destino es «Zarpazo»: +1 a la dificultad, y el que más sume de los comprometidos sufre 1 herida. Diego se lleva la herida y ahora necesitas 4. Con 5, superas la Prueba.
 
 #### Retirarte
 
@@ -355,9 +355,9 @@ Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y 
 
 **Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. «Rumores del tesoro» le da 1 ficha de Avance, y la capacidad Al zarpar de la misión le da otra porque tiene un Marinero preparado: empieza con 2.
 
-Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3, y La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota.
+Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 3 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
 
-Revela el Destino: «Corriente traicionera», +1 a la dificultad, o +2 si la Prueba es de NAV. Esta lo es, así que la Prueba pide ahora 5 y Albert tiene 4. Refuerza descartando «Mano firme al timón», con dos iconos de NAV: llega a 6 y la supera. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
+Revela el Destino: «Corriente traicionera», +1 a la dificultad, o +2 si la Prueba es de NAV. Esta lo es, así que la Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
 
 **Recompensa.** Gana 1 de reputación y busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. Devuelve las cartas de Peligro a su pila de descartes y vuelve a puerto.
 
@@ -555,7 +555,7 @@ El **mazo de Escenario** es el reloj de la partida. Su tamaño depende del modo 
 
 ### Evento
 
-Carta del mazo del capitán con un efecto propio. Para jugarla, paga su coste en el momento que indique su texto. Si no indica cuándo, juega el Evento en cualquier momento. También puedes descartarlo por sus iconos de habilidad para sumar a una Prueba, al reforzar o al cubrir una Distancia.
+Carta del mazo del capitán con un efecto propio. Para jugarla, paga su coste en el momento que indique su texto. Si no indica cuándo, juega el Evento en cualquier momento. También puedes descartarlo por sus iconos de habilidad para sumar a una Prueba, al comprometer, o para cubrir una Distancia.
 
 ### Giro
 
@@ -565,7 +565,7 @@ Regla especial de una misión que cambia cómo se juegan sus encuentros («Los e
 
 NAV (navegar), COM (combatir) y EXP (explorar). Las tienen los Tripulantes y las piden las Pruebas y la Distancia.
 
-Las **cartas de Habilidad** no tienen coste ni texto. Solo se usan descartándolas por sus iconos: cada icono suma 1.
+Las **cartas de Habilidad** no tienen coste ni texto. Solo se usan descartándolas por sus iconos, al comprometer a una Prueba o para cubrir una Distancia: cada icono suma 1.
 
 ### Herida
 
@@ -685,9 +685,9 @@ El Tripulante al que está vinculada una Mejora de tripulante o un Tesoro.
 
 El desafío de un encuentro: una habilidad y una dificultad («COM 3»), con un efecto de superación (verde) y uno de fallo (rojo). Para resolverla:
 
-1. **Compromete a tu tripulación.** Si la Prueba ofrece dos opciones, elige una. Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad. También puedes no comprometer a nadie.
+1. **Compromete a tu tripulación.** Si la Prueba ofrece dos opciones, elige una. Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: es el único momento en que pueden sumar. También puedes no comprometer a nadie.
 2. **Revela el Destino** y aplícalo. Si no comprometiste a nadie, aplica también su línea Sin oposición.
-3. **Ventana de acción.** Puedes usar capacidades y, si comprometiste a alguien, reforzar.
+3. **Ventana de acción.** Puedes usar capacidades de tus cartas en juego y Eventos con su propio momento escrito. Ya no se añaden cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, la superas; si no, o si no comprometiste a nadie, la fallas.
 5. **Gana el Avance** del encuentro.
 
@@ -708,10 +708,6 @@ Pagar el coste de un Tripulante del muelle para que entre en juego. Entra prepar
 
 - Tu Barco no puede llevar más Tripulantes que su Capacidad. Tu Capitán no cuenta.
 - Si un efecto te deja reclutar durante una misión, el Tripulante entra preparado, ocupa Capacidad (si no cabe, no puedes reclutarlo) y cuenta como reclutar.
-
-### Reforzar
-
-En la ventana de acción de una Prueba, descartar más cartas de tu mano con iconos de la habilidad de la Prueba. Solo puedes reforzar si comprometiste a alguien.
 
 ### Rehén
 
@@ -778,9 +774,9 @@ Elige uno de tus Tripulantes, que no sea el Capitán, y devuélvelo al muelle ju
 
 ### Resolver una Prueba
 
-1. Compromete a tu tripulación (o a nadie) y añade cartas.
+1. Compromete a tu tripulación (o a nadie) y añade cartas de tu mano: es tu única ocasión.
 2. Revela el Destino y aplícalo; si no comprometiste a nadie, también Sin oposición.
-3. Ventana de acción: capacidades y, si comprometiste a alguien, reforzar.
+3. Ventana de acción: capacidades de tus cartas en juego y Eventos con su propio momento.
 4. Resuelve la Prueba.
 5. Gana el Avance del encuentro.
 

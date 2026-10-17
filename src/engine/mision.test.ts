@@ -139,16 +139,18 @@ describe('Revelar y resolver encuentros', () => {
     expect(j.registro).toContain('Total 0 contra 3: fallas la Prueba (nadie comprometido).')
   })
 
-  it('reforzar solo si se comprometió a alguien', () => {
-    const sinNadie = enPuerto({ misiones: ['fantasma-I'], mano: ['abordaje'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
-    sinNadie.zarpar('fantasma-I').comprometer('COM')
-    expect(sinNadie.decision.motivo.clave).toBe('ventanaPrueba')
-    expect(sinNadie.ofrece('reforzar')).toBe(false)
-    const conAlguien = enPuerto({ misiones: ['fantasma-I'], mano: ['abordaje'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
-    conAlguien.zarpar('fantasma-I').comprometer('COM', ['capitan'])
-    expect(conAlguien.decision.motivo.clave).toBe('ventanaPrueba')
-    conAlguien.reforzar('abordaje').seguir()
-    expect(conAlguien.registro).toContain('Total 5 contra 3: superas la Prueba.')
+  it('sin refuerzo: las cartas de la mano solo se añaden al comprometer; en la ventana de acción ya no se descartan por sus iconos', () => {
+    const j = enPuerto({ misiones: ['fantasma-I'], mano: ['abordaje'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
+    j.zarpar('fantasma-I').comprometer('COM', ['capitan'])
+    expect(j.decision.motivo.clave).toBe('ventanaPrueba')
+    const acciones = (j.decision as { acciones: { tipo: string }[] }).acciones.map((a) => a.tipo)
+    expect(acciones).toEqual(['terminarPaso'])
+    j.seguir()
+    expect(j.registro).toContain('Total 3 contra 3: superas la Prueba.')
+    expect(j.zona('mano')).toEqual(['abordaje'])
+    const conCarta = enPuerto({ misiones: ['fantasma-I'], mano: ['abordaje'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
+    conCarta.zarpar('fantasma-I').comprometer('COM', ['capitan'], ['abordaje']).seguir()
+    expect(conCarta.registro).toContain('Total 5 contra 3: superas la Prueba.')
   })
 
   it('el Avance del encuentro se gana se supere o no la Prueba', () => {

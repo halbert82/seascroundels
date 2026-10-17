@@ -29,11 +29,16 @@ export interface DefinicionPrueba {
   soloCon?: InstId
 }
 
-/** Una opción de «Elige»: hacer la Prueba (quizá más difícil) o pagar algo. */
+/**
+ * Una opción de «Elige»: hacer la Prueba (quizá más difícil) o pagar algo. Con `efectos` y `prueba` a la vez, pagas
+ * y después haces la Prueba («le das 2 munición, o la Prueba recibe +2»).
+ */
 export interface OpcionElige {
   texto: string
   /** Lo que se paga (si es una opción de pago). */
   efectos?: Efecto[]
+  /** Solo se ofrece si se cumple. */
+  si?: Condicion
   /** Con esta opción se hace la Prueba. */
   prueba?: boolean
   /** «… o la Prueba recibe +2»: dificultad de más. */
@@ -49,7 +54,7 @@ export type Disparo = 'revelarPeligro' | 'cartaResuelta' | 'finTurno' | 'superar
 
 /** Cómo se quita una carta que se queda en juego (lo dice la propia carta). */
 export type FormaDeQuitar =
-  | { tipo: 'prueba'; opciones: OpcionPrueba[]; fallo?: Efecto[] }
+  | { tipo: 'prueba'; opciones: OpcionPrueba[]; fallo?: Efecto[]; exito?: Efecto[] }
   | { tipo: 'agotarRasgo'; rasgo: string | null }
   | { tipo: 'pagar'; n: number }
 
@@ -79,9 +84,19 @@ export interface QuedaEnJuego {
   modificadores?: { a: 'dificultad' | 'totalPrueba'; hab?: Habilidad; n: number }[]
   /** Mientras esté en juego, no puedes superar la misión. */
   bloqueaSuperar?: boolean
+  /** Lo que pasa además cuando la quitas con una de sus formas de quitarla (no al llegar a su contador). */
+  alQuitar?: Efecto[]
 }
 
-/** Restricciones al comprometer de un encuentro («los Tripulantes con Fiebre no pueden comprometerse»…). */
+/** Lo que el texto de un encuentro cambia en su Prueba («las Mejoras no suman», «las cartas de la mano no suman»…). */
+export type CambiosDePrueba = Partial<
+  Pick<
+    PruebaEnCurso,
+    'sinMejoras' | 'mejorasNoSuman' | 'sinCapTripulantes' | 'sinCapMejoras' | 'sinEventos' | 'sinCartas' | 'sinCanones' | 'invertirDestino' | 'destinoAntes'
+  >
+>
+
+/** Restricciones al comprometer de un encuentro («los Tripulantes heridos no pueden comprometerse»…). */
 export interface Restriccion {
   maximo?: number
   /** Devuelve el motivo si este Tripulante no puede comprometerse. */
@@ -109,6 +124,8 @@ export interface ReglasEncuentro {
   superaSi?: Condicion
   /** Si se cumple al leerla, no hay Prueba: se gana el Avance y ya. */
   sinPruebaSi?: Condicion
+  /** Lo que cambia en su Prueba. */
+  prueba?: CambiosDePrueba
 }
 
 export interface ReglasDestino {
@@ -122,7 +139,7 @@ export interface ReglasDestino {
   siFallas?: Efecto[]
   sinOposicion?: Efecto[]
   /** Lo que cambia en esta Prueba mientras se aplica. */
-  prueba?: Partial<Pick<PruebaEnCurso, 'sinMejoras' | 'sinCapTripulantes' | 'sinCapMejoras' | 'sinEventos' | 'sinReforzar' | 'sinCartas' | 'sinCanones'>>
+  prueba?: CambiosDePrueba
   capacidades?: CapacidadDeCarta[]
 }
 
