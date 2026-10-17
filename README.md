@@ -9,7 +9,9 @@ Esta aplicación web sirve para jugarlo y probarlo.
 
 - **Fase 1 (hecha):** proyecto base, publicación automática en GitHub Pages y galería con las 153 cartas
   de la Caja básica dibujadas desde `data/cartas.json`, con modo de comparación con `referencia/cartas`.
-- Fases siguientes: motor de reglas, capacidades de las cartas y mesa de juego (ver `CLAUDE.md`).
+- **Fase 2 (hecha):** motor de reglas, primera parte: preparación, turno, puerto, muelle, pagar, reclutar,
+  adquirir, despedir, Escenario y derrota por tiempo, con sus pruebas.
+- Fases siguientes: misiones y Pruebas, capacidades de las cartas y mesa de juego (ver `CLAUDE.md`).
 
 ## Para trabajar en local
 
@@ -34,6 +36,9 @@ del texto (las referencias se capturaron con medio píxel de desplazamiento).
 ## Organización
 
 - `src/engine/`: datos y reglas del juego, en TypeScript puro (sin React).
+  - El estado de la partida es JSON simple; `responder(estado, elección)` lo avanza hasta la siguiente decisión.
+  - Las reglas son una pila de tareas (`tareas/`); las capacidades de las cartas, un registro por carta (`capacidades/`).
+  - `pruebas/situacion.ts` monta situaciones de prueba en una llamada; `docs/decisiones.md` recoge las decisiones de reglas.
 - `src/ui/cartas/`: dibujo de las cartas. `cartas.css` es la maquetación original portada;
   `ajustes.ts` recoge los ajustes que la plantilla original decidía carta a carta.
 - `src/ui/galeria/`: la galería y la hoja que usan las capturas.

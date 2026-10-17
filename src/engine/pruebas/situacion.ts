@@ -1,0 +1,374 @@
+// Ayudantes para las pruebas del motor (no forman parte del juego):
+// - montar una situación concreta en una sola llamada;
+// - jugarla paso a paso con los identificadores del catálogo;
+// - comprobar los invariantes del estado tras cada paso.
+
+import { sembrar } from '../azar.ts'
+import { esUnica } from '../catalogo.ts'
+import { DATOS, type Habilidad } from '../datos.ts'
+import { copia as copiaDe, encolar, estadoVacio } from '../estado.ts'
+import { ejecutar, responder } from '../motor.ts'
+import { nuevaPartida, type OpcionesPartida } from '../preparacion.ts'
+import {
+  ZONAS,
+  type Accion,
+  type CartaId,
+  type Consulta,
+  type Copia,
+  type Decision,
+  type Eleccion,
+  type Estado,
+  type InstId,
+  type Temporal,
+  type Zona,
+} from '../tipos.ts'
+import { valor } from '../valores.ts'
+import { crearCopia, zonaDe } from '../zonas.ts'
+
+export interface CopiaInicial {
+  id: CartaId
+  heridas?: number
+  agotada?: boolean
+  /** Mejoras de tripulante (o Tesoros) que lleva. */
+  mejoras?: CartaId[]
+  entrenamiento?: Habilidad[]
+}
+
+export interface MejoraInicial {
+  id: CartaId
+  municion?: number
+  agotada?: boolean
+}
+
+export interface OpcionesSituacion {
+  semilla?: number
+  /** Paso del turno en el que empieza la situación (por defecto, Jugar cartas). */
+  empezarEn?: 'inicio' | 'jugarCartas' | 'quedarseOZarpar' | 'final'
+  turno?: number
+  /** Zonas: la primera carta es la de arriba. Lo que no se indica, queda vacío. */
+  mano?: CartaId[]
+  mazoCapitan?: CartaId[]
+  descartesCapitan?: CartaId[]
+  muelle?: CartaId[]
+  mazoMuelle?: CartaId[]
+  descartesMuelle?: CartaId[]
+  escenario?: CartaId[]
+  descartesEscenario?: CartaId[]
+  capitan?: Omit<CopiaInicial, 'id'>
+  /** Tripulantes además del Capitán. */
+  tripulacion?: (CartaId | CopiaInicial)[]
+  barco?: { dano?: number; mejoras?: (CartaId | MejoraInicial)[] }
+  /** Misiones disponibles (por defecto, las tres iniciales). */
+  misiones?: CartaId[]
+  /** Mazo de Misiones (por defecto, los capítulos I y las aventuras, sin barajar). */
+  mazoMisiones?: CartaId[]
+  reputacion?: number
+  temporales?: Temporal[]
+}
+
+function ponerCopia(s: Estado, entrada: CartaId | CopiaInicial, zona: Zona): InstId {
+  const datos = typeof entrada === 'string' ? { id: entrada } : entrada
+  const inst = crearCopia(s, datos.id, zona)
+  const c = copiaDe(s, inst)
+  c.heridas = datos.heridas ?? 0
+  c.agotada = datos.agotada ?? false
+  c.entrenamiento = [...(datos.entrenamiento ?? [])]
+  for (const m of datos.mejoras ?? []) copiaDe(s, crearCopia(s, m, 'mejoras')).vinculadaA = inst
+  return inst
+}
+
+/** Monta una partida en una situación concreta y la deja esperando la primera decisión. */
+export function montar(op: OpcionesSituacion = {}): Estado {
+  const s = estadoVacio(sembrar(op.semilla ?? 1))
+  s.capitan = ponerCopia(s, { id: DATOS.mazosPredefinidos.capitanInicial, ...op.capitan }, 'tripulacion')
+  for (const t of op.tripulacion ?? []) ponerCopia(s, t, 'tripulacion')
+  for (const m of op.barco?.mejoras ?? []) {
+    const datos = typeof m === 'string' ? { id: m } : m
+    const c = copiaDe(s, crearCopia(s, datos.id, 'mejoras'))
+    c.vinculadaA = 'barco'
+    c.municion = datos.municion ?? 0
+    c.agotada = datos.agotada ?? false
+  }
+  s.danoBarco = op.barco?.dano ?? 0
+  const zonas: [Zona, CartaId[] | undefined][] = [
+    ['mano', op.mano],
+    ['mazoCapitan', op.mazoCapitan],
+    ['descartesCapitan', op.descartesCapitan],
+    ['muelle', op.muelle],
+    ['mazoMuelle', op.mazoMuelle],
+    ['descartesMuelle', op.descartesMuelle],
+    ['mazoEscenario', op.escenario],
+    ['descartesEscenario', op.descartesEscenario],
+    ['misionesDisponibles', op.misiones ?? DATOS.ordenMisiones.iniciales.map((m) => `${m}-I`)],
+    [
+      'mazoMisiones',
+      op.mazoMisiones ?? [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras].map((m) => `${m}-I`),
+    ],
+  ]
+  for (const [zona, ids] of zonas) for (const id of ids ?? []) crearCopia(s, id, zona)
+  s.reputacion = op.reputacion ?? 0
+  s.temporales = [...(op.temporales ?? [])]
+
+  const turno = op.turno ?? 1
+  const empezar = op.empezarEn ?? 'jugarCartas'
+  if (empezar === 'inicio') {
+    s.turno = turno - 1
+    encolar(s, { tipo: 'turno', paso: 'inicio' })
+  } else {
+    s.turno = turno
+    encolar(s, { tipo: 'turno', paso: empezar === 'jugarCartas' ? 'jugar' : empezar })
+  }
+  ejecutar(s)
+  comprobarInvariantes(s)
+  return s
+}
+
+// ---------------------------------------------------------------------------
+// Invariantes
+
+function comprobarJson(valor: unknown, ruta: string): void {
+  if (valor === null || typeof valor === 'string' || typeof valor === 'boolean') return
+  if (typeof valor === 'number') {
+    if (!Number.isFinite(valor)) throw new Error(`Número no válido en ${ruta}`)
+    return
+  }
+  if (Array.isArray(valor)) {
+    valor.forEach((v, i) => comprobarJson(v, `${ruta}[${i}]`))
+    return
+  }
+  if (typeof valor === 'object' && Object.getPrototypeOf(valor) === Object.prototype) {
+    for (const [k, v] of Object.entries(valor)) {
+      if (v === undefined) throw new Error(`Valor indefinido en ${ruta}.${k}`)
+      comprobarJson(v, `${ruta}.${k}`)
+    }
+    return
+  }
+  throw new Error(`El estado no es JSON simple en ${ruta}`)
+}
+
+/**
+ * Lanza un error si el estado incumple alguna regla interna del motor.
+ * `json: false` se salta la comprobación de que es JSON simple (la más cara), para las pruebas masivas.
+ */
+export function comprobarInvariantes(s: Estado, { json = true }: { json?: boolean } = {}): void {
+  const vistas = new Map<InstId, Zona>()
+  for (const z of ZONAS) {
+    for (const inst of s.zonas[z]) {
+      if (vistas.has(inst)) throw new Error(`La copia ${inst} está en ${vistas.get(inst)} y en ${z}`)
+      vistas.set(inst, z)
+    }
+  }
+  for (const inst of Object.keys(s.cartas) as InstId[]) {
+    if (!vistas.has(inst)) throw new Error(`La copia ${inst} no está en ninguna zona`)
+  }
+  if (vistas.size !== Object.keys(s.cartas).length) throw new Error('Hay copias en zonas que no existen')
+
+  if (json) comprobarJson(s, 'estado')
+
+  for (const [inst, c] of Object.entries(s.cartas)) {
+    if (c.heridas < 0 || c.municion < 0 || c.avance < 0) throw new Error(`Contador negativo en ${inst}`)
+  }
+  if (s.danoBarco < 0 || s.reputacion < 0) throw new Error('Contador negativo en la partida')
+
+  if (s.resultado) {
+    if (s.pila.length > 0 || s.pendiente) throw new Error('La partida ha terminado pero quedan tareas o decisiones')
+  } else {
+    if (!s.pendiente) throw new Error('La partida está parada sin ninguna decisión pendiente')
+    const arriba = s.pila[s.pila.length - 1]
+    if (arriba?.id !== s.pendiente.tarea) throw new Error('La decisión pendiente no es de la tarea de arriba')
+  }
+
+  const enJuego = [...s.zonas.tripulacion, ...s.zonas.mejoras, ...s.zonas.rehenes]
+  for (const m of s.zonas.mejoras) {
+    const v = s.cartas[m]?.vinculadaA
+    const reasignando = s.pila.some((t) => t.tipo === 'reasignarTesoro' && t.tesoro === m)
+    if (v !== 'barco' && !(v && (s.zonas.tripulacion.includes(v) || s.zonas.rehenes.includes(v))) && !reasignando) {
+      throw new Error(`La Mejora ${m} no está vinculada a nada`)
+    }
+  }
+  const unicas = enJuego.map((i) => s.cartas[i]?.id ?? '').filter((id) => id && esUnica(id))
+  if (new Set(unicas).size !== unicas.length) throw new Error('Hay dos copias de una carta única en juego')
+}
+
+// ---------------------------------------------------------------------------
+// Jugador de pruebas
+
+export class Jugador {
+  estado: Estado
+
+  constructor(estado: Estado) {
+    comprobarInvariantes(estado)
+    this.estado = estado
+  }
+
+  static partida(op: OpcionesPartida): Jugador {
+    return new Jugador(nuevaPartida(op))
+  }
+
+  static en(op: OpcionesSituacion = {}): Jugador {
+    return new Jugador(montar(op))
+  }
+
+  get decision(): Decision {
+    const d = this.estado.pendiente
+    if (!d) throw new Error(`No hay decisión pendiente (resultado: ${JSON.stringify(this.estado.resultado)})`)
+    return d
+  }
+
+  responder(e: Eleccion): this {
+    this.estado = responder(this.estado, e)
+    comprobarInvariantes(this.estado)
+    return this
+  }
+
+  /** Copia de una carta por su identificador, buscando en las zonas indicadas (o en todas). */
+  inst(id: CartaId, zonas: readonly Zona[] = ZONAS): InstId {
+    for (const z of zonas) {
+      const inst = this.estado.zonas[z].find((i) => this.estado.cartas[i]?.id === id)
+      if (inst) return inst
+    }
+    throw new Error(`No encuentro «${id}» en ${zonas.join(', ')}`)
+  }
+
+  private accion(prueba: (a: Accion) => boolean, descripcion: string): this {
+    const d = this.decision
+    if (d.tipo !== 'ventanaAccion') throw new Error(`Se esperaba una ventana de acción y la decisión es «${d.tipo}»`)
+    const accion = d.acciones.find(prueba)
+    if (!accion) throw new Error(`La acción «${descripcion}» no está disponible`)
+    return this.responder({ tipo: 'accion', accion })
+  }
+
+  private idDe(inst: InstId): CartaId {
+    return copiaDe(this.estado, inst).id
+  }
+
+  /** ¿Se ofrece esta acción ahora? */
+  ofrece(tipo: Accion['tipo'], id?: CartaId, destino?: CartaId | 'barco'): boolean {
+    const d = this.estado.pendiente
+    if (d?.tipo !== 'ventanaAccion') return false
+    return d.acciones.some((a) => this.coincide(a, tipo, id, destino))
+  }
+
+  private coincide(a: Accion, tipo: Accion['tipo'], id?: CartaId, destino?: CartaId | 'barco'): boolean {
+    if (a.tipo !== tipo) return false
+    if (a.tipo === 'reclutar' || a.tipo === 'despedir') return id === undefined || this.idDe(a.carta) === id
+    if (a.tipo === 'adquirir') {
+      if (id !== undefined && this.idDe(a.carta) !== id) return false
+      if (destino === undefined) return true
+      return destino === 'barco' ? a.destino === 'barco' : a.destino !== 'barco' && this.idDe(a.destino) === destino
+    }
+    if (a.tipo === 'usar') return id === undefined || a.uso.clave === id
+    return true
+  }
+
+  reclutar(id: CartaId): this {
+    return this.accion((a) => this.coincide(a, 'reclutar', id), `reclutar ${id}`)
+  }
+
+  adquirir(id: CartaId, destino: CartaId | 'barco' = 'barco'): this {
+    return this.accion((a) => this.coincide(a, 'adquirir', id, destino), `adquirir ${id} para ${destino}`)
+  }
+
+  despedir(id: CartaId): this {
+    return this.accion((a) => this.coincide(a, 'despedir', id), `despedir ${id}`)
+  }
+
+  /** Usa una capacidad por su clave: en una ventana de acción, o como capacidad libre u ofrecida. */
+  usar(clave: string): this {
+    const d = this.decision
+    if (d.tipo === 'ventanaAccion') return this.accion((a) => this.coincide(a, 'usar', clave), `usar ${clave}`)
+    const uso = [...(d.tipo === 'ofrecer' ? d.usos : []), ...(d.libres ?? [])].find((u) => u.clave === clave)
+    if (!uso) throw new Error(`La capacidad «${clave}» no se ofrece ahora`)
+    return this.responder({ tipo: 'usar', uso })
+  }
+
+  terminar(): this {
+    return this.accion((a) => a.tipo === 'terminarPaso', 'terminar el paso')
+  }
+
+  /** Elige cartas por su identificador entre las candidatas (cada identificador, una copia distinta). */
+  elegir(...ids: CartaId[]): this {
+    const d = this.decision
+    if (d.tipo !== 'elegirCartas') throw new Error(`Se esperaba elegir cartas y la decisión es «${d.tipo}»`)
+    const usadas = new Set<InstId>()
+    const elegidas = ids.map((id) => {
+      const inst = d.candidatas.find((c) => !usadas.has(c) && this.idDe(c) === id)
+      if (!inst) throw new Error(`«${id}» no está entre las cartas que se pueden elegir`)
+      usadas.add(inst)
+      return inst
+    })
+    return this.responder({ tipo: 'cartas', ids: elegidas })
+  }
+
+  ninguna(): this {
+    return this.responder({ tipo: 'cartas', ids: [] })
+  }
+
+  opcion(clave: string): this {
+    return this.responder({ tipo: 'opcion', clave })
+  }
+
+  pasar(): this {
+    return this.responder({ tipo: 'pasar' })
+  }
+
+  repartir(reparto: Record<CartaId, number>): this {
+    const d = this.decision
+    if (d.tipo !== 'repartir') throw new Error(`Se esperaba un reparto y la decisión es «${d.tipo}»`)
+    const n: Partial<Record<InstId, number>> = {}
+    for (const [id, cantidad] of Object.entries(reparto)) {
+      const inst = (Object.keys(d.maximos) as InstId[]).find((i) => this.idDe(i) === id)
+      if (!inst) throw new Error(`No se puede repartir a «${id}»`)
+      n[inst] = cantidad
+    }
+    return this.responder({ tipo: 'reparto', n })
+  }
+
+  /** Atajo: termina Jugar cartas, se queda en puerto con dos opciones y no descarta nada al final. */
+  pasarTurnoEnPuerto(opciones: [string, string] = ['astillero', 'taberna']): this {
+    if (this.decision.motivo.clave === 'jugarCartas') this.terminar()
+    if (this.decision.motivo.clave === 'quedarseOZarpar') this.opcion('quedarse')
+    for (const o of opciones) {
+      if (this.decision.motivo.clave !== 'opcionPuerto') break
+      this.opcion(o)
+      while (this.estado.pendiente && ['repartir', 'tablon', 'soplos'].includes(this.decision.motivo.clave)) {
+        const d = this.decision
+        if (d.tipo === 'repartir') {
+          const n: Partial<Record<InstId, number>> = {}
+          let resto = d.cantidad
+          for (const [inst, max] of Object.entries(d.maximos) as [InstId, number][]) {
+            n[inst] = Math.min(max, resto)
+            resto -= n[inst] ?? 0
+          }
+          this.responder({ tipo: 'reparto', n })
+        } else if (d.tipo === 'elegirCartas') {
+          this.responder({ tipo: 'cartas', ids: d.candidatas.slice(0, d.min) })
+        }
+      }
+    }
+    if (this.estado.pendiente && this.decision.motivo.clave === 'descartarFinal') this.ninguna()
+    return this
+  }
+
+  /** Identificadores de las cartas de una zona, de arriba abajo. */
+  zona(z: Zona): CartaId[] {
+    return this.estado.zonas[z].map((i) => this.idDe(i))
+  }
+
+  /** La primera copia de una carta (en juego si la hay). */
+  copia(id: CartaId): Copia {
+    return copiaDe(this.estado, this.inst(id, ['tripulacion', 'mejoras', 'rehenes', ...ZONAS]))
+  }
+
+  zonaDe(id: CartaId): Zona {
+    return zonaDe(this.estado, this.inst(id))
+  }
+
+  valor(c: Consulta): number {
+    return valor(this.estado, c)
+  }
+
+  get registro(): string[] {
+    return this.estado.registro.map((r) => r.texto)
+  }
+}

@@ -127,3 +127,44 @@ export const CATALOGO: EntradaCatalogo[] = construirCatalogo()
 export function codigoColeccion(num: number): string {
   return `Caja básica · ${String(num).padStart(3, '0')}`
 }
+
+// ---------------------------------------------------------------------------
+// Consultas por identificador de carta («bucanero», «templo-I»…)
+
+const POR_ID = new Map<string, EntradaCatalogo>(CATALOGO.map((e) => [e.id, e]))
+
+/** Entrada del catálogo de una carta por su identificador. */
+export function porId(id: string): EntradaCatalogo {
+  const entrada = POR_ID.get(id)
+  if (!entrada) throw new Error(`No existe ninguna carta con identificador «${id}»`)
+  return entrada
+}
+
+/** Nombre impreso de la carta. */
+export function nombreDe(id: string): string {
+  const e = porId(id)
+  return e.tipo === 'peligro' || e.tipo === 'mazoPropio' || 'nombre' in e.carta ? e.carta.nombre : id
+}
+
+export function tipoDe(id: string): TipoCarta {
+  return porId(id).tipo
+}
+
+/** Coste impreso (el número del timón). 0 si la carta no tiene coste. */
+export function costeImpreso(id: string): number {
+  const c = porId(id).carta
+  return 'coste' in c && typeof c.coste === 'number' ? c.coste : 0
+}
+
+/** Una carta indestructible no se puede perder ni agotar. Los Tesoros tampoco. */
+export function esIndestructible(id: string): boolean {
+  const e = porId(id)
+  if (e.tipo === 'tesoro') return true
+  return 'texto' in e.carta && typeof e.carta.texto === 'string' && e.carta.texto.startsWith('Indestructible')
+}
+
+export function esUnica(id: string): boolean {
+  const e = porId(id)
+  if (e.tipo === 'capitan' || e.tipo === 'tesoro') return true
+  return 'unico' in e.carta && e.carta.unico === true
+}
