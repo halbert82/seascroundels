@@ -51,7 +51,7 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
         { tipo: 'prepararTodo' },
         { tipo: 'recargar' },
         { tipo: 'evento', ev: { tipo: 'inicioTurno' }, fase: 'antes', cancelado: false, usadas: [] },
-        // TODO(regla) N4: la pausa del Inicio va al final del paso (después de preparar y recargar).
+        // Decisión N4: la pausa del Inicio va al final del paso, después de preparar y recargar.
         { tipo: 'ventanaLibre', momento: 'inicio' },
       )
       encolar(s, ...tareas)

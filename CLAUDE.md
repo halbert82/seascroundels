@@ -29,7 +29,7 @@ Recursos visuales:
 ## Alcance de la versión 0
 
 - **Una partida jugable de principio a fin**, en solitario. Sin cuentas ni servidor, y sin menús más allá de una portada con «Nueva partida» y «Continuar».
-- **Todo predefinido** (`mazosPredefinidos` en `cartas.json`): capitán Diego «Garra» Mendoza, puerto Tortuga, modo normal (18 de reputación y 11 cartas de Escenario), el mazo del capitán con 36 cartas y el mazo de muelle con 42.
+- **Todo predefinido** (`mazosPredefinidos` en `cartas.json`): capitán Diego «Garra» Mendoza, puerto Tortuga, modo normal (18 de reputación y 11 cartas de Escenario), el mazo del capitán con 36 cartas y el mazo de muelle con 20 (corregido por Albert: el reglamento pide de 15 a 20).
 - **Todas las reglas del reglamento implementadas:**
   - preparación;
   - el turno en 4 pasos;

@@ -17,7 +17,7 @@ describe('catálogo de la Caja básica', () => {
   it('cumple con los mazos predefinidos de la versión 0', () => {
     const m = DATOS.mazosPredefinidos
     expect(m.mazoDelCapitan).toHaveLength(36)
-    expect(m.mazoDeMuelle).toHaveLength(42)
+    expect(m.mazoDeMuelle).toHaveLength(20)
     expect(m.capitanInicial).toBe('capitan')
     expect(m.puertoInicial).toBe('tortuga')
     expect(m.modo).toBe('normal')

@@ -26,11 +26,14 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N1 · Un Tesoro nunca acaba en el mazo de muelle.** Si su portador sale del juego sin ser derrotado (al despedirlo, por «Deserción», al volver al muelle o al perder un rehén), el Tesoro pasa al Tripulante que elija el jugador, Capitán incluido, igual que si el portador hubiera sido derrotado. *Ejemplo:* el Bucanero lleva la Espada del sacerdote; sale «Deserción» y es tu Tripulante de menor coste: el Bucanero va a los descartes del muelle y la Espada pasa a Diego.
 - **N2 · Las capacidades y los Eventos sin etiqueta se usan en cualquier pausa, nunca en mitad de otro efecto.** Se pueden usar en cualquier momento en que el motor espera una decisión del jugador y no se está resolviendo otro efecto. Eso incluye:
   - las tres ventanas de acción: Jugar cartas, tras resolver una carta de Peligro y en la Prueba tras el Destino;
-  - el Inicio, después de aplicar el Escenario;
+  - al final del Inicio, después de preparar y recargar (N4);
   - el Final, antes de robar;
   - después de revelar un encuentro y antes de comprometer a nadie en su Prueba.
 
   En mitad de otro efecto, nunca: para eso está la Interrupción. «Sin etiqueta» no es lo mismo que «Acción:», que solo vale en las ventanas de acción; por eso «El capitán hace guardia» lleva «Acción:» y no se puede jugar al final del turno. *Ejemplo:* el Barco tiene 4 daños de 5 y revelas la Fragata cazadora (3 daños si fallas); antes de comprometer a nadie juegas «Remiendo de urgencia» y bajas a 2 daños. En cambio, la Botica de a bordo no salva al Bucanero mientras recibe la herida que lo derrota.
+
+- **N3 · Una carta con munición entra en juego con su munición al máximo.** Lo normal es comprar en puerto y zarpar en el mismo turno; si entrara vacía, todo Cañón sería inútil en su primera misión. *Ejemplo:* adquieres los Cañones de bronce y zarpas contra los Piratas rivales (COM 4): ya puedes gastar 1 de munición para +2.
+- **N4 · La pausa del Inicio va al final del paso, después de preparar y recargar.** *Ejemplo:* el Carpintero de a bordo («Agotar: repara 1») no puede reparar en el Inicio, prepararse y volver a reparar en Jugar cartas: si lo usas en la pausa del Inicio, se queda agotado todo el turno.
 
 ## Presentación de las cartas
 
@@ -46,6 +49,10 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 
 La prueba del ejemplo de juego completo («Así transcurre el primer turno…») reproduce esta versión corregida.
 
+## Correcciones del kit
+
+- **Mazo de muelle de inicio de Diego: 20 cartas** (el reglamento pide de 15 a 20; el kit traía las 42). Tripulantes (12): Rufián de cubierta, Grumete leal, Bucanero veterano ×2, Uñas largas, Contrabandista del bajo Caribe, Cañonero, Carpintero de a bordo, Matasanos, Vigía inexperta, Viejo lobo de mar y Rastreador de la selva. Mejoras (8): Cañones de bronce, Vela mayor, Hamacas en el entrepuente, Casco reforzado, Botica de a bordo, Sable de abordaje, Brújula de latón y Catalejo de latón. El mazo del capitán sigue con sus 36 cartas.
+
 ## Pendientes de confirmar (se usa la opción por defecto de CLAUDE.md)
 
 - **Loro parlanchín:** si nadie se compromete a la Prueba, puede unirse después del Destino, tal como dice su texto. *Ejemplo:* no comprometes a nadie contra los Tiburones; después de revelar el Destino, el Loro se compromete a esa Prueba.
@@ -53,5 +60,3 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 - **Mazo de Escenario agotado:** no se rebaraja; se juega el último turno y se pierde (ver D12).
 - **Rehén:** el Capitán no puede ser rehén. *Ejemplo:* fallas Bandoleros con Diego y el Rufián comprometidos: el rehén es el Rufián.
 - **Barco hundido:** las Mejoras de barco que se pierden no activan efectos «al descartarse» (aún no hay ninguna carta así).
-- **N3 · Munición de una Mejora recién adquirida:** entra sin munición y se carga en la siguiente Recarga, al empezar el turno (regla nefasta). *Ejemplo:* adquieres los Cañones de bronce en Jugar cartas y zarpas a una misión de Mar: en esa misión no puedes gastar su munición; el turno siguiente tendrán 2.
-- **N4 · Momento de la pausa del Inicio (N2):** va al final del Inicio, después de preparar las cartas y recargar la munición. *Ejemplo:* el Carpintero de a bordo («Agotar: repara 1») usado en esa pausa se queda agotado todo el turno. Si la pausa fuera justo después de aplicar el Escenario, lo usarías, se prepararía en el paso siguiente y podrías volver a usarlo en Jugar cartas: dos reparaciones por turno.

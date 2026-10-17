@@ -43,7 +43,7 @@ describe('Preparación de la partida', () => {
     expect(historia.filter((id) => DATOS.cartasDeMazoPropio.some((c) => c.id === id))).toHaveLength(12)
     // 6. Muelle de Tortuga: 4 cartas.
     expect(j.zona('muelle')).toHaveLength(4)
-    expect(j.zona('mazoMuelle')).toHaveLength(42 - 4)
+    expect(j.zona('mazoMuelle')).toHaveLength(20 - 4)
     // 7. Mano inicial: tantas cartas como el Mando (5).
     expect(j.zona('mano')).toHaveLength(5)
     expect(j.zona('mazoCapitan')).toHaveLength(36 - 5)

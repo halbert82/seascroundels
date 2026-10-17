@@ -1,9 +1,16 @@
 // Una prueba por cada decisión de reglas de docs/decisiones.md. Las que dependen de mecánicas de las
 // fases 3 y 4 quedan como pendientes (aparecen en el informe de pruebas) hasta que llegue su mecánica.
 
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
+import { registrarParaPruebas } from './capacidades/index.ts'
 import { Jugador } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
+
+let quitar: (() => void) | null = null
+afterEach(() => {
+  quitar?.()
+  quitar = null
+})
 
 describe('D1a · «Mientras esté preparado» se pierde al agotarse, también a la vez', () => {
   it('Diego y el Rufián agotados juntos para cubrir «Las puertas de Panamá» (Distancia 3 con el Barco) suman 2', () => {
@@ -124,6 +131,38 @@ describe('N1 · Un Tesoro nunca acaba en el mazo de muelle', () => {
     expect(j.zona('descartesMuelle')).toEqual(['bucanero'])
   })
   it.todo('N1 al perder un rehén y al volver al muelle (fases 3 y 4)')
+})
+
+describe('N3 · Una carta con munición entra en juego con su munición al máximo', () => {
+  it('los Cañones de bronce recién adquiridos tienen sus 2 de munición (3 con la Pólvora del Rey)', () => {
+    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'] })
+    j.adquirir('bronce', 'barco').elegir('ojo', 'timon')
+    expect(j.copia('bronce').municion).toBe(2)
+    const conPolvora = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'], barco: { mejoras: ['polvora_rey'] } })
+    conPolvora.adquirir('bronce', 'barco').elegir('ojo', 'timon')
+    expect(conPolvora.copia('bronce').municion).toBe(3)
+  })
+  it.todo('N3 · adquieres los Cañones y zarpas contra los Piratas rivales (COM 4): gastas 1 de munición para +2 (fases 3 y 4)')
+})
+
+describe('N4 · La pausa del Inicio va al final del paso, después de preparar y recargar', () => {
+  it('el Carpintero usado en la pausa del Inicio se queda agotado en Jugar cartas', () => {
+    quitar = registrarParaPruebas({
+      clave: 'prueba.carpintero',
+      carta: 'carpintero',
+      ventana: 'libre',
+      desde: 'juego',
+      coste: [{ tipo: 'agotarse' }],
+      efecto: () => [{ tipo: 'reparar', n: 1 }],
+    })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev', 'noticias'], tripulacion: ['carpintero'], barco: { dano: 3 } })
+    expect(j.decision.motivo.clave).toBe('pausa.inicio')
+    j.usar('prueba.carpintero')
+    expect(j.estado.danoBarco).toBe(2)
+    expect(j.decision.motivo.clave).toBe('jugarCartas')
+    expect(j.copia('carpintero').agotada).toBe(true)
+    expect(j.ofrece('usar', 'prueba.carpintero')).toBe(false)
+  })
 })
 
 describe('Pendientes de su mecánica (fases 3 y 4)', () => {

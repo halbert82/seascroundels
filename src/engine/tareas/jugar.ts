@@ -89,9 +89,8 @@ export const adquirir: Manejador<'adquirir'> = (s, t) => {
   mover(s, t.carta, 'mejoras', 'abajo')
   const c = copia(s, t.carta)
   c.vinculadaA = t.destino
-  // TODO(regla) N3: una Mejora con munición entra sin munición y se carga en la siguiente Recarga
-  // (regla nefasta). Pendiente de que Albert lo confirme.
-  c.municion = 0
+  // Decisión N3: una carta con munición entra en juego con su munición al máximo.
+  c.municion = valor(s, { tipo: 'municionMaxima', carta: t.carta })
   const destino = t.destino === 'barco' ? 'el Barco' : nombre(s, t.destino)
   anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}.`)
   return 'hecha'
