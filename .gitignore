@@ -4,3 +4,6 @@ dist
 *.local
 # Capturas y comparaciones generadas por los scripts
 capturas/
+
+# Copias de trabajo de los ayudantes de Claude Code
+.claude/worktrees/
