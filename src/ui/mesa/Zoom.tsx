@@ -1,9 +1,12 @@
-// Ampliación de cartas: con ratón, al pasar por encima; en pantallas táctiles, al tocar.
+// Ampliación de cartas: con ratón, al pasar por encima; en pantallas táctiles, al mantenerla pulsada (y se quita al
+// tocar en otro sitio). Junto a la carta ampliada se explican las palabras de regla, Estados y fichas que nombra.
 
-import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { porId } from '../../engine/catalogo.ts'
 import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
+import { ayudasDeCarta } from '../textos/glosario.ts'
 import { enLienzo } from './disposicion.ts'
+import { TarjetaAyuda } from './Explicacion.tsx'
 
 interface CartaAmpliada {
   id: string
@@ -32,6 +35,15 @@ export function ProveedorZoom({ children }: { children: ReactNode }) {
     if (temporizador.current) window.clearTimeout(temporizador.current)
     setAmpliada(null)
   }, [])
+  // En tableta no hay «salir con el ratón»: la ampliación se quita al volver a tocar la mesa.
+  useEffect(() => {
+    if (!ampliada) return
+    const alTocar = (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') ocultar()
+    }
+    window.addEventListener('pointerdown', alTocar, true)
+    return () => window.removeEventListener('pointerdown', alTocar, true)
+  }, [ampliada, ocultar])
   return <Contexto.Provider value={{ mostrar, ocultar, ampliada }}>{children}</Contexto.Provider>
 }
 
@@ -41,9 +53,10 @@ export function useZoom(): ContextoZoom {
   return c
 }
 
-/** La carta ampliada, a un lado de la mesa (sin mover nada). */
+/** La carta ampliada, a un lado de la mesa (sin mover nada), con la explicación de lo que nombra hacia el centro. */
 export function CapaZoom() {
   const { ampliada } = useZoom()
+  const ayudas = useMemo(() => (ampliada ? ayudasDeCarta(ampliada.id) : []), [ampliada])
   if (!ampliada) return null
   const entrada = porId(ampliada.id)
   const { ancho } = dimensiones(entrada)
@@ -53,6 +66,13 @@ export function CapaZoom() {
       <div className="zoom-carta">
         <CartaEscalada entrada={entrada} escala={escala} />
       </div>
+      {ayudas.length > 0 && (
+        <div className={`zoom-ayudas${ayudas.length > 3 ? ' dos-columnas' : ''}`} aria-label="Reglas de esta carta">
+          {ayudas.map((a) => (
+            <TarjetaAyuda key={a.clave} ayuda={a} className="compacta" />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

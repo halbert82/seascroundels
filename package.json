@@ -15,6 +15,7 @@
     "capturas:galeria": "npm run build && node scripts/capturar-galeria.mjs",
     "equilibrio": "INFORME=1 vitest run src/engine/equilibrio.informe.test.ts",
     "capturas:mesa": "npm run build && node scripts/capturar-mesa.mjs",
+    "capturas:ayudas": "npm run build && node scripts/capturar-ayudas.mjs",
     "jugar:mesa": "npm run build && node scripts/jugar-desde-mesa.mjs"
   },
   "dependencies": {
