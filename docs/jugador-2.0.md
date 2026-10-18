@@ -8,7 +8,7 @@ Formato igual que el resto de `cartas.json`. Iconos: [NAV] [COM] [EXP]. Las lín
 
 ### Herbolaria
 - Tripulante · Neutral · Coste 2 · NAV 0 · COM 0 · EXP 2 · Vida 1 · Mejoras 1 · Rasgos: Explorador
-- Texto: [agotar]: Quita Envenenado, Fiebre o Sangrando a un Tripulante.
+- Texto: [agotar]: Quita a un Tripulante uno de estos Estados: Envenenado, Sangrando, Aturdido o Asustado.
 - Ambientación: «Para cada veneno, una hoja. Para cada hoja, un precio.»
 - Ejemplo: la «Barba amarilla» deja Envenenado al Bucanero; la agotas y queda limpio.
 
@@ -38,7 +38,7 @@ Formato igual que el resto de `cartas.json`. Iconos: [NAV] [COM] [EXP]. Las lín
 - Ambientación: «Barro, hojas y una oración. Funciona casi siempre.»
 
 ### Cortar por lo sano
-- Evento · Coste 1 · Iconos: [COM]
+- Evento · Coste 0 · Iconos: [COM]
 - Texto: **Acción:** Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego, salvo si es de nivel Terrible.
 - Ambientación: «Si no puedes desatar el nudo, córtalo.»
 - Ejemplo: «Campanas a rebato» lleva 2 fichas; pagas 2 cartas y el campanario calla.

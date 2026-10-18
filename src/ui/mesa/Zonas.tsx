@@ -452,9 +452,13 @@ function Origenes({ s, zona, escala }: { s: Estado; zona: Zona; escala: number }
 const ESCALA_PILA = 0.13
 
 function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona; dorso: TipoDorso; nombre: string }) {
-  const { s } = useMesa()
+  const { s, inter, pulsar } = useMesa()
   const arriba = descartes ? s.zonas[descartes][0] : undefined
   const hueco = <div className="pila-vacia" style={{ width: 378 * ESCALA_PILA, height: 528 * ESCALA_PILA }} />
+  // Si la carta de arriba de los descartes se puede elegir ahora (sale también en la bandeja del panel), se puede
+  // pulsar desde aquí, y sin vuelo, para no competir con la copia de la bandeja.
+  const opciones = arriba ? (inter.opciones.get(arriba) ?? []) : []
+  const enBandeja = arriba !== undefined && inter.apartadas.includes(arriba)
   return (
     <div className="pila">
       <div className="pila-mazo" title={`${nombre}: ${s.zonas[zona].length} cartas`}>
@@ -466,7 +470,19 @@ function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona
       </div>
       {descartes && (
         <div className="pila-mazo" title={`Descartes: ${s.zonas[descartes].length} cartas`}>
-          <div className="pila-cartas">{arriba ? <CartaMesa inst={arriba} id={copia(s, arriba).id} escala={ESCALA_PILA} /> : hueco}</div>
+          <div className="pila-cartas">
+            {arriba ? (
+              <CartaMesa
+                inst={arriba}
+                id={copia(s, arriba).id}
+                escala={ESCALA_PILA}
+                {...(enBandeja ? { sinVuelo: true, marca: inter.marcas.get(arriba) ?? null } : {})}
+                {...(opciones.length > 0 ? { onClick: (el: HTMLElement) => pulsar(arriba, el), ayuda: opciones.map((o) => o.etiqueta).join(' · ') } : {})}
+              />
+            ) : (
+              hueco
+            )}
+          </div>
           <span className="pila-n">{s.zonas[descartes].length}</span>
         </div>
       )}

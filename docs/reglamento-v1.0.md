@@ -355,11 +355,11 @@ Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y 
 
 **Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. «Rumores del tesoro» le da 1 ficha de Avance, y la capacidad Al zarpar de la misión le da otra porque tiene un Marinero preparado: empieza con 2.
 
-Revela la primera carta de Peligro y lee su encuentro de Mar: «Niebla espesa», con una Prueba de NAV 3 o EXP 3 que da 2 de Avance. Elige NAV y compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 3 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
+Revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 que da 3 de Avance. Compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 4 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
 
-Revela el Destino: «Corriente traicionera», +1 a la dificultad, o +2 si la Prueba es de NAV. Esta lo es, así que la Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Pone 2 fichas de Avance sobre la misión, llega a 4 y la supera.
+Revela el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubiera comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Gana 3 de Avance y, por superar la Turbonada, 1 más: la deja atrás y la carta va al fondo del mazo. La misión tenía 2 y pedía 3: llega a 6 y la supera.
 
-**Recompensa.** Gana 1 de reputación y busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. Devuelve las cartas de Peligro a su pila de descartes y vuelve a puerto.
+**Recompensa.** Gana 1 de reputación y busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
 
 **Final.** Albert se queda con «¡Al abordaje!» y roba cuatro para tener cinco. El turno siguiente podrá adquirir los Cañones de bronce, que siguen esperando en el muelle.
 

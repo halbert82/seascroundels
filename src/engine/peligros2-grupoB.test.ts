@@ -1,5 +1,5 @@
 // Peligros 2.0 · Grupo B (Bestias, naturaleza y enfermedades, cartas 12–22): al menos una prueba por carta, con sus
-// encuentros y su Destino. La 17, «Fiebre amarilla», espera su texto nuevo.
+// encuentros y su Destino.
 
 import { describe, expect, it } from 'vitest'
 import { dificultadPrueba, totalPrueba } from './prueba.ts'
@@ -221,6 +221,95 @@ describe('16 · Serpientes', () => {
     const k = en('mar', ['p2_corriente', 'p2_serpientes', 'calma'], { tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', [])
     expect(k.copia('viejo_lobo').heridas).toBe(1)
+  })
+})
+
+describe('17 · Fiebre amarilla', () => {
+  it('Mar: NAV 4; si superas, curas 1 herida a cada Tripulante', () => {
+    const j = en('mar', ['p2_fiebre', 'chubasco', 'calma'], {
+      capitan: { heridas: 1 },
+      tripulacion: [{ id: 'viejo_lobo', heridas: 1 }, { id: 'bucanero', heridas: 1 }],
+    })
+    j.comprometer('NAV', ['capitan', 'viejo_lobo'])
+    expect(dificultadPrueba(j.estado)).toBe(4)
+    j.pasarOfertas().seguir()
+    expect(j.registro).toContain('Total 6 contra 4: superas la Prueba.')
+    expect([j.copia('capitan').heridas, j.copia('viejo_lobo').heridas, j.copia('bucanero').heridas]).toEqual([0, 0, 0])
+  })
+
+  it('Mar: si fallas, no puedes retirarte de esta misión', () => {
+    const j = en('mar', ['p2_fiebre', 'chubasco', 'calma', 'calma'])
+    j.comprometer('NAV', []).seguir()
+    expect(j.estado.mision?.sinRetirada).toBe(true)
+    expect(j.decision.tipo).toBe('ventanaAccion')
+    expect((j.decision as { acciones: { tipo: string }[] }).acciones.some((a) => a.tipo === 'retirarse')).toBe(false)
+  })
+
+  it('Naturaleza: EXP 4, o 2 si tienes un Cirujano; si superas, curas 2 heridas', () => {
+    const sin = en('nat', ['p2_fiebre', 'chubasco', 'calma'], { tripulacion: ['baqueano'] })
+    sin.comprometer('EXP', ['baqueano'])
+    expect(dificultadPrueba(sin.estado)).toBe(4)
+    const j = en('nat', ['p2_fiebre', 'chubasco', 'calma'], { capitan: { heridas: 2 }, tripulacion: ['matasanos', 'baqueano'] })
+    j.comprometer('EXP', ['baqueano'])
+    expect(dificultadPrueba(j.estado)).toBe(2)
+    j.pasarOfertas().seguir()
+    while (j.decision.tipo === 'repartir') j.repartir({ capitan: 2 })
+    expect(j.copia('capitan').heridas).toBe(0)
+  })
+
+  it('Naturaleza: si fallas, cada Tripulante comprometido queda Aturdido', () => {
+    const j = en('nat', ['p2_fiebre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
+    j.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
+    expect(j.estados('bucanero')).toEqual(['aturdido'])
+    expect(j.estados('marinero_p')).toEqual(['aturdido'])
+    expect(j.estados('capitan')).toEqual([])
+  })
+
+  it('Ciudad: EXP 3, +1 por cada Tripulante herido (máx. 5); si superas, +1 Avance', () => {
+    const j = en('ciu', ['p2_fiebre', 'chubasco', 'calma'], { capitan: { heridas: 1 }, tripulacion: [{ id: 'baqueano' }, { id: 'bucanero', heridas: 1 }] })
+    j.comprometer('EXP', ['baqueano'])
+    expect(dificultadPrueba(j.estado)).toBe(5) // 3 + 2 heridos (Diego y el Bucanero)
+    const k = en('ciu', ['p2_fiebre', 'chubasco', 'calma'], {
+      capitan: { heridas: 1 },
+      tripulacion: [{ id: 'baqueano' }, { id: 'herbolaria' }, { id: 'bucanero', heridas: 1 }, { id: 'viejo_lobo', heridas: 1 }],
+    })
+    k.comprometer('EXP', ['capitan', 'baqueano', 'herbolaria'])
+    expect(dificultadPrueba(k.estado)).toBe(5) // 3 heridos, pero como mucho 5
+    expect(totalPrueba(k.estado)).toBeGreaterThanOrEqual(5)
+    const antes = avance(k, 'ciu')
+    k.pasarOfertas().seguir().pasarOfertas()
+    expect(avance(k, 'ciu')).toBe(antes + 2 + 1)
+  })
+
+  it('Ciudad: si fallas, el comprometido con más EXP queda rehén en el lazareto; si lo rescatas, vuelve sin heridas', () => {
+    const j = en('ciu', ['p2_fiebre', 'chubasco', 'calma', 'calma', 'calma'], {
+      tripulacion: [{ id: 'bucanero', heridas: 1 }, 'marinero_p'],
+    })
+    // EXP 3 + 1 (el Bucanero está herido); el Bucanero y el Rufián no llegan. Empatan a EXP: eliges al Bucanero.
+    j.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'queda rehén' } })
+    j.elegir('bucanero')
+    expect(j.zona('rehenes')).toEqual(['bucanero'])
+    // Superas la misión con los «Calma»: lo rescatas y vuelve sin su herida.
+    while (j.estado.mision && j.decision.tipo === 'ventanaAccion') j.seguir()
+    expect(j.registro).toContain('Rescatas a Bucanero veterano.')
+    expect(j.registro).toContain('Bucanero veterano vuelve del lazareto sin heridas.')
+    expect(j.copia('bucanero').heridas).toBe(0)
+  })
+
+  it('Destino «Vómito negro»: +1; si fallas, cada comprometido que ya tenga heridas sufre 1 más; sin oposición, el Capitán queda Aturdido', () => {
+    const j = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
+    j.comprometer('NAV', ['capitan'])
+    expect(dificultadPrueba(j.estado)).toBe(3) // Chubasco repentino, NAV 2, +1
+    // «Timba en la taberna» (EXP 3, +1; sin efecto al fallar): el Bucanero (herido) y el Rufián (sano) suman 2 y fallan.
+    const k = en('ciu', ['oportunidad', 'p2_fiebre', 'calma'], { tripulacion: [{ id: 'bucanero', heridas: 1, mejoras: ['coleto'] }, 'marinero_p'] })
+    k.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
+    expect(k.registro).toContain('Total 2 contra 4: fallas la Prueba.')
+    expect(k.copia('bucanero').heridas).toBe(2)
+    expect(k.copia('marinero_p').heridas).toBe(0)
+    const m = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
+    m.comprometer('NAV', [])
+    expect(m.estados('capitan')).toEqual(['aturdido'])
   })
 })
 

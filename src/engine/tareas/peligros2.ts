@@ -141,8 +141,11 @@ function textoAccion(a: AccionSobre): string {
       return 'no puede comprometerse'
     case 'noSuma':
       return 'no suma'
-    case 'varios':
-      return a.acciones.map(textoAccion).join(' y ')
+    case 'varios': {
+      // La marca solo sirve para recordar a quién le pasó: no se cuenta si hay algo más.
+      const visibles = a.acciones.filter((x) => x.tipo !== 'marcar')
+      return (visibles.length > 0 ? visibles : a.acciones).map(textoAccion).join(' y ')
+    }
     case 'marcar':
       return 'queda señalado'
     case 'elegir':

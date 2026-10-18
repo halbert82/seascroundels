@@ -101,14 +101,14 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, Niebla espesa, compromete con «Mano firme al timón», «Corriente traicionera», supera, busca los Cañones y roba cuatro', () => {
+  it('turno completo: zarpa, «Turbonada a popa», compromete con «Mano firme al timón», «Coral bajo la quilla», supera, busca los Cañones y roba cuatro', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'calma_ev'],
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
       muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
       mazoMuelle: ['vela', 'casco', 'vigia', 'carpintero', 'bronce', 'hamacas'],
-      mazoPeligros: ['niebla', 'arrecifes', 'calma'],
+      mazoPeligros: ['p2_turbonada', 'p2_arrecife', 'p2_calma'],
       mazoCapitan: ['coraje', 'emboscada', 'estrellas', 'ojo', 'timon'],
     })
     j.reclutar('bucanero').elegir('soborno', 'ojo')
@@ -119,18 +119,23 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     j.zarpar('prueba-I')
     expect(j.registro).toContain('Rumores del tesoro: +1 de Avance (1/3).')
     expect(j.registro).toContain('Tienes un Marinero preparado: +1 de Avance (2/3).')
-    expect(j.registro).toContain('Revelas «Niebla»: Niebla espesa (Mar).')
+    expect(j.registro).toContain('Revelas «Turbonada»: Turbonada a popa (Mar).')
 
     // Diego (NAV 2) y el Bucanero (NAV 1, sin el +1 de Diego porque Diego se agota al comprometerse) suman 3,
     // «Mano firme al timón» añade sus 2 iconos de NAV antes del Destino y La Sombra del Alba da +1 a las Pruebas de
     // NAV en el Mar: 6 (N12).
     j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
     expect(totalPrueba(j.estado)).toBe(6)
-    // «Corriente traicionera»: +1, o +2 si la Prueba es de NAV. La Prueba pide 5 y Albert tiene 6.
-    expect(j.registro.some((t) => t.startsWith('Destino: «Corriente traicionera»'))).toBe(true)
+    // «Coral bajo la quilla»: +1 (sería +0 con un Vigía comprometido). NAV 4 + 1: la Prueba pide 5 y Albert tiene 6.
+    expect(j.registro).toContain('Destino: «Coral bajo la quilla» (+1).')
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 5 } })
     j.seguir()
     expect(j.registro).toContain('Total 6 contra 5: superas la Prueba.')
+    // Por superar la Turbonada, 1 de Avance más y la carta va al fondo del mazo; con sus 3, la misión llega a 6 de 3.
+    expect(j.registro).toContain('Turbonada: +1 de Avance (3/3).')
+    expect(j.registro).toContain('Ganas 3 de Avance (6/3).')
+    expect(j.registro).toContain('«Turbonada» va al fondo del mazo de Peligros.')
+    expect(j.zona('mazoPeligros').at(-1)).toBe('p2_turbonada')
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
     // Recompensa: 1 de reputación y busca una Mejora de barco: los Cañones de bronce.

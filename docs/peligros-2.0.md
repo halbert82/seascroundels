@@ -8,7 +8,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - «Elige» = el jugador elige una opción antes de comprometer. «Sin ayuda» = solo un Tripulante puede comprometerse; las Habilidades de la mano suman; no se juegan Eventos. «Se queda en juego» = la carta queda junto a la misión hasta que se cumpla lo que dice; al acabar la misión se descarta; el Avance impreso se gana al revelarla.
 - Destino: «modificador — efecto. *Sin oposición:* castigo si no se comprometió a nadie».
 - «El comprometido con más/menos HAB» = el Tripulante comprometido con el número impreso más alto/bajo en esa habilidad; empate, elige el jugador. En los Destinos, «la habilidad más alta/baja» se refiere a la habilidad de esa Prueba.
-- Abordaje, Persigue, Incautado y Ocupar el muelle van escritos en la propia carta. Estados (Envenenado, Fiebre, Borracho, Aturdido, Asustado, Sangrando, Buscado, Maldito, Encadenado, Inspirado, Aguerrido; Barco: Vía de agua, Incendio a bordo, Velas rotas, Perseguido, Pólvora mojada) según las reglas de la fase 6.
+- Abordaje, Persigue, Incautado y Ocupar el muelle van escritos en la propia carta. Estados (Envenenado, Borracho, Aturdido, Asustado, Sangrando, Buscado, Maldito, Encadenado, Inspirado, Aguerrido; Barco: Vía de agua, Incendio a bordo, Velas rotas, Perseguido, Pólvora mojada) según las reglas de la fase 6.
 - «Esta carta Se retira» = sale del juego (penalización que ya existe). «+ La Armada» = la carta apartada La Armada entra en el mazo (ya existe).
 - Nuevo Rasgo **Piloto**: lo lleva el Viejo lobo de mar (además de los que ya tiene).
 - *Idea* e *Inspirada en* son notas de diseño, no van en la carta.
@@ -92,7 +92,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Ciudad — La barra del puerto** · #Terreno# · Prueba: NAV 4 (2 si comprometes a un _Marinero_) · Avance 2
     - Éxito: entráis con la marea, sin práctico ni registro. El siguiente encuentro #Guardia# de esta misión recibe −2.
     - Fallo: encalláis en la barra a la vista del fuerte. El siguiente encuentro #Guardia# o #Militar# de esta misión recibe +2.
-- **Destino — Coral bajo la quilla** · +1 — +0 en su lugar si comprometiste a un _Vigía_ (ve el coral bajo el agua). *Sin oposición:* 1 daño al Barco.
+- **Destino — Coral bajo la quilla** · +1 — +0 en su lugar si comprometiste a un _Vigía_ (ve el coral bajo el agua). *Sin oposición:* en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante (las rocas cortan).
 - *Idea:* el arrecife es un filtro: al que lo cruza bien le quita de encima al perseguidor (el éxito descarta el siguiente Peligro), al que no, le abre el casco. En tierra están los que viven de los naufragios; en la ciudad, la barra decide si entras sin que nadie te vea o encallado delante de los cañones. *Inspirada en:* «Arrecife de los Ahorcados» (Taller; renombrado para no chocar con «La horca»), «Puente de lianas (cortar detrás)», «Raqueros», «Farol de los raqueros».
 
 ### 7. Fuego a bordo · Duro
@@ -119,7 +119,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Ciudad — Muelle carcomido** · #Civil# · Prueba: EXP 3 · Avance 1
     - Éxito: bajo un tablón suelto, el alijo de algún contrabandista. Robas 2.
     - Fallo: un tablón cede y vuestra carga cae al agua. Descarta la carta de mayor coste de tu mano.
-- **Destino — Carcoma** · +0 — Las Mejoras no suman ni se pueden usar en esta Prueba (la madera cede). *Sin oposición:* 1 daño al Barco.
+- **Destino — Carcoma** · +0 — Las Mejoras no suman ni se pueden usar en esta Prueba (la madera cede). *Sin oposición:* en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, descarta 1 carta (se pudre la carga).
 - *Idea:* la madera podrida no aguanta peso. El Peligro lee tu mesa: en el Mar, cuantas más Mejoras de barco, más difícil encontrar la vía; en la selva, cuanta más gente cruza, antes cae el puente; en el puerto se hunde lo que cargas. El Destino desarma tus Mejoras. *Inspirada en:* «Vía de agua», «Arenas movedizas» (más peso, peor), «Muelle podrido».
 
 ### 9. Turbonada · Duro
@@ -150,7 +150,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: vuelan los tejados; hay que doblar amarras para que el barco aguante en la dársena.
     - Éxito: vuestro barco aguanta mientras otros se hunden, y hay marineros sin barco por todo el muelle. Puedes reclutar gratis 1 Tripulante de coste 2 o menos del muelle.
     - Fallo: un mercante se hunde en la bocana y cierra el puerto. Pon esta carta en el muelle: sustituye a la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En el paso de Jugar cartas puedes pagar 3 cartas para descartarla (sacáis el pecio).
-- **Destino — Vendaval** · Fallas la Prueba — salvo que descartes 2 cartas o agotes a otro Tripulante preparado con NAV 2 o más (a sujetar lo que se suelta); entonces es +2. *Sin oposición:* 2 daños al Barco o 2 heridas repartidas (tú eliges).
+- **Destino — Vendaval** · Fallas la Prueba — salvo que descartes 2 cartas o agotes a otro Tripulante preparado con NAV 2 o más (a sujetar lo que se suelta); entonces es +2. *Sin oposición:* en el Mar, 2 daños al Barco; en Naturaleza o Ciudad, 2 heridas repartidas.
 - *Idea:* el huracán es demasiado para un hombre: en el Mar lo capean los Marineros juntos y su ojo da una tregua que cura; en la selva eliges entre sangre o camino; en la ciudad el pecio literalmente ocupa el muelle hasta que pagas por sacarlo (único Ocupar el muelle del grupo, porque aquí el puerto cerrado es la historia). *Inspirada en:* «Huracán de San Bartolomé» (el ojo, árboles arrancados, tejados volando), «Vendaval» (Destino del Taller).
 
 ### 11. Maremoto · Terrible
@@ -244,26 +244,26 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Fallo: muerde al que iba el último. El comprometido con menos COM queda Envenenado.
 - **Ciudad — El culebrero** · #Civil# · Prueba: EXP 3 · Avance 1
     - Texto: un charlatán vende remedios con una serpiente al cuello. Hay que saber si el suyo es bueno.
-    - Éxito: el remedio funciona. Quita a un Tripulante un Estado malo (Envenenado, Fiebre, Sangrando, Aturdido o Asustado), o cura 2 heridas.
+    - Éxito: el remedio funciona. Quita a un Tripulante un Estado malo (Envenenado, Sangrando, Aturdido o Asustado), o cura 2 heridas.
     - Fallo: aceite de culebra y agua de pozo. Descarta 2 cartas.
 - **Destino — Colmillo** · +0 — Si fallas, el comprometido con la habilidad más alta queda Envenenado. *Sin oposición:* el Tripulante preparado con menos Vida sufre 1 herida (estaba entre la maleza).
 - *Idea:* la serpiente siempre muerde a quien no mira: al que dormía, al rezagado. En la ciudad la serpiente es el reclamo del curandero, que puede quitarte el veneno o la bolsa. *Inspirada en:* «Barba amarilla» del Taller, «Serpientes» actual.
 
 ### 17. Fiebre amarilla · Duro
 - **Mar — Bandera amarilla** · #Enfermedad# · Prueba: NAV 4 · Avance 3
-    - Texto: los Tripulantes con Fiebre no pueden comprometerse (están aislados en el castillo de proa).
-    - Éxito: una cala tranquila para desembarcar a los enfermos al sol. Quita la Fiebre a todos los Tripulantes; si nadie tenía, +1 Avance.
-    - Fallo: con la bandera amarilla izada, nadie os deja tocar tierra. No puedes retirarte de esta misión.
+    - Texto: hay enfermos a bordo y la bandera amarilla avisa a todo el que se acerque.
+    - Éxito: una cala tranquila para desembarcar a los enfermos al sol. Cura 1 herida a cada Tripulante.
+    - Fallo: con la bandera izada, nadie os deja tocar tierra. No puedes retirarte de esta misión.
 - **Naturaleza — Nube de mosquitos** · #Enfermedad# #Bestia# · Prueba: EXP 4 (2 con un _Cirujano_) · Avance 2
     - Texto: hay que hacer humo con hojas verdes y no parar de andar.
-    - Éxito: encontráis corteza de quina. Quita la Fiebre a un Tripulante, o cura 2 heridas.
-    - Fallo: el Tripulante comprometido con menos Vida queda con Fiebre (y al final del turno se contagia).
-- **Ciudad — El lazareto** · #Enfermedad# #Guardia# · Prueba: EXP 3, +1 por cada Tripulante con Fiebre (máx. 5) · Avance 2
+    - Éxito: encontráis corteza de quina. Cura 2 heridas.
+    - Fallo: la calentura. Cada Tripulante comprometido queda Aturdido.
+- **Ciudad — El lazareto** · #Enfermedad# #Guardia# · Prueba: EXP 3, +1 por cada Tripulante herido (máx. 5) · Avance 2
     - Texto: la ciudad ha cerrado las calles; el cordón de guardias busca caras amarillas.
     - Éxito: cruzáis el cordón por los patios. +1 Avance.
-    - Fallo: el cordón se lleva a uno. El comprometido con más EXP queda rehén en el lazareto; si tenía Fiebre, allí se la quitan.
-- **Destino — Vómito negro** · +1 — +2 en su lugar si algún Tripulante comprometido tiene Fiebre. *Sin oposición:* el Capitán queda con Fiebre.
-- *Idea:* los mosquitos la contagian, en el barco obliga a aislar a los enfermos (y el que no tiene enfermos no lo nota) y en la ciudad el lazareto te quita al enfermo… y lo cura. *Inspirada en:* «Fiebre de los pantanos», «Bandera de cuarentena», «Fiebre a bordo» del Taller; Destino «Contagio».
+    - Fallo: el cordón se lleva a uno. El comprometido con más EXP queda rehén en el lazareto; si lo rescatas, vuelve sin heridas (allí lo curan).
+- **Destino — Vómito negro** · +1 — Si fallas, cada Tripulante comprometido que ya tenga heridas sufre 1 herida más. *Sin oposición:* el Capitán queda Aturdido.
+- *Idea:* la plaga de los puertos tropicales: en el barco te encierra en la misión, en la selva deja a todos sin fuerzas y en la ciudad el lazareto se queda con tu hombre… y te lo devuelve curado. *Inspirada en:* «Fiebre de los pantanos», «Bandera de cuarentena», «Fiebre a bordo» del Taller; Destino «Contagio».
 
 ### 18. Tiburones · Duro
 - **Mar — Aletas en la estela** · #Bestia# · Prueba: COM 3, +1 por cada Tripulante herido (máx. 5) · Avance 2
@@ -472,7 +472,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Entráis en bote por la galería que da al mar.
     - Éxito: rescata a todos los rehenes de esta misión. Si no había ninguno, un preso agradecido os cuenta el camino: +1 Avance.
     - Fallo: el carcelero os coge en la ronda. El comprometido con más NAV queda Encadenado y sufre 1 herida.
-- **Destino — Las baterías del castillo** · +2 — +4 en su lugar salvo que descartes 2 cartas (os ponéis a cubierto). *Sin oposición:* el Barco sufre 1 daño.
+- **Destino — Las baterías del castillo** · +2 — +4 en su lugar salvo que descartes 2 cartas (os ponéis a cubierto). *Sin oposición:* en el Mar, el Barco sufre 1 daño; en Naturaleza o Ciudad, el Capitán sufre 1 herida.
 - *Idea:* el fuerte es un muro. La cadena cierra el puerto y no hay victoria hasta romperla; el fortín solo cae con fuego; a las mazmorras se entra por el agua. *Inspirada en:* la cadena del puerto de La Habana y la toma del castillo de San Lorenzo del Chagres (1671).
 
 ### 32. La horca · Terrible
@@ -487,7 +487,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Ciudad — Ahorcan a uno de los vuestros** · #Guardia# · Prueba: COM 6 · Avance 2
     - Texto: **Al revelarse:** el Tripulante preparado de menor coste está en el patíbulo y no puede comprometerse. −2 si tienes 12 o más de reputación (el gentío está de tu parte).
     - Éxito: cortáis la soga a tiempo y el gentío os vitorea. +1 reputación.
-    - Fallo: el verdugo hace su trabajo. Ese Tripulante sufre 3 heridas (si sobrevive, la soga se rompió: milagro).
+    - Fallo: lo suben al patíbulo. Ese Tripulante queda rehén. Si no superas la misión, lo ahorcan.
 - **Destino — La soga** · +2 — Si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén (para el patíbulo). *Sin oposición:* el Capitán queda Buscado.
 - *Idea:* la horca es el final de todo pirata, contada tres veces: el aviso de la Punta, el árbol de la selva y el patíbulo, donde puedes salvar a uno de los tuyos si la ciudad te quiere. *Inspirada en:* Gallows Point de Port Royal; «¡Al calabozo!» del Taller.
 
@@ -683,7 +683,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Mar — Viento a favor** · Se queda en juego · Sin Prueba · Avance 2
     - Texto: Se queda en juego junto a la misión. Mientras esté, cada Prueba de [NAV] que superes da 1 Avance más. **Respuesta:** después de revelar el Destino de una Prueba de [NAV], descarta esta carta: esa Prueba recibe −2 (aprovecháis la última racha). Se descarta también si fallas una Prueba o si se revela un encuentro #Tormenta# (el viento rola).
 - **Naturaleza — Agua dulce** · #Terreno# · Sin Prueba · Avance 1
-    - Texto: De pura suerte, dais con un manantial en una isla sin nombre. Cura 1 herida a cada Tripulante y quita Fiebre y Envenenado de todos.
+    - Texto: De pura suerte, dais con un manantial en una isla sin nombre. Quita Envenenado de todos tus Tripulantes y después cura 1 herida a cada uno.
 - **Ciudad — La lotería del virrey** · #Civil# · Sin Prueba · Avance 1
     - Texto: Puedes comprar un billete: descarta 1 carta y revela la carta de arriba del mazo de Peligros. Si su Destino es favorable (−1 o −2), te toca: robas 3. Si no, nada. Después, descarta la carta revelada.
 - **Destino — Estrella fugaz** · −2 — pero la siguiente Prueba de esta misión recibe +1 (la suerte se gasta). *Sin oposición:* nadie pide el deseo: la siguiente Prueba recibe +2 en vez de +1.
@@ -700,7 +700,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Solo un marino sabe qué jarcia vale algo y cuál está podrida.
     - Éxito: pon en juego una Mejora del muelle pagando 2 cartas menos de su coste.
     - Fallo: otro capitán puja más alto: descarta del muelle la Mejora más cara (se repone).
-- **Destino — Madera del pecio** · +0 — Si superas, repara 1 daño al Barco (tablas del galeón hundido). *Sin oposición:* alguien rapiña vuestra propia madera: el Barco sufre 1 daño.
+- **Destino — Madera del pecio** · +0 — Si superas, repara 1 daño al Barco (tablas del galeón hundido). *Sin oposición:* alguien rapiña lo vuestro: en el Mar, el Barco sufre 1 daño; en Naturaleza o Ciudad, descarta 1 carta.
 - *Idea:* un mismo galeón hundido reparte su carga por todo el Caribe: se bucea en el Mar, se recoge en la playa y se subasta en el puerto. El pecio premia mandar a mucha gente (y castiga lo mismo); el barril de ron es un regalo con resaca. *Inspirada en:* «Pecio en las rocas» y «Subasta de presas» (Taller).
 
 ### 47. Presa fácil · Favorable

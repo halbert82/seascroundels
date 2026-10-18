@@ -32,8 +32,9 @@ describe('catálogo de la Caja básica', () => {
 
   it('el mazo de Peligros son los Peligros 2.0 (sin los antiguos), uno de cada y todos con sus reglas', () => {
     const mazo = DATOS.mazosPredefinidos.mazoDePeligros
-    // 55 cartas; «Fiebre amarilla» espera su texto rehecho (sin Fiebre) y de momento no entra.
-    expect(mazo).toHaveLength(54)
+    // Las 55 cartas, «Fiebre amarilla» (rehecha sin Fiebre) incluida.
+    expect(mazo).toHaveLength(55)
+    expect(mazo).toContain('p2_fiebre')
     expect(new Set(mazo).size).toBe(mazo.length)
     for (const id of mazo) {
       const p = DATOS.peligros.find((c) => c.id === id)

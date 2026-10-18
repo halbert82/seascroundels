@@ -66,7 +66,7 @@ registrarPeligro('p2_hermanos', {
 // 35. Barril de ron · Favorable
 // «Lenguas sueltas»: mira las 3 de arriba del mazo de muelle; pon 1 en el muelle en lugar de la carta de más a la
 // izquierda (que se descarta) y las otras al fondo.
-// TODO(regla): P42 · una carta de Peligro que ocupa el muelle no cuenta como «la de más a la izquierda»: se salta (si
+// P42 (confirmada): una carta de Peligro que ocupa el muelle no cuenta como «la de más a la izquierda»: se salta (si
 // no, la quitarías gratis); las otras van al fondo en el orden en que estaban.
 registrarEspecial('p2_barril.lenguas', (s, _t, e) => {
   if (s.zonas.mazoMuelle.length === 0 && s.zonas.descartesMuelle.length > 0) {
@@ -147,7 +147,7 @@ registrarCodigo('p2_sangre.golpes', (s, fuente) =>
 )
 // Destino «Echarse la culpa»: si fallas y comprometiste a dos o más, el de la habilidad más alta y el de la más baja
 // sufren 1 herida cada uno (si empatan, eliges).
-// TODO(regla): P43 · son siempre dos Tripulantes distintos: si todos empatan, eliges uno como «el más alto» y otro como
+// P43 (confirmada): son siempre dos Tripulantes distintos: si todos empatan, eliges uno como «el más alto» y otro como
 // «el más bajo» (nadie sufre 2 heridas).
 registrarEspecial('p2_sangre.culpa', (s, t, e) => {
   const comp = comprometidos(s)
@@ -223,7 +223,7 @@ function descartarDeArriba(s: Estado, n: number): InstId[] {
   return cartas
 }
 // Destino «Dados cargados»: descarta la de arriba de tu mazo; con icono COM, +2 en su lugar; si no, con EXP, −1.
-// TODO(regla): P40 · si tu mazo del capitán está vacío, no se descarta nada ni se baraja la pila de descartes: el
+// P40 (confirmada): si tu mazo del capitán está vacío, no se descarta nada ni se baraja la pila de descartes: el
 // Destino se queda en +0 (y Sin oposición no descarta nada).
 registrarCodigo('p2_tahur.dados', (s) => {
   const [c] = descartarDeArriba(s, 1)
@@ -295,7 +295,7 @@ registrarPeligro('p2_paga', {
       },
     },
     // Fallo: tu Tripulante de menor coste queda Encadenado.
-    // TODO(regla): P41 · el Capitán no tiene coste impreso: no cuenta como «el de menor coste» (si no, siempre sería él).
+    // P41 (confirmada): el Capitán no tiene coste impreso: no cuenta como «el de menor coste» (si no, siempre sería él).
     nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menorCoste', sinCapitan: true }, hacer: { tipo: 'estado', estado: 'encadenado' } }] },
     // Elige: pagas (1 carta por cada Tripulante que tengas, máx. 3; el Capitán es un Tripulante) o Prueba de COM 3,
     // +1 por cada Bucanero que tengas (máx. +2).
@@ -336,7 +336,7 @@ registrarPeligro('p2_sueldo', {
     },
   },
   // +0. Si comprometiste a dos o más, el de menor coste no suma. Sin oposición: descarta 2 cartas.
-  // TODO(regla): P41 · el Capitán no tiene coste impreso: no cuenta como «el de menor coste».
+  // P41 (confirmada): el Capitán no tiene coste impreso: no cuenta como «el de menor coste».
   destino: {
     efectos: [
       {

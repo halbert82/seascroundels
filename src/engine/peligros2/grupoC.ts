@@ -8,7 +8,7 @@ import { anotar, copia, encolar } from '../estado.ts'
 import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
-import { marcado, registrarEspecial } from '../tareas/peligros2.ts'
+import { marcado, registrarEspecial, sucesoRehen } from '../tareas/peligros2.ts'
 import type { CartaId, Estado } from '../tipos.ts'
 import { vinculadas } from '../zonas.ts'
 import {
@@ -20,6 +20,7 @@ import {
   descartar,
   dificultad,
   encuentroEs,
+  enElMar,
   habilidadDe,
   heridas,
   mas,
@@ -136,7 +137,7 @@ registrarPeligro('p2_ojos', {
     },
     nat: { exito: [avance(2)], fallo: [pierdesAvance(1), agotar(1)] },
     // Elige: le pagas por callar (descarta 2 cartas), o no le pagas y la Prueba sube +2.
-    // TODO(regla): P35 · si le pagas, se hace igualmente la Prueba de COM 2 (sin el +2); no se gana el Avance sin Prueba.
+    // P35 (confirmada): si le pagas, se hace igualmente la Prueba de COM 2 (sin el +2); no se gana el Avance sin Prueba.
     ciu: {
       elige: [
         { texto: 'Le pagas por callar: descarta 2 cartas y Prueba de COM 2', efectos: [descartar(2)], prueba: true },
@@ -349,17 +350,18 @@ registrarPeligro('p2_morro', {
       ],
     },
   },
-  // +2; +4 en su lugar salvo que descartes 2 cartas. Sin oposición: el Barco sufre 1 daño.
-  // PENDIENTE(documento): Albert ha rehecho «Las baterías del castillo» para que diga qué hace en cada Entorno; falta
-  // su texto nuevo. Mientras tanto, el de siempre (el daño al Barco solo cuenta en el Mar, P19).
-  destino: { efectos: [codigo('p2_morro.baterias')], sinOposicion: [dano(1)] },
+  // +2; +4 en su lugar salvo que descartes 2 cartas. Sin oposición: en el Mar, el Barco sufre 1 daño; en Naturaleza o
+  // Ciudad, el Capitán sufre 1 herida.
+  destino: { efectos: [codigo('p2_morro.baterias')], sinOposicion: [enElMar([dano(1)], [{ tipo: 'heridas', n: 1, capitan: true }])] },
 })
 
 // 32. La horca · Terrible
 const PATIBULO = 'p2_horca.patibulo'
+// Fallo: lo suben al patíbulo. Ese Tripulante queda rehén (regla normal: si superas la misión lo rescatas; si no, lo
+// pierdes y −1 de reputación).
 registrarCodigo('p2_horca.verdugo', (s, fuente) => {
   const c = marcado(s, PATIBULO, fuente)
-  return c ? [{ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 3 }, fase: 'antes', cancelado: false, usadas: [] }] : []
+  return c ? [sucesoRehen(c)] : []
 })
 registrarPeligro('p2_horca', {
   encuentros: {
@@ -376,9 +378,9 @@ registrarPeligro('p2_horca', {
       fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'rehen' } }],
     },
     // Al revelarse: el Tripulante preparado de menor coste está en el patíbulo y no puede comprometerse.
-    // −2 si tienes 12 o más de reputación. Fallo: ese Tripulante sufre 3 heridas.
-    // TODO(regla): P36 · «el Tripulante preparado de menor coste» no incluye al Capitán (no tiene coste); si empatan,
-    // eliges tú; si no hay ninguno preparado, nadie sube al patíbulo y el fallo no hiere a nadie.
+    // −2 si tienes 12 o más de reputación. Fallo: ese Tripulante queda rehén.
+    // P36: «el Tripulante preparado de menor coste» no incluye al Capitán (no tiene coste); si empatan, eliges tú; si no
+    // hay ninguno preparado, nadie sube al patíbulo y el fallo no se lleva a nadie.
     ciu: {
       alRevelarse: [
         {

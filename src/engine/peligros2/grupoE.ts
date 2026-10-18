@@ -22,6 +22,7 @@ import {
   dano,
   descartar,
   dificultad,
+  enElMar,
   habilidadDe,
   heridas,
   mas,
@@ -108,10 +109,9 @@ registrarPeligro('p2_estrella', {
         disparos: [{ cuando: 'fallarPrueba', efectos: [{ tipo: 'descartarEsta' }] }],
       },
     },
-    // Cura 1 herida a cada Tripulante y quita Envenenado de todos.
-    // TODO(regla): P45 · se aplica en el orden impreso: primero cura (y curar quita antes la ficha de Envenenado, P13) y
-    // después quita Envenenado; un Envenenado con heridas pierde la ficha pero no se cura la herida.
-    nat: { efecto: [{ tipo: 'curar', n: 1, modo: 'cadaUno' }, { tipo: 'quitarEstado', estado: 'envenenado', a: 'todos' }] },
+    // Quita Envenenado de todos tus Tripulantes y después cura 1 herida a cada uno (P45): un Envenenado con 1 herida
+    // acaba sin ficha y sin herida.
+    nat: { efecto: [{ tipo: 'quitarEstado', estado: 'envenenado', a: 'todos' }, { tipo: 'curar', n: 1, modo: 'cadaUno' }] },
     // Puedes comprar un billete: descarta 1 carta y revela la de arriba del mazo de Peligros; si su Destino es −1 o −2,
     // robas 3. Después, descarta la carta revelada.
     ciu: {
@@ -151,7 +151,7 @@ function portadores(s: Estado, carta: InstId): (InstId | 'barco')[] {
 const costeRebajado = (s: Estado, c: InstId) => Math.max(0, valor(s, { tipo: 'coste', carta: c }) - 2)
 
 // «Pon en juego una Mejora del muelle pagando 2 cartas menos de su coste.» Paso 0: cuál (o ninguna); paso 1: portador.
-// TODO(regla): P47 · es opcional (puedes no pujar), como «recluta gratis»: no obliga a pagar si hay una Mejora asequible.
+// P47 (confirmada): es opcional (puedes no pujar), como «recluta gratis»: no obliga a pagar si hay una Mejora asequible.
 registrarEspecial('p2_restos.subasta', (s, t, e) => {
   if (t.paso === 0) {
     const candidatas = s.zonas.muelle.filter((c) => {
@@ -204,10 +204,9 @@ registrarPeligro('p2_restos', {
     // Éxito: pon en juego una Mejora del muelle pagando 2 cartas menos. Fallo: se descarta del muelle la Mejora más cara (se repone).
     ciu: { exito: [codigo('p2_restos.subasta')], fallo: [{ tipo: 'descartarMuelle', cual: 'mejoraMasCara', reponer: true }] },
   },
-  // +0. Si superas, repara 1 daño. Sin oposición: 1 daño al Barco.
-  // PENDIENTE(documento): Albert ha cambiado «Madera del pecio» para que diga qué hace en cada Entorno; falta su texto
-  // nuevo. Mientras tanto, el Barco solo recibe daño en el Mar (P19).
-  destino: { siSuperas: [reparar(1)], sinOposicion: [dano(1)] },
+  // +0. Si superas, repara 1 daño. Sin oposición: en el Mar, el Barco sufre 1 daño; en Naturaleza o Ciudad, descarta
+  // 1 carta.
+  destino: { siSuperas: [reparar(1)], sinOposicion: [enElMar([dano(1)], [descartar(1)])] },
 })
 
 // 47. Presa fácil · Favorable ------------------------------------------------------
@@ -260,7 +259,7 @@ registrarPeligro('p2_santelmo', {
     // Éxito: el comprometido con más NAV queda Inspirado. Fallo: en la siguiente Prueba, 2 Destinos y el peor.
     mar: { exito: [comprometidoCon(mas('NAV'), estado('inspirado'))], fallo: [{ tipo: 'siguiente', mod: { de: 'prueba', dosDestinos: true } }] },
     // Un Vigía comprometido suma +2. Éxito: busca una Mejora. Fallo: pierdes 2 Avance.
-    // TODO(regla): P46 · «busca una Mejora en tu mazo y añádela a tu mano»: las Mejoras van en el mazo de muelle, no en
+    // P46 (confirmada): «busca una Mejora en tu mazo y añádela a tu mano»: las Mejoras van en el mazo de muelle, no en
     // la mano. Por defecto: buscas una Mejora en el mazo de muelle y la pones en el muelle, como las recompensas.
     nat: {
       capacidades: [habilidadDe('vigias', (ctx, c) => (tieneRasgo(ctx.s, c, 'Vigía') ? 2 : 0))],

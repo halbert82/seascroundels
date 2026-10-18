@@ -82,10 +82,12 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 ### Cambios de regla y de diseño (18 de octubre de 2026)
 
 - **Se elimina Reforzar.** Las cartas de la mano solo se añaden por sus iconos al comprometer, antes de revelar el Destino. En la ventana de acción de la Prueba solo se usan capacidades de cartas en juego (Tripulantes, Mejoras, Cañones…) y los Eventos que tienen su propio momento escrito (Reflejos de gato, Retirada a tiempo, Lección aprendida…). Reglamento actualizado (paso 3 de la Prueba, entrada «Reforzar» quitada, referencia rápida y ejemplo del primer turno).
-- **El Estado Fiebre desaparece del juego.** La Herbolaria quita Envenenado, Sangrando, Aturdido o Asustado; «El culebrero» y «Agua dulce» ya no la mencionan; «Fiebre amarilla» está rehecha (pendiente de su texto nuevo: mientras tanto, fuera del mazo).
+- **El Estado Fiebre desaparece del juego.** La Herbolaria quita Envenenado, Sangrando, Aturdido o Asustado; «El culebrero» y «Agua dulce» ya no la mencionan; «Fiebre amarilla» está rehecha sin Fiebre y vuelve al mazo (55 cartas).
 - **Cortar por lo sano** pasa a coste 0 (solo cuesta las 2 cartas de su capacidad).
 - **Estrella polar:** «Las cartas de tu mano no suman en esta Prueba» (tampoco las que se comprometieron).
-- **Los Destinos que dañaban el Barco** dicen ahora qué hacen en cada Entorno (Coral bajo la quilla, Carcoma, Vendaval, Las baterías del castillo, Madera del pecio). Pendiente del documento nuevo: mientras tanto, su texto actual con la regla general (en tierra, el daño al Barco no hace nada), marcado `PENDIENTE(documento)` en el código.
+- **Los Destinos que dañaban el Barco** dicen ahora qué hacen en cada Entorno. En el Mar dañan el Barco; en Naturaleza o Ciudad: Coral bajo la quilla, 1 herida a un Tripulante; Carcoma, descartas 1 carta; Vendaval, 2 heridas repartidas (ya no se elige); Las baterías del castillo, 1 herida al Capitán; Madera del pecio, descartas 1 carta.
+- **Ahorcan a uno de los vuestros** (La horca, Ciudad), cambio de diseño: el Fallo pasa a ser «Lo suben al patíbulo: ese Tripulante queda rehén. Si no superas la misión, lo ahorcan». Es la regla normal de rehén: si superas la misión lo rescatas; si no, lo pierdes y −1 de reputación. Ya no sufre 3 heridas.
+- **Ejemplo del primer turno** rehecho con cartas del mazo nuevo: «Turbonada a popa» (NAV 4, 3 de Avance) y el Destino «Coral bajo la quilla» (+1). La misión llega a 6 de las 3 que pide.
 
 ### Decididas por Albert (fase 6)
 
@@ -124,18 +126,23 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 - **«Tienes un Bucanero»** cuenta a Diego (es Bucanero y Oficial).
 - **«Por cada Tripulante que tengas»** cuenta al Capitán (El reparto).
 
-### Opciones por defecto, pendientes de confirmar (marcadas con TODO(regla) en el código)
+### Respuestas de Albert a P25–P47 (18 de octubre de 2026)
 
-- **P25 · Numeración:** los Peligros 2.0 llevan del 154 al 164 (Grupo A) y del 174 al 217 (grupos B a E); las cartas de jugador 2.0, del 165 al 173. Los números de los Peligros antiguos quedan sin carta en la caja.
-- **P26 · Peligros antiguos:** fuera del mazo y de la galería, pero se conservan en los datos solo para las pruebas (unas 300 pruebas de reglas y el ejemplo del reglamento los usan).
-- **P28 · Arenas movedizas (Naturaleza), «el Tripulante preparado (o el Capitán) con más EXP»:** el Capitán cuenta como uno más; si no hay nadie preparado, queda atrapado el Capitán.
-- **P29 · «−1 Mando en tu próximo turno»** (Carestía, Demasiadas voces, Albatros muerto): robas una carta menos al final de tu próximo turno, no al final de este.
-- **P35 · «Elige: le pagas…, o la Prueba recibe +2»** (El soplón pide su parte, Peaje del corsario): pagar no te libra de la Prueba; la haces sin el +2.
-- **P36 · Ahorcan a uno de los vuestros:** «el preparado de menor coste» no incluye al Capitán; si empatan, eliges; si no hay nadie preparado, nadie sube al patíbulo.
-- **P40 · Dados cargados con el mazo del capitán vacío:** no se descarta nada ni se baraja; el Destino queda en +0.
-- **P41 · «Tu Tripulante de menor coste» / «el de menor coste no suma»:** el Capitán no cuenta (no tiene coste).
-- **P42 · Lenguas sueltas:** una carta de Peligro que ocupa el muelle no cuenta como «la de más a la izquierda».
-- **P43 · Echarse la culpa:** siempre son dos Tripulantes distintos; si empatan, eliges cuál es el más alto y cuál el más bajo.
-- **P45 · Agua dulce:** se aplica en el orden impreso: primero cura 1 a cada uno (y curar quita antes la ficha de Envenenado) y después quita Envenenado.
-- **P46 · Fuegos fatuos:** «busca una Mejora en tu mazo y añádela a tu mano»: buscas una Mejora en el mazo de muelle y la pones en el muelle, como en las recompensas.
-- **P47 · Subasta del naufragio:** poner la Mejora con descuento es opcional.
+- **Confirmadas tal cual:**
+  - **P25** · numeración: Peligros 2.0 del 154 al 164 y del 174 al 217; cartas de jugador 2.0 del 165 al 173; los números de los Peligros antiguos quedan sin carta;
+  - **P26** · los Peligros antiguos se quedan en los datos solo para las pruebas (fuera del mazo y de la galería);
+  - **P28** · Arenas movedizas: el Capitán cuenta como uno más; si no hay nadie preparado, queda atrapado él;
+  - **P29** · «−1 Mando en tu próximo turno»: robas una menos al final de tu próximo turno, no de este;
+  - **P35** · «le pagas… o la Prueba recibe +2»: pagar no te libra de la Prueba; la haces sin el +2;
+  - **P36** · Ahorcan a uno de los vuestros: «el preparado de menor coste» no incluye al Capitán; si empatan, eliges; si no hay nadie preparado, nadie sube al patíbulo;
+  - **P40** · Dados cargados con el mazo del capitán vacío: no se descarta nada y el Destino queda en +0;
+  - **P41** · «el de menor coste»: el Capitán no cuenta;
+  - **P42** · Lenguas sueltas: una carta de Peligro que ocupa el muelle no es «la de más a la izquierda»;
+  - **P43** · Echarse la culpa: siempre dos Tripulantes distintos; si empatan, eliges;
+  - **P46** · Fuegos fatuos: la Mejora se busca en el mazo de muelle y se pone en el muelle;
+  - **P47** · Subasta del naufragio: poner la Mejora con descuento es opcional.
+- **P45 · Agua dulce (corregida):** primero quita Envenenado y después cura 1 herida a cada uno. *Ejemplo:* el Bucanero con 1 herida y Envenenado acaba sin ficha y sin herida.
+
+### Pendiente de Albert
+
+- **P48 · Pruebas dobles en «La Armada te persigue».** Has dicho que las Pruebas dobles («NAV 3 o EXP 3») se eliminan, y ya no queda ninguna en los Peligros 2.0. Pero la carta que entra con «+ La Armada» (El cazador de piratas) es la antigua «La Armada te persigue», y conserva dos: «Navío de la Armada» (COM 5 o NAV 5) y «Desembarco de casacas» (COM 4 o EXP 4). *Ejemplo:* fallas «Pasquines del cazador», La Armada entra en el mazo de Peligros y, cuando sale en una misión de Mar, eliges si la afrontas con COM 5 o con NAV 5. **Opción por defecto:** la carta se queda como está y el reglamento sigue explicando las Pruebas dobles mientras exista. Si me das su texto nuevo (una sola Prueba por encuentro), lo aplico y quito las Pruebas dobles del reglamento.

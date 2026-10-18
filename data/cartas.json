@@ -397,7 +397,7 @@
    "EXP": 2,
    "vida": 1,
    "mejoras": 1,
-   "texto": "[agotar]: Quita **Envenenado**, **Sangrando**, **Aturdido** o **Asustado** a un Tripulante.",
+   "texto": "[agotar]: Quita a un Tripulante uno de estos Estados: **Envenenado**, **Sangrando**, **Aturdido** o **Asustado**.",
    "ambientacion": "«Para cada veneno, una hoja. Para cada hoja, un precio.»"
   },
   {
@@ -4221,7 +4221,7 @@
     "texto": "+0 en su lugar si comprometiste a un _Vigía_ (ve el coral bajo el agua).",
     "mod": "+1",
     "ambientacion": "",
-    "textoSinOposicion": "1 daño al Barco."
+    "textoSinOposicion": "En el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante (las rocas cortan)."
    }
   },
   {
@@ -4380,7 +4380,7 @@
     "texto": "Las Mejoras no suman ni se pueden usar en esta Prueba (la madera cede).",
     "mod": "+0",
     "ambientacion": "",
-    "textoSinOposicion": "1 daño al Barco."
+    "textoSinOposicion": "En el Mar, 1 daño al Barco; en Naturaleza o Ciudad, descarta 1 carta (se pudre la carga)."
    }
   },
   {
@@ -4543,7 +4543,7 @@
     "texto": "Fallas la Prueba, salvo que descartes 2 cartas o agotes a otro Tripulante preparado con [NAV] 2 o más (a sujetar lo que se suelta); entonces es +2.",
     "mod": "✕",
     "ambientacion": "",
-    "textoSinOposicion": "2 daños al Barco o 2 heridas repartidas (tú eliges)."
+    "textoSinOposicion": "En el Mar, 2 daños al Barco; en Naturaleza o Ciudad, 2 heridas repartidas."
    }
   },
   {
@@ -5070,9 +5070,9 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Los Tripulantes con **Fiebre** no pueden comprometerse (están aislados en el castillo de proa).",
-     "textoExito": "~Una cala tranquila para desembarcar a los enfermos al sol.~ Quita la **Fiebre** a todos los Tripulantes; si nadie tenía, +1 Avance.",
-     "textoFallo": "~Con la bandera amarilla izada, nadie os deja tocar tierra.~ No puedes retirarte de esta misión."
+     "textoEfecto": "~Hay enfermos a bordo y la bandera amarilla avisa a todo el que se acerque.~",
+     "textoExito": "~Una cala tranquila para desembarcar a los enfermos al sol.~ Cura 1 herida a cada Tripulante.",
+     "textoFallo": "~Con la bandera izada, nadie os deja tocar tierra.~ No puedes retirarte de esta misión."
     },
     "nat": {
      "nombre": "Nube de mosquitos",
@@ -5096,8 +5096,8 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Hay que hacer humo con hojas verdes y no parar de andar.~",
-     "textoExito": "~Encontráis corteza de quina.~ Quita la **Fiebre** a un Tripulante, o cura 2 heridas.",
-     "textoFallo": "El Tripulante comprometido con menos Vida queda con **Fiebre** (y al final del turno se contagia)."
+     "textoExito": "~Encontráis corteza de quina.~ Cura 2 heridas.",
+     "textoFallo": "~La calentura.~ Cada Tripulante comprometido queda **Aturdido**."
     },
     "ciu": {
      "nombre": "El lazareto",
@@ -5118,18 +5118,18 @@
      "nota": "",
      "textoEfecto": "~La ciudad ha cerrado las calles; el cordón de guardias busca caras amarillas.~",
      "textoExito": "~Cruzáis el cordón por los patios.~ +1 Avance.",
-     "textoFallo": "~El cordón se lleva a uno.~ El comprometido con más [EXP] queda rehén en el lazareto; si tenía **Fiebre**, allí se la quitan.",
-     "notaPrueba": "+1 por cada Tripulante con **Fiebre** (máx. 5)."
+     "textoFallo": "~El cordón se lleva a uno.~ El comprometido con más [EXP] queda rehén en el lazareto; si lo rescatas, vuelve sin heridas (allí lo curan).",
+     "notaPrueba": "+1 por cada Tripulante herido (máx. 5)."
     }
    },
    "destino": {
     "nombre": "Vómito negro",
     "modificador": 1,
     "textoPrototipo": "",
-    "texto": "+2 en su lugar si algún Tripulante comprometido tiene **Fiebre**.",
+    "texto": "Si fallas, cada Tripulante comprometido que ya tenga heridas sufre 1 herida más.",
     "mod": "+1",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán queda con **Fiebre**."
+    "textoSinOposicion": "El Capitán queda **Aturdido**."
    }
   },
   {
@@ -6275,7 +6275,7 @@
     "texto": "+4 en su lugar salvo que descartes 2 cartas (os ponéis a cubierto).",
     "mod": "+2",
     "ambientacion": "",
-    "textoSinOposicion": "El Barco sufre 1 daño."
+    "textoSinOposicion": "En el Mar, el Barco sufre 1 daño; en Naturaleza o Ciudad, el Capitán sufre 1 herida."
    }
   },
   {
@@ -6345,7 +6345,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** el Tripulante preparado de menor coste está en el patíbulo y no puede comprometerse. −2 si tienes 12 o más de reputación (el gentío está de tu parte).",
      "textoExito": "~Cortáis la soga a tiempo y el gentío os vitorea.~ +1 reputación.",
-     "textoFallo": "~El verdugo hace su trabajo.~ Ese Tripulante sufre 3 heridas (si sobrevive, la soga se rompió: milagro)."
+     "textoFallo": "~Lo suben al patíbulo.~ Ese Tripulante queda rehén. Si no superas la misión, lo ahorcan."
     }
    },
    "destino": {
@@ -7347,7 +7347,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~De pura suerte, dais con un manantial en una isla sin nombre.~ Cura 1 herida a cada Tripulante y quita **Envenenado** de todos."
+     "textoEfecto": "~De pura suerte, dais con un manantial en una isla sin nombre.~ Quita **Envenenado** de todos tus Tripulantes y después cura 1 herida a cada uno."
     },
     "ciu": {
      "nombre": "La lotería del virrey",
@@ -7443,7 +7443,7 @@
     "texto": "Si superas, repara 1 daño al Barco (tablas del galeón hundido).",
     "mod": "+0",
     "ambientacion": "",
-    "textoSinOposicion": "Alguien rapiña vuestra propia madera: el Barco sufre 1 daño."
+    "textoSinOposicion": "Alguien rapiña lo vuestro: en el Mar, el Barco sufre 1 daño; en Naturaleza o Ciudad, descarta 1 carta."
    }
   },
   {
@@ -9700,6 +9700,7 @@
    "p2_hambre",
    "p2_sinrumbo",
    "p2_serpientes",
+   "p2_fiebre",
    "p2_tiburones",
    "p2_murcielagos",
    "p2_arenas",

@@ -52,7 +52,7 @@ describe('45 · Buena estrella', () => {
     expect(j.zona('peligrosEnJuego')).toEqual([])
   })
 
-  it('Naturaleza: cura 1 a cada Tripulante y quita Envenenado de todos (P45: primero cura, que quita antes la ficha)', () => {
+  it('Naturaleza: quita Envenenado de todos y después cura 1 a cada uno (P45: el Bucanero acaba sin ficha y sin herida)', () => {
     const j = en('nat', ['p2_estrella', 'calma'], {
       capitan: { heridas: 1 },
       tripulacion: [
@@ -63,7 +63,7 @@ describe('45 · Buena estrella', () => {
     expect(j.copia('capitan').heridas).toBe(0)
     expect(j.estados('vigia')).toEqual([])
     expect(j.estados('bucanero')).toEqual([])
-    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.copia('bucanero').heridas).toBe(0)
   })
 
   it('Ciudad: la lotería: descartas 1 y revelas la de arriba; si su Destino es −1 o −2, robas 3', () => {
@@ -141,6 +141,13 @@ describe('46 · Restos del naufragio', () => {
     const k = en('mar', ['oportunidad', 'p2_restos', 'calma'])
     k.comprometer('NAV', []).seguir()
     expect(k.estado.danoBarco).toBe(1)
+  })
+
+  it('Destino «Madera del pecio», sin oposición en Naturaleza o Ciudad: descartas 1 carta (no daña el Barco)', () => {
+    const j = en('ciu', ['oportunidad', 'p2_restos', 'calma'], { mano: ['ojo', 'timon'] })
+    j.comprometer('EXP', []).elegir('timon').seguir()
+    expect(j.estado.danoBarco).toBe(0)
+    expect(j.zona('mano')).toEqual(['ojo'])
   })
 })
 

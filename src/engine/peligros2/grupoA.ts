@@ -17,6 +17,7 @@ import {
   descartar,
   dificultad,
   encuentroEs,
+  enElMar,
   habilidadDe,
   heridas,
   mas,
@@ -167,9 +168,12 @@ registrarPeligro('p2_arrecife', {
       fallo: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia', 'Militar'], n: 2 } }],
     },
   },
-  // +1; +0 en su lugar si comprometiste a un Vigía. Sin oposición: 1 daño al Barco (solo en el Mar, P19).
-  // PENDIENTE(documento): Albert ha rehecho «Coral bajo la quilla» para que diga qué hace en cada Entorno; falta su texto.
-  destino: { modificador: (s) => (comprometidosDe(s).some((c) => tieneRasgo(s, c, 'Vigía')) ? 0 : 1), sinOposicion: [dano(1)] },
+  // +1; +0 en su lugar si comprometiste a un Vigía. Sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad,
+  // 1 herida a un Tripulante.
+  destino: {
+    modificador: (s) => (comprometidosDe(s).some((c) => tieneRasgo(s, c, 'Vigía')) ? 0 : 1),
+    sinOposicion: [enElMar([dano(1)], [heridas(1)])],
+  },
 })
 
 // 7. Fuego a bordo · Duro
@@ -247,9 +251,9 @@ registrarPeligro('p2_broma', {
     },
     ciu: { exito: [robar(2)], fallo: [{ tipo: 'descartarMayorCoste' }] },
   },
-  // +0. Las Mejoras no suman ni se pueden usar en esta Prueba. Sin oposición: 1 daño al Barco (solo en el Mar, P19).
-  // PENDIENTE(documento): Albert ha rehecho «Carcoma» para que diga qué hace en cada Entorno; falta su texto.
-  destino: { prueba: { sinMejoras: true }, sinOposicion: [dano(1)] },
+  // +0. Las Mejoras no suman ni se pueden usar en esta Prueba. Sin oposición: en el Mar, 1 daño al Barco; en
+  // Naturaleza o Ciudad, descarta 1 carta.
+  destino: { prueba: { sinMejoras: true }, sinOposicion: [enElMar([dano(1)], [descartar(1)])] },
 })
 
 // 9. Turbonada · Duro
@@ -344,20 +348,10 @@ registrarPeligro('p2_huracan', {
     ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante' }], fallo: [{ tipo: 'ocuparMuelle', coste: 3 }] },
   },
   // Fallas la Prueba, salvo que descartes 2 cartas o agotes a otro Tripulante preparado con NAV 2 o más: entonces +2.
-  // Sin oposición: 2 daños al Barco o 2 heridas repartidas (tú eliges).
-  // El Barco solo recibe daño en el Mar (P19).
-  // PENDIENTE(documento): el Destino «Vendaval» dice ahora qué hace en cada Entorno; falta su texto nuevo.
+  // Sin oposición: en el Mar, 2 daños al Barco; en Naturaleza o Ciudad, 2 heridas repartidas.
   destino: {
     efectos: [codigo('p2_huracan.vendaval')],
-    sinOposicion: [
-      {
-        tipo: 'elegir',
-        opciones: [
-          { texto: '2 daños al Barco', efectos: [dano(2)] },
-          { texto: '2 heridas repartidas', efectos: [codigo('p2_huracan.dosHeridas')] },
-        ],
-      },
-    ],
+    sinOposicion: [enElMar([dano(2)], [codigo('p2_huracan.dosHeridas')])],
   },
 })
 

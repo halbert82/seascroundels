@@ -262,6 +262,17 @@ describe('6 · Arrecife', () => {
     k.comprometer('NAV', ['capitan'])
     expect(dificultadPrueba(k.estado)).toBe(3)
   })
+
+  it('Destino «Coral bajo la quilla», sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante', () => {
+    const j = en('mar', ['chubasco', 'p2_arrecife', 'calma'])
+    j.comprometer('NAV', []).seguir()
+    expect(j.estado.danoBarco).toBe(1)
+    // En Ciudad («Timba en la taberna», sin efecto al fallar): las rocas cortan.
+    const k = en('ciu', ['oportunidad', 'p2_arrecife', 'calma'])
+    k.comprometer('EXP', []).seguir()
+    expect(k.estado.danoBarco).toBe(0)
+    expect(k.copia('capitan').heridas).toBe(1)
+  })
 })
 
 describe('7 · Fuego a bordo', () => {
@@ -370,6 +381,17 @@ describe('8 · La broma', () => {
     j.comprometer('NAV', ['capitan'])
     expect(totalPrueba(j.estado)).toBe(3) // Diego 2 + Barco 1; la Brújula no suma
   })
+
+  it('Destino «Carcoma», sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, descarta 1 carta', () => {
+    const j = en('mar', ['chubasco', 'p2_broma', 'calma'], { mano: ['ojo', 'timon'] })
+    j.comprometer('NAV', []).seguir()
+    expect(j.estado.danoBarco).toBe(1)
+    expect(j.zona('mano')).toHaveLength(2)
+    const k = en('ciu', ['oportunidad', 'p2_broma', 'calma'], { mano: ['ojo', 'timon'] })
+    k.comprometer('EXP', []).elegir('ojo').seguir()
+    expect(k.estado.danoBarco).toBe(0)
+    expect(k.zona('mano')).toEqual(['timon'])
+  })
 })
 
 describe('9 · Turbonada', () => {
@@ -454,6 +476,19 @@ describe('10 · Huracán', () => {
     expect(j.copia('viejo_lobo').agotada).toBe(true)
     expect(j.estado.prueba?.falla).toBe(false)
     expect(dificultadPrueba(j.estado)).toBe(4)
+  })
+
+  it('Destino «Vendaval», sin oposición: en el Mar, 2 daños al Barco; en Naturaleza o Ciudad, 2 heridas repartidas', () => {
+    const j = en('mar', ['chubasco', 'p2_huracan', 'calma'], { barco: { mejoras: [] } })
+    j.comprometer('NAV', []).seguir()
+    expect(j.estado.danoBarco).toBe(2)
+    expect(j.copia('capitan').heridas).toBe(0)
+    const k = en('ciu', ['oportunidad', 'p2_huracan', 'calma'], { capitan: { mejoras: ['coleto'] } })
+    k.comprometer('EXP', [])
+    while (k.decision.tipo === 'repartir') k.repartir({ capitan: 2 })
+    k.seguir()
+    expect(k.estado.danoBarco).toBe(0)
+    expect(k.copia('capitan').heridas).toBe(2)
   })
 })
 

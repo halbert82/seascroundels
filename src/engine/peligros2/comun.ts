@@ -91,3 +91,8 @@ export function cadaComprometido(hacer: AccionSobre): Efecto {
 export function siTienes(rasgo: string, entonces: Efecto[], sino?: Efecto[]): Efecto {
   return sino ? { tipo: 'si', condicion: { tipo: 'rasgoEnJuego', rasgo }, entonces, sino } : { tipo: 'si', condicion: { tipo: 'rasgoEnJuego', rasgo }, entonces }
 }
+
+/** «En el Mar, …; en Naturaleza o Ciudad, …» (los Destinos que dañaban el Barco dicen qué hacen en cada Entorno). */
+export function enElMar(mar: Efecto[], enTierra: Efecto[]): Efecto {
+  return { tipo: 'si', condicion: { tipo: 'entorno', entorno: 'mar' }, entonces: mar, sino: enTierra }
+}

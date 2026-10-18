@@ -487,6 +487,14 @@ describe('31 · Bajo los cañones del Morro', () => {
     expect(dificultadPrueba(m.estado)).toBe(6) // sin 2 cartas en la mano, +4
     expect(m.estado.danoBarco).toBe(1)
   })
+
+  it('Destino «Las baterías del castillo», sin oposición en Naturaleza o Ciudad: el Capitán sufre 1 herida (no el Barco)', () => {
+    const j = en('ciu', ['oportunidad', 'p2_morro', 'calma'], { tripulacion: ['bucanero'] })
+    j.comprometer('EXP', []).seguir()
+    expect(j.estado.danoBarco).toBe(0)
+    expect(j.copia('capitan').heridas).toBe(1)
+    expect(j.copia('bucanero').heridas).toBe(0)
+  })
 })
 
 describe('32 · La horca', () => {
@@ -507,14 +515,30 @@ describe('32 · La horca', () => {
     expect(j.zona('rehenes')).toEqual(['vigia'])
   })
 
-  it('Ciudad: al revelarse, el preparado de menor coste está en el patíbulo (no puede comprometerse); si fallas, sufre 3 heridas', () => {
-    const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
+  it('Ciudad: al revelarse, el preparado de menor coste está en el patíbulo (no puede comprometerse); si fallas, queda rehén y, si no superas la misión, lo ahorcan', () => {
+    const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 3 })
     const d = j.decision as { tripulantes: `i${number}`[] }
     expect(d.tripulantes).not.toContain(j.inst('marinero_p'))
     expect(d.tripulantes).toContain(j.inst('bucanero'))
     j.comprometer('COM', []).seguir()
-    expect(j.zona('tripulacion')).not.toContain('marinero_p')
-    expect(j.registro).toContain('Rufián de cubierta sufre 3 heridas.')
+    // Lo suben al patíbulo: queda rehén, sin heridas (ya no sufre 3).
+    expect(j.zona('rehenes')).toEqual(['marinero_p'])
+    expect(j.copia('marinero_p').heridas).toBe(0)
+    // Te retiras sin superar la misión: lo pierdes y −1 de reputación (regla normal de rehén).
+    j.retirarse()
+    expect(j.zona('rehenes')).toEqual([])
+    expect(j.registro).toContain('Pierdes a Rufián de cubierta, que era rehén.')
+    expect(j.estado.reputacion).toBe(2)
+  })
+
+  it('Ciudad: si fallas pero superas la misión, rescatas al del patíbulo', () => {
+    // «Calma» da el Avance que falta para superar la misión con el rehén aún en el patíbulo.
+    const j = en('ciu', ['p2_horca', 'chubasco', 'calma', 'calma', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
+    j.comprometer('COM', []).seguir()
+    expect(j.zona('rehenes')).toEqual(['marinero_p'])
+    while (j.estado.mision && j.decision.tipo === 'ventanaAccion') j.seguir()
+    expect(j.registro).toContain('Rescatas a Rufián de cubierta.')
+    expect(j.zona('tripulacion')).toContain('marinero_p')
   })
 
   it('Ciudad: −2 con 12 o más de reputación; si superas, +1 reputación', () => {

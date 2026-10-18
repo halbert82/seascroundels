@@ -1,5 +1,4 @@
 // Peligros 2.0 · Grupo B: Bestias, naturaleza y enfermedades (cartas 12–22).
-// La 17, «Fiebre amarilla», está rehecha sin Fiebre y aún no tengo su texto: no está en el mazo ni tiene reglas.
 
 import { registrarPeligro } from '../capacidades/peligros.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
@@ -102,7 +101,7 @@ registrarPeligro('p2_hambre', {
         { texto: 'Regatear: Prueba de EXP 3', prueba: true },
       ],
       exito: [robar(1), { tipo: 'curar', n: 1 }],
-      // TODO(regla): P29 · «−1 Mando en tu próximo turno»: robas una carta menos al final de tu próximo turno (no
+      // P29 (confirmada): «−1 Mando en tu próximo turno»: robas una carta menos al final de tu próximo turno (no
       // al final de este, como el −1 Mando de siempre).
       fallo: [{ tipo: 'menosMando', proximo: true }],
     },
@@ -194,6 +193,55 @@ registrarPeligro('p2_serpientes', {
   },
 })
 
+// 17. Fiebre amarilla · Duro
+const LAZARETO = 'p2_fiebre.lazareto'
+// «Si fallas, cada Tripulante comprometido que ya tenga heridas sufre 1 herida más.»
+registrarCodigo('p2_fiebre.vomito', (s): NuevaTarea[] =>
+  (s.prueba?.comprometidos ?? [])
+    .filter((c) => s.zonas.tripulacion.includes(c) && copia(s, c).heridas > 0)
+    .map((c) => ({ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })),
+)
+registrarPeligro('p2_fiebre', {
+  encuentros: {
+    // NAV 4. Éxito: cura 1 herida a cada Tripulante. Fallo: no puedes retirarte de esta misión.
+    mar: { exito: [{ tipo: 'curar', n: 1, modo: 'cadaUno' }], fallo: [{ tipo: 'noRetirarse' }] },
+    // EXP 4 (2 con un Cirujano). Éxito: cura 2 heridas. Fallo: cada Tripulante comprometido queda Aturdido.
+    nat: { exito: [{ tipo: 'curar', n: 2 }], fallo: [cadaComprometido({ tipo: 'estado', estado: 'aturdido' })] },
+    // EXP 3, +1 por cada Tripulante herido (máx. 5). Éxito: +1 Avance. Fallo: el comprometido con más EXP queda rehén
+    // en el lazareto; si lo rescatas, vuelve sin heridas.
+    ciu: {
+      capacidades: [dificultad('heridos', (ctx) => Math.min(5, 3 + tripulantesHeridos(ctx.s)) - 3)],
+      exito: [avance(1)],
+      fallo: [
+        comprometidoCon(mas('EXP'), {
+          tipo: 'varios',
+          acciones: [
+            { tipo: 'marcar', clave: LAZARETO },
+            { tipo: 'rehen' },
+          ],
+        }),
+      ],
+    },
+  },
+  // +1. Si fallas, cada comprometido que ya tenga heridas sufre 1 herida más. Sin oposición: el Capitán queda Aturdido.
+  destino: { siFallas: [codigo('p2_fiebre.vomito')], sinOposicion: [{ tipo: 'estado', estado: 'aturdido', a: 'capitan' }] },
+})
+// «Si lo rescatas, vuelve sin heridas (allí lo curan).»
+registrarCapacidades({
+  clave: LAZARETO,
+  carta: 'p2_fiebre',
+  ventana: 'obligada',
+  desde: 'marca',
+  texto: 'Vuelve del lazareto sin heridas.',
+  disparo: (s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'rescatado' && ev.carta === yo && yo !== null && copia(s, yo).heridas > 0,
+  efecto: (s, yo) => {
+    if (!yo) return []
+    copia(s, yo).heridas = 0
+    anotar(s, 'efecto', `${nombre(s, yo)} vuelve del lazareto sin heridas.`)
+    return []
+  },
+})
+
 // 18. Tiburones · Duro
 registrarCodigo('p2_tiburones.prendas', (s): NuevaTarea[] => {
   // 1 carta al azar de tu mano por cada Tripulante herido (mín. 1, máx. 3).
@@ -247,7 +295,7 @@ registrarPeligro('p2_murcielagos', {
 
 // 20. Arenas movedizas · Duro
 registrarCodigo('p2_arenas.atrapa', (s, fuente): NuevaTarea[] => {
-  // TODO(regla): P28 · «el Tripulante preparado (o el Capitán) con más EXP»: el Capitán cuenta como uno más entre los
+  // P28 (confirmada): «el Tripulante preparado (o el Capitán) con más EXP»: el Capitán cuenta como uno más entre los
   // preparados; si no hay nadie preparado, queda atrapado el Capitán.
   const hacer = {
     tipo: 'varios' as const,

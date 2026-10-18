@@ -109,4 +109,4 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - **Rehén:** el Capitán no puede ser rehén (N11).
 - **Barco hundido:** las Mejoras de barco que se pierden **sí** activan sus efectos «después de que descartes esta carta».
 - Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.
-- **Fase 6:** las dudas pendientes (P25–P47) están en `docs/decisiones.md`, sección «Fase 6». Reforzar ya no existe: las cartas de la mano solo suman al comprometer.
+- **Fase 6:** las respuestas de Albert (P1–P47) están en `docs/decisiones.md`, sección «Fase 6»; queda pendiente P48 (Pruebas dobles en «La Armada te persigue»). Reforzar y la Fiebre ya no existen: las cartas de la mano solo suman al comprometer.
