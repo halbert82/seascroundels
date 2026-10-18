@@ -35,9 +35,11 @@ Las mismas 1000 partidas normales con cada regla para el Avance de un encuentro 
 
 | Regla | Victorias | Derrotas por tiempo | Derrotas por Capitán | Retiradas por partida | Turnos por partida |
 | --- | --- | --- | --- | --- | --- |
-| Como estaba: Avance entero siempre | 54.2 % | 36.6 % | 9.2 % | 1.05 | 10.0 |
-| Regla del juego: Y = mitad de X, redondeando abajo | 19.5 % | 59.4 % | 21.1 % | 2.32 | 9.8 |
-| Solo simulada: Y = X − 1 (mínimo 0) | 21.5 % | 61.1 % | 17.4 % | 2.26 | 10.0 |
+| a) Regla del juego: Y = mitad de X, redondeando abajo (1/0, 2/1, 3/1, 4/2) | 19.5 % | 59.4 % | 21.1 % | 2.32 | 9.8 |
+| b) Y = X − 1, mínimo 1 (1/1, 2/1, 3/2, 4/3) | 36.2 % | 48.6 % | 15.2 % | 1.54 | 9.9 |
+| c) Y = mitad de X, redondeando arriba (1/1, 2/1, 3/2, 4/2) | 35.9 % | 49.0 % | 15.1 % | 1.56 | 9.9 |
+| d) Como a), y cada misión pide 1 de Avance menos (mínimo 2) | 46.4 % | 39.0 % | 14.6 % | 1.36 | 9.9 |
+| Referencia: como estaba antes, Avance entero siempre | 54.2 % | 36.6 % | 9.2 % | 1.05 | 10.0 |
 
 ## Cartas de Escenario
 

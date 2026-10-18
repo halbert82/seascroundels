@@ -738,26 +738,26 @@ El **mazo de Escenario** es el reloj de la partida. El Caribe trae 14 cartas de 
 
 Ficha que perjudica o limita a un Tripulante o al Barco. Se queda de un turno a otro, también entre misiones, hasta que algo la quita. Un Tripulante no puede tener dos veces el mismo Estado, ni el Barco tampoco; si ya lo tiene, no pasa nada. Los Pasajeros no reciben Estados.
 
-En puerto, la **Taberna** quita todos los Estados de tus Tripulantes y el **Astillero**, todos los del Barco. Cada Estado indica además otras formas de quitarlo:
+En puerto, la **Taberna** quita todos los Estados de tus Tripulantes y el **Astillero**, todos los del Barco. Cualquier carta que lo diga también puede quitar un Estado; abajo va un ejemplo de cada uno, pero no son las únicas. Algunos Estados, además, se quitan solos al cumplirse algo:
 
 **Estados de los Tripulantes**
 
-- **Envenenado:** al final de cada turno, sufre 1 herida. Curarle quita primero esta ficha, en vez de una herida. También lo quitan la Herbolaria, «Cataplasma» y algunos encuentros («Agua dulce»).
-- **Borracho:** recibe +1 COM, pero no puede comprometerse a Pruebas de NAV ni de EXP. Se quita al final del turno.
-- **Aturdido:** la próxima vez que se comprometa a una Prueba, no suma. Se quita entonces. También lo quita la Herbolaria.
-- **Asustado:** no puede comprometerse solo a una Prueba (tampoco a una Prueba Sin ayuda). Se quita al superar una Prueba en la que participe. También lo quita la Herbolaria.
-- **Sangrando:** cada vez que se agota, sufre 1 herida. Curarle 1 quita esta ficha (después de Envenenado, si también lo está). También lo quitan la Herbolaria y «Cataplasma».
-- **Buscado:** en Ciudad, los encuentros Guardia y Militar reciben +1 por cada Tripulante Buscado que participe en su Prueba. Solo lo quita la Taberna.
-- **Maldito:** cuando un Destino hiere a «uno de los comprometidos», tiene que ser un Tripulante Maldito, si hay alguno comprometido. Se quita al superar la Prueba de un encuentro Sobrenatural en la que participe, y con algunas cartas («La mambo del mercado»).
-- **Encadenado:** no puede comprometerse ni usar las capacidades de su carta; sus capacidades constantes y sus Mejoras siguen funcionando. Para quitarlo, **Acción:** haz una Prueba de COM 3 o de EXP 3 (no durante otra Prueba).
+- **Envenenado:** al final de cada turno, sufre 1 herida. Curarle quita primero esta ficha, en vez de una herida. También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, la Herbolaria o «Cataplasma»).
+- **Borracho:** recibe +1 COM, pero no puede comprometerse a Pruebas de NAV ni de EXP. Se quita al final del turno. También se quita con la Taberna o con cualquier carta que lo diga.
+- **Aturdido:** la próxima vez que se comprometa a una Prueba, no suma. Se quita entonces. También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, la Herbolaria).
+- **Asustado:** no puede comprometerse solo a una Prueba (tampoco a una Prueba Sin ayuda). Se quita al superar una Prueba en la que participe. También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, la Herbolaria).
+- **Sangrando:** cada vez que se agota, sufre 1 herida. Curarle 1 quita esta ficha (después de Envenenado, si también lo está). También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, «Cataplasma»).
+- **Buscado:** en Ciudad, los encuentros Guardia y Militar reciben +1 por cada Tripulante Buscado que participe en su Prueba. Se quita con la Taberna o con cualquier carta que lo diga.
+- **Maldito:** cuando un Destino hiere a «uno de los comprometidos», tiene que ser un Tripulante Maldito, si hay alguno comprometido. Se quita al superar la Prueba de un encuentro Sobrenatural en la que participe. También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, «La mambo del mercado»).
+- **Encadenado:** no puede comprometerse ni usar las capacidades de su carta; sus capacidades constantes y sus Mejoras siguen funcionando. Para quitarlo, **Acción:** haz una Prueba de COM 3 o de EXP 3 (no durante otra Prueba). También se quita con la Taberna o con cualquier carta que lo diga.
 
 **Estados del Barco**
 
-- **Vía de agua:** al final de cada carta de Peligro en una misión de Mar, el Barco sufre 1 daño. Reparar quita primero esta ficha, en vez de un daño. También la quita el Práctico del puerto.
-- **Incendio a bordo:** en una misión de Mar, al revelar cada carta de Peligro, el Barco sufre 1 daño. Si una misión termina, en cualquier Entorno, sin haberlo apagado, pierdes una Mejora de barco y la ficha sigue. Se apaga con una **Acción:** agota a un Tripulante.
-- **Velas rotas:** el Barco no da su +1 a las Pruebas de NAV en el Mar y las Distancias son 1 mayores. También la quita el Práctico del puerto.
-- **Perseguido:** tu próxima misión de Mar empieza revelando un Peligro de más, que se resuelve entero antes del primero, sin ventana para retirarte entre ambos; cuenta como carta resuelta y da su Avance. La ficha se quita entonces. También la quita superar «Fragata a popa».
-- **Pólvora mojada:** tus Cañones no recargan en el Inicio.
+- **Vía de agua:** al final de cada carta de Peligro en una misión de Mar, el Barco sufre 1 daño. Reparar quita primero esta ficha, en vez de un daño. También se quita con el Astillero o con cualquier carta que lo diga (por ejemplo, el Práctico del puerto).
+- **Incendio a bordo:** en una misión de Mar, al revelar cada carta de Peligro, el Barco sufre 1 daño. Si una misión termina, en cualquier Entorno, sin haberlo apagado, pierdes una Mejora de barco y la ficha sigue. Se apaga con una **Acción:** agota a un Tripulante. También se quita con el Astillero o con cualquier carta que lo diga.
+- **Velas rotas:** el Barco no da su +1 a las Pruebas de NAV en el Mar y las Distancias son 1 mayores. Se quita con el Astillero o con cualquier carta que lo diga (por ejemplo, el Práctico del puerto).
+- **Perseguido:** tu próxima misión de Mar empieza revelando un Peligro de más, que se resuelve entero antes del primero, sin ventana para retirarte entre ambos; cuenta como carta resuelta y da su Avance. La ficha se quita entonces. También se quita con el Astillero o con cualquier carta que lo diga (por ejemplo, superar «Fragata a popa»).
+- **Pólvora mojada:** tus Cañones no recargan en el Inicio. Se quita con el Astillero o con cualquier carta que lo diga.
 
 > *Ejemplo:* el Bucanero veterano está Asustado y Sangrando. No puede comprometerse solo, así que lo comprometes con Diego a una Prueba de COM; al agotarse sufre 1 herida por Sangrando. Superáis la Prueba y deja de estar Asustado. Al volver a puerto eliges la Taberna: le quitas Sangrando y después le curas la herida, sin gastar curación en la ficha.
 
@@ -1128,20 +1128,20 @@ Elige uno de tus Tripulantes, que no sea el Capitán, y devuélvelo al muelle ju
 
 Un Tripulante o el Barco no puede tener dos veces la misma ficha. En puerto, la Taberna quita todos los Estados de tus Tripulantes (no las Ventajas) y el Astillero, todos los del Barco.
 
-| Ficha | Clase | Qué hace | Cómo se quita, además de en puerto |
+| Ficha | Clase | Qué hace | Cómo se quita, además de en puerto o con cualquier carta que lo diga |
 | --- | --- | --- | --- |
-| Envenenado | Estado | Al final de cada turno, 1 herida | Curarle: el primer punto quita la ficha. Herbolaria, «Cataplasma» |
+| Envenenado | Estado | Al final de cada turno, 1 herida | Curarle: el primer punto quita la ficha. Ejemplo: Herbolaria |
 | Borracho | Estado | +1 COM; no puede comprometerse a NAV ni EXP | Al final del turno |
-| Aturdido | Estado | La próxima vez que se comprometa, no suma | Al comprometerse. Herbolaria |
-| Asustado | Estado | No puede comprometerse solo | Al superar una Prueba en la que participe. Herbolaria |
-| Sangrando | Estado | Cada vez que se agota, 1 herida | Curarle 1. Herbolaria, «Cataplasma» |
-| Buscado | Estado | En Ciudad, los encuentros Guardia y Militar reciben +1 por cada Buscado que participe | Solo en puerto (Taberna) |
-| Maldito | Estado | Si un Destino hiere a «uno de los comprometidos», tiene que ser él | Al superar la Prueba de un encuentro Sobrenatural en la que participe |
+| Aturdido | Estado | La próxima vez que se comprometa, no suma | Al comprometerse. Ejemplo: Herbolaria |
+| Asustado | Estado | No puede comprometerse solo | Al superar una Prueba en la que participe. Ejemplo: Herbolaria |
+| Sangrando | Estado | Cada vez que se agota, 1 herida | Curarle 1. Ejemplo: «Cataplasma» |
+| Buscado | Estado | En Ciudad, los encuentros Guardia y Militar reciben +1 por cada Buscado que participe | — |
+| Maldito | Estado | Si un Destino hiere a «uno de los comprometidos», tiene que ser él | Al superar la Prueba de un encuentro Sobrenatural en la que participe. Ejemplo: «La mambo del mercado» |
 | Encadenado | Estado | No puede comprometerse ni usar las capacidades de su carta | Acción: Prueba de COM 3 o EXP 3 (no durante otra Prueba) |
-| Vía de agua | Estado del Barco | En el Mar, al final de cada carta de Peligro, 1 daño | Reparar: el primer punto quita la ficha. Práctico del puerto |
+| Vía de agua | Estado del Barco | En el Mar, al final de cada carta de Peligro, 1 daño | Reparar: el primer punto quita la ficha. Ejemplo: Práctico del puerto |
 | Incendio a bordo | Estado del Barco | En el Mar, al revelar cada carta de Peligro, 1 daño; si acaba la misión sin apagarlo, pierdes una Mejora de barco | Acción: agota a un Tripulante |
-| Velas rotas | Estado del Barco | Sin el +1 a NAV en el Mar; Distancias +1 | Práctico del puerto |
-| Perseguido | Estado del Barco | Tu próxima misión de Mar empieza con un Peligro de más | Al revelar ese Peligro de más |
-| Pólvora mojada | Estado del Barco | Los Cañones no recargan en el Inicio | Solo en puerto (Astillero) |
+| Velas rotas | Estado del Barco | Sin el +1 a NAV en el Mar; Distancias +1 | Ejemplo: Práctico del puerto |
+| Perseguido | Estado del Barco | Tu próxima misión de Mar empieza con un Peligro de más | Al revelar ese Peligro de más. Ejemplo: «Fragata a popa» |
+| Pólvora mojada | Estado del Barco | Los Cañones no recargan en el Inicio | — |
 | Inspirado | Ventaja | +1 en su próxima Prueba | Al comprometerse |
 | Aguerrido | Ventaja | Evita la próxima herida (solo 1) | Al evitarla |

@@ -7,6 +7,7 @@ import { avanceSinSuperar, reglasDe } from './definiciones.ts'
 import { nuevaPartida } from './preparacion.ts'
 import { Jugador, MISIONES_DE_PRUEBA } from './pruebas/situacion.ts'
 import type { Estado } from './tipos.ts'
+import { valor } from './valores.ts'
 
 const { mar5, ciu4 } = MISIONES_DE_PRUEBA
 
@@ -91,7 +92,7 @@ describe('Avance X / Y: los datos de las cartas', () => {
 
 describe('Avance X / Y: variantes solo para simular', () => {
   const def = { avance: 3, avanceSinSuperar: 1 }
-  const con = (avanceSinSuperar?: 'entero' | 'menosUno'): Estado => nuevaPartida({ semilla: 1, ...(avanceSinSuperar ? { variante: { avanceSinSuperar } } : {}) })
+  const con = (variante?: NonNullable<Estado['variante']>['avanceSinSuperar']): Estado => nuevaPartida({ semilla: 1, ...(variante ? { variante: { avanceSinSuperar: variante } } : {}) })
 
   it('la regla del juego usa el valor de la carta; sin él, la mitad hacia abajo', () => {
     expect(avanceSinSuperar(con(), def)).toBe(1)
@@ -99,10 +100,25 @@ describe('Avance X / Y: variantes solo para simular', () => {
     expect(avanceSinSuperar(con(), { avance: 1 })).toBe(0)
   })
 
-  it('«como estaba» da el Avance entero y «X − 1» uno menos, nunca por debajo de 0', () => {
+  it('«como estaba» da el Avance entero', () => {
     expect(avanceSinSuperar(con('entero'), def)).toBe(3)
-    expect(avanceSinSuperar(con('menosUno'), def)).toBe(2)
+  })
+
+  it('«X − 1» da uno menos, con mínimo 1 (1/1, 2/1, 3/2, 4/3); un Avance 0 sigue en 0', () => {
+    expect([1, 2, 3, 4].map((avance) => avanceSinSuperar(con('menosUno'), { avance }))).toEqual([1, 1, 2, 3])
     expect(avanceSinSuperar(con('menosUno'), { avance: 0 })).toBe(0)
+  })
+
+  it('«mitad hacia arriba» da 1/1, 2/1, 3/2, 4/2', () => {
+    expect([1, 2, 3, 4].map((avance) => avanceSinSuperar(con('mitadArriba'), { avance }))).toEqual([1, 1, 2, 2])
+  })
+
+  it('«misiones con 1 menos» baja el Avance que pide cada misión, sin bajar de 2', () => {
+    const normal = nuevaPartida({ semilla: 1 })
+    const menos = nuevaPartida({ semilla: 1, variante: { misionesMenosUno: true } })
+    const piden = (s: Estado) => s.zonas.misionesDisponibles.map((m) => valor(s, { tipo: 'avanceNecesario', mision: m }))
+    expect(piden(normal).length).toBeGreaterThan(0)
+    expect(piden(menos)).toEqual(piden(normal).map((n) => (n > 2 ? n - 1 : n)))
   })
 
   it('una partida normal no lleva variante', () => {

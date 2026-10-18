@@ -313,7 +313,7 @@ export interface Estado {
    * Solo para simular en el informe de equilibrio: otra regla para el Avance de un encuentro cuya Prueba no superas
    * («entero»: como antes, el Avance entero; «menosUno»: uno menos, mínimo 0). En una partida normal no está.
    */
-  variante?: { avanceSinSuperar?: 'entero' | 'menosUno' }
+  variante?: { avanceSinSuperar?: 'entero' | 'menosUno' | 'mitadArriba'; misionesMenosUno?: boolean }
   /** Cartas de Peligro que ocupan el muelle y lo que cuesta descartarlas. */
   peligrosEnMuelle?: Partial<Record<InstId, number>>
   /** De dónde salió cada carta incautada, para devolverla si superas la misión. */

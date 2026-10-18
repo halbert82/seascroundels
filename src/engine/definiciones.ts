@@ -247,7 +247,9 @@ export function avanceSinSuperar(s: Estado, def: Pick<DefinicionEncuentro, 'avan
     case 'entero':
       return def.avance
     case 'menosUno':
-      return Math.max(0, def.avance - 1)
+      return def.avance === 0 ? 0 : Math.max(1, def.avance - 1)
+    case 'mitadArriba':
+      return Math.ceil(def.avance / 2)
     default:
       return def.avanceSinSuperar ?? Math.floor(def.avance / 2)
   }
