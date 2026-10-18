@@ -22,7 +22,7 @@ import { IZQ, anchoCentro, escalaPara } from './disposicion.ts'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
 import { useLienzo } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
-import { useZoom } from './Zoom.tsx'
+import { useAmpliable, useZoom } from './Zoom.tsx'
 
 export function Icono({ id, className = '' }: { id: IconoId; className?: string }) {
   return <span className={`${claseIcono(id)} ${className}`} />
@@ -80,6 +80,7 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
   const paso = pasoActual(s)
   const escenario = s.zonas.escenarioEnCurso[0]
   const idEscenario = escenario ? copia(s, escenario).id : null
+  const reloj = useAmpliable(idEscenario)
   const dias = s.zonas.mazoEscenario.length
   return (
     <header className="barra">
@@ -104,8 +105,9 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
           type="button"
           className="reloj"
           title="Cada turno se revela una carta de Escenario; cuando no quedan, es tu último turno. Pulsa para ver la carta de este turno."
-          onClick={(e) => idEscenario && zoom.mostrar(idEscenario, e.currentTarget, true)}
-          onPointerLeave={() => zoom.ocultar()}
+          onPointerDown={reloj.onPointerDown}
+          onClick={(e) => idEscenario && zoom.mostrar(idEscenario, e.currentTarget, { inmediata: true, tactil: reloj.puntero.current !== 'mouse' })}
+          onPointerLeave={reloj.onPointerLeave}
         >
           <Icono id="acampar" />
           <span className="reloj-n">{s.ultimoTurno ? 'Último turno' : `${dias} ${dias === 1 ? 'día' : 'días'}`}</span>
@@ -143,8 +145,8 @@ function Marcas({ n, maximo, clase }: { n: number; maximo: number; clase: string
 /** Mejora (o Tesoro) en pequeño, bajo su portador: nombre, munición y si está agotada (y si se agotó ahora). */
 function Chip({ inst }: { inst: InstId }) {
   const { s, inter, pulsar } = useMesa()
-  const zoom = useZoom()
   const c = copia(s, inst)
+  const ampliable = useAmpliable(c.id)
   const e = porId(c.id)
   const opciones = inter.opciones.get(inst) ?? []
   const marca = inter.marcas.get(inst)
@@ -158,13 +160,14 @@ function Chip({ inst }: { inst: InstId }) {
       className={`chip${tesoro ? ' tesoro' : ''}${c.agotada ? ' agotada' : ''}${ahora ? ' ahora' : ''}${marca ? ` marca-${marca}` : ''}`}
       data-inst={inst}
       data-carta={c.id}
-      onClick={(ev) => opciones.length > 0 && pulsar(inst, ev.currentTarget)}
-      onPointerEnter={(ev) => ev.pointerType === 'mouse' && zoom.mostrar(c.id, ev.currentTarget)}
-      onPointerLeave={(ev) => ev.pointerType === 'mouse' && zoom.ocultar()}
-      onContextMenu={(ev) => {
-        ev.preventDefault()
-        zoom.mostrar(c.id, ev.currentTarget)
+      onClick={(ev) => {
+        ampliable.alPulsar(ev.currentTarget)
+        if (opciones.length > 0) pulsar(inst, ev.currentTarget)
       }}
+      onPointerDown={ampliable.onPointerDown}
+      onPointerEnter={ampliable.onPointerEnter}
+      onPointerLeave={ampliable.onPointerLeave}
+      onContextMenu={ampliable.onContextMenu}
       title={[nombreDe(c.id), c.agotada ? (ahora ? 'agotada en esta Prueba' : 'agotada') : '', ...opciones.map((o) => o.etiqueta)].filter(Boolean).join(' · ')}
     >
       <Icono id={tesoro ? 'doblon' : 'mejora'} />

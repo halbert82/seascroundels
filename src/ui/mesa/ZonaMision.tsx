@@ -24,6 +24,7 @@ import { habilidadElegida, type Seleccion } from './interaccion.ts'
 import { duracion, useVelocidad } from './preferencias.ts'
 import { Icono, Numero } from './Zonas.tsx'
 import { Explicable } from './Explicacion.tsx'
+import { useAmpliable } from './Zoom.tsx'
 import { AYUDA_FICHA_MISION, AYUDA_REGLA } from '../textos/glosario.ts'
 
 function BarraAvance({ actual, necesario }: { actual: number; necesario: number }) {
@@ -302,6 +303,8 @@ function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: bo
   const hayComprometidos = (s.prueba?.comprometidos ?? []).some((c) => s.zonas.tripulacion.includes(c))
   const velocidad = useVelocidad()
   const ref = useRef<HTMLDivElement>(null)
+  // La carta de la que sale el Destino se amplía al pasar por él (o al tocarlo).
+  const ampliable = useAmpliable(id)
   // Al revelarse, el centro baja lo justo para que el Destino se vea entero (no queda bajo la barra de acciones).
   useEffect(() => {
     const el = ref.current
@@ -325,7 +328,15 @@ function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: bo
       transition={{ duration: duracion(velocidad, 0.35) }}
     >
       <span className="destino-rotulo">Destino</span>
-      <div className="destino-ventana" style={{ width: 362 * escala, height: 132 * escala }}>
+      <div
+        className="destino-ventana"
+        style={{ width: 362 * escala, height: 132 * escala }}
+        onPointerDown={ampliable.onPointerDown}
+        onPointerEnter={ampliable.onPointerEnter}
+        onPointerLeave={ampliable.onPointerLeave}
+        onContextMenu={ampliable.onContextMenu}
+        onClick={(e) => ampliable.alPulsar(e.currentTarget)}
+      >
         <div className="destino-solo" style={{ transform: `scale(${escala})` }}>
           <Destino d={vista.destino} entraDuranteLaPartida={false} />
         </div>

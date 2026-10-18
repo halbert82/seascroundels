@@ -13,7 +13,7 @@ import { PanelDecision } from './PanelDecision.tsx'
 import { Ayuda, FinDeMision, FinDePartida, Menu, MenuCarta, Registro, UltimoOcurrido } from './Paneles.tsx'
 import { useVelocidad } from './preferencias.ts'
 import { usePartida, type PartidaEnMesa } from './usePartida.ts'
-import { CapaZoom, ProveedorZoom } from './Zoom.tsx'
+import { CapaZoom, ProveedorZoom, useZoom } from './Zoom.tsx'
 import { CapaExplicacion, ProveedorExplicacion } from './Explicacion.tsx'
 import { ALTO_ZONAS, ARRIBA, DER, HUECO, IZQ, MARGEN, anchoCentro } from './disposicion.ts'
 import { BarraSuperior, BloqueBarco, Mano, Mazos, ZonaPuerto, ZonaTripulacion } from './Zonas.tsx'
@@ -32,7 +32,9 @@ interface Props {
 export function Mesa(props: Props) {
   return (
     <Lienzo>
-      <MesaEnLienzo {...props} />
+      <ProveedorZoom>
+        <MesaEnLienzo {...props} />
+      </ProveedorZoom>
     </Lienzo>
   )
 }
@@ -43,6 +45,7 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
   const s = juego.estado
   const d = s.pendiente
   const velocidad = useVelocidad()
+  const zoom = useZoom()
   const [sel, setSel] = useState<Seleccion | null>(null)
   const [menuCarta, setMenuCarta] = useState<{ x: number; y: number; opciones: OpcionCarta[] } | null>(null)
   const [panel, setPanel] = useState<'registro' | 'ayuda' | 'menu' | null>(null)
@@ -82,6 +85,8 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
     const unica = opciones[0]
     if (opciones.length === 1 && unica) return ejecutar(unica)
     if (opciones.length === 0) return
+    // El menú sale junto a la carta: la ampliación se quita para no taparlo.
+    zoom.ocultar()
     const p = enLienzo(elemento)
     setMenuCarta({ x: Math.min(p.anchoLienzo - 280, Math.max(10, p.x + p.ancho / 2 - 130)), y: Math.max(70, Math.min(ALTO - 220, p.y - 20)), opciones })
   }
@@ -118,39 +123,37 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
 
   const zona = { top: ARRIBA, height: ALTO_ZONAS }
   return (
-    <ProveedorZoom>
-      <ProveedorExplicacion>
-        <Contexto.Provider value={{ s, inter, pulsar }}>
-          <LayoutGroup>
-            <div className={`mesa vel-${velocidad}`} style={{ width: ancho }}>
-              <BarraSuperior botones={botones} />
-              <div className="col-izq" style={{ ...zona, left: MARGEN, width: IZQ }}>
-                <ZonaTripulacion />
-              </div>
-              <main className="centro" style={{ ...zona, left: MARGEN + IZQ + HUECO, width: anchoCentro(ancho) }}>
-                {s.mision ? <ZonaMision desde={juego.partida.desde} decision={d} sel={actual} /> : <ZonaPuerto />}
-              </main>
-              <aside className="col-der" style={{ ...zona, right: MARGEN, width: DER }}>
-                <UltimoOcurrido s={s} desde={juego.partida.desde} />
-                <BloqueBarco />
-                <Mazos />
-              </aside>
-              {d && actual && <PanelDecision decision={d} sel={actual} setSel={setSel} elegir={elegir} />}
-              <Mano />
-              {juego.error && <div className="aviso-error">{juego.error}</div>}
-              {menuCarta && <MenuCarta {...menuCarta} alElegir={ejecutar} alCerrar={() => setMenuCarta(null)} />}
-              {panel === 'menu' && <Menu alCerrar={() => setPanel(null)} nuevaPartida={nuevaPartida} portada={() => irA('/')} galeria={() => irA('/galeria')} />}
-              {panel === 'registro' && <Registro s={s} alCerrar={() => setPanel(null)} />}
-              {panel === 'ayuda' && <Ayuda alCerrar={() => setPanel(null)} />}
-              {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} elegir={elegir} />}
-              {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva())} portada={() => irA('/')} />}
-              <CapaZoom />
-              <CapaExplicacion />
+    <ProveedorExplicacion>
+      <Contexto.Provider value={{ s, inter, pulsar }}>
+        <LayoutGroup>
+          <div className={`mesa vel-${velocidad}`} style={{ width: ancho }}>
+            <BarraSuperior botones={botones} />
+            <div className="col-izq" style={{ ...zona, left: MARGEN, width: IZQ }}>
+              <ZonaTripulacion />
             </div>
-          </LayoutGroup>
-        </Contexto.Provider>
-      </ProveedorExplicacion>
-    </ProveedorZoom>
+            <main className="centro" style={{ ...zona, left: MARGEN + IZQ + HUECO, width: anchoCentro(ancho) }}>
+              {s.mision ? <ZonaMision desde={juego.partida.desde} decision={d} sel={actual} /> : <ZonaPuerto />}
+            </main>
+            <aside className="col-der" style={{ ...zona, right: MARGEN, width: DER }}>
+              <UltimoOcurrido s={s} desde={juego.partida.desde} />
+              <BloqueBarco />
+              <Mazos />
+            </aside>
+            {d && actual && <PanelDecision decision={d} sel={actual} setSel={setSel} elegir={elegir} />}
+            <Mano />
+            {juego.error && <div className="aviso-error">{juego.error}</div>}
+            {menuCarta && <MenuCarta {...menuCarta} alElegir={ejecutar} alCerrar={() => setMenuCarta(null)} />}
+            {panel === 'menu' && <Menu alCerrar={() => setPanel(null)} nuevaPartida={nuevaPartida} portada={() => irA('/')} galeria={() => irA('/galeria')} />}
+            {panel === 'registro' && <Registro s={s} alCerrar={() => setPanel(null)} />}
+            {panel === 'ayuda' && <Ayuda alCerrar={() => setPanel(null)} />}
+            {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} elegir={elegir} />}
+            {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva())} portada={() => irA('/')} />}
+            <CapaZoom />
+            <CapaExplicacion />
+          </div>
+        </LayoutGroup>
+      </Contexto.Provider>
+    </ProveedorExplicacion>
   )
 }
 

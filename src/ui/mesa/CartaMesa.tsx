@@ -9,7 +9,7 @@ import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
-import { useZoom } from './Zoom.tsx'
+import { useAmpliable } from './Zoom.tsx'
 
 export type Marca = 'legal' | 'elegida' | 'atenuada' | null
 
@@ -53,7 +53,7 @@ export function CartaMesa(p: PropsCartaMesa) {
   const entrada = porId(p.id)
   const { ancho, alto } = dimensiones(entrada)
   const velocidad = useVelocidad()
-  const zoom = useZoom()
+  const ampliable = useAmpliable(p.id)
   const t = duracion(velocidad, 0.28)
   // Agotada: girada 90° sin encogerse (el hueco de la carta ya tiene sitio para ella).
   const giro = p.agotada ? { rotate: 90 } : { rotate: 0 }
@@ -81,17 +81,15 @@ export function CartaMesa(p: PropsCartaMesa) {
       data-carta={p.id}
       {...(esPeligro && v2 && p.entorno ? { 'data-entorno': p.entorno } : {})}
       style={{ width: ancho * p.escala, height: alto * p.escala }}
-      onClick={p.onClick ? (e) => p.onClick?.(e.currentTarget) : undefined}
-      onPointerEnter={(e) => {
-        if (e.pointerType === 'mouse') zoom.mostrar(p.id, e.currentTarget)
+      // Con el dedo, tocarla también la amplía; primero la ampliación, para que un menú de la carta la quite.
+      onClick={(e) => {
+        ampliable.alPulsar(e.currentTarget)
+        p.onClick?.(e.currentTarget)
       }}
-      onPointerLeave={(e) => {
-        if (e.pointerType === 'mouse') zoom.ocultar()
-      }}
-      onContextMenu={(e) => {
-        e.preventDefault()
-        zoom.mostrar(p.id, e.currentTarget)
-      }}
+      onPointerDown={ampliable.onPointerDown}
+      onPointerEnter={ampliable.onPointerEnter}
+      onPointerLeave={ampliable.onPointerLeave}
+      onContextMenu={ampliable.onContextMenu}
       title={p.ayuda}
     >
       <motion.div className="carta-giro" animate={giro} transition={{ duration: t }} initial={false}>
