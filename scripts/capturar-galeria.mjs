@@ -26,7 +26,7 @@ try {
     const pagina = await navegador.newPage({ viewport: { width: ancho, height: alto } })
     pagina.on('pageerror', (e) => errores.push(`${nombre}: ${e.message}`))
     pagina.on('console', (m) => m.type() === 'error' && errores.push(`${nombre}: ${m.text()}`))
-    await pagina.goto(base, { waitUntil: 'networkidle' })
+    await pagina.goto(`${base}#/galeria`, { waitUntil: 'networkidle' })
     await pagina.evaluate(() => document.fonts.ready)
     await pagina.screenshot({ path: new URL(`${nombre}.png`, destino).pathname })
     if (nombre === 'escritorio-1440') {

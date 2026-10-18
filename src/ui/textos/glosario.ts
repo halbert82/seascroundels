@@ -251,7 +251,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     {
       rotulo: 'Detalles',
       texto:
-        'Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece. Si una opción es pagar y la otra hacer la Prueba, al pagar ganas el Avance del encuentro sin hacer la Prueba ni revelar Destino.',
+        'Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece. Si una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance («3 / 1»: 3) sin hacer la Prueba ni revelar Destino.',
     },
   ),
   sinAyuda: regla('sinAyuda', 'Sin ayuda', 'Solo un Tripulante puede comprometerse a esa Prueba.', {
@@ -289,6 +289,10 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'sinOposicion',
     'Sin oposición',
     'Línea de algunos Destinos que solo se aplica cuando no comprometes a nadie a la Prueba. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
+    {
+      rotulo: 'Avance',
+      texto: 'Sin nadie comprometido, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 1»: 1), aunque la línea diga que no se aplica el efecto de fallo.',
+    },
   ),
   rehen: regla(
     'rehen',
