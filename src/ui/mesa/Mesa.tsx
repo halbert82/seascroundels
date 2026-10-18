@@ -14,6 +14,7 @@ import { Ayuda, FinDeMision, FinDePartida, Menu, MenuCarta, Registro, UltimoOcur
 import { useVelocidad } from './preferencias.ts'
 import { usePartida, type PartidaEnMesa } from './usePartida.ts'
 import { CapaZoom, ProveedorZoom } from './Zoom.tsx'
+import { CapaExplicacion, ProveedorExplicacion } from './Explicacion.tsx'
 import { ALTO_ZONAS, ARRIBA, DER, HUECO, IZQ, MARGEN, anchoCentro } from './disposicion.ts'
 import { BarraSuperior, BloqueBarco, Mano, Mazos, ZonaPuerto, ZonaTripulacion } from './Zonas.tsx'
 import { ZonaMision } from './ZonaMision.tsx'
@@ -118,6 +119,7 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
   const zona = { top: ARRIBA, height: ALTO_ZONAS }
   return (
     <ProveedorZoom>
+      <ProveedorExplicacion>
         <Contexto.Provider value={{ s, inter, pulsar }}>
           <LayoutGroup>
             <div className={`mesa vel-${velocidad}`} style={{ width: ancho }}>
@@ -143,9 +145,11 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
               {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} elegir={elegir} />}
               {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva())} portada={() => irA('/')} />}
               <CapaZoom />
+              <CapaExplicacion />
             </div>
           </LayoutGroup>
         </Contexto.Provider>
+      </ProveedorExplicacion>
     </ProveedorZoom>
   )
 }

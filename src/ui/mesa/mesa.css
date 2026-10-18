@@ -1699,7 +1699,9 @@
 }
 
 .ayuda .capa-panel {
-  width: 900px;
+  width: 1100px;
+  max-width: 1100px;
+  max-height: 860px;
 }
 
 .ayuda-columnas {
@@ -2664,4 +2666,294 @@
   text-align: left;
   white-space: normal;
   line-height: 1.3;
+}
+
+/* ------------------------------------------------------------------ Explicaciones */
+/* Fichas y rótulos que se explican al pasar el ratón o al pulsarlos (Explicacion.tsx). */
+
+:where(.explicable) {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+}
+
+.explicable {
+  cursor: help;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    box-shadow 0.15s,
+    filter 0.15s;
+}
+
+.explicable:hover,
+.explicable.explicando {
+  filter: brightness(1.2);
+}
+
+.explicable.explicando {
+  box-shadow:
+    0 0 0 2px rgba(244, 220, 156, 0.9),
+    0 0 14px rgba(244, 220, 156, 0.5);
+}
+
+.explicable:focus-visible {
+  outline: 2px solid var(--oro-claro);
+  outline-offset: 2px;
+}
+
+.rehen-marca.explicable,
+.incautadas-rotulo.explicable,
+.en-juego-rotulo.explicable {
+  border-radius: 6px;
+  padding: 0 4px;
+  margin: 0 -4px;
+}
+
+/* Colores de cada clase: los mismos que sus fichas en la mesa. */
+.clase-estado,
+.clase-estadoBarco {
+  --acento: #e0897a;
+  --ficha-fondo: #5e1a12;
+  --ficha-texto: #f8d3c6;
+}
+
+.clase-ventaja {
+  --acento: #8fc276;
+  --ficha-fondo: #23431c;
+  --ficha-texto: #d8f0c8;
+}
+
+.clase-fichaMision {
+  --acento: #e2bd6c;
+  --ficha-fondo: rgba(20, 14, 9, 0.85);
+  --ficha-texto: #f3e3bf;
+}
+
+.clase-limitacion {
+  --acento: var(--oro-viejo);
+  --ficha-fondo: #3a3126;
+  --ficha-texto: var(--oro-claro);
+}
+
+.clase-regla {
+  --acento: #c9a45c;
+  --ficha-fondo: #2e2318;
+  --ficha-texto: var(--pergamino);
+}
+
+/* La ventanita */
+.explicacion {
+  position: absolute;
+  z-index: 260;
+  pointer-events: none;
+  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.65));
+}
+
+.explicacion.fijada {
+  pointer-events: auto;
+}
+
+.explicacion-flecha {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  transform: rotate(45deg);
+  border: 1px solid rgba(232, 200, 119, 0.7);
+}
+
+.explicacion.hacia-abajo .explicacion-flecha {
+  top: -7px;
+  background: #2c1f15;
+  border-right: none;
+  border-bottom: none;
+}
+
+.explicacion.hacia-arriba .explicacion-flecha {
+  bottom: -7px;
+  background: #1b130d;
+  border-left: none;
+  border-top: none;
+}
+
+/* El texto de una explicación (ventanita, junto a la carta ampliada y en la Referencia rápida) */
+.tarjeta-ayuda {
+  --acento: var(--oro-viejo);
+  position: relative;
+  padding: 12px 16px 14px 18px;
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse 90% 55% at 0% 0%, rgba(232, 200, 119, 0.1), transparent 70%),
+    var(--panel-fuerte);
+  border: 1px solid rgba(232, 200, 119, 0.7);
+  box-shadow: inset 4px 0 0 var(--acento);
+  text-align: left;
+  color: var(--texto-claro);
+  font-family: 'Alegreya Sans', Georgia, sans-serif;
+}
+
+.ta-cabecera {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ta-clase {
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--ficha-fondo, #2e2318);
+  color: var(--ficha-texto, var(--pergamino));
+  border: 1px solid var(--acento);
+}
+
+.ta-nombre {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 24px;
+  line-height: 1.05;
+  color: var(--oro-claro);
+}
+
+.ta-parte {
+  margin-top: 8px;
+}
+
+.ta-rotulo {
+  display: block;
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  color: var(--oro-viejo);
+}
+
+.ta-parte p {
+  margin: 1px 0 0;
+  font-size: 14.5px;
+  line-height: 1.38;
+}
+
+.tarjeta-ayuda.compacta {
+  padding: 9px 13px 11px 15px;
+  border-radius: 10px;
+  box-shadow:
+    inset 4px 0 0 var(--acento),
+    0 14px 26px rgba(0, 0, 0, 0.55);
+}
+
+.tarjeta-ayuda.compacta .ta-nombre {
+  font-size: 19px;
+}
+
+.tarjeta-ayuda.compacta .ta-parte {
+  margin-top: 5px;
+}
+
+.tarjeta-ayuda.compacta .ta-rotulo {
+  font-size: 10px;
+}
+
+.tarjeta-ayuda.compacta .ta-parte p {
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+
+/* Junto a la carta ampliada, hacia el centro de la mesa */
+.capa-zoom {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.capa-zoom.a-la-derecha {
+  flex-direction: row-reverse;
+}
+
+.zoom-ayudas {
+  width: 292px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zoom-ayudas.dos-columnas {
+  width: 596px;
+  display: block;
+  columns: 2;
+  column-gap: 12px;
+}
+
+.zoom-ayudas.dos-columnas .tarjeta-ayuda {
+  break-inside: avoid;
+  margin-bottom: 10px;
+}
+
+/* En la Referencia rápida */
+.ayuda-glosario {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(201, 164, 92, 0.3);
+}
+
+.ayuda-glosario-nota {
+  margin: -2px 0 12px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--texto-tenue);
+}
+
+.glosario-grupos {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr 1.35fr;
+  gap: 26px;
+}
+
+.glosario-columna {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.glosario-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.glosario-titulo {
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--texto-tenue);
+}
+
+.glosario-fichas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.glosario-ficha {
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  padding: 2px 10px 3px;
+  border-radius: 999px;
+  background: var(--ficha-fondo);
+  color: var(--ficha-texto);
+  border: 1px solid var(--acento);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }

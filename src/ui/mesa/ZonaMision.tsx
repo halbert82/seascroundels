@@ -23,6 +23,8 @@ import { DorsoEscalado } from './Dorso.tsx'
 import { habilidadElegida, type Seleccion } from './interaccion.ts'
 import { duracion, useVelocidad } from './preferencias.ts'
 import { Icono, Numero } from './Zonas.tsx'
+import { Explicable } from './Explicacion.tsx'
+import { AYUDA_FICHA_MISION, AYUDA_REGLA } from '../textos/glosario.ts'
 
 function BarraAvance({ actual, necesario }: { actual: number; necesario: number }) {
   const velocidad = useVelocidad()
@@ -80,9 +82,14 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
           {fichasVisibles(s).length > 0 && (
             <div className="mision-fichas">
               {fichasVisibles(s).map((f) => (
-                <span key={f.ficha} className={`ficha-mision${f.umbral > 0 && f.n >= f.umbral - 1 ? ' cerca' : ''}`} title={f.nota}>
+                <Explicable
+                  key={f.ficha}
+                  ayuda={AYUDA_FICHA_MISION[f.ficha]}
+                  className={`ficha-mision${f.umbral > 0 && f.n >= f.umbral - 1 ? ' cerca' : ''}`}
+                  etiqueta={`${f.nombre}: ${f.umbral > 0 ? `${f.n} de ${f.umbral}` : f.n}. ${f.nota}`}
+                >
                   {f.nombre} <b>{f.umbral > 0 ? `${f.n}/${f.umbral}` : f.n}</b>
-                </span>
+                </Explicable>
               ))}
             </div>
           )}
@@ -102,8 +109,10 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
             ))}
           </div>
           {s.zonas.incautadas.length > 0 && (
-            <div className="incautadas" title="Debajo de la misión: si la superas, lo recuperas; si no, lo pierdes.">
-              <span className="incautadas-rotulo">Incautado</span>
+            <div className="incautadas">
+              <Explicable ayuda={AYUDA_REGLA.incautado} className="incautadas-rotulo">
+                Incautado
+              </Explicable>
               {s.zonas.incautadas.map((c) => (
                 <CartaDe key={c} inst={c} escala={0.16} girar={false} />
               ))}
@@ -111,8 +120,10 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
           )}
         </div>
         {s.zonas.peligrosEnJuego.length + s.zonas.cartasMision.length > 0 && (
-          <div className="en-juego" title="Cartas que se quedan en juego junto a la misión hasta que se quitan.">
-            <span className="en-juego-rotulo">En juego</span>
+          <div className="en-juego">
+            <Explicable ayuda={AYUDA_REGLA.seQuedaEnJuego} className="en-juego-rotulo">
+              En juego
+            </Explicable>
             <div className="en-juego-cartas">
               {[...s.zonas.cartasMision, ...s.zonas.peligrosEnJuego].map((c) => (
                 <CartaDe key={c} inst={c} escala={0.26} />

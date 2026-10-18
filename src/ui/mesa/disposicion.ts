@@ -19,12 +19,18 @@ export function escalaPara(disponible: number, n: number, anchoCarta: number, hu
   return Math.max(minima, Math.min(maxima, (disponible - (n - 1) * hueco) / n / anchoCarta))
 }
 
-/** Posición de un elemento en unidades del lienzo (para menús y ampliaciones). */
-export function enLienzo(elemento: HTMLElement): { x: number; y: number; ancho: number; anchoLienzo: number } {
+/** Posición de un elemento en unidades del lienzo (para menús, ampliaciones y explicaciones). */
+export function enLienzo(elemento: HTMLElement): { x: number; y: number; ancho: number; alto: number; anchoLienzo: number } {
   const lienzo = elemento.closest<HTMLElement>('.lienzo')
   const caja = elemento.getBoundingClientRect()
-  if (!lienzo) return { x: caja.left, y: caja.top, ancho: caja.width, anchoLienzo: window.innerWidth }
+  if (!lienzo) return { x: caja.left, y: caja.top, ancho: caja.width, alto: caja.height, anchoLienzo: window.innerWidth }
   const base = lienzo.getBoundingClientRect()
   const escala = base.width / lienzo.offsetWidth
-  return { x: (caja.left - base.left) / escala, y: (caja.top - base.top) / escala, ancho: caja.width / escala, anchoLienzo: lienzo.offsetWidth }
+  return {
+    x: (caja.left - base.left) / escala,
+    y: (caja.top - base.top) / escala,
+    ancho: caja.width / escala,
+    alto: caja.height / escala,
+    anchoLienzo: lienzo.offsetWidth,
+  }
 }

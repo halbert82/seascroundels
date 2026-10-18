@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react'
 import type { CSSProperties, ReactNode } from 'react'
-import { nombreDe, porId } from '../../engine/catalogo.ts'
+import { esCarta, nombreDe, porId } from '../../engine/catalogo.ts'
 import { reputacionMinima } from '../../engine/capacidades/misiones.ts'
 import { copia } from '../../engine/estado.ts'
 import { mazoActivo } from '../../engine/peligros.ts'
@@ -12,7 +12,9 @@ import { vinculadas } from '../../engine/zonas.ts'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
-import { ESTADOS_BARCO, INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
+import { INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
+import { AYUDA_ESTADO, AYUDA_REGLA, ayudaLimitacion, type Ayuda } from '../textos/glosario.ts'
+import { Explicable } from './Explicacion.tsx'
 import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, fichasDe, useMesa } from './contexto.tsx'
@@ -178,41 +180,39 @@ function Chip({ inst }: { inst: InstId }) {
   )
 }
 
-/** Ayuda de una ficha: si es Estado o Ventaja, lo que hace y cómo se quita en puerto. */
-function ayudaFicha(e: FichaTripulante | EstadoBarco): string {
-  const info = INFO_ESTADO[e]
-  if (info.ventaja) return `Ventaja · ${info.nombre}: ${info.texto}`
-  if ((ESTADOS_BARCO as readonly string[]).includes(e)) return `Estado del Barco · ${info.nombre}: ${info.texto} El Astillero quita todos los Estados del Barco.`
-  return `Estado · ${info.nombre}: ${info.texto} La Taberna quita todos los Estados de tus Tripulantes.`
-}
-
-/** Fichas de Estado (en rojo) y de Ventaja (en verde), y lo que dura «no se prepara», «no puede comprometerse». */
-export function FichasEstado({ estados, extra = [] }: { estados: readonly (FichaTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: string }[] }) {
+/**
+ * Fichas de Estado (en rojo) y de Ventaja (en verde), y lo que dura «no se prepara», «no puede comprometerse». Al pasar
+ * el ratón o al pulsarlas, explican qué hacen y cómo se quitan.
+ */
+export function FichasEstado({ estados, extra = [] }: { estados: readonly (FichaTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: Ayuda }[] }) {
   if (estados.length === 0 && extra.length === 0) return null
   return (
     <div className="estados">
       {estados.map((e) => (
-        <span key={e} className={`estado-ficha ${INFO_ESTADO[e].ventaja ? 'ventaja' : 'estado'}`} title={ayudaFicha(e)}>
+        <Explicable key={e} ayuda={AYUDA_ESTADO[e]} className={`estado-ficha ${INFO_ESTADO[e].ventaja ? 'ventaja' : 'estado'}`}>
           {INFO_ESTADO[e].nombre}
-        </span>
+        </Explicable>
       ))}
       {extra.map((x) => (
-        <span key={x.texto} className="estado-ficha aviso" title={x.ayuda}>
+        <Explicable key={x.ayuda.clave} ayuda={x.ayuda} className="estado-ficha aviso">
           {x.texto}
-        </span>
+        </Explicable>
       ))}
     </div>
   )
 }
 
 /** «No se prepara» y «no puede comprometerse» de un Tripulante, por las cartas de Peligro. */
-function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: string }[] {
-  const lista: { texto: string; ayuda: string }[] = []
+function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: Ayuda }[] {
+  const lista: { texto: string; ayuda: Ayuda }[] = []
   for (const t of s.temporales) {
-    if (t.inst !== inst) continue
-    const de = t.carta && s.cartas[t.carta] ? ` («${nombreDe(copia(s, t.carta).id)}»)` : ''
-    if (t.clave === 'noPrepara') lista.push({ texto: 'No se prepara', ayuda: `No se prepara${t.hasta === 'inicio' ? ' en tu próximo Inicio' : ''}${de}.` })
-    if (t.clave === 'noCompromete') lista.push({ texto: 'No compromete', ayuda: `No puede comprometerse${de}.` })
+    if (t.inst !== inst || (t.clave !== 'noPrepara' && t.clave !== 'noCompromete')) continue
+    const carta = t.carta && s.cartas[t.carta] ? nombreDe(copia(s, t.carta).id) : null
+    const fuente = carta ?? (esCarta(t.fuente) ? nombreDe(t.fuente) : null)
+    const ayuda = ayudaLimitacion(t.clave, t.hasta, fuente, carta)
+    // Dos iguales (dos cartas que impiden prepararse) se enseñan una vez: basta con una para que no se prepare.
+    if (lista.some((x) => x.ayuda.clave === ayuda.clave)) continue
+    lista.push({ texto: t.clave === 'noPrepara' ? 'No se prepara' : 'No compromete', ayuda })
   }
   return lista
 }
@@ -228,14 +228,14 @@ function Tripulante({ inst, escala, rehen, pasajero }: { inst: InstId; escala: n
         <CartaDe inst={inst} escala={escala} />
         {!pasajero && <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />}
         {rehen && (
-          <span className="rehen-marca">
+          <Explicable ayuda={AYUDA_REGLA.rehen} className="rehen-marca">
             <Icono id="rehen" /> Rehén
-          </span>
+          </Explicable>
         )}
         {pasajero && (
-          <span className="rehen-marca pasajero-marca" title="Pasajero: ocupa 1 de Capacidad, pero no es Tripulante (no se compromete ni sufre heridas).">
+          <Explicable ayuda={AYUDA_REGLA.pasajero} className="rehen-marca pasajero-marca">
             <Icono id="capacidad" /> Pasajero
-          </span>
+          </Explicable>
         )}
       </div>
       <div className="chips una-fila">
@@ -347,6 +347,18 @@ function Mision({ inst, escala }: { inst: InstId; escala: number }) {
   )
 }
 
+/** «Ocupa el muelle», con lo que hay que pagar por esta carta. */
+function ayudaMuelleOcupado(paga: number): Ayuda {
+  const base = AYUDA_REGLA.ocuparMuelle
+  return {
+    ...base,
+    partes: [
+      ...base.partes.slice(0, 1),
+      { rotulo: 'Cómo se quita', texto: `En el paso de Jugar cartas puedes pagar ${paga} ${paga === 1 ? 'carta' : 'cartas'} para descartarla. Va a la pila de descartes de Peligros.` },
+    ],
+  }
+}
+
 export function ZonaPuerto() {
   const { s } = useMesa()
   const { ancho } = useLienzo()
@@ -365,9 +377,9 @@ export function ZonaPuerto() {
             s.peligrosEnMuelle?.[c] !== undefined ? (
               <div key={c} className="peligro-muelle">
                 <CartaDe inst={c} escala={escalaMuelle} />
-                <span className="peligro-muelle-nota" title={`Ocupa el muelle. En Jugar cartas puedes pagar ${s.peligrosEnMuelle[c]} cartas para descartarla.`}>
+                <Explicable ayuda={ayudaMuelleOcupado(s.peligrosEnMuelle[c] ?? 0)} className="peligro-muelle-nota">
                   Ocupa el muelle · paga {s.peligrosEnMuelle[c]}
-                </span>
+                </Explicable>
               </div>
             ) : (
               <CartaDe key={c} inst={c} escala={escalaMuelle} />

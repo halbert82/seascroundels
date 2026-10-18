@@ -11,6 +11,8 @@ import type { OpcionCarta } from './interaccion.ts'
 import { cambiarVelocidad, duracion, useVelocidad, type Velocidad } from './preferencias.ts'
 import { Icono, Numero } from './Zonas.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
+import { glosarioCompleto } from '../textos/glosario.ts'
+import { Explicable } from './Explicacion.tsx'
 
 const ICONO_REGISTRO: Partial<Record<EntradaRegistro['tipo'], IconoId>> = {
   revelar: 'robar',
@@ -105,6 +107,13 @@ export function Registro({ s, alCerrar }: { s: Estado; alCerrar: () => void }) {
   )
 }
 
+/** El glosario en tres columnas: los grupos cortos repartidos en dos y las palabras de las cartas en la tercera. */
+function columnasGlosario(): ReturnType<typeof glosarioCompleto>[] {
+  const grupos = glosarioCompleto()
+  const cortos = grupos.filter((g) => g.ayudas.length <= 10)
+  return [cortos.filter((_, i) => i % 2 === 0), cortos.filter((_, i) => i % 2 === 1), grupos.filter((g) => g.ayudas.length > 10)]
+}
+
 /** Referencia rápida del reglamento. */
 export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
   return (
@@ -143,9 +152,32 @@ export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
         <h3>En la mesa</h3>
         <ul>
           <li>Lo que puedes hacer ahora brilla en dorado. Pulsa la carta para hacerlo.</li>
-          <li>Pasa el ratón por encima de una carta para verla en grande (en tableta, mantenla pulsada).</li>
+          <li>Pasa el ratón por encima de una carta para verla en grande, con sus reglas explicadas al lado (en tableta, mantenla pulsada).</li>
+          <li>Pasa el ratón por encima de una ficha (un Estado, una Ventaja, una ficha de misión…) o púlsala para ver qué hace y cómo se quita.</li>
           <li>«Deshacer» vuelve atrás la última decisión mientras no se haya revelado nada nuevo.</li>
         </ul>
+      </section>
+      <section className="ayuda-glosario">
+        <h3>Fichas y palabras de las cartas</h3>
+        <p className="ayuda-glosario-nota">Pasa el ratón por encima o pulsa cualquiera para leer su explicación completa.</p>
+        <div className="glosario-grupos">
+          {columnasGlosario().map((columna, i) => (
+            <div key={i} className="glosario-columna">
+              {columna.map((g) => (
+                <div key={g.titulo} className="glosario-grupo">
+                  <span className="glosario-titulo">{g.titulo}</span>
+                  <div className="glosario-fichas">
+                    {g.ayudas.map((a) => (
+                      <Explicable key={a.clave} ayuda={a} className={`glosario-ficha clase-${a.clase}`}>
+                        {a.nombre}
+                      </Explicable>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </section>
     </Capa>
   )
