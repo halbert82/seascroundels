@@ -9345,7 +9345,7 @@
    "id": "armada_patrulla",
    "num": 98,
    "nombre": "La Armada patrulla",
-   "texto": "**Elige:** descarta 3 cartas, o pon «La Armada te persigue» encima del mazo de Peligros: será el primer encuentro de tu próxima misión, y después se queda en el mazo (+ La Armada).",
+   "texto": "**Elige:** descarta 1 carta, o pon «La Armada te persigue» encima del mazo de Peligros: será el primer encuentro de tu próxima misión, y después se queda en el mazo (+ La Armada).",
    "ambientacion": "«Velas del Rey en el horizonte. Y no vienen de visita.»"
   },
   {

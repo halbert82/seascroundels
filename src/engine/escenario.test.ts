@@ -320,12 +320,20 @@ describe('Escenario 2.0: malas', () => {
     expect(j.copia('capitan').estados).toBeUndefined()
   })
 
-  it('La Armada patrulla: eliges descartar 3 cartas', () => {
-    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje', 'abordaje'] })
-    expect(opciones(j)).toEqual(['Descartar 3 cartas', 'Poner «La Armada te persigue» encima del mazo de Peligros'])
-    j.opcion('0').elegir('ojo', 'timon', 'coraje')
-    expect(j.zona('mano')).toEqual(['abordaje'])
+  it('La Armada patrulla: eliges descartar 1 carta (P60)', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'] })
+    expect(opciones(j)).toEqual(['Descartar 1 carta', 'Poner «La Armada te persigue» encima del mazo de Peligros'])
+    j.opcion('0').elegir('ojo')
+    expect(j.zona('mano')).toEqual(['timon'])
     expect(j.zona('apartados')).toEqual(['armada'])
+  })
+
+  it('La Armada patrulla: con 1 sola carta en la mano también puedes sobornar', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo'] })
+    expect(opciones(j)).toHaveLength(2)
+    j.opcion('0')
+    expect(j.zona('mano')).toEqual([])
+    expect(j.zona('mazoPeligros')).not.toContain('armada')
   })
 
   it('La Armada patrulla: o la pones encima del mazo; es el primer encuentro de tu próxima misión y después se queda en el mazo', () => {
@@ -349,10 +357,10 @@ describe('Escenario 2.0: malas', () => {
     expect(j.zona('encuentro')).toEqual(['armada'])
   })
 
-  it('La Armada patrulla: con menos de 3 cartas, La Armada va encima sin preguntar', () => {
-    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'] })
+  it('La Armada patrulla: con la mano vacía, La Armada va encima sin preguntar', () => {
+    const j = revelar('armada_patrulla', { mano: [] })
     expect(j.zona('mazoPeligros')[0]).toBe('armada')
-    expect(j.zona('mano')).toEqual(['ojo', 'timon'])
+    expect(j.decision.motivo.clave).toBe('jugarCartas')
   })
 
   it('La Armada patrulla: si La Armada ya está en el mazo o en los descartes, se saca y se pone encima', () => {
@@ -360,19 +368,19 @@ describe('Escenario 2.0: malas', () => {
     expect(opciones(enMazo)[1]).toBe('Poner «La Armada te persigue» encima del mazo de Peligros')
     enMazo.opcion('1')
     expect(enMazo.zona('mazoPeligros')).toEqual(['armada', 'calma', 'calma'])
-    const enDescartes = revelar('armada_patrulla', { mano: ['ojo'], apartados: [], mazoPeligros: ['calma'], descartesPeligros: ['chubasco', 'armada'] })
+    const enDescartes = revelar('armada_patrulla', { mano: [], apartados: [], mazoPeligros: ['calma'], descartesPeligros: ['chubasco', 'armada'] })
     expect(enDescartes.zona('mazoPeligros')).toEqual(['armada', 'calma'])
     expect(enDescartes.zona('descartesPeligros')).toEqual(['chubasco'])
   })
 
-  it('La Armada patrulla: si La Armada ya no está en la partida, solo queda descartar 3; sin 3 cartas, no pasa nada (P59c)', () => {
-    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje', 'abordaje'], apartados: [] })
+  it('La Armada patrulla: si La Armada ya no está en la partida, solo queda descartar 1; sin cartas, no pasa nada (P59c)', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'], apartados: [] })
     expect(j.registro).toContain('«La Armada patrulla»: «La Armada te persigue» ya no está en la partida.')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 3, max: 3 })
-    j.elegir('ojo', 'timon', 'coraje')
-    expect(j.zona('mano')).toEqual(['abordaje'])
-    const sinCartas = revelar('armada_patrulla', { mano: ['ojo'], apartados: [] })
-    expect(sinCartas.zona('mano')).toEqual(['ojo'])
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 1, max: 1 })
+    j.elegir('ojo')
+    expect(j.zona('mano')).toEqual(['timon'])
+    const sinCartas = revelar('armada_patrulla', { mano: [], apartados: [] })
+    expect(sinCartas.zona('apartados')).toEqual([])
     expect(sinCartas.decision.motivo.clave).toBe('jugarCartas')
   })
 

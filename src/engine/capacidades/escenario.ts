@@ -155,14 +155,14 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     esteTurno('bando.turno', 'bando'),
   ]),
 
-  // La Armada patrulla: Elige: descarta 3 cartas, o pon «La Armada te persigue» encima del mazo de Peligros (será el
+  // La Armada patrulla: Elige: descarta 1 carta (P60), o pon «La Armada te persigue» encima del mazo de Peligros (será el
   // primer encuentro de tu próxima misión y después se queda en el mazo). Si ya está en el mazo o en los descartes, se
   // saca y se pone encima, así que la segunda opción casi siempre se puede elegir.
   alRevelar('armada_patrulla', (s, inst) => {
     const cartas = numeroTras(textoDe('armada_patrulla'), 'descarta')
-    const opciones: OpcionEfectos[] = [{ texto: `Descartar ${cartas} cartas`, efectos: [{ tipo: 'descartar', n: cartas }] }]
+    const opciones: OpcionEfectos[] = [{ texto: `Descartar ${cartas} ${cartas === 1 ? 'carta' : 'cartas'}`, efectos: [{ tipo: 'descartar', n: cartas }] }]
     // P59c (confirmada, ya casi sin uso): si La Armada no se puede sacar de ningún sitio (salió del juego), esa opción no
-    // se ofrece; descartas 3 si puedes y, si no, no pasa nada.
+    // se ofrece; descartas la carta si puedes y, si no, no pasa nada.
     if (armadaQueSePuedeSacar(s)) {
       opciones.push({ texto: 'Poner «La Armada te persigue» encima del mazo de Peligros', efectos: [{ tipo: 'codigo', clave: 'patrulla.encima' }] })
     } else {

@@ -65,7 +65,7 @@ Criterios:
 - *«Se busca. Vivo o como sea.»*
 
 ### La Armada patrulla
-- Elige: descarta 3 cartas, o pon La Armada te persigue encima del mazo de Peligros: será el primer encuentro de tu próxima misión, y después se queda en el mazo (+ La Armada).
+- Elige: descarta 1 carta, o pon La Armada te persigue encima del mazo de Peligros: será el primer encuentro de tu próxima misión, y después se queda en el mazo (+ La Armada).
 - Si La Armada ya está en el mazo o en los descartes, se saca y se pone encima.
 - *«Velas del Rey en el horizonte. Y no vienen de visita.»*
 
@@ -90,3 +90,4 @@ Criterios:
 - Impuestos del gobernador: la Mejora que pierdes es la de mayor coste, no una a tu elección.
 - La Armada patrulla: La Armada ya no se baraja: va encima del mazo y es el primer encuentro de tu próxima misión.
 - Los dos últimos cambios buscan que las dos salidas de cada «Elige» duelan parecido (en el informe, casi todos elegían perder una Mejora barata o barajar La Armada).
+- La Armada patrulla: el soborno baja de 3 cartas a 1 (P60). Con 3, pagar dolía mucho más que poner La Armada encima.
