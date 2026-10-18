@@ -677,14 +677,16 @@ La NAV que necesitas para zarpar a una misión de tierra lejos de tu isla. Se in
 - Si no llegas, completa la diferencia descartando cartas de tu mano con iconos de NAV. Si ni así llegas, no puedes zarpar a esa misión.
 - Sin franja azul, la Distancia es 0. Las misiones de Mar no tienen Distancia.
 - Una misión con Distancia es una **misión lejana**.
-- Las cartas de Escenario pueden subir o bajar la Distancia de un turno.
+- Algunas cartas de Escenario suben o bajan 1 las Distancias de todas las misiones durante un turno, sea cual sea su Entorno. Una misión sin Distancia sigue en 0.
+
+> *Ejemplo:* con «Temporada de huracanes», «La selva» pasa de Distancia 2 a 3 y, con el −1 de tu Barco, tienes que cubrir 2. Con «Vientos alisios» pasa a 1 y, con el Barco, a 0: zarpas sin agotar a nadie. «Cobrar la deuda», en tu isla, sigue en 0 con cualquiera de las dos.
 
 ### Elige
 
 El encuentro, el Destino o la carta te da varias opciones y escoges una.
 
 - En un encuentro, eliges antes de comprometer a nadie.
-- En una carta de Escenario, eliges al revelarla.
+- En una carta de Escenario, eliges al revelarla. Si no puedes cumplir entera ninguna de sus opciones, no pasa nada.
 - Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece.
 - Si una opción es pagar y la otra hacer la Prueba, al pagar ganas el Avance del encuentro sin hacer la Prueba ni revelar Destino.
 
@@ -706,6 +708,8 @@ Mar, Naturaleza o Ciudad. Cada misión tiene un Entorno. «En el Mar», «en Ciu
 
 **Entra en el mazo de Peligros:** baraja esa carta en el mazo de Peligros. Se queda en el mazo el resto de la partida, como cualquier otra.
 
+Si la carta que la hace entrar dice que la pongas **encima del mazo**, no la barajes: será tu primer encuentro de la próxima misión, aunque antes se baraje el mazo, y no sale como Destino mientras espera. Después de resolverla, va a los descartes de Peligros y se queda en el mazo como cualquier otra. Si ya estaba en el mazo o en los descartes, sácala de ahí y ponla encima. *Ejemplo:* revelas «La Armada patrulla» y no quieres descartar 3 cartas: pones «La Armada te persigue» encima del mazo. Te quedas en puerto ese turno; al siguiente zarpas a una misión de Mar y tu primer encuentro es el Navío de línea de la Armada.
+
 **Se retira:** cuando un encuentro dice que su carta Se retira, aplica ese encuentro y retira la carta del juego en vez de descartarla. *Ejemplo:* superas «Zombis en la jarcia»: «les llenáis la boca de sal y caen para siempre: esta carta Se retira». La carta «La maldición del bokor» sale de la partida y ya no volverá a salir, ni como encuentro ni como Destino.
 
 ### Entrenamiento
@@ -718,7 +722,7 @@ Una región jugable, como El Caribe, con sus puertos, Peligros, misiones, Tesoro
 
 El **mazo de Escenario** es el reloj de la partida. El Caribe trae 14 cartas de Escenario, y el mazo de cada partida tiene tantas como indique el modo: 8 en una corta, 11 en una normal y 14 en una larga. Revelas una carta al empezar cada turno y aplicas su efecto. Si al empezar un turno no queda ninguna, ese es tu último turno.
 
-- Si la carta dice **Elige**, decides qué opción aplicas al revelarla. Una opción que es un pago y no puedes pagar entera no se ofrece.
+- Si la carta dice **Elige**, decides qué opción aplicas al revelarla. Una opción que es un pago y no puedes pagar entera no se ofrece. Si no puedes cumplir ninguna, no pasa nada.
 - Lo que dice «este turno» dura hasta el final del turno en que se revela.
 
 > *Ejemplo:* al empezar el turno revelas «Rumores del tesoro»: si zarpas este turno, empiezas la misión con 1 de Avance, o con 2 si es un capítulo II o III. Si te quedas en puerto, el efecto se pierde al terminar el turno.
@@ -869,6 +873,7 @@ Algunas cartas, como los Cañones, tienen munición: su máximo se indica en una
 
 - «Gasta 1 munición» es un coste: quita 1 de munición de esa carta.
 - **Recarga:** al empezar cada turno, tus cartas con munición la recuperan hasta su máximo. Nunca pasa de su máximo, salvo que una carta lo diga.
+- Si una carta dice que este turno no recargas, como «Escasez de pertrechos», te saltas la Recarga: la munición que tienes se queda, pero la gastada no vuelve hasta el turno siguiente. Ganar munición por otra carta sí funciona.
 - Los Cañones solo se pueden usar en misiones de Mar, y en las Pruebas que diga su texto.
 - **Pierdes N de munición:** tus cartas pierden N de munición en total, repartida como quieras.
 

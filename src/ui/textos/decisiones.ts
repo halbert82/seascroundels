@@ -223,7 +223,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'descartar':
       return { titulo: `Descarta ${plural(n, 'carta', 'cartas')} de tu mano` }
     case 'perderMejora':
-      return { titulo: 'Pierdes una Mejora', ayuda: 'Elige cuál se descarta.' }
+      return { titulo: 'Pierdes una Mejora', ayuda: m.texto ?? 'Elige cuál se descarta.' }
     case 'agotarMejora':
       return { titulo: 'Agota una Mejora', ayuda: 'No aplicará su texto hasta que se prepare.' }
     case 'rehen':

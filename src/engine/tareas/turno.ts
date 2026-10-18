@@ -153,6 +153,11 @@ export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
 
 /** Recarga: las cartas con munición la recuperan hasta su máximo (sin bajar si una carta la subió más). */
 export const recargar: Manejador<'recargar'> = (s) => {
+  // «Escasez de pertrechos»: este turno no recargas munición (la carta se revela antes, en el paso 1 del Inicio; P58).
+  if (s.temporales.some((x) => x.clave === 'escasez.turno')) {
+    if (s.zonas.mejoras.some((c) => valor(s, { tipo: 'municionMaxima', carta: c }) > 0)) anotar(s, 'aviso', 'Escasez de pertrechos: este turno no recargas munición.')
+    return 'hecha'
+  }
   // Pólvora mojada: los Cañones no recargan en el Inicio.
   const mojada = tieneEstadoBarco(s, 'polvoraMojada')
   if (mojada && s.zonas.mejoras.some((c) => esCanon(copia(s, c).id))) anotar(s, 'aviso', 'Pólvora mojada: los Cañones no recargan.')

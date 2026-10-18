@@ -9345,14 +9345,14 @@
    "id": "armada_patrulla",
    "num": 98,
    "nombre": "La Armada patrulla",
-   "texto": "**Elige:** descarta 3 cartas ~(sobornas a un oficial del almirantazgo)~, o baraja «La Armada te persigue» en el mazo de Peligros (+ La Armada).",
+   "texto": "**Elige:** descarta 3 cartas, o pon «La Armada te persigue» encima del mazo de Peligros: será el primer encuentro de tu próxima misión, y después se queda en el mazo (+ La Armada).",
    "ambientacion": "«Velas del Rey en el horizonte. Y no vienen de visita.»"
   },
   {
    "id": "impuestos",
    "num": 99,
    "nombre": "Impuestos del gobernador",
-   "texto": "**Elige:** descarta 2 cartas, o pierde una Mejora a tu elección. Con la _Patente de corso_ no pagas.",
+   "texto": "**Elige:** descarta 2 cartas, o pierde tu Mejora de mayor coste (empate: eliges). Con la _Patente de corso_ no pagas.",
    "ambientacion": "«El Rey cobra el quinto. El gobernador, lo que quiere.»"
   },
   {
@@ -9394,7 +9394,7 @@
    "id": "escasez",
    "num": 105,
    "nombre": "Escasez de pertrechos",
-   "texto": "Pierdes {1 municion}. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
+   "texto": "Este turno no recargas munición. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
    "ambientacion": "«No queda pólvora, ni galleta, ni nadie que fíe.»"
   },
   {
@@ -9408,14 +9408,14 @@
    "id": "huracanes",
    "num": 107,
    "nombre": "Temporada de huracanes",
-   "texto": "Este turno, las misiones [mar] necesitan {+1 avance r}, sus Distancias son {+1 r} mayores y los encuentros #Tormenta# reciben {+1 r}.",
+   "texto": "Este turno, las misiones [mar] necesitan {+1 avance r}, las Distancias de todas las misiones son {+1 r} mayores y los encuentros #Tormenta# reciben {+1 r}.",
    "ambientacion": "«En septiembre, el que puede se queda en puerto.»"
   },
   {
    "id": "alisios",
    "num": 108,
    "nombre": "Vientos alisios",
-   "texto": "Este turno, las misiones [mar] necesitan {−1 avance g} y sus Distancias son {−1 g} menores.",
+   "texto": "Este turno, las misiones [mar] necesitan {−1 avance g} y las Distancias de todas las misiones son {−1 g} menores.",
    "ambientacion": "«Viento de popa desde Canarias hasta aquí. Hoy no rema nadie.»"
   },
   {

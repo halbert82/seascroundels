@@ -32,14 +32,36 @@ describe('Escenario 2.0: buenas', () => {
     expect(j.valor({ tipo: 'avanceNecesario', mision: j.inst('aguada-I') })).toBe(3)
   })
 
-  it('Vientos alisios y Temporada de huracanes: «sus Distancias» son las de las misiones de Mar, así que ninguna cambia (TODO(regla))', () => {
+  it('Vientos alisios y Temporada de huracanes: las Distancias de todas las misiones son 1 menores o mayores (P57)', () => {
+    // «La selva» (Naturaleza, Distancia 2), «El prisionero de Portobelo» (Ciudad, Distancia 3) y «Agua y leña»
+    // (Naturaleza, Distancia 1). El Barco resta 1 a todas: sin carta de Escenario piden 1, 2 y 0.
+    const misiones = ['templo-II', 'panama-I', 'aguada-I']
+    const distancias = (j: Jugador) => misiones.map((m) => j.valor({ tipo: 'distancia', mision: j.inst(m) }))
+    expect(distancias(Jugador.en({ misiones }))).toEqual([1, 2, 0])
+    expect(distancias(revelar('huracanes', { misiones }))).toEqual([2, 3, 1])
+    expect(distancias(revelar('alisios', { misiones }))).toEqual([0, 1, 0])
+  })
+
+  it('Vientos alisios y Temporada de huracanes: una misión sin Distancia (de Mar o en tu isla) sigue en 0 (D7)', () => {
     for (const carta of ['alisios', 'huracanes']) {
-      const j = revelar(carta, { misiones: ['templo-II', 'aguada-I', 'prueba-I'] })
-      const sin = Jugador.en({ misiones: ['templo-II', 'aguada-I', 'prueba-I'] })
-      for (const m of ['templo-II', 'aguada-I', 'prueba-I']) {
-        expect(j.valor({ tipo: 'distancia', mision: j.inst(m) })).toBe(sin.valor({ tipo: 'distancia', mision: sin.inst(m) }))
-      }
+      const j = revelar(carta, { misiones: ['prueba-I', 'deuda-I'] })
+      expect(j.valor({ tipo: 'distancia', mision: j.inst('prueba-I') })).toBe(0)
+      expect(j.valor({ tipo: 'distancia', mision: j.inst('deuda-I') })).toBe(0)
     }
+  })
+
+  it('Temporada de huracanes: para zarpar a «La selva» tienes que cubrir 2 de Distancia en vez de 1', () => {
+    const j = revelar('huracanes', { misiones: ['templo-II'], tripulacion: ['viejo_lobo'] })
+    j.zarpar('templo-II')
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 2 })
+  })
+
+  it('Vientos alisios: «La selva» queda a Distancia 0 con el Barco y zarpas sin agotar a nadie', () => {
+    const j = revelar('alisios', { misiones: ['templo-II'], tripulacion: ['viejo_lobo'] })
+    j.zarpar('templo-II')
+    expect(j.decision.tipo).not.toBe('cubrirDistancia')
+    expect(j.copia('viejo_lobo').agotada).toBe(false)
+    expect(j.copia('capitan').agotada).toBe(false)
   })
 
   it('Marineros sin barco: buscas un Tripulante, va al muelle y este turno reclutarlo cuesta 1 menos', () => {
@@ -175,22 +197,41 @@ describe('Escenario 2.0: malas', () => {
 
   it('Impuestos del gobernador: eliges descartar 2 cartas', () => {
     const j = revelar('impuestos', { mano: ['ojo', 'timon', 'coraje'], barco: { mejoras: ['vela'] } })
-    expect(opciones(j)).toEqual(['Descartar 2 cartas', 'Perder una Mejora a tu elección'])
+    expect(opciones(j)).toEqual(['Descartar 2 cartas', 'Perder tu Mejora de mayor coste'])
     j.opcion('0').elegir('ojo', 'timon')
     expect(j.zona('mano')).toEqual(['coraje'])
     expect(j.zona('mejoras')).toEqual(['vela'])
   })
 
-  it('Impuestos del gobernador: o pierdes una Mejora a tu elección', () => {
+  it('Impuestos del gobernador: o pierdes tu Mejora de mayor coste, sin elegir cuál', () => {
+    // Vela mayor (1), Bandera negra (2) y Sable de abordaje (1): se pierde la Bandera.
     const j = revelar('impuestos', { mano: ['ojo', 'timon'], barco: { mejoras: ['vela', 'bandera'] }, tripulacion: [{ id: 'bucanero', mejoras: ['sable'] }] })
     j.opcion('1')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 1, max: 1, motivo: { clave: 'perderMejora' } })
-    j.elegir('sable')
-    expect(j.zona('descartesMuelle')).toEqual(['sable'])
+    expect(j.zona('descartesMuelle')).toEqual(['bandera'])
+    expect(j.zona('mejoras').sort()).toEqual(['sable', 'vela'])
     expect(j.zona('mano')).toEqual(['ojo', 'timon'])
   })
 
-  it('Impuestos del gobernador: con menos de 2 cartas en la mano, solo puedes perder una Mejora (P11)', () => {
+  it('Impuestos del gobernador: si empatan en coste, eliges entre las más caras', () => {
+    // Bandera negra y Cañones de bronce cuestan 2; la Vela mayor, 1.
+    const j = revelar('impuestos', { mano: ['ojo', 'timon'], barco: { mejoras: ['vela', 'bandera', 'bronce'] } })
+    j.opcion('1')
+    const d = j.decision
+    if (d.tipo !== 'elegirCartas') throw new Error(`Se esperaba elegir una Mejora y la decisión es «${d.tipo}»`)
+    expect(d.motivo).toMatchObject({ clave: 'perderMejora', texto: 'Empatan en coste (2): eliges cuál pierdes.' })
+    expect(d.candidatas.map((c) => j.estado.cartas[c]?.id).sort()).toEqual(['bandera', 'bronce'])
+    j.elegir('bronce')
+    expect(j.zona('descartesMuelle')).toEqual(['bronce'])
+  })
+
+  it('Impuestos del gobernador: la de mayor coste es entre las que se pueden perder (no los Tesoros)', () => {
+    // La Cruz de Santa Bárbara (Tesoro, 3) no se pierde: la más cara que se puede perder es la Vela mayor (1).
+    const j = revelar('impuestos', { mano: ['ojo'], barco: { mejoras: ['cruz', 'vela'] } })
+    expect(j.zona('descartesMuelle')).toEqual(['vela'])
+    expect(j.zona('mejoras')).toEqual(['cruz'])
+  })
+
+  it('Impuestos del gobernador: con menos de 2 cartas en la mano, solo puedes perder la Mejora (P11)', () => {
     const j = revelar('impuestos', { mano: ['ojo'], barco: { mejoras: ['vela'] } })
     expect(j.zona('mejoras')).toEqual([])
     expect(j.zona('descartesMuelle')).toEqual(['vela'])
@@ -203,7 +244,7 @@ describe('Escenario 2.0: malas', () => {
     expect(j.zona('mejoras').sort()).toEqual(['cruz', 'espada', 'mascaron'])
   })
 
-  it('Impuestos del gobernador: si no puedes cumplir ninguna opción entera, no pasa nada (TODO(regla))', () => {
+  it('Impuestos del gobernador: si no puedes cumplir ninguna opción entera, no pasa nada (P59a)', () => {
     const j = revelar('impuestos', { mano: ['ojo'], barco: { mejoras: ['cruz'] } })
     expect(j.zona('mano')).toEqual(['ojo'])
     expect(j.decision.motivo.clave).toBe('jugarCartas')
@@ -245,7 +286,7 @@ describe('Escenario 2.0: malas', () => {
     expect(j.zona('tripulacion')).toEqual(['capitan', 'marinero_p', 'bucanero'])
   })
 
-  it('Deserción: con solo el Capitán, nadie puede desertar y pagas 1 carta de soldada; sin cartas, no pasa nada (TODO(regla))', () => {
+  it('Deserción: con solo el Capitán, nadie puede desertar y pagas 1 carta de soldada; sin cartas, no pasa nada (P59b)', () => {
     const j = revelar('desercion', { mano: ['ojo', 'timon'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 1, max: 1 })
     j.elegir('ojo')
@@ -281,45 +322,73 @@ describe('Escenario 2.0: malas', () => {
 
   it('La Armada patrulla: eliges descartar 3 cartas', () => {
     const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje', 'abordaje'] })
-    expect(opciones(j)).toEqual(['Descartar 3 cartas (sobornas a un oficial del almirantazgo)', 'Barajar «La Armada te persigue» en el mazo de Peligros'])
+    expect(opciones(j)).toEqual(['Descartar 3 cartas', 'Poner «La Armada te persigue» encima del mazo de Peligros'])
     j.opcion('0').elegir('ojo', 'timon', 'coraje')
     expect(j.zona('mano')).toEqual(['abordaje'])
     expect(j.zona('apartados')).toEqual(['armada'])
   })
 
-  it('La Armada patrulla: o barajas La Armada en el mazo de Peligros', () => {
-    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje'] })
+  it('La Armada patrulla: o la pones encima del mazo; es el primer encuentro de tu próxima misión y después se queda en el mazo', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje'], misiones: [MISIONES_DE_PRUEBA.mar5], mazoPeligros: ['calma', 'calma', 'calma'] })
     j.opcion('1')
     expect(j.zona('apartados')).toEqual([])
-    expect(j.zona('mazoPeligros')).toContain('armada')
+    expect(j.zona('mazoPeligros')).toEqual(['armada', 'calma', 'calma', 'calma'])
+    expect(j.registro).toContain('«La Armada te persigue» va encima del mazo de Peligros: será el primer encuentro de tu próxima misión.')
     expect(j.zona('mano')).toHaveLength(3)
+    j.zarpar(MISIONES_DE_PRUEBA.mar5)
+    expect(j.zona('encuentro')).toEqual(['armada'])
+    j.comprometer('NAV').seguir() // Navío de línea, NAV 5 sin nadie: Abordaje
+    expect(j.zona('descartesPeligros')).toContain('armada')
+    expect(j.zona('apartados')).toEqual([])
   })
 
-  it('La Armada patrulla: con menos de 3 cartas, entra La Armada sin preguntar', () => {
+  it('La Armada patrulla: aunque te quedes en puerto, sigue esperando encima del mazo y sale en la misión siguiente', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje'], misiones: [MISIONES_DE_PRUEBA.mar5], mazoPeligros: ['calma', 'calma', 'calma'] })
+    j.opcion('1').pasarTurnoEnPuerto()
+    j.zarpar(MISIONES_DE_PRUEBA.mar5)
+    expect(j.zona('encuentro')).toEqual(['armada'])
+  })
+
+  it('La Armada patrulla: con menos de 3 cartas, La Armada va encima sin preguntar', () => {
     const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'] })
-    expect(j.zona('mazoPeligros')).toContain('armada')
+    expect(j.zona('mazoPeligros')[0]).toBe('armada')
     expect(j.zona('mano')).toEqual(['ojo', 'timon'])
   })
 
-  it('La Armada patrulla: si La Armada ya está en el mazo, solo queda descartar 3 (TODO(regla))', () => {
-    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje', 'abordaje'], apartados: [], mazoPeligros: ['armada'] })
-    expect(j.registro).toContain('«La Armada patrulla»: La Armada ya está en el mazo de Peligros.')
+  it('La Armada patrulla: si La Armada ya está en el mazo o en los descartes, se saca y se pone encima', () => {
+    const enMazo = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje', 'abordaje'], apartados: [], mazoPeligros: ['calma', 'calma', 'armada'] })
+    expect(opciones(enMazo)[1]).toBe('Poner «La Armada te persigue» encima del mazo de Peligros')
+    enMazo.opcion('1')
+    expect(enMazo.zona('mazoPeligros')).toEqual(['armada', 'calma', 'calma'])
+    const enDescartes = revelar('armada_patrulla', { mano: ['ojo'], apartados: [], mazoPeligros: ['calma'], descartesPeligros: ['chubasco', 'armada'] })
+    expect(enDescartes.zona('mazoPeligros')).toEqual(['armada', 'calma'])
+    expect(enDescartes.zona('descartesPeligros')).toEqual(['chubasco'])
+  })
+
+  it('La Armada patrulla: si La Armada ya no está en la partida, solo queda descartar 3; sin 3 cartas, no pasa nada (P59c)', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon', 'coraje', 'abordaje'], apartados: [] })
+    expect(j.registro).toContain('«La Armada patrulla»: «La Armada te persigue» ya no está en la partida.')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 3, max: 3 })
     j.elegir('ojo', 'timon', 'coraje')
     expect(j.zona('mano')).toEqual(['abordaje'])
+    const sinCartas = revelar('armada_patrulla', { mano: ['ojo'], apartados: [] })
+    expect(sinCartas.zona('mano')).toEqual(['ojo'])
+    expect(sinCartas.decision.motivo.clave).toBe('jugarCartas')
   })
 
-  it('Escasez de pertrechos: pierdes 1 munición (la Recarga la devuelve, TODO(regla)) y al final del turno robas hasta 2 cartas menos que tu Mando', () => {
-    const j = revelar('escasez', { mano: [], barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
-    expect(j.registro.some((t) => /munición/.test(t))).toBe(true)
-    // La carta se aplica en el paso 1 del Inicio y la Recarga (paso 3) vuelve a llenar los Cañones.
-    expect(j.copia('bronce').municion).toBe(2)
+  it('Escasez de pertrechos: este turno no recargas munición, pero no pierdes la que tienes (P58)', () => {
+    const j = revelar('escasez', { mano: [], barco: { mejoras: [{ id: 'bronce', municion: 1 }, { id: 'casco' }] } })
+    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.registro).toContain('Escasez de pertrechos: este turno no recargas munición.')
+    const llenos = revelar('escasez', { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+    expect(llenos.copia('bronce').municion).toBe(2)
+  })
+
+  it('Escasez de pertrechos: al final del turno robas hasta 2 cartas menos que tu Mando; al turno siguiente vuelves a recargar', () => {
+    const j = revelar('escasez', { mano: [], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+    expect(j.copia('bronce').municion).toBe(0)
     j.pasarTurnoEnPuerto()
     expect(j.zona('mano')).toHaveLength(3)
-  })
-
-  it('Escasez de pertrechos: con Pólvora mojada, la munición perdida no vuelve', () => {
-    const j = revelar('escasez', { barco: { estados: ['polvoraMojada'], mejoras: [{ id: 'bronce', municion: 2 }] } })
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').municion).toBe(2)
   })
 })

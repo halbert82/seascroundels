@@ -21,8 +21,8 @@ export type Efecto =
   | { tipo: 'curar'; n: number; modo?: 'repartir' | 'cadaComprometido' | 'cadaUno' | 'cadaHerido' | 'uno' }
   | { tipo: 'perderAvance'; n: number | 'todo' }
   | { tipo: 'perderMunicion'; n: number }
-  /** Pierdes N Mejoras (`deComprometidos`: de un Tripulante comprometido). */
-  | { tipo: 'perderMejora'; n: number; deComprometidos?: boolean }
+  /** Pierdes N Mejoras (`deComprometidos`: de un Tripulante comprometido; `mayorCoste`: la de mayor coste, si empatan eliges). */
+  | { tipo: 'perderMejora'; n: number; deComprometidos?: boolean; mayorCoste?: boolean }
   | { tipo: 'agotarMejora' }
   | { tipo: 'rehen' }
   | { tipo: 'reputacion'; n: number }

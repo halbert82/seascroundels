@@ -1,6 +1,6 @@
 // Primitivas con cartas: robar, perder un día, muelle, pagar, curar, reparar, perder Mejoras.
 
-import { esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
+import { costeImpreso, esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
 import { curable, curarTripulante, quitarEstadoBarco } from '../estados.ts'
 import type { Estado, InstId, TareaDe } from '../tipos.ts'
@@ -211,15 +211,20 @@ export const curar: Manejador<'curar'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** Pierdes una Mejora: eliges una del Barco o de un Tripulante (ni Tesoros ni indestructibles). `soloBarco`: de barco. */
+/**
+ * Pierdes una Mejora: eliges una del Barco o de un Tripulante (ni Tesoros ni indestructibles). `soloBarco`: de barco.
+ * `mayorCoste`: la de mayor coste impreso; si empatan, eliges entre ellas («Impuestos del gobernador»).
+ */
 export const perderMejora: Manejador<'perderMejora'> = (s, t, e) => {
-  const candidatas = s.zonas.mejoras.filter((m) => {
+  const posibles = s.zonas.mejoras.filter((m) => {
     const v = copia(s, m).vinculadaA
     if (esIndestructible(copia(s, m).id)) return false
     if (t.soloBarco && v !== 'barco') return false
     // «Pierdes 1 Mejora de un Tripulante comprometido».
     return !t.portadores || (v !== null && v !== 'barco' && t.portadores.includes(v))
   })
+  const maximo = Math.max(0, ...posibles.map((m) => costeImpreso(copia(s, m).id)))
+  const candidatas = t.mayorCoste ? posibles.filter((m) => costeImpreso(copia(s, m).id) === maximo) : posibles
   const perder = (m: InstId) => {
     mover(s, m, 'descartesMuelle')
     anotar(s, 'efecto', `Pierdes «${nombre(s, m)}».`)
@@ -233,7 +238,10 @@ export const perderMejora: Manejador<'perderMejora'> = (s, t, e) => {
     perder(candidatas[0])
     return 'hecha'
   }
-  if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'perderMejora' }, candidatas, min: 1, max: 1 })
+  if (!e) {
+    const motivo = t.mayorCoste ? { clave: 'perderMejora', texto: `Empatan en coste (${maximo}): eliges cuál pierdes.` } : { clave: 'perderMejora' }
+    return preguntar({ tipo: 'elegirCartas', motivo, candidatas, min: 1, max: 1 })
+  }
   const [m] = eleccionDe(e, 'cartas').ids
   if (m) perder(m)
   return 'hecha'

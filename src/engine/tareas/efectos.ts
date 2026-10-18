@@ -258,7 +258,11 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         tareas.push({ tipo: 'perderMunicion', n: e.n })
         break
       case 'perderMejora':
-        for (let i = 0; i < e.n; i++) tareas.push(e.deComprometidos ? { tipo: 'perderMejora', portadores: comprometidosEnJuego(s) } : { tipo: 'perderMejora' })
+        for (let i = 0; i < e.n; i++) {
+          const t: NuevaTarea = e.deComprometidos ? { tipo: 'perderMejora', portadores: comprometidosEnJuego(s) } : { tipo: 'perderMejora' }
+          if (e.mayorCoste && t.tipo === 'perderMejora') t.mayorCoste = true
+          tareas.push(t)
+        }
         break
       case 'agotarMejora':
         tareas.push({ tipo: 'agotarMejora' })

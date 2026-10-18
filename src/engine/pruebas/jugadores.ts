@@ -3,7 +3,7 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { costeImpreso, iconosDe, porId, rasgosDe } from '../catalogo.ts'
+import { costeImpreso, esIndestructible, iconosDe, porId, rasgosDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
@@ -422,9 +422,10 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
       const coste = (c: InstId) => costeImpreso(copia(s, c).id)
       switch (d.motivo.carta) {
         case 'impuestos': {
-          // Una Mejora barata (coste 1 o menos) vale menos que 2 cartas; si no, se descartan las cartas.
-          const barata = s.zonas.mejoras.some((m) => porId(copia(s, m).id).tipo !== 'tesoro' && coste(m) <= 1)
-          return elegir(barata ? '1' : '0')
+          // Se pierde la Mejora de mayor coste: solo compensa si vale menos que 2 cartas (coste 1 o menos).
+          const perdibles = s.zonas.mejoras.filter((m) => !esIndestructible(copia(s, m).id))
+          const masCara = Math.max(0, ...perdibles.map(coste))
+          return elegir(masCara <= 1 ? '1' : '0')
         }
         case 'desercion': {
           // Pagar la soldada si cuesta menos que volver a reclutar al desertor y reponer sus Mejoras.

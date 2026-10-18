@@ -1,8 +1,10 @@
 // Escenario 2.0 (fase 8): las 14 cartas se aplican al revelarse, al empezar el turno. Las que dicen «Este turno…»
 // dejan un efecto temporal con su propia regla, que dura hasta el final del turno. Los «Elige» se preguntan al revelar
-// la carta; solo se ofrecen las opciones que puedes cumplir enteras (como P11).
+// la carta; solo se ofrecen las opciones que puedes cumplir enteras (como P11) y, si no puedes cumplir ninguna, no
+// pasa nada (P59).
 
 import { anotar, copia, nombre } from '../estado.ts'
+import { mover } from '../zonas.ts'
 import type { Efecto, OpcionEfectos } from '../efectos.ts'
 import { cumple, registrarCodigo } from '../tareas/efectos.ts'
 import { numeroConIcono, numeroTras, primerNumero, textoDe } from '../textos.ts'
@@ -28,9 +30,30 @@ function elige(opciones: OpcionEfectos[], inst: InstId): NuevaTarea {
 
 const n = (carta: CartaId) => primerNumero(textoDe(carta))
 
-// Lo que no es un efecto de los Peligros: buscar una Mejora de barco y la deserción.
+// Lo que no es un efecto de los Peligros: buscar una Mejora de barco, la deserción y La Armada encima del mazo.
 registrarCodigo('ribera.buscar', () => [{ tipo: 'buscarMuelle', filtro: 'mejoraBarco' }])
 registrarCodigo('desercion.desertar', () => [{ tipo: 'desercion' }])
+
+/** «La Armada te persigue», si está apartada, en el mazo de Peligros o en sus descartes (de ahí se puede sacar). */
+function armadaQueSePuedeSacar(s: Estado): InstId | undefined {
+  return [...s.zonas.apartados, ...s.zonas.mazoPeligros, ...s.zonas.descartesPeligros].find((c) => copia(s, c).id === 'armada')
+}
+
+// La Armada patrulla: «pon La Armada te persigue encima del mazo de Peligros: será el primer encuentro de tu próxima
+// misión, y después se queda en el mazo». Si ya estaba en el mazo o en los descartes, se saca de ahí (Albert, fase 8).
+// Se marca como la carta que persigue: así es el primer encuentro aunque la misión mezcle su mazo propio o alguien
+// baraje el mazo antes, y no sale como Destino. Después de resolverla se descarta como cualquier otra.
+registrarCodigo('patrulla.encima', (s) => {
+  const armada = armadaQueSePuedeSacar(s)
+  if (!armada) return []
+  mover(s, armada, 'mazoPeligros', 'arriba')
+  s.persigue = armada
+  anotar(s, 'aviso', '«La Armada te persigue» va encima del mazo de Peligros: será el primer encuentro de tu próxima misión.', {
+    tipo: 'entraEnMazo',
+    carta: 'armada',
+  })
+  return []
+})
 
 export const CAPACIDADES_ESCENARIO: Capacidad[] = [
   // ---------------------------------------------------------------------------------------------------------------
@@ -90,20 +113,21 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
 
   alRevelar('huracanes', () => [esteTurno('huracanes.turno', 'huracanes')]),
 
-  // Impuestos del gobernador: Elige: descarta 2 cartas, o pierde una Mejora a tu elección. Con la Patente no pagas.
+  // Impuestos del gobernador: Elige: descarta 2 cartas, o pierde tu Mejora de mayor coste (empate: eliges). Con la
+  // Patente de corso no pagas. El coste es el impreso; los Tesoros y las indestructibles no se pierden.
   alRevelar('impuestos', (s, inst) => {
     if (cumple(s, { tipo: 'cartaEnJuego', id: 'patente' })) {
       anotar(s, 'efecto', 'Impuestos del gobernador: con la Patente de corso no pagas.')
       return []
     }
     const cartas = numeroTras(textoDe('impuestos'), 'descarta')
-    // TODO(regla) P59a: si no puedes cumplir ninguna de las dos opciones entera (menos de 2 cartas y ninguna Mejora que se
-    // pueda perder), no pasa nada (P11: una opción de pago que no puedes pagar entera no se ofrece).
+    // P59a (confirmada): si no puedes cumplir ninguna de las dos opciones entera (menos de 2 cartas y ninguna Mejora que
+    // se pueda perder), no pasa nada (P11: una opción de pago que no puedes pagar entera no se ofrece).
     return [
       elige(
         [
           { texto: `Descartar ${cartas} cartas`, efectos: [{ tipo: 'descartar', n: cartas }] },
-          { texto: 'Perder una Mejora a tu elección', efectos: [{ tipo: 'perderMejora', n: 1 }] },
+          { texto: 'Perder tu Mejora de mayor coste', efectos: [{ tipo: 'perderMejora', n: 1, mayorCoste: true }] },
         ],
         inst,
       ),
@@ -116,8 +140,8 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     // «Por cada Tripulante» cuenta al Capitán, como en «El reparto».
     const soldada = Math.min(numeroTras(textoDe('desercion'), 'máximo'), s.zonas.tripulacion.length)
     const opciones: OpcionEfectos[] = [{ texto: `Pagar la soldada: descartar ${soldada} ${soldada === 1 ? 'carta' : 'cartas'}`, efectos: [{ tipo: 'descartar', n: soldada }] }]
-    // TODO(regla) P59b: si solo tienes al Capitán, nadie puede desertar y esa opción no se ofrece: pagas la soldada (1 carta)
-    // si puedes; si no puedes pagarla, no pasa nada.
+    // P59b (confirmada): si solo tienes al Capitán, nadie puede desertar y esa opción no se ofrece: pagas la soldada
+    // (1 carta) si puedes; si no puedes pagarla, no pasa nada.
     if (s.zonas.tripulacion.some((c) => c !== s.capitan)) {
       opciones.push({ texto: 'Tu Tripulante de menor coste deserta y vuelve al muelle (sus Mejoras se descartan)', efectos: [{ tipo: 'codigo', clave: 'desercion.desertar' }] })
     }
@@ -131,27 +155,25 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     esteTurno('bando.turno', 'bando'),
   ]),
 
-  // La Armada patrulla: Elige: descarta 3 cartas, o baraja «La Armada te persigue» en el mazo de Peligros.
+  // La Armada patrulla: Elige: descarta 3 cartas, o pon «La Armada te persigue» encima del mazo de Peligros (será el
+  // primer encuentro de tu próxima misión y después se queda en el mazo). Si ya está en el mazo o en los descartes, se
+  // saca y se pone encima, así que la segunda opción casi siempre se puede elegir.
   alRevelar('armada_patrulla', (s, inst) => {
     const cartas = numeroTras(textoDe('armada_patrulla'), 'descarta')
-    const opciones: OpcionEfectos[] = [{ texto: `Descartar ${cartas} cartas (sobornas a un oficial del almirantazgo)`, efectos: [{ tipo: 'descartar', n: cartas }] }]
-    // TODO(regla) P59c: si La Armada ya está en el mazo de Peligros, no se puede barajar otra vez y esa opción no se ofrece:
-    // descartas 3 si puedes; si no puedes, no pasa nada.
-    if (s.zonas.apartados.some((c) => copia(s, c).id === 'armada')) {
-      opciones.push({ texto: 'Barajar «La Armada te persigue» en el mazo de Peligros', efectos: [{ tipo: 'entraEnMazo', carta: 'armada' }] })
+    const opciones: OpcionEfectos[] = [{ texto: `Descartar ${cartas} cartas`, efectos: [{ tipo: 'descartar', n: cartas }] }]
+    // P59c (confirmada, ya casi sin uso): si La Armada no se puede sacar de ningún sitio (salió del juego), esa opción no
+    // se ofrece; descartas 3 si puedes y, si no, no pasa nada.
+    if (armadaQueSePuedeSacar(s)) {
+      opciones.push({ texto: 'Poner «La Armada te persigue» encima del mazo de Peligros', efectos: [{ tipo: 'codigo', clave: 'patrulla.encima' }] })
     } else {
-      anotar(s, 'efecto', `«${nombre(s, inst)}»: La Armada ya está en el mazo de Peligros.`)
+      anotar(s, 'efecto', `«${nombre(s, inst)}»: «La Armada te persigue» ya no está en la partida.`)
     }
     return [elige(opciones, inst)]
   }),
 
-  // Escasez de pertrechos: pierdes 1 munición. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.
-  // TODO(regla) P58: la carta se aplica en el paso 1 del Inicio y la Recarga (paso 3) vuelve a llenar los Cañones, así que la
-  // munición perdida solo se nota con Pólvora mojada. Lectura literal, pendiente de Albert.
-  alRevelar('escasez', (_s, inst) => [
-    efectos([{ tipo: 'perderMunicion', n: numeroConIcono(textoDe('escasez'), 'municion') }], inst),
-    esteTurno('escasez.turno', 'escasez'),
-  ]),
+  // Escasez de pertrechos: este turno no recargas munición (se salta la Recarga del Inicio, P58). Al final de este
+  // turno, roba hasta tener 2 cartas menos que tu Mando.
+  alRevelar('escasez', () => [esteTurno('escasez.turno', 'escasez')]),
 
   // ---------------------------------------------------------------------------------------------------------------
   // Efectos temporales («Este turno…»)
@@ -185,27 +207,31 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     modifica: (_ctx, _yo, c) => (c.tipo === 'objetivoRobo' ? -numeroTras(textoDe('escasez'), 'tener') : 0),
   },
   {
-    // Las misiones de Mar necesitan 1 de Avance más y los encuentros Tormenta reciben +1.
-    // TODO(regla) P57: «sus Distancias son 1 mayores»: «sus» son las de las misiones de Mar, que no tienen Distancia, así que
-    // en la lectura literal ninguna Distancia cambia. Antes la carta subía todas las Distancias (D7). Pendiente de Albert.
+    // Las misiones de Mar necesitan 1 de Avance más, las Distancias de todas las misiones son 1 mayores y los
+    // encuentros Tormenta reciben +1. P57: «todas las misiones» son las de cualquier Entorno; una misión sin Distancia
+    // (de Mar o en tu isla) sigue en 0 (D7, lo mira el cálculo de la Distancia).
     clave: 'huracanes.turno',
     carta: 'huracanes',
     ventana: 'constante',
     desde: 'temporal',
     modifica: (ctx, _yo, c) => {
       if (c.tipo === 'avanceNecesario' && entornoDeMision(ctx.s, c.mision) === 'mar') return 1
+      if (c.tipo === 'distancia') return 1
       if (c.tipo === 'dificultad' && c.claves.includes('Tormenta')) return 1
       return 0
     },
   },
   {
-    // Las misiones de Mar necesitan 1 de Avance menos.
-    // TODO(regla) P57: «sus Distancias son 1 menores»: como en Temporada de huracanes, en la lectura literal no cambia ninguna.
+    // Las misiones de Mar necesitan 1 de Avance menos y las Distancias de todas las misiones son 1 menores (P57).
     clave: 'alisios.turno',
     carta: 'alisios',
     ventana: 'constante',
     desde: 'temporal',
-    modifica: (ctx, _yo, c) => (c.tipo === 'avanceNecesario' && entornoDeMision(ctx.s, c.mision) === 'mar' ? -1 : 0),
+    modifica: (ctx, _yo, c) => {
+      if (c.tipo === 'avanceNecesario' && entornoDeMision(ctx.s, c.mision) === 'mar') return -1
+      if (c.tipo === 'distancia') return -1
+      return 0
+    },
   },
   {
     // «−1 Mando» (Chubasco repentino, Huracán): este turno robas hasta una carta menos.

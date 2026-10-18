@@ -154,7 +154,8 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
     j.reclutar('bucanero')
     expect(j.decision.motivo.clave).toBe('pagar')
     expect(j.decision.libres).toBeUndefined()
-    const impuestos = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'pruebas-calma'], tripulacion: ['marinero_p'], barco: { mejoras: ['vela', 'bandera'] } })
+    // Impuestos sin cartas en la mano: pierdes la Mejora de mayor coste; Bandera negra y Cañones de bronce empatan a 2.
+    const impuestos = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'pruebas-calma'], tripulacion: ['marinero_p'], barco: { mejoras: ['bronce', 'bandera'] } })
     expect(impuestos.decision.motivo.clave).toBe('perderMejora')
     expect(impuestos.decision.libres).toBeUndefined()
   })

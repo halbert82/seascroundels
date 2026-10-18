@@ -381,7 +381,7 @@ export type Tarea = { id: number } & (
   | { tipo: 'revelarMuelle'; n: number }
   /** `marca`: deja la carta encontrada señalada este turno («Marineros sin barco»: reclutarlo cuesta 1 menos). */
   | { tipo: 'buscarMuelle'; filtro: 'tripulante' | 'mejoraBarco' | 'mejora'; marca?: { clave: string; fuente: CartaId } }
-  | { tipo: 'perderMejora'; soloBarco?: boolean; portadores?: InstId[] }
+  | { tipo: 'perderMejora'; soloBarco?: boolean; portadores?: InstId[]; mayorCoste?: boolean }
   /** «repartir»: como quieras; «cadaUno»: N a cada Tripulante; «uno»: N a un Tripulante (el indicado o el que elijas). */
   | { tipo: 'curar'; n: number; modo: 'repartir' | 'cadaUno' | 'uno'; objetivo?: InstId }
   | { tipo: 'reparar'; n: number }

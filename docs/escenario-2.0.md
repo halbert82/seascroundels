@@ -12,7 +12,7 @@ Criterios:
 ## Buenas
 
 ### Vientos alisios
-- Este turno, las misiones [mar] necesitan 1 de Avance menos y sus Distancias son 1 menores.
+- Este turno, las misiones [mar] necesitan 1 de Avance menos y las Distancias de todas las misiones son 1 menores.
 - *«Viento de popa desde Canarias hasta aquí. Hoy no rema nadie.»*
 
 ### Marineros sin barco
@@ -49,11 +49,11 @@ Criterios:
 ## Malas
 
 ### Temporada de huracanes
-- Este turno, las misiones [mar] necesitan 1 de Avance más, sus Distancias son 1 mayores y los encuentros #Tormenta# reciben +1.
+- Este turno, las misiones [mar] necesitan 1 de Avance más, las Distancias de todas las misiones son 1 mayores y los encuentros #Tormenta# reciben +1.
 - *«En septiembre, el que puede se queda en puerto.»*
 
 ### Impuestos del gobernador
-- Elige: descarta 2 cartas, o pierde una Mejora a tu elección. Con la Patente de corso no pagas.
+- Elige: descarta 2 cartas, o pierde tu Mejora de mayor coste (empate: eliges). Con la Patente de corso no pagas.
 - *«El Rey cobra el quinto. El gobernador, lo que quiere.»*
 
 ### Deserción
@@ -65,11 +65,13 @@ Criterios:
 - *«Se busca. Vivo o como sea.»*
 
 ### La Armada patrulla
-- Elige: descarta 3 cartas (sobornas a un oficial del almirantazgo), o baraja La Armada te persigue en el mazo de Peligros (+ La Armada).
+- Elige: descarta 3 cartas, o pon La Armada te persigue encima del mazo de Peligros: será el primer encuentro de tu próxima misión, y después se queda en el mazo (+ La Armada).
+- Si La Armada ya está en el mazo o en los descartes, se saca y se pone encima.
 - *«Velas del Rey en el horizonte. Y no vienen de visita.»*
 
 ### Escasez de pertrechos
-- Pierdes 1 munición. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.
+- Este turno no recargas munición. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.
+- Se salta la Recarga del Inicio de este turno: no pierdes la munición que tienes, pero no recuperas la gastada.
 - *«No queda pólvora, ni galleta, ni nadie que fíe.»*
 
 ## Cambios respecto al mazo anterior
@@ -81,3 +83,10 @@ Criterios:
 ## Números de colección (fase 8)
 - Conservan el suyo: Mercado próspero 097, Impuestos del gobernador 099, Marineros sin barco 100, Bando del virrey 102, Deserción 103, Rumores del tesoro 104, Escasez de pertrechos 105, Carpinteros de ribera 106 (absorbe a Astillero ocioso), Temporada de huracanes 107, Vientos alisios 108, Feria en la isla 109.
 - Las nuevas toman los de las que salen, en el mismo orden: Fiesta de San Juan 110 (era Días tranquilos), Cuarentena 101 (era Noticias de un botín), La Armada patrulla 098 (era Astillero ocioso).
+
+## Cambios tras la primera prueba (18 de octubre de 2026)
+- Vientos alisios y Temporada de huracanes: «sus Distancias» pasa a «las Distancias de todas las misiones» (P57). Una misión sin Distancia sigue en 0 (D7).
+- Escasez de pertrechos: ya no pierdes 1 munición; ese turno no recargas (P58).
+- Impuestos del gobernador: la Mejora que pierdes es la de mayor coste, no una a tu elección.
+- La Armada patrulla: La Armada ya no se baraja: va encima del mazo y es el primer encuentro de tu próxima misión.
+- Los dos últimos cambios buscan que las dos salidas de cada «Elige» duelan parecido (en el informe, casi todos elegían perder una Mejora barata o barajar La Armada).
