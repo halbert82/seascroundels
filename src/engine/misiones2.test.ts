@@ -10,10 +10,10 @@ const MAZO_CAPITAN = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada',
 
 /** En el paso de zarpar, con un mazo de Peligros concreto (arriba primero). */
 function enPuerto(op: OpcionesSituacion): Jugador {
-  return Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: [...MAZO_CAPITAN], ...op })
+  return Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], mazoCapitan: [...MAZO_CAPITAN], ...op })
 }
 
-const fichas = (j: Jugador, f: 'ventaja' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa') => j.estado.mision?.fichas?.[f] ?? 0
+const fichas = (j: Jugador, f: 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa') => j.estado.mision?.fichas?.[f] ?? 0
 /** Misiones en el mazo de Misiones o ya disponibles (al reponer, el capítulo nuevo puede salir enseguida). */
 const enMisiones = (j: Jugador) => [...j.zona('misionesDisponibles'), ...j.zona('mazoMisiones')]
 const acciones = (j: Jugador) => (j.decision.tipo === 'ventanaAccion' ? j.decision.acciones.map((a) => a.tipo) : [])
@@ -98,11 +98,11 @@ describe('115 · Agua y leña', () => {
 // Aventuras
 
 describe('116 · El ladrón del puerto', () => {
-  it('Ventaja: empieza en 2; cada Peligro sin Prueba +1; con 5, se escapa y la misión falla', () => {
+  it('Fichas de Ladrón: empieza con 2; cada Peligro sin Prueba +1; con 5, se escapa y la misión falla', () => {
     // Tarde de lluvia (Ciudad): sin Prueba, 1 de Avance.
     const j = enPuerto({ misiones: ['ladron-I'], mazoPeligros: ['chubasco', 'chubasco', 'chubasco', 'calma'] })
     j.zarpar('ladron-I')
-    expect(fichas(j, 'ventaja')).toBe(3)
+    expect(fichas(j, 'ladron')).toBe(3)
     j.seguir().seguir()
     expect(j.registro).toContain('La misión falla: el ladrón se escapa.')
     expect(j.registro).toContain('La misión falla (el ladrón se escapa): no superas «El ladrón del puerto».')
@@ -113,14 +113,14 @@ describe('116 · El ladrón del puerto', () => {
     // Un soplo en la taberna (EXP 2) con «Buen augurio» (−1): el Rastreador suma 4 y la Herbolaria 3.
     const j = enPuerto({ misiones: ['ladron-I'], tripulacion: ['baqueano', 'herbolaria'], mazoPeligros: ['encrucijada', 'encrucijada', 'encrucijada', 'encrucijada'] })
     j.zarpar('ladron-I').comprometer('EXP', ['baqueano']).seguir().pasarOfertas()
-    expect(fichas(j, 'ventaja')).toBe(1)
+    expect(fichas(j, 'ladron')).toBe(1)
     j.seguir().comprometer('EXP', ['herbolaria']).seguir().pasarOfertas()
     expect(j.registro).toContain('Lo atrapas: superas la misión.')
     expect(j.zona('misionesSuperadas')).toEqual(['ladron-I'])
     expect(j.estado.reputacion).toBe(2)
     const falla = enPuerto({ misiones: ['ladron-I'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'] })
     falla.zarpar('ladron-I').comprometer('EXP').seguir()
-    expect(fichas(falla, 'ventaja')).toBe(3)
+    expect(fichas(falla, 'ladron')).toBe(3)
   })
 })
 

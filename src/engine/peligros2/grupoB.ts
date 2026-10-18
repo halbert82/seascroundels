@@ -7,7 +7,7 @@ import { registrarCapacidades } from '../capacidades/index.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { agotar as agotarCarta } from '../estados.ts'
-import type { EstadoTripulante } from '../infoEstados.ts'
+import type { FichaTripulante } from '../infoEstados.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { vinculadas } from '../zonas.ts'
 import {
@@ -153,7 +153,7 @@ registrarCapacidades({
 })
 
 // 16. Serpientes · Leve
-const MALES: EstadoTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
+const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
 registrarCodigo('p2_serpientes.muerde', (s): NuevaTarea[] => {
   // El no comprometido con menos Vida; si no queda ninguno, el comprometido con menos EXP.
   const comp = s.prueba?.comprometidos ?? []
@@ -167,7 +167,7 @@ registrarPeligro('p2_serpientes', {
     // EXP 2. Si tienes un Animal, superas sin Prueba.
     mar: { superaSi: { tipo: 'rasgoEnJuego', rasgo: 'Animal' }, exito: [robar(1)], fallo: [codigo('p2_serpientes.muerde')] },
     nat: { exito: [avance(1)], fallo: [comprometidoCon(menos('COM'), { tipo: 'estado', estado: 'envenenado' })] },
-    // Éxito: quita a un Tripulante un Estado malo, o cura 2 heridas.
+    // Éxito: quita a un Tripulante un Estado (Envenenado, Sangrando, Aturdido o Asustado), o cura 2 heridas.
     ciu: {
       exito: [
         {

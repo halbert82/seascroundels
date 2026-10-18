@@ -120,14 +120,14 @@ registrarMision('aguada-I', {
 // ---------------------------------------------------------------------------
 // Aventuras
 
-// El ladrón del puerto: la Ventaja del ladrón.
+// El ladrón del puerto: las fichas de Ladrón (fase 8: antes se llamaban Ventaja).
 registrarMision('ladron-I', {
-  fichas: [{ ficha: 'ventaja', nombre: 'Ventaja', umbral: 5, inicial: 2, nota: 'Con 5, el ladrón se escapa y la misión falla. Con 0, lo atrapas y la superas.' }],
-  alZarpar: () => [ponerFichas('ventaja', 2)],
+  fichas: [{ ficha: 'ladron', nombre: 'Ladrón', umbral: 5, inicial: 2, nota: 'Con 5, el ladrón se escapa y la misión falla. Con 0, lo atrapas y la superas.' }],
+  alZarpar: () => [ponerFichas('ladron', 2)],
   capacidades: [
-    alResolverSinPrueba('sinPrueba', () => [ponerFichas('ventaja', 1)]),
-    alFallarPrueba('fallo', () => [ponerFichas('ventaja', 1)]),
-    alSuperarPrueba('corte', (_s, p) => ((p.hab === 'NAV' || p.hab === 'EXP') && p.margen >= 2 ? [ponerFichas('ventaja', -1)] : [])),
+    alResolverSinPrueba('sinPrueba', () => [ponerFichas('ladron', 1)]),
+    alFallarPrueba('fallo', () => [ponerFichas('ladron', 1)]),
+    alSuperarPrueba('corte', (_s, p) => ((p.hab === 'NAV' || p.hab === 'EXP') && p.margen >= 2 ? [ponerFichas('ladron', -1)] : [])),
   ],
   alCambiarFichas: (s, _f, antes, ahora) => {
     if (ahora >= 5 && antes < 5) fallaLaMision(s, 'el ladrón se escapa')

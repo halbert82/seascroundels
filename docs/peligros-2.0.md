@@ -8,7 +8,8 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - «Elige» = el jugador elige una opción antes de comprometer. «Sin ayuda» = solo un Tripulante puede comprometerse; las Habilidades de la mano suman; no se juegan Eventos. «Se queda en juego» = la carta queda junto a la misión hasta que se cumpla lo que dice; al acabar la misión se descarta; el Avance impreso se gana al revelarla.
 - Destino: «modificador — efecto. *Sin oposición:* castigo si no se comprometió a nadie».
 - «El comprometido con más/menos HAB» = el Tripulante comprometido con el número impreso más alto/bajo en esa habilidad; empate, elige el jugador. En los Destinos, «la habilidad más alta/baja» se refiere a la habilidad de esa Prueba.
-- Abordaje, Persigue, Incautado y Ocupar el muelle van escritos en la propia carta. Estados (Envenenado, Borracho, Aturdido, Asustado, Sangrando, Buscado, Maldito, Encadenado, Inspirado, Aguerrido; Barco: Vía de agua, Incendio a bordo, Velas rotas, Perseguido, Pólvora mojada) según las reglas de la fase 6.
+- Abordaje, Persigue, Incautado y Ocupar el muelle van escritos en la propia carta. Estados (Envenenado, Borracho, Aturdido, Asustado, Sangrando, Buscado, Maldito, Encadenado; Barco: Vía de agua, Incendio a bordo, Velas rotas, Perseguido, Pólvora mojada) y Ventajas (Inspirado, Aguerrido) según las reglas de la fase 6.
+- Estados y Ventajas (fase 8): un efecto que solo ayuda es una **Ventaja**; uno que perjudica o limita es un **Estado** (Borracho también, aunque dé +1 COM). Funcionan igual: fichas sobre el Tripulante (o el Barco) que no se repiten. En puerto, la Taberna quita todos los Estados de los Tripulantes (no las Ventajas) y el Astillero, todos los del Barco.
 - «Esta carta Se retira» = sale del juego (penalización que ya existe). «+ La Armada» = la carta apartada La Armada entra en el mazo (ya existe).
 - Nuevo Rasgo **Piloto**: lo lleva el Viejo lobo de mar (además de los que ya tiene).
 - *Idea* e *Inspirada en* son notas de diseño, no van en la carta.
@@ -244,7 +245,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Fallo: muerde al que iba el último. El comprometido con menos COM queda Envenenado.
 - **Ciudad — El culebrero** · #Civil# · Prueba: EXP 3 · Avance 1
     - Texto: un charlatán vende remedios con una serpiente al cuello. Hay que saber si el suyo es bueno.
-    - Éxito: el remedio funciona. Quita a un Tripulante un Estado malo (Envenenado, Sangrando, Aturdido o Asustado), o cura 2 heridas.
+    - Éxito: el remedio funciona. Quita a un Tripulante un Estado (Envenenado, Sangrando, Aturdido o Asustado), o cura 2 heridas.
     - Fallo: aceite de culebra y agua de pozo. Descarta 2 cartas.
 - **Destino — Colmillo** · +0 — Si fallas, el comprometido con la habilidad más alta queda Envenenado. *Sin oposición:* el Tripulante preparado con menos Vida sufre 1 herida (estaba entre la maleza).
 - *Idea:* la serpiente siempre muerde a quien no mira: al que dormía, al rezagado. En la ciudad la serpiente es el reclamo del curandero, que puede quitarte el veneno o la bolsa. *Inspirada en:* «Barba amarilla» del Taller, «Serpientes» actual.

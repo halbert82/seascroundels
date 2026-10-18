@@ -72,6 +72,10 @@ export interface Partida {
   capacidades: Record<string, number>
   /** Daño por carta de Peligro. */
   peligros: Record<CartaId, DanoDePeligro>
+  /** Orden del mazo de Escenario al empezar (las cartas que se jugarán, de arriba abajo). */
+  ordenEscenario: CartaId[]
+  /** Lo que eligió el jugador en los «Elige» de las cartas de Escenario. */
+  eleccionesEscenario: { carta: CartaId; texto: string }[]
 }
 
 function danoDe(p: Partida, carta: CartaId): DanoDePeligro {
@@ -126,6 +130,8 @@ export function jugarPartida(
     cartas: {},
     capacidades: {},
     peligros: {},
+    ordenEscenario: s.zonas.mazoEscenario.map((c) => copia(s, c).id),
+    eleccionesEscenario: [],
   }
   // La carta de Peligro cuyo encuentro está en curso (el daño se le apunta a ella) y el Destino de la Prueba.
   let enCurso: CartaId | null = null
@@ -138,7 +144,13 @@ export function jugarPartida(
     if (d.tipo === 'elegirOpcion' && d.motivo.clave === 'quedarseOZarpar') {
       for (const o of d.opciones) if (o.clave.startsWith('zarpar:')) p.ofrecidas.push(copia(s, o.clave.slice(7) as InstId).id)
     }
-    s = responder(s, jugador(s, d))
+    const eleccion = jugador(s, d)
+    // Los «Elige» de las cartas de Escenario: qué opción toma el jugador.
+    if (d.tipo === 'elegirOpcion' && d.motivo.clave === 'elegirEfectos' && d.motivo.carta && porId(d.motivo.carta).tipo === 'escenario' && eleccion.tipo === 'opcion') {
+      const texto = d.opciones.find((o) => o.clave === eleccion.clave)?.texto ?? eleccion.clave
+      p.eleccionesEscenario.push({ carta: d.motivo.carta, texto })
+    }
+    s = responder(s, eleccion)
     if (invariantes) comprobarInvariantes(s, { json: false })
     for (const r of s.registro) {
       if (r.tipo === 'turno') zarpeAbierto = null
@@ -278,6 +290,39 @@ function pct(v: number): string {
   return Number.isNaN(v) ? '—' : `${v.toFixed(1)} %`
 }
 
+/** Turnos que cuentan como «pronto» para comparar cartas de Escenario (todas las partidas los juegan casi siempre). */
+const PRONTO = 6
+
+/**
+ * Fase 8 · qué cartas de Escenario hacen más daño. Se compara, por el orden del mazo al empezar (que no depende de cómo
+ * vaya la partida), las partidas en que la carta sale en los 6 primeros turnos con las demás (sale después o no sale).
+ * Así una partida corta, que revela menos cartas, no ensucia la cuenta.
+ */
+function tablaDeEscenario(partidas: readonly Partida[]): string[] {
+  const lineas = [
+    '## Cartas de Escenario',
+    '',
+    `Partidas normales y con mazos variados juntas (${partidas.length}). «Pronto»: la carta está entre las ${PRONTO} primeras del mazo de Escenario al empezar la partida; «después o nunca»: el resto. La diferencia, en puntos de victoria, dice cuánto daña (negativa) o ayuda (positiva) tenerla pronto. Con estas partidas, una diferencia de menos de 3 puntos puede ser ruido.`,
+    '',
+    '| Carta | Partidas «pronto» | Victorias «pronto» | Victorias «después o nunca» | Diferencia | Lo que elige el jugador automático |',
+    '| --- | --- | --- | --- | --- | --- |',
+  ]
+  const filas = DATOS.escenario.map((e) => {
+    const pronto = partidas.filter((p) => p.ordenEscenario.slice(0, PRONTO).includes(e.id))
+    const resto = partidas.filter((p) => !p.ordenEscenario.slice(0, PRONTO).includes(e.id))
+    const elecciones = partidas.flatMap((p) => p.eleccionesEscenario.filter((x) => x.carta === e.id))
+    const cuenta = new Map<string, number>()
+    for (const x of elecciones) cuenta.set(x.texto, (cuenta.get(x.texto) ?? 0) + 1)
+    const eligio = [...cuenta].sort((a, b) => b[1] - a[1]).map(([texto, n]) => `${texto}: ${porcentaje(n, elecciones.length)}`).join(' · ')
+    return { e, pronto, resto, diferencia: victorias(pronto) - victorias(resto), eligio }
+  })
+  for (const f of filas.sort((a, b) => a.diferencia - b.diferencia)) {
+    lineas.push(`| ${f.e.nombre} | ${f.pronto.length} | ${pct(victorias(f.pronto))} | ${pct(victorias(f.resto))} | ${puntos(victorias(f.pronto), victorias(f.resto))} | ${f.eligio || '—'} |`)
+  }
+  lineas.push('')
+  return lineas
+}
+
 function causa(motivo: string): string {
   if (motivo.startsWith('Se ha acabado el tiempo')) return 'Se acaba el tiempo'
   if (motivo.startsWith('Tu Capitán')) return 'Capitán derrotado'
@@ -412,6 +457,8 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   for (const p of perdidas) causas.set(causa(p.motivo), (causas.get(causa(p.motivo)) ?? 0) + 1)
   for (const [c, n] of [...causas].sort((a, b) => b[1] - a[1])) lineas.push(`| ${c} | ${n} | ${porcentaje(n, perdidas.length)} |`)
   lineas.push('')
+
+  lineas.push(...tablaDeEscenario([...partidas, ...variadas]))
 
   lineas.push('## Los 10 encuentros que más se fallan', '', 'Solo encuentros con al menos 20 Pruebas.', '', '| Encuentro (carta) | Pruebas | Fallos | % de fallo |', '| --- | --- | --- | --- |')
   const pruebas = new Map<string, { n: number; fallos: number }>()

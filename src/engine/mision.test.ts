@@ -15,7 +15,7 @@ const MAZO_CAPITAN = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada',
 
 /** Situación en el paso de zarpar, con un mazo de Peligros concreto (arriba primero). */
 function enPuerto(op: OpcionesSituacion): Jugador {
-  return Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: [...MAZO_CAPITAN], ...op })
+  return Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], mazoCapitan: [...MAZO_CAPITAN], ...op })
 }
 
 function opcionesDeZarpar(j: Jugador): string[] {

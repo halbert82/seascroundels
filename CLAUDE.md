@@ -20,6 +20,7 @@ Juego de cartas cooperativo en solitario, al estilo de los LCG (Arkham Horror, E
 3. Los campos de ayuda que vienen del prototipo antiguo: `fallo`, `exito`, `siempre`, `ops`, `ayudaPrototipo`, `textoPrototipo`. Sirven al motor como pista, pero **si chocan con el texto o el reglamento, mandan el texto y el reglamento**.
 4. **Fase 6:** `docs/peligros-2.0.md` (las 55 cartas de Peligro nuevas, que sustituyen a las 25 antiguas: estas se quedan en los datos marcadas `retirada`, solo para las pruebas) y `docs/jugador-2.0.md` (9 cartas de jugador nuevas). En `cartas.json` llevan `"version": 2` (los Peligros) y sus textos completos son solo para leerlos: lo que hacen está escrito a mano por carta en `src/engine/peligros2/` (reglas) y `src/engine/capacidades/jugador2.ts`.
 5. **Fase 7:** `docs/misiones-2.0.md` (las 12 misiones 2.0: reglas y recompensas nuevas, capítulos con salida doble, Pasajeros, «¡La guardia!» y los mazos propios rehechos). Las reglas impresas de cada capítulo en `cartas.json` son para leerlas: lo que hace cada uno está escrito a mano en `src/engine/misiones2/`.
+6. **Fase 8:** `docs/escenario-2.0.md` (las 14 cartas de Escenario 2.0, que sustituyen a las anteriores; lo que hace cada una está en `src/engine/capacidades/escenario.ts`). Inspirado y Aguerrido son **Ventajas**, no Estados (un efecto que solo ayuda es Ventaja; uno que perjudica o limita es Estado). La Taberna quita todos los Estados de los Tripulantes y el Astillero, todos los del Barco.
 
 Recursos visuales:
 - `referencia/cartas/NNN.webp`: imagen de cada carta tal y como está diseñada; el nombre es su número de colección. Es la referencia visual que hay que igualar.
@@ -98,6 +99,7 @@ Recursos visuales:
 5. **Mesa de juego y pulido visual:** animaciones, registro, guardado y deshacer.
 6. **Peligros 2.0:** reglas nuevas (se queda en juego, Estados, Elige, Sin ayuda, Abordaje, Persigue, Incautado, ocupar el muelle), las 55 cartas nuevas en lugar de las antiguas y 9 cartas de jugador nuevas. Punto de control con el Grupo A (cartas 1–11) y entrega final con todas y el informe de equilibrio.
 7. **Misiones 2.0:** reglas y recompensas nuevas de las 12 misiones, capítulos II-a/II-b, Pasajeros, fichas de misión, Gesta, finales con elección, «¡La guardia!» y los mazos propios con el formato 2.0 (cartas 218–225). Para las pruebas de cartas y reglas generales hay misiones de prueba sin reglas (`pruebas-mar5`, `pruebas-nat3`…).
+8. **Reglamento al día, Estados y Ventajas, puertos y Escenario 2.0:** el reglamento recoge las reglas de Peligro de la fase 6; Inspirado y Aguerrido pasan a ser Ventajas; Taberna y Astillero quitan los Estados; las 14 cartas de Escenario nuevas. Para las pruebas que solo necesitan pasar turnos hay una carta de Escenario de prueba sin efecto (`pruebas-calma`).
 
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
@@ -113,3 +115,4 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.
 - **Fase 6:** las respuestas de Albert (P1–P48) están en `docs/decisiones.md`, sección «Fase 6». Reforzar y la Fiebre ya no existen: las cartas de la mano solo suman al comprometer. Ya no hay Pruebas dobles.
 - **Fase 7:** respuestas P49–P56 en la sección «Fase 7» de `docs/decisiones.md`. «Las puertas de Panamá» tiene que seguir siendo una victoria rara (menos del 10 % de las partidas): no se toca su equilibrio.
+- **Fase 8:** cambios y lecturas en la sección «Fase 8» de `docs/decisiones.md`; pendientes P57–P59 (Distancias de alisios y huracanes, Escasez y la Recarga, «Elige» del Escenario sin opción cumplible).

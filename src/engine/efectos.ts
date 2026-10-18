@@ -2,7 +2,7 @@
 // imprimen (iconos separados por « · »): «2 [herida] · 1 [agotar]», «1 [dano] · / 1 [herida]»…
 
 import { DATOS, type Entorno, type Habilidad } from './datos.ts'
-import type { EstadoBarco, EstadoTripulante } from './infoEstados.ts'
+import type { EstadoBarco, FichaTripulante } from './infoEstados.ts'
 import type { CartaId, InstId } from './tipos.ts'
 
 export type Efecto =
@@ -35,10 +35,10 @@ export type Efecto =
   | { tipo: 'sinFallo' }
   // Efectos de los Peligros nuevos (fase 6). No salen de los iconos impresos: los da el registro de reglas de cada carta.
   /** Ficha de Estado a un Tripulante: el que elijas, uno de los comprometidos, todos o el Capitán. */
-  | { tipo: 'estado'; estado: EstadoTripulante; a: 'uno' | 'comprometido' | 'todos' | 'capitan' }
+  | { tipo: 'estado'; estado: FichaTripulante; a: 'uno' | 'comprometido' | 'todos' | 'capitan' }
   | { tipo: 'estadoBarco'; estado: EstadoBarco }
   /** Quita un Estado: al Tripulante de la carta que lo dice, a uno que elijas o a todos. */
-  | { tipo: 'quitarEstado'; estado: EstadoTripulante; a: 'fuente' | 'uno' | 'todos' }
+  | { tipo: 'quitarEstado'; estado: FichaTripulante; a: 'fuente' | 'uno' | 'todos' }
   | { tipo: 'quitarEstadoBarco'; estado: EstadoBarco }
   /** Cartas de la mano, una Mejora o un Tripulante van debajo de la carta de misión. */
   | ({ tipo: 'incautar' } & Incautar)
@@ -89,7 +89,7 @@ export type Efecto =
   /** La Prueba se supera sin hacerla. */
   | { tipo: 'superarSinPrueba' }
   /** Quita uno de estos Estados a un Tripulante (eliges a quién y cuál) y, si lo dice, cúrale N. */
-  | { tipo: 'quitarUnEstado'; estados: EstadoTripulante[]; curar?: number }
+  | { tipo: 'quitarUnEstado'; estados: FichaTripulante[]; curar?: number }
   /** Descarta una carta del muelle: la de más a la izquierda o la Mejora más cara (y, si lo dice, repón el hueco). */
   | { tipo: 'descartarMuelle'; cual: 'izquierda' | 'mejoraMasCara'; reponer?: boolean }
   /** Le pasa algo a este Tripulante concreto. */
@@ -149,7 +149,7 @@ export interface Selector {
   rasgo?: string
   /** Solo los que no tengan este Rasgo («los que no sean Oficiales»). */
   sinRasgo?: string
-  conEstado?: EstadoTripulante
+  conEstado?: FichaTripulante
   /** Solo los que tengan alguna herida. */
   herido?: boolean
   /** Solo este Tripulante concreto. */
@@ -159,8 +159,8 @@ export interface Selector {
 /** Lo que le pasa al elegido. */
 export type AccionSobre =
   | { tipo: 'heridas'; n: number }
-  | { tipo: 'estado'; estado: EstadoTripulante }
-  | { tipo: 'quitarEstado'; estado: EstadoTripulante }
+  | { tipo: 'estado'; estado: FichaTripulante }
+  | { tipo: 'quitarEstado'; estado: FichaTripulante }
   | { tipo: 'rehen' }
   | { tipo: 'preparar' }
   | { tipo: 'agotar' }
@@ -187,14 +187,14 @@ export type Condicion =
   | { tipo: 'mejoras'; minimo: number }
   | { tipo: 'heridas'; minimo: number }
   | { tipo: 'municion'; minimo: number }
-  | { tipo: 'estado'; estado: EstadoTripulante }
+  | { tipo: 'estado'; estado: FichaTripulante }
   | { tipo: 'estadoBarco'; estado: EstadoBarco }
   | { tipo: 'no'; condicion: Condicion }
   // Peligros 2.0
   /** Número de Tripulantes comprometidos en la Prueba en curso. */
   | { tipo: 'comprometidos'; minimo?: number; maximo?: number }
   | { tipo: 'comprometidoRasgo'; rasgo: string }
-  | { tipo: 'comprometidoEstado'; estado: EstadoTripulante }
+  | { tipo: 'comprometidoEstado'; estado: FichaTripulante }
   | { tipo: 'comprometidoCapitan' }
   /** Una carta concreta en juego (la Bandera negra, el Amuleto…). */
   | { tipo: 'cartaEnJuego'; id: CartaId }
@@ -229,7 +229,7 @@ export type Medida =
   | 'heridos'
   | 'comprometidos'
   | { rasgo: string }
-  | { estado: EstadoTripulante }
+  | { estado: FichaTripulante }
 
 function numero(texto: string): number {
   return Number(texto.replace('−', '-').replace('+', ''))

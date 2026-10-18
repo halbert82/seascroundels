@@ -5,7 +5,7 @@ import { Jugador } from './pruebas/situacion.ts'
 
 /** Semilla cuya primera carta de Escenario no toca la mano ni pide decisiones (para mirar la mano tras el cambio). */
 function semillaTranquila(): number {
-  const tranquilas = ['astillero', 'bando', 'rumores', 'escasez', 'huracanes', 'alisios', 'calma_ev']
+  const tranquilas = ['bando', 'rumores', 'escasez', 'huracanes', 'alisios', 'mercado']
   for (let semilla = 1; semilla < 200; semilla++) {
     const s = nuevaPartida({ semilla })
     const arriba = s.zonas.mazoEscenario[0]

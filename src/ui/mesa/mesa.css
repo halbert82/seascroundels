@@ -2394,12 +2394,12 @@
   cursor: help;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-.estado-ficha.malo {
+.estado-ficha.estado {
   background: #5e1a12;
   color: #f8d3c6;
   border: 1px solid #e0897a;
 }
-.estado-ficha.bueno {
+.estado-ficha.ventaja {
   background: #23431c;
   color: #d8f0c8;
   border: 1px solid #8fc276;

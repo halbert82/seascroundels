@@ -4982,7 +4982,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Un charlatán vende remedios con una serpiente al cuello. Hay que saber si el suyo es bueno.~",
-     "textoExito": "~El remedio funciona.~ Quita a un Tripulante un Estado malo (**Envenenado**, **Sangrando**, **Aturdido** o **Asustado**), o cura 2 heridas.",
+     "textoExito": "~El remedio funciona.~ Quita a un Tripulante un Estado (**Envenenado**, **Sangrando**, **Aturdido** o **Asustado**), o cura 2 heridas.",
      "textoFallo": "~Aceite de culebra y agua de pozo.~ Descarta 2 cartas."
     }
    },
@@ -9269,8 +9269,8 @@
      "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Pon 2 fichas de Ventaja en esta misión ~(el ladrón huye)~.",
-      "Cada Peligro sin Prueba y cada Prueba que falles: +1 Ventaja. Cada Prueba de [NAV] o de [EXP] que superes por 2 o más: −1 Ventaja ~(le cortáis el paso)~.",
+      "**Al zarpar:** Pon 2 fichas de Ladrón en esta misión ~(el ladrón huye)~.",
+      "Cada Peligro sin Prueba y cada Prueba que falles: +1 Ladrón. Cada Prueba de [NAV] o de [EXP] que superes por 2 o más: −1 Ladrón ~(le cortáis el paso)~.",
       "Con 5 fichas, se escapa: la misión falla. Con 0, lo atrapas: superas la misión ahora, aunque no tengas todo el Avance."
      ],
      "ambientacion": "«Un garfio, un parche y una caja de caudales bajo el brazo. No debería ser difícil.»",
@@ -9338,99 +9338,99 @@
    "id": "mercado",
    "num": 97,
    "nombre": "Mercado próspero",
-   "texto": "Revela 2 cartas más del mazo de muelle y añádelas al muelle.",
-   "ambientacion": "«Ha llegado la flota mercante: hay dinero en cada esquina.»"
+   "texto": "Revela 2 cartas más del mazo de muelle y añádelas al muelle. Al reponerlo, las que sobren se descartan.",
+   "ambientacion": "«Ha llegado la flota de Sevilla y hay de todo. Hasta clientes.»"
   },
   {
-   "id": "astillero",
+   "id": "armada_patrulla",
    "num": 98,
-   "nombre": "Astillero ocioso",
-   "texto": "Repara {2 dano g}.",
-   "ambientacion": "«Los calafates se aburren. Aprovéchalo.»"
+   "nombre": "La Armada patrulla",
+   "texto": "**Elige:** descarta 3 cartas ~(sobornas a un oficial del almirantazgo)~, o baraja «La Armada te persigue» en el mazo de Peligros (+ La Armada).",
+   "ambientacion": "«Velas del Rey en el horizonte. Y no vienen de visita.»"
   },
   {
    "id": "impuestos",
    "num": 99,
    "nombre": "Impuestos del gobernador",
-   "texto": "Pierde una Mejora.",
-   "ambientacion": "«El gobernador también es pirata. Con peluca.»"
+   "texto": "**Elige:** descarta 2 cartas, o pierde una Mejora a tu elección. Con la _Patente de corso_ no pagas.",
+   "ambientacion": "«El Rey cobra el quinto. El gobernador, lo que quiere.»"
   },
   {
    "id": "reclutas",
    "num": 100,
    "nombre": "Marineros sin barco",
-   "texto": "Busca un Tripulante.",
-   "ambientacion": "«Su barco se hundió; sus ganas, no.»"
+   "texto": "Busca un Tripulante y ponlo en el muelle. Este turno, reclutarlo cuesta 1 menos.",
+   "ambientacion": "«Un mercante se hundió en la barra. Su tripulación busca patrón.»"
   },
   {
-   "id": "noticias",
+   "id": "cuarentena",
    "num": 101,
-   "nombre": "Noticias de un botín",
-   "texto": "Roba {2 robar}.",
-   "ambientacion": "«Mañana zarpa un galeón cargado. Lo sabe medio puerto.»"
+   "nombre": "Cuarentena",
+   "texto": "El puerto cierra la Taberna este turno: no se puede elegir. El Tripulante con menos Vida queda **Aturdido** ~(la calentura)~.",
+   "ambientacion": "«Bandera amarilla en el castillo. Nadie entra, nadie sale.»"
   },
   {
    "id": "bando",
    "num": 102,
    "nombre": "Bando del virrey",
-   "texto": "Este turno, los encuentros #Militar# y #Guardia# reciben {+1 r} de dificultad.",
-   "ambientacion": "«Se busca. Vivo o muerto. Mejor muerto.»"
+   "texto": "Se pegan los carteles: tu Tripulante con más [COM] queda **Buscado**. Este turno, los encuentros #Guardia# y #Militar# reciben {+1 r}.",
+   "ambientacion": "«Se busca. Vivo o como sea.»"
   },
   {
    "id": "desercion",
    "num": 103,
    "nombre": "Deserción",
-   "texto": "Descarta a tu Tripulante de menor coste junto con sus Mejoras. No puede ser tu Capitán.",
-   "ambientacion": "«Una noche en tierra y uno menos al amanecer.»"
+   "texto": "**Elige:** paga la soldada (descarta 1 carta por cada Tripulante, máximo 3), o tu Tripulante de menor coste deserta y vuelve al muelle (con sus Mejoras descartadas). Tu Capitán nunca deserta.",
+   "ambientacion": "«Sin paga no hay lealtad. Y en Tortuga sobran capitanes.»"
   },
   {
    "id": "rumores",
    "num": 104,
    "nombre": "Rumores del tesoro",
-   "texto": "Si zarpas este turno, empiezas la misión con {1 avance}.",
-   "ambientacion": "«Todo el mundo tiene un mapa. Alguno será bueno.»"
+   "texto": "Si zarpas este turno, empiezas la misión con {1 avance} ({2 avance} si es un capítulo II o III).",
+   "ambientacion": "«Todo el mundo sabe dónde está. Nadie ha vuelto para contarlo.»"
   },
   {
    "id": "escasez",
    "num": 105,
    "nombre": "Escasez de pertrechos",
-   "texto": "Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
-   "ambientacion": "«Ni pólvora, ni galleta, ni crédito.»"
+   "texto": "Pierdes {1 municion}. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
+   "ambientacion": "«No queda pólvora, ni galleta, ni nadie que fíe.»"
   },
   {
    "id": "ribera",
    "num": 106,
    "nombre": "Carpinteros de ribera",
-   "texto": "Busca una Mejora de barco.",
-   "ambientacion": "«Caoba recién cortada y manos que saben usarla.»"
+   "texto": "**Elige:** repara {2 dano g}, o busca una Mejora de barco y ponla en el muelle.",
+   "ambientacion": "«Calafates, cordeleros y un herrero que no hace preguntas.»"
   },
   {
    "id": "huracanes",
    "num": 107,
    "nombre": "Temporada de huracanes",
-   "texto": "Este turno, las misiones [mar] necesitan {+1 avance r} y las Distancias son {+1 r} mayores.",
-   "ambientacion": "«El cielo se pone verde. Mal asunto.»"
+   "texto": "Este turno, las misiones [mar] necesitan {+1 avance r}, sus Distancias son {+1 r} mayores y los encuentros #Tormenta# reciben {+1 r}.",
+   "ambientacion": "«En septiembre, el que puede se queda en puerto.»"
   },
   {
    "id": "alisios",
    "num": 108,
    "nombre": "Vientos alisios",
-   "texto": "Este turno, las misiones [mar] necesitan {−1 avance g} y las Distancias son {−1 g} menores.",
-   "ambientacion": "«Los alisios soplan hacia poniente. A favor.»"
+   "texto": "Este turno, las misiones [mar] necesitan {−1 avance g} y sus Distancias son {−1 g} menores.",
+   "ambientacion": "«Viento de popa desde Canarias hasta aquí. Hoy no rema nadie.»"
   },
   {
    "id": "feria",
    "num": 109,
    "nombre": "Feria en la isla",
    "texto": "Roba {1 robar} y cura {1 herida g} a cada Tripulante.",
-   "ambientacion": "«Música, dados y bolsas descuidadas.»"
+   "ambientacion": "«Ron, gallos de pelea y nadie con prisa.»"
   },
   {
-   "id": "calma_ev",
+   "id": "sanjuan",
    "num": 110,
-   "nombre": "Días tranquilos",
-   "texto": "Cura {1 herida g} a cada Tripulante.",
-   "ambientacion": "«Hamacas, ron y nada que hacer. Por ahora.»"
+   "nombre": "Fiesta de San Juan",
+   "texto": "Prepara a todos tus Tripulantes. Todos quedan **Borrachos**. Si zarpas este turno, empiezas la misión con {1 avance}.",
+   "ambientacion": "«Hogueras en la playa hasta el amanecer. Y luego, a trabajar.»"
   }
  ],
  "puertos": [
@@ -9444,8 +9444,8 @@
     "texto": "Pon {2 avance} en una misión disponible."
    },
    "opcionesComunes": [
-    "**Astillero.** Repara {3 dano g}.",
-    "**Taberna.** Cura {3 herida g}.",
+    "**Astillero.** Repara {3 dano g} y quita todos los Estados del Barco.",
+    "**Taberna.** Cura {3 herida g} y quita todos los Estados de tus Tripulantes.",
     "**Tablón de encargos.** Pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón."
    ],
    "ambientacion": "«En Tortuga todo se compra y todo se vende. Hasta tu nombre.»"
@@ -9460,8 +9460,8 @@
     "texto": "Pon una ficha de Entrenamiento en un Tripulante: {+1} a la habilidad que elijas. Ocupa un hueco de Mejora."
    },
    "opcionesComunes": [
-    "**Astillero.** Repara {3 dano g}.",
-    "**Taberna.** Cura {3 herida g}.",
+    "**Astillero.** Repara {3 dano g} y quita todos los Estados del Barco.",
+    "**Taberna.** Cura {3 herida g} y quita todos los Estados de tus Tripulantes.",
     "**Tablón de encargos.** Pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón."
    ],
    "ambientacion": "«Aquí no hay gobernador: hay doscientos capitanes y ninguno obedece.»"

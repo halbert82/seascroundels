@@ -1,22 +1,22 @@
-// Fichas de Estado sobre los Tripulantes y sobre el Barco. Duran hasta que se quitan, también entre misiones.
-// Un Tripulante no puede tener dos veces el mismo Estado (ni el Barco).
+// Fichas de Estado y de Ventaja sobre los Tripulantes, y de Estado sobre el Barco. Duran hasta que se quitan, también
+// entre misiones. Un Tripulante no puede tener dos veces la misma ficha (ni el Barco).
 
 import { anotar, copia, encolar, nombre } from './estado.ts'
 import type { Estado, InstId } from './tipos.ts'
 
-export { ESTADOS_BARCO, ESTADOS_TRIPULANTE, INFO_ESTADO, cartaDeEstado, type EstadoBarco, type EstadoTripulante, type InfoEstado } from './infoEstados.ts'
-import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from './infoEstados.ts'
+export { ESTADOS_BARCO, ESTADOS_TRIPULANTE, FICHAS_TRIPULANTE, INFO_ESTADO, VENTAJAS, cartaDeEstado, esVentaja, type EstadoBarco, type EstadoTripulante, type FichaTripulante, type InfoEstado, type Ventaja } from './infoEstados.ts'
+import { INFO_ESTADO, esVentaja, type EstadoBarco, type FichaTripulante } from './infoEstados.ts'
 
-export function estadosDe(s: Estado, inst: InstId): EstadoTripulante[] {
+export function estadosDe(s: Estado, inst: InstId): FichaTripulante[] {
   return copia(s, inst).estados ?? []
 }
 
-export function tieneEstado(s: Estado, inst: InstId, e: EstadoTripulante): boolean {
+export function tieneEstado(s: Estado, inst: InstId, e: FichaTripulante): boolean {
   return estadosDe(s, inst).includes(e)
 }
 
 /** Pone un Estado a un Tripulante. Devuelve falso si ya lo tenía (no se repite). */
-export function ponerEstado(s: Estado, inst: InstId, e: EstadoTripulante): boolean {
+export function ponerEstado(s: Estado, inst: InstId, e: FichaTripulante): boolean {
   const c = copia(s, inst)
   if (c.estados?.includes(e)) return false
   c.estados = [...(c.estados ?? []), e]
@@ -28,7 +28,7 @@ export function ponerEstado(s: Estado, inst: InstId, e: EstadoTripulante): boole
   return true
 }
 
-export function quitarEstado(s: Estado, inst: InstId, e: EstadoTripulante): boolean {
+export function quitarEstado(s: Estado, inst: InstId, e: FichaTripulante): boolean {
   const c = copia(s, inst)
   if (!c.estados?.includes(e)) return false
   c.estados = c.estados.filter((x) => x !== e)
@@ -37,7 +37,7 @@ export function quitarEstado(s: Estado, inst: InstId, e: EstadoTripulante): bool
 }
 
 /** Quita un Estado y lo apunta en el registro. */
-export function quitarEstadoAnotado(s: Estado, inst: InstId, e: EstadoTripulante, por?: string): boolean {
+export function quitarEstadoAnotado(s: Estado, inst: InstId, e: FichaTripulante, por?: string): boolean {
   if (!quitarEstado(s, inst, e)) return false
   anotar(s, 'efecto', `${nombre(s, inst)} ya no está ${INFO_ESTADO[e].nombre}${por ? ` (${por})` : ''}.`)
   return true
@@ -60,8 +60,28 @@ export function quitarEstadoBarco(s: Estado, e: EstadoBarco): boolean {
   return true
 }
 
+/**
+ * Taberna: quita todos los Estados de tus Tripulantes (las Ventajas se quedan). Devuelve lo quitado, para el registro.
+ */
+export function quitarEstadosTripulacion(s: Estado): string[] {
+  const partes: string[] = []
+  for (const c of s.zonas.tripulacion) {
+    const quitados = estadosDe(s, c).filter((e) => !esVentaja(e))
+    for (const e of quitados) quitarEstado(s, c, e)
+    if (quitados.length > 0) partes.push(`${nombre(s, c)} ya no está ${quitados.map((e) => INFO_ESTADO[e].nombre).join(' ni ')}`)
+  }
+  return partes
+}
+
+/** Astillero: quita todos los Estados del Barco. Devuelve sus nombres, para el registro. */
+export function quitarEstadosBarco(s: Estado): string[] {
+  const quitados = [...(s.estadosBarco ?? [])]
+  delete s.estadosBarco
+  return quitados.map((e) => INFO_ESTADO[e].nombre)
+}
+
 /** Tripulantes en juego con ese Estado. */
-export function conEstado(s: Estado, e: EstadoTripulante): InstId[] {
+export function conEstado(s: Estado, e: FichaTripulante): InstId[] {
   return s.zonas.tripulacion.filter((c) => tieneEstado(s, c, e))
 }
 

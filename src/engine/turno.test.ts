@@ -3,10 +3,10 @@ import { Jugador } from './pruebas/situacion.ts'
 
 describe('El turno · Inicio', () => {
   it('revela la carta de Escenario de arriba y la aplica', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['astillero', 'noticias'], barco: { dano: 3 } })
-    expect(j.zona('escenarioEnCurso')).toEqual(['astillero'])
-    expect(j.zona('mazoEscenario')).toEqual(['noticias'])
-    expect(j.estado.danoBarco).toBe(1)
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['feria', 'pruebas-calma'], tripulacion: [{ id: 'bucanero', heridas: 1 }] })
+    expect(j.zona('escenarioEnCurso')).toEqual(['feria'])
+    expect(j.zona('mazoEscenario')).toEqual(['pruebas-calma'])
+    expect(j.copia('bucanero').heridas).toBe(0)
     expect(j.estado.turno).toBe(1)
     expect(j.decision.motivo.clave).toBe('jugarCartas')
   })
@@ -14,7 +14,7 @@ describe('El turno · Inicio', () => {
   it('prepara todas las cartas agotadas y recarga la munición hasta su máximo', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['calma_ev'],
+      escenario: ['pruebas-calma'],
       capitan: { agotada: true },
       tripulacion: [{ id: 'bucanero', agotada: true }],
       barco: { mejoras: [{ id: 'bronce', municion: 0, agotada: true }] },
@@ -26,15 +26,15 @@ describe('El turno · Inicio', () => {
   })
 
   it('la Pólvora del Rey sube en 1 la munición máxima de los Cañones', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev'], barco: { mejoras: ['bronce', 'polvora_rey'] } })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { mejoras: ['bronce', 'polvora_rey'] } })
     expect(j.copia('bronce').municion).toBe(3)
   })
 
   it('al final del turno la carta de Escenario pasa a sus descartes', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev', 'noticias'], mazoCapitan: ['ojo', 'ojo', 'timon'] })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma', 'sanjuan'], mazoCapitan: ['ojo', 'ojo', 'timon'] })
     j.pasarTurnoEnPuerto()
-    expect(j.zona('descartesEscenario')).toEqual(['calma_ev'])
-    expect(j.zona('escenarioEnCurso')).toEqual(['noticias'])
+    expect(j.zona('descartesEscenario')).toEqual(['pruebas-calma'])
+    expect(j.zona('escenarioEnCurso')).toEqual(['sanjuan'])
     expect(j.estado.turno).toBe(2)
   })
 })
@@ -52,13 +52,13 @@ describe('El turno · Jugar cartas', () => {
       muelle: ['sable'],
       mazoMuelle: ['casco', 'vela'],
       descartesMuelle: ['hamacas'],
-      escenario: ['noticias', 'calma_ev'],
+      escenario: ['sanjuan', 'pruebas-calma'],
     })
     j.terminar()
     expect(j.zona('muelle')).toHaveLength(4)
     expect(j.zona('muelle').slice(0, 2)).toEqual(['casco', 'vela'])
     expect(j.zona('muelle').slice(2).sort()).toEqual(['hamacas', 'sable'])
-    expect(j.zona('mazoEscenario')).toEqual(['noticias', 'calma_ev'])
+    expect(j.zona('mazoEscenario')).toEqual(['sanjuan', 'pruebas-calma'])
   })
 })
 
@@ -77,13 +77,13 @@ describe('El turno · Final', () => {
       mano: ['ojo', 'timon', 'abordaje'],
       mazoCapitan: ['coraje'],
       descartesCapitan: ['emboscada', 'estrellas'],
-      escenario: ['noticias', 'calma_ev'],
+      escenario: ['sanjuan', 'pruebas-calma'],
     })
     j.ninguna()
     expect(j.zona('mano')).toHaveLength(5)
     expect(j.zona('mano').slice(0, 4)).toEqual(['ojo', 'timon', 'abordaje', 'coraje'])
     expect(j.zona('mazoCapitan')).toHaveLength(1)
-    expect(j.zona('descartesEscenario')).toEqual(['noticias'])
+    expect(j.zona('descartesEscenario')).toEqual(['sanjuan'])
     expect(j.registro.some((t) => t.startsWith('Pierdes un día'))).toBe(true)
   })
 
@@ -96,7 +96,7 @@ describe('El turno · Final', () => {
   it('los efectos «este turno» y los límites «una vez por turno» terminan con el turno', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['bando', 'calma_ev'],
+      escenario: ['bando', 'pruebas-calma'],
       mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'abordaje', 'abordaje', 'estrellas', 'estrellas'],
     })
     expect(j.estado.temporales.map((t) => t.clave)).toEqual(['bando.turno'])

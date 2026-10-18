@@ -42,13 +42,13 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 
 ### El ladrón del puerto · Aventura
 **I · El ladrón del puerto** · Ciudad · Avance 4 · Distancia 0
-- Regla (el ladrón huye): **Al zarpar:** pon 2 fichas de Ventaja en esta misión.
-  - Cada Peligro sin Prueba y cada Prueba que falles: +1 ficha.
-  - Cada Prueba de [NAV] o [EXP] que superes por 2 o más: −1 ficha (le cortáis el paso).
-  - Con 5 fichas, se escapa: la misión falla.
-  - Con 0 fichas, lo atrapas: superas la misión ahora, aunque no tengas todo el Avance.
+- Regla (el ladrón huye): **Al zarpar:** pon 2 fichas de Ladrón en esta misión.
+  - Cada Peligro sin Prueba y cada Prueba que falles: +1 Ladrón.
+  - Cada Prueba de [NAV] o [EXP] que superes por 2 o más: −1 Ladrón (le cortáis el paso).
+  - Con 5 fichas de Ladrón, se escapa: la misión falla.
+  - Con 0 fichas de Ladrón, lo atrapas: superas la misión ahora, aunque no tengas todo el Avance.
 - Recompensa: 2 de reputación y roba 2 cartas (la paga recuperada).
-- *Ejemplo:* llevas 2 de Avance de 4 y el ladrón tiene 1 ficha. Superas «Callejas del arrabal» (NAV 2) con 4: le quitas la última ficha, lo atrapas y superas la misión.
+- *Ejemplo:* llevas 2 de Avance de 4 y el ladrón tiene 1 ficha de Ladrón. Superas «Callejas del arrabal» (NAV 2) con 4: le quitas la última ficha, lo atrapas y superas la misión.
 
 ### La casa del gobernador · Aventura
 **I · La casa del gobernador** · Ciudad · Avance 5 · Distancia 0

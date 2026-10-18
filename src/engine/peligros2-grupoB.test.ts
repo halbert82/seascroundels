@@ -206,7 +206,7 @@ describe('16 · Serpientes', () => {
     expect(j.estados('vigia')).toEqual(['envenenado'])
   })
 
-  it('Ciudad: si superas, quitas un Estado malo a un Tripulante o curas 2', () => {
+  it('Ciudad: si superas, quitas un Estado a un Tripulante o curas 2', () => {
     const j = en('ciu', ['p2_serpientes', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['asustado'] }] })
     j.comprometer('EXP', ['baqueano']).pasarOfertas().seguir()
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion' })

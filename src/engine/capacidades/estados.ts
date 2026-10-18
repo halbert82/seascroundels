@@ -5,11 +5,11 @@
 // También está aquí la carta de Peligro que ocupa el muelle: pagar para descartarla.
 
 import { copia, nombre } from '../estado.ts'
-import { cartaDeEstado, type EstadoBarco, type EstadoTripulante } from '../infoEstados.ts'
+import { cartaDeEstado, type EstadoBarco, type FichaTripulante } from '../infoEstados.ts'
 import type { Capacidad, NuevaTarea } from '../tipos.ts'
 import { enEntorno, participantes } from './comun.ts'
 
-function deTripulante(e: EstadoTripulante, resto: Omit<Capacidad, 'carta' | 'desde' | 'clave'> & { clave: string }): Capacidad {
+function deTripulante(e: FichaTripulante, resto: Omit<Capacidad, 'carta' | 'desde' | 'clave'> & { clave: string }): Capacidad {
   return { ...resto, clave: `${cartaDeEstado(e)}.${resto.clave}`, carta: cartaDeEstado(e), desde: 'estado' }
 }
 

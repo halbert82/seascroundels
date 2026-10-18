@@ -127,6 +127,11 @@ export const buscarMuelle: Manejador<'buscarMuelle'> = (s, t, e) => {
   mover(s, elegida, 'muelle', 'abajo')
   barajar(s, 'mazoMuelle')
   anotar(s, 'efecto', `Buscas ${NOMBRE_FILTRO[t.filtro]}: «${nombre(s, elegida)}» pasa al muelle.`)
+  // «Marineros sin barco»: este turno, reclutar esa carta cuesta 1 menos.
+  if (t.marca) {
+    s.temporales.push({ clave: t.marca.clave, fuente: t.marca.fuente, hasta: 'finTurno', inst: elegida })
+    anotar(s, 'efecto', `Este turno, reclutar a «${nombre(s, elegida)}» cuesta 1 menos.`)
+  }
   return 'hecha'
 }
 

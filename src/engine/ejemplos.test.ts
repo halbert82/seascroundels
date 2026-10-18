@@ -63,7 +63,7 @@ describe('Ejemplo · −1 Mando (Chubasco repentino)', () => {
       empezarEn: 'final',
       mano: [],
       mazoCapitan: [...MAZO, ...MAZO],
-      escenario: ['calma_ev', 'astillero'],
+      escenario: ['pruebas-calma', 'pruebas-calma'],
       temporales: [{ clave: 'menosMando', fuente: 'chubasco', hasta: 'finTurno' }],
     })
     j.ninguna()
@@ -78,7 +78,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
   it('Inicio y Jugar cartas: Rumores del tesoro, recluta al Bucanero y al Rufián, repone el muelle', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['rumores', 'calma_ev'],
+      escenario: ['rumores', 'pruebas-calma'],
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
       muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
       mazoMuelle: ['bronce', 'vela', 'casco', 'vigia', 'carpintero'],
@@ -104,7 +104,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
   it('turno completo: zarpa, «Turbonada a popa», compromete con «Mano firme al timón», «Coral bajo la quilla», supera con su Gesta, busca los Cañones y roba cuatro', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['rumores', 'calma_ev'],
+      escenario: ['rumores', 'pruebas-calma'],
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
       muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
       mazoMuelle: ['vela', 'casco', 'vigia', 'carpintero', 'bronce', 'hamacas'],
@@ -154,7 +154,7 @@ describe('Ejemplo · Resolver una Prueba (Diego contra el Jaguar)', () => {
   it('Diego compromete con «¡Al abordaje!» (5); «Zarpazo»: +1 y Diego se lleva la herida; 5 contra 4', () => {
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
-      escenario: ['calma_ev'],
+      escenario: ['pruebas-calma'],
       misiones: ['aguada-I'],
       mano: ['abordaje'],
       mazoPeligros: ['bestias', 'bestias', 'calma'],

@@ -186,3 +186,39 @@ Fuente: `docs/misiones-2.0.md`. Las reglas impresas en `cartas.json` son para le
 ### Pendiente de Albert
 
 Nada de la fase 7.
+
+## Fase 8: reglamento al día, Estados y Ventajas, puertos y Escenario 2.0
+
+Fuente: `docs/escenario-2.0.md` y el mensaje de Albert del 18 de octubre de 2026.
+
+### Cambios de regla y de diseño (18 de octubre de 2026)
+
+- **Estados y Ventajas.** Inspirado y Aguerrido dejan de ser Estados y pasan a llamarse **Ventajas**; funcionan igual (fichas sobre el Tripulante, sin repetir la misma). Todo lo demás es Estado, Borracho incluido. Regla para el futuro: un efecto que solo ayuda es Ventaja; uno que perjudica o limita es Estado. «El culebrero» dice ahora «quita a un Tripulante un Estado (Envenenado, Sangrando, Aturdido o Asustado)». En la mesa, los Estados van en rojo y las Ventajas en verde.
+- **Fichas de Ladrón.** Las fichas de «El ladrón del puerto» dejan de llamarse Ventaja.
+- **Opciones comunes de los puertos** (Tortuga y Nassau): Astillero «Repara 3 daños y quita todos los Estados del Barco»; Taberna «Cura 3 heridas y quita todos los Estados de tus Tripulantes» (las Ventajas se quedan; así Buscado ya se puede quitar). Lo que decía «se quita con el Astillero» sigue valiendo por esta regla.
+- **Reglamento** con las reglas de Peligro de la fase 6 (Se queda en juego, Pruebas de una Acción, Estados y Ventajas con su tabla, Elige, Sin ayuda, Abordaje, Persigue, Incautado, Ocupar el muelle, el comprometido con más o menos y el daño al Barco solo en el Mar), sin Fiebre, Reforzar ni Pruebas dobles.
+- **Escenario 2.0:** las 14 cartas de `docs/escenario-2.0.md` (6 buenas, 2 mixtas y 6 malas). Las que se quedan o se funden conservan su número; las nuevas toman, en el orden en que las nombra Albert, los de las que salen: Fiesta de San Juan el 110 (Días tranquilos), Cuarentena el 101 (Noticias de un botín) y La Armada patrulla el 98 (Astillero ocioso). Una partida guardada antes del cambio recibe la carta nueva en el lugar de la que sale.
+
+### Lecturas tomadas sin duda (para que conste)
+
+- **Taberna y Astillero:** primero se quitan los Estados y después se cura o se repara (regla de oro 5: tú decides el orden de lo que se aplica a la vez). Así la curación no se gasta en quitar Envenenado o Sangrando, ni la reparación en tapar la Vía de agua. *Ejemplo:* Diego con 3 heridas y Envenenado sale de la Taberna sin heridas y sin la ficha.
+- **«Elige» del Escenario:** se decide al revelar la carta y solo se ofrecen las opciones que puedes cumplir enteras (como P11).
+- **Deserción:** «1 carta por cada Tripulante» cuenta al Capitán, como «El reparto» (Capitán y 2 Tripulantes: 3 cartas). El desertor vuelve al muelle y se puede volver a reclutar ese turno; sus Tesoros pasan a otro Tripulante (N1).
+- **Bando del virrey** («tu Tripulante con más COM») y **Cuarentena** («el Tripulante con menos Vida»): número impreso, el Capitán cuenta y, si empatan, eliges tú. *Ejemplo:* con Diego (COM 3) y el Espadachín errante (COM 3), eliges quién queda Buscado.
+- **Fiesta de San Juan:** «todos» incluye al Capitán; los Pasajeros no son Tripulantes. «Prepara a todos» llega antes de la preparación normal del Inicio, así que solo se nota en el texto: zarpas con todos preparados y Borrachos.
+- **Rumores del tesoro:** los capítulos II-a y II-b cuentan como capítulo II.
+- **Marineros sin barco:** el descuento es solo para la carta encontrada y dura hasta el final del turno.
+- **Mercado próspero:** «al reponerlo, las que sobren se descartan» ya pasaba: el muelle entero se descarta y se repone al terminar Jugar cartas.
+- **Pasajeros:** tampoco reciben Ventajas (no son Tripulantes).
+- **Ocupar el muelle:** el reglamento lo escribe como lo hace el motor desde la fase 6: la carta de Peligro que ocupa el muelle no cuenta para los efectos que eligen una carta del muelle (la de más a la izquierda, P42, la Mejora más cara…).
+
+### Pendiente de Albert
+
+- **P57 · «Sus Distancias» en Vientos alisios y Temporada de huracanes.** «Las misiones [mar] necesitan 1 de Avance más/menos y **sus** Distancias son 1 mayores/menores»: «sus» son las de las misiones de Mar, que no tienen Distancia, así que en la lectura literal ninguna Distancia cambia (es lo que hace ahora el motor, con `TODO(regla)`). Antes la carta cambiaba todas las Distancias de las misiones lejanas (D7). *Ejemplo:* con Temporada de huracanes, ¿«La selva» (Distancia 2) sigue pidiendo 2 o pasa a 3?
+- **P58 · Escasez de pertrechos y la Recarga.** La carta se aplica en el paso 1 del Inicio («Pierdes 1 munición») y la Recarga del paso 3 vuelve a llenar los Cañones, así que la munición perdida solo se nota con Pólvora mojada (lectura literal, lo que hace ahora el motor). *Ejemplo:* tienes los Cañones de bronce con 2 de 2; sale Escasez: pierdes 1 y en la Recarga vuelven a 2. ¿Es así, o la pérdida debe aplicarse después de recargar (empiezas el turno con 1)?
+- **P59 · «Elige» del Escenario cuando una opción no se puede cumplir.** Ahora, como P11, solo se ofrecen las opciones que puedes cumplir enteras, y si no puedes cumplir ninguna no pasa nada. Casos:
+  - **a)** Impuestos del gobernador con 1 carta en la mano y sin Mejoras que perder (solo Tesoros o indestructibles): no pagas nada.
+  - **b)** Deserción con solo el Capitán: nadie puede desertar, así que pagas 1 carta de soldada; con la mano vacía, no pasa nada.
+  - **c)** La Armada patrulla con La Armada ya en el mazo de Peligros: no se puede barajar otra vez, así que descartas 3; con menos de 3 cartas, no pasa nada.
+
+  ¿Te vale, o prefieres otra cosa (por ejemplo, en b y c, elegir la opción que no hace nada)?

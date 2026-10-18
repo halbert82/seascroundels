@@ -2,6 +2,7 @@
 
 import { DATOS } from '../datos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
+import { quitarEstadosBarco, quitarEstadosTripulacion } from '../estados.ts'
 import { primerNumero } from '../textos.ts'
 import type { Estado, NuevaTarea, Opcion } from '../tipos.ts'
 import { huecosLibres } from '../valores.ts'
@@ -20,21 +21,27 @@ export function opcionesDelPuerto(s: Estado): OpcionPuerto[] {
   for (const texto of puerto.opcionesComunes) {
     const titulo = /\*\*(.+?)\.\*\*/.exec(texto)?.[1] ?? ''
     if (titulo === 'Astillero') {
+      // «Repara 3 daños y quita todos los Estados del Barco.» Primero los Estados (regla de oro 5: el orden lo eliges
+      // tú), así el primer punto de reparación no se gasta en tapar la Vía de agua.
       const n = primerNumero(texto)
-      // Fase 6: el Astillero quita además Velas rotas y Pólvora mojada.
-      // El Astillero quita también Velas rotas y Pólvora mojada (P5).
       opciones.push({
         clave: 'astillero',
-        texto: `Astillero: repara ${n}`,
-        tareas: [
-          { tipo: 'reparar', n },
-          { tipo: 'quitarEstadoBarco', estado: 'velasRotas' },
-          { tipo: 'quitarEstadoBarco', estado: 'polvoraMojada' },
-        ],
+        texto: `Astillero: repara ${n} y quita los Estados del Barco`,
+        tareas: [{ tipo: 'quitarTodosLosEstados', de: 'barco' }, { tipo: 'reparar', n }],
       })
     } else if (titulo === 'Taberna') {
+      // «Cura 3 heridas y quita todos los Estados de tus Tripulantes.» Las Ventajas se quedan. Primero los Estados, así la
+      // curación no se gasta en quitar Envenenado o Sangrando. «Cuarentena» la cierra un turno.
+      if (s.temporales.some((x) => x.clave === 'cuarentena.turno')) continue
       const n = primerNumero(texto)
-      opciones.push({ clave: 'taberna', texto: `Taberna: cura ${n}`, tareas: [{ tipo: 'curar', n, modo: 'repartir' }] })
+      opciones.push({
+        clave: 'taberna',
+        texto: `Taberna: cura ${n} y quita los Estados de tus Tripulantes`,
+        tareas: [
+          { tipo: 'quitarTodosLosEstados', de: 'tripulacion' },
+          { tipo: 'curar', n, modo: 'repartir' },
+        ],
+      })
     } else if (titulo === 'Tablón de encargos') {
       opciones.push({ clave: 'tablon', texto: 'Tablón de encargos: cambia misiones', tareas: [{ tipo: 'tablon' }] })
     } else {
@@ -73,6 +80,17 @@ export const quedarseEnPuerto: Manejador<'quedarseEnPuerto'> = (s, t, e) => {
   anotar(s, 'jugada', `En puerto: ${opcion.texto}.`)
   encolar(s, ...opcion.tareas)
   return 'sigue'
+}
+
+/** Taberna y Astillero: quitan todos los Estados de tus Tripulantes o del Barco. */
+export const quitarTodosLosEstados: Manejador<'quitarTodosLosEstados'> = (s, t) => {
+  if (t.de === 'barco') {
+    const quitados = quitarEstadosBarco(s)
+    if (quitados.length > 0) anotar(s, 'efecto', `El Barco ya no tiene ${quitados.join(' ni ')}.`)
+  } else {
+    for (const linea of quitarEstadosTripulacion(s)) anotar(s, 'efecto', `${linea}.`)
+  }
+  return 'hecha'
 }
 
 /** Tablón de encargos: pon al fondo del mazo de Misiones las misiones disponibles que quieras. Repón. */

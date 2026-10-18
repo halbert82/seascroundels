@@ -12,7 +12,7 @@ import { vinculadas } from '../../engine/zonas.ts'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
-import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from '../../engine/infoEstados.ts'
+import { ESTADOS_BARCO, INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
 import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, fichasDe, useMesa } from './contexto.tsx'
@@ -178,13 +178,21 @@ function Chip({ inst }: { inst: InstId }) {
   )
 }
 
-/** Fichas de Estado (y lo que dura «no se prepara», «no puede comprometerse»). */
-export function FichasEstado({ estados, extra = [] }: { estados: readonly (EstadoTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: string }[] }) {
+/** Ayuda de una ficha: si es Estado o Ventaja, lo que hace y cómo se quita en puerto. */
+function ayudaFicha(e: FichaTripulante | EstadoBarco): string {
+  const info = INFO_ESTADO[e]
+  if (info.ventaja) return `Ventaja · ${info.nombre}: ${info.texto}`
+  if ((ESTADOS_BARCO as readonly string[]).includes(e)) return `Estado del Barco · ${info.nombre}: ${info.texto} El Astillero quita todos los Estados del Barco.`
+  return `Estado · ${info.nombre}: ${info.texto} La Taberna quita todos los Estados de tus Tripulantes.`
+}
+
+/** Fichas de Estado (en rojo) y de Ventaja (en verde), y lo que dura «no se prepara», «no puede comprometerse». */
+export function FichasEstado({ estados, extra = [] }: { estados: readonly (FichaTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: string }[] }) {
   if (estados.length === 0 && extra.length === 0) return null
   return (
     <div className="estados">
       {estados.map((e) => (
-        <span key={e} className={`estado-ficha ${INFO_ESTADO[e].bueno ? 'bueno' : 'malo'}`} title={`${INFO_ESTADO[e].nombre}: ${INFO_ESTADO[e].texto}`}>
+        <span key={e} className={`estado-ficha ${INFO_ESTADO[e].ventaja ? 'ventaja' : 'estado'}`} title={ayudaFicha(e)}>
           {INFO_ESTADO[e].nombre}
         </span>
       ))}

@@ -30,6 +30,44 @@ describe('Quedarte en puerto (Tortuga)', () => {
     expect(j.copia('contrabandista').heridas).toBe(0)
   })
 
+  it('Fase 8 · Astillero: repara 3 y quita todos los Estados del Barco (también Vía de agua, Incendio y Perseguido)', () => {
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', barco: { dano: 4, estados: ['viaDeAgua', 'incendio', 'velasRotas', 'perseguido', 'polvoraMojada'] } })
+    j.opcion('quedarse').opcion('astillero')
+    expect(j.estadosBarco).toEqual([])
+    // Los Estados se quitan antes de reparar: la Vía de agua no se lleva un punto de la reparación.
+    expect(j.estado.danoBarco).toBe(1)
+    expect(j.registro).toContain('El Barco ya no tiene Vía de agua ni Incendio a bordo ni Velas rotas ni Perseguido ni Pólvora mojada.')
+  })
+
+  it('Fase 8 · Taberna: cura 3 y quita todos los Estados de tus Tripulantes; las Ventajas se quedan', () => {
+    const j = Jugador.en({
+      empezarEn: 'quedarseOZarpar',
+      capitan: { heridas: 2, estados: ['buscado', 'inspirado'] },
+      tripulacion: [{ id: 'bucanero', heridas: 1, estados: ['envenenado', 'sangrando', 'aguerrido'] }, { id: 'grumete', estados: ['maldito', 'encadenado', 'borracho', 'aturdido', 'asustado'] }],
+    })
+    j.opcion('quedarse').opcion('taberna')
+    expect(j.copia('capitan').estados).toEqual(['inspirado'])
+    expect(j.copia('bucanero').estados).toEqual(['aguerrido'])
+    expect(j.copia('grumete').estados).toBeUndefined()
+    // Primero los Estados: los 3 puntos de curación van a las heridas (no a quitar Envenenado ni Sangrando).
+    expect(j.copia('capitan').heridas).toBe(0)
+    expect(j.copia('bucanero').heridas).toBe(0)
+    expect(j.registro).toContain('Diego «Garra» Mendoza ya no está Buscado.')
+  })
+
+  it('Fase 8 · Taberna: Buscado ya tiene forma de quitarse', () => {
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
+    j.opcion('quedarse').opcion('taberna')
+    expect(j.copia('bucanero').estados).toBeUndefined()
+  })
+
+  it('Fase 8 · las opciones comunes son las mismas en Nassau', () => {
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', puerto: 'nassau', barco: { estados: ['perseguido'] }, tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
+    j.opcion('quedarse').opcion('astillero').opcion('taberna')
+    expect(j.estadosBarco).toEqual([])
+    expect(j.copia('bucanero').estados).toBeUndefined()
+  })
+
   it('Tablón de encargos: mandas al fondo las misiones que quieras (pierden su Avance) y repones', () => {
     const j = Jugador.en({ empezarEn: 'quedarseOZarpar', mazoMisiones: ['templo-I', 'flota-I'] })
     j.estado.cartas[j.inst('deuda-I')]!.avance = 2

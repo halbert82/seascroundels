@@ -4,6 +4,7 @@
 // - comprobar los invariantes del estado tras cada paso.
 
 import { sembrar } from '../azar.ts'
+import { registrarCapacidades } from '../capacidades/index.ts'
 import { CATALOGO, esUnica, registrarCartasExtra } from '../catalogo.ts'
 import { DATOS, type CapituloDatos, type Entorno, type Habilidad, type MisionDatos } from '../datos.ts'
 import { copia as copiaDe, encolar, estadoVacio } from '../estado.ts'
@@ -23,7 +24,7 @@ import {
   type Zona,
 } from '../tipos.ts'
 import { valor } from '../valores.ts'
-import type { EstadoBarco, EstadoTripulante } from '../infoEstados.ts'
+import type { EstadoBarco, FichaTripulante } from '../infoEstados.ts'
 import { crearCopia, zonaDe } from '../zonas.ts'
 
 export interface CopiaInicial {
@@ -33,7 +34,7 @@ export interface CopiaInicial {
   /** Mejoras de tripulante (o Tesoros) que lleva. */
   mejoras?: CartaId[]
   entrenamiento?: Habilidad[]
-  estados?: EstadoTripulante[]
+  estados?: FichaTripulante[]
 }
 
 export interface MejoraInicial {
@@ -113,6 +114,17 @@ capituloDePrueba('pruebas-mar3', 9002, 'mar', 3, 0)
 capituloDePrueba('pruebas-nat3', 9003, 'nat', 3, 1)
 capituloDePrueba('pruebas-ciu4', 9004, 'ciu', 4, 0)
 capituloDePrueba('pruebas-ciu3', 9005, 'ciu', 3, 0)
+
+/** Carta de Escenario sin efecto, para las pruebas que solo necesitan que pase el tiempo. */
+export const ESCENARIO_DE_PRUEBA = 'pruebas-calma'
+registrarCartasExtra({
+  tipo: 'escenario',
+  num: 9101,
+  id: ESCENARIO_DE_PRUEBA,
+  copias: 1,
+  carta: { id: ESCENARIO_DE_PRUEBA, num: 9101, nombre: 'Día sin noticias (prueba)', texto: 'Sin efecto.', ambientacion: '' },
+})
+registrarCapacidades({ clave: ESCENARIO_DE_PRUEBA, carta: ESCENARIO_DE_PRUEBA, ventana: 'alRevelar', desde: 'escenario', efecto: () => [] })
 
 function historiaCompleta(): CartaId[] {
   const ids: CartaId[] = []
@@ -482,7 +494,10 @@ export class Jugador {
     if (this.decision.motivo.clave === 'quedarseOZarpar') this.opcion('quedarse')
     for (const o of opciones) {
       if (this.decision.motivo.clave !== 'opcionPuerto') break
-      this.opcion(o)
+      // Si la opción no se ofrece («Cuarentena» cierra la Taberna), la primera que quede.
+      const d = this.decision
+      const claves = d.tipo === 'elegirOpcion' ? d.opciones.map((x) => x.clave) : []
+      this.opcion(claves.includes(o) ? o : (claves[0] ?? o))
       while (this.estado.pendiente && ['repartir', 'tablon', 'soplos'].includes(this.decision.motivo.clave)) {
         const d = this.decision
         if (d.tipo === 'repartir') {

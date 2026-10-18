@@ -6,7 +6,7 @@ import { nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { quedaDe, type FormaDeQuitar } from '../../engine/definiciones.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
-import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from '../../engine/infoEstados.ts'
+import { INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
 import { nombreDelEncuentro } from '../../engine/prueba.ts'
 import { encuentroDe } from '../../engine/peligros.ts'
 import { textoDe } from '../../engine/textos.ts'
@@ -93,7 +93,7 @@ export function textoUso(s: Estado, uso: Uso): { carta: string; texto: string } 
       return { carta: `Liberar a ${nombre(s, uso.fuente)}`, texto: 'Prueba de COM o EXP 3 para quitarle Encadenado.' }
     }
     if (uso.clave === 'estado:incendio.apagar') return { carta: 'Apagar el Incendio a bordo', texto: 'Agota a un Tripulante.' }
-    const estado = cap.carta.slice('estado:'.length) as EstadoTripulante | EstadoBarco
+    const estado = cap.carta.slice('estado:'.length) as FichaTripulante | EstadoBarco
     return { carta: `Usar «${INFO_ESTADO[estado].nombre}»`, texto: INFO_ESTADO[estado].texto }
   }
   if (cap?.desde === 'peligroEnMuelle' && uso.fuente) {
@@ -194,7 +194,10 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'quedarseOZarpar':
       return { titulo: '¿Te quedas en puerto o zarpas?', ayuda: 'Pulsa una misión disponible para zarpar, o quédate en puerto.' }
     case 'opcionPuerto':
-      return { titulo: n <= 1 ? 'En puerto: elige la primera opción' : 'En puerto: elige la segunda opción', ayuda: 'Tienen que ser dos opciones distintas.' }
+      return {
+        titulo: n <= 1 ? 'En puerto: elige la primera opción' : 'En puerto: elige la segunda opción',
+        ayuda: `Tienen que ser dos opciones distintas.${s.temporales.some((x) => x.clave === 'cuarentena.turno') ? ' La Cuarentena cierra la Taberna este turno.' : ''}`,
+      }
     case 'descartarFinal':
       return { titulo: 'Final del turno', ayuda: 'Descarta las cartas que quieras. Después robarás hasta tu Mando.' }
     case 'pagar':
@@ -216,7 +219,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'exceso':
       return { titulo: 'No caben todos en el Barco', ayuda: `Despide a ${plural(n, 'Tripulante', 'Tripulantes')}.` }
     case 'desercion':
-      return { titulo: 'Deserción', ayuda: 'Elige quién deserta entre tus Tripulantes de menor coste.' }
+      return { titulo: 'Deserción', ayuda: 'Elige quién deserta entre tus Tripulantes de menor coste. Vuelve al muelle y sus Mejoras se descartan.' }
     case 'descartar':
       return { titulo: `Descarta ${plural(n, 'carta', 'cartas')} de tu mano` }
     case 'perderMejora':
@@ -248,11 +251,11 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'elige':
       return { titulo: `«${nombreCarta(m.carta)}»: elige`, ayuda: 'Haz la Prueba o paga lo que pide la carta.' }
     case 'ponerEstado': {
-      const info = m.carta ? INFO_ESTADO[m.carta.slice('estado:'.length) as EstadoTripulante] : undefined
+      const info = m.carta ? INFO_ESTADO[m.carta.slice('estado:'.length) as FichaTripulante] : undefined
       return { titulo: `¿Quién queda ${info?.nombre ?? ''}?`, ayuda: info?.texto }
     }
     case 'quitarEstado': {
-      const info = m.carta ? INFO_ESTADO[m.carta.slice('estado:'.length) as EstadoTripulante] : undefined
+      const info = m.carta ? INFO_ESTADO[m.carta.slice('estado:'.length) as FichaTripulante] : undefined
       return { titulo: `¿A quién le quitas ${info?.nombre ?? 'el Estado'}?` }
     }
     case 'incautar':

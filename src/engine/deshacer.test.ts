@@ -28,11 +28,22 @@ describe('Deshacer', () => {
 
 describe('Guardado', () => {
   it('una partida guardada y recuperada sigue exactamente igual', () => {
-    const s = montar({ mano: ['ojo'], muelle: ['marinero_p'], mazoMuelle: ['vela', 'casco', 'sable', 'loro'], escenario: ['calma_ev'] })
+    const s = montar({ mano: ['ojo'], muelle: ['marinero_p'], mazoMuelle: ['vela', 'casco', 'sable', 'loro'], escenario: ['pruebas-calma'] })
     const recuperada = deserializar(serializar(s))
     expect(recuperada).toEqual(s)
     const fin = { tipo: 'accion', accion: { tipo: 'terminarPaso' } } as const
     expect(responder(recuperada, fin)).toEqual(responder(s, fin))
+  })
+
+  it('fase 8: una partida guardada con las cartas de Escenario que salen recibe las nuevas, y las fichas de Ventaja del ladrón pasan a ser de Ladrón', () => {
+    const s = montar({ escenario: ['feria', 'sanjuan', 'cuarentena', 'armada_patrulla'] })
+    const vieja = JSON.parse(serializar(s)) as { cartas: Record<string, { id: string }>; mision: unknown }
+    const nuevoAViejo: Record<string, string> = { sanjuan: 'calma_ev', cuarentena: 'noticias', armada_patrulla: 'astillero' }
+    for (const c of Object.values(vieja.cartas)) c.id = nuevoAViejo[c.id] ?? c.id
+    vieja.mision = { carta: s.zonas.misionesDisponibles[0], fichas: { ventaja: 3 } }
+    const recuperada = deserializar(JSON.stringify(vieja))
+    expect(s.zonas.mazoEscenario.map((c) => recuperada.cartas[c]?.id)).toEqual(['feria', 'sanjuan', 'cuarentena', 'armada_patrulla'])
+    expect(recuperada.mision?.fichas).toEqual({ ladron: 3 })
   })
 
   it('rechaza partidas guardadas de otra versión', () => {
@@ -40,7 +51,7 @@ describe('Guardado', () => {
   })
 
   it('rechaza las partidas guardadas antes de las misiones 2.0 (sin Pasajeros, o con capítulos que ya no existen)', () => {
-    const s = montar({ escenario: ['calma_ev'] })
+    const s = montar({ escenario: ['pruebas-calma'] })
     const sinPasajeros = JSON.parse(serializar(s)) as { zonas: Record<string, unknown> }
     delete sinPasajeros.zonas.pasajeros
     expect(() => deserializar(JSON.stringify(sinPasajeros))).toThrow(/versión/)

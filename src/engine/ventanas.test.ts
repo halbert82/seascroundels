@@ -79,7 +79,7 @@ describe('Obligadas', () => {
       disparo: (_s, _yo, ev, fase) => ev.tipo === 'finTurno' && fase === 'despues',
       efecto: () => [{ tipo: 'reparar', n: 1 }],
     })
-    const j = Jugador.en({ empezarEn: 'final', barco: { dano: 2 }, mano: ['ojo', 'ojo', 'ojo', 'ojo', 'ojo'], escenario: ['calma_ev'] })
+    const j = Jugador.en({ empezarEn: 'final', barco: { dano: 2 }, mano: ['ojo', 'ojo', 'ojo', 'ojo', 'ojo'], escenario: ['pruebas-calma'] })
     j.ninguna()
     expect(j.estado.danoBarco).toBe(1)
   })
@@ -93,7 +93,7 @@ describe('Obligadas', () => {
       efecto: () => [],
     }
     registrar({ ...base, clave: 'prueba.obligadaA' }, { ...base, clave: 'prueba.obligadaB' })
-    const j = Jugador.en({ empezarEn: 'final', mano: ['ojo', 'ojo', 'ojo', 'ojo', 'ojo'], escenario: ['calma_ev'] })
+    const j = Jugador.en({ empezarEn: 'final', mano: ['ojo', 'ojo', 'ojo', 'ojo', 'ojo'], escenario: ['pruebas-calma'] })
     j.ninguna()
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'ordenObligadas' } })
   })
@@ -120,21 +120,28 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
 
   it('el Inicio tiene su pausa después de aplicar el Escenario; si no hay nada que usar, no se pregunta', () => {
     registrar(libre)
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['astillero', 'calma_ev'], tripulacion: ['marinero_p'], barco: { dano: 4 } })
-    expect(j.estado.danoBarco).toBe(2) // Astillero ocioso ya aplicado.
+    const j = Jugador.en({
+      empezarEn: 'inicio',
+      escenario: ['feria', 'pruebas-calma'],
+      capitan: { heridas: 1 },
+      tripulacion: ['marinero_p'],
+      mazoCapitan: ['ojo'],
+      barco: { dano: 4 },
+    })
+    expect(j.copia('capitan').heridas).toBe(0) // Feria en la isla ya aplicada.
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'pausa.inicio' } })
     j.usar('prueba.libre')
-    expect(j.estado.danoBarco).toBe(1)
+    expect(j.estado.danoBarco).toBe(3)
     expect(j.decision.motivo.clave).toBe('jugarCartas')
-    const sinNada = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev'] })
+    const sinNada = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'] })
     expect(sinNada.decision.motivo.clave).toBe('jugarCartas')
   })
 
   it('se ofrecen al decidir si te quedas o zarpas y en el Final, antes de robar', () => {
     registrar(libre)
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: ['marinero_p'], barco: { dano: 3 }, escenario: ['calma_ev'] })
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: ['marinero_p'], barco: { dano: 3 }, escenario: ['pruebas-calma'] })
     expect(j.decision.libres).toEqual([{ fuente: j.inst('marinero_p'), clave: 'prueba.libre' }])
-    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['marinero_p'], barco: { dano: 3 }, escenario: ['calma_ev'] })
+    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['marinero_p'], barco: { dano: 3 }, escenario: ['pruebas-calma'] })
     expect(f.decision.motivo.clave).toBe('descartarFinal')
     f.usar('prueba.libre')
     expect(f.estado.danoBarco).toBe(2)
@@ -147,7 +154,7 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
     j.reclutar('bucanero')
     expect(j.decision.motivo.clave).toBe('pagar')
     expect(j.decision.libres).toBeUndefined()
-    const impuestos = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'calma_ev'], tripulacion: ['marinero_p'], barco: { mejoras: ['vela', 'bandera'] } })
+    const impuestos = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'pruebas-calma'], tripulacion: ['marinero_p'], barco: { mejoras: ['vela', 'bandera'] } })
     expect(impuestos.decision.motivo.clave).toBe('perderMejora')
     expect(impuestos.decision.libres).toBeUndefined()
   })
@@ -156,7 +163,7 @@ describe('N2 · Capacidades sin etiqueta: en cualquier pausa, nunca en mitad de 
     registrar({ ...libre, clave: 'prueba.accion', ventana: 'accion' })
     const j = Jugador.en({ tripulacion: ['marinero_p'], barco: { dano: 2 } })
     expect(j.ofrece('usar', 'prueba.accion')).toBe(true)
-    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['marinero_p'], barco: { dano: 2 }, escenario: ['calma_ev'] })
+    const f = Jugador.en({ empezarEn: 'final', tripulacion: ['marinero_p'], barco: { dano: 2 }, escenario: ['pruebas-calma'] })
     expect(f.decision.libres).toBeUndefined()
   })
 
@@ -200,7 +207,7 @@ describe('Límites', () => {
       limite: { veces: 1, por: 'turno' },
       efecto: () => [],
     })
-    const j = Jugador.en({ escenario: ['calma_ev', 'astillero'], mazoCapitan: [...MAZO] })
+    const j = Jugador.en({ escenario: ['pruebas-calma', 'pruebas-calma'], mazoCapitan: [...MAZO] })
     j.usar('prueba.limite')
     expect(j.ofrece('usar', 'prueba.limite')).toBe(false)
     j.pasarTurnoEnPuerto()

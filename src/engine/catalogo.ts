@@ -20,7 +20,7 @@ import {
   type TesoroDatos,
   type TripulanteDatos,
 } from './datos.ts'
-import { INFO_ESTADO, type EstadoBarco, type EstadoTripulante } from './infoEstados.ts'
+import { INFO_ESTADO, type EstadoBarco, type FichaTripulante } from './infoEstados.ts'
 
 export type EntradaCatalogo =
   | { tipo: 'capitan'; num: number; id: string; copias: number; carta: CapitanDatos }
@@ -167,7 +167,7 @@ export function registrarCartasExtra(...entradas: EntradaCatalogo[]): void {
 /** Fuentes de capacidades que no son cartas: las fichas de Estado y la carta de Peligro que ocupa el muelle. */
 function nombreDeFuente(id: string): string | null {
   if (id.startsWith('estado:')) {
-    const info = INFO_ESTADO[id.slice('estado:'.length) as EstadoTripulante | EstadoBarco]
+    const info = INFO_ESTADO[id.slice('estado:'.length) as FichaTripulante | EstadoBarco]
     return info ? info.nombre : null
   }
   if (id === 'peligroEnMuelle') return 'Peligro en el muelle'

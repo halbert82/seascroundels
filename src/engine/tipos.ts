@@ -3,7 +3,7 @@
 import type { Habilidad } from './datos.ts'
 import type { AccionSobre, Efecto, Incautar, ModSiguiente, OpcionEfectos, Selector } from './efectos.ts'
 import type { DefinicionPrueba } from './definiciones.ts'
-import type { EstadoBarco, EstadoTripulante } from './estados.ts'
+import type { EstadoBarco, FichaTripulante } from './estados.ts'
 
 /** Identificador de carta del catálogo («bucanero», «templo-I»…). */
 export type CartaId = string
@@ -69,7 +69,7 @@ export interface Copia {
   /** Fichas de Entrenamiento (+1 a una habilidad; ocupan hueco de Mejora). */
   entrenamiento: Habilidad[]
   /** Fichas de Estado de un Tripulante (Envenenado, Borracho…). Nunca dos iguales. */
-  estados?: EstadoTripulante[]
+  estados?: FichaTripulante[]
   /** Contador de fichas de una carta de Peligro en juego (siempre cuenta hacia arriba). */
   fichas?: number
 }
@@ -110,7 +110,7 @@ export type Suceso =
   | { tipo: 'zarpar'; mision: CartaId }
   | { tipo: 'prueba'; peligro: CartaId; encuentro: string; superada: boolean }
   | { tipo: 'finMision'; mision: CartaId; resultado: FinMision; resueltas?: number; avance?: number; necesario?: number; motivo?: string }
-  /** Cambian las fichas sobre la misión (Ventaja, Alarma…): cuántas hay ahora. */
+  /** Cambian las fichas sobre la misión (Ladrón, Alarma…): cuántas hay ahora. */
   | { tipo: 'fichasMision'; ficha: FichaMision; n: number }
   /** Se cumple la Gesta de la misión. */
   | { tipo: 'gesta'; mision: CartaId }
@@ -144,7 +144,7 @@ export type Suceso =
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
 /** Fichas que se ponen sobre la carta de misión. Se descartan al terminarla. */
-export type FichaMision = 'ventaja' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa'
+export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa'
 
 /** Una Prueba ya resuelta en la misión en curso. */
 export interface PruebaHecha {
@@ -187,7 +187,7 @@ export interface MisionEnCurso {
   /** Lo que pasa además si superas la misión y recuperas lo incautado («las recuperas y robas 2»). */
   alRecuperar?: Efecto[]
   // Misiones 2.0 (fase 7)
-  /** Fichas sobre la carta de misión (Ventaja, Alarma, Sospecha…). */
+  /** Fichas sobre la carta de misión (Ladrón, Alarma, Sospecha…). */
   fichas?: Partial<Record<FichaMision, number>>
   /** Pruebas resueltas en esta misión, en orden. */
   pruebas?: PruebaHecha[]
@@ -352,7 +352,7 @@ export type Evento =
   /** Un Destino va a ponerse encima del mazo de Peligros («Persigue»). */
   | { tipo: 'persigue'; carta: InstId; alFondo?: boolean }
   /** Un Tripulante acaba de quedar con un Estado que no tenía. */
-  | { tipo: 'estadoPuesto'; carta: InstId; estado: EstadoTripulante }
+  | { tipo: 'estadoPuesto'; carta: InstId; estado: FichaTripulante }
 
 // ---------------------------------------------------------------------------
 // Tareas: pasos de reglas pendientes. Son datos, para que la partida se pueda guardar en cualquier momento.
@@ -379,13 +379,18 @@ export type Tarea = { id: number } & (
   | { tipo: 'perderDia' }
   | { tipo: 'reponerMuelle' }
   | { tipo: 'revelarMuelle'; n: number }
-  | { tipo: 'buscarMuelle'; filtro: 'tripulante' | 'mejoraBarco' | 'mejora' }
+  /** `marca`: deja la carta encontrada señalada este turno («Marineros sin barco»: reclutarlo cuesta 1 menos). */
+  | { tipo: 'buscarMuelle'; filtro: 'tripulante' | 'mejoraBarco' | 'mejora'; marca?: { clave: string; fuente: CartaId } }
   | { tipo: 'perderMejora'; soloBarco?: boolean; portadores?: InstId[] }
   /** «repartir»: como quieras; «cadaUno»: N a cada Tripulante; «uno»: N a un Tripulante (el indicado o el que elijas). */
   | { tipo: 'curar'; n: number; modo: 'repartir' | 'cadaUno' | 'uno'; objetivo?: InstId }
   | { tipo: 'reparar'; n: number }
+  /** «Deserción»: tu Tripulante de menor coste vuelve al muelle y sus Mejoras se descartan. */
   | { tipo: 'desercion' }
-  | { tipo: 'sacarTripulante'; carta: InstId; destino: 'descartesMuelle' | 'fueraDeJuego' | 'muelle'; motivo: string }
+  /** `mejorasA`: adónde van sus Mejoras, si no van con él (al desertar, a los descartes del muelle). */
+  | { tipo: 'sacarTripulante'; carta: InstId; destino: 'descartesMuelle' | 'fueraDeJuego' | 'muelle'; motivo: string; mejorasA?: 'descartesMuelle' }
+  /** Puerto: la Taberna quita todos los Estados de tus Tripulantes; el Astillero, todos los del Barco. */
+  | { tipo: 'quitarTodosLosEstados'; de: 'tripulacion' | 'barco' }
   | { tipo: 'reasignarTesoro'; tesoro: InstId }
   | { tipo: 'exceso' }
   | { tipo: 'hundirse' }
@@ -468,9 +473,9 @@ export type Tarea = { id: number } & (
   | { tipo: 'descartarPeligroEnJuego'; carta: InstId }
   /** Suma una ficha al contador de una carta en juego y, si llega al umbral, aplica lo que dice. */
   | { tipo: 'contador'; carta: InstId; clave: string }
-  | { tipo: 'ponerEstado'; estado: EstadoTripulante; entre: InstId[] }
+  | { tipo: 'ponerEstado'; estado: FichaTripulante; entre: InstId[] }
   | { tipo: 'ponerEstadoBarco'; estado: EstadoBarco }
-  | { tipo: 'quitarEstado'; estado: EstadoTripulante; de: InstId[] | 'todos' }
+  | { tipo: 'quitarEstado'; estado: FichaTripulante; de: InstId[] | 'todos' }
   | { tipo: 'quitarEstadoBarco'; estado: EstadoBarco }
   /** Estados al final del turno: Envenenado hiere, Borracho se pasa. */
   | { tipo: 'estadosFinTurno'; paso: 'veneno' | 'borracho'; pendientes: InstId[] }
@@ -498,7 +503,7 @@ export type Tarea = { id: number } & (
   | { tipo: 'gratisDelMuelle'; maxCoste: number; que: 'tripulante' | 'mejora' | 'cualquiera'; rasgo?: string; siNo?: Efecto[]; carta?: InstId }
   | { tipo: 'recuperarDescarte'; n: number }
   /** Quita uno de estos Estados a un Tripulante (eliges a quién y, si tiene varios, cuál); luego, si lo dice, cúrale N. */
-  | { tipo: 'quitarUnEstado'; estados: EstadoTripulante[]; carta?: InstId; curar?: number }
+  | { tipo: 'quitarUnEstado'; estados: FichaTripulante[]; carta?: InstId; curar?: number }
   /** Descarta una de estas cartas de Peligro en juego (eliges cuál). */
   | { tipo: 'quitarPeligroEnJuego'; candidatas: InstId[] }
   /** Descarta una carta del muelle (la de más a la izquierda, o la Mejora más cara) y, si lo dice, repón el hueco. */

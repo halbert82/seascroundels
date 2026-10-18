@@ -69,7 +69,7 @@ describe('Eventos de Acción', () => {
   })
 
   it('059 · Náufrago en la playa: reclutas gratis a uno de las 3 primeras del mazo de muelle; al final del turno, se descarta', () => {
-    const j = Jugador.en({ mano: ['naufrago', 'ojo'], mazoMuelle: ['sable', 'bucanero', 'vela', 'casco'], escenario: ['calma_ev', 'calma_ev'] })
+    const j = Jugador.en({ mano: ['naufrago', 'ojo'], mazoMuelle: ['sable', 'bucanero', 'vela', 'casco'], escenario: ['pruebas-calma', 'pruebas-calma'] })
     j.usar('naufrago.jugar').elegir('ojo')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'naufrago' } })
     j.elegir('bucanero')
@@ -83,7 +83,7 @@ describe('Eventos de Acción', () => {
 
   it('063 · Trampa en la maleza: este turno, −1 a la dificultad de las Pruebas de COM en Naturaleza', () => {
     // «Agua y leña» (Naturaleza, Distancia 1): Bandoleros (COM 3) pide 2.
-    const j = Jugador.en({ mano: ['trampa'], tripulacion: ['bucanero'], misiones: ['pruebas-nat3'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['calma_ev'] })
+    const j = Jugador.en({ mano: ['trampa'], tripulacion: ['bucanero'], misiones: ['pruebas-nat3'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['pruebas-calma'] })
     j.usar('trampa.jugar').zarpar('pruebas-nat3') // Distancia 1 − 1 del Barco = 0
     j.comprometer('COM', ['capitan'])
     expect(dificultadPrueba(j.estado)).toBe(2)

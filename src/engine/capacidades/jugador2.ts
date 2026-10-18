@@ -4,7 +4,7 @@
 import { porId } from '../catalogo.ts'
 import { anotar, copia, nombre } from '../estado.ts'
 import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
-import type { EstadoTripulante } from '../infoEstados.ts'
+import type { FichaTripulante } from '../infoEstados.ts'
 import type { Capacidad, CartaId, Estado, NuevaTarea, Ventana } from '../tipos.ts'
 import { participa, participantes } from './comun.ts'
 
@@ -12,11 +12,11 @@ function evento(carta: CartaId, ventana: Ventana, resto: Omit<Capacidad, 'clave'
   return { clave: `${carta}.jugar`, carta, ventana, desde: 'mano', ...resto }
 }
 
-function alguienCon(s: Estado, estados: readonly EstadoTripulante[]): boolean {
+function alguienCon(s: Estado, estados: readonly FichaTripulante[]): boolean {
   return s.zonas.tripulacion.some((c) => estados.some((e) => tieneEstado(s, c, e)))
 }
 
-const MALES: EstadoTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
+const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
 
 export const CAPACIDADES_JUGADOR2: Capacidad[] = [
   // Herbolaria: «Agotar: Quita Envenenado, Sangrando, Aturdido o Asustado a un Tripulante.»

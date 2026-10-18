@@ -8,7 +8,7 @@ import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { devolverPeligros, persigueVigente } from '../peligros.ts'
 import { agotar, tieneEstadoBarco } from '../estados.ts'
 import { rescatarRehen } from './peligros2.ts'
-import { primerNumero, textoDe } from '../textos.ts'
+import { numeroConIcono, textoDe } from '../textos.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { navParaDistancia, valor } from '../valores.ts'
 import { barajar, mover, rebarajar } from '../zonas.ts'
@@ -91,13 +91,25 @@ function ganar(s: Estado, n: number, motivo: string): void {
   anotar(s, 'efecto', `${motivo}: +${n} de Avance (${m.avance}/${valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta })}).`, { tipo: 'avance', n, total: m.avance })
 }
 
+/** «Si zarpas este turno, empiezas la misión con…»: Rumores del tesoro (1, o 2 en un capítulo II o III) y San Juan (1). */
+export function avanceInicialDelEscenario(s: Estado, mision: InstId): { n: number; motivo: string }[] {
+  const lista: { n: number; motivo: string }[] = []
+  const hay = (clave: string) => s.temporales.some((x) => x.clave === clave)
+  if (hay('rumores.turno')) {
+    const [uno = 1, dos = 2] = [...textoDe('rumores').matchAll(/\{(\d+) avance\}/g)].map((x) => Number(x[1]))
+    lista.push({ n: /-(II|III)(-[ab])?$/.test(copia(s, mision).id) ? dos : uno, motivo: 'Rumores del tesoro' })
+  }
+  if (hay('sanjuan.turno')) lista.push({ n: numeroConIcono(textoDe('sanjuan'), 'avance'), motivo: 'Fiesta de San Juan' })
+  return lista
+}
+
 export const mision: Manejador<'mision'> = (s, t) => {
   const m = s.mision
   if (!m) return 'hecha'
   switch (t.paso) {
     case 'inicio': {
       // Avance inicial: las fichas que ya tuviera (se quedan) y las de otras cartas.
-      if (s.temporales.some((x) => x.clave === 'rumores.turno')) ganar(s, primerNumero(textoDe('rumores')), 'Rumores del tesoro')
+      for (const extra of avanceInicialDelEscenario(s, m.carta)) ganar(s, extra.n, extra.motivo)
       const tareas: NuevaTarea[] = []
       // Las reglas de la misión: «Al zarpar» y «no puedes retirarte de esta misión».
       const reglas = reglasMision(copia(s, m.carta).id)

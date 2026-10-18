@@ -1,6 +1,6 @@
 # Cartas de jugador nuevas (para probar con los Peligros 2.0)
 
-Nueve cartas de la caja básica que responden a las reglas nuevas de Peligro (Estados, cartas que se quedan en juego, rehenes, Persigue). Ninguna respuesta sale gratis: todas piden agotar, pagar cartas, gastar munición o superar una Prueba.
+Nueve cartas de la caja básica que responden a las reglas nuevas de Peligro (Estados y Ventajas, cartas que se quedan en juego, rehenes, Persigue). Ninguna respuesta sale gratis: todas piden agotar, pagar cartas, gastar munición o superar una Prueba.
 
 Formato igual que el resto de `cartas.json`. Iconos: [NAV] [COM] [EXP]. Las líneas «Ejemplo» son notas de diseño, no van en la carta.
 
@@ -52,6 +52,7 @@ Formato igual que el resto de `cartas.json`. Iconos: [NAV] [COM] [EXP]. Las lín
 ### Ron para los valientes
 - Evento · Coste 0 · Iconos: [COM]
 - Texto: **Acción:** Un Tripulante queda Borracho y Aguerrido.
+- Nota (fase 8): Borracho es un Estado y Aguerrido, una Ventaja. El texto de la carta no cambia.
 - Ambientación: «Un trago para el valor. Otro para el pulso. El tercero, para el miedo.»
 
 ### Virar y dar la cara

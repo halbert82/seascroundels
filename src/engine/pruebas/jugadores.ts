@@ -415,6 +415,35 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     }
     case 'conservarMision':
       return elegir('dejar')
+    case 'elegirEfectos': {
+      // Fase 8: los «Elige» de las cartas de Escenario. Las opciones se numeran como en la carta («0», «1»); si solo
+      // queda una, el motor no pregunta.
+      const mano = s.zonas.mano.length
+      const coste = (c: InstId) => costeImpreso(copia(s, c).id)
+      switch (d.motivo.carta) {
+        case 'impuestos': {
+          // Una Mejora barata (coste 1 o menos) vale menos que 2 cartas; si no, se descartan las cartas.
+          const barata = s.zonas.mejoras.some((m) => porId(copia(s, m).id).tipo !== 'tesoro' && coste(m) <= 1)
+          return elegir(barata ? '1' : '0')
+        }
+        case 'desercion': {
+          // Pagar la soldada si cuesta menos que volver a reclutar al desertor y reponer sus Mejoras.
+          const soldada = Math.min(3, s.zonas.tripulacion.length)
+          const candidatos = s.zonas.tripulacion.filter((c) => c !== s.capitan)
+          const menor = Math.min(...candidatos.map(coste))
+          const desertor = candidatos.find((c) => coste(c) === menor)
+          const valorDesertor = desertor ? menor + s.zonas.mejoras.filter((m) => copia(s, m).vinculadaA === desertor).reduce((n, m) => n + coste(m), 0) : 0
+          return elegir(soldada <= valorDesertor && mano > soldada ? '0' : '1')
+        }
+        case 'armada_patrulla':
+          // Tres cartas son casi toda la mano del turno: solo se soborna con la mano muy llena.
+          return elegir(mano >= 6 ? '0' : '1')
+        case 'ribera':
+          return elegir(s.danoBarco >= 2 ? '0' : '1')
+        default:
+          return elegir(claves[0]!)
+      }
+    }
     case 'finalMision': {
       // Final con elección: la reputación cuenta lo que da; un Tesoro vale más cuanto antes llegue; Maldito o
       // Perseguido restan un poco.

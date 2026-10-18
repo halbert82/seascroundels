@@ -27,12 +27,14 @@ export const sacarTripulante: Manejador<'sacarTripulante'> = (s, t) => {
   const suyas = vinculadas(s, t.carta)
   const tesoros = suyas.filter((m) => tipoDe(copia(s, m).id) === 'tesoro')
   const mejoras = suyas.filter((m) => !tesoros.includes(m))
-  for (const m of mejoras) mover(s, m, t.destino)
+  const destinoMejoras = t.mejorasA ?? t.destino
+  for (const m of mejoras) mover(s, m, destinoMejoras)
   mover(s, t.carta, t.destino)
-  if (t.destino === 'descartesMuelle') encolar(s, ...mejoras.map(sucesoDescartada))
+  if (destinoMejoras === 'descartesMuelle') encolar(s, ...mejoras.map(sucesoDescartada))
   const accion = MOTIVOS[t.motivo] ?? 'sale'
-  const conMejoras = mejoras.length > 0 ? ` junto con ${nombres(s, mejoras)}` : ''
-  anotar(s, 'efecto', `${accion.charAt(0).toUpperCase()}${accion.slice(1)} ${nombre(s, t.carta)}${conMejoras}.`)
+  const conMejoras = mejoras.length === 0 ? '' : t.mejorasA ? ` (se descartan ${nombres(s, mejoras)})` : ` junto con ${nombres(s, mejoras)}`
+  if (t.motivo === 'desercion') anotar(s, 'efecto', `${nombre(s, t.carta)} deserta y vuelve al muelle${conMejoras}.`)
+  else anotar(s, 'efecto', `${accion.charAt(0).toUpperCase()}${accion.slice(1)} ${nombre(s, t.carta)}${conMejoras}.`)
   encolar(s, ...tesoros.map((tesoro): NuevaTarea => ({ tipo: 'reasignarTesoro', tesoro })))
   return 'hecha'
 }
@@ -63,7 +65,10 @@ export const reasignarTesoro: Manejador<'reasignarTesoro'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** «Deserción»: descarta a tu Tripulante de menor coste (no el Capitán). Si hay empate, eliges tú. */
+/**
+ * «Deserción»: tu Tripulante de menor coste (nunca el Capitán) deserta y vuelve al muelle, con sus Mejoras descartadas.
+ * Si hay empate, eliges tú.
+ */
 export const desercion: Manejador<'desercion'> = (s, _t, e) => {
   const candidatos = s.zonas.tripulacion.filter((c) => c !== s.capitan)
   if (candidatos.length === 0) {
@@ -72,7 +77,7 @@ export const desercion: Manejador<'desercion'> = (s, _t, e) => {
   }
   const minimo = Math.min(...candidatos.map((c) => costeImpreso(copia(s, c).id)))
   const empatados = candidatos.filter((c) => costeImpreso(copia(s, c).id) === minimo)
-  const sacar = (c: InstId) => encolar(s, { tipo: 'sacarTripulante', carta: c, destino: 'descartesMuelle', motivo: 'desercion' })
+  const sacar = (c: InstId) => encolar(s, { tipo: 'sacarTripulante', carta: c, destino: 'muelle', motivo: 'desercion', mejorasA: 'descartesMuelle' })
   if (empatados.length === 1 && empatados[0]) {
     sacar(empatados[0])
     return 'hecha'

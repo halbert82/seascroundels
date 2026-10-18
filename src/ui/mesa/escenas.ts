@@ -38,7 +38,7 @@ const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' |
 const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'emboscada', 'estrellas', 'abordaje', 'vendas']
 
 /**
- * Fase 6, en una misión de Mar: «Bajamar» en juego con 1 ficha, Estados en Tripulantes y Barco, una carta incautada
+ * Fase 6, en una misión de Mar: «Bajamar» en juego con 1 ficha, Estados y Ventajas en Tripulantes, Estados en el Barco, una carta incautada
  * y la Prueba de «Niebla» con el Destino revelado.
  */
 function enJuego(): PartidaEnMesa {
@@ -47,7 +47,7 @@ function enJuego(): PartidaEnMesa {
     mazoPeligros: ['p2_bajamar', 'p2_niebla', 'chubasco', 'p2_cielo', 'calma'],
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje', 'cataplasma'],
-    tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, 'practico'],
+    tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, { id: 'practico', estados: ['aguerrido'] }],
     barco: { estados: ['viaDeAgua', 'velasRotas'], mejoras: [{ id: 'bronce', municion: 1 }, 'vela'] },
     reputacion: 6,
   })

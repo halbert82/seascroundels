@@ -1,6 +1,7 @@
-// Fichas de Estado (fase 6): cada una con su ejemplo.
+// Fichas de Estado (fase 6) y de Ventaja (fase 8): cada una con su ejemplo.
 
 import { describe, expect, it } from 'vitest'
+import { ESTADOS_BARCO, ESTADOS_TRIPULANTE, INFO_ESTADO, VENTAJAS, esVentaja } from './infoEstados.ts'
 import { dificultadPrueba, totalPrueba } from './prueba.ts'
 import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
@@ -14,6 +15,23 @@ function alFinal(op: OpcionesSituacion): Jugador {
 function mision(mision: CartaId, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
   return Jugador.enMision({ misiones: [mision], mazoPeligros, ...op })
 }
+
+describe('Fase 8 · Estados y Ventajas', () => {
+  it('Inspirado y Aguerrido son Ventajas; todo lo demás es Estado, Borracho incluido', () => {
+    expect([...VENTAJAS]).toEqual(['inspirado', 'aguerrido'])
+    expect([...ESTADOS_TRIPULANTE]).toEqual(['envenenado', 'borracho', 'aturdido', 'asustado', 'sangrando', 'buscado', 'maldito', 'encadenado'])
+    expect(esVentaja('borracho')).toBe(false)
+    expect(esVentaja('aguerrido')).toBe(true)
+    for (const e of [...ESTADOS_TRIPULANTE, ...ESTADOS_BARCO]) expect(INFO_ESTADO[e].ventaja).toBeUndefined()
+    for (const v of VENTAJAS) expect(INFO_ESTADO[v].ventaja).toBe(true)
+  })
+
+  it('una Ventaja tampoco se repite: «Ron para los valientes» a un Aguerrido lo deja Borracho y Aguerrido una sola vez', () => {
+    const j = Jugador.en({ mano: ['ron_valientes'], tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
+    j.usar('ron_valientes.jugar').elegir('bucanero')
+    expect(j.copia('bucanero').estados).toEqual(['aguerrido', 'borracho'])
+  })
+})
 
 describe('Estados de los Tripulantes', () => {
   it('Envenenado: al final de cada turno, 1 herida; curar quita la ficha en vez de la herida', () => {
@@ -189,9 +207,9 @@ describe('Estados del Barco', () => {
   })
 
   it('Pólvora mojada: los Cañones no recargan en el Inicio', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev'], barco: { estados: ['polvoraMojada'], mejoras: [{ id: 'bronce', municion: 0 }] } })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { estados: ['polvoraMojada'], mejoras: [{ id: 'bronce', municion: 0 }] } })
     expect(j.copia('bronce').municion).toBe(0)
-    const k = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+    const k = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
     expect(k.copia('bronce').municion).toBeGreaterThan(0)
   })
 })

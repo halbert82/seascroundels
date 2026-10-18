@@ -18,7 +18,7 @@ function heridaExtraEn(mision: string): Capacidad {
 /** En una misión ya empezada: zarpa (cubriendo la Distancia si hace falta) y se para en la primera decisión. */
 function enMision(op: OpcionesSituacion & { cubrir?: string[] }): Jugador {
   const { cubrir, ...resto } = op
-  const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto })
+  const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto })
   const mision = resto.misiones?.[0] ?? 'deuda-I'
   j.zarpar(mision)
   if (cubrir) j.cubrir(...cubrir)
@@ -45,28 +45,21 @@ describe('D1a · «Mientras esté preparado» se pierde al agotarse, también a 
 
   it('en una Prueba: Diego (NAV 2) y el Bucanero (NAV 1) comprometidos juntos suman 3', () => {
     // Riada (Naturaleza): NAV 4. En tierra, el Barco no suma.
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], misiones: ['aguada-I'], tripulacion: ['bucanero'], mazoPeligros: ['temporal', 'chubasco', 'calma'] })
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], misiones: ['aguada-I'], tripulacion: ['bucanero'], mazoPeligros: ['temporal', 'chubasco', 'calma'] })
     j.zarpar('aguada-I').comprometer('NAV', ['capitan', 'bucanero']).seguir()
     expect(j.registro).toContain('Total 3 contra 4: fallas la Prueba.')
   })
 })
 
 describe('D7 · Los cambios a «las Distancias» solo afectan a las misiones lejanas', () => {
-  it('con «Temporada de huracanes», «La selva» pasa de 1 a 2 (con el Barco) y «Cobrar la deuda» sigue en 0', () => {
-    const j = Jugador.en({
-      empezarEn: 'inicio',
-      escenario: ['huracanes', 'calma_ev'],
-      misiones: ['templo-II', 'deuda-I', 'prueba-I'],
-    })
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('templo-II') })).toBe(2)
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('deuda-I') })).toBe(0)
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('prueba-I') })).toBe(0)
-  })
-
-  it('con «Vientos alisios», «Agua y leña» (Distancia 1) queda en 0, nunca por debajo', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['alisios', 'calma_ev'], misiones: ['aguada-I', 'panama-I', 'deuda-I'] })
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('aguada-I') })).toBe(0)
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('panama-I') })).toBe(1)
+  // Fase 8: ninguna carta de Escenario cambia ya las Distancias de las misiones lejanas (ver la prueba de los Vientos
+  // alisios y la Temporada de huracanes); la regla se sigue viendo con Velas rotas.
+  it('con Velas rotas, «La selva» sube 1 y «Cobrar la deuda» y «Rumbo a mar abierto» siguen en 0', () => {
+    const sin = Jugador.en({ misiones: ['templo-II', 'deuda-I', 'prueba-I'] })
+    const con = Jugador.en({ misiones: ['templo-II', 'deuda-I', 'prueba-I'], barco: { estados: ['velasRotas'] } })
+    expect(con.valor({ tipo: 'distancia', mision: con.inst('templo-II') })).toBe(sin.valor({ tipo: 'distancia', mision: sin.inst('templo-II') }) + 1)
+    expect(con.valor({ tipo: 'distancia', mision: con.inst('deuda-I') })).toBe(0)
+    expect(con.valor({ tipo: 'distancia', mision: con.inst('prueba-I') })).toBe(0)
   })
 })
 
@@ -74,7 +67,7 @@ describe('D8 · Perder o agotar una Mejora que sube un máximo se comprueba al m
   it('Hamacas: con 5 Tripulantes y sin las Hamacas, despides a uno al momento', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['impuestos', 'calma_ev'],
+      escenario: ['impuestos', 'pruebas-calma'],
       barco: { mejoras: ['hamacas'] },
       tripulacion: ['marinero_p', 'grumete', 'bucanero', 'carpintero', 'saqueador'],
     })
@@ -88,7 +81,7 @@ describe('D8 · Perder o agotar una Mejora que sube un máximo se comprueba al m
   it('Coleto: un Bucanero con Coleto (Vida 3) y 2 heridas que pierde el Coleto queda derrotado', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['impuestos', 'calma_ev'],
+      escenario: ['impuestos', 'pruebas-calma'],
       tripulacion: [{ id: 'bucanero', heridas: 2, mejoras: ['coleto'] }],
     })
     expect(j.zona('tripulacion')).toEqual(['capitan'])
@@ -99,7 +92,7 @@ describe('D8 · Perder o agotar una Mejora que sube un máximo se comprueba al m
   it('Casco: con 5 daños, perder el Casco hunde el Barco en puerto (heridas a todos, se reflota)', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
-      escenario: ['impuestos', 'calma_ev'],
+      escenario: ['impuestos', 'pruebas-calma'],
       barco: { dano: 5, mejoras: ['casco'] },
       tripulacion: ['bucanero'],
     })
@@ -111,7 +104,7 @@ describe('D8 · Perder o agotar una Mejora que sube un máximo se comprueba al m
   })
 
   it('si el Capitán queda derrotado, pierdes la partida', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'calma_ev'], capitan: { heridas: 4, mejoras: ['coleto'] } })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['impuestos', 'pruebas-calma'], capitan: { heridas: 4, mejoras: ['coleto'] } })
     expect(j.estado.resultado).toEqual({ gana: false, motivo: 'Tu Capitán ha quedado derrotado.' })
   })
 })
@@ -141,7 +134,7 @@ describe('D12 · Una partida normal dura 12 turnos', () => {
   })
 
   it('perder días acorta la partida', () => {
-    const j = Jugador.en({ empezarEn: 'final', turno: 10, escenario: ['calma_ev'], mano: [], descartesCapitan: ['ojo', 'timon'] })
+    const j = Jugador.en({ empezarEn: 'final', turno: 10, escenario: ['pruebas-calma'], mano: [], descartesCapitan: ['ojo', 'timon'] })
     j.ninguna() // Robar con el mazo vacío: se pierde el último día.
     expect(j.zona('mazoEscenario')).toEqual([])
     expect(j.estado.turno).toBe(11)
@@ -181,7 +174,7 @@ describe('N3 · Una carta con munición entra en juego con su munición al máxi
     expect(conPolvora.copia('bronce').municion).toBe(3)
   })
   it('adquieres los Cañones y zarpas contra los Piratas rivales (COM 4): ya puedes gastar 1 de munición para +2', () => {
-    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'], misiones: ['prueba-I'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['calma_ev'] })
+    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'], misiones: ['prueba-I'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['pruebas-calma'] })
     j.adquirir('bronce', 'barco').elegir('ojo', 'timon')
     j.zarpar('prueba-I').comprometer('COM', ['capitan']).usar('bronce.disparar').seguir()
     expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
@@ -199,7 +192,7 @@ describe('N4 · La pausa del Inicio va al final del paso, después de preparar y
       coste: [{ tipo: 'agotarse' }],
       efecto: () => [{ tipo: 'reparar', n: 1 }],
     })
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['calma_ev', 'noticias'], tripulacion: ['carpintero'], barco: { dano: 3 } })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma', 'pruebas-calma'], tripulacion: ['carpintero'], barco: { dano: 3 } })
     expect(j.decision.motivo.clave).toBe('pausa.inicio')
     j.usar('prueba.carpintero')
     expect(j.estado.danoBarco).toBe(2)
