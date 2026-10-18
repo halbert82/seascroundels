@@ -21,6 +21,8 @@ export const COLOR_TIPO = {
   habilidad: '#3B302A',
   escenario: '#7A5418',
   tesoro: '#7A5A14',
+  pasajero: '#4A4F6B',
+  cartaMision: '#6E2B26',
 } as const
 
 export const COLOR_HABILIDAD: Record<Habilidad, string> = { NAV: '#24609A', COM: '#8E2B23', EXP: '#8A5E0F' }
@@ -167,6 +169,8 @@ export interface VistaMazoPropio {
   mazo: string
   encuentro: VistaEncuentro
   destino: VistaDestino
+  /** Formato de los Peligros 2.0: textos completos. */
+  v2?: boolean
 }
 
 export interface VistaCapitulo {
@@ -174,6 +178,8 @@ export interface VistaCapitulo {
   num: number
   codigo: string
   sello: string
+  /** Capítulo con salida doble: «a» o «b». */
+  rama?: string
   de: string
   travesia: string
   nombre: string
@@ -184,6 +190,8 @@ export interface VistaCapitulo {
   ambientacion: string
   recompensa: Ficha[]
   recompensaTexto?: string
+  /** La recompensa tal y como se imprime, cuando no basta con las fichas (finales con elección…). */
+  recompensaMarcada?: Segmento[]
   siguiente?: string
   pie: string
   arte?: Arte
@@ -457,22 +465,54 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
     }
     case 'mazoPropio': {
       const c = entrada.carta
+      const v2 = c.version === 2
       return {
         forma: 'mazoPropio',
         num: entrada.num,
         codigo: codigoColeccion(entrada.num),
         mazo: entrada.mazo.charAt(0).toUpperCase() + entrada.mazo.slice(1),
-        encuentro: vistaEncuentro(c.encuentro),
-        destino: vistaDestino(c.destino),
+        encuentro: vistaEncuentro(c.encuentro, undefined, v2),
+        destino: vistaDestino(c.destino, v2),
+        ...(v2 ? { v2: true } : {}),
+      }
+    }
+    case 'pasajero': {
+      const c = entrada.carta
+      return {
+        ...base(entrada),
+        nombre: c.nombre,
+        unica: true,
+        color: COLOR_TIPO.pasajero,
+        tipoTexto: `Pasajero · ${entrada.mision.nombre}`,
+        pestanasIzqTop: 74,
+        pestanasDer: [{ icono: 'capacidad', valor: 1, color: '#2E5E63' }],
+        pestanasDerTop: 96,
+        texto: parsearTexto(c.texto),
+        ambientacion: c.ambientacion,
+        ...conArte(entrada.id),
+      }
+    }
+    case 'cartaMision': {
+      const c = entrada.carta
+      return {
+        ...base(entrada),
+        nombre: c.nombre,
+        color: COLOR_TIPO.cartaMision,
+        tipoTexto: 'Carta de misión · Ciudad',
+        pestanasIzqTop: 74,
+        texto: parsearTexto(c.texto),
+        ambientacion: c.ambientacion,
+        ...conArte(entrada.id),
       }
     }
     case 'capitulo': {
       const c = entrada.carta
       const m = entrada.mision
       const r = c.recompensa
-      const recompensa: Ficha[] = r.rep ? [{ texto: `+${r.rep}`, icono: 'rep' }] : []
+      const recompensa: Ficha[] = r.rep && !r.texto ? [{ texto: `+${r.rep}`, icono: 'rep' }] : []
       let recompensaTexto: string | undefined
-      if (r.victoria) recompensaTexto = '¡Victoria!'
+      if (r.texto) recompensaTexto = undefined
+      else if (r.victoria) recompensaTexto = '¡Victoria!'
       else if (r.search === 'crew') recompensaTexto = 'y busca un Tripulante'
       else if (r.search === 'ship') recompensaTexto = 'y busca una Mejora de barco'
       else if (r.search === 'up') recompensaTexto = 'y busca una Mejora'
@@ -482,7 +522,7 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
         num: entrada.num,
         codigo: codigoColeccion(entrada.num),
         sello: c.capitulo,
-        de: ROMANOS[m.capitulos.length] ?? String(m.capitulos.length),
+        de: ROMANOS[new Set(m.capitulos.map((x) => x.capitulo)).size] ?? String(m.capitulos.length),
         travesia: m.inicial ? 'Misión inicial' : m.aventura ? 'Aventura' : m.nombre,
         nombre: c.nombre,
         entorno: c.entorno,
@@ -494,6 +534,8 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
         pie: m.inicial ? 'Misión inicial · a la vista al empezar' : c.capitulo === 'I' ? 'Mazo de Misiones' : 'Mazo de historia',
       }
       if (recompensaTexto) vista.recompensaTexto = recompensaTexto
+      if (r.texto) vista.recompensaMarcada = parsearTexto(r.texto)
+      if (c.rama) vista.rama = c.rama
       if (c.textoSiguiente) vista.siguiente = c.textoSiguiente
       const arte = arteDe(entrada.id)
       if (arte) vista.arte = arte
@@ -531,6 +573,8 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'evento':
     case 'escenario':
     case 'tesoro':
+    case 'pasajero':
+    case 'cartaMision':
       return [entrada.carta.texto]
     case 'habilidad':
       return []
@@ -539,7 +583,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'mazoPropio':
       return [entrada.carta.destino.texto]
     case 'capitulo':
-      return entrada.carta.reglas
+      return [...entrada.carta.reglas, ...(entrada.carta.recompensa.texto ? [entrada.carta.recompensa.texto] : [])]
     case 'puerto':
       return [...entrada.carta.opcionesComunes, entrada.carta.habilidadPropia.texto]
   }

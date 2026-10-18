@@ -193,8 +193,43 @@ export interface CartaMazoPropioDatos {
   num: number
   nombre: string
   nivel: NivelPeligro
+  /** 2: formato de los Peligros 2.0 (textos completos; lo que hacen está en sus reglas). */
+  version?: 2
   encuentro: EncuentroDatos
   destino: DestinoDatos
+}
+
+/** Pasajero: viaja contigo y ocupa Capacidad, pero no es Tripulante. */
+export interface PasajeroDatos {
+  id: string
+  num: number
+  nombre: string
+  /** Travesía a la que pertenece. */
+  mision: string
+  texto: string
+  ambientacion: string
+}
+
+/** Carta de misión apartada que una misión pone en juego («¡La guardia!»). */
+export interface CartaMisionDatos {
+  id: string
+  num: number
+  nombre: string
+  entorno: Entorno
+  texto: string
+  ambientacion: string
+  /** Capítulos que la usan. */
+  misiones: string[]
+}
+
+/** Una de las opciones de un final con elección. */
+export interface OpcionFinal {
+  clave: string
+  texto: string
+  rep?: number
+  tesoro?: string
+  /** Lo que pasa además, en palabras («tu Capitán queda Maldito»). */
+  efecto?: string
 }
 
 export interface RecompensaDatos {
@@ -205,25 +240,32 @@ export interface RecompensaDatos {
   /** id del Tesoro que se gana. */
   tesoro?: string
   victoria?: boolean
+  /** Pasajero que se pone en juego. */
+  pasajero?: string
+  /** Final con elección: eliges una de estas recompensas. */
+  elige?: OpcionFinal[]
+  /** La recompensa tal y como se imprime, cuando no basta con las fichas («Elige: …»). */
+  texto?: string
 }
 
 export interface CapituloDatos {
   capitulo: 'I' | 'II' | 'III'
+  /** Capítulo con salida doble: «a» o «b» (II-a, II-b). */
+  rama?: 'a' | 'b'
   num: number
   nombre: string
   entorno: Entorno
   avanceNecesario: number
   distancia: number
+  /** Reglas impresas (para leerlas: lo que hacen está escrito a mano en src/engine/misiones2/). */
   reglas: string[]
   ambientacion: string
   recompensa: RecompensaDatos
+  /** Números de colección de la carta que añade al superarla (dos si tiene salida doble: primero la II-a). */
+  siguiente: number[]
   textoSiguiente: string
-  ayudaPrototipo?: {
-    mix?: { name: string; deck: string[]; n: number }
-    minRep?: number
-    final?: boolean
-    [clave: string]: unknown
-  }
+  /** Mazo propio que baraja al zarpar. */
+  mazoPropio?: { nombre: string; cartas: string[] }
 }
 
 export interface MisionDatos {
@@ -275,6 +317,8 @@ export interface DatosCartas {
   tesoros: TesoroDatos[]
   peligros: PeligroDatos[]
   cartasDeMazoPropio: CartaMazoPropioDatos[]
+  pasajeros: PasajeroDatos[]
+  cartasDeMision: CartaMisionDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

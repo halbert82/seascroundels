@@ -33,7 +33,7 @@ const GRUPOS: Grupo[] = [
   { id: 'mejoras', nombre: 'Mejoras', tipos: ['mejoraBarco', 'mejoraTripulante'] },
   { id: 'mano', nombre: 'Eventos y Habilidades', tipos: ['evento', 'habilidad'] },
   { id: 'peligros', nombre: 'Peligros', tipos: ['peligro', 'mazoPropio'] },
-  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo'] },
+  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'cartaMision'] },
   { id: 'tesoros', nombre: 'Tesoros', tipos: ['tesoro'] },
   { id: 'escenario', nombre: 'Escenario y Puertos', tipos: ['escenario', 'puerto'] },
 ]
@@ -63,8 +63,13 @@ function descripcion(e: EntradaCatalogo): string {
       const total = e.mision.capitulos.length
       if (e.mision.inicial) return 'Misión inicial'
       if (e.mision.aventura) return 'Aventura'
-      return `Capítulo ${e.carta.capitulo} de ${['', 'I', 'II', 'III'][total]}`
+      const capitulos = new Set(e.mision.capitulos.map((c) => c.capitulo)).size
+      return `Capítulo ${e.carta.capitulo}${e.carta.rama ? `-${e.carta.rama}` : ''} de ${['', 'I', 'II', 'III'][capitulos] ?? total}`
     }
+    case 'pasajero':
+      return `Pasajero · ${e.mision.nombre}`
+    case 'cartaMision':
+      return 'Carta de misión · apartada'
     case 'peligro':
       return `Peligro ${e.carta.nivel.toLowerCase()} · ${e.carta.entraDuranteLaPartida ? 'apartada' : copias}`
     case 'mazoPropio':

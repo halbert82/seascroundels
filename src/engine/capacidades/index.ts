@@ -8,7 +8,6 @@ import { CAPACIDADES_ESTADOS } from './estados.ts'
 import { CAPACIDADES_EVENTOS } from './eventos.ts'
 import { CAPACIDADES_JUGADOR2 } from './jugador2.ts'
 import { CAPACIDADES_MEJORAS } from './mejoras.ts'
-import { CAPACIDADES_MISIONES } from './misiones.ts'
 import { CAPACIDADES_TRIPULANTES } from './tripulantes.ts'
 
 const POR_CARTA = new Map<CartaId, Capacidad[]>()
@@ -23,7 +22,6 @@ function registrar(cap: Capacidad): void {
 for (const cap of [
   ...CAPACIDADES_CONSTANTES,
   ...CAPACIDADES_ESCENARIO,
-  ...CAPACIDADES_MISIONES,
   ...CAPACIDADES_TRIPULANTES,
   ...CAPACIDADES_MEJORAS,
   ...CAPACIDADES_EVENTOS,

@@ -3551,7 +3551,7 @@
    "entraDuranteLaPartida": true,
    "encuentros": {
     "mar": {
-     "nombre": "Navío de la Armada",
+     "nombre": "Navío de línea de la Armada",
      "palabrasClave": [
       "Barco",
       "Militar"
@@ -3559,38 +3559,16 @@
      "avance": 3,
      "prueba": [
       {
-       "hab": "COM",
-       "dificultad": 5
-      },
-      {
        "hab": "NAV",
        "dificultad": 5
       }
      ],
-     "fallo": [
-      [
-       "ship",
-       2
-      ],
-      [
-       "wound",
-       1
-      ],
-      [
-       "retira",
-       1
-      ]
-     ],
-     "exito": [
-      [
-       "retira",
-       1
-      ]
-     ],
+     "fallo": [],
+     "exito": [],
      "siempre": [],
      "nota": "",
-     "textoFallo": "2 [dano] · 1 [herida] · Se retira",
-     "textoExito": "Se retira"
+     "textoExito": "Esta carta Se retira.",
+     "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén. Esta carta Se retira."
     },
     "nat": {
      "nombre": "Desembarco de casacas",
@@ -3608,17 +3586,11 @@
        "dificultad": 4
       }
      ],
-     "fallo": [
-      [
-       "wound",
-       2
-      ]
-     ],
+     "fallo": [],
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoFallo": "2 [herida]",
-     "textoExito": ""
+     "textoFallo": "2 heridas repartidas entre los comprometidos."
     },
     "ciu": {
      "nombre": "Tu cara en los pasquines",
@@ -3632,44 +3604,24 @@
        "dificultad": 4
       }
      ],
-     "fallo": [
-      [
-       "hostage",
-       1
-      ]
-     ],
+     "fallo": [],
      "exito": [],
      "siempre": [],
-     "nota": "Si te reconocen, prenden a uno de los tuyos.",
-     "textoFallo": "1 [rehen]",
-     "textoExito": ""
+     "nota": "",
+     "textoEfecto": "~Si te reconocen, prenden a uno de los tuyos.~",
+     "textoFallo": "Un Tripulante comprometido queda rehén."
     }
    },
    "destino": {
     "nombre": "Velas en el horizonte",
     "modificador": 1,
-    "textoPrototipo": "+2 si el encuentro es Militar o Guardia; si no, +1.",
-    "modKw": {
-     "kw": [
-      "Militar",
-      "Guardia"
-     ],
-     "n": 2
-    },
-    "sinOposicion": {
-     "texto": "agota a 1 Tripulante.",
-     "ops": [
-      [
-       "exhaust",
-       1
-      ]
-     ]
-    },
-    "texto": "Si el encuentro es #Militar# o #Guardia#, {+2} en su lugar.",
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si el encuentro es #Militar# o #Guardia#.",
     "mod": "+1",
     "ambientacion": "«Bandera del Rey a barlovento. Y viene a por nosotros.»",
-    "textoSinOposicion": "1 [agotar]"
-   }
+    "textoSinOposicion": "Agota a 1 Tripulante."
+   },
+   "version": 2
   },
   {
    "id": "amigos",
@@ -8198,6 +8150,7 @@
    "num": 122,
    "nombre": "Guerreros esqueleto",
    "nivel": "Duro",
+   "version": 2,
    "encuentro": {
     "nombre": "Guerreros esqueleto",
     "palabrasClave": [
@@ -8210,36 +8163,21 @@
       "dificultad": 4
      }
     ],
-    "fallo": [
-     [
-      "wound",
-      2
-     ]
-    ],
+    "fallo": [],
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoFallo": "2 [herida]",
-    "textoExito": ""
+    "textoExito": "~Se deshacen en polvo.~ Esta carta Se retira.",
+    "textoFallo": "2 heridas repartidas entre los comprometidos."
    },
    "destino": {
     "nombre": "Huesos que se levantan",
     "modificador": 1,
-    "textoPrototipo": "+1 a la dificultad. Uno de los que mandaste sufre 1 herida.",
-    "sentWound": 1,
-    "sinOposicion": {
-     "texto": "además 1 herida a un Tripulante.",
-     "ops": [
-      [
-       "wound",
-       1
-      ]
-     ]
-    },
-    "texto": "Uno de los Tripulantes comprometidos sufre {1 herida}.",
+    "textoPrototipo": "",
+    "texto": "Si fallas, pon esta carta encima del mazo del Templo ~(vuelven a levantarse)~.",
     "mod": "+1",
     "ambientacion": "«Siguen de guardia. Siglos después.»",
-    "textoSinOposicion": "1 [herida]"
+    "textoSinOposicion": "1 herida a un Tripulante."
    }
   },
   {
@@ -8247,10 +8185,11 @@
    "num": 123,
    "nombre": "Trampa de dardos",
    "nivel": "Leve",
+   "version": 2,
    "encuentro": {
     "nombre": "Trampa de dardos",
     "palabrasClave": [
-     "Trampa"
+     "Terreno"
     ],
     "avance": 1,
     "prueba": [
@@ -8263,31 +8202,21 @@
       }
      }
     ],
-    "fallo": [
-     [
-      "wound",
-      1
-     ],
-     [
-      "wound",
-      1
-     ]
-    ],
+    "fallo": [],
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoFallo": "1 [herida] · 1 [herida]",
-    "textoExito": ""
+    "textoExito": "~Desmontáis la trampa y os quedáis los dardos.~ Gana 1 munición.",
+    "textoFallo": "El comprometido con menos [EXP] queda **Envenenado**."
    },
    "destino": {
     "nombre": "Dardos desde el techo",
     "modificador": 0,
-    "textoPrototipo": "+0. Uno de los que mandaste sufre 1 herida.",
-    "sentWound": 1,
-    "texto": "Uno de los Tripulantes comprometidos sufre {1 herida}.",
+    "textoPrototipo": "",
+    "texto": "El comprometido con la habilidad más baja sufre 1 herida.",
     "mod": "+0",
     "ambientacion": "«Un clic bajo el pie. Demasiado tarde.»",
-    "textoSinOposicion": ""
+    "textoSinOposicion": "1 herida a un Tripulante preparado."
    }
   },
   {
@@ -8295,6 +8224,7 @@
    "num": 124,
    "nombre": "Ídolo maldito",
    "nivel": "Duro",
+   "version": 2,
    "encuentro": {
     "nombre": "Ídolo maldito",
     "palabrasClave": [
@@ -8304,48 +8234,28 @@
     "prueba": [
      {
       "hab": "EXP",
-      "dificultad": 3
+      "dificultad": 4
      }
     ],
-    "fallo": [
-     [
-      "wound",
-      1
-     ],
-     [
-      "loseUp",
-      1
-     ]
-    ],
-    "exito": [
-     [
-      "draw",
-      2
-     ]
-    ],
+    "fallo": [],
+    "exito": [],
     "siempre": [],
-    "nota": "Si no resistes su influjo, el ídolo se cobra algo tuyo.",
-    "textoFallo": "1 [herida] · −1 [mejora]",
-    "textoExito": "+2 [robar]"
+    "nota": "",
+    "textoEfecto": "Elige: lo dejas en su sitio (pierdes 1 Avance) o lo coges: Prueba de [EXP] 4.",
+    "textoExito": "~Las gemas de los ojos.~ Robas 3.",
+    "textoFallo": "El comprometido con más [EXP] queda **Maldito**.",
+    "etiquetas": [
+     "Elige"
+    ]
    },
    "destino": {
     "nombre": "Maldición del ídolo",
     "modificador": 1,
-    "textoPrototipo": "+1 a la dificultad. Las cartas de la mano no suman.",
-    "noCards": 1,
-    "sinOposicion": {
-     "texto": "descartas 1 carta.",
-     "ops": [
-      [
-       "discard",
-       1
-      ]
-     ]
-    },
-    "texto": "Las cartas de tu mano no suman.",
+    "textoPrototipo": "",
+    "texto": "Las cartas de tu mano no suman en esta Prueba.",
     "mod": "+1",
     "ambientacion": "«Oro puro. Nadie que lo tocó volvió a sonreír.»",
-    "textoSinOposicion": "1 [descartar]"
+    "textoSinOposicion": "Descarta 1 carta."
    }
   },
   {
@@ -8353,6 +8263,7 @@
    "num": 125,
    "nombre": "Pasadizo secreto",
    "nivel": "Favorable",
+   "version": 2,
    "encuentro": {
     "nombre": "Pasadizo secreto",
     "palabrasClave": [],
@@ -8362,21 +8273,84 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": ""
+    "textoEfecto": "Mira las 3 de arriba del mazo del Templo y pon 1 al fondo."
    },
    "destino": {
     "nombre": "Corriente de aire",
     "modificador": -1,
-    "textoPrototipo": "−1 a la dificultad.",
-    "sinOposicion": {
-     "texto": "no se aplica el efecto de fallo.",
-     "ops": [],
-     "ignoraFallo": true
-    },
+    "textoPrototipo": "",
     "texto": "",
     "mod": "−1",
     "ambientacion": "«Una corriente de aire entre las piedras.»",
-    "textoSinOposicion": "Sin fallo"
+    "textoSinOposicion": "+0 en su lugar."
+   }
+  },
+  {
+   "id": "losa",
+   "num": 223,
+   "nombre": "La losa giratoria",
+   "nivel": "Leve",
+   "version": 2,
+   "encuentro": {
+    "nombre": "La losa giratoria",
+    "palabrasClave": [
+     "Terreno"
+    ],
+    "avance": 1,
+    "prueba": [],
+    "fallo": [],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": "**Al revelarse:** el Tripulante preparado con más [EXP] queda al otro lado de la losa: no puede comprometerse mientras esta carta esté en juego. **Acción:** agota a 2 Tripulantes ~(empujáis la losa)~: descarta esta carta.",
+    "etiquetas": [
+     "Se queda en juego"
+    ]
+   },
+   "destino": {
+    "nombre": "Suelo que cede",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si fallas, pierdes 1 Avance.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Agota a 1 Tripulante."
+   }
+  },
+  {
+   "id": "guardian",
+   "num": 224,
+   "nombre": "El guardián de jade",
+   "nivel": "Terrible",
+   "version": 2,
+   "encuentro": {
+    "nombre": "El guardián de jade",
+    "palabrasClave": [
+     "Sobrenatural"
+    ],
+    "avance": 3,
+    "prueba": [
+     {
+      "hab": "COM",
+      "dificultad": 6
+     }
+    ],
+    "fallo": [],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": "Las Mejoras no suman ~(no hay acero que lo hiera)~. Si un comprometido lleva un _Escapulario_ o un _Amuleto_, −2.",
+    "textoExito": "+1 Avance y robas 2.",
+    "textoFallo": "Sufres 1 herida por cada punto que te falte (máximo 3)."
+   },
+   "destino": {
+    "nombre": "Ojos de jade",
+    "modificador": 2,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "+2",
+    "ambientacion": "",
+    "textoSinOposicion": "El Capitán sufre 2 heridas."
    }
   },
   {
@@ -8384,6 +8358,7 @@
    "num": 130,
    "nombre": "Galeón de la plata",
    "nivel": "Duro",
+   "version": 2,
    "encuentro": {
     "nombre": "Galeón de la plata",
     "palabrasClave": [
@@ -8397,40 +8372,22 @@
       "dificultad": 5
      }
     ],
-    "fallo": [
-     [
-      "ship",
-      2
-     ]
-    ],
-    "exito": [
-     [
-      "draw",
-      2
-     ]
-    ],
+    "fallo": [],
+    "exito": [],
     "siempre": [],
     "nota": "",
-    "textoFallo": "2 [dano]",
-    "textoExito": "+2 [robar]"
+    "textoEfecto": "Antes de comprometer, puedes gastar 1 munición: −2.",
+    "textoExito": "Robas 2 y ganas 1 munición.",
+    "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén."
    },
    "destino": {
     "nombre": "Andanada de costado",
     "modificador": 1,
-    "textoPrototipo": "+1 a la dificultad.",
-    "sinOposicion": {
-     "texto": "además 1 daño al Barco (en tierra, 1 herida a un Tripulante).",
-     "ops": [
-      [
-       "shipOrWound",
-       1
-      ]
-     ]
-    },
+    "textoPrototipo": "",
     "texto": "",
     "mod": "+1",
     "ambientacion": "«Treinta cañones por banda y la bodega llena.»",
-    "textoSinOposicion": "1 [dano] · / 1 [herida]"
+    "textoSinOposicion": "1 daño al Barco."
    }
   },
   {
@@ -8438,6 +8395,7 @@
    "num": 131,
    "nombre": "Navío de escolta",
    "nivel": "Duro",
+   "version": 2,
    "encuentro": {
     "nombre": "Navío de escolta",
     "palabrasClave": [
@@ -8448,39 +8406,25 @@
     "prueba": [
      {
       "hab": "NAV",
-      "dificultad": 4
-     },
-     {
-      "hab": "COM",
       "dificultad": 5
      }
     ],
-    "fallo": [
-     [
-      "ship",
-      2
-     ]
-    ],
+    "fallo": [],
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoFallo": "2 [dano]",
-    "textoExito": ""
+    "textoEfecto": "~Se interpone entre vosotros y el galeón.~",
+    "textoExito": "~Le ganáis el barlovento.~ El siguiente encuentro #Barco# de esta misión recibe −1.",
+    "textoFallo": "2 daños al Barco."
    },
    "destino": {
     "nombre": "Señales entre los mástiles",
     "modificador": 1,
-    "textoPrototipo": "+2 si el encuentro es Barco; si no, +1.",
-    "modKw": {
-     "kw": [
-      "Barco"
-     ],
-     "n": 2
-    },
-    "texto": "Si el encuentro es #Barco#, {+2} en su lugar.",
+    "textoPrototipo": "",
+    "texto": "+2 en su lugar si el encuentro es #Barco#.",
     "mod": "+1",
     "ambientacion": "«La Armada no deja sola a su plata.»",
-    "textoSinOposicion": ""
+    "textoSinOposicion": "El Barco queda **Perseguido**."
    }
   },
   {
@@ -8488,6 +8432,7 @@
    "num": 132,
    "nombre": "Fuego de cobertura",
    "nivel": "Leve",
+   "version": 2,
    "encuentro": {
     "nombre": "Fuego de cobertura",
     "palabrasClave": [
@@ -8495,26 +8440,23 @@
     ],
     "avance": 1,
     "prueba": [],
-    "fallo": [
-     [
-      "ship",
-      1
-     ]
-    ],
+    "fallo": [],
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "1 [dano]"
+    "textoEfecto": "Mientras esté, los Cañones no suman. **Acción:** haz una Prueba de [NAV] 3 para salir de su alcance: si la superas, descarta esta carta.",
+    "etiquetas": [
+     "Se queda en juego"
+    ]
    },
    "destino": {
     "nombre": "Humo de pólvora",
     "modificador": 0,
-    "textoPrototipo": "+0. Los Cañones no suman.",
-    "noGuns": 1,
+    "textoPrototipo": "",
     "texto": "Los Cañones no suman.",
     "mod": "+0",
     "ambientacion": "«Disparan para que no levantes la cabeza.»",
-    "textoSinOposicion": ""
+    "textoSinOposicion": "1 daño al Barco."
    }
   },
   {
@@ -8522,6 +8464,7 @@
    "num": 133,
    "nombre": "Marineros del galeón hundido",
    "nivel": "Favorable",
+   "version": 2,
    "encuentro": {
     "nombre": "Marineros del galeón hundido",
     "palabrasClave": [
@@ -8535,30 +8478,20 @@
      }
     ],
     "fallo": [],
-    "exito": [
-     [
-      "draw",
-      1
-     ]
-    ],
+    "exito": [],
     "siempre": [],
-    "nota": "Si no llegas, no pasa nada.",
-    "textoFallo": "",
-    "textoExito": "+1 [robar]"
+    "nota": "",
+    "textoExito": "~Uno se enrola.~ Recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad); si no, robas 1.",
+    "textoFallo": "~Remáis en balde.~ Agota a 1 Tripulante."
    },
    "destino": {
     "nombre": "Viento largo",
     "modificador": -1,
-    "textoPrototipo": "−1 a la dificultad.",
-    "sinOposicion": {
-     "texto": "no se aplica el efecto de fallo.",
-     "ops": [],
-     "ignoraFallo": true
-    },
+    "textoPrototipo": "",
     "texto": "",
     "mod": "−1",
     "ambientacion": "«Agarrados a un mástil, nos hacen señas.»",
-    "textoSinOposicion": "Sin fallo"
+    "textoSinOposicion": "+0 en su lugar."
    }
   },
   {
@@ -8566,6 +8499,7 @@
    "num": 134,
    "nombre": "Mar gruesa",
    "nivel": "Leve",
+   "version": 2,
    "encuentro": {
     "nombre": "Mar gruesa",
     "palabrasClave": [
@@ -8578,39 +8512,60 @@
       "dificultad": 3
      }
     ],
-    "fallo": [
-     [
-      "ship",
-      1
-     ],
-     [
-      "wound",
-      1
-     ]
-    ],
+    "fallo": [],
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoFallo": "1 [dano] · 1 [herida]",
-    "textoExito": ""
+    "textoExito": "~La ola levanta al galeón y lo deja a tiro.~ +1 Avance.",
+    "textoFallo": "1 daño al Barco y 1 herida a un Tripulante."
    },
    "destino": {
     "nombre": "Ola de costado",
     "modificador": 1,
-    "textoPrototipo": "+1 a la dificultad.",
-    "sinOposicion": {
-     "texto": "además 1 daño al Barco (en tierra, 1 herida a un Tripulante).",
-     "ops": [
-      [
-       "shipOrWound",
-       1
-      ]
-     ]
-    },
+    "textoPrototipo": "",
     "texto": "",
     "mod": "+1",
     "ambientacion": "«Olas como casas.»",
-    "textoSinOposicion": "1 [dano] · / 1 [herida]"
+    "textoSinOposicion": "1 daño al Barco."
+   }
+  },
+  {
+   "id": "cofres",
+   "num": 225,
+   "nombre": "Cofres por la borda",
+   "nivel": "Leve",
+   "version": 2,
+   "encuentro": {
+    "nombre": "Cofres por la borda",
+    "palabrasClave": [
+     "Barco"
+    ],
+    "avance": 2,
+    "prueba": [
+     {
+      "hab": "NAV",
+      "dificultad": 4
+     }
+    ],
+    "fallo": [],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": "~El galeón aligera tirando plata al mar.~ Elige: os paráis a recogerla (robas 3 y pierdes 1 Avance) o seguís tras él: Prueba de [NAV] 4.",
+    "textoExito": "+2 Avance.",
+    "textoFallo": "Agota a 1 Tripulante.",
+    "etiquetas": [
+     "Elige"
+    ]
+   },
+   "destino": {
+    "nombre": "El brillo de la plata",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "Si superas, robas 1.",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta 1 carta."
    }
   }
  ],
@@ -8631,28 +8586,17 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Si tienes un _Vigía_ preparado, gana {1 avance}.",
-      "**Al zarpar:** Agota a un _Oficial_ para ganar {2 avance}."
+      "La isla no sale en ningún mapa: no puedes superar la misión hasta haber superado al menos una Prueba de [NAV] o de [EXP] en ella.",
+      "**Al zarpar:** Puedes agotar a un _Oficial_ para ganar {2 avance} ~(el informante de Tortuga solo habla con oficiales)~."
      ],
      "ambientacion": "«Dicen que la isla no sale en ningún mapa. Por eso vamos.»",
      "recompensa": {
       "rep": 1
      },
-     "textoSiguiente": "Añade la carta 119 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Vigía preparado, empiezas con Avance 1.",
-       "startRasgo": {
-        "rasgo": "Vigía",
-        "av": 1
-       }
-      },
-      "atajo": {
-       "exh": "Oficial",
-       "av": 2,
-       "t": "Agota a un Oficial (el informante de Tortuga solo habla con oficiales): +2 Avance."
-      }
-     }
+     "siguiente": [
+      119
+     ],
+     "textoSiguiente": "Añade la carta 119 a Misiones"
     },
     {
      "capitulo": "II",
@@ -8660,24 +8604,19 @@
      "nombre": "La selva",
      "entorno": "nat",
      "avanceNecesario": 4,
-     "distancia": 3,
+     "distancia": 2,
      "reglas": [
-      "Tus Tripulantes reciben {−1 COM}."
+      "La selva se cierra detrás de vosotros: no puedes retirarte de esta misión.",
+      "Cada Prueba de [EXP] que superes por 2 o más da {1 avance} más ~(encontráis la vieja calzada)~."
      ],
      "ambientacion": "«Cada paso, un mosquito. Cada diez, una serpiente.»",
      "recompensa": {
       "rep": 2
      },
-     "textoSiguiente": "Añade la carta 120 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Todos tus Tripulantes tienen −1 COM.",
-       "statMod": {
-        "hab": "COM",
-        "n": -1
-       }
-      }
-     }
+     "siguiente": [
+      120
+     ],
+     "textoSiguiente": "Añade la carta 120 a Misiones"
     },
     {
      "capitulo": "III",
@@ -8685,35 +8624,42 @@
      "nombre": "El templo",
      "entorno": "nat",
      "avanceNecesario": 5,
-     "distancia": 3,
+     "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Baraja el mazo del Templo con 6 cartas del mazo de Peligros. Durante esta misión, revela de ese mazo.",
-      "Cada efecto de fallo inflige además {1 herida}."
+      "**Al zarpar:** Baraja el mazo del Templo con 6 cartas del mazo de Peligros. Durante esta misión, revela de ese mazo."
      ],
      "ambientacion": "«Los sacerdotes nunca se fueron. Solo dejaron de respirar.»",
      "recompensa": {
-      "rep": 4,
-      "tesoro": "espada"
+      "elige": [
+       {
+        "clave": "espada",
+        "texto": "Te llevas la Espada del sacerdote",
+        "rep": 2,
+        "tesoro": "espada",
+        "efecto": "tu Capitán queda Maldito"
+       },
+       {
+        "clave": "idolo",
+        "texto": "Devuelves el ídolo a su altar",
+        "rep": 4
+       }
+      ],
+      "texto": "**Elige:** la Espada del sacerdote y {+2 rep}, pero tu Capitán queda **Maldito**; o devuelves el ídolo a su altar: {+4 rep}."
      },
+     "siguiente": [
+      121
+     ],
      "textoSiguiente": "Tesoro · carta 121",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Cada efecto de fallo trae además 1 herida.",
-       "sufferWound": 1
-      },
-      "mix": {
-       "name": "mazo del Templo",
-       "deck": [
-        "esqueleto",
-        "esqueleto",
-        "dardos",
-        "dardos",
-        "idolo",
-        "pasadizo"
-       ],
-       "n": 6
-      },
-      "final": true
+     "mazoPropio": {
+      "nombre": "mazo del Templo",
+      "cartas": [
+       "esqueleto",
+       "dardos",
+       "idolo",
+       "pasadizo",
+       "losa",
+       "guardian"
+      ]
      }
     }
    ]
@@ -8734,30 +8680,17 @@
      "avanceNecesario": 6,
      "distancia": 0,
      "reglas": [
-      "Los encuentros #Tormenta# reciben {+1 r} de dificultad.",
-      "**Al zarpar:** Agota a un _Marinero_ para ganar {3 avance}."
+      "Temporada de huracanes: los encuentros #Tormenta# reciben {+1 r} de dificultad.",
+      "**Al zarpar:** Puedes agotar a un _Piloto_ o a un _Marinero_ para ganar {2 avance} ~(conoce el paso)~."
      ],
      "ambientacion": "«Entre Cuba y La Española, el viento manda.»",
      "recompensa": {
-      "rep": 1
+      "rep": 2
      },
-     "textoSiguiente": "Añade la carta 127 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Tormenta piden +1.",
-       "reqKw": {
-        "kw": [
-         "Tormenta"
-        ],
-        "n": 1
-       }
-      },
-      "atajo": {
-       "exh": "Marinero",
-       "av": 3,
-       "t": "Agota a un Marinero (conoce a un práctico de La Habana): +3 Avance."
-      }
-     }
+     "siguiente": [
+      127
+     ],
+     "textoSiguiente": "Añade la carta 127 a Misiones"
     },
     {
      "capitulo": "II",
@@ -8768,33 +8701,26 @@
      "distancia": 0,
      "reglas": [
       "**Al zarpar:** Baraja el mazo de la Escolta con 6 cartas del mazo de Peligros. Durante esta misión, revela de ese mazo.",
-      "**Al zarpar:** Si tienes 3 o más Tripulantes preparados, gana {2 avance}."
+      "Cada Prueba de [COM] que superes en esta misión, roba {1 robar} ~(la bodega del galeón)~."
      ],
      "ambientacion": "«Se quedó atrás con una vía de agua… y con media plata de Potosí.»",
      "recompensa": {
-      "rep": 2
+      "rep": 3
      },
+     "siguiente": [
+      128
+     ],
      "textoSiguiente": "Añade la carta 128 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "¡Al abordaje!: si llevas 3 Tripulantes o más, empiezas con Avance 2.",
-       "startCrew": {
-        "n": 3,
-        "av": 2
-       }
-      },
-      "mix": {
-       "name": "mazo de la Escolta",
-       "deck": [
-        "galeon",
-        "escolta",
-        "escolta",
-        "cobertura",
-        "naufragos_g",
-        "margruesa"
-       ],
-       "n": 6
-      }
+     "mazoPropio": {
+      "nombre": "mazo de la Escolta",
+      "cartas": [
+       "galeon",
+       "escolta",
+       "cobertura",
+       "naufragos_g",
+       "margruesa",
+       "cofres"
+      ]
      }
     },
     {
@@ -8802,29 +8728,21 @@
      "num": 128,
      "nombre": "La huida con la plata",
      "entorno": "mar",
-     "avanceNecesario": 4,
+     "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Los encuentros #Barco# reciben {+1 r} de dificultad."
+      "**Al zarpar:** Pon 1 ficha de Persecución ~(la flota va detrás)~. Cada Prueba de [NAV] que falles y cada Peligro sin Prueba: +1. Cada Prueba de [NAV] que superes por 2 o más: −1.",
+      "Con 3 fichas os dan alcance: pon **La Armada te persigue** encima del mazo de Peligros y deja la Persecución en 1. Después de resolverla, vuelve a apartarse."
      ],
      "ambientacion": "«Ahora nos busca la Armada entera. Que busque.»",
      "recompensa": {
-      "rep": 4,
+      "rep": 5,
       "tesoro": "mascaron"
      },
-     "textoSiguiente": "Tesoro · carta 129",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Barco piden +1.",
-       "reqKw": {
-        "kw": [
-         "Barco"
-        ],
-        "n": 1
-       }
-      },
-      "final": true
-     }
+     "siguiente": [
+      129
+     ],
+     "textoSiguiente": "Tesoro · carta 129"
     }
    ]
   },
@@ -8844,30 +8762,17 @@
      "avanceNecesario": 4,
      "distancia": 2,
      "reglas": [
-      "Los encuentros #Guardia# reciben {+1 r} de dificultad.",
-      "**Al zarpar:** Agota a un _Contrabandista_ para ganar {2 avance}."
+      "**Al zarpar:** Puedes descartar 2 cartas ~(pagas al soplón)~ para mirar las 3 de arriba del mazo de Peligros y ordenarlas.",
+      "Los encuentros #Civil# dan {1 avance} más ~(en Port Royal todo el mundo habla)~."
      ],
      "ambientacion": "«Un hombre con acento de Cádiz pregunta demasiado.»",
      "recompensa": {
       "rep": 1
      },
-     "textoSiguiente": "Añade la carta 136 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Guardia piden +1.",
-       "reqKw": {
-        "kw": [
-         "Guardia"
-        ],
-        "n": 1
-       }
-      },
-      "atajo": {
-       "exh": "Contrabandista",
-       "av": 2,
-       "t": "Agota a un Contrabandista (el tabernero es de los suyos): +2 Avance."
-      }
-     }
+     "siguiente": [
+      136
+     ],
+     "textoSiguiente": "Añade la carta 136 a Misiones"
     },
     {
      "capitulo": "II",
@@ -8875,57 +8780,39 @@
      "nombre": "Seguirle por los muelles",
      "entorno": "ciu",
      "avanceNecesario": 4,
-     "distancia": 2,
+     "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Si tienes un _Vigía_ preparado, gana {2 avance}.",
-      "**Al zarpar:** Descarta 2 cartas para ganar {2 avance}."
+      "No te tiene que ver: cada Prueba de [COM] que superes y cada Prueba que falles por 2 o más pone 1 ficha de Sospecha. Con 3, el espía te descubre: la misión falla."
      ],
      "ambientacion": "«Capa gris, paso rápido. No lo pierdas.»",
      "recompensa": {
       "rep": 2
      },
-     "textoSiguiente": "Añade la carta 137 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Vigía preparado, empiezas con Avance 2.",
-       "startRasgo": {
-        "rasgo": "Vigía",
-        "av": 2
-       }
-      },
-      "atajo": {
-       "discard": 2,
-       "av": 2,
-       "t": "Descarta 2 cartas (sobornos y disfraces): +2 Avance."
-      }
-     }
+     "siguiente": [
+      137
+     ],
+     "textoSiguiente": "Añade la carta 137 a Misiones"
     },
     {
      "capitulo": "III",
      "num": 137,
      "nombre": "La goleta del correo",
      "entorno": "mar",
-     "avanceNecesario": 4,
+     "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Cada vez que superes una Prueba de [NAV], gana {1 avance} más."
+      "El correo tira los despachos al mar si os ve llegar con las armas en la mano: si fallas alguna Prueba de [COM] en esta misión, no ganas el Tesoro (solo la reputación).",
+      "Cada Prueba de [NAV] que superes da {1 avance} más."
      ],
      "ambientacion": "«Lleva el Caribe entero en una valija sellada.»",
      "recompensa": {
-      "rep": 4,
+      "rep": 3,
       "tesoro": "despachos"
      },
-     "textoSiguiente": "Tesoro · carta 138",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Cada Prueba que superes con NAV te da +1 Avance.",
-       "bonusHab": {
-        "hab": "NAV",
-        "av": 1
-       }
-      },
-      "final": true
-     }
+     "siguiente": [
+      138
+     ],
+     "textoSiguiente": "Tesoro · carta 138"
     }
    ]
   },
@@ -8945,57 +8832,60 @@
      "avanceNecesario": 4,
      "distancia": 3,
      "reglas": [
-      "Las Pruebas de [EXP] reciben {+1 r} de dificultad.",
-      "**Al zarpar:** Descarta 2 cartas para ganar {2 avance}."
+      "**Al zarpar:** Pon en juego al Pasajero **Don Anselmo, el comerciante**.",
+      "**Salida doble:** si en esta misión algún Tripulante quedó **Buscado** o fallaste algún encuentro #Guardia#, los guardacostas te esperan: añade la carta 140 (II-b). Si no, la carta 218 (II-a)."
      ],
      "ambientacion": "«Cacao en los sacos y tabaco en el fondo. El fondo, que no lo mire nadie.»",
      "recompensa": {
       "rep": 1
      },
-     "textoSiguiente": "Añade la carta 140 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Guardia piden +1.",
-       "reqKw": {
-        "kw": [
-         "Guardia"
-        ],
-        "n": 1
-       }
-      },
-      "atajo": {
-       "exh": "Contrabandista",
-       "av": 2,
-       "t": "Agota a un Contrabandista (sabe a quién no hay que mirar): +2 Avance."
-      }
-     }
+     "siguiente": [
+      218,
+      140
+     ],
+     "textoSiguiente": "Añade la carta 218 o la 140"
     },
     {
      "capitulo": "II",
-     "num": 140,
-     "nombre": "El bloqueo del lago",
+     "num": 218,
+     "nombre": "La barra de noche",
      "entorno": "mar",
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Los encuentros #Militar# reciben {+1 r} de dificultad."
+      "Salís sin luces, por la barra: las Pruebas de [NAV] reciben {−1 g} de dificultad y los encuentros #Militar#, {+2 r}.",
+      "**Gesta:** Si superas la misión sin superar ninguna Prueba de [COM], {+1 rep} ~(nadie supo que pasasteis)~."
+     ],
+     "ambientacion": "",
+     "recompensa": {
+      "rep": 2
+     },
+     "siguiente": [
+      141
+     ],
+     "textoSiguiente": "Añade la carta 141 a Misiones",
+     "rama": "a"
+    },
+    {
+     "capitulo": "II",
+     "num": 140,
+     "nombre": "Romper el bloqueo",
+     "entorno": "mar",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "Los encuentros #Militar# reciben {+1 r} de dificultad.",
+      "Cada Prueba de [COM] que superes da {1 avance} más."
      ],
      "ambientacion": "«Tres guardacostas y una sola salida. Toca bailar.»",
      "recompensa": {
       "rep": 2
      },
+     "siguiente": [
+      141
+     ],
      "textoSiguiente": "Añade la carta 141 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Militar piden +1.",
-       "reqKw": {
-        "kw": [
-         "Militar"
-        ],
-        "n": 1
-       }
-      }
-     }
+     "rama": "b"
     },
     {
      "capitulo": "III",
@@ -9009,20 +8899,14 @@
      ],
      "ambientacion": "«Aquí el Rey no ha puesto nunca el pie. Ni lo pondrá.»",
      "recompensa": {
-      "rep": 4,
-      "tesoro": "mapa_calas"
+      "rep": 3,
+      "tesoro": "mapa_calas",
+      "texto": "{+3 rep} y el Tesoro. Don Anselmo se baja y paga: roba {2 robar} y descártalo. Sin él, no hay Tesoro."
      },
-     "textoSiguiente": "Tesoro · carta 142",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Contrabandista preparado, empiezas con Avance 2.",
-       "startRasgo": {
-        "rasgo": "Contrabandista",
-        "av": 2
-       }
-      },
-      "final": true
-     }
+     "siguiente": [
+      142
+     ],
+     "textoSiguiente": "Tesoro · carta 142"
     }
    ]
   },
@@ -9039,59 +8923,62 @@
      "num": 143,
      "nombre": "Desembarco nocturno",
      "entorno": "nat",
-     "avanceNecesario": 5,
-     "distancia": 3,
+     "avanceNecesario": 4,
+     "distancia": 2,
      "reglas": [
-      "Tus Tripulantes reciben {−1 EXP}.",
-      "**Al zarpar:** Agota a un _Vigía_ para ganar {2 avance}."
+      "Noche sin luna: las Pruebas de [COM] reciben {+1 r} de dificultad ~(un disparo despierta al fuerte)~ y las de [EXP], {−1 g}.",
+      "**Salida doble:** si superas la misión sin haber superado ninguna Prueba de [COM], entráis sin que os vean: añade la carta 219 (II-a). Si no, la carta 144 (II-b)."
      ],
      "ambientacion": "«Sin faroles, sin ruido y sin miedo. O con miedo, pero callados.»",
      "recompensa": {
-      "rep": 1
+      "rep": 2
      },
-     "textoSiguiente": "Añade la carta 144 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Es de noche: todos tus Tripulantes tienen −1 EXP.",
-       "statMod": {
-        "hab": "EXP",
-        "n": -1
-       }
-      },
-      "atajo": {
-       "exh": "Vigía",
-       "av": 2,
-       "t": "Agota a un Vigía (ha visto una cala sin centinelas): +2 Avance."
-      }
-     }
+     "siguiente": [
+      219,
+      144
+     ],
+     "textoSiguiente": "Añade la carta 219 o la 144"
+    },
+    {
+     "capitulo": "II",
+     "num": 219,
+     "nombre": "Por el aljibe",
+     "entorno": "ciu",
+     "avanceNecesario": 4,
+     "distancia": 0,
+     "reglas": [
+      "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego **¡La guardia!**."
+     ],
+     "ambientacion": "",
+     "recompensa": {
+      "rep": 3
+     },
+     "siguiente": [
+      145
+     ],
+     "textoSiguiente": "Añade la carta 145 a Misiones",
+     "rama": "a"
     },
     {
      "capitulo": "II",
      "num": 144,
-     "nombre": "Las murallas",
+     "nombre": "Al asalto de las murallas",
      "entorno": "ciu",
-     "avanceNecesario": 5,
-     "distancia": 3,
+     "avanceNecesario": 6,
+     "distancia": 0,
      "reglas": [
-      "Los encuentros #Militar# y #Guardia# reciben {+1 r} de dificultad."
+      "Los encuentros #Militar# y #Guardia# reciben {+1 r} de dificultad.",
+      "Si fallas una Prueba de [COM], cada Tripulante comprometido sufre además {1 herida} ~(cae de la escala)~."
      ],
      "ambientacion": "«Treinta pies de piedra y un centinela dormido.»",
      "recompensa": {
-      "rep": 2
+      "rep": 3
      },
+     "siguiente": [
+      145
+     ],
      "textoSiguiente": "Añade la carta 145 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Militar y Guardia piden +1.",
-       "reqKw": {
-        "kw": [
-         "Militar",
-         "Guardia"
-        ],
-        "n": 1
-       }
-      }
-     }
+     "rama": "b"
     },
     {
      "capitulo": "III",
@@ -9099,23 +8986,32 @@
      "nombre": "El polvorín",
      "entorno": "ciu",
      "avanceNecesario": 5,
-     "distancia": 3,
+     "distancia": 0,
      "reglas": [
-      "Cada efecto de fallo inflige además {1 herida}."
+      "**Al zarpar:** La mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4, el polvorín estalla: {2 herida} repartidas entre tus Tripulantes y te retiras."
      ],
      "ambientacion": "«Una chispa y la fortaleza entera salta por los aires. Mejor que nos pille lejos.»",
      "recompensa": {
-      "rep": 4,
-      "tesoro": "polvora_rey"
+      "elige": [
+       {
+        "clave": "amigo",
+        "texto": "Rescatas a tu amigo",
+        "rep": 5
+       },
+       {
+        "clave": "polvorin",
+        "texto": "Vuelas el polvorín",
+        "rep": 3,
+        "tesoro": "polvora_rey",
+        "efecto": "el Barco queda Perseguido"
+       }
+      ],
+      "texto": "**Elige:** rescatas a tu amigo: {+5 rep}; o vuelas el polvorín: {+3 rep} y el Tesoro, y el Barco queda **Perseguido**."
      },
-     "textoSiguiente": "Tesoro · carta 146",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Cada efecto de fallo trae además 1 herida.",
-       "sufferWound": 1
-      },
-      "final": true
-     }
+     "siguiente": [
+      146
+     ],
+     "textoSiguiente": "Tesoro · carta 146"
     }
    ]
   },
@@ -9135,19 +9031,17 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Los Cañones no suman."
+      "Los Cañones no suman ~(las balas atraviesan la niebla y no tocan nada)~.",
+      "Los encuentros #Sobrenatural# dan {1 avance} más ~(vais tras su rastro)~."
      ],
      "ambientacion": "«La niebla huele a sal y a tumba.»",
      "recompensa": {
       "rep": 1
      },
-     "textoSiguiente": "Añade la carta 148 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Con esta niebla, los Cañones no suman.",
-       "noGuns": 1
-      }
-     }
+     "siguiente": [
+      148
+     ],
+     "textoSiguiente": "Añade la carta 148 a Misiones"
     },
     {
      "capitulo": "II",
@@ -9157,22 +9051,17 @@
      "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "Las Pruebas de [COM] reciben {+1 r} de dificultad."
+      "Estáis a bordo del fantasma, no en vuestro barco: el Barco no sufre daño en esta misión. Cada daño que fuera a sufrir es, en su lugar, {1 herida} a un Tripulante que elijas.",
+      "Los encuentros #Sobrenatural# reciben {+1 r} de dificultad."
      ],
      "ambientacion": "«La mesa está puesta y la sopa, caliente. No hay nadie.»",
      "recompensa": {
       "rep": 2
      },
-     "textoSiguiente": "Añade la carta 149 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Las Pruebas de COM piden +1: el acero atraviesa a los muertos.",
-       "habMod": {
-        "hab": "COM",
-        "n": 1
-       }
-      }
-     }
+     "siguiente": [
+      149
+     ],
+     "textoSiguiente": "Añade la carta 149 a Misiones"
     },
     {
      "capitulo": "III",
@@ -9182,21 +9071,31 @@
      "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "Todas las Pruebas reciben {+1 r} de dificultad."
+      "El capitán muerto te reta: la primera Prueba de esta misión es **Sin ayuda**.",
+      "**Gesta:** Si superas la misión sin haber superado ninguna Prueba de [COM], {+1 rep} ~(lo dejaste descansar)~."
      ],
      "ambientacion": "«Sigue en su sillón, con la bitácora abierta. Lleva cien años escribiendo.»",
      "recompensa": {
-      "rep": 4,
-      "tesoro": "farol"
+      "elige": [
+       {
+        "clave": "farol",
+        "texto": "Te llevas el Farol de los ahogados",
+        "rep": 2,
+        "tesoro": "farol"
+       },
+       {
+        "clave": "bitacora",
+        "texto": "Le devuelves su bitácora y el barco se hunde en paz",
+        "rep": 4,
+        "efecto": "quitas Maldito de todos tus Tripulantes"
+       }
+      ],
+      "texto": "**Elige:** el Farol de los ahogados y {+2 rep}; o le devuelves su bitácora: {+4 rep} y quita **Maldito** de todos tus Tripulantes."
      },
-     "textoSiguiente": "Tesoro · carta 150",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Todas las Pruebas piden +1.",
-       "reqAll": 1
-      },
-      "final": true
-     }
+     "siguiente": [
+      150
+     ],
+     "textoSiguiente": "Tesoro · carta 150"
     }
    ]
   },
@@ -9216,26 +9115,16 @@
      "avanceNecesario": 3,
      "distancia": 0,
      "reglas": [
-      "Los encuentros #Pirata# reciben {−1 g} de dificultad."
+      "Los encuentros #Pirata# reciben {−1 g} de dificultad ~(la Hermandad está de tu parte)~.",
+      "**Al zarpar:** Puedes poner 1 carta de tu mano bajo esta misión como pagaré. Si superas la misión, la recuperas y robas {1 robar}. Si no, la pierdes."
      ],
      "ambientacion": "«En Tortuga las deudas se pagan con oro o con sangre. Que elija él.»",
      "recompensa": {
       "rep": 1,
       "search": "crew"
      },
-     "textoSiguiente": "",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Aquí te conocen: los encuentros Pirata piden 1 menos.",
-       "reqKw": {
-        "kw": [
-         "Pirata"
-        ],
-        "n": -1
-       }
-      },
-      "final": true
-     }
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -9255,24 +9144,16 @@
      "avanceNecesario": 3,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Si tienes un _Marinero_ preparado, gana {1 avance}."
+      "El Barco sale de carena: la primera vez que vaya a sufrir daño en esta misión, evítalo.",
+      "**Gesta:** Si superas la misión sin que el Barco tenga ningún daño, {+1 rep}."
      ],
      "ambientacion": "«A ver de qué está hecha esta vieja.»",
      "recompensa": {
       "rep": 1,
       "search": "ship"
      },
-     "textoSiguiente": "",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Marinero preparado, empiezas con Avance 1.",
-       "startRasgo": {
-        "rasgo": "Marinero",
-        "av": 1
-       }
-      },
-      "final": true
-     }
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -9292,24 +9173,15 @@
      "avanceNecesario": 3,
      "distancia": 1,
      "reglas": [
-      "**Al zarpar:** Si tienes un _Explorador_ preparado, gana {1 avance}."
+      "Cala tranquila: cada vez que superes una Prueba, cura {1 curar} a uno de los Tripulantes comprometidos ~(agua fresca)~."
      ],
      "ambientacion": "«Agua dulce, leña seca y ni un alma. Casi demasiado fácil.»",
      "recompensa": {
       "rep": 1,
       "draw": 2
      },
-     "textoSiguiente": "",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Explorador preparado, empiezas con Avance 1.",
-       "startRasgo": {
-        "rasgo": "Explorador",
-        "av": 1
-       }
-      },
-      "final": true
-     }
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -9329,22 +9201,18 @@
      "avanceNecesario": 5,
      "distancia": 3,
      "reglas": [
-      "**Al zarpar:** Si tienes un _Bucanero_ preparado, gana {1 avance}."
+      "Los encuentros #Guardia# reciben {+1 r} de dificultad."
      ],
      "ambientacion": "«Un oficial español sabe el camino a Panamá. Lo canta todo por un tonel de ron.»",
      "recompensa": {
-      "rep": 1
+      "rep": 2,
+      "pasajero": "guia",
+      "texto": "{+2 rep} y pon en juego al Pasajero **El guía del istmo**."
      },
-     "textoSiguiente": "Añade la carta 152 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Bucanero preparado, empiezas con Avance 1.",
-       "startRasgo": {
-        "rasgo": "Bucanero",
-        "av": 1
-       }
-      }
-     }
+     "siguiente": [
+      152
+     ],
+     "textoSiguiente": "Añade la carta 152 a Misiones"
     },
     {
      "capitulo": "II",
@@ -9354,47 +9222,35 @@
      "avanceNecesario": 6,
      "distancia": 2,
      "reglas": [
-      "Las Pruebas de [EXP] reciben {+1 r} de dificultad."
+      "Si **El guía del istmo** viaja contigo, la Distancia de esta misión es 0. Si no, las Pruebas de [EXP] reciben {+1 r} de dificultad.",
+      "No hay vuelta atrás por la selva: no puedes retirarte de esta misión."
      ],
      "ambientacion": "«Nueve días de río, barro y hambre. Los que lleguen, llegarán con hambre de oro.»",
      "recompensa": {
-      "rep": 2
+      "rep": 3
      },
-     "textoSiguiente": "Añade la carta 153 a Misiones",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Las Pruebas de EXP piden +1.",
-       "habMod": {
-        "hab": "EXP",
-        "n": 1
-       }
-      }
-     }
+     "siguiente": [
+      153
+     ],
+     "textoSiguiente": "Añade la carta 153 a Misiones"
     },
     {
      "capitulo": "III",
      "num": 153,
      "nombre": "Las puertas de Panamá",
      "entorno": "ciu",
-     "avanceNecesario": 7,
-     "distancia": 4,
+     "avanceNecesario": 5,
+     "distancia": 0,
      "reglas": [
       "Solo puedes zarpar a esta misión si tienes {9 rep} o más.",
-      "Todas las Pruebas reciben {+1 r} de dificultad."
+      "**Al zarpar:** Pon 3 fichas de Defensa ~(la ciudad se defiende)~. Cada Prueba de [COM] que superes quita 1. No puedes superar la misión mientras quede alguna."
      ],
      "ambientacion": "«La ciudad más rica del Nuevo Mundo. Y esta noche, la tuya.»",
      "recompensa": {
       "victoria": true
      },
-     "textoSiguiente": "",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Todas las Pruebas piden +1.",
-       "reqAll": 1
-      },
-      "final": true,
-      "minRep": 9
-     }
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -9414,19 +9270,17 @@
      "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Si tienes un _Vigía_ preparado, gana {1 avance}."
+      "**Al zarpar:** Pon 2 fichas de Ventaja en esta misión ~(el ladrón huye)~.",
+      "Cada Peligro sin Prueba y cada Prueba que falles: +1 Ventaja. Cada Prueba de [NAV] o de [EXP] que superes por 2 o más: −1 Ventaja ~(le cortáis el paso)~.",
+      "Con 5 fichas, se escapa: la misión falla. Con 0, lo atrapas: superas la misión ahora, aunque no tengas todo el Avance."
      ],
      "ambientacion": "«Un garfio, un parche y una caja de caudales bajo el brazo. No debería ser difícil.»",
      "recompensa": {
-      "rep": 2
+      "rep": 2,
+      "draw": 2
      },
-     "textoSiguiente": "",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Si llevas un Vigía preparado, empiezas con Avance 1."
-      },
-      "final": true
-     }
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -9446,20 +9300,16 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Los encuentros #Guardia# y #Militar# reciben {+1 r} de dificultad."
+      "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego **¡La guardia!**.",
+      "Saqueo: puedes retirarte entre dos Peligros y cobrar según tu Avance: con 2 o 3, roba {2 robar}; con 4 o más, {+1 rep} y busca una Mejora."
      ],
      "ambientacion": "«Música, pelucas y candelabros de plata. Los candelabros, para nosotros.»",
      "recompensa": {
       "rep": 2,
       "search": "up"
      },
-     "textoSiguiente": "",
-     "ayudaPrototipo": {
-      "g": {
-       "t": "Los encuentros Guardia y Militar piden +1."
-      },
-      "final": true
-     }
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   }
@@ -9747,5 +9597,37 @@
   "capitanInicial": "capitan",
   "puertoInicial": "tortuga",
   "modo": "normal"
- }
+ },
+ "pasajeros": [
+  {
+   "id": "anselmo",
+   "num": 221,
+   "nombre": "Don Anselmo, el comerciante",
+   "mision": "maracaibo",
+   "texto": "Los encuentros #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía (o el Barco se hunde), Don Anselmo se baja asustado: descártalo. Sin él, el capítulo III no da el Tesoro.\nSe va al terminar «La cala de los contrabandistas».",
+   "ambientacion": "«Mis papeles y mi bolsa abren puertas.»"
+  },
+  {
+   "id": "guia",
+   "num": 222,
+   "nombre": "El guía del istmo",
+   "mision": "panama",
+   "texto": "Las Pruebas de [EXP] en [nat] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: descártalo.",
+   "ambientacion": "«Un cimarrón que conoce el camino.»"
+  }
+ ],
+ "cartasDeMision": [
+  {
+   "id": "guardia",
+   "num": 220,
+   "nombre": "¡La guardia!",
+   "entorno": "ciu",
+   "texto": "Se queda en juego junto a la misión. Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Haz una Prueba de [COM] 5 ~(los echáis a palos)~, o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.\nAl terminar la misión, vuelve a apartarse.",
+   "ambientacion": "",
+   "misiones": [
+    "gobernador-I",
+    "sanfelipe-II-a"
+   ]
+  }
+ ]
 }

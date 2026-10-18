@@ -4,7 +4,7 @@
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
 import { costeImpreso, iconosDe, porId, rasgosDe } from '../catalogo.ts'
-import { DATOS } from '../datos.ts'
+import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
 import { copia } from '../estado.ts'
@@ -15,6 +15,7 @@ import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor } from '../valores.ts'
 import { cumple } from '../tareas/efectos.ts'
+import { motivoSinSuperar } from '../misiones2/comun.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
 
@@ -154,16 +155,27 @@ const VALOR_VICTORIA = 12
 /** Cuánto pesa lo que queda de una cadena (ajustado jugando: más peso le hace jugar San Felipe y pierde más). */
 const PESO_CADENA = 0.2
 
+/** Reputación que da una misión al superarla (en un final con elección, la mejor opción). */
+function reputacionDe(c: CapituloDatos): number {
+  const r = c.recompensa
+  return Math.max(r.rep ?? 0, ...(r.elige ?? []).map((o) => o.rep ?? 0))
+}
+
 /** Puntuación de una misión disponible para zarpar o para poner Avance. */
 function puntuacionMision(s: Estado, m: InstId): number {
   const e = porId(copia(s, m).id)
   if (e.tipo !== 'capitulo') return -99
   const falta = Math.max(0, valor(s, { tipo: 'avanceNecesario', mision: m }) - copia(s, m).avance)
-  const rep = e.carta.recompensa.rep ?? 0
+  const rep = reputacionDe(e.carta)
   const victoria = e.carta.recompensa.victoria ? 30 : 0
   // Lo que vale el resto de la cadena, si quedan turnos para terminarla (cada capítulo hay que sacarlo del mazo de Misiones y jugarlo).
-  const posteriores = e.mision.capitulos.slice(e.mision.capitulos.indexOf(e.carta) + 1)
-  const futuro = posteriores.reduce((n, c) => n + (c.recompensa.victoria ? VALOR_VICTORIA : (c.recompensa.rep ?? 0)), 0)
+  // Con salida doble, de los dos capítulos II solo se juega uno: cuenta el mejor.
+  const orden = ['I', 'II', 'III']
+  const posteriores = orden
+    .slice(orden.indexOf(e.carta.capitulo) + 1)
+    .map((n) => e.mision.capitulos.filter((c) => c.capitulo === n))
+    .filter((grupo) => grupo.length > 0)
+  const futuro = posteriores.reduce((n, grupo) => n + Math.max(...grupo.map((c) => (c.recompensa.victoria ? VALOR_VICTORIA : reputacionDe(c)))), 0)
   const holgura = s.zonas.mazoEscenario.length - 2 * posteriores.length
   const cadena = futuro * Math.min(PESO_CADENA, Math.max(0, holgura / 10)) * 2.2
   const distancia = valor(s, { tipo: 'distancia', mision: m })
@@ -189,6 +201,11 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
   const encuentro = p?.encuentro
   if (!encuentro) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   const tripulantes = d.tripulantes
+  // «Seguirle por los muelles»: superar una Prueba de COM pone Sospecha; con 2, mejor no comprometer a nadie.
+  const m = s.mision
+  if (m && copia(s, m.carta).id === 'espia-II' && (m.fichas?.sospecha ?? 0) >= 2 && d.opciones.every((o) => o.hab === 'COM')) {
+    return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
+  }
   const margen = margenDestino(s, encuentro)
   let mejor: { coste: number; eleccion: Eleccion } | null = null
   for (let opcion = 0; opcion < d.opciones.length; opcion++) {
@@ -246,6 +263,7 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'exceso':
     case 'desercion':
     case 'rehen':
+    case 'pasajeroSinSitio':
       return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
     case 'perderMejora':
     case 'agotarMejora':
@@ -397,6 +415,25 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     }
     case 'conservarMision':
       return elegir('dejar')
+    case 'finalMision': {
+      // Final con elección: la reputación cuenta lo que da; un Tesoro vale más cuanto antes llegue; Maldito o
+      // Perseguido restan un poco.
+      const e = d.motivo.carta ? porId(d.motivo.carta) : null
+      const opciones = e?.tipo === 'capitulo' ? (e.carta.recompensa.elige ?? []) : []
+      const quedan = s.zonas.mazoEscenario.length
+      // Con días por delante, un Tesoro vale como 3 de reputación (si empatan, la primera opción, que es la del Tesoro).
+      const tesoro = quedan >= 3 ? 3 : quedan >= 1 ? 1.5 : 0
+      const valorDe = (clave: string) => {
+        const o = opciones.find((x) => x.clave === clave)
+        if (!o) return -99
+        const malo = /Maldito|Perseguido/.test(o.efecto ?? '') && !/quita/i.test(o.efecto ?? '') ? 1 : 0
+        const objetivo = s.reputacionObjetivo - s.reputacion
+        // Si la reputación de una opción da la victoria, esa.
+        if ((o.rep ?? 0) >= objetivo) return 100 + (o.rep ?? 0)
+        return (o.rep ?? 0) + (o.tesoro ? tesoro : 0) - malo
+      }
+      return elegir([...claves].sort((a, b) => valorDe(b) - valorDe(a))[0]!)
+    }
     default:
       return elegir(claves[0]!)
   }
@@ -461,15 +498,20 @@ function ventana(s: Estado, d: Extract<Decision, { tipo: 'ventanaAccion' }>): El
     case 'trasEncuentro': {
       const m = s.mision
       if (!m) return terminar
-      const falta = valor(s, { tipo: 'avanceNecesario', mision: m.carta }) - copia(s, m.carta).avance
+      // Si la misión aún no se puede superar (falta una Prueba de NAV o EXP, quedan fichas de Defensa…), aunque tenga
+      // el Avance le queda trabajo: cuenta como si le faltaran 2.
+      const avanceQueFalta = valor(s, { tipo: 'avanceNecesario', mision: m.carta }) - copia(s, m.carta).avance
+      const falta = motivoSinSuperar(s) ? Math.max(2, avanceQueFalta) : avanceQueFalta
       const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
       const iconosMano = s.zonas.mano.reduce((n, c) => n + iconosTotales(s, c), 0)
       const enMar = porId(copia(s, m.carta).id).tipo === 'capitulo' && encuentroEnMar(s)
       const barcoMal = enMar && s.danoBarco >= valor(s, { tipo: 'danoMaximo' }) - 2 && falta > 1
       const capitanMal = vidaRestante(s, s.capitan) <= 1 && falta > 1
       const sinFuerzas = preparados === 0 && iconosMano < 3 && falta >= 2
+      // «El polvorín»: con 3 de Mecha, el siguiente Peligro lo hace estallar (2 heridas y retirada): mejor irse ya.
+      const mecha = copia(s, m.carta).id === 'sanfelipe-III' && (m.fichas?.mecha ?? 0) >= 3 && falta > 0
       const retirada = d.acciones.find((a) => a.tipo === 'retirarse')
-      if (retirada && (barcoMal || capitanMal || sinFuerzas)) return { tipo: 'accion', accion: retirada }
+      if (retirada && (barcoMal || capitanMal || sinFuerzas || mecha)) return { tipo: 'accion', accion: retirada }
       return terminar
     }
     default:
@@ -563,6 +605,21 @@ function faltaAvance(s: Estado): number {
 }
 
 /** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
+/** Capacidades que empiezan una Prueba (la de una Acción). */
+const PRUEBAS_DE_ACCION = new Set(['guardia.palos', 'estado:encadenado.liberar', 'p2_jaguar.nat.accion0', 'a_por_ellos.jugar'])
+
+function empiezaUnaPrueba(s: Estado, uso: Uso): boolean {
+  if (PRUEBAS_DE_ACCION.has(uso.clave)) return true
+  const i = /\.quitar(\d+)$/.exec(uso.clave)?.[1]
+  return i !== undefined && uso.fuente !== null && quedaDe(s, uso.fuente)?.quitar[Number(i)]?.tipo === 'prueba'
+}
+
+/** La última Prueba de la misión fue la de una Acción y se falló: no se repite hasta resolver otro encuentro. */
+function acabaDeFallarUnaAccion(s: Estado): boolean {
+  const ultima = s.mision?.pruebas?.at(-1)
+  return ultima !== undefined && !ultima.encuentro && !ultima.superada
+}
+
 function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   const p = s.prueba
   const ev = sucesoPendiente(s, d)
@@ -570,6 +627,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   const fuente = uso.fuente
   const enMision = s.mision !== null && !s.mision.fin
   const trasEncuentro = d.motivo.clave === 'trasEncuentro'
+  if (trasEncuentro && acabaDeFallarUnaAccion(s) && empiezaUnaPrueba(s, uso)) return 0
   const enPruebaAbierta = p !== null && p.hab !== null && !p.automatica
   const carta = s.zonas.encuentro[0]
   switch (uso.clave) {
@@ -725,6 +783,11 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return trasEncuentro && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && cazaElJaguar(s, c)) ? 2 : 0
     case 'peligroEnMuelle.descartar':
       return fuente && mano >= (s.peligrosEnMuelle?.[fuente] ?? 0) + 2 ? 1 : 0
+    // Misiones 2.0: «¡La guardia!» (todas las Pruebas +1): echarlos si se llega, o escabullirse si sobra gente.
+    case 'guardia.palos':
+      return trasEncuentro && faltaAvance(s) > 0 && alcanza(s, [{ hab: 'COM', dificultad: 6 }]) ? 2 : 0
+    case 'guardia.tejados':
+      return trasEncuentro && faltaAvance(s) > 0 && s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length >= 3 ? 1 : 0
     default: {
       // Quitar una carta de Peligro en juego (o sus Acciones): si estorba y se puede pagar sin quedarse sin nadie.
       const cap = capacidadDe(uso)
@@ -742,13 +805,18 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   }
 }
 
-/** ¿Llegan los preparados (con las cartas de la mano) a alguna de estas Pruebas con 1 de margen? */
+/**
+ * ¿Llegan los preparados (con las cartas de la mano) a alguna de estas Pruebas con 1 de margen? La dificultad es la
+ * real: con lo que le sumen la misión, «¡La guardia!» o «la siguiente Prueba recibe +1».
+ */
 function alcanza(s: Estado, opciones: readonly { hab: 'NAV' | 'COM' | 'EXP'; dificultad: number }[]): boolean {
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !(copia(s, c).estados ?? []).includes('encadenado'))
   if (preparados.length === 0) return false
   return opciones.some((o) => {
     const total = preparados.reduce((n, c) => n + valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }), 0) + s.zonas.mano.reduce((n, c) => n + iconos(s, c, o.hab), 0)
-    return total >= o.dificultad + 1
+    const pendientes = (s.mision?.modsSiguientes ?? []).filter((m) => m.de === 'prueba' && !m.claves && (!m.hab || m.hab === o.hab)).reduce((n, m) => n + (m.n ?? 0), 0)
+    const dificultad = valor(s, { tipo: 'dificultad', base: o.dificultad, hab: o.hab, claves: [] }) + pendientes
+    return total >= dificultad + 1
   })
 }
 

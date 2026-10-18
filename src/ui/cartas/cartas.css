@@ -445,3 +445,23 @@
 .dest.v2 .so2 .ic{font-size:1.35em;margin-right:3px}
 .dest.v2 .so2 .lbl{background:rgba(0,0,0,.3);color:#F2DFA8;box-shadow:inset 0 0 0 1px rgba(210,174,98,.55)}
 .card.enc.v2 .hznum{bottom:4px}
+
+/* ---------- Misiones 2.0 ---------- */
+/* Capítulos: la letra de las reglas se ajusta sola para que quepan; sello con rama (II-a, II-b). */
+.chapr{overflow:hidden}
+.chapr .rules{font-size:var(--fsr,16px)}
+.chapr .flavor{font-size:calc(var(--fsr,16px) * .9)}
+.seal.rama b{font-size:19px;letter-spacing:-.02em}
+.seal.rama b i{font-style:normal;font-family:'Alegreya Sans',sans-serif;font-weight:800;font-size:13px;margin-left:1px}
+.reward.marcada{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;padding:5px 12px 7px;flex-wrap:nowrap;flex:none}
+.reward.marcada .rcab{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.reward.marcada .rtexto{display:block;font-size:calc(var(--fsr,16px) * .9);line-height:1.28;color:#24401C;text-align:left}
+.reward.marcada .rtexto .ic{font-size:1.3em;vertical-align:-.3em}
+.reward.marcada .rtexto .num{font-weight:900;white-space:nowrap}
+.reward.marcada .next{flex:none;font-size:13px;white-space:nowrap;margin-left:0}
+/* Mazo propio con el formato de los Peligros 2.0: menos ilustración y más texto. */
+.card.enc.solo.v2{padding:7px 7px 18px}
+.card.enc.solo.v2 .soloart{height:96px}
+.card.enc.solo.v2 .soloh{height:26px}
+.card.enc.solo.v2 .encp.v2{flex:1 1 auto}
+.card.enc.solo.v2 .dest.v2{max-height:30%}

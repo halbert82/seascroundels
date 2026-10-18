@@ -113,6 +113,8 @@ export interface Incautar {
   alRecuperar?: Efecto[]
   /** Si no superas la misión: fuera del juego (por defecto) o a los descartes. */
   siPierdes?: 'descartar'
+  /** Cómo se cuenta en el registro (por defecto, «Te incautan…»): «Dejas como pagaré». */
+  anotacion?: string
 }
 
 /** Una opción de «Elige» de un recuadro (o de un Destino). `si`: solo se ofrece si se cumple. */
@@ -148,6 +150,8 @@ export interface Selector {
   /** Solo los que no tengan este Rasgo («los que no sean Oficiales»). */
   sinRasgo?: string
   conEstado?: EstadoTripulante
+  /** Solo los que tengan alguna herida. */
+  herido?: boolean
   /** Solo este Tripulante concreto. */
   inst?: InstId
 }

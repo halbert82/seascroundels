@@ -4,8 +4,8 @@
 // - comprobar los invariantes del estado tras cada paso.
 
 import { sembrar } from '../azar.ts'
-import { CATALOGO, esUnica } from '../catalogo.ts'
-import { DATOS, type Habilidad } from '../datos.ts'
+import { CATALOGO, esUnica, registrarCartasExtra } from '../catalogo.ts'
+import { DATOS, type CapituloDatos, type Entorno, type Habilidad, type MisionDatos } from '../datos.ts'
 import { copia as copiaDe, encolar, estadoVacio } from '../estado.ts'
 import { ejecutar, responder } from '../motor.ts'
 import { nuevaPartida, type OpcionesPartida } from '../preparacion.ts'
@@ -79,7 +79,40 @@ export interface OpcionesSituacion {
   mazoHistoria?: CartaId[]
   /** Avance ya puesto en misiones disponibles (por identificador de misión). */
   avance?: Record<CartaId, number>
+  /** Pasajeros que ya viajan contigo (se quitan del mazo de historia). */
+  pasajeros?: CartaId[]
 }
+
+// ---------------------------------------------------------------------------
+// Misiones de prueba: sin reglas que estorben, para probar cartas y reglas generales. No son de la caja (no salen en
+// el catálogo ni en la galería).
+
+const MISION_DE_PRUEBA: MisionDatos = { id: 'pruebas', nombre: 'Misión de prueba', reto: 'Prueba', intro: '', inicial: true, aventura: false, capitulos: [] }
+
+function capituloDePrueba(id: string, num: number, entorno: Entorno, avance: number, distancia: number): void {
+  const carta: CapituloDatos = {
+    capitulo: 'I',
+    num,
+    nombre: `Prueba (${entorno} ${avance}${distancia > 0 ? `, Distancia ${distancia}` : ''})`,
+    entorno,
+    avanceNecesario: avance,
+    distancia,
+    reglas: [],
+    ambientacion: '',
+    recompensa: { rep: 1 },
+    siguiente: [],
+    textoSiguiente: '',
+  }
+  registrarCartasExtra({ tipo: 'capitulo', num, id, copias: 1, carta, mision: MISION_DE_PRUEBA })
+}
+
+/** Misiones sin reglas: Mar 5, Mar 3, Naturaleza 3 (Distancia 1), Ciudad 4 y Ciudad 3. */
+export const MISIONES_DE_PRUEBA = { mar5: 'pruebas-mar5', mar3: 'pruebas-mar3', nat3: 'pruebas-nat3', ciu4: 'pruebas-ciu4', ciu3: 'pruebas-ciu3' } as const
+capituloDePrueba('pruebas-mar5', 9001, 'mar', 5, 0)
+capituloDePrueba('pruebas-mar3', 9002, 'mar', 3, 0)
+capituloDePrueba('pruebas-nat3', 9003, 'nat', 3, 1)
+capituloDePrueba('pruebas-ciu4', 9004, 'ciu', 4, 0)
+capituloDePrueba('pruebas-ciu3', 9005, 'ciu', 3, 0)
 
 function historiaCompleta(): CartaId[] {
   const ids: CartaId[] = []
@@ -87,6 +120,7 @@ function historiaCompleta(): CartaId[] {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
     if (e.tipo === 'tesoro') ids.push(e.id)
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
+    if (e.tipo === 'pasajero' || e.tipo === 'cartaMision') ids.push(e.id)
   }
   return ids
 }
@@ -135,7 +169,8 @@ export function montar(op: OpcionesSituacion = {}): Estado {
     ['mazoPeligros', op.mazoPeligros],
     ['descartesPeligros', op.descartesPeligros],
     ['apartados', op.apartados ?? DATOS.mazosPredefinidos.apartadosDePeligros],
-    ['mazoHistoria', op.mazoHistoria ?? historiaCompleta()],
+    ['mazoHistoria', op.mazoHistoria ?? historiaCompleta().filter((id) => !(op.pasajeros ?? []).includes(id))],
+    ['pasajeros', op.pasajeros],
   ]
   for (const [zona, ids] of zonas) for (const id of ids ?? []) crearCopia(s, id, zona)
   for (const [id, n] of Object.entries(op.avance ?? {})) {
@@ -252,8 +287,9 @@ export class Jugador {
    */
   static enMision(op: OpcionesSituacion & { cubrir?: CartaId[] }): Jugador {
     const { cubrir, ...resto } = op
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto })
-    j.zarpar(resto.misiones?.[0] ?? 'deuda-I')
+    const misiones = resto.misiones ?? [MISIONES_DE_PRUEBA.ciu3]
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto, misiones })
+    j.zarpar(misiones[0] ?? MISIONES_DE_PRUEBA.ciu3)
     if (cubrir) j.cubrir(...cubrir)
     return j
   }

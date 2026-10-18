@@ -2,8 +2,10 @@
 // (si chocaran, manda el texto: esta prueba avisa para revisarlo).
 
 import { describe, expect, it } from 'vitest'
-import { CAPACIDADES_MISIONES, reputacionMinima } from './capacidades/misiones.ts'
+import { reputacionMinima } from './capacidades/misiones.ts'
 import { CATALOGO } from './catalogo.ts'
+import { misionesConReglas } from './misiones2/registro.ts'
+import './motor.ts'
 import { DATOS, type DestinoDatos, type EncuentroDatos, type OperacionPrototipo } from './datos.ts'
 import { interpretarDestino } from './destinos.ts'
 import { interpretarEfectos, type Efecto } from './efectos.ts'
@@ -12,12 +14,15 @@ function encuentros(): [string, EncuentroDatos][] {
   const lista: [string, EncuentroDatos][] = []
   // Los Peligros 2.0 no se leen de los iconos: tienen sus reglas registradas (peligros2/).
   for (const p of DATOS.peligros.filter((x) => x.version !== 2)) for (const [ent, e] of Object.entries(p.encuentros)) lista.push([`${p.id}.${ent}`, e])
-  for (const c of DATOS.cartasDeMazoPropio) lista.push([c.id, c.encuentro])
+  for (const c of DATOS.cartasDeMazoPropio.filter((x) => x.version !== 2)) lista.push([c.id, c.encuentro])
   return lista
 }
 
 function destinos(): [string, DestinoDatos][] {
-  return [...DATOS.peligros.filter((x) => x.version !== 2).map((p): [string, DestinoDatos] => [p.id, p.destino]), ...DATOS.cartasDeMazoPropio.map((c): [string, DestinoDatos] => [c.id, c.destino])]
+  return [
+    ...DATOS.peligros.filter((x) => x.version !== 2).map((p): [string, DestinoDatos] => [p.id, p.destino]),
+    ...DATOS.cartasDeMazoPropio.filter((x) => x.version !== 2).map((c): [string, DestinoDatos] => [c.id, c.destino]),
+  ]
 }
 
 /** Traduce una operación del prototipo a lo que debería entender el motor del texto. */
@@ -137,12 +142,10 @@ describe('Textos de las cartas que lee el motor', () => {
     }
   })
 
-  it('entiende las reglas de las 26 misiones', () => {
-    const misiones = CATALOGO.filter((e) => e.tipo === 'capitulo')
-    expect(misiones).toHaveLength(26)
-    // Todas las reglas salvo «Solo puedes zarpar… 9 de reputación», que se lee aparte.
-    const reglas = misiones.reduce((n, e) => n + (e.tipo === 'capitulo' ? e.carta.reglas.length : 0), 0)
-    expect(CAPACIDADES_MISIONES).toHaveLength(reglas - 1)
+  it('las 28 cartas de misión (misiones 2.0) tienen sus reglas escritas', () => {
+    const misiones = CATALOGO.filter((e) => e.tipo === 'capitulo').map((e) => e.id)
+    expect(misiones).toHaveLength(28)
+    expect([...misionesConReglas()].sort()).toEqual([...misiones].sort())
     expect(reputacionMinima('panama-III')).toBe(9)
     expect(reputacionMinima('deuda-I')).toBe(0)
   })

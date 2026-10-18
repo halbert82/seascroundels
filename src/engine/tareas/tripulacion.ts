@@ -116,6 +116,8 @@ export const hundirse: Manejador<'hundirse'> = (s) => {
   if (perdidas.length > 0) anotar(s, 'efecto', `Pierdes tus Mejoras de barco: ${nombres(s, perdidas)}.`)
   s.danoBarco = 0
   anotar(s, 'efecto', 'El Barco se reflota sin daño.')
+  // Don Anselmo se baja asustado si el Barco se hunde.
+  if (s.zonas.pasajeros.some((c) => copia(s, c).id === 'anselmo')) encolar(s, { tipo: 'bajarPasajero', carta: 'anselmo', motivo: 'se baja asustado' })
   // Las Mejoras perdidas al hundirse sí activan sus efectos «después de que descartes esta carta» (decisión de Albert).
   encolar(
     s,

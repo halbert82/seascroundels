@@ -6,6 +6,7 @@ import {
   type CapitanDatos,
   type CapituloDatos,
   type CartaMazoPropioDatos,
+  type CartaMisionDatos,
   type DatosCartas,
   type EscenarioDatos,
   type EventoDatos,
@@ -13,6 +14,7 @@ import {
   type MejoraBarcoDatos,
   type MejoraTripulanteDatos,
   type MisionDatos,
+  type PasajeroDatos,
   type PeligroDatos,
   type PuertoDatos,
   type TesoroDatos,
@@ -40,12 +42,14 @@ export type EntradaCatalogo =
       mazo: string
       mision: MisionDatos
     }
+  | { tipo: 'pasajero'; num: number; id: string; copias: number; carta: PasajeroDatos; mision: MisionDatos }
+  | { tipo: 'cartaMision'; num: number; id: string; copias: number; carta: CartaMisionDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
       tipo: 'capitulo'
       num: number
-      /** `${mision.id}-${capitulo}`, p. ej. «templo-I». */
+      /** `${mision.id}-${capitulo}`, p. ej. «templo-I» (con su rama si tiene salida doble: «maracaibo-II-a»). */
       id: string
       copias: number
       carta: CapituloDatos
@@ -65,6 +69,8 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   tesoro: 'Tesoro',
   peligro: 'Peligro',
   mazoPropio: 'Mazo propio',
+  pasajero: 'Pasajero',
+  cartaMision: 'Carta de misión',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -95,7 +101,7 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
       lista.push({
         tipo: 'capitulo',
         num: capitulo.num,
-        id: `${mision.id}-${capitulo.capitulo}`,
+        id: idCapitulo(mision.id, capitulo),
         copias: 1,
         carta: capitulo,
         mision,
@@ -103,23 +109,35 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     }
   }
 
-  // Cada carta de mazo propio pertenece al capítulo cuya capacidad Al zarpar la mezcla.
+  // Cada carta de mazo propio pertenece al capítulo que la baraja al zarpar.
   for (const carta of datos.cartasDeMazoPropio) {
     let encontrada = false
     for (const mision of datos.misiones) {
       for (const capitulo of mision.capitulos) {
-        const mezcla = capitulo.ayudaPrototipo?.mix
-        if (!mezcla) continue
-        const copias = mezcla.deck.filter((id) => id === carta.id).length
+        const mazo = capitulo.mazoPropio
+        if (!mazo) continue
+        const copias = mazo.cartas.filter((id) => id === carta.id).length
         if (copias === 0) continue
-        lista.push({ tipo: 'mazoPropio', num: carta.num, id: carta.id, copias, carta, mazo: mezcla.name, mision })
+        lista.push({ tipo: 'mazoPropio', num: carta.num, id: carta.id, copias, carta, mazo: mazo.nombre, mision })
         encontrada = true
       }
     }
     if (!encontrada) throw new Error(`La carta de mazo propio «${carta.id}» no pertenece a ningún mazo propio`)
   }
 
+  for (const carta of datos.pasajeros ?? []) {
+    const mision = datos.misiones.find((m) => m.id === carta.mision)
+    if (!mision) throw new Error(`El Pasajero «${carta.id}» no pertenece a ninguna travesía`)
+    lista.push({ tipo: 'pasajero', num: carta.num, id: carta.id, copias: 1, carta, mision })
+  }
+  for (const carta of datos.cartasDeMision ?? []) lista.push({ tipo: 'cartaMision', num: carta.num, id: carta.id, copias: 1, carta })
+
   return lista.sort((a, b) => a.num - b.num)
+}
+
+/** Identificador de un capítulo: «templo-I», o «maracaibo-II-a» si tiene salida doble. */
+export function idCapitulo(mision: string, capitulo: Pick<CapituloDatos, 'capitulo' | 'rama'>): string {
+  return `${mision}-${capitulo.capitulo}${capitulo.rama ? `-${capitulo.rama}` : ''}`
 }
 
 export const CATALOGO: EntradaCatalogo[] = construirCatalogo()

@@ -1,9 +1,9 @@
 // Zarpar, empezar la misión, recorrer sus cartas de Peligro y cerrarla (superada, retirada o hundida).
 
-import { capacidadesDe } from '../capacidades/index.ts'
 import { candidatas, sePuedeUsar } from '../usos.ts'
 import { reputacionMinima } from '../capacidades/misiones.ts'
 import { CATALOGO, iconosDe, porId, rasgosDe } from '../catalogo.ts'
+import { reglasMision } from '../misiones2/registro.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { devolverPeligros, persigueVigente } from '../peligros.ts'
 import { agotar, tieneEstadoBarco } from '../estados.ts'
@@ -99,12 +99,13 @@ export const mision: Manejador<'mision'> = (s, t) => {
       // Avance inicial: las fichas que ya tuviera (se quedan) y las de otras cartas.
       if (s.temporales.some((x) => x.clave === 'rumores.turno')) ganar(s, primerNumero(textoDe('rumores')), 'Rumores del tesoro')
       const tareas: NuevaTarea[] = []
-      for (const cap of capacidadesDe(copia(s, m.carta).id)) {
-        if (cap.ventana === 'alZarpar' && cap.desde === 'mision') tareas.push(...(cap.efecto?.(s, m.carta, null) ?? []))
-      }
+      // Las reglas de la misión: «Al zarpar» y «no puedes retirarte de esta misión».
+      const reglas = reglasMision(copia(s, m.carta).id)
+      if (reglas?.sinRetirada) m.sinRetirada = true
+      tareas.push(...(reglas?.alZarpar?.(s) ?? []))
       // Las capacidades «Al zarpar» de tus cartas (Vela mayor, Chalupa) se aplican en el mismo momento.
       for (const [cap, fuente] of candidatas(s)) {
-        if (cap.ventana === 'alZarpar' && sePuedeUsar(s, cap, fuente)) tareas.push({ tipo: 'usar', uso: { fuente, clave: cap.clave }, evento: null, paso: 'coste' })
+        if (cap.ventana === 'alZarpar' && cap.desde !== 'mision' && sePuedeUsar(s, cap, fuente)) tareas.push({ tipo: 'usar', uso: { fuente, clave: cap.clave }, evento: null, paso: 'coste' })
       }
       // «Después de zarpar…»: Respuestas de las cartas del jugador.
       tareas.push({ tipo: 'evento', ev: { tipo: 'zarpar', mision: m.carta }, fase: 'antes', cancelado: false, usadas: [] })
@@ -144,20 +145,24 @@ export const ganarAvance: Manejador<'ganarAvance'> = (s, t) => {
   return 'hecha'
 }
 
-/** «Agota a un Oficial para ganar 2» / «Descarta 2 cartas para ganar 2»: opcionales. */
+/** «Puedes agotar a un Oficial para ganar 2», «puedes descartar 2 cartas para mirar…»: opcionales, al zarpar. */
 export const alZarparOpcional: Manejador<'alZarparOpcional'> = (s, t, e) => {
-  if (!s.mision) return 'hecha'
+  const m = s.mision
+  if (!m) return 'hecha'
+  const misionId = copia(s, m.carta).id
+  const efectos: NuevaTarea = { tipo: 'aplicarEfectos', efectos: t.efectos, contexto: 'efecto', fuente: m.carta }
   const coste = t.coste
   if (coste.tipo === 'agotarRasgo') {
-    const candidatos = preparados(s).filter((c) => rasgosDe(copia(s, c).id).includes(coste.rasgo))
+    const candidatos = preparados(s).filter((c) => rasgosDe(copia(s, c).id).some((r) => coste.rasgos.includes(r)))
     if (candidatos.length === 0) return 'hecha'
     if (!e) {
-      return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'alZarparAgotar', n: t.n }, candidatas: candidatos, min: 0, max: 1 })
+      return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'alZarparAgotar', carta: misionId, texto: t.texto }, candidatas: candidatos, min: 0, max: 1 })
     }
     const [c] = eleccionDe(e, 'cartas').ids
     if (c) {
       agotar(s, c)
-      ganar(s, t.n, `Agotas a ${nombre(s, c)}`)
+      anotar(s, 'pagar', `Agotas a ${nombre(s, c)} al zarpar.`)
+      encolar(s, efectos)
     }
     return 'hecha'
   }
@@ -165,20 +170,19 @@ export const alZarparOpcional: Manejador<'alZarparOpcional'> = (s, t, e) => {
   if (!e) {
     return preguntar({
       tipo: 'elegirOpcion',
-      motivo: { clave: 'alZarparDescartar', n: t.n },
+      motivo: { clave: 'alZarparDescartar', carta: misionId, n: coste.n, texto: t.texto },
       opciones: [
-        { clave: 'si', texto: `Descartar ${coste.n} cartas para ganar ${t.n} de Avance` },
+        { clave: 'si', texto: t.texto },
         { clave: 'no', texto: 'No' },
       ],
     })
   }
-  if (eleccionDe(e, 'opcion').clave === 'si') {
-    encolar(s, { tipo: 'pagar', cantidad: coste.n, motivo: copia(s, s.mision.carta).id }, { tipo: 'ganarAvance', n: t.n })
-  }
+  if (eleccionDe(e, 'opcion').clave === 'si') encolar(s, { tipo: 'pagar', cantidad: coste.n, motivo: misionId }, efectos)
   return 'hecha'
 }
 
 /** «Baraja el mazo propio con N cartas del mazo de Peligros. Durante esta misión, revela de ese mazo.» */
+// Las cartas del mazo propio de la travesía están en el mazo de historia (las que se retiraron, no vuelven).
 export const mezclarMazoPropio: Manejador<'mezclarMazoPropio'> = (s, t) => {
   if (!s.mision) return 'hecha'
   const misionId = porId(copia(s, s.mision.carta).id)
@@ -203,12 +207,16 @@ export const mezclarMazoPropio: Manejador<'mezclarMazoPropio'> = (s, t) => {
 // ---------------------------------------------------------------------------
 // Fin de la misión
 
-/** Superar la misión: rehenes rescatados, reputación, recompensa, capítulo siguiente y Tesoro. */
+/**
+ * Superar la misión: rehenes rescatados, lo incautado vuelve, reputación y recompensa (o el final con elección),
+ * Gesta, Pasajero, capítulo siguiente (con salida doble, el que toque) y Tesoro.
+ */
 export const superarMision: Manejador<'superarMision'> = (s) => {
   const m = s.mision
   if (!m) return 'hecha'
   const e = porId(copia(s, m.carta).id)
   if (e.tipo !== 'capitulo') return 'hecha'
+  const reglas = reglasMision(e.id)
   anotar(s, 'fin', `¡Superas «${e.carta.nombre}»!`, {
     tipo: 'finMision',
     mision: e.id,
@@ -217,6 +225,10 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
     avance: copia(s, m.carta).avance,
     necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
   })
+  // Lo que se mira de la misión antes de que cambie nada (Gesta, Tesoro, salida doble).
+  const gesta = reglas?.gesta?.(s) ?? false
+  const conTesoro = reglas?.conTesoro?.(s) ?? true
+  const elegido = reglas?.siguiente?.(s)
   for (const h of [...s.zonas.rehenes]) rescatarRehen(s, h)
   const habiaIncautadas = s.zonas.incautadas.length > 0
   recuperarIncautadas(s)
@@ -224,23 +236,40 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   const tareas: NuevaTarea[] = []
   // «Si superas la misión, las recuperas y robas 2».
   if (habiaIncautadas && m.alRecuperar && m.alRecuperar.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: m.alRecuperar, contexto: 'efecto' })
-  if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
+  if (r.elige && r.elige.length > 0) tareas.push({ tipo: 'elegirFinal', mision: m.carta })
+  else if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
+  if (gesta) {
+    anotar(s, 'efecto', '¡Gesta cumplida!: +1 de reputación.', { tipo: 'gesta', mision: e.id })
+    tareas.push({ tipo: 'cambiarReputacion', n: 1 })
+  }
   if (r.search) tareas.push({ tipo: 'buscarMuelle', filtro: r.search === 'crew' ? 'tripulante' : r.search === 'ship' ? 'mejoraBarco' : 'mejora' })
   if (r.draw) tareas.push({ tipo: 'robar', n: r.draw })
-  const siguiente = /carta (\d+)/.exec(e.carta.textoSiguiente)?.[1]
-  if (siguiente) {
-    const num = Number(siguiente)
+  if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
+  // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda y el otro sale de la partida.
+  const posibles = e.carta.siguiente
+  const num = elegido ?? posibles[0]
+  for (const otro of posibles.filter((n) => n !== num)) {
+    const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === otro)
+    if (carta) {
+      mover(s, carta, 'fueraDeJuego')
+      anotar(s, 'efecto', `«${nombre(s, carta)}» sale de la partida.`)
+    }
+  }
+  if (num !== undefined && !(r.elige && r.elige.length > 0)) {
     const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === num)
     if (carta) {
       const tipo = porId(copia(s, carta).id).tipo
-      if (tipo === 'tesoro') tareas.push({ tipo: 'ponerTesoro', carta })
-      else {
+      if (tipo === 'tesoro') {
+        if (conTesoro) tareas.push({ tipo: 'ponerTesoro', carta })
+        else anotar(s, 'aviso', `No ganas el Tesoro «${nombre(s, carta)}».`)
+      } else {
         mover(s, carta, 'mazoMisiones')
         barajar(s, 'mazoMisiones')
         anotar(s, 'efecto', `«${nombre(s, carta)}» se baraja en el mazo de Misiones.`)
       }
     }
   }
+  tareas.push(...(reglas?.alSuperar?.(s) ?? []))
   if (r.victoria) {
     s.resultado = { gana: true, motivo: `Has superado «${e.carta.nombre}».` }
     anotar(s, 'fin', '¡Has ganado la partida!')
@@ -279,22 +308,30 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
   if (!m) return 'hecha'
   if (t.paso === 'rehenes') {
     const id = copia(s, m.carta).id
+    const reglas = reglasMision(id)
     const textos = { retirada: 'Te retiras de', hundida: 'El Barco se hunde: no superas', superada: '' }
-    anotar(s, 'fin', `${textos[m.fin ?? 'retirada']} «${nombre(s, m.carta)}».`, {
+    const texto = m.motivoFallo ? `La misión falla (${m.motivoFallo}): no superas` : textos[m.fin ?? 'retirada']
+    const avance = copia(s, m.carta).avance
+    anotar(s, 'fin', `${texto} «${nombre(s, m.carta)}».`, {
       tipo: 'finMision',
       mision: id,
       resultado: m.fin ?? 'retirada',
       resueltas: m.cartasResueltas,
-      avance: copia(s, m.carta).avance,
+      avance,
       necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
+      ...(m.motivoFallo ? { motivo: m.motivoFallo } : {}),
     })
-    copia(s, m.carta).avance = 0
     const tareas: NuevaTarea[] = []
+    // Saqueo (La casa del gobernador): si te retiras por tu cuenta entre dos Peligros, cobras según tu Avance.
+    if (m.fin === 'retirada' && m.retiradaVoluntaria && reglas?.alRetirarte) tareas.push(...reglas.alRetirarte(s, avance))
+    copia(s, m.carta).avance = 0
     for (const h of [...s.zonas.rehenes]) {
       anotar(s, 'aviso', `Pierdes a ${nombre(s, h)}, que era rehén.`, { tipo: 'rehenPerdido', carta: copia(s, h).id })
       tareas.push({ tipo: 'sacarTripulante', carta: h, destino: 'fueraDeJuego', motivo: 'rehen' }, { tipo: 'cambiarReputacion', n: -1 })
     }
     tareas.push(...perderIncautadas(s))
+    // Lo que pasa al no superarla («Don Anselmo se baja asustado»).
+    tareas.push(...(reglas?.alNoSuperar?.(s) ?? []))
     encolar(s, ...tareas)
     t.paso = 'conservar'
     return 'sigue'
@@ -362,6 +399,18 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   const m = s.mision
   if (!m) return 'hecha'
   if (m.fin === 'superada' && s.zonas.misionesDisponibles.includes(m.carta)) mover(s, m.carta, 'misionesSuperadas', 'abajo')
+  // «La Armada te persigue» de la Flota III vuelve a apartarse aunque no haya llegado a salir.
+  const apartar = m.alApartar
+  if (apartar && (s.zonas.mazoPeligros.includes(apartar) || s.zonas.mazoMision.includes(apartar))) {
+    if (s.persigue === apartar) s.persigue = null
+    mover(s, apartar, 'apartados')
+    anotar(s, 'efecto', `«${nombre(s, apartar)}» vuelve a apartarse.`)
+  }
+  // Las cartas de misión que estaban junto a ella («¡La guardia!») vuelven a apartarse.
+  for (const c of [...s.zonas.cartasMision]) {
+    mover(s, c, 'mazoHistoria', 'abajo')
+    anotar(s, 'efecto', `«${nombre(s, c)}» vuelve a apartarse.`)
+  }
   devolverPeligros(s)
   delete s.incautadas
   // Al acabar la misión con Incendio, en cualquier Entorno, pierdes una Mejora de barco y la ficha se queda (P4).

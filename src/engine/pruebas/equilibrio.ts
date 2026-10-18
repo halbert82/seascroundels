@@ -58,6 +58,8 @@ export interface Partida {
   ofrecidas: CartaId[]
   zarpes: CartaId[]
   resultados: { mision: CartaId; resultado: 'superada' | 'retirada' | 'hundida' }[]
+  /** Reputación ganada (o perdida) en cada zarpe: durante la misión y con su recompensa. */
+  repPorZarpe: { mision: CartaId; rep: number }[]
   rehenesPerdidos: number
   /** Tripulantes que quedaron rehenes (los rescatara o no). */
   capturados: number
@@ -114,6 +116,7 @@ export function jugarPartida(
     ofrecidas: [],
     zarpes: [],
     resultados: [],
+    repPorZarpe: [],
     rehenesPerdidos: 0,
     capturados: 0,
     entradasEnMazo: 0,
@@ -127,6 +130,8 @@ export function jugarPartida(
   // La carta de Peligro cuyo encuentro está en curso (el daño se le apunta a ella) y el Destino de la Prueba.
   let enCurso: CartaId | null = null
   let destinoEnCurso: CartaId | null = null
+  // La reputación que cambia desde que zarpas hasta que empieza el turno siguiente se apunta a esa misión.
+  let zarpeAbierto: { mision: CartaId; rep: number } | null = null
   for (let n = 0; !s.resultado && n < MAXIMO_RESPUESTAS; n++) {
     const d = s.pendiente
     if (!d) throw new Error(`Partida ${semilla} parada sin decisión`)
@@ -136,8 +141,10 @@ export function jugarPartida(
     s = responder(s, jugador(s, d))
     if (invariantes) comprobarInvariantes(s, { json: false })
     for (const r of s.registro) {
+      if (r.tipo === 'turno') zarpeAbierto = null
       const dato = r.dato
       if (!dato) continue
+      if (dato.tipo === 'reputacion' && zarpeAbierto) zarpeAbierto.rep += dato.n
       switch (dato.tipo) {
         case 'prueba':
           p.pruebas.push({ encuentro: `${dato.encuentro} (${nombreDe(dato.peligro)})`, superada: dato.superada })
@@ -175,6 +182,8 @@ export function jugarPartida(
           break
         case 'zarpar':
           p.zarpes.push(dato.mision)
+          zarpeAbierto = { mision: dato.mision, rep: 0 }
+          p.repPorZarpe.push(zarpeAbierto)
           break
         case 'finMision':
           p.resultados.push({ mision: dato.mision, resultado: dato.resultado })
@@ -386,7 +395,11 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   const panama = ganadas.filter((p) => p.motivo.includes('Panamá')).length
   lineas.push(`| … por reputación / por Panamá | ${ganadas.length - panama} / ${panama} |`)
   lineas.push(`| Reputación media al final | ${media(partidas.map((p) => p.reputacion))} |`)
+  lineas.push(`| Turnos de media por partida | ${media(partidas.map((p) => p.turnoFinal))} |`)
   lineas.push(`| Turno medio de victoria | ${media(ganadas.map((p) => p.turnoFinal))} |`)
+  lineas.push(`| Misiones superadas por partida | ${media(partidas.map((p) => p.resultados.filter((r) => r.resultado === 'superada').length), 2)} |`)
+  const zarpes = partidas.flatMap((p) => p.repPorZarpe)
+  lineas.push(`| Reputación media por zarpe | ${media(zarpes.map((z) => z.rep), 2)} |`)
   lineas.push(`| Hundimientos por partida | ${media(partidas.map((p) => p.hundimientos), 2)} |`)
   lineas.push(`| Tripulantes muertos por partida | ${media(partidas.map((p) => p.muertes), 2)} |`)
   lineas.push(`| Rehenes capturados / perdidos por partida | ${media(partidas.map((p) => p.capturados), 2)} / ${media(partidas.map((p) => p.rehenesPerdidos), 2)} |`)
@@ -422,10 +435,10 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   lineas.push(
     '## Misiones',
     '',
-    'Por orden de la caja: cada cadena con sus capítulos I, II y III. «Ofrecida» cuenta cada turno en que se podía zarpar a ella; «evitada», las veces que se ofreció y no se eligió. «A medias»: la partida terminó durante la misión (Capitán derrotado o victoria).',
+    'Por orden de la caja: cada cadena con sus capítulos I, II y III (y los II-a y II-b de las salidas dobles). «Ofrecida» cuenta cada turno en que se podía zarpar a ella; «evitada», las veces que se ofreció y no se eligió. «A medias»: la partida terminó durante la misión (Capitán derrotado o victoria). «Rep. por zarpe»: la reputación media que da cada vez que se zarpa a ella (recompensa, Gesta y lo que ganes o pierdas durante la misión, como un rehén perdido).',
     '',
-    '| Misión | Cap. | Ofrecida | Zarpes | Superada | Retirada | Hundida | A medias | % evitada | % éxito al zarpar |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Misión | Cap. | Ofrecida | Zarpes | Superada | Retirada | Hundida | A medias | % evitada | % éxito al zarpar | Rep. por zarpe |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   )
   const misiones = new Map<CartaId, { ofrecida: number; zarpes: number; superada: number; retirada: number; hundida: number }>()
   const fila = (m: CartaId) => {
@@ -438,15 +451,38 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
     for (const m of p.zarpes) fila(m).zarpes++
     for (const r of p.resultados) fila(r.mision)[r.resultado]++
   }
-  for (const [m, f] of [...misiones].sort((a, b) => porId(a[0]).num - porId(b[0]).num)) {
+  // Orden de la caja: por travesía, y dentro de cada una por capítulo (II-a antes que II-b).
+  const ordenCapitulo = (m: CartaId) => {
     const e = porId(m)
-    const capitulo = e.tipo === 'capitulo' ? e.carta.capitulo : ''
+    if (e.tipo !== 'capitulo') return [999, 0]
+    const travesia = Math.min(...e.mision.capitulos.map((c) => c.num))
+    return [travesia, ['I', 'II', 'III'].indexOf(e.carta.capitulo) * 10 + (e.carta.rama === 'b' ? 1 : 0)]
+  }
+  const ordenadas = [...misiones].sort((a, b) => {
+    const [ta, ca] = ordenCapitulo(a[0])
+    const [tb, cb] = ordenCapitulo(b[0])
+    return (ta ?? 0) - (tb ?? 0) || (ca ?? 0) - (cb ?? 0)
+  })
+  for (const [m, f] of ordenadas) {
+    const e = porId(m)
+    const capitulo = e.tipo === 'capitulo' ? `${e.carta.capitulo}${e.carta.rama ? `-${e.carta.rama}` : ''}` : ''
     const medias = f.zarpes - f.superada - f.retirada - f.hundida
+    const rep = zarpes.filter((z) => z.mision === m).map((z) => z.rep)
     lineas.push(
-      `| ${nombreDe(m)} | ${capitulo} | ${f.ofrecida} | ${f.zarpes} | ${f.superada} | ${f.retirada} | ${f.hundida} | ${medias} | ${porcentaje(f.ofrecida - f.zarpes, f.ofrecida)} | ${porcentaje(f.superada, f.zarpes)} |`,
+      `| ${nombreDe(m)} | ${capitulo} | ${f.ofrecida} | ${f.zarpes} | ${f.superada} | ${f.retirada} | ${f.hundida} | ${medias} | ${porcentaje(f.ofrecida - f.zarpes, f.ofrecida)} | ${porcentaje(f.superada, f.zarpes)} | ${rep.length > 0 ? media(rep, 2) : '—'} |`,
     )
   }
   lineas.push('')
+  // Qué elige y qué evita el jugador automático (entre las que se le ofrecieron al menos 100 veces).
+  const ofrecidas = ordenadas.filter(([, f]) => f.ofrecida >= 100)
+  const porEvitar = [...ofrecidas].sort((a, b) => (b[1].ofrecida - b[1].zarpes) / b[1].ofrecida - (a[1].ofrecida - a[1].zarpes) / a[1].ofrecida)
+  const nombrar = (lista: typeof ofrecidas) => lista.map(([m, f]) => `«${nombreDe(m)}» (${porcentaje(f.ofrecida - f.zarpes, f.ofrecida)})`).join(', ')
+  lineas.push(
+    `**Las que más evita** (de las que se le ofrecieron al menos 100 veces): ${nombrar(porEvitar.slice(0, 5))}.`,
+    '',
+    `**Las que más elige:** ${nombrar([...porEvitar].reverse().slice(0, 5))}.`,
+    '',
+  )
 
   // Datos por carta en la partida predefinida.
   const predefinidas = [...new Set([...DATOS.mazosPredefinidos.mazoDeMuelle, ...DATOS.mazosPredefinidos.mazoDelCapitan])]

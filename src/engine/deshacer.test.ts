@@ -38,4 +38,15 @@ describe('Guardado', () => {
   it('rechaza partidas guardadas de otra versión', () => {
     expect(() => deserializar('{"version":2}')).toThrow()
   })
+
+  it('rechaza las partidas guardadas antes de las misiones 2.0 (sin Pasajeros, o con capítulos que ya no existen)', () => {
+    const s = montar({ escenario: ['calma_ev'] })
+    const sinPasajeros = JSON.parse(serializar(s)) as { zonas: Record<string, unknown> }
+    delete sinPasajeros.zonas.pasajeros
+    expect(() => deserializar(JSON.stringify(sinPasajeros))).toThrow(/versión/)
+    const conCapituloAntiguo = JSON.parse(serializar(s)) as { cartas: Record<string, { id: string }> }
+    const historia = s.zonas.mazoHistoria[0]
+    if (historia) conCapituloAntiguo.cartas[historia] = { ...conCapituloAntiguo.cartas[historia]!, id: 'maracaibo-II' }
+    expect(() => deserializar(JSON.stringify(conCapituloAntiguo))).toThrow(/versión/)
+  })
 })

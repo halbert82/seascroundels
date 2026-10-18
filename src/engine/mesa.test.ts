@@ -28,7 +28,7 @@ function partidaCompleta(semilla: number): { final: Estado; estados: Estado[] } 
 
 describe('Desglose de la Prueba', () => {
   it('ejemplo: Niebla espesa con «Corriente traicionera»: Diego 2 · Bucanero 1 · Barco +1 · Mano firme +2 = 6 contra 3 + 2 = 5', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['bucanero'], mano: ['timon'], mazoPeligros: ['niebla', 'arrecifes', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['bucanero'], mano: ['timon'], mazoPeligros: ['niebla', 'arrecifes', 'calma'] })
     j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
     const total = desgloseTotal(j.estado)
     expect(total.map((p) => [p.etiqueta, p.n])).toEqual([
@@ -76,7 +76,7 @@ describe('Resumen de la partida', () => {
 
 describe('Datos para animar', () => {
   it('lo revelado, el Avance, las heridas, el daño y la reputación llevan su dato en el registro', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], mazoPeligros: ['arrecifes', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mazoPeligros: ['arrecifes', 'leyenda', 'calma'] })
     j.comprometer('NAV', ['capitan']).seguir()
     const tipos = j.estado.registro.map((r) => r.dato?.tipo).filter(Boolean)
     expect(tipos).toEqual(expect.arrayContaining(['revelado', 'dano', 'avance']))

@@ -63,15 +63,18 @@ describe('vista de las cartas', () => {
     const fiebres = vistaDeCarta(carta(87)) as VistaPeligro
     expect(fiebres.encuentros[0]?.opciones[0]?.alternativa).toEqual({ texto: '1 con', rasgo: 'Cirujano' })
 
+    // «La Armada te persigue» ya tiene el formato de los Peligros 2.0 (Navío de línea de la Armada).
     const armada = vistaDeCarta(carta(95)) as VistaPeligro
     expect(armada.entraDuranteLaPartida).toBe(true)
-    expect(armada.destino.sinOposicion).toEqual([{ texto: '1', icono: 'agotar' }])
+    expect(armada.v2).toBe(true)
+    expect(armada.encuentros[0]?.nombre).toBe('Navío de línea de la Armada')
+    expect(armada.encuentros[0]?.opciones.map((o) => `${o.hab} ${o.dificultad}`)).toEqual(['NAV 5'])
   })
 
   it('capítulos: sello, travesía, Distancia, recompensa y pie', () => {
     const selva = vistaDeCarta(carta(119)) as VistaCapitulo
     expect([selva.sello, selva.de, selva.travesia]).toEqual(['II', 'III', 'El templo perdido'])
-    expect(selva.distancia).toBe(3)
+    expect(selva.distancia).toBe(2)
     expect(selva.siguiente).toBe('Añade la carta 120 a Misiones')
     expect(selva.pie).toBe('Mazo de historia')
 
@@ -82,6 +85,15 @@ describe('vista de las cartas', () => {
 
     expect((vistaDeCarta(carta(153)) as VistaCapitulo).recompensaTexto).toBe('¡Victoria!')
     expect((vistaDeCarta(carta(116)) as VistaCapitulo).travesia).toBe('Aventura')
+
+    // Salida doble: los capítulos II-a y II-b llevan su rama en el sello; la travesía sigue teniendo III capítulos.
+    const barra = vistaDeCarta(carta(218)) as VistaCapitulo
+    expect([barra.sello, barra.rama, barra.de, barra.nombre]).toEqual(['II', 'a', 'III', 'La barra de noche'])
+    expect((vistaDeCarta(carta(140)) as VistaCapitulo).rama).toBe('b')
+    // Final con elección: la recompensa se imprime como texto.
+    const templo = vistaDeCarta(carta(120)) as VistaCapitulo
+    expect(templo.recompensa).toEqual([])
+    expect(templo.recompensaMarcada?.length).toBeGreaterThan(0)
   })
 
   it('puerto: muelle, tres opciones comunes y la propia', () => {

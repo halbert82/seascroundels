@@ -47,7 +47,7 @@ registrarPeligro('oportunidad', {
 
 describe('Se queda en juego', () => {
   it('se quita con una Prueba normal: comprometes, sale Destino y, si superas, se descarta', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
     expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
     j.usar('percances.mar.quitar0')
     expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
@@ -59,25 +59,25 @@ describe('Se queda en juego', () => {
   })
 
   it('una Prueba de una Acción sin nadie comprometido aplica Sin oposición y falla (con su efecto de fallo)', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'niebla', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'niebla', 'calma'] })
     j.usar('percances.mar.quitar0').comprometer('NAV', []).seguir()
     expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
     expect(j.copia('capitan').heridas).toBe(1)
   })
 
   it('se quita agotando a un Tripulante con el Rasgo pedido, o pagando cartas', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], tripulacion: ['viejo_lobo'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], tripulacion: ['viejo_lobo'] })
     j.usar('percances.mar.quitar1')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'agotarParaPagar' } })
     j.elegir('viejo_lobo')
     expect(j.zona('peligrosEnJuego')).toEqual([])
-    const k = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], mano: ['ojo', 'timon'] })
+    const k = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['ojo', 'timon'] })
     k.usar('percances.mar.quitar2').elegir('ojo', 'timon')
     expect(k.zona('peligrosEnJuego')).toEqual([])
   })
 
   it('mientras está, cambia las Pruebas y reacciona cuando fallas', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'fauna', 'chubasco', 'calma'], tripulacion: ['carpintero'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'fauna', 'chubasco', 'calma'], tripulacion: ['carpintero'] })
     j.seguir().comprometer('COM', ['carpintero'])
     expect(dificultadPrueba(j.estado)).toBe(3) // Bestia en el Mar COM 2 + 1 de «Percances»; el Destino es +0
     j.seguir()
@@ -85,13 +85,13 @@ describe('Se queda en juego', () => {
   })
 
   it('no se puede hacer la Prueba de una Acción durante otra Prueba', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'chubasco', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'chubasco', 'calma'] })
     j.seguir().comprometer('NAV', ['capitan'])
     expect(j.ofreceCapacidad('percances.mar.quitar0')).toBe(false)
   })
 
   it('al terminar la misión, se descarta', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'] })
     j.retirarse().opcion('dejar')
     expect(j.zona('peligrosEnJuego')).toEqual([])
     expect(j.zona('descartesPeligros')).toContain('percances')
@@ -100,7 +100,7 @@ describe('Se queda en juego', () => {
 
 describe('Sin ayuda', () => {
   it('solo un Tripulante; suman las Habilidades de la mano; no se juegan Eventos', () => {
-    const j = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['bucanero'], mano: ['ojo', 'vendas'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['bucanero'], mano: ['ojo', 'vendas'] })
     expect(j.decision).toMatchObject({ tipo: 'comprometer', sinAyuda: true })
     expect(() => j.comprometer('EXP', ['capitan', 'bucanero'])).toThrow(/solo puede comprometerse un Tripulante/)
     expect((j.decision as { cartas: `i${number}`[] }).cartas.map((c) => j.estado.cartas[c]?.id)).toEqual(['ojo']) // las Vendas (Evento) no
@@ -111,7 +111,7 @@ describe('Sin ayuda', () => {
 
 describe('Incautado', () => {
   it('cartas de la mano van debajo de la misión; si superas, se recuperan', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], mano: ['ojo', 'timon', 'coraje'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], mano: ['ojo', 'timon', 'coraje'] })
     j.elegir('ojo', 'timon')
     expect(j.zona('incautadas')).toEqual(['ojo', 'timon'])
     j.comprometer('NAV', ['capitan']).seguir() // éxito: recupera ya lo incautado
@@ -120,17 +120,17 @@ describe('Incautado', () => {
   })
 
   it('una Mejora incautada vuelve a su portador si superas la misión; si no, se pierde', () => {
-    const j = Jugador.enMision({ misiones: ['aguada-I'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], capitan: { mejoras: ['sable'] }, mano: ['ojo'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-nat3'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], capitan: { mejoras: ['sable'] }, mano: ['ojo'] })
     expect(j.zona('incautadas')).toEqual(['sable'])
     j.comprometer('EXP', ['capitan'], ['ojo']).seguir().seguir() // 2 + 2 de Avance: supera la misión
     expect(j.copia('sable').vinculadaA).toBe(j.inst('capitan'))
-    const k = Jugador.enMision({ misiones: ['aguada-I'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], capitan: { mejoras: ['sable'] } })
+    const k = Jugador.enMision({ misiones: ['pruebas-nat3'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], capitan: { mejoras: ['sable'] } })
     k.comprometer('EXP', []).seguir().retirarse()
     expect(k.zona('fueraDeJuego')).toContain('sable')
   })
 
   it('un Tripulante incautado sigue ocupando su plaza y se pierde si no superas la misión', () => {
-    const j = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['encrucijada', 'calma', 'calma'], tripulacion: ['bucanero', 'vigia'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], mazoPeligros: ['encrucijada', 'calma', 'calma'], tripulacion: ['bucanero', 'vigia'] })
     j.elegir('bucanero')
     expect(j.zona('incautadas')).toEqual(['bucanero'])
     expect(j.ofrece('retirarse')).toBe(false) // «No puedes retirarte de esta misión»
@@ -139,14 +139,14 @@ describe('Incautado', () => {
 
 describe('Efectos que leen la mesa y miran el mazo', () => {
   it('mirar las 2 de arriba y descartar la de arriba sin resolverla', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['oportunidad', 'chubasco', 'niebla', 'calma'], tripulacion: ['viejo_lobo'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['oportunidad', 'chubasco', 'niebla', 'calma'], tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['viejo_lobo', 'capitan']).pasarOfertas().seguir()
     expect(j.registro.some((r) => r.startsWith('Miras las 2 cartas de arriba'))).toBe(true)
     expect(j.zona('descartesPeligros')).toContain('niebla')
   })
 
   it('«1 herida por cada Mejora (máx. 2)»', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['oportunidad', 'chubasco', 'calma'], barco: { mejoras: ['vela', 'hamacas', 'casco'] } })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['oportunidad', 'chubasco', 'calma'], barco: { mejoras: ['vela', 'hamacas', 'casco'] } })
     j.comprometer('NAV', []).seguir()
     expect(j.copia('capitan').heridas).toBe(2)
   })

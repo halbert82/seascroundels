@@ -40,7 +40,8 @@ describe('Prueba masiva: jugador con criterio', () => {
       expect(p.reputacion >= 18 || p.motivo.includes('Panamá')).toBe(true)
     }
     expect(ganadas.some((p) => p.reputacion >= 18)).toBe(true)
-    expect(ganadas.some((p) => p.motivo.includes('Panamá'))).toBe(true)
+    // Con las misiones 2.0 el jugador automático llega antes a 18 de reputación que a «Las puertas de Panamá»
+    // (la victoria por Panamá tiene su propia prueba en mision.test.ts).
   })
 
   it('en la simulación ocurre de todo: superar, retirarse, hundirse, morir, la Armada y «Se retira»', { timeout: 180_000 }, () => {

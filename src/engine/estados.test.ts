@@ -37,7 +37,7 @@ describe('Estados de los Tripulantes', () => {
   })
 
   it('Borracho: +1 COM, no puede comprometerse a NAV ni EXP, y se quita al final del turno', () => {
-    const j = mision('maracaibo-II', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['borracho'] }] })
+    const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['borracho'] }] })
     expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })).toBe(4)
     expect(() => j.comprometer('NAV', ['bucanero'])).toThrow(/Borracho/)
     const k = alFinal({ tripulacion: [{ id: 'bucanero', estados: ['borracho'] }] })
@@ -46,21 +46,21 @@ describe('Estados de los Tripulantes', () => {
   })
 
   it('Aturdido: la próxima vez que se comprometa no suma, y se quita entonces', () => {
-    const j = mision('maracaibo-II', ['chubasco', 'chubasco', 'chubasco', 'chubasco'], { tripulacion: [{ id: 'viejo_lobo', estados: ['aturdido'] }] })
+    const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'chubasco', 'chubasco'], { tripulacion: [{ id: 'viejo_lobo', estados: ['aturdido'] }] })
     j.comprometer('NAV', ['viejo_lobo'])
     expect(totalPrueba(j.estado)).toBe(1) // solo el Barco
     expect(j.estados('viejo_lobo')).toEqual([])
   })
 
   it('Asustado: no puede comprometerse solo; se quita al superar una Prueba en la que participe', () => {
-    const j = mision('maracaibo-II', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'viejo_lobo', estados: ['asustado'] }] })
+    const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'viejo_lobo', estados: ['asustado'] }] })
     expect(() => j.comprometer('NAV', ['viejo_lobo'])).toThrow(/Asustado/)
     j.comprometer('NAV', ['viejo_lobo', 'capitan']).pasarOfertas().seguir()
     expect(j.estados('viejo_lobo')).toEqual([])
   })
 
   it('Sangrando: cada vez que se agota, 1 herida; curar 1 lo quita', () => {
-    const j = mision('maracaibo-II', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['sangrando'] }] })
+    const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['sangrando'] }] })
     j.comprometer('NAV', ['bucanero'])
     expect(j.copia('bucanero').heridas).toBe(1)
     const k = Jugador.en({ tripulacion: ['matasanos', { id: 'bucanero', heridas: 1, estados: ['sangrando'] }] })
@@ -70,25 +70,25 @@ describe('Estados de los Tripulantes', () => {
   })
 
   it('Buscado: en Ciudad, los encuentros Guardia y Militar reciben +1 si participa', () => {
-    const j = mision('ladron-I', ['ley', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
+    const j = mision('pruebas-ciu4', ['ley', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
     j.comprometer('COM', ['bucanero'])
     expect(dificultadPrueba(j.estado)).toBe(4) // COM 3 + 1
-    const k = mision('ladron-I', ['ley', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
+    const k = mision('pruebas-ciu4', ['ley', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
     k.comprometer('COM', ['capitan'])
     expect(dificultadPrueba(k.estado)).toBe(3)
   })
 
   it('Maldito: cuando un Destino hiere a «uno de los comprometidos», tiene que ser él; se quita solo si participa en la Prueba Sobrenatural que se supera (P15)', () => {
-    const j = mision('maracaibo-II', ['chubasco', 'rivales', 'calma'], { tripulacion: ['viejo_lobo', { id: 'bucanero', estados: ['maldito'] }] })
+    const j = mision('pruebas-mar5', ['chubasco', 'rivales', 'calma'], { tripulacion: ['viejo_lobo', { id: 'bucanero', estados: ['maldito'] }] })
     j.comprometer('NAV', ['viejo_lobo', 'bucanero']).pasarOfertas()
     expect(j.copia('bucanero').heridas).toBe(1)
     expect(j.copia('viejo_lobo').heridas).toBe(0)
     // No participa: sigue Maldito.
-    const k = mision('ladron-I', ['sirenas', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['maldito'] }] })
+    const k = mision('pruebas-ciu4', ['sirenas', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['maldito'] }] })
     k.comprometer('EXP', ['baqueano']).pasarOfertas().seguir().pasarOfertas()
     expect(k.estados('bucanero')).toEqual(['maldito'])
     // Participa: se le quita.
-    const m = mision('ladron-I', ['sirenas', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['maldito'] }] })
+    const m = mision('pruebas-ciu4', ['sirenas', 'chubasco', 'calma'], { tripulacion: ['baqueano', { id: 'bucanero', estados: ['maldito'] }] })
     m.comprometer('EXP', ['baqueano', 'bucanero']).pasarOfertas().seguir().pasarOfertas()
     expect(m.estados('bucanero')).toEqual([])
   })
@@ -105,16 +105,16 @@ describe('Estados de los Tripulantes', () => {
   })
 
   it('Inspirado: +1 en su próxima Prueba', () => {
-    const j = mision('maracaibo-II', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['inspirado'] }] })
+    const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['inspirado'] }] })
     j.comprometer('NAV', ['bucanero'])
     expect(totalPrueba(j.estado)).toBe(4) // NAV 1 + 1 de Diego + 1 del Barco + 1
     expect(j.estados('bucanero')).toEqual([])
   })
 
   it('Aguerrido: evita la próxima herida', () => {
-    const j = mision('maracaibo-II', ['escollos', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
+    const j = mision('pruebas-mar5', ['escollos', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
     j.comprometer('EXP', ['bucanero']).seguir() // Bajíos: falla, 1 daño y pierde una Mejora; sin heridas
-    const k = mision('aguada-I', ['escollos', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
+    const k = mision('pruebas-nat3', ['escollos', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
     k.comprometer('EXP', ['bucanero']).seguir() // Barranco: 1 herida, que evita
     expect(k.copia('bucanero').heridas).toBe(0)
     expect(k.estados('bucanero')).toEqual([])
@@ -122,7 +122,7 @@ describe('Estados de los Tripulantes', () => {
   })
 
   it('un Tripulante no puede tener dos veces el mismo Estado, y los Estados duran entre misiones', () => {
-    const j = mision('ladron-I', ['p2_niebla', 'chubasco', 'calma', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
+    const j = mision('pruebas-ciu4', ['p2_niebla', 'chubasco', 'calma', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
     j.comprometer('EXP', ['bucanero']).seguir()
     expect(j.estados('bucanero')).toEqual(['buscado'])
     expect(j.registro).toContain('Bucanero veterano ya estaba Buscado.')
@@ -133,7 +133,7 @@ describe('Estados de los Tripulantes', () => {
 
 describe('Estados del Barco', () => {
   it('Vía de agua: al final de cada carta de Peligro en el Mar, 1 daño; reparar 1 quita la ficha', () => {
-    const j = mision('maracaibo-II', ['calma', 'calma', 'calma'], { barco: { estados: ['viaDeAgua'] } })
+    const j = mision('pruebas-mar5', ['calma', 'calma', 'calma'], { barco: { estados: ['viaDeAgua'] } })
     expect(j.estado.danoBarco).toBe(1)
     const k = Jugador.en({ tripulacion: ['carpintero'], barco: { dano: 1, estados: ['viaDeAgua'] } })
     k.usar('carpintero.reparar')
@@ -142,7 +142,7 @@ describe('Estados del Barco', () => {
   })
 
   it('Incendio a bordo: al revelar cada carta de Peligro en el Mar, 1 daño; se apaga agotando a un Tripulante', () => {
-    const j = mision('maracaibo-II', ['calma', 'calma', 'calma'], { barco: { estados: ['incendio'] }, tripulacion: ['bucanero'] })
+    const j = mision('pruebas-mar5', ['calma', 'calma', 'calma'], { barco: { estados: ['incendio'] }, tripulacion: ['bucanero'] })
     expect(j.estado.danoBarco).toBe(1)
     j.usar('estado:incendio.apagar').elegir('bucanero')
     expect(j.estadosBarco).toEqual([])
@@ -152,19 +152,19 @@ describe('Estados del Barco', () => {
   })
 
   it('Incendio a bordo: fuera del Mar no hace daño (P4)', () => {
-    const j = mision('ladron-I', ['calma', 'calma', 'calma'], { barco: { estados: ['incendio'] } })
+    const j = mision('pruebas-ciu4', ['calma', 'calma', 'calma'], { barco: { estados: ['incendio'] } })
     expect(j.estado.danoBarco).toBe(0)
   })
 
   it('Incendio a bordo: en tierra, si acaba la misión sin apagarlo, también pierdes una Mejora de barco (P4)', () => {
-    const j = mision('ladron-I', ['calma', 'calma'], { barco: { estados: ['incendio'], mejoras: ['vela', 'hamacas'] } })
+    const j = mision('pruebas-ciu4', ['calma', 'calma'], { barco: { estados: ['incendio'], mejoras: ['vela', 'hamacas'] } })
     j.retirarse()
     j.opcion('dejar')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'perderMejora' } })
   })
 
   it('Incendio a bordo: si no se apaga antes de acabar la misión, pierdes una Mejora de barco (y la ficha sigue)', () => {
-    const j = mision('maracaibo-II', ['calma', 'calma'], { barco: { estados: ['incendio'], mejoras: ['vela', 'hamacas'] } })
+    const j = mision('pruebas-mar5', ['calma', 'calma'], { barco: { estados: ['incendio'], mejoras: ['vela', 'hamacas'] } })
     j.retirarse()
     j.opcion('dejar')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'perderMejora' } })
@@ -181,10 +181,10 @@ describe('Estados del Barco', () => {
   })
 
   it('Perseguido: tu próxima misión de Mar empieza con un Peligro de más, sin poder retirarte entre los dos', () => {
-    const j = mision('maracaibo-II', ['calma', 'calma', 'calma'], { barco: { estados: ['perseguido'] } })
+    const j = mision('pruebas-mar5', ['calma', 'calma', 'calma'], { barco: { estados: ['perseguido'] } })
     // Dos «Mar en calma» seguidas: la primera ventana de retirarse llega tras las dos.
     expect(j.decision.motivo.clave).toBe('trasEncuentro')
-    expect(j.avance('maracaibo-II')).toBe(4)
+    expect(j.avance('pruebas-mar5')).toBe(4)
     expect(j.estadosBarco).toEqual([])
   })
 

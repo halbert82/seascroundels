@@ -210,18 +210,23 @@ function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: string 
 }
 
 /** Hueco fijo de un Tripulante: cabe la carta derecha y la carta girada, así nada se mueve al agotar o preparar. */
-function Tripulante({ inst, escala, rehen }: { inst: InstId; escala: number; rehen?: boolean }) {
+function Tripulante({ inst, escala, rehen, pasajero }: { inst: InstId; escala: number; rehen?: boolean; pasajero?: boolean }) {
   const { s } = useMesa()
   const lado = 528 * escala
   const mejoras = vinculadas(s, inst)
   return (
-    <div className={`tripulante${rehen ? ' rehen' : ''}`} style={{ width: lado }}>
+    <div className={`tripulante${rehen ? ' rehen' : ''}${pasajero ? ' pasajero' : ''}`} style={{ width: lado }}>
       <div className="hueco" style={{ width: lado, height: lado }}>
         <CartaDe inst={inst} escala={escala} />
-        <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />
+        {!pasajero && <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />}
         {rehen && (
           <span className="rehen-marca">
             <Icono id="rehen" /> Rehén
+          </span>
+        )}
+        {pasajero && (
+          <span className="rehen-marca pasajero-marca" title="Pasajero: ocupa 1 de Capacidad, pero no es Tripulante (no se compromete ni sufre heridas).">
+            <Icono id="capacidad" /> Pasajero
           </span>
         )}
       </div>
@@ -236,7 +241,7 @@ function Tripulante({ inst, escala, rehen }: { inst: InstId; escala: number; reh
 
 export function ZonaTripulacion() {
   const { s } = useMesa()
-  const total = s.zonas.tripulacion.length + s.zonas.rehenes.length
+  const total = s.zonas.tripulacion.length + s.zonas.rehenes.length + s.zonas.pasajeros.length
   // Tres huecos por fila; si hay más de seis, se achican para que quepan tres filas.
   const porFila = 3
   const filas = Math.max(2, Math.ceil(total / porFila))
@@ -245,13 +250,16 @@ export function ZonaTripulacion() {
   const escala = Math.min(ladoPorAncho, ladoPorAlto) / 528
   return (
     <section className="zona zona-tripulacion">
-      <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{valor(s, { tipo: 'capacidad' })} · el Capitán no cuenta</span>}>Tripulación</Rotulo>
+      <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{valor(s, { tipo: 'capacidad' })} · el Capitán no cuenta{s.zonas.pasajeros.length > 0 ? ', los Pasajeros sí' : ''}</span>}>Tripulación</Rotulo>
       <div className="tripulacion">
         {s.zonas.tripulacion.map((c) => (
           <Tripulante key={c} inst={c} escala={escala} />
         ))}
         {s.zonas.rehenes.map((c) => (
           <Tripulante key={c} inst={c} escala={escala} rehen />
+        ))}
+        {s.zonas.pasajeros.map((c) => (
+          <Tripulante key={c} inst={c} escala={escala} pasajero />
         ))}
       </div>
     </section>

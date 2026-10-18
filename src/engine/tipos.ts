@@ -21,6 +21,8 @@ export const ZONAS = [
   'descartesMuelle',
   /** Tripulantes en juego, Capitán incluido. */
   'tripulacion',
+  /** Pasajeros: viajan contigo y ocupan Capacidad, pero no son Tripulantes. */
+  'pasajeros',
   /** Mejoras y Tesoros vinculados al Barco o a un Tripulante. */
   'mejoras',
   'rehenes',
@@ -41,6 +43,8 @@ export const ZONAS = [
   'apartados',
   /** Cartas de Peligro que se quedan en juego junto a la misión hasta que se cumple lo que dicen para quitarlas. */
   'peligrosEnJuego',
+  /** Cartas de misión que una misión pone en juego a su lado («¡La guardia!»). */
+  'cartasMision',
   /** Cartas y Tripulantes incautados: debajo de la misión hasta superarla (se recuperan) o no (se pierden). */
   'incautadas',
   'misionesDisponibles',
@@ -105,7 +109,11 @@ export interface EntradaRegistro {
 export type Suceso =
   | { tipo: 'zarpar'; mision: CartaId }
   | { tipo: 'prueba'; peligro: CartaId; encuentro: string; superada: boolean }
-  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision; resueltas?: number; avance?: number; necesario?: number }
+  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision; resueltas?: number; avance?: number; necesario?: number; motivo?: string }
+  /** Cambian las fichas sobre la misión (Ventaja, Alarma…): cuántas hay ahora. */
+  | { tipo: 'fichasMision'; ficha: FichaMision; n: number }
+  /** Se cumple la Gesta de la misión. */
+  | { tipo: 'gesta'; mision: CartaId }
   | { tipo: 'hundimiento' }
   | { tipo: 'derrota'; carta: CartaId }
   | { tipo: 'rehenPerdido'; carta: CartaId }
@@ -135,6 +143,23 @@ export type Suceso =
 
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
+/** Fichas que se ponen sobre la carta de misión. Se descartan al terminarla. */
+export type FichaMision = 'ventaja' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa'
+
+/** Una Prueba ya resuelta en la misión en curso. */
+export interface PruebaHecha {
+  hab: Habilidad
+  superada: boolean
+  /** Puntos por los que se superó (o, en negativo, los que faltaron: al menos 1). */
+  margen: number
+  /** Palabras clave de lo que se probaba. */
+  claves: string[]
+  /** Salía de un encuentro (no de la Acción de una carta). */
+  encuentro: boolean
+  /** No se comprometió a nadie (Sin oposición). */
+  nadie: boolean
+}
+
 export interface MisionEnCurso {
   carta: InstId
   /** Cartas de Peligro ya resueltas (D5a: hasta resolver la primera no se puede superar). */
@@ -161,6 +186,21 @@ export interface MisionEnCurso {
   resueltas?: string[][]
   /** Lo que pasa además si superas la misión y recuperas lo incautado («las recuperas y robas 2»). */
   alRecuperar?: Efecto[]
+  // Misiones 2.0 (fase 7)
+  /** Fichas sobre la carta de misión (Ventaja, Alarma, Sospecha…). */
+  fichas?: Partial<Record<FichaMision, number>>
+  /** Pruebas resueltas en esta misión, en orden. */
+  pruebas?: PruebaHecha[]
+  /** Veces que un Tripulante ha quedado Buscado en esta misión. */
+  buscados?: number
+  /** Te retiras por tu cuenta, entre dos Peligros (no porque lo diga una carta). */
+  retiradaVoluntaria?: boolean
+  /** La misión falla por una regla suya («el ladrón se escapa»): cuenta como retirarse. */
+  motivoFallo?: string
+  /** Carta que vuelve a apartarse al terminar de resolverla («La Armada te persigue» en la Flota III). */
+  alApartar?: InstId
+  /** Pruebas empezadas en esta misión («la primera Prueba de esta misión es Sin ayuda»). */
+  pruebasEmpezadas?: number
 }
 
 export interface Bono {
@@ -307,6 +347,8 @@ export type Evento =
   | { tipo: 'rescatado'; carta: InstId }
   /** Un Destino va a ponerse encima del mazo de Peligros («Persigue»). */
   | { tipo: 'persigue'; carta: InstId; alFondo?: boolean }
+  /** Un Tripulante acaba de quedar con un Estado que no tenía. */
+  | { tipo: 'estadoPuesto'; carta: InstId; estado: EstadoTripulante }
 
 // ---------------------------------------------------------------------------
 // Tareas: pasos de reglas pendientes. Son datos, para que la partida se pueda guardar en cualquier momento.
@@ -354,7 +396,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'zarpar'; mision: InstId }
   | { tipo: 'mision'; paso: 'inicio' | 'alZarpar' | 'encuentros' | 'terminar' }
   | { tipo: 'ganarAvance'; n: number; si?: { rasgo: string } | { preparados: number }; motivo?: string }
-  | { tipo: 'alZarparOpcional'; coste: { tipo: 'agotarRasgo'; rasgo: string } | { tipo: 'descartar'; n: number }; n: number }
+  /** «Puedes agotar a un Oficial para ganar 2 de Avance», «puedes descartar 2 cartas para mirar…»: opcionales. */
+  | { tipo: 'alZarparOpcional'; coste: { tipo: 'agotarRasgo'; rasgos: string[] } | { tipo: 'descartar'; n: number }; efectos: Efecto[]; texto: string }
   | { tipo: 'mezclarMazoPropio'; n: number }
   /** `sinVentana`: sin la ventana de retirarse al terminar (el Peligro de más de «Perseguido»). */
   | { tipo: 'encuentro'; carta: InstId | null; paso: 'revelar' | 'leer' | 'avance' | 'despues'; sinVentana?: boolean; sinAvance?: boolean }
@@ -375,6 +418,15 @@ export type Tarea = { id: number } & (
   | { tipo: 'reclutaEncuentro' }
   | { tipo: 'prepararUno'; entre: InstId[] }
   | { tipo: 'superarMision' }
+  /** Final con elección: eliges una de las recompensas de la misión. */
+  | { tipo: 'elegirFinal'; mision: InstId }
+  // Misiones 2.0 (fase 7)
+  /** Pon (o quita, con `n` negativo) fichas sobre la misión en curso, y mira si llegan a su número. */
+  | { tipo: 'fichasMision'; ficha: FichaMision; n: number }
+  /** Un Pasajero entra en juego (si no cabe, devuelves un Tripulante al muelle). */
+  | { tipo: 'ponerPasajero'; carta: CartaId }
+  /** Un Pasajero se va: vuelve a apartarse. */
+  | { tipo: 'bajarPasajero'; carta: CartaId; motivo: string }
   | { tipo: 'fallarMision'; paso: 'rehenes' | 'conservar' }
   | { tipo: 'ponerTesoro'; carta: InstId }
   | { tipo: 'cerrarMision' }
@@ -559,6 +611,11 @@ export type Consulta =
   | { tipo: 'heridaExtraFallo' }
   /** Avance extra al superar una Prueba de esa habilidad. */
   | { tipo: 'avanceExtraPrueba'; hab: Habilidad }
+  /**
+   * Avance extra que da un encuentro al ganar su Avance («los encuentros #Civil# dan 1 más», «cada Prueba de EXP que
+   * superes por 2 o más da 1 más»). `hab` y `margen`: los de su Prueba, si la hubo y se superó.
+   */
+  | { tipo: 'avanceExtraEncuentro'; claves: readonly string[]; hab: Habilidad | null; margen: number }
   /** Mayor que 0: los Cañones no suman. */
   | { tipo: 'sinCanones' }
   /** Mayor que 0: este Tripulante se compromete en esta Prueba sin agotarse (Rodrigo). */
@@ -625,6 +682,10 @@ export interface Capacidad {
     | 'destino'
     /** Un Tripulante marcado por una carta («se pierde», «atrapado», «señalado»): la capacidad es de esa marca. */
     | 'marca'
+    /** Un Pasajero en juego. */
+    | 'pasajero'
+    /** Una carta de misión junto a la misión («¡La guardia!»). */
+    | 'cartaMision'
   /** Condición extra para poder usarla ahora (p. ej., «solo en Pruebas de COM en el Mar»). */
   requisito?: (s: Estado, yo: InstId | null) => boolean
   /** Lo que dice, para la mesa, cuando no sale del texto de una carta del jugador (capacidades de los Peligros). */

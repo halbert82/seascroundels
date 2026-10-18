@@ -54,7 +54,7 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra }: Opc
   for (const id of m.apartadosDePeligros) crearCopia(s, id, 'apartados')
 
   // 5. Misiones: las tres iniciales disponibles; capítulos I y aventuras en el mazo de Misiones;
-  //    capítulos II y III, Tesoros y mazos propios en el mazo de historia.
+  //    capítulos II y III, Tesoros, mazos propios, Pasajeros y cartas de misión en el mazo de historia.
   for (const id of DATOS.ordenMisiones.iniciales) crearCopia(s, `${id}-I`, 'misionesDisponibles')
   for (const id of [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras]) crearCopia(s, `${id}-I`, 'mazoMisiones')
   barajar(s, 'mazoMisiones')
@@ -62,6 +62,8 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra }: Opc
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') crearCopia(s, e.id, 'mazoHistoria')
     if (e.tipo === 'tesoro') crearCopia(s, e.id, 'mazoHistoria')
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) crearCopia(s, e.id, 'mazoHistoria')
+    // Misiones 2.0: los Pasajeros y las cartas de misión («¡La guardia!») esperan apartadas en el mazo de historia.
+    if (e.tipo === 'pasajero' || e.tipo === 'cartaMision') crearCopia(s, e.id, 'mazoHistoria')
   }
 
   // 6. Muelle.

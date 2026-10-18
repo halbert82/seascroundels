@@ -239,7 +239,37 @@ export function CartaPeligro({ v }: { v: VistaPeligro }) {
 const FONDO_MAZO_PROPIO =
   'linear-gradient(160deg, color-mix(in srgb, #3B302A, #fff 12%) 0%, color-mix(in srgb, #3B302A, #000 55%) 100%)'
 
+function CartaMazoPropio2({ v }: { v: VistaMazoPropio }) {
+  const ref = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const carta = ref.current
+    if (!carta) return
+    const desborda = () => [...carta.querySelectorAll<HTMLElement>('.encb, .dest')].some((x) => x.scrollHeight > x.clientHeight + 0.5)
+    for (const t of TAMANOS_PROPIO) {
+      carta.style.setProperty('--fs2', `${t}px`)
+      if (!desborda()) break
+    }
+  })
+  return (
+    <div className="card enc solo v2" ref={ref}>
+      <div className="soloh">{v.mazo}</div>
+      <div className="soloart" style={{ background: FONDO_MAZO_PROPIO }}>
+        <span>Ilustración pendiente</span>
+      </div>
+      <Encuentro2 e={v.encuentro} />
+      <Destino2 d={v.destino} />
+      <div className="hznum">
+        <span>Mazo propio</span> · <span>{v.codigo}</span>
+      </div>
+    </div>
+  )
+}
+
+/** Las cartas de mazo propio tienen un solo encuentro: la letra puede ser algo mayor. */
+const TAMANOS_PROPIO = [14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.6, 9.2, 8.8]
+
 export function CartaMazoPropio({ v }: { v: VistaMazoPropio }) {
+  if (v.v2) return <CartaMazoPropio2 v={v} />
   return (
     <div className="card enc solo">
       <div className="soloh">{v.mazo}</div>

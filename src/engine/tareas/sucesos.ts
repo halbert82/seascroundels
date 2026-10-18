@@ -32,6 +32,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'descartada':
     case 'cartaResuelta':
     case 'rescatado':
+    case 'estadoPuesto':
       return // Solo marcan el momento para las Interrupciones y Respuestas.
     case 'rehen': {
       if (ev.carta === s.capitan || !estaEn(s, ev.carta, 'tripulacion')) return
@@ -205,7 +206,7 @@ export const usar: Manejador<'usar'> = (s, t) => {
       }
     }
     // Lo que hacen solas las cartas de Peligro (contadores, «cada vez que…») no se anota como «Usas»: lo cuentan sus efectos.
-    const sola = cap.ventana === 'obligada' && ['peligroEnJuego', 'encuentro', 'destino', 'estadoBarco', 'estado'].includes(cap.desde)
+    const sola = cap.ventana === 'obligada' && ['peligroEnJuego', 'encuentro', 'destino', 'estadoBarco', 'estado', 'mision', 'pasajero', 'cartaMision'].includes(cap.desde)
     if (sola) {
       // nada
     } else if (fuente !== null && (cap.desde === 'estado' || cap.desde === 'estadoBarco')) {

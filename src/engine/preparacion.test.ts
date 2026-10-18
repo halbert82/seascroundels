@@ -38,9 +38,12 @@ describe('Preparación de la partida', () => {
     const esperadas = [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras].map((m) => `${m}-I`)
     expect(j.zona('mazoMisiones').sort()).toEqual(esperadas.sort())
     const historia = j.zona('mazoHistoria')
-    expect(historia.filter((id) => /-(II|III)$/.test(id))).toHaveLength(14)
+    // Capítulos II y III (con los dos de salida doble de Maracaibo y San Felipe), Tesoros, mazos propios,
+    // los dos Pasajeros y «¡La guardia!».
+    expect(historia.filter((id) => /-(II|III)(-[ab])?$/.test(id))).toHaveLength(16)
     expect(historia.filter((id) => DATOS.tesoros.some((t) => t.id === id))).toHaveLength(6)
     expect(historia.filter((id) => DATOS.cartasDeMazoPropio.some((c) => c.id === id))).toHaveLength(12)
+    expect(historia.filter((id) => ['anselmo', 'guia', 'guardia'].includes(id)).sort()).toEqual(['anselmo', 'guardia', 'guia'])
     // 6. Muelle de Tortuga: 4 cartas.
     expect(j.zona('muelle')).toHaveLength(4)
     expect(j.zona('mazoMuelle')).toHaveLength(20 - 4)

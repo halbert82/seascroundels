@@ -20,6 +20,11 @@ export function ponerEstado(s: Estado, inst: InstId, e: EstadoTripulante): boole
   const c = copia(s, inst)
   if (c.estados?.includes(e)) return false
   c.estados = [...(c.estados ?? []), e]
+  // Durante una misión, sus reglas pueden mirarlo («cada vez que un Tripulante quede Buscado…»).
+  if (s.mision && s.zonas.tripulacion.includes(inst)) {
+    if (e === 'buscado') s.mision.buscados = (s.mision.buscados ?? 0) + 1
+    encolar(s, { tipo: 'evento', ev: { tipo: 'estadoPuesto', carta: inst, estado: e }, fase: 'despues', cancelado: false, usadas: [] })
+  }
   return true
 }
 

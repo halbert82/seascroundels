@@ -48,8 +48,10 @@ export function nuevaPrueba(encuentro: InstId): PruebaEnCurso {
  * de la carta de Peligro en la misión en curso (lo impreso más sus reglas especiales).
  */
 export function definicionDe(s: Estado, carta: InstId): DefinicionPrueba & { restriccion?: Restriccion } {
-  if (s.prueba?.encuentro === carta && s.prueba.definicion) return s.prueba.definicion
-  return definicionEncuentro(s, carta)
+  const p = s.prueba
+  const def = p?.encuentro === carta && p.definicion ? p.definicion : definicionEncuentro(s, carta)
+  // La Prueba en curso es Sin ayuda por otra regla («la primera Prueba de esta misión es Sin ayuda»).
+  return p?.encuentro === carta && p.sinAyuda && !def.sinAyuda ? { ...def, sinAyuda: true } : def
 }
 
 /** Definición de la Prueba en curso. */

@@ -27,7 +27,7 @@ describe('Herbolaria', () => {
 
 describe('Práctico del puerto', () => {
   it('Respuesta: tras superar una Prueba de NAV en la que participe, quita Vía de agua o Velas rotas', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['chubasco', 'chubasco', 'calma'], tripulacion: ['practico'], barco: { estados: ['velasRotas'] } })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['chubasco', 'chubasco', 'calma'], tripulacion: ['practico'], barco: { estados: ['velasRotas'] } })
     j.comprometer('NAV', ['practico']).seguir()
     expect(j.ofreceCapacidad('practico.barco')).toBe(true)
     j.usar('practico.barco')
@@ -77,7 +77,7 @@ describe('Cataplasma', () => {
 
 describe('Cortar por lo sano', () => {
   it('Acción: descarta 2 cartas (su coste es 0) para descartar una carta de Peligro en juego que no sea Terrible', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
     expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
     j.usar('cortar.jugar').elegir('timon', 'coraje')
     expect(j.zona('peligrosEnJuego')).toEqual([])
@@ -85,7 +85,7 @@ describe('Cortar por lo sano', () => {
   })
 
   it('no se puede jugar sin 2 cartas más en la mano', () => {
-    const j = Jugador.enMision({ misiones: ['maracaibo-II'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo'] })
     expect(j.ofreceCapacidad('cortar.jugar')).toBe(false)
   })
 })
@@ -119,7 +119,7 @@ describe('Ron para los valientes', () => {
 describe('Virar y dar la cara', () => {
   it('Interrupción: gasta 1 munición y la carta que persigue va al fondo del mazo en vez de encima', () => {
     const j = Jugador.enMision({
-      misiones: ['maracaibo-II'],
+      misiones: ['pruebas-mar5'],
       mazoPeligros: ['chubasco', 'p2_turbonada', 'calma', 'racha'],
       mano: ['virar'],
       barco: { mejoras: [{ id: 'bronce', municion: 2 }] },

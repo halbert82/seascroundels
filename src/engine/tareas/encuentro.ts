@@ -9,7 +9,8 @@ import { anotar, claveUso, copia, encolar, nombre, nombres } from '../estado.ts'
 import { agotar, quitarEstado, tieneEstado } from '../estados.ts'
 import { cartaDeArriba, cerrarPrueba, descartarPeligro, entornoActual, mazoActivo, ponerEnMuelle } from '../peligros.ts'
 import { impideRetirarse } from '../definiciones.ts'
-import { cumple } from './efectos.ts'
+import { cumple, faltan, margen } from './efectos.ts'
+import { reglasMision } from '../misiones2/registro.ts'
 import { vetadoAlComprometer } from './peligros2.ts'
 import {
   definicionActual,
@@ -23,6 +24,7 @@ import {
   totalPrueba,
 } from '../prueba.ts'
 import type { Accion, Estado, InstId, NuevaTarea, PruebaEnCurso } from '../tipos.ts'
+import type { Habilidad } from '../datos.ts'
 import { encolarUso, usosDisponibles } from '../usos.ts'
 import { modificadores, valor } from '../valores.ts'
 import { mover } from '../zonas.ts'
@@ -53,6 +55,14 @@ export function empezarPrueba(s: Estado, carta: InstId, extra: number, origen: '
     if (cambios) Object.assign(p, cambios)
   }
   s.prueba = p
+  // «La primera Prueba de esta misión es Sin ayuda» (El camarote del capitán).
+  if (m) {
+    if ((m.pruebasEmpezadas ?? 0) === 0 && reglasMision(copia(s, m.carta).id)?.primeraSinAyuda) {
+      p.sinAyuda = true
+      anotar(s, 'aviso', 'La primera Prueba de esta misión es Sin ayuda.')
+    }
+    m.pruebasEmpezadas = (m.pruebasEmpezadas ?? 0) + 1
+  }
   // «Soborno»: esta Prueba se supera automáticamente, sin revelar Destino.
   if (origen === 'encuentro' && m) {
     if (m.automatica === carta) p.automatica = true
@@ -75,9 +85,27 @@ function pruebaCortada(s: Estado): boolean {
   return s.prueba?.origen !== 'accion'
 }
 
+/**
+ * Avance de más que da un encuentro según la misión («los encuentros #Civil# dan 1 más», «cada Prueba de EXP que
+ * superes por 2 o más da 1 más»). Con `p`, la Prueba del encuentro (si se superó).
+ */
+export function avanceExtraEncuentro(s: Estado, claves: readonly string[], p: PruebaEnCurso | null): number {
+  const superada = p?.resultado === 'superada' && p.hab !== null
+  const hab: Habilidad | null = superada ? p.hab : null
+  return valor(s, { tipo: 'avanceExtraEncuentro', claves, hab, margen: superada ? margen(s) : 0 })
+}
+
 /** Al terminar de resolverse, la carta del encuentro va a los descartes o, si lo dice, ocupa el muelle. */
 function salidaDelEncuentro(s: Estado, carta: InstId): void {
   const m = s.mision
+  // «La Armada te persigue» en la Flota III: después de resolverla, vuelve a apartarse.
+  if (m?.alApartar === carta) {
+    delete m.alApartar
+    m.retirar = m.retirar.filter((c) => c !== carta)
+    mover(s, carta, 'apartados')
+    anotar(s, 'efecto', `«${nombre(s, carta)}» vuelve a apartarse.`)
+    return
+  }
   if (m?.alMuelle?.carta === carta) {
     const { coste } = m.alMuelle
     delete m.alMuelle
@@ -170,8 +198,9 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
         cerrarPrueba(s)
         return 'hecha'
       }
-      let n = t.sinAvance ? 0 : definicionEncuentro(s, carta).avance
       const p = s.prueba
+      const claves = definicionEncuentro(s, carta).palabrasClave
+      let n = t.sinAvance ? 0 : definicionEncuentro(s, carta).avance + avanceExtraEncuentro(s, claves, p)
       if (p?.resultado === 'superada' && p.hab) n += p.avanceSiSuperas + valor(s, { tipo: 'avanceExtraPrueba', hab: p.hab })
       const mc = copia(s, m.carta)
       mc.avance += n
@@ -202,6 +231,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       }
       if (accion.tipo === 'retirarse') {
         m.fin = 'retirada'
+        m.retiradaVoluntaria = true
         anotar(s, 'jugada', 'Te retiras y vuelves a puerto.')
       }
       return 'hecha'
@@ -421,6 +451,18 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
       p.final = { total, dificultad }
       const superada = p.automatica || (!p.falla && p.comprometidos.length > 0 && total >= dificultad)
       p.resultado = superada ? 'superada' : 'fallada'
+      // Se apunta en la misión (las reglas de misión miran qué Pruebas has superado o fallado, y por cuánto).
+      if (s.mision && p.hab) {
+        const hecha = {
+          hab: p.hab,
+          superada,
+          margen: superada ? margen(s) : -faltan(s),
+          claves: [...def.palabrasClave],
+          encuentro: p.origen !== 'accion',
+          nadie: p.comprometidos.length === 0,
+        }
+        s.mision.pruebas = [...(s.mision.pruebas ?? []), hecha]
+      }
       const motivo = p.falla ? ' (el Destino la hace fallar)' : p.comprometidos.length === 0 ? ' (nadie comprometido)' : ''
       const texto = p.automatica ? 'Prueba superada automáticamente.' : `Total ${total} contra ${dificultad}: ${superada ? 'superas' : 'fallas'} la Prueba${motivo}.`
       anotar(s, 'jugada', texto, {

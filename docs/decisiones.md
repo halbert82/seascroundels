@@ -145,4 +145,36 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 
 ### Pendiente de Albert
 
-- **P48 · Pruebas dobles en «La Armada te persigue».** Has dicho que las Pruebas dobles («NAV 3 o EXP 3») se eliminan, y ya no queda ninguna en los Peligros 2.0. Pero la carta que entra con «+ La Armada» (El cazador de piratas) es la antigua «La Armada te persigue», y conserva dos: «Navío de la Armada» (COM 5 o NAV 5) y «Desembarco de casacas» (COM 4 o EXP 4). *Ejemplo:* fallas «Pasquines del cazador», La Armada entra en el mazo de Peligros y, cuando sale en una misión de Mar, eliges si la afrontas con COM 5 o con NAV 5. **Opción por defecto:** la carta se queda como está y el reglamento sigue explicando las Pruebas dobles mientras exista. Si me das su texto nuevo (una sola Prueba por encuentro), lo aplico y quito las Pruebas dobles del reglamento.
+- **P48 · Pruebas dobles en «La Armada te persigue».** Sigue abierta en parte: ver P51 (fase 7). El encuentro de Mar ya es el Navío de línea de la Armada (NAV 5); «Desembarco de casacas» (COM 4 o EXP 4) conserva su Prueba doble hasta que llegue el texto rehecho.
+
+## Fase 7: misiones 2.0
+
+Fuente: `docs/misiones-2.0.md`. Las reglas impresas en `cartas.json` son para leerlas; lo que hace cada capítulo está escrito a mano en `src/engine/misiones2/`.
+
+### Cambios de regla y de diseño (18 de octubre de 2026)
+
+- **Las 12 misiones** cambian de reglas y de recompensas; se mantienen nombres, introducciones, Tesoros y números de colección.
+- **Cartas nuevas:** 218 «La barra de noche» (Maracaibo II-a), 219 «Por el aljibe» (San Felipe II-a), 220 «¡La guardia!», 221 Don Anselmo, el comerciante, 222 El guía del istmo, 223 La losa giratoria, 224 El guardián de jade, 225 Cofres por la borda. Los antiguos capítulos II pasan a ser los II-b: 140 «Romper el bloqueo» y 144 «Al asalto de las murallas».
+- **Mazos propios** con el formato de los Peligros 2.0: un encuentro y un Destino. El Templo y la Escolta tienen 6 cartas distintas cada uno (una copia de cada).
+- **Reglas nuevas:** Pasajero, capítulo con salida doble, fichas de misión (Ventaja, Alarma, Sospecha, Persecución, Mecha y Defensa), «la misión falla» (como retirarse), saqueo al retirarse (La casa del gobernador), Gesta y final con elección.
+- **«La Armada te persigue»:** su encuentro de Mar es el Navío de línea de la Armada (NAV 5, Abordaje). En la Flota III se pone encima del mazo de Peligros al llegar a 3 de Persecución y, después de resolverla, vuelve a apartarse.
+- **Lecturas tomadas sin duda:**
+  - «la misión falla» se anota como una retirada, con su motivo («el ladrón se escapa»);
+  - un Pasajero que se va (o que se descarta) vuelve a apartarse en el mazo de historia;
+  - la Gesta y el Tesoro se miran al superar la misión, antes de rescatar rehenes o de que se baje Don Anselmo;
+  - «Cada Prueba de [COM] que superes da 1 de Avance más» solo vale para las Pruebas de los encuentros (las de una Acción no dan Avance), como la regla antigua;
+  - las reglas «cada efecto de fallo inflige además 1 herida» ya no las tiene ninguna misión, pero el motor las sigue entendiendo (D2b, D2c y N15 se prueban con una misión de prueba).
+
+### Pendiente de Albert (fase 7)
+
+Cada una lleva su opción por defecto, ya aplicada y marcada en el código con `TODO(regla)`.
+
+- **P49 · «Cada Peligro sin Prueba»** (El ladrón del puerto y La huida con la plata). *Ejemplo:* en «Cofres por la borda» eliges pararte a recoger la plata en vez de hacer la Prueba. **Por defecto:** no cuenta; solo cuentan las cartas que llevan impreso «Sin Prueba».
+- **P50 · Gesta de «Rumbo a mar abierto».** *Ejemplo:* zarpas con 1 daño que traías de otra misión y no sufres ninguno más. **Por defecto:** no hay Gesta, porque al superarla el Barco tiene daño. La otra lectura sería «sin sufrir daño en esta misión».
+- **P51 · Texto de «La Armada te persigue» rehecha.** Solo he cambiado lo que dice el documento de misiones: el encuentro de Mar es «Navío de línea de la Armada», NAV 5, y si fallas te aborda (Abordaje). He mantenido «Esta carta Se retira» al superarlo y al fallarlo, como en la carta antigua. Naturaleza, Ciudad y el Destino siguen como estaban, y «Desembarco de casacas» conserva su Prueba doble (COM 4 o EXP 4). **Por defecto:** así hasta que me pases la carta entera.
+- **P52 · El polvorín.** *Ejemplo:* revelas el cuarto Peligro y pones la cuarta ficha de Mecha. **Por defecto:** el polvorín estalla en ese momento; ese Peligro no se resuelve (ni da su Avance), sufres las 2 heridas y te retiras.
+- **P53 · La Armada ya estaba en el mazo.** *Ejemplo:* «Pasquines del cazador» metió La Armada en el mazo de Peligros y después llegas a 3 de Persecución en la Flota III. **Por defecto:** se saca del mazo (o de los descartes), se pone encima y, después de resolverla, se aparta: ya no vuelve al mazo.
+- **P54 · ¡La guardia! y su propia Prueba.** *Ejemplo:* quieres echarlos a palos (COM 5) mientras ¡La guardia! está en juego. **Por defecto:** su «todas las Pruebas reciben +1» también vale para esa Prueba, que queda en COM 6.
+- **P55 · Sospecha sin nadie comprometido** (Seguirle por los muelles). La regla dice «cada Prueba que falles por 2 o más», pero el ejemplo dice que es mejor dejar una pelea sin oposición que superarla. Sin nadie comprometido fallas por toda la dificultad. **Por defecto:** sigo el ejemplo: una Prueba sin nadie comprometido no pone Sospecha.
+- **P56 · Don Anselmo vuelve a subir.** *Ejemplo:* te retiras de «Los muelles de Maracaibo», Don Anselmo se baja asustado y otro turno vuelves a zarpar a esa misión. **Por defecto:** su «Al zarpar: pon en juego a Don Anselmo» lo vuelve a subir. Y mientras viaja contigo, su −1 a los encuentros #Guardia# y #Civil# vale en cualquier misión.
+

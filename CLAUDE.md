@@ -19,6 +19,7 @@ Juego de cartas cooperativo en solitario, al estilo de los LCG (Arkham Horror, E
 2. `data/cartas.json`: todas las cartas de la caja básica (153, con su número de colección). El campo `texto` es la versión 1.0, la buena. La sección `_leyenda` explica el marcado de los textos.
 3. Los campos de ayuda que vienen del prototipo antiguo: `fallo`, `exito`, `siempre`, `ops`, `ayudaPrototipo`, `textoPrototipo`. Sirven al motor como pista, pero **si chocan con el texto o el reglamento, mandan el texto y el reglamento**.
 4. **Fase 6:** `docs/peligros-2.0.md` (las 55 cartas de Peligro nuevas, que sustituyen a las 25 antiguas: estas se quedan en los datos marcadas `retirada`, solo para las pruebas) y `docs/jugador-2.0.md` (9 cartas de jugador nuevas). En `cartas.json` llevan `"version": 2` (los Peligros) y sus textos completos son solo para leerlos: lo que hacen está escrito a mano por carta en `src/engine/peligros2/` (reglas) y `src/engine/capacidades/jugador2.ts`.
+5. **Fase 7:** `docs/misiones-2.0.md` (las 12 misiones 2.0: reglas y recompensas nuevas, capítulos con salida doble, Pasajeros, «¡La guardia!» y los mazos propios rehechos). Las reglas impresas de cada capítulo en `cartas.json` son para leerlas: lo que hace cada uno está escrito a mano en `src/engine/misiones2/`.
 
 Recursos visuales:
 - `referencia/cartas/NNN.webp`: imagen de cada carta tal y como está diseñada; el nombre es su número de colección. Es la referencia visual que hay que igualar.
@@ -96,6 +97,7 @@ Recursos visuales:
 4. **Capacidades de todas las cartas**, con sus pruebas.
 5. **Mesa de juego y pulido visual:** animaciones, registro, guardado y deshacer.
 6. **Peligros 2.0:** reglas nuevas (se queda en juego, Estados, Elige, Sin ayuda, Abordaje, Persigue, Incautado, ocupar el muelle), las 55 cartas nuevas en lugar de las antiguas y 9 cartas de jugador nuevas. Punto de control con el Grupo A (cartas 1–11) y entrega final con todas y el informe de equilibrio.
+7. **Misiones 2.0:** reglas y recompensas nuevas de las 12 misiones, capítulos II-a/II-b, Pasajeros, fichas de misión, Gesta, finales con elección, «¡La guardia!» y los mazos propios con el formato 2.0 (cartas 218–225). Para las pruebas de cartas y reglas generales hay misiones de prueba sin reglas (`pruebas-mar5`, `pruebas-nat3`…).
 
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
@@ -109,4 +111,5 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - **Rehén:** el Capitán no puede ser rehén (N11).
 - **Barco hundido:** las Mejoras de barco que se pierden **sí** activan sus efectos «después de que descartes esta carta».
 - Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.
-- **Fase 6:** las respuestas de Albert (P1–P47) están en `docs/decisiones.md`, sección «Fase 6»; queda pendiente P48 (Pruebas dobles en «La Armada te persigue»). Reforzar y la Fiebre ya no existen: las cartas de la mano solo suman al comprometer.
+- **Fase 6:** las respuestas de Albert (P1–P47) están en `docs/decisiones.md`, sección «Fase 6»; P48 (Pruebas dobles en «La Armada te persigue») sigue abierta dentro de P51. Reforzar y la Fiebre ya no existen: las cartas de la mano solo suman al comprometer.
+- **Fase 7:** pendientes P49–P56 (sección «Fase 7» de `docs/decisiones.md`), con su opción por defecto aplicada y marcada con `TODO(regla)`.

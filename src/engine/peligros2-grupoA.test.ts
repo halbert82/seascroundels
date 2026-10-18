@@ -6,7 +6,7 @@ import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
 /** Misiones sin reglas que estorben: Mar (5 de Avance), Naturaleza (3, Distancia 0 con el Barco), Ciudad (4). */
-const MISION = { mar: 'maracaibo-II', nat: 'aguada-I', ciu: 'ladron-I' } as const
+const MISION = { mar: 'pruebas-mar5', nat: 'pruebas-nat3', ciu: 'pruebas-ciu4' } as const
 
 function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
   return Jugador.enMision({ misiones: [MISION[entorno]], mazoPeligros, ...op })
@@ -57,7 +57,7 @@ describe('1 · La corriente del Golfo', () => {
     const k = en('mar', ['escollos', 'p2_corriente', 'calma']) // Bajíos: NAV 2 o EXP 3
     k.comprometer('EXP', ['capitan'])
     expect(dificultadPrueba(k.estado)).toBe(2)
-    const l = en('mar', ['escollos', 'p2_corriente', 'calma'], { avance: { 'maracaibo-II': 2 } })
+    const l = en('mar', ['escollos', 'p2_corriente', 'calma'], { avance: { 'pruebas-mar5': 2 } })
     l.comprometer('EXP', []).seguir()
     expect(l.registro).toContain('Pierdes 1 de Avance.')
   })
@@ -221,7 +221,7 @@ describe('5 · Bajamar', () => {
     const j = en('mar', ['chubasco', 'p2_bajamar', 'calma'])
     j.comprometer('NAV', ['capitan']).seguir()
     expect(avance(j, 'mar')).toBe(3) // 2 de la carta + 1 del Destino
-    const k = en('mar', ['chubasco', 'p2_bajamar', 'calma'], { avance: { 'maracaibo-II': 1 } })
+    const k = en('mar', ['chubasco', 'p2_bajamar', 'calma'], { avance: { 'pruebas-mar5': 1 } })
     k.comprometer('NAV', []).seguir()
     // Falla (−1 del Destino y −1 de Sin oposición) y luego gana los 2 de la carta.
     expect(avance(k, 'mar')).toBe(2)
@@ -448,7 +448,7 @@ describe('10 · Huracán', () => {
   })
 
   it('Naturaleza: si fallas, por cada punto que falte (máx. 3) eliges herida a un comprometido o perder 1 Avance', () => {
-    const j = en('nat', ['p2_huracan', 'chubasco', 'calma'], { tripulacion: ['bucanero'], avance: { 'aguada-I': 2 } })
+    const j = en('nat', ['p2_huracan', 'chubasco', 'calma'], { tripulacion: ['bucanero'], avance: { 'pruebas-nat3': 2 } })
     j.comprometer('EXP', ['bucanero']).seguir() // EXP 0 + 1 = 1 contra 5: faltan 4, como mucho 3
     j.opcion('1').opcion('1') // sin Avance que perder, la tercera es la herida
     expect(j.copia('bucanero').heridas).toBe(1)

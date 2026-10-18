@@ -14,7 +14,7 @@ import { valor } from '../valores.ts'
 import { mover, rebarajar } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { cumple, sePuedePagarEntero } from './efectos.ts'
-import { empezarPrueba } from './encuentro.ts'
+import { avanceExtraEncuentro, empezarPrueba } from './encuentro.ts'
 
 // ---------------------------------------------------------------------------
 // «Elige» y Pruebas de una Acción
@@ -97,12 +97,13 @@ export const quedarEnJuego: Manejador<'quedarEnJuego'> = (s, t) => {
   if (q?.contador || q?.fichasIniciales) copia(s, t.carta).fichas = q.fichasIniciales ?? 0
   m.cartasResueltas++
   anotar(s, 'aviso', `«${nombre(s, t.carta)}» se queda en juego junto a la misión.`)
-  if (def.avance > 0) {
+  const n = def.avance + (def.avance > 0 ? avanceExtraEncuentro(s, def.palabrasClave, null) : 0)
+  if (n > 0) {
     const mc = copia(s, m.carta)
-    mc.avance += def.avance
-    anotar(s, 'efecto', `Ganas ${def.avance} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`, {
+    mc.avance += n
+    anotar(s, 'efecto', `Ganas ${n} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`, {
       tipo: 'avance',
-      n: def.avance,
+      n,
       total: mc.avance,
     })
   }
@@ -262,7 +263,8 @@ export const incautar: Manejador<'incautar'> = (s, t, e) => {
     mover(s, c, 'incautadas', 'abajo')
   }
   if (t.alRecuperar && t.alRecuperar.length > 0) s.mision.alRecuperar = [...(s.mision.alRecuperar ?? []), ...t.alRecuperar]
-  anotar(s, 'aviso', `Te incautan ${nombres(s, elegidas)}: si superas la misión, lo recuperas.`)
+  if (t.anotacion) anotar(s, 'jugada', `${t.anotacion}: ${nombres(s, elegidas)}.`)
+  else anotar(s, 'aviso', `Te incautan ${nombres(s, elegidas)}: si superas la misión, lo recuperas.`)
   return 'hecha'
 }
 

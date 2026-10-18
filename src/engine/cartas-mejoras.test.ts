@@ -10,7 +10,7 @@ describe('Mejoras de barco', () => {
   })
 
   it('022 · Vela mayor: +1 de Avance al zarpar hacia una misión de Mar; en tierra, no', () => {
-    const mar = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['vela'] }, mazoPeligros: ['calma', 'calma', 'calma'] })
+    const mar = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['vela'] }, mazoPeligros: ['calma', 'calma', 'calma'] })
     expect(mar.registro).toContain('Vela mayor: +1 de Avance (1/3).')
     const tierra = Jugador.enMision({ barco: { mejoras: ['vela'] }, mazoPeligros: ['calma', 'calma', 'calma'] })
     expect(tierra.registro.some((t) => t.startsWith('Vela mayor'))).toBe(false)
@@ -21,7 +21,7 @@ describe('Mejoras de barco', () => {
   })
 
   it('024 · Bandera negra: +1 a las Pruebas de COM en el Mar; en tierra, no', () => {
-    const mar = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['bandera'] }, mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+    const mar = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['bandera'] }, mazoPeligros: ['fauna', 'chubasco', 'calma'] })
     mar.comprometer('COM', ['capitan'])
     expect(totalPrueba(mar.estado)).toBe(3 + 1)
     const tierra = Jugador.enMision({ barco: { mejoras: ['bandera'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
@@ -52,7 +52,7 @@ describe('Mejoras de barco', () => {
 
   it('028 · La Cruz de Santa Bárbara: más de 2 daños a la vez se quedan en 2; es indestructible', () => {
     // Arrecife de los Ahorcados (fallo: 3 daños) con el Destino «Fallo».
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['cruz'] }, mazoPeligros: ['arrecifes', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['cruz'] }, mazoPeligros: ['arrecifes', 'leyenda', 'calma'] })
     j.comprometer('NAV', ['capitan']).seguir()
     expect(j.estado.danoBarco).toBe(2)
     expect(j.registro).toContain('La Cruz de Santa Bárbara deja el daño en 2.')
@@ -61,7 +61,7 @@ describe('Mejoras de barco', () => {
   })
 
   it('029 · Cañones de bronce: gastas 1 de munición y la Prueba de COM recibe +2; con «Los Cañones no suman», nada', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('bronce.disparar')
     expect(totalPrueba(j.estado)).toBe(5)
     expect(j.copia('bronce').municion).toBe(1)
@@ -71,25 +71,25 @@ describe('Mejoras de barco', () => {
   })
 
   it('030 · Carronadas: antes de comprometer, superas una Prueba de COM de dificultad 4 o menos sin revelar Destino', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'carronadas', municion: 1 }] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'carronadas', municion: 1 }] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.usar('carronadas.disparar')
     expect(j.registro).toContain('Superas automáticamente la Prueba de COM, sin revelar Destino.')
     expect(j.registro.some((t) => t.startsWith('Destino:'))).toBe(false)
     expect(j.zona('mazoPeligros')[0]).toBe('leyenda')
     // Fragata cazadora (COM 5): no se puede.
-    const fragata = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'carronadas', municion: 1 }] }, mazoPeligros: ['cazadores', 'chubasco', 'calma'] })
+    const fragata = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'carronadas', municion: 1 }] }, mazoPeligros: ['cazadores', 'chubasco', 'calma'] })
     expect(fragata.ofreceCapacidad('carronadas.disparar')).toBe(false)
   })
 
   it('031 · Culebrina de proa: gastas 1 de munición y una Prueba de NAV en el Mar recibe +2', () => {
     // Niebla espesa (NAV 3) con «Refuerzos» (+1): pide 4. Diego 2 + 1 (Barco) = 3; con la Culebrina, 5.
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'fauna', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'fauna', 'calma'] })
     j.comprometer('NAV', ['capitan']).usar('culebrina.disparar').seguir()
     expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
   })
 
   it('032 · Pedrero de borda: gastas 1 de munición y descartas una carta de Peligro con Prueba de COM; solo en el Mar (N18)', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'pedrero', municion: 2 }] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'pedrero', municion: 2 }] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     j.usar('pedrero.disparar')
     expect(j.zona('descartesPeligros')).toContain('rivales')
     expect(j.copia('pedrero').municion).toBe(1)
@@ -99,11 +99,11 @@ describe('Mejoras de barco', () => {
   })
 
   it('033 · Velas de tormenta: se agotan y descartan una carta de Peligro con Prueba de NAV', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['velas_tormenta'] }, mazoPeligros: ['chubasco', 'calma', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['velas_tormenta'] }, mazoPeligros: ['chubasco', 'calma', 'calma'] })
     j.usar('velas_tormenta.esquivar')
     expect(j.zona('descartesPeligros')).toContain('chubasco')
     expect(j.copia('velas_tormenta').agotada).toBe(true)
-    const com = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['velas_tormenta'] }, mazoPeligros: ['fauna', 'calma', 'calma'] })
+    const com = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['velas_tormenta'] }, mazoPeligros: ['fauna', 'calma', 'calma'] })
     expect(com.ofreceCapacidad('velas_tormenta.esquivar')).toBe(false)
   })
 })
@@ -118,14 +118,14 @@ describe('Mejoras de tripulante', () => {
   })
 
   it('037 · Pistola de chispa: se agota y da +2 a una Prueba de COM en la que participa su portador', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], capitan: { mejoras: ['pistola'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['pistola'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('pistola.disparar').seguir()
     expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
     expect(j.copia('pistola').agotada).toBe(true)
   })
 
   it('038 · Escapulario del Carmen: se agota y cancela el Destino de una Prueba en la que participa su portador', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], capitan: { mejoras: ['escapulario'] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['escapulario'] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('escapulario.cancelar').pasarOfertas().seguir()
     expect(j.registro).toContain('Cancelas el Destino «Fallo»: no se aplica nada de él.')
     expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
@@ -152,7 +152,7 @@ describe('Mejoras de tripulante', () => {
     expect(tienda.ofrece('adquirir', 'patente', 'capitan')).toBe(true)
     expect(tienda.ofrece('adquirir', 'patente', 'bucanero')).toBe(false)
     // Patrulla española (Militar, COM 4): pide 3.
-    const j = Jugador.enMision({ misiones: ['prueba-I'], capitan: { mejoras: ['patente'] }, mazoPeligros: ['ley', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['patente'] }, mazoPeligros: ['ley', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan'])
     expect(dificultadPrueba(j.estado)).toBe(3)
   })
@@ -165,7 +165,7 @@ describe('Mejoras de tripulante', () => {
 
 describe('Tesoros', () => {
   it('121 · Espada del sacerdote: +2 COM y cancela el Destino de una Prueba de COM de su portador, una vez por misión', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], capitan: { mejoras: ['espada'] }, mazoPeligros: ['fauna', 'leyenda', 'fauna', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['espada'] }, mazoPeligros: ['fauna', 'leyenda', 'fauna', 'leyenda', 'calma'] })
     expect(j.valor({ tipo: 'habilidad', carta: j.estado.capitan, hab: 'COM' })).toBe(5)
     j.comprometer('COM', ['capitan']).usar('espada.cancelar').seguir()
     expect(j.registro).toContain('Total 5 contra 2: superas la Prueba.')
@@ -175,14 +175,14 @@ describe('Tesoros', () => {
   })
 
   it('129 · Mascarón del galeón: +1 al daño máximo y evita el daño al Barco una vez por misión', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['mascaron'] }, mazoPeligros: ['arrecifes', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['mascaron'] }, mazoPeligros: ['arrecifes', 'leyenda', 'calma'] })
     expect(j.valor({ tipo: 'danoMaximo' })).toBe(6)
     j.comprometer('NAV', ['capitan']).seguir().usar('mascaron.evitar')
     expect(j.estado.danoBarco).toBe(0)
   })
 
   it('138 · Los despachos del Rey: después de zarpar, oteas 2', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['despachos'] }, mazoPeligros: ['leyenda', 'cazadores', 'calma', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['despachos'] }, mazoPeligros: ['leyenda', 'cazadores', 'calma', 'calma'] })
     j.usar('despachos.otear').opcion('fondo').opcion('fondo')
     expect(j.zona('mazoPeligros').slice(-2)).toEqual(['leyenda', 'cazadores'])
     expect(j.zona('descartesPeligros')).toEqual(['calma']) // la primera carta revelada ya es el Mar en calma
@@ -200,7 +200,7 @@ describe('Tesoros', () => {
   })
 
   it('150 · Farol de los ahogados: descarta un Destino y revela otro, una vez por misión', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['farol'] }, mazoPeligros: ['fauna', 'leyenda', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['farol'] }, mazoPeligros: ['fauna', 'leyenda', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('farol.destino')
     expect(j.registro).toContain('Descartas «Fallo». Nuevo Destino: «Sin novedad» (+0).')
     expect(j.ofreceCapacidad('farol.destino')).toBe(false)

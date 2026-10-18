@@ -140,7 +140,7 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
               {panel === 'menu' && <Menu alCerrar={() => setPanel(null)} nuevaPartida={nuevaPartida} portada={() => irA('/')} galeria={() => irA('/galeria')} />}
               {panel === 'registro' && <Registro s={s} alCerrar={() => setPanel(null)} />}
               {panel === 'ayuda' && <Ayuda alCerrar={() => setPanel(null)} />}
-              {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} />}
+              {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} elegir={elegir} />}
               {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva())} portada={() => irA('/')} />}
               <CapaZoom />
             </div>

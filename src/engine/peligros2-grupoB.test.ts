@@ -7,7 +7,7 @@ import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
 /** Misiones sin reglas que estorben: Mar (5 de Avance), Naturaleza (3, Distancia 0 con el Barco), Ciudad (4). */
-const MISION = { mar: 'maracaibo-II', nat: 'aguada-I', ciu: 'ladron-I' } as const
+const MISION = { mar: 'pruebas-mar5', nat: 'pruebas-nat3', ciu: 'pruebas-ciu4' } as const
 
 function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
   return Jugador.enMision({ misiones: [MISION[entorno]], mazoPeligros, ...op })
@@ -45,7 +45,7 @@ describe('12 · Tortugas', () => {
     expect(dificultadPrueba(j.estado)).toBe(1)
     j.seguir()
     expect(j.estados('viejo_lobo')).toEqual(['aguerrido'])
-    const k = en('mar', ['p2_corriente', 'p2_tortugas', 'calma'], { avance: { 'maracaibo-II': 2 } })
+    const k = en('mar', ['p2_corriente', 'p2_tortugas', 'calma'], { avance: { 'pruebas-mar5': 2 } })
     k.comprometer('NAV', []).seguir()
     expect(avance(k, 'mar')).toBe(3) // 2 − 1 + 2 del encuentro
   })
@@ -64,11 +64,11 @@ describe('13 · Sol de justicia', () => {
   })
 
   it('Naturaleza, Elige: volver al arroyo (pierdes 1 Avance y ganas el del encuentro) o la Prueba; si la fallas, Aturdidos', () => {
-    const j = en('nat', ['p2_sol', 'calma', 'calma'], { avance: { 'aguada-I': 1 } })
+    const j = en('nat', ['p2_sol', 'calma', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige' } })
     j.opcion('0')
     expect(avance(j, 'nat')).toBe(2)
-    const k = en('nat', ['p2_sol', 'chubasco', 'calma'], { avance: { 'aguada-I': 1 } })
+    const k = en('nat', ['p2_sol', 'chubasco', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     k.opcion('1').comprometer('EXP', ['capitan']).seguir()
     expect(k.estados('capitan')).toEqual(['aturdido'])
   })

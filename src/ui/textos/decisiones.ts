@@ -157,6 +157,8 @@ export function textoSuceso(s: Estado, ev: Evento, fase: 'antes' | 'despues'): s
       return `Has reclutado a ${nombre(s, ev.carta)}.`
     case 'descartada':
       return `Se ha descartado «${nombre(s, ev.carta)}».`
+    case 'estadoPuesto':
+      return `${nombre(s, ev.carta)} ha quedado ${INFO_ESTADO[ev.estado].nombre}.`
     case 'inicioTurno':
       return 'Empieza el turno.'
     case 'finTurno':
@@ -313,9 +315,13 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'ordenarOteo':
       return { titulo: 'Ordena las cartas que dejas arriba', ayuda: 'La primera que elijas queda encima.' }
     case 'alZarparAgotar':
-      return { titulo: 'Al zarpar', ayuda: `Puedes agotar a un Tripulante con el Rasgo que pide la misión para ganar ${n} de Avance.` }
+      return { titulo: m.carta ? `Al zarpar a «${nombreCarta(m.carta)}»` : 'Al zarpar', ayuda: `${m.texto ?? 'Puedes agotar a un Tripulante con el Rasgo que pide la misión'}. Elige a quién, o a nadie.` }
     case 'alZarparDescartar':
-      return { titulo: 'Al zarpar', ayuda: `¿Descartas cartas de tu mano para ganar ${n} de Avance?` }
+      return { titulo: m.carta ? `Al zarpar a «${nombreCarta(m.carta)}»` : 'Al zarpar', ayuda: `¿${m.texto ?? `Descartas ${plural(n, 'carta', 'cartas')}`}?` }
+    case 'finalMision':
+      return { titulo: `«${nombreCarta(m.carta)}»: elige el final`, ayuda: 'La misión está superada. Elige una de las dos recompensas.' }
+    case 'pasajeroSinSitio':
+      return { titulo: `«${nombreCarta(m.carta)}» sube a bordo`, ayuda: 'No te queda Capacidad: elige el Tripulante que vuelve al muelle (con sus Mejoras).' }
     case 'conservarMision':
       return { titulo: `No has superado «${nombreCarta(m.carta)}»`, ayuda: '¿La dejas disponible para otro turno o la mandas al fondo del mazo de Misiones?' }
     case 'portadorTesoro':
@@ -594,22 +600,28 @@ export function describirEfectos(efectos: readonly Efecto[]): string {
     .join(' y ')
 }
 
-/** Las partes de la recompensa de una misión, en palabras. */
-export function partesDeRecompensa(misionId: string): string[] {
+/**
+ * Las partes de la recompensa de una misión, en palabras. `como`: lo que ha pasado al superarla (la Gesta, el
+ * Tesoro que no se gana, el capítulo que añade una salida doble).
+ */
+export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; sinTesoro?: boolean; siguiente?: number } = {}): string[] {
   const e = porId(misionId)
   if (e.tipo !== 'capitulo') return []
   const r = e.carta.recompensa
   const partes: string[] = []
   if (r.victoria) partes.push('¡ganas la partida!')
+  if (r.elige && r.elige.length > 0) partes.push(`eliges el final: ${r.elige.map((o) => o.texto.charAt(0).toLowerCase() + o.texto.slice(1)).join(' o ')}`)
   if (r.rep) partes.push(`+${r.rep} de reputación`)
+  if (como.gesta) partes.push('+1 de reputación por la Gesta')
   if (r.search === 'crew') partes.push('buscas un Tripulante en el mazo de muelle')
   else if (r.search === 'ship') partes.push('buscas una Mejora de barco en el mazo de muelle')
   else if (r.search) partes.push('buscas una Mejora en el mazo de muelle')
   if (r.draw) partes.push(`robas ${n2(r.draw, 'carta', 'cartas')}`)
-  if (r.tesoro) partes.push(`ganas el Tesoro «${nombreDe(r.tesoro)}»`)
-  const siguiente = /carta (\d+)/.exec(e.carta.textoSiguiente)?.[1]
-  if (siguiente && !r.tesoro) {
-    const capitulo = e.mision.capitulos.find((c) => c.num === Number(siguiente))
+  if (r.pasajero) partes.push(`«${nombreDe(r.pasajero)}» sube a bordo como Pasajero`)
+  if (r.tesoro) partes.push(como.sinTesoro ? `no ganas el Tesoro «${nombreDe(r.tesoro)}»` : `ganas el Tesoro «${nombreDe(r.tesoro)}»`)
+  const siguiente = como.siguiente ?? e.carta.siguiente[0]
+  if (siguiente !== undefined && !r.tesoro && !(r.elige && r.elige.length > 0)) {
+    const capitulo = e.mision.capitulos.find((c) => c.num === siguiente)
     partes.push(capitulo ? `«${capitulo.nombre}» entra en el mazo de Misiones` : `la carta ${siguiente} entra en el mazo de Misiones`)
   }
   return partes

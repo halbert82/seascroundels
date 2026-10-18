@@ -6,7 +6,7 @@ import { esCarta, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { partesDeRecompensa } from '../textos/decisiones.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { resumenDePartida } from '../../engine/resumen.ts'
-import type { EntradaRegistro, Estado } from '../../engine/tipos.ts'
+import type { Eleccion, EntradaRegistro, Estado } from '../../engine/tipos.ts'
 import type { OpcionCarta } from './interaccion.ts'
 import { cambiarVelocidad, duracion, useVelocidad, type Velocidad } from './preferencias.ts'
 import { Icono, Numero } from './Zonas.tsx'
@@ -229,15 +229,27 @@ function frase(partes: string[]): string {
 }
 
 /** Panel con el resultado de una misión recién terminada: recompensa completa y resumen de la misión. */
-export function FinDeMision({ s, desde, alCerrar }: { s: Estado; desde: number; alCerrar: () => void }) {
+export function FinDeMision({ s, desde, alCerrar, elegir }: { s: Estado; desde: number; alCerrar: () => void; elegir: (e: Eleccion) => void }) {
   const i = s.registro.findIndex((r, k) => k >= desde && r.dato?.tipo === 'finMision')
   const fin = s.registro[i]?.dato
   if (i < 0 || fin?.tipo !== 'finMision') return null
-  const r = RESULTADO_MISION[fin.resultado]
+  const r = fin.motivo ? { titulo: 'La misión falla', clase: 'mal' } : RESULTADO_MISION[fin.resultado]
   const cifras = cifrasDeMision(s, i)
-  const pendiente = s.pendiente?.motivo.clave
+  const d = s.pendiente
+  const pendiente = d?.motivo.clave
   const eliges = pendiente === 'buscar' || pendiente === 'portadorTesoro'
-  const recompensa = fin.resultado === 'superada' ? frase(partesDeRecompensa(fin.mision)) : ''
+  // Final con elección: se elige aquí mismo.
+  const finales = d?.tipo === 'elegirOpcion' && pendiente === 'finalMision' ? d.opciones : []
+  const despues = s.registro.slice(i)
+  const salida = despues.find((x) => x.texto.endsWith('se baraja en el mazo de Misiones.'))
+  const nombreSalida = salida ? /«(.+)»/.exec(salida.texto)?.[1] : undefined
+  const capituloSalida = nombreSalida ? (porId(fin.mision).tipo === 'capitulo' ? (porId(fin.mision) as Extract<ReturnType<typeof porId>, { tipo: 'capitulo' }>).mision.capitulos.find((c) => c.nombre === nombreSalida) : undefined) : undefined
+  const como = {
+    gesta: despues.some((x) => x.dato?.tipo === 'gesta'),
+    sinTesoro: despues.some((x) => x.texto.startsWith('No ganas el Tesoro')),
+    ...(capituloSalida ? { siguiente: capituloSalida.num } : {}),
+  }
+  const recompensa = fin.resultado === 'superada' ? frase(partesDeRecompensa(fin.mision, como)) : ''
   return (
     <Capa alCerrar={alCerrar} clase={`fin-mision ${r.clase}`}>
       <div className="fin-mision-cuerpo">
@@ -253,7 +265,19 @@ export function FinDeMision({ s, desde, alCerrar }: { s: Estado; desde: number; 
               {eliges && <em> Lo eliges al pulsar «Seguir».</em>}
             </p>
           ) : (
-            <p className="fin-recompensa mal">Sin recompensa: pierdes el Avance de la misión y vuelves a puerto.</p>
+            <p className="fin-recompensa mal">
+              {fin.motivo ? `${fin.motivo.charAt(0).toUpperCase()}${fin.motivo.slice(1)}. ` : ''}Sin recompensa: pierdes el Avance de la misión y vuelves a puerto.
+            </p>
+          )}
+          {finales.length > 0 && (
+            <div className="fin-elige">
+              <span className="fin-elige-rotulo">Elige el final</span>
+              {finales.map((o) => (
+                <button key={o.clave} type="button" className="boton opcion-final" onClick={() => elegir({ tipo: 'opcion', clave: o.clave })}>
+                  {o.texto}
+                </button>
+              ))}
+            </div>
           )}
           <dl className="fin-cifras">
             <div>

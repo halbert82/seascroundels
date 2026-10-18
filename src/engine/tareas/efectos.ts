@@ -488,7 +488,13 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
   }
   // «Perdidos en la espesura»: sin recuadro rojo tampoco hay herida extra de la misión (D2c); la del Destino, sí (N15).
   const def = definicionActual(s)
-  const efectos = p.ignorarFallo ? [] : def.fallo
+  // «1 herida por cada punto que te falte»: son heridas del fallo como las demás (se reparten entre los comprometidos).
+  const efectos = (p.ignorarFallo ? [] : def.fallo).flatMap((e): Efecto[] => {
+    if (e.tipo !== 'porCada' || !e.efectos.every((x) => x.tipo === 'heridas' && !x.capitan && !x.soloEnTierra)) return [e]
+    const k = Math.max(e.minimo ?? 0, Math.min(medir(s, e.medida), e.maximo ?? Infinity))
+    const n = k * e.efectos.reduce((t, x) => t + (x.tipo === 'heridas' ? x.n : 0), 0)
+    return n > 0 ? [{ tipo: 'heridas', n }] : []
+  })
   if (p.ignorarFallo) anotar(s, 'efecto', 'Ignoras los efectos de fallo del encuentro.')
   const comprometidos = comprometidosEnJuego(s)
   const extraMision = efectos.length > 0 ? valor(s, { tipo: 'heridaExtraFallo' }) : 0

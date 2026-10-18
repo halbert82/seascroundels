@@ -7,7 +7,7 @@ import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
 /** Misiones sin reglas que estorben: Mar (5 de Avance), Naturaleza (3, Distancia 0 con el Barco), Ciudad (4). */
-const MISION = { mar: 'maracaibo-II', nat: 'aguada-I', ciu: 'ladron-I' } as const
+const MISION = { mar: 'pruebas-mar5', nat: 'pruebas-nat3', ciu: 'pruebas-ciu4' } as const
 
 function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
   return Jugador.enMision({ misiones: [MISION[entorno]], mazoPeligros, ...op })
@@ -225,7 +225,7 @@ describe('37 · El tahúr', () => {
 
 describe('38 · Paga atrasada', () => {
   it('Mar: se queda en juego; cada otro Peligro revelado, 1 ficha; con 3, 2 daños al Barco y se descarta', () => {
-    const j = en('mar', ['p2_paga', 'calma', 'calma', 'chubasco', 'calma'], { avance: { 'maracaibo-II': 0 } })
+    const j = en('mar', ['p2_paga', 'calma', 'calma', 'chubasco', 'calma'], { avance: { 'pruebas-mar5': 0 } })
     expect(j.zona('peligrosEnJuego')).toEqual(['p2_paga'])
     j.seguir() // calma: 1 ficha (Avance 4)
     expect(j.copia('p2_paga').fichas).toBe(1)
@@ -304,7 +304,7 @@ describe('39 · A sueldo', () => {
     const j = en('nat', ['p2_sueldo', 'chubasco', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir()
     expect(j.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', n: -1 }])
-    const k = en('nat', ['p2_sueldo', 'chubasco', 'calma'], { avance: { 'aguada-I': 1 } })
+    const k = en('nat', ['p2_sueldo', 'chubasco', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     k.comprometer('NAV', []).seguir()
     expect(k.copia('capitan').heridas).toBe(1)
     expect(k.registro).toContain('Pierdes 1 de Avance.')
@@ -321,7 +321,7 @@ describe('39 · A sueldo', () => {
   })
 
   it('Ciudad: si superas la misión, recuperas lo incautado y robas 1', () => {
-    const j = en('ciu', ['p2_sueldo', 'chubasco', 'calma'], { mano: ['ojo', 'soborno', 'sangre_fria'], avance: { 'ladron-I': 3 } })
+    const j = en('ciu', ['p2_sueldo', 'chubasco', 'calma'], { mano: ['ojo', 'soborno', 'sangre_fria'], avance: { 'pruebas-ciu4': 3 } })
     j.pasarOfertas().comprometer('NAV', []).pasarOfertas().seguir()
     expect(j.zona('mano')).toEqual(expect.arrayContaining(['soborno', 'sangre_fria']))
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
@@ -354,7 +354,7 @@ describe('40 · La sombra de Bastián', () => {
   })
 
   it('Naturaleza: si fallas, pierdes 2 Avance; Ciudad: si fallas, la siguiente Prueba recibe +2', () => {
-    const j = en('nat', ['p2_bastian', 'chubasco', 'calma'], { avance: { 'aguada-I': 2 } })
+    const j = en('nat', ['p2_bastian', 'chubasco', 'calma'], { avance: { 'pruebas-nat3': 2 } })
     j.comprometer('EXP', []).seguir()
     expect(j.registro).toContain('Pierdes 2 de Avance.')
     const k = en('ciu', ['p2_bastian', 'chubasco', 'calma'])
@@ -485,7 +485,7 @@ describe('43 · Motín', () => {
   })
 
   it('Naturaleza: si fallas, pierdes 2 Avance y sufres 2 heridas', () => {
-    const j = en('nat', ['p2_motin', 'chubasco', 'calma'], { avance: { 'aguada-I': 2 } })
+    const j = en('nat', ['p2_motin', 'chubasco', 'calma'], { avance: { 'pruebas-nat3': 2 } })
     j.comprometer('NAV', []).seguir()
     expect(j.copia('capitan').heridas).toBe(2)
     expect(j.registro).toContain('Pierdes 2 de Avance.')
@@ -544,8 +544,8 @@ describe('44 · El cazador de piratas', () => {
     })
     k.comprometer('COM', ['capitan'], ['abordaje']).seguir()
     expect(k.zona('tripulacion')).not.toContain('marinero_p')
-    // Robas 2 por el encuentro (y otras 2 de la recompensa de la misión, que se supera con este Avance).
-    expect(k.registro.filter((r) => r.startsWith('Robas 2')).length).toBe(2)
+    // Robas 2 por el encuentro (la misión de prueba no da cartas al superarla).
+    expect(k.registro.filter((r) => r.startsWith('Robas 2')).length).toBe(1)
   })
 
   it('Naturaleza: si fallas, el comprometido con más COM queda rehén', () => {

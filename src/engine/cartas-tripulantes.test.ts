@@ -34,7 +34,7 @@ describe('002 · Catalina «la Enganchadora» Rojas', () => {
 describe('005 · Grumete leal', () => {
   it('se descarta y las heridas que iba a sufrir otro Tripulante quedan en 0', () => {
     // Tiburones (COM 2, fallo: 1 herida) con el Destino «Fallo»: Diego falla y va a sufrir 1 herida.
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['grumete'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['grumete'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['capitan']).seguir()
     expect(j.ofreceCapacidad('grumete.salvar')).toBe(true)
     j.usar('grumete.salvar')
@@ -43,7 +43,7 @@ describe('005 · Grumete leal', () => {
   })
 
   it('no se protege a sí mismo', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['grumete'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['grumete'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['grumete']).seguir()
     expect(j.ofreceCapacidad('grumete.salvar')).toBe(false)
   })
@@ -51,7 +51,7 @@ describe('005 · Grumete leal', () => {
 
 describe('007 · Uñas largas', () => {
   it('si superas una Prueba en la que participa, robas 1', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['saqueador'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['saqueador'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
     j.comprometer('COM', ['saqueador']).seguir()
     expect(j.ofreceCapacidad('saqueador.superar')).toBe(true)
     j.usar('saqueador.superar')
@@ -61,14 +61,14 @@ describe('007 · Uñas largas', () => {
 
 describe('008 · Contrabandista del bajo Caribe', () => {
   it('si superas una Prueba de NAV en la que participa, ganas 1 de Avance', () => {
-    // Chubasco repentino (NAV 2). Es Marinero: «Rumbo a mar abierto» le da 1 al zarpar.
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['contrabandista'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
+    // Chubasco repentino (NAV 2): el Contrabandista suma 2 + 1 (Diego) + 1 (Barco).
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['contrabandista'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
     j.comprometer('NAV', ['contrabandista']).seguir().usar('contrabandista.superar')
-    expect(j.registro).toContain('Contrabandista del bajo Caribe: +1 de Avance (2/3).')
+    expect(j.registro).toContain('Contrabandista del bajo Caribe: +1 de Avance (1/3).')
   })
 
   it('en una Prueba de COM no se ofrece', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['contrabandista'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['contrabandista'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
     j.comprometer('COM', ['contrabandista']).seguir()
     expect(j.ofreceCapacidad('contrabandista.superar')).toBe(false)
   })
@@ -77,7 +77,7 @@ describe('008 · Contrabandista del bajo Caribe', () => {
 describe('009 · Filibustero borracho', () => {
   it('en la ventana de la Prueba: sufre 1 herida y tiene +2 COM; una vez por turno', () => {
     // Piratas rivales (COM 4) con «Refuerzos» (+1): pide 5. Filibustero 3 + 1 (Diego) = 4; con la furia, 6.
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['filibustero'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['filibustero'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
     j.comprometer('COM', ['filibustero'])
     expect(totalPrueba(j.estado)).toBe(4)
     j.usar('filibustero.furia')
@@ -89,7 +89,7 @@ describe('009 · Filibustero borracho', () => {
   })
 
   it('también antes de comprometer, en la pausa tras revelar el encuentro', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['filibustero'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['filibustero'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     expect(j.ofreceCapacidad('filibustero.furia')).toBe(true)
     j.usar('filibustero.furia').comprometer('COM', ['filibustero'])
     expect(totalPrueba(j.estado)).toBe(6)
@@ -131,7 +131,7 @@ describe('011 · Isabela «Cuervo» Saldaña', () => {
 
 describe('012 · Íñigo «Lince» Quintero', () => {
   it('se agota, descarta la carta de Peligro revelada sin resolverla y revela otra', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['bartolome'], mazoPeligros: ['leyenda', 'calma', 'chubasco'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['bartolome'], mazoPeligros: ['leyenda', 'calma', 'chubasco'] })
     expect(j.registro.some((x) => x.endsWith(': Kraken (Mar).'))).toBe(true)
     j.usar('bartolome.descartar')
     expect(j.zona('descartesPeligros')).toContain('leyenda')
@@ -143,7 +143,7 @@ describe('012 · Íñigo «Lince» Quintero', () => {
 
 describe('013 · Rodrigo «Carnicero» Ortega', () => {
   it('en la primera Prueba de COM del turno no se agota; en la segunda, sí', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['reinaldo'], mazoPeligros: ['fauna', 'chubasco', 'fauna', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['reinaldo'], mazoPeligros: ['fauna', 'chubasco', 'fauna', 'chubasco', 'calma'] })
     j.comprometer('COM', ['reinaldo']).seguir()
     expect(j.copia('reinaldo').agotada).toBe(false)
     expect(j.registro).toContain('Rodrigo «Carnicero» Ortega se compromete sin agotarse.')
@@ -176,10 +176,10 @@ describe('015 · Matasanos', () => {
 describe('016 · Espadachín errante', () => {
   it('+2 COM si es el único que participa; con otro, no', () => {
     // Tiburón tigre (COM 3), Destino «Sin novedad».
-    const solo = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
+    const solo = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     solo.comprometer('COM', ['espadachin'])
     expect(totalPrueba(solo.estado)).toBe(3 + 1 + 2)
-    const juntos = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
+    const juntos = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     juntos.comprometer('COM', ['espadachin', 'bucanero'])
     expect(totalPrueba(juntos.estado)).toBe(3 + 1 + (2 + 1))
   })
@@ -198,7 +198,7 @@ describe('017 · Vigía inexperta', () => {
 describe('018 · Viejo lobo de mar', () => {
   it('si participa, descarta el Destino y revela otro; una vez por turno', () => {
     // Niebla espesa (NAV 3). El Destino «Fallo» se descarta y sale «Sin novedad».
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'leyenda', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'leyenda', 'chubasco', 'calma'] })
     j.comprometer('NAV', ['viejo_lobo'])
     j.usar('viejo_lobo.destino')
     expect(j.registro).toContain('Descartas «Fallo». Nuevo Destino: «Sin novedad» (+0).')
@@ -219,7 +219,7 @@ describe('019 · Rastreador de la selva', () => {
 
 describe('020 · Loro parlanchín', () => {
   it('tras revelarse el Destino se compromete en la Prueba y se agota', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['loro', 'bucanero'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['loro', 'bucanero'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     j.comprometer('EXP', ['bucanero'])
     j.usar('loro.unirse')
     expect(j.estado.prueba?.comprometidos).toContain(j.inst('loro'))

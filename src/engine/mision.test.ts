@@ -36,28 +36,28 @@ describe('Zarpar', () => {
   })
 
   it('no se ofrece una misión lejana si no se puede cubrir su Distancia', () => {
-    // «La selva»: Distancia 3, 2 con el Barco. Diego solo tiene NAV 2: llega justo.
-    expect(opcionesDeZarpar(enPuerto({ misiones: ['templo-II'] }))).toEqual(['templo-II'])
+    // «El prisionero de Portobelo»: Distancia 3, 2 con el Barco. Diego solo tiene NAV 2: llega justo.
+    expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-I'] }))).toEqual(['panama-I'])
     expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-II'], capitan: { agotada: true } }))).toEqual([])
   })
 
-  it('ejemplo del reglamento: «La selva» se cubre con el Viejo lobo, o con el Bucanero mientras Diego está preparado', () => {
-    const conLobo = enPuerto({ misiones: ['templo-II'], tripulacion: ['viejo_lobo', 'bucanero'], mazoPeligros: ['calma'] })
-    conLobo.zarpar('templo-II')
+  it('ejemplo del reglamento: «El prisionero de Portobelo» se cubre con el Viejo lobo, o con el Bucanero mientras Diego está preparado', () => {
+    const conLobo = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'bucanero'], mazoPeligros: ['calma'] })
+    conLobo.zarpar('panama-I')
     expect(conLobo.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 2 })
     conLobo.cubrir('viejo_lobo')
     expect(conLobo.copia('viejo_lobo').agotada).toBe(true)
     expect(conLobo.copia('capitan').agotada).toBe(false)
 
-    const sinLobo = enPuerto({ misiones: ['templo-II'], tripulacion: ['bucanero'], mazoPeligros: ['calma'] })
-    sinLobo.zarpar('templo-II').cubrir('bucanero') // NAV 1 + 1 por Diego = 2
+    const sinLobo = enPuerto({ misiones: ['panama-I'], tripulacion: ['bucanero'], mazoPeligros: ['calma'] })
+    sinLobo.zarpar('panama-I').cubrir('bucanero') // NAV 1 + 1 por Diego = 2
     expect(sinLobo.copia('bucanero').agotada).toBe(true)
     expect(sinLobo.registro).toContain('Cubres la Distancia 2: agotas a Bucanero veterano.')
   })
 
   it('no vale una combinación que no llega; las cartas con NAV completan la diferencia', () => {
-    const j = enPuerto({ misiones: ['templo-II'], tripulacion: ['marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
-    j.zarpar('templo-II')
+    const j = enPuerto({ misiones: ['panama-I'], tripulacion: ['marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
+    j.zarpar('panama-I')
     expect(() => j.cubrir('marinero_p')).toThrow(/sumas 1/) // 0 + 1 por Diego
     j.cubrir('marinero_p', 'timon')
     expect(j.zona('descartesCapitan')).toEqual(['timon'])
@@ -73,37 +73,23 @@ describe('Al empezar la misión', () => {
     expect(j.zona('misionesSuperadas')).toEqual(['deuda-I'])
   })
 
-  it('Al zarpar: «Si tienes un Vigía preparado, gana 1»', () => {
-    const conVigia = enPuerto({ misiones: ['ladron-I'], tripulacion: ['vigia'], mazoPeligros: ['chubasco', 'calma'] })
-    conVigia.zarpar('ladron-I')
-    expect(conVigia.registro).toContain('Tienes un Vigía preparado: +1 de Avance (1/4).')
+  it('Al zarpar: «Si tienes un Contrabandista preparado, gana 2»', () => {
+    const j = enPuerto({ misiones: ['maracaibo-III'], tripulacion: ['viejo_lobo', 'contrabandista'], mazoPeligros: ['chubasco', 'calma'] })
+    j.zarpar('maracaibo-III').cubrir('viejo_lobo')
+    expect(j.registro).toContain('Tienes un Contrabandista preparado: +2 de Avance (2/4).')
   })
 
-  it('Al zarpar opcional: «Agota a un Oficial para ganar 2» (puedes no hacerlo)', () => {
+  it('Al zarpar opcional: «Puedes agotar a un Oficial para ganar 2» (puedes no hacerlo)', () => {
     const j = enPuerto({ misiones: ['templo-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['racha', 'racha'] })
     j.zarpar('templo-I')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 0, max: 1, motivo: { clave: 'alZarparAgotar', n: 2 } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 0, max: 1, motivo: { clave: 'alZarparAgotar', carta: 'templo-I' } })
     j.elegir('viejo_lobo')
     expect(j.copia('viejo_lobo').agotada).toBe(true)
-    expect(j.registro).toContain('Agotas a Viejo lobo de mar: +2 de Avance (2/5).')
-  })
-
-  it('Al zarpar opcional: «Descarta 2 cartas para ganar 2»', () => {
-    const j = enPuerto({ misiones: ['espia-II'], tripulacion: ['viejo_lobo'], mano: ['ojo', 'timon', 'coraje'], mazoPeligros: ['calma', 'calma'] })
-    j.zarpar('espia-II').cubrir('viejo_lobo')
-    j.opcion('si').elegir('ojo', 'coraje')
-    expect(j.registro).toContain('Al zarpar: +2 de Avance (2/4).')
-    expect(j.zona('mano')).toEqual(['timon'])
-  })
-
-  it('Al zarpar: «Si tienes 3 o más Tripulantes preparados, gana 2», y el mazo de la Escolta mezclado con 6 Peligros', () => {
-    const peligros = ['racha', 'racha', 'hallazgo', 'calma', 'encrucijada', 'oportunidad', 'chubasco']
-    const j = enPuerto({ misiones: ['flota-II'], tripulacion: ['marinero_p', 'bucanero'], mazoPeligros: peligros })
-    j.zarpar('flota-II')
-    expect(j.registro).toContain('Tienes 3 o más Tripulantes preparados: +2 de Avance (2/5).')
-    // Mazo propio (6) + 6 del mazo de Peligros; uno ya se ha revelado.
-    expect(j.zona('mazoMision').length + j.zona('encuentro').length + j.zona('descartesMision').length).toBe(12)
-    expect(j.zona('mazoPeligros')).toEqual(['chubasco'])
+    expect(j.registro).toContain('Agotas a Viejo lobo de mar al zarpar.')
+    expect(j.registro).toContain('Rumbo a la isla: +2 de Avance (2/5).')
+    const sin = enPuerto({ misiones: ['templo-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['racha', 'racha'] })
+    sin.zarpar('templo-I').ninguna()
+    expect(sin.copia('viejo_lobo').agotada).toBe(false)
   })
 })
 
@@ -273,12 +259,12 @@ describe('Superar una misión', () => {
     const j = enPuerto({
       misiones: ['espia-I', 'prueba-I', 'aguada-I'],
       mazoMisiones: ['fantasma-I'],
-      tripulacion: ['viejo_lobo', 'contrabandista'],
+      tripulacion: ['viejo_lobo'],
       avance: { 'espia-I': 2 },
       mazoPeligros: ['calma', 'calma'],
     })
-    j.zarpar('espia-I').cubrir('viejo_lobo')
-    j.elegir('contrabandista') // Al zarpar: agota a un Contrabandista para ganar 2 → 4
+    j.zarpar('espia-I').cubrir('viejo_lobo') // sin cartas en la mano no hay soplón al que pagar
+    expect(j.avance('espia-I')).toBe(0) // «Hora de la siesta»: 2 + 2 = 4, superada
     expect(j.estado.reputacion).toBe(1)
     expect(j.zona('misionesSuperadas')).toEqual(['espia-I'])
     expect([...j.zona('misionesDisponibles'), ...j.zona('mazoMisiones')].sort()).toEqual(['aguada-I', 'espia-II', 'fantasma-I', 'prueba-I'])
@@ -286,17 +272,20 @@ describe('Superar una misión', () => {
   })
 
   it('el capítulo III da su Tesoro, que entra en juego sin coste', () => {
-    const j = enPuerto({ misiones: ['flota-III'], tripulacion: ['bucanero'], avance: { 'flota-III': 4 }, mazoPeligros: ['calma'] })
+    const j = enPuerto({ misiones: ['flota-III'], tripulacion: ['bucanero'], avance: { 'flota-III': 3 }, mazoPeligros: ['calma'] })
     j.zarpar('flota-III')
-    expect(j.estado.reputacion).toBe(4)
+    expect(j.estado.reputacion).toBe(5)
     expect(j.copia('mascaron').vinculadaA).toBe('barco')
     expect(j.zona('mejoras')).toContain('mascaron')
   })
 
   it('un Tesoro de tripulante lo lleva quien elijas', () => {
-    const j = enPuerto({ misiones: ['templo-III'], tripulacion: ['viejo_lobo', 'bucanero'], avance: { 'templo-III': 5 }, mazoPeligros: ['calma'] })
-    j.zarpar('templo-III').cubrir('viejo_lobo')
-    while (j.decision.motivo.clave !== 'portadorTesoro') j.seguir()
+    // «El templo»: final con elección; la Espada del sacerdote es un Tesoro de tripulante.
+    const j = enPuerto({ misiones: ['templo-III'], tripulacion: ['viejo_lobo', 'bucanero'], avance: { 'templo-III': 5 }, mazoPeligros: ['calma'], mazoHistoria: ['espada'] })
+    j.zarpar('templo-III')
+    while (j.decision.motivo.clave !== 'finalMision') j.seguir()
+    j.opcion('espada')
+    expect(j.decision.motivo.clave).toBe('portadorTesoro')
     j.elegir('bucanero')
     expect(j.copia('espada').vinculadaA).toBe(j.inst('bucanero'))
   })
@@ -310,13 +299,20 @@ describe('Superar una misión', () => {
     expect(aguada.zona('mano')).toHaveLength(2)
   })
 
-  it('«Las puertas de Panamá»: ¡victoria!', () => {
-    const j = enPuerto({ misiones: ['panama-III'], reputacion: 9, tripulacion: ['viejo_lobo', 'contrabandista'], avance: { 'panama-III': 7 }, mazoPeligros: ['calma'] })
-    j.zarpar('panama-III').cubrir('viejo_lobo', 'contrabandista')
+  it('«Las puertas de Panamá»: ¡victoria! (sin fichas de Defensa)', () => {
+    // Pelea de taberna (COM 3): Diego la supera justo y «Ánimo» lo prepara para la siguiente. Cada una quita 1 Defensa.
+    const peleas = ['rivales', 'calma', 'rivales', 'calma', 'rivales', 'calma', 'calma']
+    const j = enPuerto({ misiones: ['panama-III'], reputacion: 9, avance: { 'panama-III': 5 }, mazoPeligros: peleas })
+    j.zarpar('panama-III')
+    expect(j.estado.mision?.fichas?.defensa).toBe(3)
+    j.comprometer('COM', ['capitan']).seguir()
+    expect(j.estado.mision?.fichas?.defensa).toBe(2)
+    expect(j.estado.resultado).toBeNull() // 7 de 5 de Avance, pero quedan fichas de Defensa
+    j.seguir().comprometer('COM', ['capitan']).seguir().seguir().comprometer('COM', ['capitan']).seguir()
     expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has superado «Las puertas de Panamá».' })
   })
 
-  it('ejemplo del reglamento: en el último turno, con 15 de reputación, «La goleta del correo» da 4 y ganas', () => {
+  it('ejemplo del reglamento: en el último turno, con 15 de reputación, «La goleta del correo» da 3 y ganas', () => {
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
       escenario: [],
@@ -326,8 +322,8 @@ describe('Superar una misión', () => {
       avance: { 'espia-III': 2 },
       mazoPeligros: ['racha', 'calma'],
     })
-    j.zarpar('espia-III')
-    expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has llegado a 19 de reputación.' })
+    j.zarpar('espia-III') // Viento de popa: 2 + 3 = 5
+    expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has llegado a 18 de reputación.' })
   })
 })
 

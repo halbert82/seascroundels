@@ -6,6 +6,7 @@ import { porId } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 import { copia } from './estado.ts'
 import { cartaDeEstado } from './infoEstados.ts'
+import { reglasMision } from './misiones2/registro.ts'
 import type { Capacidad, Consulta, Contexto, Estado, InstId } from './tipos.ts'
 import { vinculadas } from './zonas.ts'
 
@@ -49,6 +50,13 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
     for (const cap of capacidadesDe(copia(s, s.mision.carta).id)) {
       if (cap.ventana === 'constante' && cap.desde === 'mision') yield [cap, s.mision.carta]
     }
+  }
+  // Misiones 2.0: los Pasajeros y las cartas de misión que están junto a la misión («¡La guardia!»).
+  for (const inst of s.zonas.pasajeros) {
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'pasajero') yield [cap, inst]
+  }
+  for (const inst of s.zonas.cartasMision) {
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'cartaMision') yield [cap, inst]
   }
   for (const t of s.temporales) {
     // «En tu próximo turno»: aún no cuenta.
@@ -120,6 +128,7 @@ function base(s: Estado, c: Consulta): number {
     case 'totalPrueba':
     case 'heridaExtraFallo':
     case 'avanceExtraPrueba':
+    case 'avanceExtraEncuentro':
     case 'sinCanones':
     case 'sinAgotarAlComprometer':
     case 'noSuma':
@@ -129,7 +138,10 @@ function base(s: Estado, c: Consulta): number {
     case 'avanceNecesario': {
       const e = porId(copia(s, c.mision).id)
       if (e.tipo !== 'capitulo') throw new Error(`${e.id} no es una misión`)
-      return c.tipo === 'distancia' ? e.carta.distancia : e.carta.avanceNecesario
+      if (c.tipo === 'avanceNecesario') return e.carta.avanceNecesario
+      // «Si El guía del istmo viaja contigo, la Distancia de esta misión es 0.»
+      const distancia = reglasMision(e.id)?.distancia
+      return distancia ? distancia(s, e.carta.distancia) : e.carta.distancia
     }
   }
 }
@@ -211,11 +223,11 @@ export function huecosLibres(s: Estado, tripulante: InstId): number {
   return valor(s, { tipo: 'huecos', carta: tripulante }) - huecosOcupados(s, tripulante)
 }
 
-/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los rehenes y los incautados. */
+/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los rehenes, los incautados y los Pasajeros. */
 export function plazasOcupadas(s: Estado): number {
   // Un Tripulante incautado sigue ocupando su plaza (P9).
   const incautados = s.zonas.incautadas.filter((c) => porId(copia(s, c).id).tipo === 'tripulante').length
-  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.rehenes.length + incautados
+  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.rehenes.length + incautados + s.zonas.pasajeros.length
 }
 
 export function plazasLibres(s: Estado): number {

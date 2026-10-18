@@ -9,8 +9,10 @@ import { encolarUso, mismoUso, usosDisponibles } from './usos.ts'
 import { iconosDe } from './catalogo.ts'
 import { navParaDistancia, plazasOcupadas, valor } from './valores.ts'
 import { impideSuperar } from './definiciones.ts'
-// Reglas de las cartas de Peligro 2.0 (se registran al cargar).
+// Reglas de las cartas de Peligro 2.0 y de las misiones 2.0 (se registran al cargar).
 import './peligros2/index.ts'
+import './misiones2/index.ts'
+import { reglasEnCurso } from './misiones2/comun.ts'
 import { definicionActual, problemaCompromiso } from './prueba.ts'
 
 /** Pasos máximos sin decisión del jugador: si se superan, hay un bucle en las reglas. */
@@ -69,7 +71,7 @@ function comprobar(s: Estado): boolean {
   }
   // D5a: en cuanto reúnes el Avance, superas la misión; pero la primera carta de Peligro se resuelve siempre.
   // Una carta en juego que «impide superar la misión» lo retrasa hasta que se quite.
-  if (s.mision && !s.mision.fin && s.mision.cartasResueltas >= 1 && !impideSuperar(s)) {
+  if (s.mision && !s.mision.fin && s.mision.cartasResueltas >= 1 && !impideSuperar(s) && !reglasEnCurso(s)?.impideSuperar?.(s)) {
     const avance = copia(s, s.mision.carta).avance
     if (avance >= valor(s, { tipo: 'avanceNecesario', mision: s.mision.carta })) {
       s.mision.fin = 'superada'

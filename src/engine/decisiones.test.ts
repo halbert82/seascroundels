@@ -5,6 +5,15 @@ import { registrarParaPruebas } from './capacidades/index.ts'
 import { totalPrueba } from './prueba.ts'
 import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
+import type { Capacidad } from './tipos.ts'
+
+/**
+ * «Cada efecto de fallo inflige además 1 herida» (D2b, D2c, N15). Ninguna misión 2.0 lo tiene ya, pero la regla sigue
+ * en el motor: se prueba con una regla de mentira en una misión de prueba.
+ */
+function heridaExtraEn(mision: string): Capacidad {
+  return { clave: 'prueba.heridaExtra', carta: mision, ventana: 'constante', desde: 'mision', modifica: (_ctx, _yo, c) => (c.tipo === 'heridaExtraFallo' ? 1 : 0) }
+}
 
 /** En una misión ya empezada: zarpa (cubriendo la Distancia si hace falta) y se para en la primera decisión. */
 function enMision(op: OpcionesSituacion & { cubrir?: string[] }): Jugador {
@@ -23,9 +32,9 @@ afterEach(() => {
 })
 
 describe('D1a · «Mientras esté preparado» se pierde al agotarse, también a la vez', () => {
-  it('Diego y el Rufián agotados juntos para cubrir «Las puertas de Panamá» (Distancia 3 con el Barco) suman 2', () => {
-    const j = Jugador.en({ tripulacion: ['marinero_p'], misiones: ['panama-III'] })
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('panama-III') })).toBe(3)
+  it('Diego y el Rufián agotados juntos para cubrir «El prisionero de Portobelo» (Distancia 2 con el Barco) suman 2', () => {
+    const j = Jugador.en({ tripulacion: ['marinero_p'], misiones: ['panama-I'] })
+    expect(j.valor({ tipo: 'distancia', mision: j.inst('panama-I') })).toBe(2)
     expect(navParaDistancia(j.estado, [j.estado.capitan, j.inst('marinero_p')])).toBe(2)
   })
 
@@ -43,21 +52,21 @@ describe('D1a · «Mientras esté preparado» se pierde al agotarse, también a 
 })
 
 describe('D7 · Los cambios a «las Distancias» solo afectan a las misiones lejanas', () => {
-  it('con «Temporada de huracanes», «La selva» pasa de 2 a 3 (con el Barco) y «Cobrar la deuda» sigue en 0', () => {
+  it('con «Temporada de huracanes», «La selva» pasa de 1 a 2 (con el Barco) y «Cobrar la deuda» sigue en 0', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['huracanes', 'calma_ev'],
       misiones: ['templo-II', 'deuda-I', 'prueba-I'],
     })
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('templo-II') })).toBe(3)
+    expect(j.valor({ tipo: 'distancia', mision: j.inst('templo-II') })).toBe(2)
     expect(j.valor({ tipo: 'distancia', mision: j.inst('deuda-I') })).toBe(0)
     expect(j.valor({ tipo: 'distancia', mision: j.inst('prueba-I') })).toBe(0)
   })
 
   it('con «Vientos alisios», «Agua y leña» (Distancia 1) queda en 0, nunca por debajo', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['alisios', 'calma_ev'], misiones: ['aguada-I', 'templo-II', 'deuda-I'] })
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['alisios', 'calma_ev'], misiones: ['aguada-I', 'panama-I', 'deuda-I'] })
     expect(j.valor({ tipo: 'distancia', mision: j.inst('aguada-I') })).toBe(0)
-    expect(j.valor({ tipo: 'distancia', mision: j.inst('templo-II') })).toBe(1)
+    expect(j.valor({ tipo: 'distancia', mision: j.inst('panama-I') })).toBe(1)
   })
 })
 
@@ -223,10 +232,9 @@ describe('D2 · Heridas de un fallo', () => {
     expect(tigre.copia('capitan').heridas).toBe(2)
   })
 
-  it('D2b · en «El templo», fallar la Trampa de dardos («1 · 1») son 3 heridas en total', () => {
-    // Mazo mezclado solo con Trampas de dardos: la primera carta es una Trampa y su Destino, otra.
-    const dardos = ['dardos', 'dardos', 'dardos', 'dardos', 'dardos', 'dardos']
-    const j = enMision({ misiones: ['templo-III'], tripulacion: ['viejo_lobo'], mazoHistoria: ['dardos', 'dardos'], mazoPeligros: dardos, cubrir: ['viejo_lobo'] })
+  it('D2b · con «cada efecto de fallo inflige además 1 herida», fallar la Fiebre amarilla («1 · 1») son 3 heridas en total', () => {
+    quitar = registrarParaPruebas(heridaExtraEn('pruebas-nat3'))
+    const j = enMision({ misiones: ['pruebas-nat3'], tripulacion: ['viejo_lobo'], mazoPeligros: ['fiebre', 'calma', 'calma'] })
     j.comprometer('EXP').seguir()
     let heridas = 0
     while (j.decision.motivo.clave === 'herir') {
@@ -237,8 +245,9 @@ describe('D2 · Heridas de un fallo', () => {
     expect(j.copia('capitan').heridas).toBe(3)
   })
 
-  it('D2c · un recuadro rojo vacío no da herida extra («El polvorín», «Un soplo en la taberna»)', () => {
-    const j = enMision({ misiones: ['sanfelipe-III'], tripulacion: ['viejo_lobo', 'contrabandista'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'], cubrir: ['viejo_lobo', 'contrabandista'] })
+  it('D2c · un recuadro rojo vacío no da herida extra («Un soplo en la taberna»)', () => {
+    quitar = registrarParaPruebas(heridaExtraEn('pruebas-ciu4'))
+    const j = enMision({ misiones: ['pruebas-ciu4'], tripulacion: ['viejo_lobo', 'contrabandista'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'] })
     j.comprometer('EXP').seguir()
     expect(j.registro.some((t) => t.includes('sufre'))).toBe(false)
   })
@@ -348,16 +357,16 @@ describe('D10 · Si se acaba el mazo mezclado de una misión, se barajan los des
       tripulacion: ['viejo_lobo', 'baqueano', 'bucanero', 'contrabandista'],
       mazoHistoria: ['pasadizo'],
       mazoPeligros: ['calma'],
-      cubrir: ['viejo_lobo'],
       reputacion: 0,
     })
-    // Mazo mezclado: el Pasadizo secreto y 1 Remanso (2 cartas, 2 de Avance cada una). Con 5 de Avance
+    // Mazo mezclado: el Pasadizo secreto y un Claro tranquilo (2 cartas, 2 de Avance cada una). Con 5 de Avance
     // necesario, hay que resolver 3 cartas: la tercera sale de rebarajar los descartes de la misión.
     for (let i = 0; i < 20 && j.estado.mision; i++) {
       const d = j.decision
       if (d.motivo.clave === 'trasEncuentro') j.seguir()
       else if (d.tipo === 'comprometer') j.comprometer(d.opciones[0]!.hab, [], []).seguir()
       else if (d.tipo === 'elegirCartas') j.responder({ tipo: 'cartas', ids: d.candidatas.slice(0, d.min) })
+      else if (d.tipo === 'elegirOpcion') j.responder({ tipo: 'opcion', clave: d.opciones[0]!.clave })
       else j.seguir()
     }
     expect(j.registro).toContain('Se acaba el mazo de la misión: se barajan sus descartes.')
@@ -395,25 +404,24 @@ describe('Decisiones que dependen de cartas concretas', () => {
     expect(pedrero.ofreceCapacidad('pedrero.disparar')).toBe(true)
   })
 
-  it('D5a · «Rumbo a la isla» (Mar 5): resuelta una carta y con 3, revelas el Kraken y «¡A toda vela!» la supera sin resolverlo', () => {
-    const j = Jugador.enMision({ misiones: ['templo-I'], avance: { 'templo-I': 1 }, mano: ['viento', 'ojo'], mazoPeligros: ['calma', 'leyenda', 'chubasco'] })
-    j.ninguna() // no agota a Diego (Oficial) para ganar 2
+  it('D5a · en una misión de Mar 5, resuelta una carta y con 3, revelas el Kraken y «¡A toda vela!» la supera sin resolverlo', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], avance: { 'pruebas-mar5': 1 }, mano: ['viento', 'ojo'], mazoPeligros: ['calma', 'leyenda', 'chubasco'] })
     j.pasar() // no juega «¡A toda vela!» con el Mar en calma
-    expect(j.avance('templo-I')).toBe(3)
+    expect(j.avance('pruebas-mar5')).toBe(3)
     j.seguir() // revela el Kraken
     j.usar('viento.jugar').elegir('ojo')
     expect(j.registro).toContain('Reúnes el Avance a mitad del encuentro: lo dejas sin resolver.')
-    expect(j.zona('misionesSuperadas')).toContain('templo-I')
+    expect(j.zona('misionesSuperadas')).toContain('pruebas-mar5')
   })
 
-  it('D5b · empiezas «Un soplo en Port Royal» (Ciudad 4) con 4 y quitas la primera carta con «Sangre fría»: hay que resolver otra', () => {
-    const j = Jugador.enMision({ misiones: ['espia-I'], avance: { 'espia-I': 4 }, mano: ['sangre_fria', 'ojo', 'timon'], mazoPeligros: ['rivales', 'calma', 'calma'], cubrir: ['capitan'] })
+  it('D5b · empiezas una misión de Ciudad 4 con 4 y quitas la primera carta con «Sangre fría»: hay que resolver otra', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], avance: { 'pruebas-ciu4': 4 }, mano: ['sangre_fria', 'ojo', 'timon'], mazoPeligros: ['rivales', 'calma', 'calma'] })
     j.usar('sangre_fria.jugar').elegir('ojo', 'timon')
     // Con 6 de 4 no se supera aún: hay que revelar y resolver otra carta (la Hora de la siesta).
     const r = j.registro
     const sangre = r.indexOf('«Pelea de taberna»: +2 de Avance (6/4).')
     const siesta = r.findIndex((t) => t.endsWith(': Hora de la siesta (Ciudad).'))
-    const superada = r.indexOf('¡Superas «Un soplo en Port Royal»!')
+    const superada = r.findIndex((t) => t.startsWith('¡Superas «Prueba (ciu 4)»'))
     expect(sangre).toBeGreaterThanOrEqual(0)
     expect(siesta).toBeGreaterThan(sangre)
     expect(superada).toBeGreaterThan(siesta)
@@ -490,13 +498,14 @@ describe('N14 · El Loro que se une a una Prueba sin comprometidos anula Sin opo
 })
 
 describe('N15 · «Perdidos en la espesura» ignora el recuadro rojo y la herida extra de la misión, no la del Destino', () => {
-  // «El templo»: cada efecto de fallo inflige además 1 herida. Mazo mezclado solo con Fiebres: el encuentro
-  // es la Fiebre amarilla (1 herida · 1 herida, como la Trampa de dardos) y el Destino, «Fiebre».
+  // Una misión con «cada efecto de fallo inflige además 1 herida». Mazo solo con Fiebres: el encuentro es la
+  // Fiebre amarilla (1 herida · 1 herida) y el Destino, «Fiebre» (si fallas, además 1 herida).
   const fiebres = ['fiebre', 'fiebre', 'fiebre', 'fiebre', 'fiebre', 'fiebre']
   const montarTemplo = (mano: string[]) =>
-    Jugador.enMision({ misiones: ['templo-III'], tripulacion: ['viejo_lobo'], capitan: { heridas: 0 }, mano, mazoHistoria: [], mazoPeligros: fiebres, cubrir: ['viejo_lobo'] })
+    Jugador.enMision({ misiones: ['pruebas-nat3'], tripulacion: ['viejo_lobo'], capitan: { heridas: 0 }, mano, mazoPeligros: fiebres })
 
   it('sin la carta, 4 heridas; con ella, 1 (la de «Fiebre»)', () => {
+    quitar = registrarParaPruebas(heridaExtraEn('pruebas-nat3'))
     const sin = montarTemplo([])
     sin.comprometer('EXP', ['capitan']).seguir()
     expect(sin.copia('capitan').heridas).toBe(4)

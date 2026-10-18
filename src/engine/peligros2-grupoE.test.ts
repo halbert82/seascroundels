@@ -6,8 +6,8 @@ import { dificultadPrueba, totalPrueba } from './prueba.ts'
 import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import type { CartaId, InstId } from './tipos.ts'
 
-/** Misiones sin reglas que estorben: Mar (5 de Avance), Naturaleza (3), Ciudad (4). */
-const MISION = { mar: 'maracaibo-II', nat: 'aguada-I', ciu: 'ladron-I' } as const
+/** Misiones de prueba, sin reglas que estorben: Mar (5 de Avance), Naturaleza (3), Ciudad (4). */
+const MISION = { mar: 'pruebas-mar5', nat: 'pruebas-nat3', ciu: 'pruebas-ciu4' } as const
 
 function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
   return Jugador.enMision({ misiones: [MISION[entorno]], mazoPeligros, ...op })

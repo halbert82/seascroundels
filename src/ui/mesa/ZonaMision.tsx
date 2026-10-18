@@ -13,6 +13,7 @@ import { vistaDeCarta } from '../cartas/vista.ts'
 import { describirEfectos } from '../textos/decisiones.ts'
 import { impideRetirarse, impideSuperar } from '../../engine/definiciones.ts'
 import { textoModSiguiente } from '../../engine/tareas/efectos.ts'
+import { fichasVisibles, motivoSinSuperar } from '../../engine/misiones2/comun.ts'
 import { anchoCentro } from './disposicion.ts'
 import { useLienzo } from './Lienzo.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
@@ -75,6 +76,15 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
         <CartaDe inst={m.carta} escala={0.34} />
         <div className="mision-estado">
           <BarraAvance actual={copia(s, m.carta).avance} necesario={necesario} />
+          {fichasVisibles(s).length > 0 && (
+            <div className="mision-fichas">
+              {fichasVisibles(s).map((f) => (
+                <span key={f.ficha} className={`ficha-mision${f.umbral > 0 && f.n >= f.umbral - 1 ? ' cerca' : ''}`} title={f.nota}>
+                  {f.nombre} <b>{f.umbral > 0 ? `${f.n}/${f.umbral}` : f.n}</b>
+                </span>
+              ))}
+            </div>
+          )}
           <div className="mision-notas">
             <span>
               {m.cartasResueltas} {m.cartasResueltas === 1 ? 'carta resuelta' : 'cartas resueltas'}
@@ -82,6 +92,7 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
             {m.cartasResueltas === 0 && <span className="aviso">Hay que resolver al menos una carta para superarla</span>}
             {m.mazoMezclado && <span>Revelas del mazo de la misión</span>}
             {impideSuperar(s) && <span className="aviso">Una carta en juego te impide superarla</span>}
+            {motivoSinSuperar(s) && <span className="aviso">{motivoSinSuperar(s)}</span>}
             {(m.sinRetirada || impideRetirarse(s)) && <span className="aviso">No puedes retirarte</span>}
             {(m.modsSiguientes ?? []).map((x, i) => (
               <span key={i} className="pendiente">
@@ -98,11 +109,11 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
             </div>
           )}
         </div>
-        {s.zonas.peligrosEnJuego.length > 0 && (
-          <div className="en-juego" title="Cartas de Peligro que se quedan en juego junto a la misión hasta que se quitan.">
+        {s.zonas.peligrosEnJuego.length + s.zonas.cartasMision.length > 0 && (
+          <div className="en-juego" title="Cartas que se quedan en juego junto a la misión hasta que se quitan.">
             <span className="en-juego-rotulo">En juego</span>
             <div className="en-juego-cartas">
-              {s.zonas.peligrosEnJuego.map((c) => (
+              {[...s.zonas.cartasMision, ...s.zonas.peligrosEnJuego].map((c) => (
                 <CartaDe key={c} inst={c} escala={0.26} />
               ))}
             </div>

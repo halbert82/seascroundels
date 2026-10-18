@@ -34,7 +34,7 @@ Pierdes la partida si tu Capitán queda derrotado, si se acaba el tiempo o si no
 
 ### Componentes
 
-La Caja básica contiene 173 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica contiene 212 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 **Cartas del jugador**
 
@@ -42,9 +42,9 @@ La Caja básica contiene 173 cartas, que se dividen en cartas del jugador y cart
 | --- | --- | --- |
 | Capitanes | 2 | Diego «Garra» Mendoza y Catalina «la Enganchadora» Rojas. Eliges uno por partida |
 | Barco | 1 | La Sombra del Alba |
-| Tripulantes | 20 | Tu gente. Van al mazo de muelle |
+| Tripulantes | 24 | Tu gente. Van al mazo de muelle |
 | Mejoras | 22 | 13 de barco y 9 de tripulante. Van al mazo de muelle |
-| Eventos | 24 | Efectos de un solo uso. Van al mazo del capitán |
+| Eventos | 29 | Efectos de un solo uso. Van al mazo del capitán |
 | Habilidades | 12 | Seis cartas distintas, 2 copias de cada una. Van al mazo del capitán |
 
 **Cartas del escenario El Caribe**
@@ -52,18 +52,21 @@ La Caja básica contiene 173 cartas, que se dividen en cartas del jugador y cart
 | Cartas | Cantidad | Para qué sirven |
 | --- | --- | --- |
 | Puertos | 2 | Tortuga y Nassau. Eliges uno por partida |
-| Peligros | 32 | El mazo de Peligros. Dos de ellas empiezan fuera del mazo |
+| Peligros | 57 | El mazo de Peligros (55) y dos cartas que empiezan fuera del mazo |
 | Escenario | 14 | El reloj de la partida |
 | Misiones iniciales | 3 | Las tres primeras misiones disponibles |
 | Aventuras | 2 | Misiones sueltas del mazo de Misiones |
-| Capítulos | 21 | Siete travesías de tres capítulos cada una |
+| Capítulos | 23 | Siete travesías de tres capítulos cada una; dos de ellas tienen dos capítulos II (salida doble) |
 | Tesoros | 6 | Recompensas únicas de algunos capítulos |
-| Mazos propios | 12 | Cartas de Peligro de dos misiones concretas |
+| Mazos propios | 12 | Cartas de Peligro de dos misiones concretas: 6 del Templo y 6 de la Escolta |
+| Pasajeros | 2 | Don Anselmo y El guía del istmo. Viajan contigo en algunas travesías |
+| Cartas de misión | 1 | «¡La guardia!», que ponen en juego algunas misiones |
 
 **Fichas**
 
 - Fichas de herida, de daño, de Avance y de munición.
 - Fichas de Entrenamiento (+1).
+- Fichas de misión: Ventaja, Alarma, Sospecha, Persecución, Mecha y Defensa. Solo las usan las misiones que las nombran.
 - Un marcador de reputación.
 
 ### Anatomía de las cartas
@@ -111,8 +114,8 @@ La carta de puerto tiene el texto a la izquierda y la ilustración a la derecha.
 2. **Travesía y nombre.** Encima del nombre va la travesía a la que pertenece, «Aventura» o «Misión inicial».
 3. **Entorno:** la primera pestaña (Mar, Naturaleza o Ciudad). Si lleva una franja azul con el icono de NAV y un número, ese número es su **Distancia**.
 4. **Avance:** la pestaña del mapa. Es el Avance que necesitas para superarla.
-5. **Texto de la misión:** sus reglas especiales y sus capacidades **Al zarpar**.
-6. **Recompensa:** la reputación (calavera) y lo demás que ganas. Una etiqueta oscura indica, por su número de colección, qué carta añades al mazo de Misiones o qué Tesoro ganas.
+5. **Texto de la misión:** sus reglas especiales y sus capacidades **Al zarpar**. Algunas reglas ponen fichas de misión sobre la carta, y algunas misiones tienen una **Gesta** (reputación de más si la superas de cierta manera).
+6. **Recompensa:** la reputación (calavera) y lo demás que ganas. Una etiqueta oscura indica, por su número de colección, qué carta añades al mazo de Misiones o qué Tesoro ganas. En un final con elección, la recompensa dice las dos opciones.
 7. **Mazo:** abajo a la izquierda, dónde va la carta al preparar la partida.
 
 #### Peligro
@@ -168,7 +171,7 @@ Prepara la partida siguiendo estos pasos:
 2. **Pon en juego a tu Capitán y tu Barco.** Tu Capitán empieza preparado y sin coste.
 3. **Elige un puerto** de El Caribe y ponlo en el centro de la mesa. Jugarás toda la partida en él.
 4. **Prepara el mazo de Peligros.** Deja aparte «La Armada te persigue» y «Amigos en la costa»: solo entran si una carta lo indica. Baraja el resto.
-5. **Prepara las misiones.** Pon boca arriba las tres misiones iniciales: son las **misiones disponibles**, a las que puedes zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne los capítulos II y III, los Tesoros y los mazos propios en el **mazo de historia** y déjalo aparte, boca abajo: de él solo salen cartas cuando otra carta lo indica.
+5. **Prepara las misiones.** Pon boca arriba las tres misiones iniciales: son las **misiones disponibles**, a las que puedes zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros y «¡La guardia!» en el **mazo de historia** y déjalo aparte, boca abajo: de él solo salen cartas cuando otra carta lo indica.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique tu puerto. Esas cartas, boca arriba junto al puerto, son el **muelle**: el único sitio desde el que puedes reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a tu mano.
 7. **Roba tu mano inicial.** Baraja tu **mazo del capitán** y roba tantas cartas como el **Mando** de tu Capitán. Puedes cambiar tu mano una vez: descarta las cartas que quieras y roba otras tantas.
 
@@ -245,12 +248,12 @@ Las misiones de Naturaleza y de Ciudad que están lejos de tu isla llevan una fr
 
 Una misión sin franja azul tiene Distancia 0: está en tu propia isla. Las misiones de Mar no tienen Distancia, porque navegar ya es la misión.
 
-> *Ejemplo:* «La selva» es una misión de Naturaleza 4 con Distancia 3. Si agotas al Viejo lobo de mar (NAV 3), ya la cubres. Sin él, puedes agotar al Bucanero veterano (NAV 1, más 1 por Diego mientras Diego esté preparado) y contar el −1 a la Distancia de tu Barco: necesitas 2 y tienes 2. Bajas a la selva con un hombre menos, pero con Diego.
+> *Ejemplo:* «El prisionero de Portobelo» es una misión de Ciudad 5 con Distancia 3. Si agotas al Viejo lobo de mar (NAV 3), ya la cubres. Sin él, puedes agotar al Bucanero veterano (NAV 1, más 1 por Diego mientras Diego esté preparado) y contar el −1 a la Distancia de tu Barco: necesitas 2 y tienes 2. Llegas a Portobelo con un hombre menos, pero con Diego.
 
 #### Al empezar la misión
 
 1. **Avance inicial.** Las fichas de Avance que ya tuviera la misión se quedan sobre ella y cuentan para superarla. Añade las que te den otras cartas, como Mapa robado o la Chalupa.
-2. **Capacidades Al zarpar.** Resuelve las capacidades **Al zarpar** de la misión y las de tus cartas que se usan al zarpar. Si una es opcional, decides ahora si la usas («Agota a un Oficial para ganar 2 de Avance»). Algunas preparan la misión, como las que te piden barajar un mazo propio con cartas del mazo de Peligros: en ese caso, durante esta misión revelas las cartas de ese mazo mezclado.
+2. **Capacidades Al zarpar.** Resuelve las capacidades **Al zarpar** de la misión y las de tus cartas que se usan al zarpar. Si una es opcional, decides ahora si la usas («Puedes agotar a un Oficial para ganar 2 de Avance»). Algunas preparan la misión: te piden barajar un mazo propio con cartas del mazo de Peligros (durante esta misión revelas las cartas de ese mazo mezclado), poner fichas de misión sobre la carta o poner en juego a un Pasajero.
 
 #### Revelar cartas de Peligro
 
@@ -272,9 +275,25 @@ Algunos encuentros ofrecen **dos opciones** («EXP 3 / NAV 4»). Otros piden men
 
 > *Ejemplo:* comprometes a Diego (COM 3) contra el Jaguar (COM 3) y, por si el Destino se tuerce, añades «¡Al abordaje!», que tiene dos iconos de COM: sumas 5. El Destino es «Zarpazo»: +1 a la dificultad, y el que más sume de los comprometidos sufre 1 herida. Diego se lleva la herida y ahora necesitas 4. Con 5, superas la Prueba.
 
+#### Fichas de misión
+
+Algunas misiones llevan la cuenta de algo con fichas sobre su carta: la Ventaja del ladrón, la Alarma de una casa o de una fortaleza, la Sospecha del espía, la Persecución de la flota, la Mecha del polvorín o la Defensa de Panamá. La misión dice cuándo se ponen y se quitan, y qué pasa al llegar a cierto número. Las fichas de misión se descartan al terminar la misión, la superes o no.
+
+> *Ejemplo:* en «La casa del gobernador», cada Prueba de COM que superes pone 1 ficha de Alarma. Con 2 fichas, la misión necesita 1 de Avance más. Con 3, pones en juego «¡La guardia!» junto a la misión: mientras esté, todas las Pruebas reciben +1.
+
+Algunas misiones dicen que **la misión falla** («Con 3, el espía te descubre: la misión falla»). Es como retirarte: no la superas, pierdes su Avance y eliges si la dejas disponible o la pones al fondo del mazo de Misiones.
+
+#### Pasajeros
+
+Un **Pasajero** es una carta que viaja contigo: Don Anselmo, el comerciante, o El guía del istmo. La misión que lo pone en juego lo dice.
+
+- Ocupa 1 de Capacidad. Si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle (con sus Mejoras).
+- No es un Tripulante: no se compromete, no se agota y no puede recibir heridas, Estados ni quedar rehén, salvo que su carta lo diga.
+- Se queda en juego entre misiones hasta que su carta diga que se va. Cuando se va, vuelve a apartarse.
+
 #### Retirarte
 
-Después de resolver una carta de Peligro, puedes retirarte y volver a puerto. La misión no se supera y pierdes todo su Avance.
+Después de resolver una carta de Peligro, puedes retirarte y volver a puerto. La misión no se supera y pierdes todo su Avance. Alguna misión te deja cobrar algo si te retiras («Saqueo» en «La casa del gobernador»), y otras dicen que no puedes retirarte de ellas.
 
 > *Ejemplo:* en «Rumbo a la isla» (Mar 5) llevas 3 de Avance y solo te queda preparado el Rufián. La siguiente carta te dará al menos 1 de Avance, pero una Fragata cazadora (COM 5, 3 daños al Barco) podría hundirte. Si te retiras, no te llevas nada.
 
@@ -282,9 +301,11 @@ Después de resolver una carta de Peligro, puedes retirarte y volver a puerto. L
 
 En cuanto reúnes el Avance que pide la misión, la superas. Tienes que resolver al menos una carta de Peligro: aunque empieces la misión con el Avance suficiente, no la superas hasta resolver la primera. Al superarla:
 
-1. Gana su recompensa.
+1. Gana su recompensa. Si la misión tiene una **Gesta** y la has cumplido («si superas la misión sin superar ninguna Prueba de COM»), ganas además 1 de reputación. En un **final con elección**, eliges una de las dos recompensas que indica.
 2. Si la recompensa indica una carta, búscala en el mazo de historia por su número de colección. Si es un capítulo, barájalo en el mazo de Misiones. Si es un Tesoro, ponlo en juego sin coste.
-3. Descarta las fichas de Avance, aparta la misión superada y repón las misiones disponibles hasta tener tres.
+3. Descarta las fichas de Avance y las fichas de misión, aparta la misión superada y repón las misiones disponibles hasta tener tres.
+
+**Capítulos con salida doble.** Algunos capítulos I indican dos cartas posibles para el capítulo II («Si superas la misión sin haber superado ninguna Prueba de COM, añade la carta 219; si no, la carta 144»). Al superarlo, añade la que corresponda; la otra sale de la partida.
 
 Como el capítulo nuevo se baraja antes de reponer, puede salir enseguida o mucho más tarde.
 
@@ -292,11 +313,11 @@ Como el capítulo nuevo se baraja antes de reponer, puede salir enseguida o much
 
 #### No superar una misión
 
-Si te retiras o se hunde tu Barco, no superas la misión: descarta todas sus fichas de Avance. Después eliges: la dejas disponible para intentarlo otro turno, o la pones al fondo del mazo de Misiones y repones.
+Si te retiras, la misión falla o se hunde tu Barco, no superas la misión: descarta todas sus fichas de Avance y de misión. Después eliges: la dejas disponible para intentarlo otro turno, o la pones al fondo del mazo de Misiones y repones.
 
 #### Al terminar la misión
 
-Superada o no, si la misión tenía un mazo propio, sepáralo y devuélvelo al mazo de historia. Devuelve las demás cartas de Peligro a su pila de descartes. Después vuelves a puerto y pasas al paso de Final.
+Superada o no, si la misión tenía un mazo propio, sepáralo y devuélvelo al mazo de historia. Las cartas de misión que estuvieran junto a ella («¡La guardia!») vuelven a apartarse. Devuelve las demás cartas de Peligro a su pila de descartes. Los Pasajeros se quedan contigo. Después vuelves a puerto y pasas al paso de Final.
 
 ### Heridas, daño y penalizaciones
 
@@ -341,7 +362,7 @@ Las cartas de Peligro y de Escenario usan iconos para sus penalizaciones más co
 - Se acaba el tiempo: cuando, al empezar un turno, no queda ninguna carta en el mazo de Escenario, juegas ese último turno entero. Al terminarlo, pierdes.
 - No queda ninguna misión disponible ni en el mazo de Misiones.
 
-> *Ejemplo:* llegas al último turno con 15 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que da 4. Reclutas todo lo que puedes pagar y zarpas. Si la superas, llegas a 19 y ganas. Si te retiras o te hundes, pierdes.
+> *Ejemplo:* llegas al último turno con 15 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que da 3. Reclutas todo lo que puedes pagar y zarpas. Si la superas, llegas a 18 y ganas. Si te retiras o te hundes, pierdes.
 
 ### Ejemplo de juego
 
@@ -353,13 +374,13 @@ Así transcurre el primer turno de una partida normal con Diego en Tortuga.
 
 Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y al Rufián descartando «Reflejos de gato». Se queda con dos cartas: «¡Al abordaje!» (dos iconos de COM) y «Mano firme al timón» (dos iconos de NAV). Termina el paso: descarta el Sable y el Matasanos y revela cuatro cartas nuevas para el muelle.
 
-**Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. «Rumores del tesoro» le da 1 ficha de Avance, y la capacidad Al zarpar de la misión le da otra porque tiene un Marinero preparado: empieza con 2.
+**Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. «Rumores del tesoro» le da 1 ficha de Avance: empieza con 1. La misión dice que el Barco acaba de salir de carena: la primera vez que fuera a sufrir daño en ella, lo evitaría.
 
 Revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 que da 3 de Avance. Compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 4 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
 
-Revela el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubiera comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Gana 3 de Avance y, por superar la Turbonada, 1 más: la deja atrás y la carta va al fondo del mazo. La misión tenía 2 y pedía 3: llega a 6 y la supera.
+Revela el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubiera comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Gana 3 de Avance y, por superar la Turbonada, 1 más: la deja atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y la supera.
 
-**Recompensa.** Gana 1 de reputación y busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
+**Recompensa.** Gana 1 de reputación y, como el Barco no tiene ningún daño, cumple la Gesta de la misión: 1 más. Busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
 
 **Final.** Albert se queda con «¡Al abordaje!» y roba cuatro para tener cinco. El turno siguiente podrá adquirir los Cañones de bronce, que siguen esperando en el muelle.
 
@@ -430,7 +451,7 @@ Misión suelta de un solo capítulo.
 Tu Barco tiene tres valores:
 
 - **Daño máximo:** cuando su daño llega a este número, se hunde.
-- **Capacidad:** cuántos Tripulantes puede llevar. Tu Capitán no cuenta.
+- **Capacidad:** cuántos Tripulantes puede llevar. Tu Capitán no cuenta; los rehenes y los Pasajeros, sí.
 - **Espacio:** cuánto pueden ocupar en total tus Mejoras de barco.
 
 Tu Barco solo recibe daño en las misiones de Mar.
@@ -448,6 +469,8 @@ Un efecto cancelado no se aplica. Un Destino cancelado no tiene ningún efecto: 
 ### Capítulo
 
 Cada carta de misión de una travesía. Su sello indica su número (I, II o III). Los capítulos I empiezan en el mazo de Misiones; los II y III, en el mazo de historia. Al superar un capítulo, su recompensa indica qué carta añades al mazo de Misiones.
+
+- **Salida doble:** dos travesías tienen dos capítulos II, «II-a» y «II-b». Su capítulo I dice cuál añades según cómo lo superes; el otro sale de la partida.
 
 *Consulta también:* Travesía.
 
@@ -557,6 +580,18 @@ El **mazo de Escenario** es el reloj de la partida. Su tamaño depende del modo 
 
 Carta del mazo del capitán con un efecto propio. Para jugarla, paga su coste en el momento que indique su texto. Si no indica cuándo, juega el Evento en cualquier momento. También puedes descartarlo por sus iconos de habilidad para sumar a una Prueba, al comprometer, o para cubrir una Distancia.
 
+### Fichas de misión
+
+Fichas que una misión pone sobre su carta para llevar la cuenta de algo: Ventaja, Alarma, Sospecha, Persecución, Mecha o Defensa. La misión dice cuándo se ponen, cuándo se quitan y qué pasa al llegar a cierto número. Se descartan al terminar la misión.
+
+### Final con elección
+
+Recompensa de algunos capítulos III: al superarlo, eliges una de las dos opciones que indica (por ejemplo, un Tesoro y 2 de reputación, o 4 de reputación).
+
+### Gesta
+
+Regla de algunas misiones: si la superas de la manera que dice («sin que el Barco tenga ningún daño», «sin superar ninguna Prueba de COM»), ganas además 1 de reputación.
+
 ### Giro
 
 Regla especial de una misión que cambia cómo se juegan sus encuentros («Los encuentros Guardia reciben +1 de dificultad», «Tus Tripulantes reciben −1 COM», «Cada efecto de fallo inflige además 1 herida»). Se aplica durante toda la misión.
@@ -599,7 +634,7 @@ El número de cartas hasta el que robas al final de cada turno. Lo indica tu Cap
 
 ### Mazo de historia
 
-Los capítulos II y III, los Tesoros y los mazos propios, apartados boca abajo. Ninguna carta sale de él si otra carta no lo indica. Sus cartas se buscan por su número de colección.
+Los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros y las cartas de misión, apartados boca abajo. Ninguna carta sale de él si otra carta no lo indica. Sus cartas se buscan por su número de colección.
 
 ### Mazo de Misiones
 
@@ -619,7 +654,7 @@ El mazo de El Caribe del que revelas encuentros y Destinos. Si se acaba, baraja 
 
 ### Mazo propio
 
-Cartas de Peligro de una misión concreta, con un solo encuentro sin Entorno, un nivel y un Destino. La capacidad Al zarpar de esa misión indica cuántas cartas del mazo de Peligros barajas con él. Durante la misión revelas encuentros y Destinos de ese mazo mezclado. Al terminarla, separa el mazo propio y devuélvelo al mazo de historia.
+Cartas de Peligro de una misión concreta, con un solo encuentro sin Entorno (el de su misión), un nivel y un Destino. La capacidad Al zarpar de esa misión indica cuántas cartas del mazo de Peligros barajas con él. Durante la misión revelas encuentros y Destinos de ese mazo mezclado. Al terminarla, separa el mazo propio y devuélvelo al mazo de historia.
 
 ### Mejora
 
@@ -677,6 +712,10 @@ Mira las N primeras cartas del mazo de Peligros y devuélvelas encima o al fondo
 
 Tipos de encuentro a los que se refieren los giros y otras cartas: Barco, Bestia, Civil, Enfermedad, Guardia, Militar, Monstruo, Pirata, Sobrenatural, Terreno, Tormenta y Trampa. Aparecen en versalitas bajo el nombre del encuentro.
 
+### Pasajero
+
+Carta que viaja contigo. Ocupa 1 de Capacidad; si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle. No es un Tripulante: no se compromete, no se agota y no puede recibir heridas, Estados ni quedar rehén, salvo que su carta lo diga. Se queda en juego entre misiones hasta que su carta diga que se va.
+
 ### Portador
 
 El Tripulante al que está vinculada una Mejora de tripulante o un Tesoro.
@@ -726,7 +765,7 @@ Etiqueta de capacidad. Una capacidad de **Respuesta:** se usa justo después de 
 
 ### Retirarte
 
-Durante una misión, después de resolver una carta de Peligro, puedes volver a puerto. No superas la misión y pierdes todo su Avance.
+Durante una misión, después de resolver una carta de Peligro, puedes volver a puerto. No superas la misión y pierdes todo su Avance. «La misión falla» se resuelve igual que retirarte.
 
 ### Revelar
 

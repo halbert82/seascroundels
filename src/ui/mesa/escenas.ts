@@ -8,7 +8,7 @@ import { Jugador } from '../../engine/pruebas/situacion.ts'
 import type { Estado, InstId } from '../../engine/tipos.ts'
 import { empezar, type PartidaEnMesa } from './usePartida.ts'
 
-export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado'] as const
+export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision'] as const
 export type Escena = (typeof ESCENAS)[number]
 
 function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): PartidaEnMesa | null {
@@ -25,7 +25,7 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
   return null
 }
 
-const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado'>, (s: Estado, desde: number) => boolean> = {
+const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision'>, (s: Estado, desde: number) => boolean> = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
   puerto: (s) => s.turno >= 3 && s.pendiente?.motivo.clave === 'jugarCartas' && s.zonas.tripulacion.length >= 3,
   // Una Prueba con comprometidos y el Destino revelado, en la ventana de acción.
@@ -43,7 +43,7 @@ const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'emboscada', '
  */
 function enJuego(): PartidaEnMesa {
   const j = Jugador.enMision({
-    misiones: ['maracaibo-II'],
+    misiones: ['pruebas-mar5'],
     mazoPeligros: ['p2_bajamar', 'p2_niebla', 'chubasco', 'p2_cielo', 'calma'],
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje', 'cataplasma'],
@@ -86,9 +86,46 @@ function muelleOcupado(): PartidaEnMesa {
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
 }
 
+/**
+ * Fase 7, «La casa del gobernador»: tres Pruebas de COM superadas ponen la Alarma a 3 y llega «¡La guardia!». Don
+ * Anselmo viaja como Pasajero.
+ */
+function alarma(): PartidaEnMesa {
+  const j = Jugador.enMision({
+    misiones: ['gobernador-I'],
+    mazoPeligros: Array.from({ length: 9 }, () => 'oportunidad'),
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'abordaje'],
+    tripulacion: ['reinaldo', 'filibustero', 'espadachin'],
+    pasajeros: ['anselmo'],
+    reputacion: 5,
+  })
+  j.comprometer('COM', ['filibustero']).seguir().seguir().comprometer('COM', ['espadachin']).seguir().seguir()
+  j.comprometer('COM', ['reinaldo']).seguir()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
+}
+
+/** Fase 7, «El templo» superado: final con elección (la Espada del sacerdote o devolver el ídolo). */
+function finalMision(): PartidaEnMesa {
+  const j = Jugador.enMision({
+    misiones: ['templo-III'],
+    avance: { 'templo-III': 3 },
+    mazoHistoria: ['espada'],
+    mazoPeligros: Array.from({ length: 7 }, () => 'calma'),
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon'],
+    tripulacion: ['viejo_lobo', 'baqueano'],
+    reputacion: 9,
+  })
+  const desde = j.estado.registro.findIndex((r) => r.dato?.tipo === 'zarpar')
+  return { ...empezar(j.estado), desde: Math.max(0, desde) }
+}
+
 export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'enJuego') return enJuego()
   if (nombre === 'muelleOcupado') return muelleOcupado()
+  if (nombre === 'alarma') return alarma()
+  if (nombre === 'finalMision') return finalMision()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

@@ -95,7 +95,8 @@ export function baseDelSelector(s: Estado, q: Selector, hacer?: AccionSobre): In
       !(sinCapitan && c === s.capitan) &&
       (!q.rasgo || rasgosDe(copia(s, c).id).includes(q.rasgo)) &&
       (!q.sinRasgo || !rasgosDe(copia(s, c).id).includes(q.sinRasgo)) &&
-      (!q.conEstado || tieneEstado(s, c, q.conEstado)),
+      (!q.conEstado || tieneEstado(s, c, q.conEstado)) &&
+      (!q.herido || copia(s, c).heridas > 0),
   )
 }
 
