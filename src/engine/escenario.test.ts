@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DATOS } from './datos.ts'
+import { jugadorConCriterio } from './pruebas/jugadores.ts'
 import { Jugador, MISIONES_DE_PRUEBA } from './pruebas/situacion.ts'
 
 const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'abordaje', 'abordaje', 'estrellas', 'estrellas']
@@ -398,5 +399,26 @@ describe('Escenario 2.0: malas', () => {
     j.pasarTurnoEnPuerto()
     expect(j.zona('mano')).toHaveLength(3)
     expect(j.copia('bronce').municion).toBe(2)
+  })
+})
+
+describe('Jugador automático: La Armada patrulla', () => {
+  const eleccion = (j: Jugador) => jugadorConCriterio()(j.estado, j.decision)
+
+  it('soborna (1 carta) si no tiene ningún Tripulante preparado con NAV 3 o más', () => {
+    // Diego tiene NAV 2 y el Bucanero veterano, 1 + 1 de Diego.
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'], tripulacion: ['bucanero'] })
+    expect(eleccion(j)).toEqual({ tipo: 'opcion', clave: '0' })
+  })
+
+  it('pone La Armada encima con el Viejo lobo de mar (NAV 3), aunque siga agotado del turno anterior', () => {
+    // La carta se revela antes de preparar: cuenta quien se prepara en este mismo Inicio.
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'], tripulacion: [{ id: 'viejo_lobo', agotada: true }] })
+    expect(eleccion(j)).toEqual({ tipo: 'opcion', clave: '1' })
+  })
+
+  it('cuenta la NAV que tendrá ya preparado: el Contrabandista (NAV 2) llega a 3 con el +1 de Diego', () => {
+    const j = revelar('armada_patrulla', { mano: ['ojo', 'timon'], capitan: { agotada: true }, tripulacion: [{ id: 'contrabandista', agotada: true }] })
+    expect(eleccion(j)).toEqual({ tipo: 'opcion', clave: '1' })
   })
 })

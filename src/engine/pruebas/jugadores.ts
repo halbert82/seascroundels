@@ -15,6 +15,7 @@ import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor } from '../valores.ts'
 import { cumple } from '../tareas/efectos.ts'
+import { puedePrepararse } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
@@ -437,8 +438,9 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           return elegir(soldada <= valorDesertor && mano > soldada ? '0' : '1')
         }
         case 'armada_patrulla':
-          // Tres cartas son casi toda la mano del turno: solo se soborna con la mano muy llena.
-          return elegir(mano >= 6 ? '0' : '1')
+          // Albert (fase 8): soborna (1 carta) si no tiene preparado ningún Tripulante con NAV 3 o más; si lo tiene,
+          // pone La Armada encima del mazo.
+          return elegir(tieneNavegante(s, 3) ? '1' : '0')
         case 'ribera':
           return elegir(s.danoBarco >= 2 ? '0' : '1')
         default:
@@ -872,6 +874,17 @@ function mejorUso(s: Estado, usos: readonly Uso[], d: Decision): Uso | null {
 
 function tareaDe(s: Estado, d: Decision) {
   return s.pila.find((x) => x.id === d.tarea)
+}
+
+/**
+ * ¿Tienes un Tripulante (el Capitán cuenta) preparado con al menos esa NAV? Las cartas de Escenario se revelan en el
+ * paso 1 del Inicio, antes de preparar, así que cuenta como preparado el que se prepara en este mismo Inicio. La NAV
+ * es la que tendrá ya preparado: con el +1 de Diego, Entrenamiento, Ventajas…
+ */
+export function tieneNavegante(s: Estado, minimo: number): boolean {
+  const t = JSON.parse(JSON.stringify(s)) as Estado
+  for (const c of t.zonas.tripulacion) if (puedePrepararse(t, c)) copia(t, c).agotada = false
+  return t.zonas.tripulacion.some((c) => !copia(t, c).agotada && valor(t, { tipo: 'habilidad', carta: c, hab: 'NAV' }) >= minimo)
 }
 
 export function jugadorConCriterio(): JugadorAutomatico {
