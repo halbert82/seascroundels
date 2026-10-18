@@ -8,7 +8,7 @@ import { destinoDe } from './destinos.ts'
 import { copia } from './estado.ts'
 import { tieneEstado } from './estados.ts'
 import type { Bono, Estado, InstId, PruebaEnCurso } from './tipos.ts'
-import { aportaciones, modificadores, valor } from './valores.ts'
+import { aportaciones, modificadores, valor, valorSinMinimo } from './valores.ts'
 
 export function pruebaEnCurso(s: Estado): PruebaEnCurso {
   if (!s.prueba) throw new Error('No hay ninguna Prueba en curso')
@@ -157,9 +157,9 @@ export function modificadorDeDestino(s: Estado, destino: InstId, encuentro: Inst
 export function dificultadPrueba(s: Estado): number {
   const p = pruebaEnCurso(s)
   if (!p.hab) return 0
-  // TODO(regla) P61: la dificultad no baja de 0 antes de sumar el Destino (el motor siempre lo ha hecho así): EXP 1 con
-  // −1 y −1 queda en 0 y un Destino +1 la sube a 1. Pendiente de Albert: ¿o se suma todo y después no baja de 0 (0)?
-  const d = valor(s, { tipo: 'dificultad', base: p.dificultadBase, hab: p.hab, claves: clavesDelEncuentro(s, p.encuentro) })
+  // P61: se suman todos los modificadores, el Destino incluido, y solo el resultado final, si es menor que 0, cuenta
+  // como 0. Sin tope intermedio: EXP 1 con −1, −1 y un Destino +1 pide 0.
+  const d = valorSinMinimo(s, { tipo: 'dificultad', base: p.dificultadBase, hab: p.hab, claves: clavesDelEncuentro(s, p.encuentro) })
   return Math.max(0, d + p.modDestino + (p.modExtra ?? 0))
 }
 
@@ -184,7 +184,8 @@ export function prevision(s: Estado, encuentro: InstId, opcion: number, tripulan
   total += modificadores(s, { tipo: 'totalPrueba', hab: o.hab })
   const base = dificultadDeOpcion(s, encuentro, opcion, tripulantes)
   const extra = s.prueba?.encuentro === encuentro ? (s.prueba.modExtra ?? 0) + modsPendientes(s, def, o.hab) : 0
-  const dificultad = Math.max(0, valor(s, { tipo: 'dificultad', base, hab: o.hab, claves: def.palabrasClave }, supuestas, tripulantes) + extra)
+  // P61: solo el resultado final no baja de 0.
+  const dificultad = Math.max(0, valorSinMinimo(s, { tipo: 'dificultad', base, hab: o.hab, claves: def.palabrasClave }, supuestas, tripulantes) + extra)
   return { total, dificultad }
 }
 
@@ -274,17 +275,13 @@ export function desgloseDificultad(s: Estado): ParteDesglose[] {
   for (const a of aportaciones(s, { tipo: 'dificultad', base: p.dificultadBase, hab: p.hab, claves: clavesDelEncuentro(s, p.encuentro) })) {
     partes.push({ etiqueta: nombreDe(a.carta), n: a.n, tipo: 'modificador', carta: a.carta })
   }
-  // Como en dificultadPrueba: no baja de 0 antes del Destino ni al final (P61, pendiente). Se muestra para que cuadre.
-  const noBajaDe0 = () => {
-    const suma = partes.filter((x) => !x.anulada).reduce((n, x) => n + x.n, 0)
-    if (suma < 0) partes.push({ etiqueta: 'No baja de 0', n: -suma, tipo: 'modificador' })
-  }
-  noBajaDe0()
   if (p.destino) {
     const d = destinoDe(copia(s, p.destino).id)
     partes.push({ etiqueta: d.nombre, n: p.modDestino, tipo: 'destino', inst: p.destino, anulada: p.destinoCancelado })
   }
   if (p.modExtra) partes.push({ etiqueta: 'Efecto del Peligro', n: p.modExtra, tipo: 'modificador' })
-  noBajaDe0()
+  // P61: si el total final queda por debajo de 0, cuenta como 0 (una sola línea, al final).
+  const suma = partes.filter((x) => !x.anulada).reduce((n, x) => n + x.n, 0)
+  if (suma < 0) partes.push({ etiqueta: 'No baja de 0', n: -suma, tipo: 'modificador' })
   return partes
 }

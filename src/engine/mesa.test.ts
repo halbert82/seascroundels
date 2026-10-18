@@ -49,8 +49,8 @@ describe('Desglose de la Prueba', () => {
       for (const s of partidaCompleta(semilla).estados) {
         if (s.pendiente?.motivo.clave !== 'ventanaPrueba') continue
         expect(suma(desgloseTotal(s))).toBe(totalPrueba(s))
-        const dificultad = dificultadPrueba(s)
-        if (dificultad > 0) expect(suma(desgloseDificultad(s))).toBe(dificultad)
+        // P61: con la línea «No baja de 0», cuadra también cuando la dificultad queda en 0.
+        expect(suma(desgloseDificultad(s))).toBe(dificultadPrueba(s))
         comprobadas++
       }
     }

@@ -2,7 +2,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { registrarParaPruebas } from './capacidades/index.ts'
-import { totalPrueba } from './prueba.ts'
+import { desgloseDificultad, dificultadPrueba, totalPrueba } from './prueba.ts'
 import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
 import type { Capacidad } from './tipos.ts'
@@ -568,5 +568,42 @@ describe('Barco hundido: las Mejoras que se pierden activan sus efectos «despu�
     expect(j.zona('descartesMuelle')).toEqual(['vela'])
     j.usar('prueba.alDescartarse')
     expect(j.zona('mano')).toEqual(['ojo'])
+  })
+})
+
+describe('P61 · La dificultad suma todos los modificadores, el Destino incluido; solo el resultado final no baja de 0', () => {
+  // «Desembarco nocturno»: las Pruebas de EXP reciben −1. El Guía del istmo: −1 a EXP en Naturaleza.
+  // «Manzanillas de la muerte» (El hambre): EXP 3, o 1 con un Explorador (el Rastreador de la selva).
+  const manzanillas = (destino: string) =>
+    Jugador.enMision({
+      misiones: ['sanfelipe-I'],
+      tripulacion: ['baqueano'],
+      pasajeros: ['guia'],
+      mano: ['timon'],
+      cubrir: ['timon'],
+      mazoPeligros: ['p2_hambre', destino, 'calma', 'calma'],
+    }).comprometer('EXP', ['baqueano'])
+
+  it('el ejemplo del reglamento: 1 − 1 − 1 + 1 de «Canto lejano» = 0, y con total 0 superas la Prueba', () => {
+    const j = manzanillas('p2_sirena')
+    expect(dificultadPrueba(j.estado)).toBe(0)
+    expect(desgloseDificultad(j.estado).map((p) => [p.etiqueta, p.n])).toEqual([
+      ['Manzanillas de la muerte', 1],
+      ['Desembarco nocturno', -1],
+      ['El guía del istmo', -1],
+      ['Canto lejano', 1],
+    ])
+    j.seguir()
+    expect(j.registro).toContain('Total 0 contra 0: superas la Prueba.')
+  })
+
+  it('si el total final queda por debajo de 0, cuenta como 0, con una sola línea «No baja de 0» al final del desglose', () => {
+    // «Aguja de marear»: −1, o −2 si comprometiste a un Explorador. 1 − 1 − 1 − 2 = −3 → 0.
+    const j = manzanillas('p2_sinrumbo')
+    expect(dificultadPrueba(j.estado)).toBe(0)
+    const partes = desgloseDificultad(j.estado)
+    expect(partes.filter((p) => p.etiqueta === 'No baja de 0')).toEqual([{ etiqueta: 'No baja de 0', n: 3, tipo: 'modificador' }])
+    expect(partes.at(-1)?.etiqueta).toBe('No baja de 0')
+    expect(partes.reduce((n, p) => n + p.n, 0)).toBe(0)
   })
 })

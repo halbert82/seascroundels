@@ -152,17 +152,24 @@ function base(s: Estado, c: Consulta): number {
  * `participantes`: para prever una Prueba, quiénes participarían en ella.
  */
 export function valor(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<InstId>, participantes?: readonly InstId[]): number {
-  const b = base(s, c)
   // D7: una misión sin Distancia (de Mar o en tu isla) sigue en 0 pase lo que pase.
-  if (c.tipo === 'distancia' && b === 0) return 0
+  if (c.tipo === 'distancia' && base(s, c) === 0) return 0
+  return Math.max(0, valorSinMinimo(s, c, supuestasAgotadas, participantes))
+}
+
+/**
+ * Número impreso + modificadores activos, sin el mínimo de 0. Para la dificultad de una Prueba, que suma también el
+ * Destino y solo al final no baja de 0 (P61).
+ */
+export function valorSinMinimo(s: Estado, c: Consulta, supuestasAgotadas?: ReadonlySet<InstId>, participantes?: readonly InstId[]): number {
   const ctx = contexto(s, supuestasAgotadas, participantes)
-  let total = b
+  let total = base(s, c)
   const sinMejoras = deLaPrueba(s, c)
   for (const [cap, yo] of constantesActivas(s)) {
     if (sinMejoras && yo !== null && s.zonas.mejoras.includes(yo)) continue
     total += cap.modifica?.(ctx, yo, c) ?? 0
   }
-  return Math.max(0, total)
+  return total
 }
 
 /** «Las Mejoras no suman en esta Prueba»: no cuentan para las habilidades ni para el total. */

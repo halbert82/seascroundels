@@ -13,7 +13,7 @@ import { definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
-import { navParaDistancia, plazasLibres, valor } from '../valores.ts'
+import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valores.ts'
 import { cumple } from '../tareas/efectos.ts'
 import { puedePrepararse } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
@@ -850,7 +850,7 @@ function alcanza(s: Estado, opciones: readonly { hab: 'NAV' | 'COM' | 'EXP'; dif
   return opciones.some((o) => {
     const total = preparados.reduce((n, c) => n + valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }), 0) + s.zonas.mano.reduce((n, c) => n + iconos(s, c, o.hab), 0)
     const pendientes = (s.mision?.modsSiguientes ?? []).filter((m) => m.de === 'prueba' && !m.claves && (!m.hab || m.hab === o.hab)).reduce((n, m) => n + (m.n ?? 0), 0)
-    const dificultad = valor(s, { tipo: 'dificultad', base: o.dificultad, hab: o.hab, claves: [] }) + pendientes
+    const dificultad = Math.max(0, valorSinMinimo(s, { tipo: 'dificultad', base: o.dificultad, hab: o.hab, claves: [] }) + pendientes)
     return total >= dificultad + 1
   })
 }

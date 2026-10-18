@@ -282,7 +282,7 @@ Una Prueba indica una habilidad y una dificultad («COM 3»). Resuélvela con es
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, superas la Prueba y aplicas el recuadro verde. Si no, o si no comprometiste a nadie, la fallas y aplicas el recuadro rojo.
 5. **Gana el Avance** del encuentro: ponlo en fichas sobre la carta de misión.
 
-Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»).
+Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»). La dificultad suma todos sus modificadores a la vez, el del Destino incluido; solo si el resultado final queda por debajo de 0 cuenta como 0.
 
 > *Ejemplo:* en Ciudad revelas la «Leva forzosa» (COM 4). Comprometes a Diego (COM 3) y, por si el Destino se tuerce, añades «¡Al abordaje!», que tiene dos iconos de COM: sumas 5. El Destino es «Cuerpo a cuerpo»: +1 a la dificultad y, como la Prueba es de COM, el comprometido con la habilidad más alta sufre 1 herida. Diego se lleva la herida y ahora necesitas 5. Con 5, superas la Prueba.
 
@@ -656,6 +656,7 @@ Durante el paso de Jugar cartas puedes despedir a un Tripulante: ponlo en la pil
 La franja inferior de cada carta de Peligro. Se revela en cada Prueba, después de comprometer a tu tripulación, y siempre se aplica.
 
 - El Destino cambia la dificultad de la Prueba (no tu habilidad) o añade un efecto.
+- Su modificador se suma a la vez que todos los demás de la Prueba. Solo el resultado final, si queda por debajo de 0, cuenta como 0. *Ejemplo:* «Manzanillas de la muerte» con un Explorador pide 1; con −1 de «Desembarco nocturno» y −1 del Guía del istmo, el Destino «Canto lejano» (+1) deja la dificultad en 0, no en 1 (ver Prueba).
 - Si no comprometiste a nadie, aplica también su línea Sin oposición, si la tiene.
 - Un Destino se lee en cualquier Entorno. Si daña el Barco fuera del Mar, aplica la alternativa que indica.
 - Cada carta de Peligro sale una sola vez por vuelta del mazo: como encuentro o como Destino.
@@ -946,6 +947,9 @@ El desafío de un encuentro: una habilidad y una dificultad («COM 3»), con un 
 
 - Algunas Pruebas piden menos si tienes un Rasgo preparado («NAV 4, NAV 2 con un Vigía»).
 - Si fallas una Prueba con Tripulantes comprometidos, sus heridas se reparten entre ellos.
+- **La dificultad** es el número de la Prueba más todos sus modificadores (los de tus cartas, la misión, el Escenario y el Destino), sumados a la vez. Solo el resultado final, si queda por debajo de 0, cuenta como 0: no hay tope intermedio.
+
+> *Ejemplo:* en «Desembarco nocturno», que da −1 a las Pruebas de EXP, viaja contigo el Guía del istmo (−1 a las Pruebas de EXP en Naturaleza) y revelas «Manzanillas de la muerte»: EXP 3, o 1 con un Explorador. Comprometes al Rastreador de la selva y el Destino es «Canto lejano»: +1, y el comprometido con la habilidad más baja no suma. La dificultad es 1 − 1 − 1 + 1 = 0: aunque tu total sea 0, superas la Prueba. No se cuenta 1 − 1 − 1 = −1 → 0 y después +1. Si el Destino hubiera sido «Aguja de marear» (−2 con un Explorador), la cuenta daría −3 y la dificultad sería 0.
 
 *Consulta también:* Prueba de una Acción, Sin ayuda.
 
