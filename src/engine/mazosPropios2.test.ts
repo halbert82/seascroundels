@@ -210,21 +210,48 @@ describe('225 · Cofres por la borda', () => {
   })
 })
 
-describe('095 · La Armada te persigue (Navío de línea de la Armada)', () => {
-  it('Mar: NAV 5; si superas, Se retira; si fallas, Abordaje (y también Se retira)', () => {
-    const j = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], apartados: ['amigos'] })
+describe('095 · La Armada te persigue (rehecha, P51)', () => {
+  it('Mar · Navío de línea: NAV 5 y los Cañones no suman; si superas, +1 Avance y la carta se queda en el mazo', () => {
+    const j = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
     expect(j.registro).toContain('Revelas «La Armada te persigue»: Navío de línea de la Armada (Mar).')
     resolver(j.comprometer('NAV', ['capitan', 'viejo_lobo']))
-    expect(j.zona('fueraDeJuego')).toContain('armada')
-    const k = en('mar', ['armada', 'calma', 'calma'], { apartados: ['amigos'] })
-    k.comprometer('NAV').seguir()
-    expect(k.copia('capitan').heridas).toBe(3)
-    expect(k.zona('fueraDeJuego')).toContain('armada')
+    expect(j.registro).toContain('La Armada te persigue: +1 de Avance (1/5).')
+    expect(j.zona('descartesPeligros')).toContain('armada')
+    expect(j.zona('fueraDeJuego')).not.toContain('armada')
   })
 
-  it('Destino «Velas en el horizonte»: +2 si el encuentro es #Militar# o #Guardia#; Sin oposición, agotas 1', () => {
-    const j = en('ciu', ['ley', 'armada', 'calma'], { apartados: ['amigos'] })
+  it('Mar · Abordaje: sin nadie comprometido, te faltan 5 → 3 heridas', () => {
+    const k = en('mar', ['armada', 'calma', 'calma'])
+    k.comprometer('NAV').seguir()
+    expect(k.copia('capitan').heridas).toBe(3)
+    expect(k.zona('descartesPeligros')).toContain('armada')
+  })
+
+  it('Naturaleza · Desembarco de casacas: EXP 4; si superas, +1 munición; si fallas, 2 heridas y el Barco Perseguido', () => {
+    const j = en('nat', ['armada', 'calma', 'calma'], { tripulacion: ['baqueano', 'herbolaria'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+    resolver(j.comprometer('EXP', ['baqueano', 'herbolaria']))
+    expect(j.copia('bronce').municion).toBe(1)
+    const k = en('nat', ['armada', 'calma', 'calma'])
+    k.comprometer('EXP', ['capitan']).seguir()
+    expect(k.copia('capitan').heridas).toBe(2)
+    expect(k.estadosBarco).toContain('perseguido')
+  })
+
+  it('Ciudad · Registro casa por casa: EXP 4; si superas, +1 Avance; si fallas, el comprometido con más EXP queda rehén', () => {
+    const j = en('ciu', ['armada', 'calma', 'calma'], { tripulacion: ['baqueano', 'herbolaria'] })
+    resolver(j.comprometer('EXP', ['baqueano', 'herbolaria']))
+    expect(j.registro).toContain('La Armada te persigue: +1 de Avance (1/4).')
+    const k = en('ciu', ['armada', 'calma', 'calma'], { tripulacion: ['vigia'] })
+    k.comprometer('EXP', ['capitan', 'vigia']).seguir()
+    expect(k.zona('rehenes')).toEqual(['vigia'])
+  })
+
+  it('Destino «Velas en el horizonte»: +2 si el encuentro es #Militar# o #Guardia#; Sin oposición, el Barco queda Perseguido', () => {
+    const j = en('ciu', ['ley', 'armada', 'calma'])
     j.comprometer('COM', ['capitan'])
     expect(dificultadPrueba(j.estado)).toBe(5) // Ronda de la guardia: COM 3 + 2
+    const k = en('ciu', ['ley', 'armada', 'calma'])
+    k.comprometer('COM')
+    expect(k.estadosBarco).toContain('perseguido')
   })
 })

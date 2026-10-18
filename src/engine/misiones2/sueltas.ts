@@ -105,8 +105,8 @@ registrarMision('prueba-I', {
       },
     },
   ],
-  // TODO(regla): P50 · la Gesta mira el daño del Barco al superarla (también el que traía de antes).
-  gesta: (s) => s.danoBarco === 0,
+  // P50 (respondida): Gesta si el Barco no ha sufrido daño en esta misión; el que traía de antes no cuenta.
+  gesta: (s) => (s.mision?.danoSufrido ?? 0) === 0,
 })
 
 // Aguada en la cala · I · Agua y leña

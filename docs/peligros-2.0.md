@@ -1,6 +1,6 @@
 # Peligros 2.0 (55 cartas, aprobadas para probar jugando)
 
-Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una). Las cartas apartadas La Armada y Amigos, y los Peligros propios de algunas misiones, se quedan como están por ahora.
+Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una). Las cartas apartadas están al final, en «Cartas apartadas»; los Peligros propios de las misiones, en docs/misiones-2.0.md.
 
 ## Cómo leer estas cartas
 - Cada carta tiene tres encuentros (Mar, Naturaleza, Ciudad; solo se lee el del Entorno de la misión) y un Destino.
@@ -842,3 +842,26 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Fallo: quien oye su historia queda marcado: el Barco queda Perseguido, y descarta 2 cartas (lo que le pagaste).
 - **Destino — El Holandés errante** · Fallas la Prueba — solo en el Mar. En Naturaleza y Ciudad, +1 en su lugar: el Holandés no puede tocar tierra. *Sin oposición:* os ha visto: el Barco queda Perseguido.
 - *Idea:* el barco fantasma es el único Abordaje del grupo, y uno donde los cañones no sirven y el escapulario sí. En tierra son sus ahogados, que castigan al que se queda mirando; en la ciudad, el loco que vende la ruta y contagia la persecución. Su Destino respeta la leyenda: solo es mortal en el Mar. *Inspirada en:* «El Holandés de las Velas Negras» (Taller); el ejemplo del encargo.
+
+## Cartas apartadas
+
+No están en el mazo de Peligros al empezar la partida.
+
+### La Armada te persigue · Duro
+Entra en el mazo con «+ La Armada» y se queda en él el resto de la partida. En la Flota III («La huida con la plata») se pone encima del mazo de Peligros al llegar a 3 de Persecución y, después de resolverla, vuelve a apartarse.
+
+- **Mar — Navío de línea de la Armada** · #Militar# #Barco# · Prueba: NAV 5 · Avance 3
+    - Texto: los Cañones no suman (contra un navío de línea solo se puede correr).
+    - Éxito: le dais esquinazo entre los cayos: +1 Avance.
+    - Fallo (Abordaje): sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén.
+- **Naturaleza — Desembarco de casacas** · #Militar# · Prueba: EXP 4 · Avance 2
+    - Éxito: os escondéis y les robáis un barril: +1 munición.
+    - Fallo: 2 heridas repartidas y el Barco queda Perseguido.
+- **Ciudad — Registro casa por casa** · #Guardia# · Prueba: EXP 4 · Avance 2
+    - Éxito: os escondéis en la trastienda de un amigo: +1 Avance.
+    - Fallo: el comprometido con más EXP queda rehén.
+- **Destino — Velas en el horizonte** · +1 — +2 en su lugar si el encuentro es #Militar# o #Guardia#. *Sin oposición:* el Barco queda Perseguido. Ambientación: «Bandera del Rey a barlovento. Y viene a por nosotros.»
+
+### Amigos en la costa
+Fuera de la galería y de la partida hasta que se rehaga su uso: ninguna carta la mete en el mazo.
+

@@ -57,7 +57,7 @@ registrarCapacidades(
 
 registrarCapacidades(
   ...enSuZona('cartaMision', 'cartasMision', 'guardia', [
-    // TODO(regla): P54 · el +1 de «¡La guardia!» también se aplica a su propia Prueba de COM 5 (queda en 6).
+    // P54 (confirmada): el +1 de «¡La guardia!» también se aplica a su propia Prueba de COM 5 (queda en 6).
     { clave: 'todas', ventana: 'constante', modifica: (_ctx, _yo, c: Consulta) => (c.tipo === 'dificultad' ? 1 : 0) },
     {
       clave: 'palos',

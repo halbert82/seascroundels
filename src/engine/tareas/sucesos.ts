@@ -51,6 +51,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'danoBarco': {
       if (ev.cantidad <= 0) return
       s.danoBarco += ev.cantidad
+      if (s.mision) s.mision.danoSufrido = (s.mision.danoSufrido ?? 0) + ev.cantidad
       anotar(s, 'efecto', `El Barco recibe ${ev.cantidad} de daño (${s.danoBarco}).`, { tipo: 'dano', n: ev.cantidad })
       return
     }

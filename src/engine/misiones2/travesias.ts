@@ -36,9 +36,29 @@ const mezclar = (n: number): NuevaTarea => ({ tipo: 'mezclarMazoPropio', n })
 // ---------------------------------------------------------------------------
 // El templo perdido · Media (1 / 2 / 4)
 
+/** «Rumbo a la isla»: habéis avistado la isla (agotando a un Vigía o a un Piloto). */
+const ISLA = 'templo-I.isla'
+const avistada = (s: Parameters<typeof hasSuperado>[0]) => s.mision?.hecho?.includes(ISLA) ?? false
+
 registrarMision('templo-I', {
-  impideSuperar: (s) => (hasSuperado(s, 'NAV', 'EXP') ? null : 'No puedes superarla hasta superar una Prueba de NAV o de EXP'),
+  // No se supera hasta superar una Prueba de NAV o de EXP en ella, o hasta avistar la isla (cambio de diseño de Albert).
+  impideSuperar: (s) => (hasSuperado(s, 'NAV', 'EXP') || avistada(s) ? null : 'No puedes superarla hasta superar una Prueba de NAV o de EXP, o avistar la isla'),
   alZarpar: () => [{ tipo: 'alZarparOpcional', coste: { tipo: 'agotarRasgo', rasgos: ['Oficial'] }, efectos: [avance(2)], texto: 'Agotar a un Oficial para ganar 2 de Avance' }],
+  capacidades: [
+    {
+      // Acción durante la misión: agota a un Vigía o a un Piloto (avistáis la isla).
+      clave: 'isla',
+      ventana: 'accion',
+      texto: 'Agota a un Vigía o a un Piloto: avistáis la isla (ya podéis superar la misión)',
+      coste: [{ tipo: 'agotarTripulante', rasgo: null, rasgos: ['Vigía', 'Piloto'] }],
+      requisito: (s) => !avistada(s) && !hasSuperado(s, 'NAV', 'EXP'),
+      efecto: (s) => {
+        if (s.mision) s.mision.hecho = [...(s.mision.hecho ?? []), ISLA]
+        anotar(s, 'efecto', 'Avistáis la isla: ya podéis superar la misión.')
+        return []
+      },
+    },
+  ],
 })
 
 registrarMision('templo-II', {
@@ -85,7 +105,7 @@ registrarMision('flota-III', {
 
 // Os dan alcance: «La Armada te persigue» se pone encima del mazo de Peligros (será el siguiente encuentro) y la
 // Persecución vuelve a 1. Después de resolverla, vuelve a apartarse.
-// TODO(regla): P53 · si La Armada ya estaba en el mazo de Peligros (la metió El cazador de piratas), se saca de ahí
+// P53 (confirmada): si La Armada ya estaba en el mazo de Peligros (la metió El cazador de piratas), se saca de ahí
 // y después de resolverla también se aparta.
 registrarCodigo('mision.alcance', (s) => {
   const m = s.mision
@@ -124,7 +144,7 @@ registrarMision('espia-II', {
   fichas: [{ ficha: 'sospecha', nombre: 'Sospecha', umbral: 3, inicial: 0, nota: 'Con 3, el espía te descubre y la misión falla.' }],
   capacidades: [
     alSuperarPrueba('com', (_s, p) => (p.hab === 'COM' ? [ponerFichas('sospecha', 1)] : [])),
-    // TODO(regla): P55 · una Prueba sin nadie comprometido no cuenta como «fallar por 2 o más» (lo dice el ejemplo:
+    // P55 (confirmada): una Prueba sin nadie comprometido no cuenta como «fallar por 2 o más» (lo dice el ejemplo:
     // «mejor dejarla sin oposición y sufrir su castigo que superarla»).
     alFallarPrueba('porDos', (_s, p) => (p.margen <= -2 && !p.nadie ? [ponerFichas('sospecha', 1)] : [])),
   ],
@@ -146,7 +166,7 @@ registrarMision('espia-III', {
 const anselmoSeBaja = () => [bajarPasajero('anselmo', 'se baja asustado')]
 
 registrarMision('maracaibo-I', {
-  // TODO(regla): P56 · si Don Anselmo se bajó, vuelve a subir cada vez que zarpas a esta misión.
+  // P56 (confirmada): si Don Anselmo se bajó, vuelve a subir cada vez que zarpas a esta misión.
   alZarpar: () => [ponerPasajero('anselmo')],
   // Salida doble: con un Buscado o un encuentro #Guardia# fallado, los guardacostas te esperan (II-b, carta 140).
   siguiente: (s) => ((s.mision?.buscados ?? 0) > 0 || hasFalladoEncuentro(s, 'Guardia') ? 140 : 218),
@@ -192,14 +212,29 @@ registrarMision('sanfelipe-II-b', {
 })
 
 registrarMision('sanfelipe-III', {
-  fichas: [{ ficha: 'mecha', nombre: 'Mecha', umbral: 4, inicial: 0, nota: 'Con 4, el polvorín estalla: 2 heridas repartidas y te retiras.' }],
-  capacidades: [alRevelarPeligro('mecha', () => [ponerFichas('mecha', 1)])],
-  // TODO(regla): P52 · el polvorín estalla en cuanto se pone la 4.ª ficha: el Peligro recién revelado no se resuelve.
-  alCambiarFichas: (s, _f, antes, ahora) => {
-    if (antes >= 4 || ahora < 4) return []
-    fallaLaMision(s, 'el polvorín estalla')
-    return [{ tipo: 'repartirHeridas', n: 2, entre: [...s.zonas.tripulacion] }]
-  },
+  fichas: [
+    {
+      ficha: 'mecha',
+      nombre: 'Mecha',
+      umbral: 4,
+      inicial: 0,
+      nota: 'Con 4, después de resolver ese Peligro, si no has superado la misión, el polvorín estalla: 2 heridas repartidas y te retiras.',
+    },
+  ],
+  capacidades: [
+    alRevelarPeligro('mecha', () => [ponerFichas('mecha', 1)]),
+    // P52 (respondida): el cuarto Peligro se resuelve entero (da su Avance); si después no has superado la misión,
+    // el polvorín estalla.
+    {
+      clave: 'estalla',
+      ventana: 'obligada',
+      disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'cartaResuelta' && fichas(s, 'mecha') >= 4 && s.mision !== null && !s.mision.fin,
+      efecto: (s) => {
+        fallaLaMision(s, 'el polvorín estalla')
+        return [{ tipo: 'repartirHeridas', n: 2, entre: [...s.zonas.tripulacion] }]
+      },
+    },
+  ],
   // Vuelas el polvorín: el Barco queda Perseguido.
   alElegir: (_s, clave) => (clave === 'polvorin' ? [{ tipo: 'ponerEstadoBarco', estado: 'perseguido' }] : []),
 })

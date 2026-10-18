@@ -110,7 +110,7 @@ export function alFallarPrueba(clave: string, efecto: (s: Estado, p: PruebaHecha
 
 /**
  * «Cada Peligro sin Prueba»: el encuentro resuelto no tenía Prueba impresa (en la carta pone «Sin Prueba»).
- * TODO(regla): P49 · un «Elige» en el que pagas en vez de hacer la Prueba no cuenta como Peligro sin Prueba.
+ * P49 (confirmada): un «Elige» en el que pagas en vez de hacer la Prueba no cuenta como Peligro sin Prueba.
  */
 export function alResolverSinPrueba(clave: string, efecto: (s: Estado) => NuevaTarea[]): CapacidadDeCarta {
   return {

@@ -508,8 +508,8 @@ function ventana(s: Estado, d: Extract<Decision, { tipo: 'ventanaAccion' }>): El
       const barcoMal = enMar && s.danoBarco >= valor(s, { tipo: 'danoMaximo' }) - 2 && falta > 1
       const capitanMal = vidaRestante(s, s.capitan) <= 1 && falta > 1
       const sinFuerzas = preparados === 0 && iconosMano < 3 && falta >= 2
-      // «El polvorín»: con 3 de Mecha, el siguiente Peligro lo hace estallar (2 heridas y retirada): mejor irse ya.
-      const mecha = copia(s, m.carta).id === 'sanfelipe-III' && (m.fichas?.mecha ?? 0) >= 3 && falta > 0
+      // «El polvorín»: con 3 de Mecha, si el siguiente Peligro no basta para superarla, estalla (2 heridas y retirada).
+      const mecha = copia(s, m.carta).id === 'sanfelipe-III' && (m.fichas?.mecha ?? 0) >= 3 && falta >= 3
       const retirada = d.acciones.find((a) => a.tipo === 'retirarse')
       if (retirada && (barcoMal || capitanMal || sinFuerzas || mecha)) return { tipo: 'accion', accion: retirada }
       return terminar
@@ -783,7 +783,10 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return trasEncuentro && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && cazaElJaguar(s, c)) ? 2 : 0
     case 'peligroEnMuelle.descartar':
       return fuente && mano >= (s.peligrosEnMuelle?.[fuente] ?? 0) + 2 ? 1 : 0
-    // Misiones 2.0: «¡La guardia!» (todas las Pruebas +1): echarlos si se llega, o escabullirse si sobra gente.
+    // Misiones 2.0: «Rumbo a la isla»: si ya tiene el Avance y solo falta avistar la isla, agota al Vigía o al Piloto.
+    case 'templo-I.isla':
+      return trasEncuentro && faltaAvance(s) <= 0 ? 3 : 0
+    // «¡La guardia!» (todas las Pruebas +1): echarlos si se llega, o escabullirse si sobra gente.
     case 'guardia.palos':
       return trasEncuentro && faltaAvance(s) > 0 && alcanza(s, [{ hab: 'COM', dificultad: 6 }]) ? 2 : 0
     case 'guardia.tejados':

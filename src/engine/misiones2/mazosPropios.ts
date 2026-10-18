@@ -1,6 +1,5 @@
 // Misiones 2.0 · las cartas de Peligro de los mazos propios (Templo y Escolta), con el formato de los Peligros 2.0:
-// un solo encuentro (el del Entorno de su misión) y un Destino. También «La Armada te persigue», cuyo encuentro de Mar
-// es ahora el Navío de línea de la Armada.
+// un solo encuentro (el del Entorno de su misión) y un Destino. También «La Armada te persigue», rehecha (P51).
 
 import { registrarPeligro } from '../capacidades/peligros.ts'
 import { anotar, copia } from '../estado.ts'
@@ -187,18 +186,21 @@ registrarPeligro('cofres', {
 })
 
 // ---------------------------------------------------------------------------
-// La Armada te persigue (entra con «+ La Armada»; en la Flota III, os da alcance).
-// TODO(regla): P51 · solo el encuentro de Mar está rehecho (Navío de línea de la Armada, NAV 5, Abordaje); los demás
-// se transcriben de la carta antigua, y «Desembarco de casacas» conserva su Prueba doble (P48).
+// La Armada te persigue (P51, rehecha por Albert): carta apartada que entra con «+ La Armada» y se queda en el mazo el
+// resto de la partida. En la Flota III os da alcance y, después de resolverla, vuelve a apartarse.
 
 registrarPeligro('armada', {
   encuentros: {
-    mar: { abordaje: true, exito: [{ tipo: 'seRetira' }], fallo: [{ tipo: 'seRetira' }] },
-    nat: { fallo: [heridas(2)] },
-    ciu: { fallo: [{ tipo: 'rehen' }] },
+    // Los Cañones no suman. Éxito: +1 Avance. Fallo: Abordaje.
+    mar: { prueba: { sinCanones: true }, abordaje: true, exito: [avance(1)] },
+    // Éxito: +1 munición. Fallo: 2 heridas repartidas y el Barco queda Perseguido.
+    nat: { exito: [municion(1)], fallo: [heridas(2), { tipo: 'estadoBarco', estado: 'perseguido' }] },
+    // Éxito: +1 Avance. Fallo: el comprometido con más EXP queda rehén.
+    ciu: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'rehen' })] },
   },
+  // +1; +2 en su lugar si el encuentro es #Militar# o #Guardia#. Sin oposición: el Barco queda Perseguido.
   destino: {
     modificador: (s) => (encuentroEs(s, 'Militar', 'Guardia') ? 2 : 1),
-    sinOposicion: [agotar(1)],
+    sinOposicion: [{ tipo: 'estadoBarco', estado: 'perseguido' }],
   },
 })

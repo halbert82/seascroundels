@@ -28,7 +28,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 ### Prueba de mar · Inicial
 **I · Rumbo a mar abierto** · Mar · Avance 3 · Distancia 0
 - Regla: el Barco sale de carena. La primera vez que vaya a sufrir daño en esta misión, evítalo.
-- Gesta: si superas la misión sin que el Barco tenga ningún daño, +1 de reputación.
+- Gesta: si superas la misión sin que el Barco haya sufrido daño en esta misión, +1 de reputación (el daño que traías de antes no cuenta).
 - Recompensa: 1 de reputación y busca una Mejora de barco.
 
 ### Aguada en la cala · Inicial
@@ -65,7 +65,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 
 ### El templo perdido · Media (1 / 2 / 4)
 **I · Rumbo a la isla** · Mar · Avance 5 · Distancia 0
-- Regla: la isla no sale en ningún mapa. No puedes superar la misión hasta haber superado al menos una Prueba de [NAV] o de [EXP] en ella.
+- Regla: la isla no sale en ningún mapa. No puedes superar la misión hasta haber superado al menos una Prueba de [NAV] o de [EXP] en ella, o hasta agotar a un Vigía o a un Piloto (avistáis la isla). Agotarlo es una Acción durante la misión.
 - Regla: **Al zarpar:** puedes agotar a un _Oficial_ para ganar 2 de Avance (el informante de Tortuga solo habla con oficiales).
 - Recompensa: 1 de reputación. Añade el capítulo II.
 
@@ -95,7 +95,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 - Regla (persecución): **Al zarpar:** pon 1 ficha de Persecución en esta misión (la flota va detrás).
   - Cada Prueba de [NAV] que falles y cada Peligro sin Prueba: +1 ficha.
   - Cada Prueba de [NAV] que superes por 2 o más: −1 ficha.
-  - Con 3 fichas os dan alcance: pon **La Armada te persigue** encima del mazo de Peligros (será tu siguiente encuentro) y deja la Persecución en 1. Después de resolverla, La Armada te persigue vuelve a apartarse (aquí no se queda en el mazo).
+  - Con 3 fichas os dan alcance: pon **La Armada te persigue** encima del mazo de Peligros (será tu siguiente encuentro) y deja la Persecución en 1. Después de resolverla, La Armada te persigue vuelve a apartarse (aquí no se queda en el mazo). Si ya estaba en el mazo de Peligros, se saca de ahí. Su texto está en docs/peligros-2.0.md, «Cartas apartadas».
 - Recompensa: 5 de reputación y el Tesoro Mascarón del galeón.
 - *Ejemplo:* fallas una Prueba de NAV y luego sale un encuentro sin Prueba: 3 fichas. Tu siguiente encuentro es el Navío de línea de la Armada (NAV 5), que si fallas te aborda.
 
@@ -149,7 +149,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 - Recompensa: 3 de reputación. Añade el capítulo III.
 
 **III · El polvorín** · Ciudad · Avance 5 · Distancia 0
-- Regla (la mecha): **Al zarpar:** la mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4, el polvorín estalla: 2 heridas repartidas entre tus Tripulantes y te retiras.
+- Regla (la mecha): **Al zarpar:** la mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4 fichas, después de resolver ese Peligro, si no has superado la misión, el polvorín estalla: 2 heridas repartidas entre tus Tripulantes y te retiras.
 - Recompensa, elige una:
   - **Rescatas a tu amigo:** 5 de reputación.
   - **Vuelas el polvorín:** 3 de reputación y el Tesoro Pólvora del Rey; el Barco queda Perseguido.
@@ -188,6 +188,12 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 - Recompensa: ganas la partida.
 
 ---
+
+## Aclaraciones (respuestas de Albert, 18 de octubre de 2026)
+- «Cada Peligro sin Prueba» (El ladrón del puerto, La huida con la plata) son las cartas que llevan impreso «Sin Prueba». Un «Elige» en el que pagas en vez de hacer la Prueba no cuenta.
+- «¡La guardia!»: su +1 a todas las Pruebas también vale para su propia Prueba de COM 5 (queda en COM 6).
+- «Seguirle por los muelles»: una Prueba sin nadie comprometido no cuenta como «fallar por 2 o más» (no pone Sospecha).
+- Don Anselmo vuelve a subir cada vez que zarpas a «Los muelles de Maracaibo» (si se había bajado). Mientras viaja contigo, su −1 a los encuentros #Guardia# y #Civil# vale en cualquier misión.
 
 ## Cartas de misión (apartadas)
 

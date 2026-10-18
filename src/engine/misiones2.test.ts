@@ -61,11 +61,22 @@ describe('114 · Rumbo a mar abierto', () => {
     expect(j.estado.reputacion).toBe(1)
   })
 
-  it('Gesta: superada sin ningún daño en el Barco, +1 de reputación', () => {
+  it('Gesta: superada sin que el Barco haya sufrido daño en esta misión, +1 de reputación', () => {
     const j = enPuerto({ misiones: ['prueba-I'], mazoMuelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
     j.zarpar('prueba-I').elegir('vela')
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
     expect(j.estado.reputacion).toBe(2)
+  })
+
+  it('P50: el daño que el Barco traía de antes no cuenta para la Gesta; el que evita la carena, tampoco', () => {
+    const antes = enPuerto({ misiones: ['prueba-I'], barco: { dano: 2 }, mazoMuelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
+    antes.zarpar('prueba-I').elegir('vela')
+    expect(antes.estado.reputacion).toBe(2)
+    // Bajíos fallados: su daño lo evita la carena; después, Viento de popa la supera.
+    const evitado = enPuerto({ misiones: ['prueba-I'], mazoMuelle: ['vela'], mazoPeligros: ['escollos', 'chubasco', 'racha', 'calma'] })
+    evitado.zarpar('prueba-I').comprometer('NAV').seguir().seguir().elegir('vela')
+    expect(evitado.estado.danoBarco).toBe(0)
+    expect(evitado.estado.reputacion).toBe(2)
   })
 })
 
@@ -173,6 +184,22 @@ describe('118 · Rumbo a la isla', () => {
     j.seguir().seguir().comprometer('NAV', ['capitan']).seguir() // Chubasco repentino (NAV 2): 3
     expect(j.zona('misionesSuperadas')).toEqual(['templo-I'])
     expect(enMisiones(j)).toContain('templo-II')
+  })
+})
+
+describe('118 · Rumbo a la isla: avistar la isla', () => {
+  it('Acción: agotar a un Vigía o a un Piloto también permite superarla, sin Prueba de NAV ni de EXP', () => {
+    const j = enPuerto({ misiones: ['templo-I'], tripulacion: ['vigia'], avance: { 'templo-I': 4 }, mazoPeligros: ['racha', 'calma', 'calma'] })
+    j.zarpar('templo-I').ninguna()
+    expect(j.avance('templo-I')).toBe(7)
+    expect(j.ofreceCapacidad('templo-I.isla')).toBe(true)
+    j.usar('templo-I.isla')
+    expect(j.copia('vigia').agotada).toBe(true)
+    expect(j.registro).toContain('Avistáis la isla: ya podéis superar la misión.')
+    expect(j.zona('misionesSuperadas')).toEqual(['templo-I'])
+    const sinVigia = enPuerto({ misiones: ['templo-I'], tripulacion: ['bucanero'], avance: { 'templo-I': 4 }, mazoPeligros: ['racha', 'calma', 'calma'] })
+    sinVigia.zarpar('templo-I').ninguna()
+    expect(sinVigia.ofreceCapacidad('templo-I.isla')).toBe(false)
   })
 })
 
@@ -455,14 +482,23 @@ describe('144 · Al asalto de las murallas (II-b)', () => {
 })
 
 describe('145 · El polvorín', () => {
-  it('Mecha: 1 ficha por cada Peligro revelado; con 4, el polvorín estalla (2 heridas repartidas) y te retiras', () => {
+  it('Mecha: 1 ficha por cada Peligro revelado; con 4, se resuelve ese Peligro y, si no la has superado, estalla (P52)', () => {
+    // Tarde de lluvia (Ciudad): sin Prueba, 1 de Avance.
     const j = enPuerto({ misiones: ['sanfelipe-III'], mazoPeligros: ['chubasco', 'chubasco', 'chubasco', 'chubasco', 'calma'] })
     j.zarpar('sanfelipe-III').seguir().seguir()
     expect(fichas(j, 'mecha')).toBe(3)
     j.seguir()
+    expect(j.registro).toContain('Ganas 1 de Avance (4/5).')
     expect(j.registro).toContain('La misión falla: el polvorín estalla.')
     expect(j.copia('capitan').heridas).toBe(2)
     expect(j.decision.motivo.clave).toBe('conservarMision')
+  })
+
+  it('si el cuarto Peligro te da el Avance que faltaba, superas la misión y no estalla', () => {
+    const j = enPuerto({ misiones: ['sanfelipe-III'], avance: { 'sanfelipe-III': 1 }, mazoPeligros: ['chubasco', 'chubasco', 'chubasco', 'chubasco', 'calma'] })
+    j.zarpar('sanfelipe-III').seguir().seguir().seguir()
+    expect(j.registro).not.toContain('La misión falla: el polvorín estalla.')
+    expect(j.decision.motivo.clave).toBe('finalMision')
   })
 
   it('final con elección: rescatas a tu amigo (5) o vuelas el polvorín (3, Tesoro y el Barco Perseguido)', () => {

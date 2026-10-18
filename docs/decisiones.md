@@ -145,7 +145,7 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 
 ### Pendiente de Albert
 
-- **P48 · Pruebas dobles en «La Armada te persigue».** Sigue abierta en parte: ver P51 (fase 7). El encuentro de Mar ya es el Navío de línea de la Armada (NAV 5); «Desembarco de casacas» (COM 4 o EXP 4) conserva su Prueba doble hasta que llegue el texto rehecho.
+- **P48 · Pruebas dobles en «La Armada te persigue».** Cerrada en la fase 7 (ver P51): la carta rehecha tiene una sola Prueba por encuentro.
 
 ## Fase 7: misiones 2.0
 
@@ -165,16 +165,24 @@ Fuente: `docs/misiones-2.0.md`. Las reglas impresas en `cartas.json` son para le
   - «Cada Prueba de [COM] que superes da 1 de Avance más» solo vale para las Pruebas de los encuentros (las de una Acción no dan Avance), como la regla antigua;
   - las reglas «cada efecto de fallo inflige además 1 herida» ya no las tiene ninguna misión, pero el motor las sigue entendiendo (D2b, D2c y N15 se prueban con una misión de prueba).
 
-### Pendiente de Albert (fase 7)
+### Respuestas de Albert a P49–P56 (18 de octubre de 2026)
 
-Cada una lleva su opción por defecto, ya aplicada y marcada en el código con `TODO(regla)`.
+- **Confirmadas tal cual:**
+  - **P49** · «Cada Peligro sin Prueba» son las cartas que llevan impreso «Sin Prueba»: un «Elige» en el que pagas no cuenta;
+  - **P53** · si La Armada ya estaba en el mazo cuando os dan alcance en la Flota III, se saca de ahí y, después de resolverla, se aparta;
+  - **P54** · el +1 de «¡La guardia!» también vale para su propia Prueba de COM 5 (queda en COM 6);
+  - **P55** · Seguirle por los muelles: una Prueba sin nadie comprometido no pone Sospecha;
+  - **P56** · Don Anselmo vuelve a subir cada vez que zarpas a «Los muelles de Maracaibo»; su −1 vale en cualquier misión mientras viaja contigo.
+- **P50 · Gesta de «Rumbo a mar abierto» (corregida):** «si superas la misión sin que el Barco haya sufrido daño en esta misión». El daño que traías de antes no cuenta, y el que evita la carena tampoco. *Ejemplo:* zarpas con 2 daños, no sufres ninguno más y la superas: Gesta.
+- **P52 · El polvorín (corregida):** el cuarto Peligro se revela y se resuelve entero (da su Avance). Si después de resolverlo no has superado la misión, el polvorín estalla: 2 heridas repartidas y te retiras. *Ejemplo:* llevas 4 de 5 y el cuarto Peligro da 1: la superas y no estalla.
+- **P51 y P48 · «La Armada te persigue» (rehecha):** Duro, una sola Prueba por encuentro y sin «Se retira». Mar: Navío de línea de la Armada (NAV 5, los Cañones no suman; Éxito +1 Avance; Fallo con Abordaje). Naturaleza: Desembarco de casacas (EXP 4; Éxito +1 munición; Fallo 2 heridas repartidas y el Barco Perseguido). Ciudad: Registro casa por casa (EXP 4; Éxito +1 Avance; Fallo el comprometido con más EXP queda rehén). Destino «Velas en el horizonte»: +1, +2 si el encuentro es #Militar# o #Guardia#; Sin oposición, el Barco queda Perseguido. Entra con «+ La Armada» y se queda en el mazo el resto de la partida (salvo en la Flota III). Ya no queda ninguna Prueba doble: el reglamento deja de explicarlas.
+- **«Amigos en la costa»:** fuera de la galería y de la partida hasta que se rehaga su uso.
 
-- **P49 · «Cada Peligro sin Prueba»** (El ladrón del puerto y La huida con la plata). *Ejemplo:* en «Cofres por la borda» eliges pararte a recoger la plata en vez de hacer la Prueba. **Por defecto:** no cuenta; solo cuentan las cartas que llevan impreso «Sin Prueba».
-- **P50 · Gesta de «Rumbo a mar abierto».** *Ejemplo:* zarpas con 1 daño que traías de otra misión y no sufres ninguno más. **Por defecto:** no hay Gesta, porque al superarla el Barco tiene daño. La otra lectura sería «sin sufrir daño en esta misión».
-- **P51 · Texto de «La Armada te persigue» rehecha.** Solo he cambiado lo que dice el documento de misiones: el encuentro de Mar es «Navío de línea de la Armada», NAV 5, y si fallas te aborda (Abordaje). He mantenido «Esta carta Se retira» al superarlo y al fallarlo, como en la carta antigua. Naturaleza, Ciudad y el Destino siguen como estaban, y «Desembarco de casacas» conserva su Prueba doble (COM 4 o EXP 4). **Por defecto:** así hasta que me pases la carta entera.
-- **P52 · El polvorín.** *Ejemplo:* revelas el cuarto Peligro y pones la cuarta ficha de Mecha. **Por defecto:** el polvorín estalla en ese momento; ese Peligro no se resuelve (ni da su Avance), sufres las 2 heridas y te retiras.
-- **P53 · La Armada ya estaba en el mazo.** *Ejemplo:* «Pasquines del cazador» metió La Armada en el mazo de Peligros y después llegas a 3 de Persecución en la Flota III. **Por defecto:** se saca del mazo (o de los descartes), se pone encima y, después de resolverla, se aparta: ya no vuelve al mazo.
-- **P54 · ¡La guardia! y su propia Prueba.** *Ejemplo:* quieres echarlos a palos (COM 5) mientras ¡La guardia! está en juego. **Por defecto:** su «todas las Pruebas reciben +1» también vale para esa Prueba, que queda en COM 6.
-- **P55 · Sospecha sin nadie comprometido** (Seguirle por los muelles). La regla dice «cada Prueba que falles por 2 o más», pero el ejemplo dice que es mejor dejar una pelea sin oposición que superarla. Sin nadie comprometido fallas por toda la dificultad. **Por defecto:** sigo el ejemplo: una Prueba sin nadie comprometido no pone Sospecha.
-- **P56 · Don Anselmo vuelve a subir.** *Ejemplo:* te retiras de «Los muelles de Maracaibo», Don Anselmo se baja asustado y otro turno vuelves a zarpar a esa misión. **Por defecto:** su «Al zarpar: pon en juego a Don Anselmo» lo vuelve a subir. Y mientras viaja contigo, su −1 a los encuentros #Guardia# y #Civil# vale en cualquier misión.
+### Cambios de diseño por el informe (18 de octubre de 2026)
 
+- **«Rumbo a la isla»:** no puedes superar la misión hasta haber superado al menos una Prueba de NAV o de EXP en ella, o hasta agotar a un Vigía o a un Piloto (avistáis la isla). Agotarlo es una Acción durante la misión.
+- **«Las puertas de Panamá»** se queda como está: tiene que ser una victoria épica y rara (menos del 10 % de las partidas).
+
+### Pendiente de Albert
+
+Nada de la fase 7.

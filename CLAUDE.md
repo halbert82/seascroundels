@@ -111,5 +111,5 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - **Rehén:** el Capitán no puede ser rehén (N11).
 - **Barco hundido:** las Mejoras de barco que se pierden **sí** activan sus efectos «después de que descartes esta carta».
 - Si aparece cualquier otro caso no cubierto, pregunta a Albert con una opción por defecto y un ejemplo, y márcala en el código con `// TODO(regla): …` hasta que responda.
-- **Fase 6:** las respuestas de Albert (P1–P47) están en `docs/decisiones.md`, sección «Fase 6»; P48 (Pruebas dobles en «La Armada te persigue») sigue abierta dentro de P51. Reforzar y la Fiebre ya no existen: las cartas de la mano solo suman al comprometer.
-- **Fase 7:** pendientes P49–P56 (sección «Fase 7» de `docs/decisiones.md`), con su opción por defecto aplicada y marcada con `TODO(regla)`.
+- **Fase 6:** las respuestas de Albert (P1–P48) están en `docs/decisiones.md`, sección «Fase 6». Reforzar y la Fiebre ya no existen: las cartas de la mano solo suman al comprometer. Ya no hay Pruebas dobles.
+- **Fase 7:** respuestas P49–P56 en la sección «Fase 7» de `docs/decisiones.md`. «Las puertas de Panamá» tiene que seguir siendo una victoria rara (menos del 10 % de las partidas): no se toca su equilibrio.

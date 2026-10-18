@@ -34,7 +34,7 @@ Pierdes la partida si tu Capitán queda derrotado, si se acaba el tiempo o si no
 
 ### Componentes
 
-La Caja básica contiene 212 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica contiene 211 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 **Cartas del jugador**
 
@@ -52,7 +52,7 @@ La Caja básica contiene 212 cartas, que se dividen en cartas del jugador y cart
 | Cartas | Cantidad | Para qué sirven |
 | --- | --- | --- |
 | Puertos | 2 | Tortuga y Nassau. Eliges uno por partida |
-| Peligros | 57 | El mazo de Peligros (55) y dos cartas que empiezan fuera del mazo |
+| Peligros | 56 | El mazo de Peligros (55) y «La Armada te persigue», que empieza fuera del mazo |
 | Escenario | 14 | El reloj de la partida |
 | Misiones iniciales | 3 | Las tres primeras misiones disponibles |
 | Aventuras | 2 | Misiones sueltas del mazo de Misiones |
@@ -126,7 +126,7 @@ Cada carta de Peligro tiene **tres encuentros** y una **franja de Destino**.
 
 1. **Entorno del encuentro:** la franja de color de la izquierda (azul Mar, verde Naturaleza, marrón Ciudad). Durante una misión solo lees el encuentro de su Entorno.
 2. **Nombre y palabras clave** del encuentro.
-3. **Prueba:** el icono de habilidad y su dificultad. Algunas tienen dos opciones separadas por una barra, o una dificultad más baja si tienes cierto Rasgo.
+3. **Prueba:** el icono de habilidad y su dificultad. Algunas piden una dificultad más baja si tienes cierto Rasgo.
 4. **Avance:** el número del mapa, arriba a la derecha del encuentro.
 5. **Efectos:** el recuadro verde se aplica si superas la Prueba y el rojo si la fallas. Un encuentro sin Prueba tiene un solo recuadro, que se aplica siempre.
 6. **Destino:** la franja oscura de abajo, con su nombre, su modificador (el círculo) y su efecto. El recuadro pequeño de la derecha es su línea **Sin oposición**.
@@ -170,7 +170,7 @@ Prepara la partida siguiendo estos pasos:
 1. **Elige el modo de partida y prepara el mazo de Escenario.** El modo decide la reputación que necesitas para ganar y cuántas cartas tiene el mazo de Escenario, que es el reloj de la partida: revelarás una carta al empezar cada turno. Baraja las cartas de Escenario, quédate con las que indica la tabla y devuelve las demás a la caja sin mirarlas. Deja el mazo boca abajo y pon el marcador de reputación a 0.
 2. **Pon en juego a tu Capitán y tu Barco.** Tu Capitán empieza preparado y sin coste.
 3. **Elige un puerto** de El Caribe y ponlo en el centro de la mesa. Jugarás toda la partida en él.
-4. **Prepara el mazo de Peligros.** Deja aparte «La Armada te persigue» y «Amigos en la costa»: solo entran si una carta lo indica. Baraja el resto.
+4. **Prepara el mazo de Peligros.** Deja aparte «La Armada te persigue»: solo entra si una carta lo indica. Baraja el resto. («Amigos en la costa» se queda en la caja por ahora.)
 5. **Prepara las misiones.** Pon boca arriba las tres misiones iniciales: son las **misiones disponibles**, a las que puedes zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros y «¡La guardia!» en el **mazo de historia** y déjalo aparte, boca abajo: de él solo salen cartas cuando otra carta lo indica.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique tu puerto. Esas cartas, boca arriba junto al puerto, son el **muelle**: el único sitio desde el que puedes reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a tu mano.
 7. **Roba tu mano inicial.** Baraja tu **mazo del capitán** y roba tantas cartas como el **Mando** de tu Capitán. Puedes cambiar tu mano una vez: descarta las cartas que quieras y roba otras tantas.
@@ -265,13 +265,13 @@ Cada encuentro te da su Avance, pase lo que pase. Un **encuentro sin Prueba** so
 
 Una Prueba indica una habilidad y una dificultad («COM 3»). Resuélvela con estos pasos:
 
-1. **Compromete a tu tripulación.** Si la Prueba ofrece dos opciones, elige una. Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad de todos ellos, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: cada icono suma 1. Es el único momento en que las cartas de tu mano suman por sus iconos: después de revelar el Destino ya no se pueden añadir. También puedes no comprometer a nadie.
+1. **Compromete a tu tripulación.** Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad de todos ellos, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: cada icono suma 1. Es el único momento en que las cartas de tu mano suman por sus iconos: después de revelar el Destino ya no se pueden añadir. También puedes no comprometer a nadie.
 2. **Revela el Destino.** Revela la carta de arriba del mazo de Peligros, lee solo su franja de Destino y aplícala: cambia la dificultad o añade un efecto. Si no comprometiste a nadie, aplica también su línea Sin oposición, si la tiene.
 3. **Ventana de acción.** Antes de resolver la Prueba puedes usar las capacidades de tus cartas en juego (Tripulantes, Mejoras, Cañones…), como gastar munición de tus Cañones, y jugar los Eventos que tienen su propio momento escrito, como «Reflejos de gato». Aquí ya no se descartan cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, superas la Prueba y aplicas el recuadro verde. Si no, o si no comprometiste a nadie, la fallas y aplicas el recuadro rojo.
 5. **Gana el Avance** del encuentro: ponlo en fichas sobre la carta de misión.
 
-Algunos encuentros ofrecen **dos opciones** («EXP 3 / NAV 4»). Otros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»).
+Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»).
 
 > *Ejemplo:* comprometes a Diego (COM 3) contra el Jaguar (COM 3) y, por si el Destino se tuerce, añades «¡Al abordaje!», que tiene dos iconos de COM: sumas 5. El Destino es «Zarpazo»: +1 a la dificultad, y el que más sume de los comprometidos sufre 1 herida. Diego se lleva la herida y ahora necesitas 4. Con 5, superas la Prueba.
 
@@ -380,7 +380,7 @@ Revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa
 
 Revela el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubiera comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Gana 3 de Avance y, por superar la Turbonada, 1 más: la deja atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y la supera.
 
-**Recompensa.** Gana 1 de reputación y, como el Barco no tiene ningún daño, cumple la Gesta de la misión: 1 más. Busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
+**Recompensa.** Gana 1 de reputación y, como el Barco no ha sufrido daño en esta misión, cumple la Gesta: 1 más. Busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
 
 **Final.** Albert se queda con «¡Al abordaje!» y roba cuatro para tener cinco. El turno siguiente podrá adquirir los Cañones de bronce, que siguen esperando en el muelle.
 
@@ -564,7 +564,7 @@ Mar, Naturaleza o Ciudad. Cada misión tiene un Entorno. «En el Mar», «en Ciu
 
 ### Entra en el mazo de Peligros y Se retira
 
-**Entra en el mazo de Peligros:** baraja esa carta en el mazo de Peligros. Se queda en el mazo vuelta tras vuelta hasta que reveles el encuentro suyo que dice **Se retira**: entonces aplica ese encuentro y retira la carta del juego. Si sale como Destino o con otro de sus encuentros, se aplica y va a la pila de descartes como cualquier otra.
+**Entra en el mazo de Peligros:** baraja esa carta en el mazo de Peligros. Se queda en el mazo el resto de la partida, como cualquier otra, salvo que un encuentro suyo diga **Se retira**: entonces aplica ese encuentro y retira la carta del juego.
 
 ### Entrenamiento
 
@@ -590,7 +590,7 @@ Recompensa de algunos capítulos III: al superarlo, eliges una de las dos opcion
 
 ### Gesta
 
-Regla de algunas misiones: si la superas de la manera que dice («sin que el Barco tenga ningún daño», «sin superar ninguna Prueba de COM»), ganas además 1 de reputación.
+Regla de algunas misiones: si la superas de la manera que dice («sin que el Barco haya sufrido daño en esta misión», «sin superar ninguna Prueba de COM»), ganas además 1 de reputación.
 
 ### Giro
 
@@ -724,7 +724,7 @@ El Tripulante al que está vinculada una Mejora de tripulante o un Tesoro.
 
 El desafío de un encuentro: una habilidad y una dificultad («COM 3»), con un efecto de superación (verde) y uno de fallo (rojo). Para resolverla:
 
-1. **Compromete a tu tripulación.** Si la Prueba ofrece dos opciones, elige una. Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: es el único momento en que pueden sumar. También puedes no comprometer a nadie.
+1. **Compromete a tu tripulación.** Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: es el único momento en que pueden sumar. También puedes no comprometer a nadie.
 2. **Revela el Destino** y aplícalo. Si no comprometiste a nadie, aplica también su línea Sin oposición.
 3. **Ventana de acción.** Puedes usar capacidades de tus cartas en juego y Eventos con su propio momento escrito. Ya no se añaden cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, la superas; si no, o si no comprometiste a nadie, la fallas.

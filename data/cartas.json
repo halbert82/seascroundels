@@ -3553,8 +3553,8 @@
     "mar": {
      "nombre": "Navío de línea de la Armada",
      "palabrasClave": [
-      "Barco",
-      "Militar"
+      "Militar",
+      "Barco"
      ],
      "avance": 3,
      "prueba": [
@@ -3567,8 +3567,9 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "Esta carta Se retira.",
-     "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén. Esta carta Se retira."
+     "textoEfecto": "Los Cañones no suman ~(contra un navío de línea solo se puede correr)~.",
+     "textoExito": "~Le dais esquinazo entre los cayos:~ +1 Avance.",
+     "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén."
     },
     "nat": {
      "nombre": "Desembarco de casacas",
@@ -3578,10 +3579,6 @@
      "avance": 2,
      "prueba": [
       {
-       "hab": "COM",
-       "dificultad": 4
-      },
-      {
        "hab": "EXP",
        "dificultad": 4
       }
@@ -3590,10 +3587,11 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoFallo": "2 heridas repartidas entre los comprometidos."
+     "textoExito": "~Os escondéis y les robáis un barril:~ +1 munición.",
+     "textoFallo": "2 heridas repartidas y el Barco queda **Perseguido**."
     },
     "ciu": {
-     "nombre": "Tu cara en los pasquines",
+     "nombre": "Registro casa por casa",
      "palabrasClave": [
       "Guardia"
      ],
@@ -3608,8 +3606,8 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Si te reconocen, prenden a uno de los tuyos.~",
-     "textoFallo": "Un Tripulante comprometido queda rehén."
+     "textoExito": "~Os escondéis en la trastienda de un amigo:~ +1 Avance.",
+     "textoFallo": "El comprometido con más [EXP] queda rehén."
     }
    },
    "destino": {
@@ -3619,7 +3617,7 @@
     "texto": "+2 en su lugar si el encuentro es #Militar# o #Guardia#.",
     "mod": "+1",
     "ambientacion": "«Bandera del Rey a barlovento. Y viene a por nosotros.»",
-    "textoSinOposicion": "Agota a 1 Tripulante."
+    "textoSinOposicion": "El Barco queda **Perseguido**."
    },
    "version": 2
   },
@@ -3709,7 +3707,8 @@
     "mod": "−2",
     "ambientacion": "«No todo el Caribe te quiere ver colgado.»",
     "textoSinOposicion": "Sin fallo"
-   }
+   },
+   "retirada": true
   },
   {
    "id": "p2_corriente",
@@ -8586,7 +8585,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "La isla no sale en ningún mapa: no puedes superar la misión hasta haber superado al menos una Prueba de [NAV] o de [EXP] en ella.",
+      "La isla no sale en ningún mapa: no puedes superar la misión hasta haber superado al menos una Prueba de [NAV] o de [EXP] en ella, o hasta agotar a un _Vigía_ o a un _Piloto_ ~(avistáis la isla)~. Agotarlo es una **Acción** durante la misión.",
       "**Al zarpar:** Puedes agotar a un _Oficial_ para ganar {2 avance} ~(el informante de Tortuga solo habla con oficiales)~."
      ],
      "ambientacion": "«Dicen que la isla no sale en ningún mapa. Por eso vamos.»",
@@ -8988,7 +8987,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** La mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4, el polvorín estalla: {2 herida} repartidas entre tus Tripulantes y te retiras."
+      "**Al zarpar:** La mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4 fichas, después de resolver ese Peligro, si no has superado la misión, el polvorín estalla: {2 herida} repartidas entre tus Tripulantes y te retiras."
      ],
      "ambientacion": "«Una chispa y la fortaleza entera salta por los aires. Mejor que nos pille lejos.»",
      "recompensa": {
@@ -9145,7 +9144,7 @@
      "distancia": 0,
      "reglas": [
       "El Barco sale de carena: la primera vez que vaya a sufrir daño en esta misión, evítalo.",
-      "**Gesta:** Si superas la misión sin que el Barco tenga ningún daño, {+1 rep}."
+      "**Gesta:** Si superas la misión sin que el Barco haya sufrido daño en esta misión, {+1 rep}."
      ],
      "ambientacion": "«A ver de qué está hecha esta vieja.»",
      "recompensa": {
@@ -9591,8 +9590,7 @@
    "p2_holandes"
   ],
   "apartadosDePeligros": [
-   "armada",
-   "amigos"
+   "armada"
   ],
   "capitanInicial": "capitan",
   "puertoInicial": "tortuga",

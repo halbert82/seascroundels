@@ -201,6 +201,10 @@ export interface MisionEnCurso {
   alApartar?: InstId
   /** Pruebas empezadas en esta misión («la primera Prueba de esta misión es Sin ayuda»). */
   pruebasEmpezadas?: number
+  /** Daño que ha sufrido el Barco en esta misión (el evitado no cuenta). */
+  danoSufrido?: number
+  /** Algo que la misión recuerda («avistáis la isla»), por clave. */
+  hecho?: string[]
 }
 
 export interface Bono {
