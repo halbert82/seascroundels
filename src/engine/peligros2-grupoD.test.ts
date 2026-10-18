@@ -321,7 +321,8 @@ describe('39 · A sueldo', () => {
   })
 
   it('Ciudad: si superas la misión, recuperas lo incautado y robas 1', () => {
-    const j = en('ciu', ['p2_sueldo', 'chubasco', 'calma'], { mano: ['ojo', 'soborno', 'sangre_fria'], avance: { 'pruebas-ciu4': 3 } })
+    // Empieza con todo el Avance: se supera al resolver este Peligro, aunque sin superar su Prueba dé 0 (Avance 1 / 0).
+    const j = en('ciu', ['p2_sueldo', 'chubasco', 'calma'], { mano: ['ojo', 'soborno', 'sangre_fria'], avance: { 'pruebas-ciu4': 4 } })
     j.pasarOfertas().comprometer('NAV', []).pasarOfertas().seguir()
     expect(j.zona('mano')).toEqual(expect.arrayContaining(['soborno', 'sangre_fria']))
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)

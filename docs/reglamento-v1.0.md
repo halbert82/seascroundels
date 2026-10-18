@@ -129,7 +129,7 @@ Cada carta de Peligro tiene **tres encuentros** y una **franja de Destino**.
 1. **Entorno del encuentro:** la franja de color de la izquierda (azul Mar, verde Naturaleza, marrón Ciudad). Durante una misión solo lees el encuentro de su Entorno.
 2. **Nombre y palabras clave** del encuentro.
 3. **Prueba:** el icono de habilidad y su dificultad. Algunas piden una dificultad más baja si tienes cierto Rasgo.
-4. **Avance:** el número del mapa, arriba a la derecha del encuentro.
+4. **Avance:** el número del mapa, arriba a la derecha del encuentro. Si el encuentro tiene Prueba, lleva dos números, «3 / 1»: el primero es el Avance que ganas si la superas y el segundo, más pequeño, el que ganas si no la superas.
 5. **Efectos:** el recuadro verde se aplica si superas la Prueba y el rojo si la fallas. Un encuentro sin Prueba tiene un solo recuadro, que se aplica siempre.
 6. **Destino:** la franja oscura de abajo, con su nombre, su modificador (el círculo) y su efecto. El recuadro pequeño de la derecha es su línea **Sin oposición**.
 
@@ -270,7 +270,7 @@ Una misión sin franja azul tiene Distancia 0: está en tu propia isla. Las misi
 
 Revela la carta de arriba del mazo de Peligros y lee **solo el encuentro de su Entorno**: en una misión de Mar, el encuentro de Mar. Resuélvelo, pon sobre la carta de misión tantas fichas de Avance como indique su mapa y descarta la carta de Peligro (salvo que diga que se queda en juego: ver «Cartas que se quedan en juego»). Después revela otra. Sigue así hasta reunir el Avance que pide la misión, o hasta que te retires.
 
-Cada encuentro te da su Avance, pase lo que pase. Un **encuentro sin Prueba** solo da su Avance y aplica su efecto, sin revelar Destino. Un **encuentro con Prueba** pone a prueba a tu tripulación.
+Cada encuentro te da Avance. Un **encuentro sin Prueba** solo da su Avance y aplica su efecto, sin revelar Destino. Un **encuentro con Prueba** pone a prueba a tu tripulación y lleva dos valores de Avance, «Avance 3 / 1»: si superas la Prueba ganas el primero y, si no la superas (la fallas o no comprometes a nadie), el segundo.
 
 #### Resolver una Prueba
 
@@ -280,7 +280,7 @@ Una Prueba indica una habilidad y una dificultad («COM 3»). Resuélvela con es
 2. **Revela el Destino.** Revela la carta de arriba del mazo de Peligros, lee solo su franja de Destino y aplícala: cambia la dificultad o añade un efecto. Si no comprometiste a nadie, aplica también su línea Sin oposición, si la tiene.
 3. **Ventana de acción.** Antes de resolver la Prueba puedes usar las capacidades de tus cartas en juego (Tripulantes, Mejoras, Cañones…), como gastar munición de tus Cañones, y jugar los Eventos que tienen su propio momento escrito, como «Reflejos de gato». Aquí ya no se descartan cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, superas la Prueba y aplicas el recuadro verde. Si no, o si no comprometiste a nadie, la fallas y aplicas el recuadro rojo.
-5. **Gana el Avance** del encuentro: ponlo en fichas sobre la carta de misión.
+5. **Gana el Avance** del encuentro: el primer número si superaste la Prueba y el segundo si no la superaste. Ponlo en fichas sobre la carta de misión.
 
 Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»). La dificultad suma todos sus modificadores a la vez, el del Destino incluido; solo si el resultado final queda por debajo de 0 cuenta como 0.
 
@@ -290,9 +290,9 @@ Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con u
 
 Los encuentros de Peligro usan unas cuantas expresiones que conviene conocer antes de jugar. Todas tienen su entrada en la Referencia de reglas.
 
-**Elige.** El encuentro te da dos opciones y escoges una antes de comprometer a nadie. Si una opción es un pago (descartar cartas, agotar Tripulantes…) y no puedes pagarla entera, no se ofrece. Cuando una opción es pagar y la otra hacer la Prueba, si pagas ganas el Avance del encuentro sin hacer la Prueba ni revelar Destino.
+**Elige.** El encuentro te da dos opciones y escoges una antes de comprometer a nadie. Si una opción es un pago (descartar cartas, agotar Tripulantes…) y no puedes pagarla entera, no se ofrece. Cuando una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance sin hacer la Prueba ni revelar Destino.
 
-> *Ejemplo:* en Ciudad revelas «Carestía» (Avance 1): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano puedes pagar 2 y ganar su Avance sin Prueba. Con 1 sola carta no puedes pagar: tienes que regatear.
+> *Ejemplo:* en Ciudad revelas «Carestía» (Avance 1 / 0): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano puedes pagar 2 y ganar 1 de Avance sin Prueba. Con 1 sola carta no puedes pagar: tienes que regatear y, si no superas la Prueba, no ganas Avance.
 
 **Sin ayuda.** Solo un Tripulante puede comprometerse a esa Prueba. Puedes añadir cartas de Habilidad de tu mano por sus iconos, pero no Eventos (ni por sus iconos), y durante esa Prueba no puedes jugar Eventos. Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
 
@@ -361,7 +361,7 @@ Un **Pasajero** es una carta que viaja contigo: Don Anselmo, el comerciante, o E
 
 Después de resolver una carta de Peligro, puedes retirarte y volver a puerto. La misión no se supera y pierdes todo su Avance. Alguna misión te deja cobrar algo si te retiras («Saqueo» en «La casa del gobernador»), y otras dicen que no puedes retirarte de ellas.
 
-> *Ejemplo:* en «Rumbo a la isla» (Mar 5) llevas 3 de Avance y solo te queda preparado el Rufián. La siguiente carta te dará al menos 1 de Avance, pero una Fragata cazadora (COM 5, 3 daños al Barco) podría hundirte. Si te retiras, no te llevas nada.
+> *Ejemplo:* en «Rumbo a la isla» (Mar 5) llevas 3 de Avance y solo te queda preparado el Rufián. Con él solo, lo más probable es no superar la Prueba de la siguiente carta y ganar únicamente su Avance pequeño, y una Fragata cazadora (COM 5, 3 daños al Barco) podría hundirte. Si te retiras, no te llevas nada.
 
 #### Superar una misión
 
@@ -468,7 +468,7 @@ Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y 
 
 **Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. Es una misión inicial, así que «Rumores del tesoro» le da 1 ficha de Avance: empieza con 1. La misión dice que el Barco acaba de salir de carena: la primera vez que fuera a sufrir daño en ella, lo evitaría.
 
-Revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 que da 3 de Avance. Compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 4 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
+Revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 con Avance 3 / 1: 3 si la supera y 1 si no. Compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 4 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
 
 Revela el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubiera comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Gana 3 de Avance y, por superar la Turbonada, 1 más: la deja atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y la supera.
 
@@ -540,6 +540,12 @@ Etiqueta de las capacidades de una misión que se resuelven al empezarla, despu�
 ### Avance
 
 Lo que reúnes durante una misión. Se marca con fichas de Avance sobre la carta de misión. Cada encuentro da el Avance indicado en su mapa. En cuanto tienes el Avance que pide la misión, la superas.
+
+- **Avance X / Y.** Un encuentro con Prueba lleva dos valores: ganas X si superas la Prueba e Y si no la superas (la fallas, no comprometes a nadie o el Destino dice que la fallas). Los encuentros sin Prueba y los que se quedan en juego tienen un solo valor.
+- En un «Elige», si pagas en vez de hacer la Prueba, cuenta como superada: ganas X.
+- Lo que una misión da de más al superar una Prueba («cada Prueba de NAV que superes da 1 de Avance más») se suma a X.
+
+> *Ejemplo:* en «La goleta del correo», que da 1 de Avance más por cada Prueba de NAV que superes, revelas «Arrecife de los Colorados» (NAV 4, Avance 3 / 1). Si la superas, ganas 3 + 1 = 4; si no comprometes a nadie, solo 1.
 
 - Tienes que resolver al menos una carta de Peligro para superar una misión, aunque empieces con el Avance suficiente.
 - Las fichas de Avance que una carta pone sobre una misión antes de zarpar se quedan sobre ella y cuentan cuando zarpes. Si la misión deja de estar disponible, descártalas.
@@ -689,7 +695,7 @@ El encuentro, el Destino o la carta te da varias opciones y escoges una.
 - En un encuentro, eliges antes de comprometer a nadie.
 - En una carta de Escenario, eliges al revelarla. Si no puedes cumplir entera ninguna de sus opciones, no pasa nada.
 - Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece.
-- Si una opción es pagar y la otra hacer la Prueba, al pagar ganas el Avance del encuentro sin hacer la Prueba ni revelar Destino.
+- Si una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance (X) sin hacer la Prueba ni revelar Destino.
 
 > *Ejemplo:* en Ciudad revelas «El aduanero tiene precio»: «Elige: le untas la mano (descarta 2 cartas y gana el Avance sin Prueba), o pasas el género por tu cuenta: Prueba de EXP 3 (1 con un Contrabandista)». Llevas al Contrabandista del bajo Caribe y solo 2 cartas en la mano: prefieres la Prueba, que pide 1, y guardar las cartas.
 
@@ -699,7 +705,7 @@ Cada carta de Peligro tiene tres encuentros, uno por Entorno. Durante una misió
 
 - Un encuentro sin Prueba da su Avance y aplica su efecto. No se revela Destino.
 - Un encuentro con Prueba se resuelve como indica la entrada Prueba.
-- Todo encuentro da su Avance, se supere su Prueba o no.
+- Un encuentro con Prueba da Avance aunque no la superes, pero menos: con «Avance 3 / 1», 3 si la superas y 1 si no (ver Avance).
 
 ### Entorno
 
@@ -943,7 +949,7 @@ El desafío de un encuentro: una habilidad y una dificultad («COM 3»), con un 
 2. **Revela el Destino** y aplícalo. Si no comprometiste a nadie, aplica también su línea Sin oposición.
 3. **Ventana de acción.** Puedes usar capacidades de tus cartas en juego y Eventos con su propio momento escrito. Ya no se añaden cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, la superas; si no, o si no comprometiste a nadie, la fallas.
-5. **Gana el Avance** del encuentro.
+5. **Gana el Avance** del encuentro: X si la superaste, Y si no («Avance X / Y»).
 
 - Algunas Pruebas piden menos si tienes un Rasgo preparado («NAV 4, NAV 2 con un Vigía»).
 - Si fallas una Prueba con Tripulantes comprometidos, sus heridas se reparten entre ellos.
@@ -1040,6 +1046,8 @@ Texto de algunos encuentros con Prueba. Solo un Tripulante puede comprometerse a
 
 Línea de algunos Destinos que solo se aplica cuando no comprometes a nadie a la Prueba. En los Destinos favorables suele decir «no se aplica el efecto de fallo».
 
+- Sin nadie comprometido, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 1»: 1), aunque la línea Sin oposición diga que no se aplica el efecto de fallo.
+
 ### Tesoro
 
 Carta única que dan algunos capítulos. Búscala en el mazo de historia y ponla en juego al momento, sin coste. Si es una Mejora de tripulante, vincúlala al Tripulante que elijas.
@@ -1095,7 +1103,7 @@ Elige uno de tus Tripulantes, que no sea el Capitán, y devuélvelo al muelle ju
 2. Revela el Destino y aplícalo; si no comprometiste a nadie, también Sin oposición.
 3. Ventana de acción: capacidades de tus cartas en juego y Eventos con su propio momento.
 4. Resuelve la Prueba.
-5. Gana el Avance del encuentro.
+5. Gana el Avance: X si la superas, Y si no («Avance X / Y»).
 
 ### Iconos de efecto
 

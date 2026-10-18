@@ -1076,6 +1076,37 @@
   border: 1.5px dashed rgba(232, 200, 119, 0.45);
 }
 
+/* Avance del encuentro según cómo salga la Prueba (Avance X / Y) */
+.prueba-avance {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 2px 0 0;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 14px;
+  color: #e9dcc0;
+}
+.prueba-avance .ic {
+  font-size: 16px;
+  color: #d9b45f;
+}
+.prueba-avance .punto {
+  opacity: 0.5;
+}
+.prueba-avance .sin-superar {
+  color: #e8a27a;
+  font-weight: 700;
+}
+.prueba-avance .logrado {
+  color: #f5e3b0;
+  font-weight: 700;
+}
+.prueba-avance .apagado {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
 .prueba-nota {
   margin: 0;
   font-size: 13px;

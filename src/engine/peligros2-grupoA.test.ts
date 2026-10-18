@@ -223,8 +223,8 @@ describe('5 · Bajamar', () => {
     expect(avance(j, 'mar')).toBe(3) // 2 de la carta + 1 del Destino
     const k = en('mar', ['chubasco', 'p2_bajamar', 'calma'], { avance: { 'pruebas-mar5': 1 } })
     k.comprometer('NAV', []).seguir()
-    // Falla (−1 del Destino y −1 de Sin oposición) y luego gana los 2 de la carta.
-    expect(avance(k, 'mar')).toBe(2)
+    // Falla (−1 del Destino y −1 de Sin oposición) y luego gana 1 de la carta (Avance 2 / 1: no la supera).
+    expect(avance(k, 'mar')).toBe(1)
   })
 })
 

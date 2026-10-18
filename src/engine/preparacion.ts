@@ -25,10 +25,12 @@ export interface OpcionesPartida {
   mazoDeMuelle?: CartaId[]
   /** Cartas de Peligro de más en el mazo de Peligros (las de prueba de la fase 6, ya registradas). */
   peligrosExtra?: CartaId[]
+  /** Solo para simular otra regla (ver `Estado.variante`). */
+  variante?: Estado['variante']
 }
 
 /** Prepara una partida con los mazos predefinidos y la deja esperando el cambio de mano inicial. */
-export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra }: OpcionesPartida): Estado {
+export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, variante }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
   const errores = erroresDeMazos({ capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle })
@@ -36,6 +38,7 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra }: Opc
   const s = estadoVacio(sembrar(semilla))
   s.modo = modo ?? m.modo
   s.reputacionObjetivo = MODOS[s.modo].reputacion
+  if (variante) s.variante = variante
 
   // 1. Mazo de Escenario: se baraja y se queda con las cartas del modo; las demás vuelven a la caja sin mirarlas.
   for (const e of DATOS.escenario) crearCopia(s, e.id, 'mazoEscenario')

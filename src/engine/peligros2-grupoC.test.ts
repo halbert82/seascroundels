@@ -179,7 +179,7 @@ describe('26 · Ojos del gobernador', () => {
     const k = en('nat', ['p2_ojos', 'chubasco', 'calma'], { tripulacion: ['vigia'], avance: { [MISION.nat]: 1 } })
     k.comprometer('NAV', ['capitan']).seguir()
     expect(k.copia('vigia').agotada).toBe(true)
-    expect(avance(k, 'nat')).toBe(1) // 1 − 1 + 1 del encuentro
+    expect(avance(k, 'nat')).toBe(0) // 1 − 1 + 0 del encuentro (Avance 1 / 0: no la supera)
   })
 
   it('Ciudad, Elige: le pagas 2 cartas y haces la Prueba (COM 2), o no le pagas y la Prueba recibe +2; si fallas, el Capitán queda Buscado', () => {
@@ -397,7 +397,7 @@ describe('30 · El quinto del rey', () => {
     expect(dificultadPrueba(k.estado)).toBe(4)
     k.seguir()
     expect(k.copia('capitan').heridas).toBe(1)
-    expect(avance(k, 'nat')).toBe(2) // 1 − 1 + 2
+    expect(avance(k, 'nat')).toBe(1) // 1 − 1 + 1 (Avance 2 / 1: no la supera)
   })
 
   it('Ciudad: si superas, el de más EXP queda Inspirado; si fallas, ocupa el muelle (pagas 3)', () => {
@@ -587,7 +587,7 @@ describe('33 · La Armada de Barlovento', () => {
     const k = en('nat', ['p2_armada', 'chubasco', 'calma'], { avance: { [MISION.nat]: 1 } })
     k.comprometer('EXP', ['capitan']).seguir()
     expect(k.copia('capitan').heridas).toBe(2)
-    expect(avance(k, 'nat')).toBe(2) // 1 − 1 + 2
+    expect(avance(k, 'nat')).toBe(1) // 1 − 1 + 1 (Avance 2 / 1: no la supera)
   })
 
   it('Ciudad: si fallas, descartas 3 cartas al azar', () => {

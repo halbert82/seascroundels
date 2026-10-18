@@ -103,9 +103,9 @@ export function mazoDeMuelleAlAzar(semilla: number): CartaId[] {
 export function jugarPartida(
   semilla: number,
   jugador: JugadorAutomatico,
-  { invariantes = false, mazoDeMuelle }: { invariantes?: boolean; mazoDeMuelle?: CartaId[] } = {},
+  { invariantes = false, mazoDeMuelle, variante }: { invariantes?: boolean; mazoDeMuelle?: CartaId[]; variante?: Estado['variante'] } = {},
 ): Partida {
-  let s = nuevaPartida(mazoDeMuelle ? { semilla, mazoDeMuelle } : { semilla })
+  let s = nuevaPartida({ semilla, ...(mazoDeMuelle ? { mazoDeMuelle } : {}), ...(variante ? { variante } : {}) })
   const capitan = copia(s, s.capitan).id
   const p: Partida = {
     semilla,
@@ -423,7 +423,36 @@ function tablaDePeligros(partidas: readonly Partida[]): string[] {
 }
 
 /** Informe de equilibrio en Markdown. `variadas`: partidas con mazos de muelle al azar, para los datos por carta. */
-export function informe(partidas: readonly Partida[], titulo: string, variadas: readonly Partida[] = []): string {
+/** Una variante de regla simulada, con sus partidas (las mismas semillas que las normales). */
+export interface VarianteSimulada {
+  nombre: string
+  partidas: readonly Partida[]
+}
+
+/** Avance X / Y: la regla del juego frente a otras simuladas, con los datos que más cambian. */
+function tablaDeVariantes(variantes: readonly VarianteSimulada[]): string[] {
+  const lineas = [
+    '## Avance con dos valores: variantes',
+    '',
+    `Las mismas ${variantes[0]?.partidas.length ?? 0} partidas normales con cada regla para el Avance de un encuentro cuya Prueba no superas. Solo la regla del juego usa los valores de las cartas; las demás se simulan.`,
+    '',
+    '| Regla | Victorias | Derrotas por tiempo | Derrotas por Capitán | Retiradas por partida | Turnos por partida |',
+    '| --- | --- | --- | --- | --- | --- |',
+  ]
+  for (const v of variantes) {
+    const n = v.partidas.length
+    const perdidas = v.partidas.filter((p) => !p.gana)
+    const por = (c: string) => perdidas.filter((p) => causa(p.motivo) === c).length
+    const retiradas = media(v.partidas.map((p) => p.resultados.filter((r) => r.resultado === 'retirada').length), 2)
+    lineas.push(
+      `| ${v.nombre} | ${porcentaje(n - perdidas.length, n)} | ${porcentaje(por('Se acaba el tiempo'), n)} | ${porcentaje(por('Capitán derrotado'), n)} | ${retiradas} | ${media(v.partidas.map((p) => p.turnoFinal))} |`,
+    )
+  }
+  lineas.push('')
+  return lineas
+}
+
+export function informe(partidas: readonly Partida[], titulo: string, variadas: readonly Partida[] = [], variantes: readonly VarianteSimulada[] = []): string {
   const total = partidas.length
   const ganadas = partidas.filter((p) => p.gana)
   const perdidas = partidas.filter((p) => !p.gana)
@@ -457,6 +486,8 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   for (const p of perdidas) causas.set(causa(p.motivo), (causas.get(causa(p.motivo)) ?? 0) + 1)
   for (const [c, n] of [...causas].sort((a, b) => b[1] - a[1])) lineas.push(`| ${c} | ${n} | ${porcentaje(n, perdidas.length)} |`)
   lineas.push('')
+
+  if (variantes.length > 0) lineas.push(...tablaDeVariantes(variantes))
 
   lineas.push(...tablaDeEscenario([...partidas, ...variadas]))
 
@@ -578,7 +609,7 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   lineas.push(
     '---',
     '',
-    'Se genera con `npm run equilibrio` (por defecto 1000 partidas predefinidas y 2000 con mazos variados; `INFORME_PARTIDAS=200 npm run equilibrio` para menos). Las semillas son siempre las mismas, así que si no cambian las cartas ni el jugador automático, el informe sale idéntico.',
+    'Se genera con `npm run equilibrio` (por defecto 1000 partidas predefinidas, 2000 con mazos variados y otras 2000 con las variantes de Avance; `INFORME_PARTIDAS=200 npm run equilibrio` para menos). Las semillas son siempre las mismas, así que si no cambian las cartas ni el jugador automático, el informe sale idéntico.',
   )
   return lineas.join('\n')
 }

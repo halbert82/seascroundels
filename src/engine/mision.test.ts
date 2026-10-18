@@ -139,11 +139,11 @@ describe('Revelar y resolver encuentros', () => {
     expect(conCarta.registro).toContain('Total 5 contra 3: superas la Prueba.')
   })
 
-  it('el Avance del encuentro se gana se supere o no la Prueba', () => {
+  it('el encuentro da Avance aunque no superes la Prueba, pero el segundo valor (Avance 2 / 1: 1)', () => {
     const j = enPuerto({ misiones: ['fantasma-I'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     j.zarpar('fantasma-I').comprometer('COM').seguir() // Tiburón tigre fallado sin comprometidos: 2 heridas a un Tripulante
     expect(j.copia('capitan').heridas).toBe(2)
-    expect(j.avance('fantasma-I')).toBe(2)
+    expect(j.avance('fantasma-I')).toBe(1)
   })
 })
 
@@ -175,7 +175,7 @@ describe('Destinos', () => {
     const j = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'leyenda', 'calma'] })
     j.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).pasar().seguir()
     expect(j.registro.some((t) => t.includes('fallas la Prueba (el Destino la hace fallar)'))).toBe(true)
-    expect(j.avance('fantasma-I')).toBe(2) // Niebla espesa: −1 de Avance al fallar (sin Avance aún), +2 del encuentro
+    expect(j.avance('fantasma-I')).toBe(1) // Niebla espesa: −1 de Avance al fallar (sin Avance aún), +1 del encuentro (2 / 1, no la supera)
   })
 
   it('«Puñal escondido»: uno de los comprometidos sufre 1 herida; eliges cuál', () => {
@@ -189,7 +189,8 @@ describe('Destinos', () => {
 
 describe('Rehenes', () => {
   it('el rehén sale de entre los comprometidos, sigue ocupando Capacidad y se rescata si superas la misión', () => {
-    const j = enPuerto({ misiones: ['aguada-I'], tripulacion: ['marinero_p', 'grumete', 'bucanero', 'carpintero'], mazoPeligros: ['rivales', 'chubasco', 'racha'] })
+    // La misión empieza con 1 de Avance: los Bandoleros fallados solo dan 1 (Avance 2 / 1).
+    const j = enPuerto({ misiones: ['aguada-I'], avance: { 'aguada-I': 1 }, tripulacion: ['marinero_p', 'grumete', 'bucanero', 'carpintero'], mazoPeligros: ['rivales', 'chubasco', 'racha'] })
     j.zarpar('aguada-I')
     // Bandoleros (COM 3): el Grumete suma 1 + 1 = 2; Destino «Sin novedad». Fallas: el Grumete es capturado.
     j.comprometer('COM', ['grumete']).seguir()

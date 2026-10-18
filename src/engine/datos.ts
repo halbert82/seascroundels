@@ -129,7 +129,10 @@ export interface OpcionPrueba {
 export interface EncuentroDatos {
   nombre: string
   palabrasClave: string[]
+  /** Avance del encuentro; en uno con Prueba, el que ganas si la superas. */
   avance: number
+  /** En un encuentro con Prueba, el Avance que ganas si no la superas («Avance 3 / 1»). Por defecto, la mitad. */
+  avanceSinSuperar?: number
   prueba: OpcionPrueba[]
   fallo: OperacionPrototipo[]
   exito: OperacionPrototipo[]

@@ -5,6 +5,18 @@ import { Fichas, TextoCarta, claseIcono } from './TextoCarta.tsx'
 import { esNombreEncuentroLargo } from './ajustes.ts'
 import { COLOR_ENTORNO, COLOR_HABILIDAD, type VistaDestino, type VistaEncuentro, type VistaMazoPropio, type VistaPeligro } from './vista.ts'
 
+/** «3 / 1»: lo que ganas si superas la Prueba y, más pequeño, si no la superas. */
+function AvanceEncuentro({ e }: { e: VistaEncuentro }) {
+  if (e.avanceSinSuperar === undefined) return <b>{e.avance}</b>
+  return (
+    <span className="av-xy" title={`Si superas la Prueba: ${e.avance} de Avance. Si no la superas: ${e.avanceSinSuperar}.`}>
+      <b>{e.avance}</b>
+      <span className="av-sep">/</span>
+      <b className="av-y">{e.avanceSinSuperar}</b>
+    </span>
+  )
+}
+
 function Encuentro({ e }: { e: VistaEncuentro }) {
   return (
     <div className="encp">
@@ -21,7 +33,7 @@ function Encuentro({ e }: { e: VistaEncuentro }) {
           </div>
           <span className="av">
             <span className="ic i-avance" />
-            <b>{e.avance}</b>
+            <AvanceEncuentro e={e} />
           </span>
         </div>
         {e.conPrueba ? (
@@ -134,7 +146,7 @@ function Encuentro2({ e }: { e: VistaEncuentro }) {
           <span className="encn">{e.nombre}</span>
           <span className="av">
             <span className="ic i-avance" />
-            <b>{e.avance}</b>
+            <AvanceEncuentro e={e} />
           </span>
         </div>
         <div className="encm">

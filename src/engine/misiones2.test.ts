@@ -50,8 +50,9 @@ describe('113 · Cobrar la deuda', () => {
 
 describe('114 · Rumbo a mar abierto', () => {
   it('el primer daño de la misión se evita; el segundo, no; sin Gesta con el Barco dañado', () => {
-    // Bajíos traicioneros (NAV 2 / EXP 3): sin nadie comprometido, 1 daño.
-    const j = enPuerto({ misiones: ['prueba-I'], mazoPeligros: ['escollos', 'chubasco', 'escollos', 'chubasco', 'calma'] })
+    // Bajíos traicioneros (NAV 2 / EXP 3): sin nadie comprometido, 1 daño. Empieza con 1 de Avance: cada Bajío sin
+    // superar da el Avance pequeño (1).
+    const j = enPuerto({ misiones: ['prueba-I'], avance: { 'prueba-I': 1 }, mazoPeligros: ['escollos', 'chubasco', 'escollos', 'chubasco', 'calma'] })
     j.zarpar('prueba-I').comprometer('NAV').seguir()
     expect(j.registro).toContain('El Barco sale de carena: evitas ese daño.')
     expect(j.estado.danoBarco).toBe(0)
@@ -311,9 +312,9 @@ describe('135 · Un soplo en Port Royal', () => {
     j.opcion('si').elegir('ojo', 'coraje')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
     j.elegir('civiles', 'chubasco', 'calma')
-    // Comerciante estafador (Civil, EXP 3, 1 de Avance) fallado: 1 + 1.
+    // Comerciante estafador (Civil, EXP 3, Avance 1 / 0) fallado: 0 + 1 por ser #Civil#.
     j.comprometer('EXP').seguir()
-    expect(j.registro).toContain('Ganas 2 de Avance (2/4).')
+    expect(j.registro).toContain('Ganas 1 de Avance (1/4).')
   })
 })
 
@@ -369,14 +370,15 @@ describe('139 · Los muelles de Maracaibo', () => {
 
   it('con un encuentro #Guardia# fallado, los guardacostas te esperan: añade el II-b', () => {
     // Sereno curioso (Guardia, EXP 1; con Don Anselmo, 0) fallado sin nadie.
-    const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 3 }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    // Empieza con todo el Avance: se supera al resolver el primer Peligro, aunque sin superar su Prueba dé poco.
+    const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 4 }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     j.zarpar('maracaibo-I').cubrir('viejo_lobo').comprometer('EXP').seguir()
     expect(enMisiones(j)).toContain('maracaibo-II-b')
     expect(j.zona('fueraDeJuego')).toContain('maracaibo-II-a')
   })
 
   it('con un Tripulante Buscado, también el II-b', () => {
-    const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 3 }, mazoPeligros: ['p2_ojos', 'chubasco', 'calma'] })
+    const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 4 }, mazoPeligros: ['p2_ojos', 'chubasco', 'calma'] })
     j.zarpar('maracaibo-I').cubrir('viejo_lobo').comprometer('COM').seguir()
     expect(j.estado.mision === null || (j.estado.mision.buscados ?? 0) > 0).toBe(true)
     expect(enMisiones(j)).toContain('maracaibo-II-b')

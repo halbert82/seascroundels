@@ -13,6 +13,7 @@ import { vistaDeCarta } from '../cartas/vista.ts'
 import { describirEfectos } from '../textos/decisiones.ts'
 import { impideRetirarse, impideSuperar } from '../../engine/definiciones.ts'
 import { textoModSiguiente } from '../../engine/tareas/efectos.ts'
+import { avancePrevisto } from '../../engine/tareas/encuentro.ts'
 import { fichasVisibles, motivoSinSuperar } from '../../engine/misiones2/comun.ts'
 import { anchoCentro } from './disposicion.ts'
 import { useLienzo } from './Lienzo.tsx'
@@ -172,6 +173,7 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
       <div className="panel-prueba">
         <Cabecera titulo={enc.nombre} hab={hab} />
         <Marcador total={pv.total} dificultad={pv.dificultad} prevision nadie={tripulantes.length === 0} />
+        <AvanceDeLaPrueba hab={hab} />
         <p className="prueba-nota">
           {p.destino
             ? 'El Destino ya está a la vista (se aplica al comprometer). Pulsa Tripulantes y cartas de tu mano para comprometerlos.'
@@ -199,6 +201,7 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
     <div className={`panel-prueba${p.destino ? ' con-destino' : ''}`}>
       <Cabecera titulo={enc.nombre} hab={p.hab} />
       <Marcador total={total} dificultad={dificultad} nadie={p.comprometidos.length === 0} falla={p.falla} resultado={p.resultado} />
+      <AvanceDeLaPrueba hab={p.hab} resultado={p.resultado} />
       <div className="desglose">
         <div className="desglose-fila">
           <span className="desglose-titulo">Total</span>
@@ -211,6 +214,21 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
       </div>
       {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={Math.min(ancho, 400)} />}
     </div>
+  )
+}
+
+/** «Si la superas: +3 · Si no la superas: +1»: el Avance del encuentro según cómo salga la Prueba. */
+function AvanceDeLaPrueba({ hab, resultado }: { hab: 'NAV' | 'COM' | 'EXP' | null; resultado?: 'superada' | 'fallada' | null }) {
+  const { s } = useMesa()
+  const a = avancePrevisto(s, hab)
+  if (!a || a.siSuperas === a.siNo) return null
+  return (
+    <p className="prueba-avance">
+      <Icono id="avance" />
+      <span className={resultado === 'fallada' ? 'apagado' : resultado === 'superada' ? 'logrado' : ''}>Si la superas: +{a.siSuperas}</span>
+      <span className="punto">·</span>
+      <span className={resultado === 'superada' ? 'apagado' : resultado === 'fallada' ? 'logrado' : 'sin-superar'}>Si no la superas: +{a.siNo}</span>
+    </p>
   )
 }
 

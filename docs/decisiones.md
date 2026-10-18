@@ -245,3 +245,16 @@ Para que las dos salidas de cada «Elige» duelan parecido (en el informe, el ju
 ### Pendiente de Albert
 
 Nada de la fase 8.
+
+## Avance con dos valores (19 de octubre de 2026)
+
+Cambio de regla de Albert: jugando, el Avance llegaba entero aunque no hicieras nada, y eso hacía el juego demasiado fácil.
+
+- **Avance X / Y.** Cada encuentro con Prueba lleva dos valores de Avance. Si superas la Prueba, ganas X; si no la superas (la fallas, no comprometes a nadie o un Destino dice «Fallas la Prueba»), ganas Y. Los encuentros sin Prueba y los que se quedan en juego siguen con un solo valor. *Ejemplo:* «Arrecife de los Colorados» (NAV 4, Avance 3 / 1): si la superas, 3; si no comprometes a nadie, 1. *Prueba:* `avance.test.ts`.
+- **«Elige»:** pagar en vez de hacer la Prueba cuenta como superada (X). *Ejemplo:* «Carestía» (Avance 1 / 0): si pagas 2 cartas, ganas 1; si regateas y no superas la Prueba, 0.
+- **Reglas de misión** que dan Avance de más al superar una Prueba: se suman a X. *Ejemplo:* en «La goleta del correo», el Arrecife superado da 3 + 1 = 4; sin superar, 1.
+- **Valor por defecto:** Y = la mitad de X, redondeando hacia abajo, en los 154 encuentros con Prueba (Peligros 2.0, La Armada y los mazos propios del Templo y la Escolta). Va en los datos de cada carta (`avanceSinSuperar`) para retocarlo carta a carta. Reparto: 40 encuentros de 1 / 0, 85 de 2 / 1, 27 de 3 / 1 y 2 de 4 / 2.
+- **En la carta y en la mesa:** el Avance se ve como «3 / 1», con el segundo más pequeño y atenuado. Antes de decidir, el panel de la Prueba avisa «Si la superas: +3 · Si no la superas: +1», con lo que da la misión de más (lo que depende de superarla por 2 o más no se cuenta en el aviso).
+- **Jugador automático:** cuenta el Avance que deja de ganar al fallar (X − Y) como parte del coste de fallar: al decidir a quién compromete, al elegir en un «Elige» y al valorar el riesgo de un encuentro.
+- **Informe de equilibrio:** compara tres reglas con las mismas partidas: como estaba (Avance entero siempre), la regla del juego (Y = mitad de X) y, solo simulada, Y = X − 1 (mínimo 0).
+

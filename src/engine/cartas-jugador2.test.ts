@@ -53,7 +53,8 @@ describe('La Lengua', () => {
 
 describe('Fiador de la Hermandad', () => {
   it('Interrupción: queda rehén en lugar de otro; si lo rescatas, robas 2', () => {
-    const j = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['p2_maremoto', 'chubasco', 'calma', 'calma', 'calma'], tripulacion: ['isabela', 'fiador'] })
+    // Empieza con 1 de Avance: el Maremoto fallado da 1 (Avance 2 / 1) y la «calma» siguiente, 2: 4 de 4.
+    const j = Jugador.enMision({ misiones: ['ladron-I'], avance: { 'ladron-I': 1 }, mazoPeligros: ['p2_maremoto', 'chubasco', 'calma', 'calma', 'calma'], tripulacion: ['isabela', 'fiador'] })
     j.comprometer('COM', ['isabela']).seguir()
     expect(j.ofreceCapacidad('fiador.rehen')).toBe(true)
     j.usar('fiador.rehen')

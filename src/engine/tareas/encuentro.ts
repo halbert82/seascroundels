@@ -2,7 +2,7 @@
 // y la ventana posterior (retirarse o seguir).
 
 import { iconosDe, porId, tipoDe } from '../catalogo.ts'
-import { definicionEncuentro, reglasDe } from '../definiciones.ts'
+import { avanceSinSuperar, definicionEncuentro, reglasDe } from '../definiciones.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
 import { anotar, claveUso, copia, encolar, nombre, nombres } from '../estado.ts'
@@ -93,6 +93,23 @@ export function avanceExtraEncuentro(s: Estado, claves: readonly string[], p: Pr
   const superada = p?.resultado === 'superada' && p.hab !== null
   const hab: Habilidad | null = superada ? p.hab : null
   return valor(s, { tipo: 'avanceExtraEncuentro', claves, hab, margen: superada ? margen(s) : 0 })
+}
+
+/**
+ * Avance que dará el encuentro de la Prueba en curso si la superas y si no la superas («3 / 1»), con lo que la misión
+ * da de más (lo que depende de por cuánto la superes no se cuenta). Null si no es la Prueba de un encuentro.
+ */
+export function avancePrevisto(s: Estado, hab: Habilidad | null): { siSuperas: number; siNo: number } | null {
+  const p = s.prueba
+  if (!p || p.origen === 'accion' || !s.zonas.encuentro.includes(p.encuentro)) return null
+  const def = definicionEncuentro(s, p.encuentro)
+  const claves = def.palabrasClave
+  const siempre = valor(s, { tipo: 'avanceExtraEncuentro', claves, hab: null, margen: 0 })
+  // Al superarla: lo de la misión para esa habilidad (superándola por lo justo) y lo de las cartas.
+  const alSuperar = hab
+    ? valor(s, { tipo: 'avanceExtraEncuentro', claves, hab, margen: 0 }) + valor(s, { tipo: 'avanceExtraPrueba', hab }) + p.avanceSiSuperas
+    : siempre + p.avanceSiSuperas
+  return { siSuperas: def.avance + alSuperar, siNo: avanceSinSuperar(s, def) + siempre }
 }
 
 /** Al terminar de resolverse, la carta del encuentro va a los descartes o, si lo dice, ocupa el muelle. */
@@ -199,8 +216,14 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
         return 'hecha'
       }
       const p = s.prueba
-      const claves = definicionEncuentro(s, carta).palabrasClave
-      let n = t.sinAvance ? 0 : definicionEncuentro(s, carta).avance + avanceExtraEncuentro(s, claves, p)
+      const def = definicionEncuentro(s, carta)
+      const claves = def.palabrasClave
+      // Avance X / Y: si no superas la Prueba del encuentro (fallas, no comprometes a nadie o el Destino dice «Fallas la
+      // Prueba»), ganas Y. Si la superas, si en un «Elige» pagas en vez de hacer la Prueba o si no hay Prueba, ganas X.
+      // Lo que la misión da de más al superar una Prueba se suma a X.
+      const sinSuperar = p?.encuentro === carta && p.origen !== 'accion' && p.hab !== null && p.resultado === 'fallada'
+      const base = sinSuperar ? avanceSinSuperar(s, def) : def.avance
+      let n = t.sinAvance ? 0 : base + avanceExtraEncuentro(s, claves, p)
       if (p?.resultado === 'superada' && p.hab) n += p.avanceSiSuperas + valor(s, { tipo: 'avanceExtraPrueba', hab: p.hab })
       const mc = copia(s, m.carta)
       mc.avance += n

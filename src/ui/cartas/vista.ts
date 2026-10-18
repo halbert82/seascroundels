@@ -131,6 +131,8 @@ export interface VistaEncuentro {
   nombre: string
   claves: string
   avance: number
+  /** Avance si no superas la Prueba («3 / 1»): solo en los encuentros con Prueba. */
+  avanceSinSuperar?: number
   opciones: Opcion[]
   conPrueba: boolean
   exito: Ficha[]
@@ -255,6 +257,7 @@ function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): Vista
         nombre: e.nombre,
         claves: e.palabrasClave.join(' · '),
         avance: e.avance,
+        ...(e.avanceSinSuperar !== undefined && e.prueba.length > 0 ? { avanceSinSuperar: e.avanceSinSuperar } : {}),
         opciones,
         conPrueba: e.prueba.length > 0,
         exito: [],
@@ -273,6 +276,7 @@ function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): Vista
         nombre: e.nombre,
         claves: e.palabrasClave.join(' · '),
         avance: e.avance,
+        ...(e.avanceSinSuperar !== undefined && e.prueba.length > 0 ? { avanceSinSuperar: e.avanceSinSuperar } : {}),
         opciones,
         conPrueba: e.prueba.length > 0,
         exito: parsearFichas(e.textoExito ?? ''),

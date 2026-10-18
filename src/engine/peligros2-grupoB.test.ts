@@ -47,7 +47,7 @@ describe('12 · Tortugas', () => {
     expect(j.estados('viejo_lobo')).toEqual(['aguerrido'])
     const k = en('mar', ['p2_corriente', 'p2_tortugas', 'calma'], { avance: { 'pruebas-mar5': 2 } })
     k.comprometer('NAV', []).seguir()
-    expect(avance(k, 'mar')).toBe(3) // 2 − 1 + 2 del encuentro
+    expect(avance(k, 'mar')).toBe(2) // 2 − 1 + 1 del encuentro (Avance 2 / 1: no la supera)
   })
 })
 
@@ -151,7 +151,7 @@ describe('15 · Sin rumbo', () => {
     expect(j.decision.motivo.clave).toMatch(/otear|alFondo/)
     const k = en('mar', ['p2_sinrumbo', 'chubasco', 'calma', 'calma'])
     k.comprometer('NAV', []).seguir().seguir()
-    expect(avance(k, 'mar')).toBe(2) // la «calma» siguiente no da su Avance
+    expect(avance(k, 'mar')).toBe(1) // 1 del encuentro (2 / 1: no la supera); la «calma» siguiente no da su Avance
   })
 
   it('Naturaleza: NAV 1 si un comprometido lleva una Brújula', () => {

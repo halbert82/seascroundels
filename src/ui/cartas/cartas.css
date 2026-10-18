@@ -113,6 +113,10 @@
   background:linear-gradient(180deg,#3E3128,#1E1712);border:1.5px solid #C9A45C;color:#F2DFA8;box-shadow:0 2px 3px rgba(0,0,0,.35)}
 .av .ic{font-size:23px}
 .av b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:25px;line-height:1;color:#FBF2DE}
+/* Avance X / Y: el segundo (si no superas la Prueba), más pequeño y atenuado */
+.av-xy{display:inline-flex;align-items:baseline;gap:3px}
+.av-xy .av-sep{font-family:'Alegreya',Georgia,serif;font-weight:700;font-size:.62em;line-height:1;color:#FBF2DE;opacity:.55}
+.av .av-xy b.av-y{font-size:.68em;opacity:.7}
 .test{display:flex;align-items:center;gap:7px;min-height:28px}
 .opt{display:flex;align-items:center;gap:3px}
 .opt .ic{font-size:29px}
@@ -418,6 +422,8 @@
 .encp.v2 .av{height:auto;padding:1px 6px 1px 5px;gap:2px;border-radius:5px;border-width:1px}
 .encp.v2 .av .ic{font-size:calc(var(--fs2) * 1.45)}
 .encp.v2 .av b{font-size:calc(var(--fs2) * 1.55)}
+.encp.v2 .av .av-sep{font-size:calc(var(--fs2) * 1.05)}
+.encp.v2 .av .av-xy b.av-y{font-size:calc(var(--fs2) * 1.05)}
 .encm{display:flex;align-items:center;flex-wrap:wrap;gap:3px 6px;min-height:0}
 .encp.v2 .enck{font-size:calc(var(--fs2) * .9);min-height:0;line-height:1.1}
 .etq{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:calc(var(--fs2) * .82);letter-spacing:.06em;line-height:1.25;

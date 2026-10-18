@@ -9,7 +9,7 @@ import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
 import { copia } from '../estado.ts'
 import { entornoActual } from '../peligros.ts'
-import { definicionEncuentro, quedaDe } from '../definiciones.ts'
+import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
@@ -184,8 +184,21 @@ function puntuacionMision(s: Estado, m: InstId): number {
   return rep * 2.2 + victoria + cadena - falta * 0.9 - distancia * 0.6 + enMar
 }
 
+/** Avance que se deja de ganar si no se supera la Prueba de este encuentro (Avance X / Y: X − Y). */
+function avanceEnJuego(s: Estado, carta: InstId): number {
+  // Una Prueba de una Acción (de un Tripulante, de «¡La guardia!»…) no da Avance de encuentro.
+  if (s.prueba?.encuentro === carta && s.prueba.origen === 'accion') return 0
+  const tipo = porId(copia(s, carta).id).tipo
+  if (tipo !== 'peligro' && tipo !== 'mazoPropio') return 0
+  const def = definicionEncuentro(s, carta)
+  if (def.opciones.length === 0 || def.queda) return 0
+  return Math.max(0, def.avance - avanceSinSuperar(s, def))
+}
+
+/** Lo que cuesta fallar: el recuadro rojo y el Avance que se deja de ganar. */
 function peligroDeFallo(s: Estado, carta: InstId): number {
-  return peligroDe(s.prueba?.encuentro === carta ? definicionActual(s).fallo : definicionEncuentro(s, carta).fallo)
+  const fallo = peligroDe(s.prueba?.encuentro === carta ? definicionActual(s).fallo : definicionEncuentro(s, carta).fallo)
+  return fallo + PESO_AVANCE * avanceEnJuego(s, carta)
 }
 
 /**
@@ -397,7 +410,10 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           def.opciones.length > 0
             ? Math.max(...def.opciones.map((op) => preparados.reduce((n, c) => n + valor(s, { tipo: 'habilidad', carta: c, hab: op.hab }), 0) + iconosMano(op.hab) / 2 - op.dificultad - extra))
             : -9
-        const riesgo = margen >= 2 ? 0.3 : margen >= 0 ? 1.2 : 2 + Math.min(4, -margen) + peligroDe(def.fallo) / 2
+        // Pagar cuenta como superarla (Avance entero); con la Prueba, si fallas, ganas menos.
+        const perdida = PESO_AVANCE * avanceEnJuego(s, carta)
+        const riesgo =
+          margen >= 2 ? 0.3 + perdida * 0.1 : margen >= 0 ? 1.2 + perdida * 0.4 : 2 + Math.min(4, -margen) + peligroDe(def.fallo) / 2 + perdida * 0.9
         return pago + riesgo
       }
       return elegir([...claves].sort((a, b) => coste(a) - coste(b))[0]!)
@@ -562,6 +578,9 @@ function encuentroEnMar(s: Estado): boolean {
 // ---------------------------------------------------------------------------
 // Capacidades: cuándo le sale a cuenta usar cada una
 
+/** Cuánto pesa cada punto de Avance que se deja de ganar al fallar, frente a una herida (1,5). */
+const PESO_AVANCE = 0.75
+
 function peligroDe(efectos: readonly Efecto[]): number {
   let peligro = 0
   for (const e of efectos) {
@@ -597,7 +616,7 @@ function riesgoDelEncuentro(s: Estado, carta: InstId): number {
     margen = Math.max(margen, total - dificultad)
   }
   // Superarla comprometiendo a todos también cuesta: deja a la tripulación agotada para lo que venga.
-  const peligro = peligroDe(enc.fallo) + (enc.abordaje ? 3 : 0)
+  const peligro = peligroDe(enc.fallo) + (enc.abordaje ? 3 : 0) + PESO_AVANCE * avanceEnJuego(s, carta)
   if (preparados.length === 0 || margen < 1) return peligro
   if (margen < 3) return peligro * 0.6
   return 0
