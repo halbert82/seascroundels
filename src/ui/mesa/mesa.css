@@ -2473,7 +2473,12 @@
   left: 50%;
   bottom: 4px;
   transform: translateX(-50%);
-  white-space: nowrap;
+  /* Fase 10c: el Peligro (tarot) es más estrecho en el muelle; la nota se parte en dos líneas si no cabe. */
+  width: max-content;
+  max-width: calc(100% - 6px);
+  text-align: center;
+  line-height: 1.15;
+  z-index: 3;
   font-family: 'Alegreya Sans SC', sans-serif;
   font-weight: 800;
   font-size: 11px;

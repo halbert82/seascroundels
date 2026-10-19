@@ -154,7 +154,8 @@ function revisar([arteDeCarta, muestras]) {
     for (const f of pagina.querySelectorAll('.fragmento')) {
       const ancho = f.getBoundingClientRect().width / MM
       const carta = f.querySelector('.card')
-      const escala = carta ? carta.getBoundingClientRect().width / 378 : 0
+      // Fase 10c: las cartas de Peligro son tarot (420 px de ancho sin escalar).
+      const escala = carta ? carta.getBoundingClientRect().width / 420 : 0
       const letra = (parseFloat(carta?.style.getPropertyValue('--fs2') ?? '') || 10) * escala
       if (ancho < 59.9 || letra < 7.15) problemas.push(`pág. ${n}: el recorte de ${f.dataset.carta} mide ${ancho.toFixed(1)} mm y su letra ${letra.toFixed(1)} px: no se lee`)
       if (!f.querySelector('.fragmento-nombre')?.textContent?.trim()) problemas.push(`pág. ${n}: el recorte de ${f.dataset.carta} no lleva el nombre de la carta`)
