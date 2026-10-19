@@ -83,6 +83,9 @@ async function capturar(pagina, libro) {
     await guardar('5-prueba.png', await capturaDePagina(pagina, await paginaCon(pagina, '.prueba-flujo')))
     await guardar('7-ejemplo-de-juego-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '.ejemplo-de-juego')))
     await guardar('8-contraportada.png', await capturaDePagina(pagina, (await pagina.locator('.pagedjs_page').count()) - 1))
+    await guardar('9-el-turno.png', await capturaDePagina(pagina, await paginaCon(pagina, '.turno')))
+    await guardar('10-cabecera-de-capitulo.png', await capturaDePagina(pagina, await paginaCon(pagina, '#a-las-misiones')))
+    await guardar('11-anatomia-mision.png', await capturaDePagina(pagina, await paginaCon(pagina, '.anatomia-mision')))
   } else {
     await guardar('6-referencia-de-reglas-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '#r-destino')))
   }

@@ -7,6 +7,7 @@ import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import fuente from '../../docs/reglamento-v1.0.md?raw'
 import '../estilos/fuentes.ts'
+import { VINETAS } from './arte.ts'
 import { Barra } from './Barra.tsx'
 import { leerReglamento, type LibroId } from './fuente.ts'
 import { Libro, TITULO } from './Libro.tsx'
@@ -82,10 +83,82 @@ function cerrarCadenas(): void {
 function marcarAperturas(): void {
   for (const pagina of document.querySelectorAll<HTMLElement>('.pagedjs_page')) {
     const contenido = pagina.querySelector('.pagedjs_page_content')
-    const cabecera = pagina.querySelector('.cabecera-capitulo, .creditos > .titulo-preliminar')
+    const cabecera = pagina.querySelector('.inicio-capitulo, .cabecera-capitulo, .creditos > .titulo-preliminar')
     if (!contenido || !cabecera) continue
     if (cabecera.getBoundingClientRect().top - contenido.getBoundingClientRect().top < 40) pagina.classList.add('pagina-de-apertura')
   }
+}
+
+/** Milímetros en píxeles CSS. */
+const MM = 96 / 25.4
+/** Alto de una viñeta y lo que se separa de lo que haya encima y debajo (mm). */
+const ALTO_VINETA = 36
+const AIRE_VINETA = 5
+
+/**
+ * Viñetas en la columna exterior: en cada página de texto cuya columna exterior quede libre en más de la mitad de su
+ * alto, una ilustración pequeña en el hueco libre más grande. Ninguna ilustración se repite en dos páginas seguidas
+ * (las cabeceras de los capítulos también cuentan). El ejemplo de juego a doble página no lleva.
+ */
+function vinetas(): void {
+  const paginas = [...document.querySelectorAll<HTMLElement>('.pagedjs_page')]
+  const usadas = paginas.map((p) => new Set([...p.querySelectorAll<HTMLElement>('[data-arte]')].map((e) => e.dataset.arte ?? '')))
+  let turno = 0
+  paginas.forEach((pagina, i) => {
+    if (!pagina.querySelector('.capitulo .flujo, .referencia .flujo')) return
+    if (pagina.querySelector('.ejemplo-de-juego, .contraportada, .creditos')) return
+    const area = pagina.querySelector<HTMLElement>('.pagedjs_page_content')
+    if (!area) return
+    const a = area.getBoundingClientRect()
+    const lateral = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--lateral')) * MM || 46 * MM
+    const derecha = pagina.classList.contains('pagedjs_right_page')
+    const x0 = derecha ? a.right - lateral : a.left
+    const x1 = x0 + lateral
+    // Lo que ya ocupa la columna exterior (notas, consejos, lo ancho…), con algo de aire.
+    const ocupado = [...area.querySelectorAll<HTMLElement>('.flujo > *, .nota-tema, .consejo, .cartas-lado, .ancho, .vease')]
+      .map((e) => e.getBoundingClientRect())
+      .filter((r) => r.height > 0 && r.right > x0 + MM && r.left < x1 - MM)
+      .map((r) => [Math.max(a.top, r.top - AIRE_VINETA * MM), Math.min(a.bottom, r.bottom + AIRE_VINETA * MM)] as const)
+      .sort((p, q) => p[0] - q[0])
+    const libres: [number, number][] = []
+    let desde = a.top
+    for (const [arriba, abajo] of ocupado) {
+      if (arriba > desde) libres.push([desde, arriba])
+      desde = Math.max(desde, abajo)
+    }
+    if (a.bottom > desde) libres.push([desde, a.bottom])
+    const libre = libres.reduce((n, [p, q]) => n + (q - p), 0)
+    const hueco = libres.reduce<[number, number] | null>((m, h) => (!m || h[1] - h[0] > m[1] - m[0] ? h : m), null)
+    const alto = ALTO_VINETA * MM
+    if (libre <= a.height / 2 || !hueco || hueco[1] - hueco[0] < alto) return
+    // Junto al texto: si la página acaba antes, el hueco se corta donde acaba el texto (si así sigue cabiendo).
+    const finTexto = Math.max(...[...area.querySelectorAll<HTMLElement>('.flujo > *')].map((e) => e.getBoundingClientRect().bottom), a.top)
+    const junto: [number, number] = [hueco[0], Math.min(hueco[1], finTexto)]
+    const sitio: [number, number] = junto[1] - junto[0] >= alto ? junto : [hueco[0], hueco[0] + alto]
+    // Una ilustración que no esté en esta página ni en las de al lado.
+    const vecinas = new Set([...(usadas[i - 1] ?? []), ...(usadas[i] ?? []), ...(usadas[i + 1] ?? [])])
+    for (let k = 0; k < VINETAS.length; k++) {
+      const arte = VINETAS[(turno + k) % VINETAS.length]
+      if (!arte || vecinas.has(arte.nombre)) continue
+      turno = (turno + k + 1) % VINETAS.length
+      usadas[i]?.add(arte.nombre)
+      const vineta = document.createElement('div')
+      vineta.className = 'vineta'
+      vineta.dataset.arte = arte.nombre
+      // Paged.js da a lo que cuelga de la página su alto entero (con !important): el de la viñeta va aquí.
+      vineta.style.setProperty('height', `${ALTO_VINETA}mm`, 'important')
+      vineta.style.left = `${x0 - a.left}px`
+      vineta.style.top = `${(sitio[0] + sitio[1]) / 2 - alto / 2 - a.top}px`
+      const img = document.createElement('img')
+      img.src = arte.url
+      img.alt = ''
+      img.style.objectPosition = arte.encuadre
+      vineta.append(img)
+      if (getComputedStyle(area).position === 'static') area.style.position = 'relative'
+      area.append(vineta)
+      return
+    }
+  })
 }
 
 /** Referencia de reglas: pestañas con las letras en el borde exterior, con la de la página resaltada. */
@@ -143,6 +216,8 @@ async function principal(): Promise<void> {
   cerrarCadenas()
   marcarAperturas()
   if (libro === 'referencia') indiceLateral()
+  vinetas()
+  await cargarImagenes(destino)
   document.getElementById('cargando')?.remove()
   ajustarZoom()
   window.addEventListener('resize', ajustarZoom)

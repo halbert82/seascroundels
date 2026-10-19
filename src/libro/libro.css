@@ -25,6 +25,8 @@
   --hueco: 6mm;
   --desplaza: calc(var(--lateral) + var(--hueco));
   --sangria: 5.5mm;
+  /* Lo que se corre lo ancho hacia el lomo para quedar centrado en la página: (19 mm − 13 mm) / 2. */
+  --centrar: 3mm;
 }
 
 /* ------------------------------------------------------------------ */
@@ -203,6 +205,77 @@ body {
 
 .pagedjs_left_page .flujo > :not(.ancho, .nota-tema, .consejo, .cartas-lado) {
   margin-left: var(--desplaza);
+}
+
+/*
+ * Lo ancho (diagramas, cabeceras ilustradas) ocupa toda la página, centrado en ella: los márgenes son 19 mm por dentro y
+ * 13 mm por fuera, así que se corre 3 mm hacia el lomo y queda a 16 mm de cada borde. Nunca ocupa solo la columna
+ * exterior por un lado.
+ */
+.pagedjs_right_page .ancho {
+  margin-left: calc(-1 * var(--centrar)) !important;
+  margin-right: var(--centrar) !important;
+}
+
+.pagedjs_left_page .ancho {
+  margin-left: var(--centrar) !important;
+  margin-right: calc(-1 * var(--centrar)) !important;
+}
+
+/* La cabecera ilustrada de un capítulo: la ilustración a lo ancho y, debajo, el título en la columna principal. */
+.inicio-capitulo {
+  break-inside: avoid;
+  break-after: avoid;
+}
+
+.pagedjs_right_page .inicio-capitulo.con-arte > .cabecera-capitulo {
+  margin-left: var(--centrar);
+  margin-right: calc(var(--desplaza) - var(--centrar));
+}
+
+.pagedjs_left_page .inicio-capitulo.con-arte > .cabecera-capitulo {
+  margin-left: calc(var(--desplaza) - var(--centrar));
+  margin-right: var(--centrar);
+}
+
+.cabecera-arte {
+  position: relative;
+  height: 33mm;
+  margin-bottom: -5mm;
+}
+
+/* Fundido al pergamino: por abajo y por los lados. */
+.cabecera-arte img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.88) sepia(0.1);
+  -webkit-mask-image:
+    linear-gradient(to bottom, #000 35%, transparent 97%),
+    linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, #000 35%, transparent 97%),
+    linear-gradient(to right, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* Viñeta en la columna exterior de una página que la tiene casi vacía (la pone main.tsx tras repartir las páginas). */
+.pagedjs_page_content > .vineta {
+  position: absolute;
+  width: var(--lateral);
+  pointer-events: none;
+}
+
+.vineta img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.8) sepia(0.16);
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 58%, transparent 100%);
 }
 
 .libro {
@@ -972,14 +1045,22 @@ body {
   display: flow-root;
 }
 
+/* Las cartas del ejemplo, lo bastante grandes para leer su nombre y sus números: una, al lado del texto; varias, en una
+   fila debajo (Libro.tsx calcula su tamaño para que quepan). */
 .ejemplo-cartas {
-  float: right;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 1.6mm;
-  max-width: 47mm;
-  margin: 0.4mm 0 1.6mm 3mm;
+  gap: 2.5mm;
+}
+
+.ejemplo-cartas.una {
+  float: right;
+  margin: 0.4mm 0 1.6mm 3.5mm;
+}
+
+.ejemplo-cartas.fila {
+  justify-content: center;
+  align-items: flex-start;
+  margin: 2mm 0 0.6mm;
 }
 
 .ejemplo-texto p {

@@ -130,7 +130,7 @@ function formasDe(titulo: string): string[] {
 }
 
 /** Términos tan generales que no se añaden solos a «Véase también» (sí se marcan en el texto). */
-// TODO(diseño): «Véase también» añade solo hasta 4 términos que nombra la entrada, sin estos (docs/decisiones.md, fase 9).
+// «Véase también» añade hasta 4 términos que nombra la entrada, sin estos (aprobado por Albert, docs/decisiones.md, fase 9).
 const GENERALES = new Set(['Tripulante', 'Capitán', 'Prueba', 'Barco', 'Misión', 'Encuentro'])
 
 /** Entradas que no se marcan en el texto de otras (son demasiado generales o no son términos). */
@@ -190,9 +190,12 @@ function aplicar(trozos: Trozo[], re: RegExp, cambiar: (m: RegExpExecArray) => T
   return salida
 }
 
+/** Cartas que se enseñan en un recuadro de ejemplo (las primeras que nombra): 4 caben en una fila a 27 mm. */
+const MAX_CARTAS_EJEMPLO = 4
+
 const NOMBRE_LIBRO: Record<LibroId, string> = { aprende: 'Aprende a jugar', referencia: 'Referencia de reglas' }
 
-/** «véase «Destino», pág. 14» (en el mismo libro) o «véase «Destino» en la Referencia de reglas». */
+/** «véase «Destino», pág. 14» (en el mismo libro) o «véase *Referencia de reglas*, «Destino»» (en el otro, sin página). */
 function remision(v: string, titulo: string, e: Entorno): Trozo[] | null {
   const propio = e.anclas[e.libro].get(titulo)
   const otro: LibroId = e.libro === 'aprende' ? 'referencia' : 'aprende'
@@ -201,7 +204,7 @@ function remision(v: string, titulo: string, e: Entorno): Trozo[] | null {
   if (propio) {
     return [{ h: `${palabra} <a class="ref" href="#${propio}">«${escapar(titulo)}»</a>, <span class="pag">pág.&nbsp;<a class="num-pag" href="#${propio}"></a></span>` }]
   }
-  if (ajeno) return [{ h: `${palabra} «${escapar(titulo)}» en <i>${NOMBRE_LIBRO[otro]}</i>` }]
+  if (ajeno) return [{ h: `${palabra} <i>${NOMBRE_LIBRO[otro]}</i>, «${escapar(titulo)}»` }]
   return null
 }
 
@@ -524,7 +527,7 @@ function bloquesDe(md: MarkdownIt, tokens: Token[], e: Entorno, opciones: { comp
       soltarTema()
       if (tipo === 'ejemplo') {
         const pasos = limpio.some((x) => x.type === 'ordered_list_open')
-        bloques.push({ tipo: 'ejemplo', titulo: resto, html: renderizar(md, limpio, sinTerminos), cartas: cartasNombradas(`${resto}\n${textoPlano(limpio)}`), pasos })
+        bloques.push({ tipo: 'ejemplo', titulo: resto, html: renderizar(md, limpio, sinTerminos), cartas: cartasNombradas(`${resto}\n${textoPlano(limpio)}`, MAX_CARTAS_EJEMPLO), pasos })
       } else if (tipo === 'importante' || tipo === 'consejo') {
         bloques.push({ tipo, html: renderizar(md, limpio, sinTerminos) })
       } else if (tipo === 'epigrafe') {

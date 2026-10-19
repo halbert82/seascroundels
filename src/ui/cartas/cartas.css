@@ -461,7 +461,7 @@
 .seal.rama b i{font-style:normal;font-family:'Alegreya Sans',sans-serif;font-weight:800;font-size:13px;margin-left:1px}
 .reward.marcada{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;padding:5px 12px 7px;flex-wrap:nowrap;flex:none}
 /* Si «Añade la carta N a…» no cabe junto a «Recompensa», baja de línea (a la derecha) y la letra se ajusta. */
-.reward.marcada .rcab{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:10px;row-gap:3px}
+.reward.marcada .rcab{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:10px;row-gap:3px;line-height:1.25}
 .reward.marcada .rtexto{display:block;font-size:calc(var(--fsr,16px) * .9);line-height:1.28;color:#24401C;text-align:left}
 .reward.marcada .rtexto .ic{font-size:1.3em;vertical-align:-.3em}
 .reward.marcada .rtexto .num{font-weight:900;white-space:nowrap}

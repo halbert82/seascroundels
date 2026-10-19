@@ -6,7 +6,7 @@ import { Fragment, useContext, useLayoutEffect, useRef, useState, type CSSProper
 import arte from '../../data/arte.json'
 import { CATALOGO, type EntradaCatalogo, type TipoCarta } from '../engine/catalogo.ts'
 import type { Bloque, Capitulo, FilaComponente, Reglamento } from './fuente.ts'
-import { BloqueVista, ContextoReglamento } from './Libro.tsx'
+import { BloqueVista, ContextoReglamento, InicioCapitulo } from './Libro.tsx'
 import { Dorso, Filete, Icono, Marcador, Miniatura } from './piezas.tsx'
 
 function Html({ html, className = '' }: { html: string; className?: string }) {
@@ -255,11 +255,11 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
       { letra: 'E', texto: 'Ilustración' },
     ],
   },
-  // TODO(diseño): «La selva» en vez de «El prisionero de Portobelo» (su recompensa no cabe en la carta dibujada).
+  // «El prisionero de Portobelo», como la lámina de referencia (su recompensa ya cabe: la letra se ajusta sola).
   mision: {
     cartas: [
       {
-        id: 'templo-II',
+        id: 'panama-I',
         ancho: 58,
         llamadas: [
           { n: '1', sel: '.seal', donde: 'arr-izq', dx: 1, dy: 1 },
@@ -693,7 +693,7 @@ interface GrupoPanel {
   cartas: CartaPanel[]
 }
 
-// TODO(diseño): paneles del ejemplo de juego escritos a mano para ese ejemplo (ver docs/decisiones.md, fase 9).
+// Paneles del ejemplo de juego escritos a mano para ese ejemplo (aprobado por Albert): si cambia el ejemplo, hay que cambiarlos.
 const PANEL_PUERTO: GrupoPanel[] = [
   { rotulo: 'Escenario', paso: 1, cartas: [{ id: 'rumores', insignia: '+1 de Avance si zarpas' }] },
   {
@@ -721,7 +721,7 @@ const PANEL_PUERTO: GrupoPanel[] = [
 
 const PANEL_MISION: GrupoPanel[] = [
   { rotulo: 'Misión', paso: 3, cartas: [{ id: 'prueba-I', insignia: 'Empieza con 1 · pide 3' }] },
-  { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', insignia: 'NAV 4 · Avance 3 / 1' }] },
+  { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', insignia: 'NAV 4 · Avance 3 / 2' }] },
   {
     rotulo: 'Comprometidos',
     paso: 3,
@@ -784,18 +784,7 @@ export function EjemploDeJuego({ c }: { c: Capitulo }) {
   return (
     <section className="capitulo ejemplo-de-juego" id={c.id}>
       <div className="flujo">
-        <header className="cabecera-capitulo">
-          <h2 className="titulo-capitulo">{c.titulo}</h2>
-          <Filete />
-          {c.epigrafe ? (
-            <div className="epigrafe">
-              <div className="epigrafe-texto" dangerouslySetInnerHTML={{ __html: c.epigrafe.html }} />
-              <div className="epigrafe-autor">— {c.epigrafe.autor}</div>
-            </div>
-          ) : (
-            <div className="epigrafe pendiente">[epígrafe pendiente]</div>
-          )}
-        </header>
+        <InicioCapitulo c={c} />
         {!c.conTema && <aside className="nota-tema pendiente">[nota pendiente]</aside>}
         {intro && <BloqueVista b={intro} />}
         <PanelEjemplo grupos={PANEL_PUERTO} ancho={19.5} className="panel-puerto" />

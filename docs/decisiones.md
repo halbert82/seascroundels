@@ -282,17 +282,22 @@ Cambio de regla de Albert: jugando, el Avance llegaba entero aunque no hicieras 
 - **Las 8 notas temáticas** pedidas, en su sitio. La de Diego («Un capitán manda desde el alcázar…») va en la entrada «Comprometer» de la Referencia: «Aprende a jugar» no tiene un párrafo con esa regla (solo la cuenta el ejemplo de juego).
 - **Barra superior que desaparecía:** la causa era el registro de partida, no el Destino (ver el commit «Mesa: la barra superior ya no desaparece»). Prueba: `npm run comprobar:barra`.
 
+### Respuestas de Albert (19 de octubre de 2026)
+
+- **Sí** a: los títulos de los 40 ejemplos, «Véase también» (en el reglamento y al final de cada entrada), los hasta 4 términos que añade «Véase también» por su cuenta, el número de página pequeño en los términos de la Referencia, los paneles del ejemplo de juego escritos a mano y los créditos provisionales.
+- **Remisiones al otro libro:** sin página, con el nombre del libro delante: «véase *Aprende a jugar*, «El turno»». En «Véase también», si alguna remite al otro libro, se separan con punto y coma.
+- **Lo ancho:** los diagramas anchos ocupan exactamente la columna principal o la página entera, centrados en ella; nunca la columna principal más la exterior por un lado. Hecho: todo lo ancho (componentes, anatomías, la mesa, el turno, la Prueba, los paneles del ejemplo de juego y las cabeceras ilustradas) ocupa la página entera centrado (178 mm, a 16 mm de cada borde: se corre 3 mm hacia el lomo).
+- **Ilustraciones:** una en la cabecera de cada capítulo de «Aprende a jugar» (a todo el ancho, con fundido al pergamino) y viñetas pequeñas en la columna exterior de las páginas que la tienen libre en más de la mitad de su alto (en los dos libros, junto al texto, en el hueco libre más grande). Ninguna ilustración se repite en dos páginas seguidas.
+- **Cartas de los ejemplos:** más grandes, hasta 30 mm de ancho (antes, 14–16): una carta va al lado del texto y varias, en una fila debajo, del tamaño que quepan (con 4, unos 27 mm).
+- **«El prisionero de Portobelo»:** la etiqueta «Añade la carta 152 a Misiones» baja de línea si no cabe junto a «Recompensa» y la letra se ajusta a lo ancho y a lo alto. Vuelve a la anatomía de Misión.
+- **Tableta:** el primer toque sobre una carta solo la amplía; lo que puede hacer sale como botones dentro de la ampliación («Reclutar (cuesta 2)», «Comprometer»…), y un segundo toque sobre la carta ya ampliada también lo hace. En escritorio no cambia nada.
+- **Glosario de la mesa:** genérico, como el reglamento (ver «Avance doble» arriba, mismo commit).
+
 ### Pendiente de Albert (TODO(diseño))
 
-- **Títulos de los ejemplos.** Los 40 ejemplos llevan ahora la marca `[!ejemplo] Título`; los títulos («Pagar en el muelle», «Un Abordaje sin nadie comprometido»…) los he puesto yo. Cámbialos en el reglamento si quieres otros.
-- **«Consulta también» → «Véase también».** Cambiado en el reglamento (también en el aviso «¡Alto!»), como pedías para el final de cada entrada.
-- **«Véase también» automático.** Además de las remisiones escritas, cada entrada añade hasta 4 términos que nombra (sin Tripulante, Capitán, Prueba, Barco, Misión ni Encuentro, que salen en casi todas). Alternativa: solo las escritas.
-- **Términos en negrita en la Referencia:** la primera vez que una entrada nombra otro término con entrada, va en negrita y con su página en pequeño (Prueba¹⁹). En «Aprende a jugar», cada término va en negrita solo la primera vez que sale en el libro.
-- **Remisiones entre libros** («véase «Capacidades de las cartas» en *Aprende a jugar*») van sin número de página; las del mismo libro, con página.
+- **Ilustración de cada capítulo:** la he elegido yo (`src/libro/arte.ts`): Resumen, la vigía; Objetivo, la brújula; Componentes, los cañones; Anatomía, Diego; Reglas de oro, el amuleto; Capacidades, el grumete saltando; Preparación, el casco en la playa; El turno, la taberna; Las misiones, el abordaje; Heridas, las vendas; Ganar y perder, el sable; Ejemplo de juego, el filibustero; Construir tu mazo, las hamacas. Son las ilustraciones de las cartas (756 px de ancho): en papel, a todo el ancho, se verán algo blandas.
+- **Cartas de los ejemplos:** como mucho 4 por ejemplo (las 4 primeras que nombra el texto), para que quepan en una fila a un tamaño que se lea. Antes salían hasta 5.
+- **Ampliación en la mesa:** si a tamaño entero solo cabe tapando su carta, sale algo más pequeña (hasta el 80 %). Pasa, por ejemplo, con un Destino en el centro de la mesa que nombra muchos Estados.
 - **Iconos en el texto:** NAV, COM y EXP siempre con su icono; heridas, daño, Avance, munición y reputación solo cuando van con número («3 [daño] daños»).
-- **Epígrafes y notas que faltan:** cada capítulo sin epígrafe muestra «[epígrafe pendiente]» y cada capítulo sin nota, «[nota pendiente]» en la columna exterior. Los créditos dejan «[pendiente]» en pruebas de juego y agradecimientos; el resto del texto de créditos es provisional.
-- **Ejemplo de juego a doble página:** los dos paneles (qué cartas pagan, quién se recluta, la cuenta de la Prueba) están escritos a mano para ese ejemplo; si cambia el ejemplo, hay que cambiarlos (`src/libro/graficos.tsx`).
-- **Anatomía de Misión:** uso «La selva» (119) en vez de «El prisionero de Portobelo» de la lámina, porque la recompensa de Portobelo (con el Pasajero) no cabe en su recuadro y el texto se monta. Ese defecto es de la carta dibujada (también en la galería y en la mesa): está por arreglar.
+- **Epígrafes y notas que faltan:** cada capítulo sin epígrafe muestra «[epígrafe pendiente]» y cada capítulo sin nota, «[nota pendiente]» en la columna exterior. Los créditos dejan «[pendiente]» en pruebas de juego y agradecimientos.
 - **Páginas:** empiezan en página nueva Componentes, Anatomía, Preparación (a la izquierda, para que mire al diagrama de la mesa), El turno, Las misiones, Heridas…, Ejemplo de juego (a la izquierda: doble página) y Construir tu mazo. La contraportada va siempre en página par; si hace falta, queda una página en blanco antes (con una rosa de los vientos).
-- **Ampliación en tableta (parte C):** tocar una carta la amplía y, si la carta tiene una acción, el mismo toque también la hace (como ratón encima + clic). Alternativa: que el primer toque solo amplíe y la acción pida un segundo toque o una pulsación larga.
-- **Glosario de la mesa:** sigue nombrando todas las cartas que quitan cada Estado (el reglamento ya no). ¿Lo hago genérico también?

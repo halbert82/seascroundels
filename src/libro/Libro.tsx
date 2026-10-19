@@ -4,6 +4,9 @@
 import { createContext, Fragment } from 'react'
 import arteAprende from '../../assets/arte/cap_galeon.jpg'
 import arteReferencia from '../../assets/arte/abordaje.jpg'
+import { porId } from '../engine/catalogo.ts'
+import { dimensiones } from '../ui/cartas/Carta.tsx'
+import { ARTE_CAPITULO } from './arte.ts'
 import type { Bloque, Capitulo, Entrada, LibroId, Reglamento } from './fuente.ts'
 import { Anatomia, Componentes, Contraportada, EjemploDeJuego, Mesa, PruebaFlujo, Turno } from './graficos.tsx'
 import { Filete, Miniatura, Rosa } from './piezas.tsx'
@@ -140,7 +143,35 @@ function IndiceReferencia({ entradas }: { entradas: Entrada[] }) {
 // ---------------------------------------------------------------------------
 // Bloques del texto
 
+/** Ancho útil dentro de un recuadro de ejemplo (mm) y separación entre sus cartas. */
+const ANCHO_EJEMPLO = 116
+const SEPARACION_CARTAS = 2.5
+/** Las cartas de un ejemplo, lo más grandes que quepan en una fila, hasta 30 mm y no menos de 24 (así se leen su nombre
+ *  y sus números): si no caben a 24, se enseñan menos (las primeras que nombra el texto). */
+const CARTA_EJEMPLO = 30
+const CARTA_EJEMPLO_MINIMA = 24
+
+/** Ancho de las cartas de un ejemplo (de su lado corto) para que quepan todas en una fila del recuadro. */
+function anchoCartasEjemplo(ids: readonly string[]): number {
+  const proporcion = ids.reduce((n, id) => {
+    const d = dimensiones(porId(id))
+    return n + (d.ancho > d.alto ? d.ancho / d.alto : 1)
+  }, 0)
+  return Math.min(CARTA_EJEMPLO, (ANCHO_EJEMPLO - SEPARACION_CARTAS * (ids.length - 1)) / proporcion)
+}
+
 function Ejemplo({ b }: { b: Bloque & { tipo: 'ejemplo' } }) {
+  // Una carta, al lado del texto; varias, en una fila debajo.
+  let ids = b.cartas
+  while (ids.length > 1 && anchoCartasEjemplo(ids) < CARTA_EJEMPLO_MINIMA) ids = ids.slice(0, -1)
+  const ancho = anchoCartasEjemplo(ids)
+  const cartas = ids.length > 0 && (
+    <div className={`ejemplo-cartas ${ids.length === 1 ? 'una' : 'fila'}`}>
+      {ids.map((id) => (
+        <Miniatura key={id} id={id} ancho={ancho} />
+      ))}
+    </div>
+  )
   return (
     <div className={`ejemplo ${b.pasos ? 'con-pasos' : ''}`}>
       <div className="ejemplo-cabecera">
@@ -148,14 +179,9 @@ function Ejemplo({ b }: { b: Bloque & { tipo: 'ejemplo' } }) {
         {b.titulo && <span className="ejemplo-titulo">{b.titulo}</span>}
       </div>
       <div className="ejemplo-cuerpo">
-        {b.cartas.length > 0 && (
-          <div className={`ejemplo-cartas n${b.cartas.length}`}>
-            {b.cartas.map((id) => (
-              <Miniatura key={id} id={id} ancho={b.cartas.length > 3 ? 14 : 16} />
-            ))}
-          </div>
-        )}
+        {ids.length === 1 && cartas}
         <Html html={b.html} className="ejemplo-texto" />
+        {ids.length > 1 && cartas}
       </div>
     </div>
   )
@@ -205,6 +231,28 @@ export function BloqueVista({ b }: { b: Bloque }) {
   }
 }
 
+/**
+ * Cabecera de un capítulo de «Aprende a jugar»: su ilustración a todo el ancho de la página (centrada, con fundido al
+ * pergamino), el título, el filete y el epígrafe.
+ */
+export function InicioCapitulo({ c }: { c: Capitulo }) {
+  const arte = ARTE_CAPITULO[c.titulo]
+  return (
+    <div className={`inicio-capitulo ${arte ? 'ancho con-arte' : ''}`}>
+      {arte && (
+        <div className="cabecera-arte" data-arte={arte.nombre}>
+          <img src={arte.url} alt="" style={{ objectPosition: arte.encuadre }} />
+        </div>
+      )}
+      <header className="cabecera-capitulo">
+        <h2 className="titulo-capitulo">{c.titulo}</h2>
+        <Filete />
+        <Epigrafe c={c} />
+      </header>
+    </div>
+  )
+}
+
 function Epigrafe({ c }: { c: Capitulo }) {
   if (!c.epigrafe) return <div className="epigrafe pendiente">[epígrafe pendiente]</div>
   return (
@@ -242,11 +290,7 @@ function CapituloVista({ c, primero = false }: { c: Capitulo; primero?: boolean 
   return (
     <section className={`capitulo ${nueva ? 'pagina-nueva' : ''} ${primero ? 'primero' : ''}`} id={c.id}>
       <div className="flujo">
-        <header className="cabecera-capitulo">
-          <h2 className="titulo-capitulo">{c.titulo}</h2>
-          <Filete />
-          <Epigrafe c={c} />
-        </header>
+        <InicioCapitulo c={c} />
         {!c.conTema && <aside className="nota-tema pendiente">[nota pendiente]</aside>}
         {c.bloques.map((b, i) => (
           <BloqueVista key={i} b={b} />
@@ -315,7 +359,8 @@ function EntradaVista({ e }: { e: Entrada }) {
           <span className="vease-rotulo">Véase también:</span>{' '}
           {e.vease.map((v, i) => (
             <Fragment key={v.titulo}>
-              {i > 0 && ', '}
+              {/* Con una remisión al otro libro («Aprende a jugar, «El turno»»), la coma ya no separa: punto y coma. */}
+              {i > 0 && (e.vease.some((x) => !(x.id && x.libro === 'referencia')) ? '; ' : ', ')}
               {v.id && v.libro === 'referencia' ? (
                 <>
                   <a href={`#${v.id}`} className="vease-termino">
@@ -329,7 +374,7 @@ function EntradaVista({ e }: { e: Entrada }) {
                 </>
               ) : (
                 <>
-                  <span className="vease-termino">{v.titulo}</span> <span className="pag">(en <i>Aprende a jugar</i>)</span>
+                  <i>Aprende a jugar</i>, «<span className="vease-termino">{v.titulo}</span>»
                 </>
               )}
             </Fragment>
@@ -344,7 +389,7 @@ function EntradaVista({ e }: { e: Entrada }) {
 // ---------------------------------------------------------------------------
 // Créditos
 
-// TODO(diseño): créditos provisionales; faltan pruebas de juego y agradecimientos (docs/decisiones.md, fase 9).
+// Créditos provisionales (aprobados por Albert); faltan las pruebas de juego y los agradecimientos.
 function Creditos({ libro }: { libro: LibroId }) {
   return (
     <section className="creditos" id="creditos">

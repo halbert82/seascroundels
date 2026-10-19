@@ -149,7 +149,7 @@ Una regla.
 
 ### Prueba
 
-Texto de la Prueba.
+Texto de la Prueba (ver «El turno»).
 
 ## Referencia rápida
 
@@ -163,6 +163,11 @@ Texto de la Prueba.
   it('el epígrafe va con su autor al principio del capítulo', () => {
     expect(turno?.epigrafe?.autor).toBe('Viejo lobo de mar')
     expect(turno?.epigrafe?.html).toContain('El mar no es justo ni injusto')
+  })
+
+  it('una remisión al otro libro lleva su nombre delante y no lleva página: «véase *Aprende a jugar*, «El turno»»', () => {
+    const prueba = m.referencia.entradas.find((e) => e.titulo === 'Prueba')
+    expect(htmlDe(prueba?.bloques ?? [])).toContain('(véase <i>Aprende a jugar</i>, «El turno»)')
   })
 
   it('«importante» y «consejo» son recuadros', () => {
