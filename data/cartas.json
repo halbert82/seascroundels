@@ -1,7 +1,7 @@
 {
  "_leyenda": {
   "marcado": "**negrita** = etiqueta (Acción:, Respuesta:…); [ICONO] = icono suelto; {N icono} = número con icono (flag g/r/k = color verde/rojo/tinta); _Rasgo_; #PalabraClave#; \\n = salto de párrafo.",
-  "iconos": "NAV, COM, EXP = habilidades · mar, nat, ciu = Entornos · herida, dano (daño del Barco), avance, municion, robar (carta), curar, agotar, descartar, rep (reputación), vida, mejora, capacidad, MAN (Mando).",
+  "iconos": "NAV, COM, EXP = habilidades · mar, nat, ciu = Entornos · herida, dano (daño del Barco), avance, robar (carta), curar, quitarestado (quitar un Estado), agotar, descartar, rep (reputación), vida, mejora, capacidad, MAN (Mando).",
   "fuente": "Textos v1.0 (la verdad). Los campos en inglés o abreviados (fx, win, al, ops, g, atajo, mix…) vienen del prototipo antiguo y sirven de ayuda para el motor: si chocan con el texto, manda el texto y el reglamento.",
   "num": "Número de colección «Caja básica · NNN»; las recompensas de misión citan estos números.",
   "avance": "En un encuentro con Prueba, «avance» es lo que ganas si la superas y «avanceSinSuperar», lo que ganas si no la superas (fallas o no comprometes a nadie). Se ve en la carta como «3 / 2» (por defecto, la segunda es la mitad de la primera redondeando hacia arriba: 1 / 1, 2 / 1, 3 / 2, 4 / 2). Los encuentros sin Prueba y los que se quedan en juego solo llevan «avance»."
@@ -184,7 +184,7 @@
    "EXP": 0,
    "vida": 1,
    "mejoras": 1,
-   "texto": "[agotar]: Añade {1 municion} a un Cañón.",
+   "texto": "[agotar]: Prepara un Cañón.",
    "ambientacion": "«Dame pólvora seca y te hundo lo que quieras.»"
   },
   {
@@ -472,8 +472,7 @@
    "ambientacion": "«Doble forro de roble. Que vengan.»",
    "bonificacion_vida": 1,
    "espacio": 2,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "vela",
@@ -485,8 +484,7 @@
    "texto": "**Al zarpar hacia una misión [mar]:** Gana {1 avance}.",
    "ambientacion": "«Con buen trapo, el viento trabaja para ti.»",
    "espacio": 1,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "hamacas",
@@ -499,8 +497,7 @@
    "ambientacion": "«Donde caben diez, caben doce.»",
    "bonificacion_capacidad": 1,
    "espacio": 1,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "bandera",
@@ -512,8 +509,7 @@
    "texto": "Tus Pruebas de [COM] en [mar] reciben {+1}.",
    "ambientacion": "«Al verla, la mitad se rinde. La otra mitad reza.»",
    "espacio": 0,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "chalupa",
@@ -525,8 +521,7 @@
    "texto": "**Al zarpar hacia una misión [nat] o [ciu]:** Gana {1 avance}.",
    "ambientacion": "«Hasta la orilla a remo, y en silencio.»",
    "espacio": 2,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "botica",
@@ -538,8 +533,7 @@
    "texto": "Descarta 1 carta de tu mano: Cura {1 herida g} a un Tripulante. (Límite de dos veces por turno.)",
    "ambientacion": "«Láudano, ron y vendas limpias. Casi siempre limpias.»",
    "espacio": 1,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "viveres",
@@ -551,8 +545,7 @@
    "texto": "**Acción:** Descarta Víveres de reserva: Prepara a todos tus Tripulantes.",
    "ambientacion": "«Galleta, cecina y agua dulce. Pesa, pero da la vida.»",
    "espacio": 1,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "cruz",
@@ -564,8 +557,7 @@
    "texto": "Indestructible.\nCuando el Barco vaya a sufrir más de {2 dano} a la vez, en vez de eso sufre {2 dano}.",
    "ambientacion": "«La patrona de los artilleros vela por el casco.»",
    "espacio": 0,
-   "canon": false,
-   "municion": 0
+   "canon": false
   },
   {
    "id": "bronce",
@@ -574,11 +566,10 @@
    "copias": 1,
    "coste": 2,
    "unico": false,
-   "texto": "Gasta {1 municion}: Una Prueba de [COM] recibe {+2}.",
+   "texto": "[agotar]: Una Prueba de [COM] recibe {+2}.",
    "ambientacion": "«Bronce de Sevilla: ni se oxida ni perdona.»",
    "espacio": 2,
-   "canon": true,
-   "municion": 2
+   "canon": true
   },
   {
    "id": "carronadas",
@@ -587,11 +578,10 @@
    "copias": 1,
    "coste": 2,
    "unico": false,
-   "texto": "Gasta {1 municion}: Supera automáticamente una Prueba de [COM] de dificultad 4 o menos, sin revelar Destino.",
+   "texto": "[agotar]: Supera automáticamente una Prueba de [COM] de dificultad 4 o menos, sin revelar Destino.",
    "ambientacion": "«A quemarropa no hace falta apuntar.»",
    "espacio": 2,
-   "canon": true,
-   "municion": 1
+   "canon": true
   },
   {
    "id": "culebrina",
@@ -600,11 +590,10 @@
    "copias": 1,
    "coste": 1,
    "unico": false,
-   "texto": "Gasta {1 municion}: Una Prueba de [NAV] en [mar] recibe {+2}.",
+   "texto": "[agotar]: Una Prueba de [NAV] en [mar] recibe {+2}.",
    "ambientacion": "«Que nos persigan. Tenemos algo para su bauprés.»",
    "espacio": 1,
-   "canon": true,
-   "municion": 2
+   "canon": true
   },
   {
    "id": "pedrero",
@@ -613,11 +602,10 @@
    "copias": 1,
    "coste": 1,
    "unico": false,
-   "texto": "**Respuesta:** Gasta {1 municion}: Después de que reveles una carta de Peligro con Prueba de [COM], descártala sin resolverla y revela otra.",
+   "texto": "**Respuesta:** [agotar]: Después de que reveles una carta de Peligro con Prueba de [COM], descártala sin resolverla y revela otra.",
    "ambientacion": "«Una andanada de metralla y se les quitan las ganas.»",
    "espacio": 1,
-   "canon": true,
-   "municion": 2
+   "canon": true
   },
   {
    "id": "velas_tormenta",
@@ -629,8 +617,7 @@
    "texto": "**Respuesta:** [agotar]: Después de que reveles una carta de Peligro con Prueba de [NAV], descártala sin resolverla y revela otra.",
    "ambientacion": "«Recoge trapo, vira en redondo y que la tormenta pase de largo.»",
    "espacio": 1,
-   "canon": false,
-   "municion": 0
+   "canon": false
   }
  ],
  "mejorasTripulante": [
@@ -800,7 +787,7 @@
    "iconos": [
     "COM"
    ],
-   "texto": "Añade {1 municion} a un Cañón.",
+   "texto": "Prepara todos tus Cañones.",
    "ambientacion": "«Holandesa, seca y sin papeles.»"
   },
   {
@@ -1066,7 +1053,7 @@
     "NAV",
     "COM"
    ],
-   "texto": "**Interrupción:** Gasta {1 municion}: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar.",
+   "texto": "**Interrupción:** Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar.",
    "ambientacion": "«¿Nos persiguen? Que prueben el bronce de popa.»"
   }
  ],
@@ -1176,7 +1163,7 @@
    "num": 146,
    "nombre": "Pólvora del Rey",
    "tipo": "Mejora de barco",
-   "texto": "Indestructible.\nTus Cañones reciben {+1 municion} de máximo.",
+   "texto": "Al entrar en juego, pon 3 fichas sobre esta carta.\n**Respuesta:** Después de agotar un Cañón en una Prueba de [COM], quita 1 ficha de esta carta: esa Prueba recibe {+2} más. Si no quedan fichas, descarta esta carta.",
    "ambientacion": "«Lleva el sello del Rey. Ahora lleva el nuestro.»"
   },
   {
@@ -1963,14 +1950,14 @@
      "prueba": [],
      "fallo": [
       [
-       "ammoLoss",
+       "exhaust",
        1
       ]
      ],
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "−1 [municion]"
+     "textoEfecto": "1 [agotar]"
     },
     "nat": {
      "nombre": "Mosquitos",
@@ -3590,7 +3577,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Os escondéis y les robáis un barril:~ +1 munición.",
+     "textoExito": "~Os escondéis y les robáis un barril:~ Prepara un Cañón.",
      "textoFallo": "2 heridas repartidas y el Barco queda **Perseguido**."
     },
     "ciu": {
@@ -3973,7 +3960,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Un casco sale de la niebla a tiro de pistola. Ellos tampoco os veían, y ya están saltando.~",
-     "textoExito": "~Los echáis por la borda y os quedáis su pólvora.~ +1 munición.",
+     "textoExito": "~Los echáis por la borda y os quedáis su pólvora.~ Prepara un Cañón.",
      "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante asignado queda rehén."
     },
     "nat": {
@@ -4135,7 +4122,7 @@
      "siempre": [],
      "nota": "",
      "textoExito": "~Pasáis por un canal que nadie conoce.~ Descarta la carta de arriba del mazo de Peligros sin resolverla (lo que os seguía se queda en el coral).",
-     "textoFallo": "~El coral abre el casco.~ 2 daños al Barco y pierdes 1 munición (tiráis pólvora por la borda para aligerar y soltaros)."
+     "textoFallo": "~El coral abre el casco.~ 2 daños al Barco y agota 1 Cañón (tiráis pólvora por la borda para aligerar y soltaros)."
     },
     "nat": {
      "nombre": "Raqueros de la costa",
@@ -4155,7 +4142,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Viven de lo que el arrecife hunde, y no quieren testigos.~",
-     "textoExito": "~Les quitáis lo último que saquearon.~ +1 munición y robas 1.",
+     "textoExito": "~Les quitáis lo último que saquearon.~ Prepara un Cañón y robas 1.",
      "textoFallo": "~Os apedrean desde las rocas.~ 2 heridas repartidas entre los Tripulantes asignados."
     },
     "ciu": {
@@ -4220,8 +4207,8 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**Elige. Anegar la santabárbara:** pierdes toda tu munición y el Barco queda con **Pólvora mojada**. **Atacar el fuego:** Prueba de [NAV] 4 (viráis para que el viento eche las llamas fuera); +1 de dificultad si tienes 2 o más munición.",
-     "textoExito": "~Lo apagáis sin mojar un barril.~ +1 munición.",
+     "textoEfecto": "**Elige. Anegar la santabárbara:** agota todos tus Cañones y el Barco queda con **Pólvora mojada**. **Atacar el fuego:** Prueba de [NAV] 4 (viráis para que el viento eche las llamas fuera); +1 de dificultad si tienes algún Cañón preparado.",
+     "textoExito": "~Lo apagáis sin mojar un barril.~ Prepara un Cañón.",
      "textoFallo": "~Lo apagáis a cubos, pero se moja la pólvora.~ 1 daño al Barco y el Barco queda con **Pólvora mojada**.",
      "etiquetas": [
       "Elige"
@@ -4268,10 +4255,10 @@
     "nombre": "Pavesas",
     "modificador": -1,
     "textoPrototipo": "",
-    "texto": "Con 3 o más munición: −2 en su lugar.",
+    "texto": "Con 2 o más Cañones preparados: −2 en su lugar.",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "Pierdes 1 munición."
+    "textoSinOposicion": "Agota 1 Cañón."
    }
   },
   {
@@ -5269,7 +5256,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Siguen el rastro de la sangre. Hay que dormir lejos de la cueva y con fuego.~",
-     "textoExito": "~Dais con la cueva y su guano: salitre para la pólvora.~ Ganas 1 munición.",
+     "textoExito": "~Dais con la cueva y su guano: salitre para la pólvora.~ Prepara un Cañón.",
      "textoFallo": "~Os sangran mientras dormís.~ El Tripulante asignado con menos Vida queda **Sangrando**.",
      "notaPrueba": "+1 si algún Tripulante está **Sangrando**."
     },
@@ -5578,7 +5565,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Han huido de un navío del rey con la pólvora del pañol.~ Gana 2 munición."
+     "textoEfecto": "~Han huido de un navío del rey con la pólvora del pañol.~ Prepara un Cañón."
     },
     "nat": {
      "nombre": "Soldado perdido en la manigua",
@@ -5743,7 +5730,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** **Incautado:** pon 2 cartas de tu mano debajo de la carta de misión (la carga que revisan); con la _Patente de corso_, solo 1. Si superas la misión, las recuperas.",
      "textoExito": "~Los papeles cuadran.~ Recupera ya las cartas incautadas y roba 1.",
-     "textoFallo": "~Decomisan también la pólvora.~ Pierdes 1 munición.",
+     "textoFallo": "~Decomisan también la pólvora.~ Agota 1 Cañón.",
      "etiquetas": [
       "Incautado"
      ]
@@ -5767,7 +5754,7 @@
      "nota": "",
      "textoEfecto": "~Vigilan el río por donde baja el tabaco. Bajáis en canoa y en la canoa solo caben dos.~ No puedes asignar más de 2 Tripulantes.",
      "textoExito": "~La corriente os deja lejos, con los fardos.~ Nada más.",
-     "textoFallo": "~Volcáis en los rápidos.~ Pierdes 1 munición (pólvora mojada) y el Tripulante asignado con más [NAV] sufre 1 herida."
+     "textoFallo": "~Volcáis en los rápidos.~ Agota 1 Cañón (pólvora mojada) y el Tripulante asignado con más [NAV] sufre 1 herida."
     },
     "ciu": {
      "nombre": "El aduanero tiene precio",
@@ -6114,7 +6101,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~El centinela corre a encender la hoguera de aviso. Hay que llegar antes, de noche y por la loma, guiándoos por las estrellas.~",
-     "textoExito": "~Llegáis antes y le quitáis el pedernal y la pólvora.~ Gana 1 munición.",
+     "textoExito": "~Llegáis antes y le quitáis el pedernal y la pólvora.~ Prepara un Cañón.",
      "textoFallo": "~La humareda se ve desde la costa.~ El Barco queda **Perseguido**."
     },
     "ciu": {
@@ -6171,9 +6158,9 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Viene a cobrar el quinto de vuestras presas.~ +1 de dificultad si tienes 3 o más munición (ve la bodega llena y trae más gente).",
-     "textoExito": "~Lo apresáis con lo recaudado.~ Gana 1 munición y roba 1.",
-     "textoFallo": "~Cobra con creces.~ Pierdes 2 munición."
+     "textoEfecto": "~Viene a cobrar el quinto de vuestras presas.~ +1 de dificultad si tienes 2 o más Cañones preparados (ve la bodega llena y trae más gente).",
+     "textoExito": "~Lo apresáis con lo recaudado.~ Prepara un Cañón y roba 1.",
+     "textoFallo": "~Cobra con creces.~ Agota 2 Cañones."
     },
     "nat": {
      "nombre": "Portazgo del Camino Real",
@@ -6229,7 +6216,7 @@
     "texto": "Si superas la Prueba: descarta 1 carta. Con la _Patente de corso_, no descartas.",
     "mod": "0",
     "ambientacion": "",
-    "textoSinOposicion": "Pierdes 1 munición."
+    "textoSinOposicion": "Agota 1 Cañón."
    }
   },
   {
@@ -6278,7 +6265,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Tomáis el fortín y su polvorín.~ Gana 2 munición.",
+     "textoExito": "~Tomáis el fortín y su polvorín.~ Prepara un Cañón.",
      "textoFallo": "~Os barren desde las troneras.~ 3 heridas repartidas entre los Tripulantes asignados.",
      "notaPrueba": "~Un tiro con estopa encendida prende los techos de palma.~"
     },
@@ -6343,7 +6330,7 @@
      "nota": "",
      "textoEfecto": "~Pasáis de noche bajo la batería y las jaulas con los piratas colgados.~ Cada _Marinero_ asignado suma 1 menos (son supersticiosos).",
      "textoExito": "~En una jaula cuelga un viejo compañero, con su mapa.~ Roba 2.",
-     "textoFallo": "~La batería de la punta os encuentra.~ El Barco sufre 2 daños y pierdes 1 munición."
+     "textoFallo": "~La batería de la punta os encuentra.~ El Barco sufre 2 daños y agota 1 Cañón."
     },
     "nat": {
      "nombre": "El árbol de los ahorcados",
@@ -6503,7 +6490,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Una balandra amiga se abarloa y os presta lo que le sobra.~ Gana 1 munición y repara 1 daño. Si tienes un _Bucanero_, gana 1 munición más (es de su cofradía)."
+     "textoEfecto": "~Una balandra amiga se abarloa y os presta lo que le sobra.~ Prepara un Cañón y repara 1 daño. Si tienes un _Bucanero_, prepara otro Cañón (es de su cofradía)."
     },
     "nat": {
      "nombre": "Bucán en la playa",
@@ -6548,7 +6535,7 @@
     "texto": "Encuentro de tipo #Pirata# con un _Bucanero_ asignado: +2 en su lugar.",
     "mod": "+1",
     "ambientacion": "",
-    "textoSinOposicion": "Pierdes 1 munición."
+    "textoSinOposicion": "Agota 1 Cañón."
    }
   },
   {
@@ -6591,7 +6578,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Unos contrabandistas enterraron aquí su mercancía.~",
-     "textoExito": "~Desentierras ron y pólvora.~ Gana 1 munición y prepara 1 Tripulante.",
+     "textoExito": "~Desentierras ron y pólvora.~ Prepara un Cañón y 1 Tripulante.",
      "textoFallo": "~Sus dueños vuelven antes de tiempo.~ 1 herida al Tripulante asignado con más [EXP]."
     },
     "ciu": {
@@ -6751,7 +6738,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Los bucaneros del monte apuestan su pólvora contra vuestro ron.~",
-     "textoExito": "~Ganas su pólvora.~ Gana 2 munición.",
+     "textoExito": "~Ganas su pólvora.~ Prepara un Cañón.",
      "textoFallo": "~Pagáis con trabajo.~ Agota 1 Tripulante preparado (le toca desollar sus reses)."
     },
     "ciu": {
@@ -6897,9 +6884,9 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Un corsario con patente os corta el paso. Le enseñas papeles falsos.~ **Elige** antes de asignar: le das 2 munición (si no las tienes, no puedes), o la Prueba recibe +2 de dificultad (no se fía y abre las portas).",
+     "textoEfecto": "~Un corsario con patente os corta el paso. Le enseñas papeles falsos.~ **Elige** antes de asignar: agota 2 Cañones (si no los tienes preparados, no puedes), o la Prueba recibe +2 de dificultad (no se fía y abre las portas).",
      "textoExito": "~Se cree tus papeles y te escolta un trecho.~ +1 Avance.",
-     "textoFallo": "~Descubre el engaño.~ 1 daño al Barco y pierdes 1 munición.",
+     "textoFallo": "~Descubre el engaño.~ 1 daño al Barco y agota 1 Cañón.",
      "etiquetas": [
       "Elige"
      ]
@@ -6944,7 +6931,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Un armador rival paga a unos matones para quedarse tu carga. Hay que sacarla en el bote antes de que lleguen.~",
-     "textoExito": "~Te llevas también la suya.~ Gana 1 munición.",
+     "textoExito": "~Te llevas también la suya.~ Prepara un Cañón.",
      "textoFallo": "**Incautado:** las 2 cartas de más coste de tu mano van debajo de la carta de misión. Si superas la misión, las recuperas y robas 1; si no, se descartan."
     }
    },
@@ -7069,8 +7056,8 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Antes de asignar, puedes gastar 1 munición: −1 de dificultad, o −2 si asignas a un _Artillero_ (metralla a su cubierta).",
-     "textoExito": "~El filibote es tuyo.~ Gana 2 munición y robas 2.",
+     "textoEfecto": "Antes de asignar, puedes agotar un Cañón: −1 de dificultad, o −2 si asignas a un _Artillero_ (metralla a su cubierta).",
+     "textoExito": "~El filibote es tuyo.~ Prepara un Cañón y robas 2.",
      "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante asignado queda rehén."
     },
     "nat": {
@@ -7113,7 +7100,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Mientras estáis en tierra, los holandeses sueltan tus amarras y se lo llevan.~",
-     "textoExito": "~Los alcanzas en la bocana y te quedas su bote.~ Repara 1 daño y gana 1 munición.",
+     "textoExito": "~Los alcanzas en la bocana y te quedas su bote.~ Repara 1 daño y prepara un Cañón.",
      "textoFallo": "~Lo encuentras varado y saqueado.~ 2 daños al Barco y descarta 1 carta."
     }
    },
@@ -7154,7 +7141,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "**Sin ayuda.** ~El Vizcaíno, tu antiguo contramaestre y hoy capitán rival, reta a tu Capitán a sable.~ Puedes mandar a otro Tripulante en su lugar, pero entonces la Prueba recibe +1 de dificultad (sus hombres se ríen y los tuyos dudan).",
-     "textoExito": "~Su gente paga por recuperarlo vivo.~ Gana 2 munición y tu duelista queda **Inspirado**.",
+     "textoExito": "~Su gente paga por recuperarlo vivo.~ Prepara un Cañón y tu duelista queda **Inspirado**.",
      "textoFallo": "Tu duelista sufre 2 heridas y queda **Sangrando**.",
      "etiquetas": [
       "Sin ayuda"
@@ -7326,7 +7313,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Parece una presa fácil, lenta y cargada hasta la borda, pero lleva las portas pintadas y cien soldados tumbados en cubierta. Quiere piratas vivos para la horca.~",
-     "textoExito": "~Veis la trampa a tiempo y le cruzáis la popa a cañonazos.~ Gana 2 munición.",
+     "textoExito": "~Veis la trampa a tiempo y le cruzáis la popa a cañonazos.~ Prepara un Cañón.",
      "textoFallo": "~Os abarloáis confiados y salen de debajo de las lonas.~ **Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante asignado queda rehén."
     },
     "nat": {
@@ -7484,7 +7471,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~La marea trae la carga del galeón.~ A tu elección: abrís el de ron (prepara a todos los Tripulantes agotados, pero quedan **Borrachos**) o el de pólvora (ganas 2 munición)."
+     "textoEfecto": "~La marea trae la carga del galeón.~ A tu elección: abrís el de ron (prepara a todos los Tripulantes agotados, pero quedan **Borrachos**) o el de pólvora (prepara un Cañón)."
     },
     "ciu": {
      "nombre": "Subasta del naufragio",
@@ -7546,7 +7533,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "Si tienes una _Bandera negra_, arría su pabellón al verla: superas sin Prueba.",
-     "textoExito": "A tu elección: saqueas la bodega (robas 2) o la santabárbara (ganas 2 munición).",
+     "textoExito": "A tu elección: saqueas la bodega (robas 2) o la santabárbara (prepara un Cañón).",
      "textoFallo": "~Escapa y su cañón de popa os alcanza.~ El Barco sufre 1 daño."
     },
     "nat": {
@@ -8053,7 +8040,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Se enrosca al casco.~ Cada _Artillero_ asignado suma +1 (cañonazo a quemarropa).",
-     "textoExito": "~Suelta el casco y se hunde herida.~ Ganas 2 munición (grasa de serpiente para las mechas).",
+     "textoExito": "~Suelta el casco y se hunde herida.~ Prepara un Cañón (grasa de serpiente para las mechas).",
      "textoFallo": "~Aprieta.~ El Barco sufre 2 daños. Si ya tenía 2 o más daños, además queda con **Velas rotas** (le parte el palo)."
     },
     "nat": {
@@ -8225,7 +8212,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Las balas lo atraviesan.~ Los Cañones y la munición no suman. Si un Tripulante asignado lleva un _Escapulario_, −2 de dificultad.",
+     "textoEfecto": "~Las balas lo atraviesan.~ Los Cañones no suman. Si un Tripulante asignado lleva un _Escapulario_, −2 de dificultad.",
      "textoExito": "~Lo mandáis al fondo otros siete años.~ +1 reputación y esta carta Se retira.",
      "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante asignado queda rehén (pasa a su tripulación de muertos)."
     },
@@ -8353,7 +8340,7 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoExito": "~Desmontáis la trampa y os quedáis los dardos.~ Gana 1 munición.",
+    "textoExito": "~Desmontáis la trampa y os quedáis los dardos.~ Prepara un Cañón.",
     "textoFallo": "El Tripulante asignado con menos [EXP] queda **Envenenado**."
    },
    "destino": {
@@ -8526,8 +8513,8 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "Antes de asignar, puedes gastar 1 munición: −2 de dificultad.",
-    "textoExito": "Robas 2 y ganas 1 munición.",
+    "textoEfecto": "Antes de asignar, puedes agotar un Cañón: −2 de dificultad.",
+    "textoExito": "Robas 2 y prepara un Cañón.",
     "textoFallo": "**Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante asignado queda rehén."
    },
    "destino": {
@@ -9549,7 +9536,7 @@
    "id": "escasez",
    "num": 105,
    "nombre": "Escasez de pertrechos",
-   "texto": "Este turno no recargas munición. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
+   "texto": "Este turno, tus Cañones no se preparan en la Fase de Inicio. Al final de este turno, roba hasta tener 2 cartas menos que tu Mando.",
    "ambientacion": "«No queda pólvora, ni galleta, ni nadie que fíe.»"
   },
   {

@@ -60,41 +60,47 @@ describe('Mejoras de barco', () => {
     expect(hundido.zona('mejoras')).toEqual(['cruz'])
   })
 
-  it('029 · Cañones de bronce: gastas 1 de munición y la Prueba de COM recibe +2; con «Los Cañones no suman», nada', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+  it('029 · Cañones de bronce (fase 10b): se agotan y la Prueba de COM recibe +2; con «Los Cañones no suman», nada', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['bronce'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('bronce.disparar')
     expect(totalSinDestinoPrueba(j.estado)).toBe(5)
-    expect(j.copia('bronce').municion).toBe(1)
-    const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    expect(j.copia('bronce').agotada).toBe(true)
+    expect(j.ofreceCapacidad('bronce.disparar')).toBe(false)
+    const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: ['bronce'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     niebla.comprometer('COM', ['capitan']).usar('bronce.disparar')
     expect(totalSinDestinoPrueba(niebla.estado)).toBe(3)
+    // Agotados no disparan.
+    const agotados = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'bronce', agotada: true }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    agotados.comprometer('COM', ['capitan'])
+    expect(agotados.ofreceCapacidad('bronce.disparar')).toBe(false)
   })
 
-  it('030 · Carronadas: antes de comprometer, superas una Prueba de COM de dificultad 4 o menos sin revelar Destino', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'carronadas', municion: 1 }] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
+  it('030 · Carronadas: antes de asignar, se agotan y superas una Prueba de COM de dificultad 4 o menos sin revelar Destino', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['carronadas'] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.usar('carronadas.disparar')
     expect(j.registro).toContain('Superas automáticamente la Prueba de COM, sin revelar Destino.')
     expect(j.registro.some((t) => t.startsWith('Destino:'))).toBe(false)
     expect(j.zona('mazoPeligros')[0]).toBe('leyenda')
+    expect(j.copia('carronadas').agotada).toBe(true)
     // Fragata cazadora (COM 5): no se puede.
-    const fragata = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'carronadas', municion: 1 }] }, mazoPeligros: ['cazadores', 'chubasco', 'calma'] })
+    const fragata = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['carronadas'] }, mazoPeligros: ['cazadores', 'chubasco', 'calma'] })
     expect(fragata.ofreceCapacidad('carronadas.disparar')).toBe(false)
   })
 
-  it('031 · Culebrina de proa: gastas 1 de munición y una Prueba de NAV en el Mar recibe +2', () => {
+  it('031 · Culebrina de proa: se agota y una Prueba de NAV en el Mar recibe +2', () => {
     // Niebla espesa (NAV 3) con el Destino de «Fauna» (−1). Diego 2 + 1 (Barco) = 3; con la Culebrina, 5; con el Destino, 4.
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'fauna', 'calma'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['culebrina'] }, mazoPeligros: ['niebla', 'fauna', 'calma'] })
     j.comprometer('NAV', ['capitan']).usar('culebrina.disparar').seguir()
     expect(j.registro).toContain('Total 4 contra 3: superas la Prueba.')
   })
 
-  it('032 · Pedrero de borda: gastas 1 de munición y descartas una carta de Peligro con Prueba de COM; solo en el Mar (N18)', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'pedrero', municion: 2 }] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
+  it('032 · Pedrero de borda: se agota y descartas una carta de Peligro con Prueba de COM; solo en el Mar (N18)', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['pedrero'] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     j.usar('pedrero.disparar')
     expect(j.zona('descartesPeligros')).toContain('rivales')
-    expect(j.copia('pedrero').municion).toBe(1)
+    expect(j.copia('pedrero').agotada).toBe(true)
     // En «Cobrar la deuda» (Ciudad), la Pelea de taberna (COM 3) no se puede descartar con el Pedrero.
-    const tierra = Jugador.enMision({ barco: { mejoras: [{ id: 'pedrero', municion: 2 }] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
+    const tierra = Jugador.enMision({ barco: { mejoras: ['pedrero'] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     expect(tierra.ofreceCapacidad('pedrero.disparar')).toBe(false)
   })
 
@@ -194,9 +200,18 @@ describe('Tesoros', () => {
     expect(j.valor({ tipo: 'avanceNecesario', mision: j.inst('deuda-I') })).toBe(3)
   })
 
-  it('146 · Pólvora del Rey: tus Cañones reciben +1 de munición máxima', () => {
-    const j = Jugador.en({ barco: { mejoras: ['polvora_rey', { id: 'culebrina', municion: 0 }] } })
-    expect(j.valor({ tipo: 'municionMaxima', carta: j.inst('culebrina') })).toBe(3)
+  it('146 · Pólvora del Rey (fase 10b): después de agotar un Cañón en una Prueba de COM, quitas 1 ficha y la Prueba recibe +2 más', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'polvora_rey', fichas: 3 }, 'bronce'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    j.comprometer('COM', ['capitan']).usar('bronce.disparar').usar('polvora_rey.disparo')
+    expect(totalSinDestinoPrueba(j.estado)).toBe(7) // Diego 3 + 2 de los Cañones + 2 de la Pólvora
+    expect(j.copia('polvora_rey').fichas).toBe(2)
+    // Con la última ficha, la carta se descarta (vuelve al mazo de historia). En una Prueba de NAV no se ofrece.
+    const k = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'polvora_rey', fichas: 1 }, 'bronce'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    k.comprometer('COM', ['capitan']).usar('bronce.disparar').usar('polvora_rey.disparo')
+    expect(k.zonaDe('polvora_rey')).toBe('mazoHistoria')
+    const m = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'polvora_rey', fichas: 3 }, 'culebrina'] }, mazoPeligros: ['niebla', 'fauna', 'calma'] })
+    m.comprometer('NAV', ['capitan']).usar('culebrina.disparar')
+    expect(m.decision.tipo).not.toBe('ofrecer')
   })
 
   it('150 · Farol de los ahogados: descarta un Destino y revela otro, una vez por misión', () => {

@@ -24,10 +24,10 @@ import {
   heridas,
   heridasAsignados,
   mas,
-  municion,
+  preparaCanon,
   participantesCtx,
   pierdesAvance,
-  pierdesMunicion,
+  agotaCanones,
   preparar,
   reparar,
   robar,
@@ -51,7 +51,7 @@ registrarCodigo('p2_motin.dosHeridas', (s) => [{ tipo: 'repartirHeridas', n: 2, 
 registrarPeligro('p2_hermanos', {
   encuentros: {
     // Gana 1 munición y repara 1 daño. Si tienes un Bucanero, gana 1 munición más.
-    mar: { efecto: [municion(1), reparar(1), siTienes('Bucanero', [municion(1)])] },
+    mar: { efecto: [preparaCanon(), reparar(1), siTienes('Bucanero', [preparaCanon()])] },
     // Cura 2 heridas, repartidas como quieras. Si no tenías heridas, prepara 1 Tripulante (se mira antes de curar).
     nat: { efecto: [{ tipo: 'si', condicion: { tipo: 'no', condicion: { tipo: 'heridas', minimo: 1 } }, entonces: [preparar(1)] }, { tipo: 'curar', n: 2 }] },
     // Éxito: recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad). Fallo: descarta 1.
@@ -60,7 +60,7 @@ registrarPeligro('p2_hermanos', {
   // −1; −2 en su lugar si el encuentro es Pirata y comprometiste a un Bucanero. Sin oposición: pierdes 1 munición.
   destino: {
     modificador: (s, p) => (encuentroEs(s, 'Pirata') && p.comprometidos.some((c) => s.zonas.tripulacion.includes(c) && tieneRasgo(s, c, 'Bucanero')) ? -2 : -1),
-    sinOposicion: [pierdesMunicion(1)],
+    sinOposicion: [agotaCanones(1)],
   },
 })
 
@@ -101,7 +101,7 @@ registrarPeligro('p2_barril', {
   encuentros: {
     // Prepara a todos tus Tripulantes. El Tripulante con más COM queda Borracho.
     mar: { efecto: [preparar('todos'), { tipo: 'aQuien', quien: { de: 'tripulacion', por: mas('COM') }, hacer: { tipo: 'estado', estado: 'borracho' } }] },
-    nat: { exito: [municion(1), preparar(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'heridas', n: 1 })] },
+    nat: { exito: [preparaCanon(), preparar(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'heridas', n: 1 })] },
     ciu: { efecto: [codigo('p2_barril.lenguas')] },
   },
   // −1; −2 en su lugar si comprometiste a un Tripulante Borracho. Sin oposición: el preparado con más NAV queda Borracho.
@@ -256,7 +256,7 @@ registrarPeligro('p2_tahur', {
       exito: [codigo('p2_tahur.bolsa')],
       fallo: [descartar(2), codigo('p2_tahur.aparejo')],
     },
-    nat: { exito: [municion(2)], fallo: [agotar(1)] },
+    nat: { exito: [preparaCanon()], fallo: [agotar(1)] },
     // Sin ayuda. Cada carta de tu mano que comprometas suma +1 más.
     ciu: {
       sinAyuda: true,
@@ -320,11 +320,11 @@ registrarPeligro('p2_sueldo', {
     // Elige antes de comprometer: le das 2 munición (si no las tienes, no puedes), o la Prueba recibe +2.
     mar: {
       elige: [
-        { texto: 'Le das 2 munición: Prueba de EXP 3', efectos: [pierdesMunicion(2)], prueba: true },
+        { texto: 'Agotas 2 Cañones: Prueba de EXP 3', efectos: [agotaCanones(2)], prueba: true },
         { texto: 'No le das nada: la Prueba recibe +2', prueba: true, modDificultad: 2 },
       ],
       exito: [avance(1)],
-      fallo: [dano(1), pierdesMunicion(1)],
+      fallo: [dano(1), agotaCanones(1)],
     },
     nat: {
       exito: [{ tipo: 'siguiente', mod: { de: 'prueba', n: -1 } }],
@@ -332,7 +332,7 @@ registrarPeligro('p2_sueldo', {
     },
     // Fallo: Incautado: las 2 de más coste de tu mano; si superas la misión, las recuperas y robas 1; si no, se descartan.
     ciu: {
-      exito: [municion(1)],
+      exito: [preparaCanon()],
       fallo: [{ tipo: 'incautar', que: 'mano', n: 2, criterio: 'mayorCoste', alRecuperar: [robar(1)], siPierdes: 'descartar' }],
     },
   },
@@ -378,12 +378,12 @@ registrarCodigo('p2_curazao.metralla', (s, fuente) => {
 })
 registrarPeligro('p2_curazao', {
   encuentros: {
-    // Antes de comprometer, puedes gastar 1 munición: −1, o −2 si comprometes a un Artillero. Abordaje.
+    // Antes de asignar, puedes agotar un Cañón: −1, o −2 si asignas a un Artillero. Abordaje. (Fase 10b.)
     mar: {
       alRevelarse: [codigo('p2_curazao.reset')],
       elige: [
-        { texto: 'No gastar munición: Prueba de COM 5', prueba: true },
-        { texto: 'Gastar 1 munición: −1, o −2 si asignas a un Artillero', prueba: true, efectos: [pierdesMunicion(1), codigo('p2_curazao.metralla')] },
+        { texto: 'Sin agotar ningún Cañón: Prueba de COM 5', prueba: true },
+        { texto: 'Agotar un Cañón: −1, o −2 si asignas a un Artillero', prueba: true, efectos: [agotaCanones(1), codigo('p2_curazao.metralla')] },
       ],
       capacidades: [
         {
@@ -396,14 +396,14 @@ registrarPeligro('p2_curazao', {
         },
       ],
       abordaje: true,
-      exito: [municion(2), robar(2)],
+      exito: [preparaCanon(), robar(2)],
     },
     nat: {
       exito: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true, maximo: 3 }, hacer: { tipo: 'curar', n: 1 } }],
       fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true, maximo: 3 }, hacer: { tipo: 'heridas', n: 1 } }],
     },
     // «Te roban el barco»: la carta dice expresamente que daña el Barco en tierra (P19).
-    ciu: { exito: [reparar(1), municion(1)], fallo: [{ tipo: 'dano', n: 2, enTierra: true }, descartar(1)] },
+    ciu: { exito: [reparar(1), preparaCanon()], fallo: [{ tipo: 'dano', n: 2, enTierra: true }, descartar(1)] },
   },
   // −1. Prueba de COM: el Tripulante asignado con la COM más alta sufre 1 herida.
   // Sin oposición: inflige 1 herida a un Tripulante (fase 10: ya no tiene que estar preparado).
@@ -426,7 +426,7 @@ registrarPeligro('p2_cuentas', {
     mar: {
       sinAyuda: true,
       capacidades: [dificultad('vizcaino', (ctx) => (participantesCtx(ctx).some((c) => c !== ctx.s.capitan) ? 1 : 0))],
-      exito: [municion(2), cadaComprometido({ tipo: 'estado', estado: 'inspirado' })],
+      exito: [preparaCanon(), cadaComprometido({ tipo: 'estado', estado: 'inspirado' })],
       fallo: [heridasAsignados(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'sangrando' })],
     },
     // Si comprometes al Capitán, −2.
@@ -511,7 +511,7 @@ registrarPeligro('p2_motin', {
 registrarPeligro('p2_cazador', {
   encuentros: {
     // EXP 5 (4 si comprometes a un Vigía: está en los datos). Abordaje.
-    mar: { abordaje: true, exito: [municion(2)] },
+    mar: { abordaje: true, exito: [preparaCanon()] },
     // Éxito: recluta gratis un Tripulante de coste 2 o menos (si tienes Capacidad); si no, robas 2.
     nat: {
       exito: [{ tipo: 'si', condicion: { tipo: 'plazasLibres', minimo: 1 }, entonces: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante' }], sino: [robar(2)] }],

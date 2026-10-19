@@ -404,7 +404,7 @@ export function sinMarcado(texto: string): string {
     avance: 'Avance',
     robar: 'carta',
     curar: 'curar',
-    municion: 'munición',
+    quitarestado: 'quitar un Estado',
     rep: 'reputación',
     vida: 'Vida',
     capacidad: 'Capacidad',

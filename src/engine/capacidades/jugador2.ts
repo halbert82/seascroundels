@@ -151,10 +151,10 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     ],
   }),
 
-  // Virar y dar la cara: «Interrupción: Gasta 1 munición: Cuando un Destino vaya a poner su carta encima del mazo de
+  // Virar y dar la cara: «Interrupción: Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de
   // Peligros, ponla al fondo del mazo en su lugar.»
   evento('virar', 'interrupcion', {
-    coste: [{ tipo: 'gastarMunicion', n: 1 }],
+    coste: [{ tipo: 'agotarCanon' }],
     disparo: (_s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'persigue' && !ev.alFondo,
     efecto: (_s, _yo, suceso) => {
       if (suceso?.ev.tipo === 'persigue') suceso.ev.alFondo = true

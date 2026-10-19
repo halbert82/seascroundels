@@ -24,7 +24,8 @@ export type Efecto =
   /** Curar N: repartidas (por defecto), N a cada comprometido, a cada Tripulante, a cada herido, o a uno. */
   | { tipo: 'curar'; n: number; modo?: 'repartir' | 'cadaComprometido' | 'cadaUno' | 'cadaHerido' | 'uno' }
   | { tipo: 'perderAvance'; n: number | 'todo' }
-  | { tipo: 'perderMunicion'; n: number }
+  /** Agota N Cañones preparados, o todos («pierdes N munición» antes de la fase 10b). */
+  | { tipo: 'agotarCanones'; n: number | 'todos' }
   /** Pierdes N Mejoras (`deComprometidos`: de un Tripulante comprometido; `mayorCoste`: la de mayor coste, si empatan eliges). */
   | { tipo: 'perderMejora'; n: number; deComprometidos?: boolean; mayorCoste?: boolean }
   | { tipo: 'agotarMejora' }
@@ -56,13 +57,14 @@ export type Efecto =
   | { tipo: 'retirarse' }
   /** La carta de Peligro en juego que lo dice se descarta. */
   | { tipo: 'descartarEsta' }
-  /** Lee la mesa: Rasgos, Mejoras, heridas, munición, Estados… */
+  /** Lee la mesa: Rasgos, Mejoras, heridas, Cañones, Estados… */
   | { tipo: 'si'; condicion: Condicion; entonces: Efecto[]; sino?: Efecto[] }
   /** «1 herida por cada Mejora» (con un mínimo y un máximo, si lo dice). */
   | { tipo: 'porCada'; medida: Medida; efectos: Efecto[]; maximo?: number; minimo?: number }
   // Peligros 2.0
   | { tipo: 'ganarAvance'; n: number }
-  | { tipo: 'ganarMunicion'; n: number }
+  /** Prepara N Cañones agotados («gana N munición» antes de la fase 10b). */
+  | { tipo: 'prepararCanones'; n: number }
   /** Prepara a N Tripulantes (a tu elección), a todos o a los comprometidos. */
   | { tipo: 'preparar'; n: number | 'todos' | 'comprometidos' }
   /** A quién le pasa algo: «el comprometido con más EXP queda Buscado», «cada Tripulante agotado sufre 1 herida»… */
@@ -190,7 +192,7 @@ export type Condicion =
   | { tipo: 'rasgoEnJuego'; rasgo: string }
   | { tipo: 'mejoras'; minimo: number }
   | { tipo: 'heridas'; minimo: number }
-  | { tipo: 'municion'; minimo: number }
+  | { tipo: 'canonesPreparados'; minimo: number }
   | { tipo: 'estado'; estado: FichaTripulante }
   | { tipo: 'estadoBarco'; estado: EstadoBarco }
   | { tipo: 'no'; condicion: Condicion }
@@ -223,7 +225,7 @@ export type Medida =
   | 'mejoras'
   | 'mejorasBarco'
   | 'heridas'
-  | 'municion'
+  | 'canonesPreparados'
   | 'tripulantes'
   | 'peligrosEnJuego'
   | 'margen'
@@ -283,9 +285,6 @@ export function interpretarEfectos(texto: string): Efecto[] {
           continue
         case 'avance':
           efectos.push({ tipo: 'perderAvance', n: n === null ? 'todo' : -n })
-          continue
-        case 'municion':
-          efectos.push({ tipo: 'perderMunicion', n: -(n ?? 0) })
           continue
         case 'mejora':
           // «−1 [mejora]»: pierdes una Mejora. «1 [mejora]» (tachada): agota una Mejora.

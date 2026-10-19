@@ -1,6 +1,6 @@
 // Sucesos con sus ventanas, uso de capacidades, Eventos jugados y pausas para capacidades sin etiqueta.
 
-import { nombreDe, tipoDe } from '../catalogo.ts'
+import { esCanon, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada } from '../estado.ts'
 import { agotar, quitarEstadoAnotado, quitarEstadoBarco } from '../estados.ts'
 import { definicionActual } from '../prueba.ts'
@@ -171,8 +171,8 @@ export const usar: Manejador<'usar'> = (s, t) => {
         encolar(s, coste.rasgos ? { tipo: 'agotarParaPagar', rasgo: coste.rasgo, rasgos: coste.rasgos } : { tipo: 'agotarParaPagar', rasgo: coste.rasgo })
         continue
       }
-      if (coste.tipo === 'gastarMunicion') {
-        encolar(s, { tipo: 'perderMunicion', n: coste.n })
+      if (coste.tipo === 'agotarCanon') {
+        encolar(s, { tipo: 'agotarCanones', n: 1, coste: true })
         continue
       }
       if (coste.tipo === 'agotarVarios') {
@@ -184,8 +184,9 @@ export const usar: Manejador<'usar'> = (s, t) => {
       if (coste.tipo === 'agotarse') {
         agotar(s, fuente)
         if (s.prueba && !s.prueba.agotadas.includes(fuente)) s.prueba.agotadas.push(fuente)
+        // Fase 10b: agotar un Cañón para disparar (la Pólvora del Rey puede responder).
+        if (esCanon(c.id)) encolar(s, { tipo: 'evento', ev: { tipo: 'canonAgotado', carta: fuente }, fase: 'despues', cancelado: false, usadas: [] })
       }
-      else if (coste.tipo === 'municion') c.municion -= coste.n
       // N13: una herida pagada como coste se puede evitar o desviar como cualquier otra (Grumete, «Ni un hombre
       // atrás»); el coste se da por pagado igualmente.
       else if (coste.tipo === 'herida') {
@@ -235,7 +236,7 @@ export const jugarEvento: Manejador<'jugarEvento'> = (s, t) => {
     for (const c of capacidadDe({ fuente: t.carta, clave: t.clave }).coste ?? []) {
       if (c.tipo === 'agotarCapitan') agotar(s, s.capitan)
       else if (c.tipo === 'pagar') pagos.push({ tipo: 'pagar', cantidad: c.n, motivo: copia(s, t.carta).id })
-      else if (c.tipo === 'gastarMunicion') pagos.push({ tipo: 'perderMunicion', n: c.n })
+      else if (c.tipo === 'agotarCanon') pagos.push({ tipo: 'agotarCanones', n: 1, coste: true })
       else throw new Error(`Coste no previsto en un Evento: ${c.tipo}`)
     }
     encolar(s, ...pagos)

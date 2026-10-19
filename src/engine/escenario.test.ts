@@ -385,20 +385,19 @@ describe('Escenario 2.0: malas', () => {
     expect(sinCartas.decision.motivo.clave).toBe('jugarCartas')
   })
 
-  it('Escasez de pertrechos: este turno no recargas munición, pero no pierdes la que tienes (P58)', () => {
-    const j = revelar('escasez', { mano: [], barco: { mejoras: [{ id: 'bronce', municion: 1 }, { id: 'casco' }] } })
-    expect(j.copia('bronce').municion).toBe(1)
-    expect(j.registro).toContain('Escasez de pertrechos: este turno no recargas munición.')
-    const llenos = revelar('escasez', { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
-    expect(llenos.copia('bronce').municion).toBe(2)
+  it('Escasez de pertrechos (fase 10b): este turno tus Cañones no se preparan en la Fase de Inicio; el resto, sí', () => {
+    const j = revelar('escasez', { mano: [], capitan: { agotada: true }, barco: { mejoras: [{ id: 'bronce', agotada: true }, { id: 'casco' }] } })
+    expect(j.copia('bronce').agotada).toBe(true)
+    expect(j.copia('capitan').agotada).toBe(false)
+    expect(j.registro).toContain('Escasez de pertrechos: tus Cañones no se preparan.')
   })
 
-  it('Escasez de pertrechos: al final del turno robas hasta 2 cartas menos que tu Mando; al turno siguiente vuelves a recargar', () => {
-    const j = revelar('escasez', { mano: [], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
-    expect(j.copia('bronce').municion).toBe(0)
+  it('Escasez de pertrechos: al final del turno robas hasta 2 cartas menos que tu Mando; al turno siguiente los Cañones se preparan', () => {
+    const j = revelar('escasez', { mano: [], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
+    expect(j.copia('bronce').agotada).toBe(true)
     j.pasarTurnoEnPuerto()
     expect(j.zona('mano')).toHaveLength(3)
-    expect(j.copia('bronce').municion).toBe(2)
+    expect(j.copia('bronce').agotada).toBe(false)
   })
 })
 

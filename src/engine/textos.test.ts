@@ -51,7 +51,7 @@ function delPrototipo(op: OperacionPrototipo): string {
     case 'progAll':
       return 'perderAvance:todo'
     case 'ammoLoss':
-      return `perderMunicion:${n}`
+      return `agotarCanones:${n}`
     case 'loseUp':
       return `perderMejora:${n}`
     case 'breakUp':
@@ -83,7 +83,7 @@ function resumen(e: Efecto): string {
     case 'descartar':
     case 'robar':
     case 'curar':
-    case 'perderMunicion':
+    case 'agotarCanones':
     case 'perderMejora':
     case 'reputacion':
       return `${e.tipo}:${e.n}`

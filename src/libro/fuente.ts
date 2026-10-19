@@ -241,8 +241,8 @@ function remisiones(trozos: Trozo[], e: Entorno): Trozo[] {
 
 const HABILIDAD = /\b(NAV|COM|EXP)\b/g
 const FICHA_NUM = /(\b\d+|\bN|−\d+)(\s)(heridas?|daños?)\b/g
-const FICHA_DE = /(\b\d+|\bN)( de )(Avance|munición|reputación)\b/g
-const ICONO_FICHA: Record<string, string> = { herida: 'herida', heridas: 'herida', daño: 'dano', daños: 'dano', Avance: 'avance', munición: 'municion', reputación: 'rep' }
+const FICHA_DE = /(\b\d+|\bN)( de )(Avance|reputación)\b/g
+const ICONO_FICHA: Record<string, string> = { herida: 'herida', heridas: 'herida', daño: 'dano', daños: 'dano', Avance: 'avance', reputación: 'rep' }
 
 const habilidad = (h: string) => `<span class="hab hab-${h.toLowerCase()}"><i class="ic i-${h.toLowerCase()}"></i>${h}</span>`
 

@@ -5,6 +5,7 @@ import { esCanon, esUnica, porId } from '../catalogo.ts'
 import type { Entorno, Habilidad } from '../datos.ts'
 import { copia } from '../estado.ts'
 import { curable } from '../estados.ts'
+import { mejoraActiva } from '../valores.ts'
 import { encuentroDe, entornoActual } from '../peligros.ts'
 import type { Estado, Evento, InstId } from '../tipos.ts'
 import { plazasLibres, valor } from '../valores.ts'
@@ -16,9 +17,14 @@ export function entornoDeMision(s: Estado, mision: InstId): Entorno {
   return e.carta.entorno
 }
 
-/** Cañones en juego a los que les falta munición. */
-export function canonesSinCargar(s: Estado): InstId[] {
-  return s.zonas.mejoras.filter((m) => esCanon(copia(s, m).id) && copia(s, m).municion < valor(s, { tipo: 'municionMaxima', carta: m }))
+/** Cañones en juego agotados que se pueden preparar (fase 10b: los Cañones disparan agotándose). */
+export function canonesAgotados(s: Estado): InstId[] {
+  return s.zonas.mejoras.filter((m) => esCanon(copia(s, m).id) && copia(s, m).agotada && mejoraActiva(s, m))
+}
+
+/** Cañones en juego preparados. */
+export function canonesPreparados(s: Estado): InstId[] {
+  return s.zonas.mejoras.filter((m) => esCanon(copia(s, m).id) && !copia(s, m).agotada && mejoraActiva(s, m))
 }
 
 /** ¿Se puede reclutar ahora este Tripulante? (cabe en el Barco y, si es único, no hay otro en juego) */

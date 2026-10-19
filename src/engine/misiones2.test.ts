@@ -511,6 +511,7 @@ describe('145 · El polvorín', () => {
     vuela.zarpar('sanfelipe-III').opcion('polvorin')
     expect(vuela.estado.reputacion).toBe(3)
     expect(vuela.zona('mejoras')).toContain('polvora_rey')
+    expect(vuela.copia('polvora_rey').fichas).toBe(3) // fase 10b: entra en juego con 3 fichas
     expect(vuela.estadosBarco).toEqual(['perseguido'])
   })
 })

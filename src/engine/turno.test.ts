@@ -11,23 +11,17 @@ describe('El turno · Inicio', () => {
     expect(j.decision.motivo.clave).toBe('jugarCartas')
   })
 
-  it('prepara todas las cartas agotadas y recarga la munición hasta su máximo', () => {
+  it('prepara todas las cartas agotadas, también los Cañones (fase 10b: sin munición)', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['pruebas-calma'],
       capitan: { agotada: true },
       tripulacion: [{ id: 'bucanero', agotada: true }],
-      barco: { mejoras: [{ id: 'bronce', municion: 0, agotada: true }] },
+      barco: { mejoras: [{ id: 'bronce', agotada: true }] },
     })
     expect(j.copia('capitan').agotada).toBe(false)
     expect(j.copia('bucanero').agotada).toBe(false)
     expect(j.copia('bronce').agotada).toBe(false)
-    expect(j.copia('bronce').municion).toBe(2)
-  })
-
-  it('la Pólvora del Rey sube en 1 la munición máxima de los Cañones', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { mejoras: ['bronce', 'polvora_rey'] } })
-    expect(j.copia('bronce').municion).toBe(3)
   })
 
   it('al final del turno la carta de Escenario pasa a sus descartes', () => {

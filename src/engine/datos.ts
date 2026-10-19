@@ -66,8 +66,6 @@ export interface MejoraBarcoDatos {
   espacio: number
   /** Es un Cañón (Rasgo «Cañón»). */
   canon: boolean
-  /** Munición máxima (0 si no tiene). */
-  municion: number
   bonificacion_vida?: number
   bonificacion_capacidad?: number
 }

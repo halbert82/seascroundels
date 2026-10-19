@@ -12,6 +12,7 @@ import { mejoraActiva, plazasLibres, valor } from '../valores.ts'
 import { barajar, mover, vinculadas } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { recuperarIncautadas } from './mision.ts'
+import { canonesPreparados } from '../capacidades/comun.ts'
 import { puedePrepararse, rescatarRehen, sucesoRehen } from './peligros2.ts'
 
 /** Tripulantes comprometidos que siguen en juego (N7: si no queda ninguno, como sin comprometidos). */
@@ -34,8 +35,8 @@ export function cumple(s: Estado, c: Condicion): boolean {
       return s.zonas.mejoras.length >= c.minimo
     case 'heridas':
       return s.zonas.tripulacion.reduce((n, x) => n + copia(s, x).heridas, 0) >= c.minimo
-    case 'municion':
-      return s.zonas.mejoras.reduce((n, x) => n + copia(s, x).municion, 0) >= c.minimo
+    case 'canonesPreparados':
+      return canonesPreparados(s).length >= c.minimo
     case 'estado':
       return s.zonas.tripulacion.some((x) => tieneEstado(s, x, c.estado))
     case 'estadoBarco':
@@ -129,8 +130,8 @@ export function medir(s: Estado, m: Medida): number {
       return vinculadas(s, 'barco').length
     case 'heridas':
       return s.zonas.tripulacion.reduce((n, x) => n + copia(s, x).heridas, 0)
-    case 'municion':
-      return s.zonas.mejoras.reduce((n, x) => n + copia(s, x).municion, 0)
+    case 'canonesPreparados':
+      return canonesPreparados(s).length
     case 'tripulantes':
       return s.zonas.tripulacion.length
     case 'peligrosEnJuego':
@@ -167,8 +168,8 @@ export function sePuedePagarEntero(s: Estado, efectos: readonly Efecto[]): boole
       case 'agotar':
         if (e.n !== 'todos' && preparados < e.n) return false
         break
-      case 'perderMunicion':
-        if (medir(s, 'municion') < e.n) return false
+      case 'agotarCanones':
+        if (e.n !== 'todos' && canonesPreparados(s).length < e.n) return false
         break
       case 'perderMejora':
         if (s.zonas.mejoras.filter((m) => !esIndestructible(copia(s, m).id)).length < e.n) return false
@@ -257,8 +258,8 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
       case 'perderAvance':
         tareas.push({ tipo: 'perderAvance', n: e.n })
         break
-      case 'perderMunicion':
-        tareas.push({ tipo: 'perderMunicion', n: e.n })
+      case 'agotarCanones':
+        tareas.push({ tipo: 'agotarCanones', n: e.n })
         break
       case 'perderMejora':
         for (let i = 0; i < e.n; i++) {
@@ -365,8 +366,8 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
       case 'ganarAvance':
         if (s.mision && e.n > 0) tareas.push({ tipo: 'ganarAvance', n: e.n, motivo: fuente ? nombre(s, fuente) : 'Efecto' })
         break
-      case 'ganarMunicion':
-        for (let i = 0; i < e.n; i++) tareas.push({ tipo: 'anadirMunicion', n: 1 })
+      case 'prepararCanones':
+        for (let i = 0; i < e.n; i++) tareas.push({ tipo: 'prepararCanon' })
         break
       case 'preparar':
         if (e.n === 'todos') tareas.push({ tipo: 'prepararTripulantes' })
@@ -651,28 +652,21 @@ export const perderAvance: Manejador<'perderAvance'> = (s, t) => {
   return 'hecha'
 }
 
-/** Pierdes N de munición en total, repartida como quieras. */
-export const perderMunicion: Manejador<'perderMunicion'> = (s, t, e) => {
-  const cargadas = s.zonas.mejoras.filter((m) => copia(s, m).municion > 0)
-  const total = cargadas.reduce((n, m) => n + copia(s, m).municion, 0)
-  if (total === 0) return 'hecha'
-  if (total <= t.n || cargadas.length === 1) {
-    let resto = t.n
-    for (const m of cargadas) {
-      const quitar = Math.min(resto, copia(s, m).municion)
-      copia(s, m).municion -= quitar
-      resto -= quitar
-    }
-    anotar(s, 'efecto', `Pierdes ${Math.min(t.n, total)} de munición.`)
-    return 'hecha'
-  }
-  if (!e) {
-    const maximos: Partial<Record<InstId, number>> = {}
-    for (const m of cargadas) maximos[m] = copia(s, m).municion
-    return preguntar({ tipo: 'repartir', motivo: { clave: 'municion', n: t.n }, cantidad: t.n, maximos })
-  }
-  for (const [m, n] of Object.entries(eleccionDe(e, 'reparto').n) as [InstId, number][]) copia(s, m).municion -= n
-  anotar(s, 'efecto', `Pierdes ${t.n} de munición.`)
+/**
+ * Agota N Cañones preparados, o todos (fase 10b: antes, «pierdes N munición»). Los eliges tú; si no tienes tantos,
+ * se agotan los que haya. `coste`: los agota el jugador para pagar algo («Virar y dar la cara»), y eso es «agotar un
+ * Cañón» para la Pólvora del Rey.
+ */
+export const agotarCanones: Manejador<'agotarCanones'> = (s, t, e) => {
+  const preparados = canonesPreparados(s)
+  if (preparados.length === 0) return 'hecha'
+  let elegidos: InstId[]
+  if (t.n === 'todos' || preparados.length <= t.n) elegidos = preparados
+  else if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'agotarCanones', n: t.n }, candidatas: preparados, min: t.n, max: t.n })
+  else elegidos = eleccionDe(e, 'cartas').ids
+  for (const c of elegidos) agotar(s, c)
+  anotar(s, 'efecto', `Agotas ${elegidos.map((c) => `«${nombre(s, c)}»`).join(' y ')}.`)
+  if (t.coste) for (const c of elegidos) encolar(s, { tipo: 'evento', ev: { tipo: 'canonAgotado', carta: c }, fase: 'despues', cancelado: false, usadas: [] })
   return 'hecha'
 }
 

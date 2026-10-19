@@ -33,7 +33,7 @@ export function textoPlano(id: string): string {
     avance: 'Avance',
     robar: 'carta',
     curar: 'curación',
-    municion: 'munición',
+    quitarestado: 'Estado',
     rep: 'reputación',
     vida: 'Vida',
     capacidad: 'Capacidad',
@@ -141,6 +141,8 @@ export function textoSuceso(s: Estado, ev: Evento, fase: 'antes' | 'despues'): s
       return `Has rescatado a ${nombre(s, ev.carta)}.`
     case 'persigue':
       return `«${nombre(s, ev.carta)}» ${antes ? 'va a ponerse' : 'se ha puesto'} encima del mazo de Peligros.`
+    case 'canonAgotado':
+      return `Has agotado «${nombre(s, ev.carta)}».`
     case 'revelarDestino': {
       const d = destinoDe(copia(s, ev.carta).id)
       return `Se revela el Destino de la carta «${nombre(s, ev.carta)}»: ${d.impreso}.`
@@ -216,10 +218,10 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     }
     case 'curar':
       return { titulo: `Reparte ${n} de curación`, ayuda: 'Entre tus Tripulantes heridos, como quieras.' }
-    case 'municion':
-      return d.tipo === 'repartir'
-        ? { titulo: `Pierdes ${n} de munición`, ayuda: 'Reparte la pérdida entre tus Cañones.' }
-        : { titulo: `¿A qué Cañón añades ${n} de munición?` }
+    case 'agotarCanones':
+      return { titulo: `Agota ${n === 1 ? 'un Cañón' : `${n} Cañones`}`, ayuda: 'Elige entre tus Cañones preparados.' }
+    case 'prepararCanon':
+      return { titulo: '¿Qué Cañón preparas?' }
     case 'agotar':
       return { titulo: `Agota a ${plural(n, 'Tripulante', 'Tripulantes')}` }
     case 'exceso':
@@ -396,8 +398,8 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       return `curas ${e.n}`
     case 'perderAvance':
       return e.n === 'todo' ? 'pierdes todo el Avance' : `pierdes ${e.n} de Avance`
-    case 'perderMunicion':
-      return `pierdes ${e.n} de munición`
+    case 'agotarCanones':
+      return e.n === 'todos' ? 'agotas todos tus Cañones' : `agotas ${n2(e.n, 'Cañón', 'Cañones')}`
     case 'perderMejora':
       return e.n === 1 ? 'pierdes una Mejora' : `pierdes ${e.n} Mejoras`
     case 'agotarMejora':
@@ -453,8 +455,8 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       return `${describirEfectos(e.efectos)} por cada ${describirMedida(e.medida)}${e.maximo !== undefined ? ` (máximo ${e.maximo})` : ''}`
     case 'ganarAvance':
       return `+${e.n} de Avance`
-    case 'ganarMunicion':
-      return `ganas ${e.n} de munición`
+    case 'prepararCanones':
+      return `preparas ${n2(e.n, 'Cañón', 'Cañones')}`
     case 'preparar':
       return e.n === 'todos' ? 'preparas a todos tus Tripulantes' : e.n === 'comprometidos' ? 'preparas a los Tripulantes asignados' : `preparas a ${n2(e.n, 'Tripulante', 'Tripulantes')}`
     case 'aQuien':
@@ -541,8 +543,8 @@ function describirCondicion(c: Condicion): string {
       return `tienes ${c.minimo} o más Mejoras`
     case 'heridas':
       return `tu tripulación tiene ${c.minimo} o más heridas`
-    case 'municion':
-      return `tienes ${c.minimo} o más de munición`
+    case 'canonesPreparados':
+      return c.minimo === 1 ? 'tienes algún Cañón preparado' : `tienes ${c.minimo} o más Cañones preparados`
     case 'estado':
       return `alguien está ${INFO_ESTADO[c.estado].nombre}`
     case 'estadoBarco':
@@ -592,7 +594,7 @@ function describirMedida(m: Medida): string {
     mejoras: 'Mejora',
     mejorasBarco: 'Mejora de barco',
     heridas: 'herida de tu tripulación',
-    municion: 'munición',
+    canonesPreparados: 'Cañón preparado',
     tripulantes: 'Tripulante',
     peligrosEnJuego: 'carta de Peligro en juego',
     margen: 'punto que superes',

@@ -25,7 +25,7 @@ export function useMesa(): ContextoMesa {
   return c
 }
 
-/** Fichas de una copia según su tipo: heridas en Tripulantes, munición en Cañones, Avance en misiones. */
+/** Fichas de una copia según su tipo: heridas en Tripulantes, Avance en misiones, fichas en las cartas que las llevan. */
 export function fichasDe(s: Estado, inst: InstId): FichasCarta {
   const c = copia(s, inst)
   const tipo = porId(c.id).tipo
@@ -34,9 +34,8 @@ export function fichasDe(s: Estado, inst: InstId): FichasCarta {
     if (c.entrenamiento.length > 0) f.entrenamiento = c.entrenamiento
     return f
   }
-  if (tipo === 'mejoraBarco' && valor(s, { tipo: 'municionMaxima', carta: inst }) > 0) return { municion: c.municion }
   if (tipo === 'capitulo') return { avance: c.avance }
-  if (s.zonas.peligrosEnJuego.includes(inst) && c.fichas !== undefined) return { contador: c.fichas }
+  if ((s.zonas.peligrosEnJuego.includes(inst) || tipo === 'tesoro') && c.fichas !== undefined) return { contador: c.fichas }
   return {}
 }
 

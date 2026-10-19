@@ -48,7 +48,7 @@ function enJuego(): PartidaEnMesa {
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje', 'cataplasma'],
     tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, { id: 'practico', estados: ['aguerrido'] }],
-    barco: { estados: ['viaDeAgua', 'velasRotas'], mejoras: [{ id: 'bronce', municion: 1 }, 'vela'] },
+    barco: { estados: ['viaDeAgua', 'velasRotas'], mejoras: [{ id: 'bronce', agotada: true }, 'vela'] },
     reputacion: 6,
   })
   // Una carta de la mano, incautada bajo la misión.

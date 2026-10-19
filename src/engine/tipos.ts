@@ -61,7 +61,6 @@ export interface Copia {
   id: CartaId
   agotada: boolean
   heridas: number
-  municion: number
   /** Fichas de Avance (en las misiones). */
   avance: number
   /** Para Mejoras y Tesoros: a qué van vinculados. */
@@ -70,7 +69,7 @@ export interface Copia {
   entrenamiento: Habilidad[]
   /** Fichas de Estado de un Tripulante (Envenenado, Borracho…). Nunca dos iguales. */
   estados?: FichaTripulante[]
-  /** Contador de fichas de una carta de Peligro en juego (siempre cuenta hacia arriba). */
+  /** Fichas sobre la carta: el contador de una carta de Peligro en juego (siempre sube) o las de la Pólvora del Rey. */
   fichas?: number
 }
 
@@ -357,6 +356,8 @@ export type Evento =
   | { tipo: 'rescatado'; carta: InstId }
   /** Un Destino va a ponerse encima del mazo de Peligros («Persigue»). */
   | { tipo: 'persigue'; carta: InstId; alFondo?: boolean }
+  /** El jugador acaba de agotar un Cañón para pagar una capacidad (la Pólvora del Rey lo mira). */
+  | { tipo: 'canonAgotado'; carta: InstId }
   /** Un Tripulante acaba de quedar con un Estado que no tenía. */
   | { tipo: 'estadoPuesto'; carta: InstId; estado: FichaTripulante }
 
@@ -370,7 +371,6 @@ export type Tarea = { id: number } & (
   | { tipo: 'turno'; paso: PasoTurno }
   | { tipo: 'aplicarEscenario'; carta: InstId }
   | { tipo: 'prepararTodo' }
-  | { tipo: 'recargar' }
   | { tipo: 'ventanaJugar' }
   /** Pausa en la que solo se pueden usar capacidades sin etiqueta (N2). Se salta si no hay ninguna. */
   | { tipo: 'ventanaLibre'; momento: 'inicio' }
@@ -426,7 +426,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'agotarMejora' }
   | { tipo: 'descartarMano'; n: number }
   | { tipo: 'perderAvance'; n: number | 'todo' }
-  | { tipo: 'perderMunicion'; n: number }
+  /** Agota N Cañones preparados, o todos (los eliges tú). */
+  | { tipo: 'agotarCanones'; n: number | 'todos'; coste?: boolean }
   | { tipo: 'rehen'; entre: InstId[] }
   | { tipo: 'cambiarReputacion'; n: number }
   | { tipo: 'entrarEnMazo'; carta: CartaId }
@@ -460,7 +461,8 @@ export type Tarea = { id: number } & (
   /** Compromete a un Tripulante en la Prueba en curso, ya revelado el Destino (el Loro). */
   | { tipo: 'comprometerUno'; carta: InstId }
   | { tipo: 'prepararTripulantes' }
-  | { tipo: 'anadirMunicion'; n: number }
+  /** Prepara un Cañón agotado (lo eliges tú), o todos. */
+  | { tipo: 'prepararCanon'; todos?: boolean }
   /** Recluta sin pagar un Tripulante del muelle de coste N o menos («Prisionero liberado»). */
   | { tipo: 'reclutarGratis'; maxCoste: number }
   /** «Náufrago en la playa»: mira las 3 primeras del mazo de muelle y recluta gratis a uno. */
@@ -607,7 +609,6 @@ export type Consulta =
   | { tipo: 'habilidad'; carta: InstId; hab: Habilidad }
   | { tipo: 'vida'; carta: InstId }
   | { tipo: 'huecos'; carta: InstId }
-  | { tipo: 'municionMaxima'; carta: InstId }
   | { tipo: 'coste'; carta: InstId }
   | { tipo: 'capacidad' }
   | { tipo: 'espacio' }
@@ -651,15 +652,14 @@ export type Coste =
   | { tipo: 'agotarse' }
   | { tipo: 'descartarse' }
   | { tipo: 'pagar'; n: number }
-  | { tipo: 'municion'; n: number }
   | { tipo: 'herida'; n: number }
   | { tipo: 'agotarCapitan' }
   /** Agota a un Tripulante preparado (con ese Rasgo, si lo hay; o con uno de esos Rasgos). */
   | { tipo: 'agotarTripulante'; rasgo: string | null; rasgos?: string[] }
   /** Agota a N Tripulantes preparados, o a 1 con ese Rasgo («agota 2 Tripulantes (o 1 Marinero)»). */
   | { tipo: 'agotarVarios'; n: number; oRasgo?: string }
-  /** Gasta N de munición de tus Cañones (eliges de cuál). */
-  | { tipo: 'gastarMunicion'; n: number }
+  /** Agota uno de tus Cañones preparados (eliges cuál). */
+  | { tipo: 'agotarCanon' }
 
 export type Ventana =
   | 'constante'

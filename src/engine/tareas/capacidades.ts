@@ -2,13 +2,13 @@
 // cambiar el Destino, desviar heridas, comprometer tras el Destino, preparar, munición, reclutar gratis,
 // «Náufrago en la playa», fichas de Entrenamiento y volver al muelle.
 
-import { canonesSinCargar, reclutable, reclutablesGratis } from '../capacidades/comun.ts'
+import { canonesAgotados, reclutable, reclutablesGratis } from '../capacidades/comun.ts'
 import type { Habilidad } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { cartaDeArriba, descartarPeligro, encuentroDe, mazoActivo } from '../peligros.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
-import { huecosLibres, valor } from '../valores.ts'
+import { huecosLibres } from '../valores.ts'
 import { arriba, mover, rebarajar } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { ganarAvanceMision } from './mision.ts'
@@ -157,16 +157,16 @@ export const prepararTripulantes: Manejador<'prepararTripulantes'> = (s) => {
   return 'hecha'
 }
 
-/** Añade N de munición a un Cañón, sin pasar de su máximo. */
-export const anadirMunicion: Manejador<'anadirMunicion'> = (s, t, e) => {
-  const candidatos = canonesSinCargar(s)
+/** Prepara un Cañón agotado (lo eliges tú), o todos («Pólvora de contrabando»). Fase 10b: sin munición. */
+export const prepararCanon: Manejador<'prepararCanon'> = (s, t, e) => {
+  const candidatos = canonesAgotados(s).filter((c) => puedePrepararse(s, c))
   if (candidatos.length === 0) return 'hecha'
-  if (candidatos.length > 1 && !e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'municion', n: t.n }, candidatas: candidatos, min: 1, max: 1 })
-  const canon = candidatos.length === 1 ? candidatos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
-  if (!canon) return 'hecha'
-  const c = copia(s, canon)
-  c.municion = Math.min(valor(s, { tipo: 'municionMaxima', carta: canon }), c.municion + t.n)
-  anotar(s, 'efecto', `«${nombre(s, canon)}» queda con ${c.municion} de munición.`)
+  let elegidos: InstId[]
+  if (t.todos || candidatos.length === 1) elegidos = candidatos
+  else if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'prepararCanon' }, candidatas: candidatos, min: 1, max: 1 })
+  else elegidos = eleccionDe(e, 'cartas').ids
+  for (const c of elegidos) copia(s, c).agotada = false
+  anotar(s, 'efecto', `Preparas ${elegidos.map((c) => `«${nombre(s, c)}»`).join(' y ')}.`)
   return 'hecha'
 }
 

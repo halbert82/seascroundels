@@ -17,7 +17,7 @@ import {
   heridasAsignados,
   mas,
   menos,
-  municion,
+  preparaCanon,
   participantesCtx,
   pierdesAvance,
   robar,
@@ -48,7 +48,7 @@ registrarPeligro('esqueleto', {
 
 // Trampa de dardos · Leve
 registrarPeligro('dardos', {
-  encuentros: { unico: { exito: [municion(1)], fallo: [comprometidoCon(menos('EXP'), { tipo: 'estado', estado: 'envenenado' })] } },
+  encuentros: { unico: { exito: [preparaCanon()], fallo: [comprometidoCon(menos('EXP'), { tipo: 'estado', estado: 'envenenado' })] } },
   destino: {
     efectos: [comprometidoCon(menos('prueba'), { tipo: 'heridas', n: 1 })],
     // Sin oposición: inflige 1 herida a un Tripulante (fase 10: ya no tiene que estar preparado).
@@ -111,16 +111,16 @@ registrarPeligro('guardian', {
 // ---------------------------------------------------------------------------
 // Mazo de la Escolta (solo Mar)
 
-// Galeón de la plata · Duro · Antes de comprometer, puedes gastar 1 munición: −2. Abordaje.
+// Galeón de la plata · Antes de asignar, puedes agotar un Cañón: −2. Abordaje. (Fase 10b.)
 registrarPeligro('galeon', {
   encuentros: {
     unico: {
       elige: [
-        { texto: 'Gastar 1 munición: la Prueba recibe −2', efectos: [{ tipo: 'perderMunicion', n: 1 }], prueba: true, modDificultad: -2, si: { tipo: 'municion', minimo: 1 } },
-        { texto: 'Hacer la Prueba sin gastar munición', prueba: true },
+        { texto: 'Agotar un Cañón: la Prueba recibe −2', efectos: [{ tipo: 'agotarCanones', n: 1 }], prueba: true, modDificultad: -2, si: { tipo: 'canonesPreparados', minimo: 1 } },
+        { texto: 'Hacer la Prueba sin agotar ningún Cañón', prueba: true },
       ],
       abordaje: true,
-      exito: [robar(2), municion(1)],
+      exito: [robar(2), preparaCanon()],
     },
   },
   destino: { sinOposicion: [dano(1)] },
@@ -196,7 +196,7 @@ registrarPeligro('armada', {
     // Los Cañones no suman. Éxito: +1 Avance. Fallo: Abordaje.
     mar: { prueba: { sinCanones: true }, abordaje: true, exito: [avance(1)] },
     // Éxito: +1 munición. Fallo: 2 heridas repartidas y el Barco queda Perseguido.
-    nat: { exito: [municion(1)], fallo: [heridas(2), { tipo: 'estadoBarco', estado: 'perseguido' }] },
+    nat: { exito: [preparaCanon()], fallo: [heridas(2), { tipo: 'estadoBarco', estado: 'perseguido' }] },
     // Éxito: +1 Avance. Fallo: el comprometido con más EXP queda rehén.
     ciu: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'rehen' })] },
   },

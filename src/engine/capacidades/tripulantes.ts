@@ -9,7 +9,7 @@ import type { Efecto } from '../efectos.ts'
 import { numeroConIcono, numerosEntreLlaves, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { valor } from '../valores.ts'
-import { canonesSinCargar, destinoVigente, hayHeridos, hayQueReparar, participa, participantes, peligroRevelado } from './comun.ts'
+import { canonesAgotados, destinoVigente, hayHeridos, hayQueReparar, participa, participantes, peligroRevelado } from './comun.ts'
 import { definicionActual, problemaCompromiso } from '../prueba.ts'
 
 const texto = (id: CartaId) => textoDe(id)
@@ -95,15 +95,15 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
     modifica: (_ctx, yo, c) => (c.tipo === 'habilidad' && c.hab === 'COM' && c.carta === yo ? numeroConIcono(texto('filibustero'), 'COM') : 0),
   },
 
-  // Cañonero: «Agotar: Añade 1 munición a un Cañón.» (sin pasar de su máximo)
+  // Cañonero: «Agotar: Prepara un Cañón.» (fase 10b)
   {
-    clave: 'canonero.municion',
+    clave: 'canonero.preparar',
     carta: 'canonero',
     ventana: 'libre',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    requisito: (s) => canonesSinCargar(s).length > 0,
-    efecto: () => [{ tipo: 'anadirMunicion', n: numeroConIcono(texto('canonero'), 'municion') }],
+    requisito: (s) => canonesAgotados(s).length > 0,
+    efecto: () => [{ tipo: 'prepararCanon' }],
   },
 
   // Isabela: «Interrupción: Agotar: Cuando otro Tripulante vaya a quedar derrotado, en vez de eso reduce su Vida a 1.»

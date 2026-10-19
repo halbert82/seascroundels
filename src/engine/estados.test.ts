@@ -180,10 +180,10 @@ describe('Estados del Barco (fase 10b)', () => {
     expect(j.registro).toContain('El Barco ya no está Perseguido (superas un encuentro de tipo Armada).')
   })
 
-  it('Pólvora mojada: los Cañones no recargan en el Inicio', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { estados: ['polvoraMojada'], mejoras: [{ id: 'bronce', municion: 0 }] } })
-    expect(j.copia('bronce').municion).toBe(0)
-    const k = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
-    expect(k.copia('bronce').municion).toBeGreaterThan(0)
+  it('Pólvora mojada (fase 10b): los Cañones no se preparan en la Fase de Inicio', () => {
+    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { estados: ['polvoraMojada'], mejoras: [{ id: 'bronce', agotada: true }] } })
+    expect(j.copia('bronce').agotada).toBe(true)
+    const k = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
+    expect(k.copia('bronce').agotada).toBe(false)
   })
 })

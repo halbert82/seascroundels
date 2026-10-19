@@ -107,15 +107,15 @@ describe('46 · Restos del naufragio', () => {
     expect(j.copia('capitan').heridas).toBe(0)
   })
 
-  it('Naturaleza: el barril de ron prepara a los agotados, que quedan Borrachos; o el de pólvora da 2 munición', () => {
+  it('Naturaleza: el barril de ron prepara a los agotados, que quedan Borrachos; o el de pólvora prepara un Cañón', () => {
     const j = en('nat', ['p2_restos', 'calma'], { tripulacion: [{ id: 'bucanero', agotada: true }, 'vigia'] })
     j.opcion('0')
     expect(j.copia('bucanero').agotada).toBe(false)
     expect(j.estados('bucanero')).toEqual(['borracho'])
     expect(j.estados('vigia')).toEqual([])
-    const k = en('nat', ['p2_restos', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+    const k = en('nat', ['p2_restos', 'calma'], { barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     k.opcion('1')
-    expect(k.copia('bronce').municion).toBe(2)
+    expect(k.copia('bronce').agotada).toBe(false)
   })
 
   it('Ciudad: si superas, pones en juego una Mejora del muelle pagando 2 cartas menos', () => {
@@ -422,12 +422,12 @@ describe('52 · El oro de los muertos', () => {
 })
 
 describe('53 · La serpiente marina', () => {
-  it('Mar: cada Artillero comprometido suma +1; si superas, +2 munición', () => {
-    const j = en('mar', ['p2_serpiente_marina', 'chubasco', 'calma'], { tripulacion: ['canonero'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('Mar: cada Artillero comprometido suma +1; si superas, preparas un Cañón', () => {
+    const j = en('mar', ['p2_serpiente_marina', 'chubasco', 'calma'], { tripulacion: ['canonero'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('COM', ['capitan', 'canonero'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(5) // Diego 3 + Cañonero 1 + 1
     j.seguir()
-    expect(j.copia('bronce').municion).toBe(2)
+    expect(j.copia('bronce').agotada).toBe(false)
   })
 
   it('Mar: si fallas, 2 daños y, si el Barco ya tenía 2 o más, Velas rotas', () => {

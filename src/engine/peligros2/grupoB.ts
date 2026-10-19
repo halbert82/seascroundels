@@ -23,7 +23,7 @@ import {
   mas,
   mejorasDeBarco,
   menos,
-  municion,
+  preparaCanon,
   participantesCtx,
   pierdesAvance,
   preparar,
@@ -282,7 +282,7 @@ registrarPeligro('p2_murcielagos', {
     // EXP 3, +1 si algún Tripulante está Sangrando.
     nat: {
       capacidades: [dificultad('sangre', (ctx) => (ctx.s.zonas.tripulacion.some((c) => copia(ctx.s, c).estados?.includes('sangrando')) ? 1 : 0))],
-      exito: [municion(1)],
+      exito: [preparaCanon()],
       fallo: [comprometidoCon('menosVida', { tipo: 'estado', estado: 'sangrando' })],
     },
     ciu: { exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }], fallo: [{ tipo: 'heridas', n: 1, capitan: true }, descartar(1)] },

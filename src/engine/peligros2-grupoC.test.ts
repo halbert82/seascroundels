@@ -22,9 +22,9 @@ const avance = (j: Jugador, entorno: keyof typeof MISION) => j.avance(MISION[ent
 const conDestino = (carta: CartaId, op: OpcionesSituacion = {}) => en('mar', ['p2_corriente', carta, 'calma', 'calma'], op)
 
 describe('23 · Desertores del rey', () => {
-  it('Mar, sin Prueba: ganas 2 de munición y su Avance', () => {
-    const j = en('mar', ['p2_desertores', 'calma'], { barco: { mejoras: ['bronce'] } })
-    expect(j.copia('bronce').municion).toBe(2)
+  it('Mar, sin Prueba: preparas un Cañón y su Avance', () => {
+    const j = en('mar', ['p2_desertores', 'calma'], { barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
+    expect(j.copia('bronce').agotada).toBe(false)
     expect(avance(j, 'mar')).toBe(3)
   })
 
@@ -123,18 +123,18 @@ describe('25 · La aduana del rey', () => {
     expect(k.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
   })
 
-  it('Mar: si fallas, pierdes 1 de munición', () => {
-    const j = en('mar', ['p2_aduana', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+  it('Mar: si fallas, agota 1 Cañón (fase 10b)', () => {
+    const j = en('mar', ['p2_aduana', 'chubasco', 'calma'], { barco: { mejoras: ['bronce'] } })
     j.comprometer('EXP', []).seguir()
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(true)
   })
 
-  it('Naturaleza: no puedes comprometer más de 2; si fallas, pierdes 1 munición y el que tenga más NAV sufre 1 herida', () => {
+  it('Naturaleza: no puedes comprometer más de 2; si fallas, agota 1 Cañón y el que tenga más NAV sufre 1 herida', () => {
     const j = en('nat', ['p2_aduana', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     expect(() => j.comprometer('NAV', ['capitan', 'bucanero', 'vigia'])).toThrow(/más de 2/)
-    const k = en('nat', ['p2_aduana', 'chubasco', 'calma'], { tripulacion: ['vigia'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
+    const k = en('nat', ['p2_aduana', 'chubasco', 'calma'], { tripulacion: ['vigia'], barco: { mejoras: ['bronce'] } })
     k.comprometer('NAV', ['capitan', 'vigia']).seguir() // 2 + 0 contra 3
-    expect(k.copia('bronce').municion).toBe(0)
+    expect(k.copia('bronce').agotada).toBe(true)
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
@@ -323,10 +323,10 @@ describe('29 · Toque a rebato', () => {
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
-  it('Naturaleza: si superas, +1 munición; si fallas, el Barco queda Perseguido', () => {
-    const j = en('nat', ['p2_rebato', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: ['bronce'] } })
+  it('Naturaleza: si superas, preparas un Cañón; si fallas, el Barco queda Perseguido', () => {
+    const j = en('nat', ['p2_rebato', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
     const k = en('nat', ['p2_rebato', 'chubasco', 'calma'])
     k.comprometer('NAV', []).seguir()
     expect(k.estadosBarco).toEqual(['perseguido'])
@@ -372,19 +372,20 @@ describe('29 · Toque a rebato', () => {
 })
 
 describe('30 · El quinto del rey', () => {
-  it('Mar: +1 con 3 o más munición; si superas, +1 munición y robas 1; si fallas, pierdes 2 de munición', () => {
-    const j = en('mar', ['p2_quinto', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { mejoras: [{ id: 'bronce', municion: 3 }] } })
+  it('Mar (fase 10b): +1 con 2 o más Cañones preparados; si superas, prepara un Cañón y robas 1; si fallas, agota 2 Cañones', () => {
+    const j = en('mar', ['p2_quinto', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { mejoras: ['bronce', 'culebrina'] } })
     j.comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(5)
-    const exito = en('mar', ['p2_quinto', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
+    const exito = en('mar', ['p2_quinto', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     exito.comprometer('COM', ['capitan', 'bucanero']).seguir()
-    expect(exito.copia('bronce').municion).toBe(2)
+    expect(exito.copia('bronce').agotada).toBe(false)
     expect(exito.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
-    const k = en('mar', ['p2_quinto', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+    const k = en('mar', ['p2_quinto', 'chubasco', 'calma'], { barco: { mejoras: ['bronce', 'culebrina'] } })
     k.comprometer('COM', [])
-    expect(dificultadConDestino(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(5)
     k.seguir()
-    expect(k.copia('bronce').municion).toBe(0)
+    expect(k.copia('bronce').agotada).toBe(true)
+    expect(k.copia('culebrina').agotada).toBe(true)
   })
 
   it('Naturaleza: +1 si al revelarla tienes 5 o más cartas; si fallas, el de más COM sufre 1 herida y pierdes 1 Avance', () => {
@@ -409,16 +410,16 @@ describe('30 · El quinto del rey', () => {
     expect(Object.values(k.estado.peligrosEnMuelle ?? {})).toEqual([3])
   })
 
-  it('Destino «La parte del rey»: si superas, descartas 1 (con la Patente, no); sin oposición, pierdes 1 munición', () => {
+  it('Destino «La parte del rey»: si superas, descartas 1 (con la Patente, no); sin oposición, agota 1 Cañón (fase 10b)', () => {
     const j = conDestino('p2_quinto', { mano: ['ojo', 'timon'] })
     j.comprometer('NAV', ['capitan']).seguir().elegir('ojo')
     expect(j.zona('mano')).toEqual(['timon'])
     const k = conDestino('p2_quinto', { mano: ['ojo', 'timon'], capitan: { mejoras: ['patente'] } })
     k.comprometer('NAV', ['capitan']).seguir()
     expect(k.zona('mano')).toEqual(['ojo', 'timon'])
-    const m = conDestino('p2_quinto', { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+    const m = conDestino('p2_quinto', { barco: { mejoras: ['bronce'] } })
     m.comprometer('NAV', [])
-    expect(m.copia('bronce').municion).toBe(1)
+    expect(m.copia('bronce').agotada).toBe(true)
   })
 })
 
@@ -443,12 +444,12 @@ describe('31 · Bajo los cañones del Morro', () => {
     expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
   })
 
-  it('Naturaleza: COM 6 (4 con un Artillero); si superas, +2 munición; si fallas, 3 heridas repartidas entre los comprometidos', () => {
-    const j = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'canonero'], barco: { mejoras: ['bronce'] } })
+  it('Naturaleza: COM 6 (4 con un Artillero); si superas, preparas un Cañón; si fallas, 3 heridas repartidas entre los comprometidos', () => {
+    const j = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'canonero'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
-    expect(j.copia('bronce').municion).toBe(2)
+    expect(j.copia('bronce').agotada).toBe(false)
     const k = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('COM', ['capitan', 'bucanero']).seguir().repartir({ capitan: 2, bucanero: 1 })
     expect(k.copia('capitan').heridas).toBe(2)
@@ -497,13 +498,13 @@ describe('31 · Bajo los cañones del Morro', () => {
 })
 
 describe('32 · La horca', () => {
-  it('Mar: cada Marinero comprometido suma 1 menos; si fallas, 2 daños y pierdes 1 munición', () => {
-    const j = en('mar', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
+  it('Mar: cada Marinero comprometido suma 1 menos; si fallas, 2 daños y agota 1 Cañón', () => {
+    const j = en('mar', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: ['bronce'] } })
     j.comprometer('NAV', ['viejo_lobo'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(4) // 3 + 1 de Diego − 1 + 1 del Barco
     j.pasarOfertas().seguir()
     expect(j.estado.danoBarco).toBe(2)
-    expect(j.copia('bronce').municion).toBe(0)
+    expect(j.copia('bronce').agotada).toBe(true)
   })
 
   it('Naturaleza: +2 si algún Tripulante está Buscado; si fallas, el comprometido con menos Vida queda rehén', () => {

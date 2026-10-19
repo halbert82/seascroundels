@@ -8,6 +8,7 @@ import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe }
 import type { Habilidad } from '../datos.ts'
 import type { Capacidad, CartaId, Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { valor } from '../valores.ts'
+import { mover } from '../zonas.ts'
 import { conPruebaDe, destinoVigente, enEntorno, hayAgotados, hayHeridos, participa, participantes, peligroRevelado, portadorDe } from './comun.ts'
 
 const texto = (id: CartaId) => textoDe(id)
@@ -98,24 +99,24 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
       return []
     },
   },
-  // Cañones de bronce: «Gasta 1 munición: Una Prueba de COM recibe +2.» Los Cañones, solo en el Mar (N18).
+  // Cañones de bronce: «Agotar: Una Prueba de COM recibe +2.» Los Cañones, solo en el Mar (N18). Fase 10b: sin munición.
   {
     clave: 'bronce.disparar',
     carta: 'bronce',
     ventana: 'libre',
     desde: 'juego',
-    coste: [{ tipo: 'municion', n: numeroConIcono(texto('bronce'), 'municion') }],
+    coste: [{ tipo: 'agotarse' }],
     requisito: (s) => enEntorno(s, 'mar') && pruebaDe(s, 'COM'),
-    efecto: (s) => bono(s, numerosEntreLlaves(texto('bronce'))[1] ?? 0, true, 'bronce'),
+    efecto: (s) => bono(s, numerosEntreLlaves(texto('bronce'))[0] ?? 0, true, 'bronce'),
   },
-  // Carronadas: «Gasta 1 munición: Supera automáticamente una Prueba de COM de dificultad 4 o menos, sin revelar Destino.»
+  // Carronadas: «Agotar: Supera automáticamente una Prueba de COM de dificultad 4 o menos, sin revelar Destino.»
   // Se usa antes de comprometer (aún no hay Destino). La dificultad cuenta sus modificadores (N17).
   {
     clave: 'carronadas.disparar',
     carta: 'carronadas',
     ventana: 'libre',
     desde: 'juego',
-    coste: [{ tipo: 'municion', n: numeroConIcono(texto('carronadas'), 'municion') }],
+    coste: [{ tipo: 'agotarse' }],
     requisito: (s) => enEntorno(s, 'mar') && opcionDeCarronadas(s) !== null,
     efecto: (s) => {
       const opcion = opcionDeCarronadas(s)
@@ -126,24 +127,24 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
       return []
     },
   },
-  // Culebrina de proa: «Gasta 1 munición: Una Prueba de NAV en el Mar recibe +2.»
+  // Culebrina de proa: «Agotar: Una Prueba de NAV en el Mar recibe +2.»
   {
     clave: 'culebrina.disparar',
     carta: 'culebrina',
     ventana: 'libre',
     desde: 'juego',
-    coste: [{ tipo: 'municion', n: numeroConIcono(texto('culebrina'), 'municion') }],
+    coste: [{ tipo: 'agotarse' }],
     requisito: (s) => enEntorno(s, 'mar') && pruebaDe(s, 'NAV'),
-    efecto: (s) => bono(s, numerosEntreLlaves(texto('culebrina'))[1] ?? 0, true, 'culebrina'),
+    efecto: (s) => bono(s, numerosEntreLlaves(texto('culebrina'))[0] ?? 0, true, 'culebrina'),
   },
-  // Pedrero de borda: «Respuesta: Gasta 1 munición: Después de que reveles una carta de Peligro con Prueba de COM,
+  // Pedrero de borda: «Respuesta: Agotar: Después de que reveles una carta de Peligro con Prueba de COM,
   // descártala sin resolverla y revela otra.» Solo en el Mar, como todo Cañón (N18).
   {
     clave: 'pedrero.disparar',
     carta: 'pedrero',
     ventana: 'respuesta',
     desde: 'juego',
-    coste: [{ tipo: 'municion', n: numeroConIcono(texto('pedrero'), 'municion') }],
+    coste: [{ tipo: 'agotarse' }],
     disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'mar') && peligroRevelado(s, ev) && conPruebaDe(s, ev.carta, 'COM'),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
   },
@@ -266,6 +267,29 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     desde: 'juego',
     requisito: (s) => s.zonas[mazoActivo(s).mazo].length + s.zonas[mazoActivo(s).descartes].length > 0,
     efecto: () => [{ tipo: 'otear', n: primerNumero(texto('despachos')), cartas: [], arriba: [], fondo: [] }],
+  },
+  // Pólvora del Rey (Tesoro, fase 10b): «Al entrar en juego, pon 3 fichas sobre esta carta. Respuesta: Después de agotar
+  // un Cañón en una Prueba de COM, quita 1 ficha de esta carta: esa Prueba recibe +2 más. Si no quedan fichas, descarta
+  // esta carta.» Las 3 fichas las pone ponerTesoro. El +2 es fuego de Cañón: «Los Cañones no suman» también lo anula.
+  {
+    clave: 'polvora_rey.disparo',
+    carta: 'polvora_rey',
+    ventana: 'respuesta',
+    desde: 'juego',
+    disparo: (s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'canonAgotado' && yo !== null && (copia(s, yo).fichas ?? 0) > 0 && pruebaDe(s, 'COM'),
+    efecto: (s, yo) => {
+      if (!yo) return []
+      const c = copia(s, yo)
+      c.fichas = Math.max(0, (c.fichas ?? 0) - 1)
+      anotar(s, 'efecto', `Quitas 1 ficha de la Pólvora del Rey (le ${c.fichas === 1 ? 'queda' : 'quedan'} ${c.fichas}).`)
+      const tareas = bono(s, numerosEntreLlaves(texto('polvora_rey'))[0] ?? 0, true, 'polvora_rey')
+      if (c.fichas === 0) {
+        // Un Tesoro no va a ningún mazo de descartes: vuelve al mazo de historia (sale de la partida).
+        mover(s, yo, 'mazoHistoria', 'abajo')
+        anotar(s, 'efecto', 'La Pólvora del Rey se queda sin fichas: se descarta.')
+      }
+      return tareas
+    },
   },
   // Farol de los ahogados: «Respuesta: Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)»
   {

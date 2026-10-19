@@ -7,6 +7,7 @@ import { copia } from '../estado.ts'
 import { clavesDelEncuentro } from '../prueba.ts'
 import type { Consulta, Contexto, Estado, InstId } from '../tipos.ts'
 import { vinculadas } from '../zonas.ts'
+import { canonesPreparados } from '../capacidades/comun.ts'
 import { porId } from '../catalogo.ts'
 import type { Habilidad } from '../datos.ts'
 
@@ -30,8 +31,9 @@ export function mejorasDeBarco(s: Estado): number {
   return vinculadas(s, 'barco').filter((m) => porId(copia(s, m).id).tipo === 'mejoraBarco').length
 }
 
-export function municionTotal(s: Estado): number {
-  return s.zonas.mejoras.reduce((n, m) => n + copia(s, m).municion, 0)
+/** Cuántos Cañones preparados tienes (fase 10b: lo que antes era la munición). */
+export function canonesListos(s: Estado): number {
+  return canonesPreparados(s).length
 }
 
 /** El encuentro de la Prueba en curso tiene alguna de estas palabras clave. */
@@ -68,8 +70,10 @@ export const heridas = (n: number): Efecto => ({ tipo: 'heridas', n })
 export const heridasAsignados = (n: number): Efecto => ({ tipo: 'heridas', n, asignados: true })
 export const robar = (n: number): Efecto => ({ tipo: 'robar', n })
 export const descartar = (n: number): Efecto => ({ tipo: 'descartar', n })
-export const municion = (n: number): Efecto => ({ tipo: 'ganarMunicion', n })
-export const pierdesMunicion = (n: number): Efecto => ({ tipo: 'perderMunicion', n })
+/** «Prepara un Cañón» (fase 10b: antes, «gana N munición»). */
+export const preparaCanon = (): Efecto => ({ tipo: 'prepararCanones', n: 1 })
+/** «Agota N Cañones» (fase 10b: antes, «pierdes N munición»). */
+export const agotaCanones = (n: number | 'todos'): Efecto => ({ tipo: 'agotarCanones', n })
 export const preparar = (n: number | 'todos' | 'comprometidos'): Efecto => ({ tipo: 'preparar', n })
 export const reparar = (n: number): Efecto => ({ tipo: 'reparar', n })
 export const agotar = (n: number): Efecto => ({ tipo: 'agotar', n })

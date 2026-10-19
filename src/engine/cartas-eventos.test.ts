@@ -47,10 +47,13 @@ describe('Eventos sin etiqueta (en cualquier pausa)', () => {
     expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([0, 0])
   })
 
-  it('048 · Pólvora de contrabando: añades 1 de munición a un Cañón', () => {
-    const j = Jugador.en({ mano: ['polvora_c'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('048 · Pólvora de contrabando (fase 10b): preparas todos tus Cañones', () => {
+    const j = Jugador.en({ mano: ['polvora_c'], barco: { mejoras: [{ id: 'bronce', agotada: true }, { id: 'culebrina', agotada: true }] } })
     j.usar('polvora_c.jugar')
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
+    expect(j.copia('culebrina').agotada).toBe(false)
+    const sin = Jugador.en({ mano: ['polvora_c'], barco: { mejoras: ['bronce'] } })
+    expect(sin.ofreceCapacidad('polvora_c.jugar')).toBe(false)
   })
 })
 

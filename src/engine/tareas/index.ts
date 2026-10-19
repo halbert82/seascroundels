@@ -15,7 +15,7 @@ import {
   robarHastaMando,
 } from './cartas.ts'
 import {
-  anadirMunicion,
+  prepararCanon,
   cambiarDestino,
   comprometerUno,
   desviarHeridas,
@@ -38,7 +38,7 @@ import {
   entrarEnMazo,
   herirUno,
   perderAvance,
-  perderMunicion,
+  agotarCanones,
   prepararUno,
   reclutaEncuentro,
   rehen,
@@ -93,14 +93,13 @@ import {
 } from './peligros2.ts'
 import { evento, jugarEvento, usar, ventanaLibre } from './sucesos.ts'
 import { desercion, exceso, hundirse, reasignarTesoro, sacarTripulante } from './tripulacion.ts'
-import { aplicarEscenario, cambioMano, descartarFinal, prepararTodo, recargar, turno } from './turno.ts'
+import { aplicarEscenario, cambioMano, descartarFinal, prepararTodo, turno } from './turno.ts'
 
 export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   cambioMano,
   turno,
   aplicarEscenario,
   prepararTodo,
-  recargar,
   ventanaJugar,
   ventanaLibre,
   reclutar,
@@ -146,7 +145,7 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   agotarMejora,
   descartarMano,
   perderAvance,
-  perderMunicion,
+  agotarCanones,
   rehen,
   cambiarReputacion,
   entrarEnMazo,
@@ -166,7 +165,7 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   desviarHeridas,
   comprometerUno,
   prepararTripulantes,
-  anadirMunicion,
+  prepararCanon,
   reclutarGratis,
   naufrago,
   ponerEntrenamiento,

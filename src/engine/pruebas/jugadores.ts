@@ -465,6 +465,12 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           return elegir(s.danoBarco >= 2 ? '0' : '1')
         default:
           // Vía de agua (fase 10b): achica (agota a uno) si el Barco está cerca de hundirse o sobra gente preparada.
+          // Carpintero (fase 10b): tapa la Vía de agua salvo que el Barco esté a punto de hundirse.
+          const tapar = d.opciones.find((o) => o.texto.startsWith('Quita Vía de agua'))
+          if (tapar) {
+            const reparar = d.opciones.find((o) => o !== tapar)!.clave
+            return elegir(valor(s, { tipo: 'danoMaximo' }) - s.danoBarco <= 1 ? reparar : tapar.clave)
+          }
           if (d.opciones.some((o) => o.texto.startsWith('Achicar'))) {
             const margen = valor(s, { tipo: 'danoMaximo' }) - s.danoBarco
             const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
@@ -605,7 +611,7 @@ function peligroDe(efectos: readonly Efecto[]): number {
     else if (e.tipo === 'si' || e.tipo === 'porCada') peligro += peligroDe(e.tipo === 'si' ? e.entonces : e.efectos) * (e.tipo === 'porCada' ? 1.5 : 1)
     else if (e.tipo === 'elegir') peligro += Math.min(...e.opciones.map((o) => peligroDe(o.efectos)), 3)
     else if (
-      ['robar', 'curar', 'reparar', 'recluta', 'sinFallo', 'seRetira', 'ganarAvance', 'ganarMunicion', 'preparar', 'gratisDelMuelle', 'rescatarRehenes', 'recuperarIncautadas', 'recuperarDescarte', 'mirarOrdenar', 'quitarEstado', 'quitarEstadoBarco', 'alFondo'].includes(e.tipo)
+      ['robar', 'curar', 'reparar', 'recluta', 'sinFallo', 'seRetira', 'ganarAvance', 'prepararCanones', 'preparar', 'gratisDelMuelle', 'rescatarRehenes', 'recuperarIncautadas', 'recuperarDescarte', 'mirarOrdenar', 'quitarEstado', 'quitarEstadoBarco', 'alFondo'].includes(e.tipo)
     )
       peligro += 0
     else peligro += 0.5
@@ -696,7 +702,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   switch (uso.clave) {
     // Curar y reparar
     case 'carpintero.reparar':
-      return s.danoBarco > 0 ? 2 : 0
+      return s.danoBarco > 0 || (s.estadosBarco ?? []).includes('viaDeAgua') ? 2 : 0
     case 'reparacion.jugar':
       return s.danoBarco >= 2 ? 2 : 0
     case 'matasanos.curar':
@@ -712,10 +718,12 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       if (!portador || portador === 'barco') return 0
       return (trasEncuentro && copia(s, portador).agotada && faltaAvance(s) > 0) || vidaRestante(s, portador) <= 1 ? 1 : 0
     }
-    // Munición
-    case 'canonero.municion':
+    // Cañones (fase 10b: se preparan en vez de recargar)
+    case 'canonero.preparar':
     case 'polvora_c.jugar':
       return 1
+    case 'polvora_rey.disparo':
+      return 3
     // Otear y preparar
     case 'vigia.otear':
     case 'taberna.jugar':

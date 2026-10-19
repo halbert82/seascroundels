@@ -125,17 +125,17 @@ describe('Ron para los valientes', () => {
 })
 
 describe('Virar y dar la cara', () => {
-  it('Interrupción: gasta 1 munición y la carta que persigue va al fondo del mazo en vez de encima', () => {
+  it('Interrupción: agota un Cañón y la carta que persigue va al fondo del mazo en vez de encima (fase 10b)', () => {
     const j = Jugador.enMision({
       misiones: ['pruebas-mar5'],
       mazoPeligros: ['chubasco', 'p2_turbonada', 'calma', 'racha'],
       mano: ['virar'],
-      barco: { mejoras: [{ id: 'bronce', municion: 2 }] },
+      barco: { mejoras: ['bronce'] },
     })
     j.comprometer('NAV', ['capitan']).seguir()
     expect(j.ofreceCapacidad('virar.jugar')).toBe(true)
     j.usar('virar.jugar')
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(true)
     expect(j.zona('mazoPeligros')).toEqual(['calma', 'racha', 'p2_turbonada'])
   })
 })

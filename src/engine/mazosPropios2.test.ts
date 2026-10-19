@@ -41,12 +41,12 @@ describe('122 · Guerreros esqueleto', () => {
 })
 
 describe('123 · Trampa de dardos', () => {
-  it('EXP 3 (2 con un Explorador): si superas, 1 munición; si fallas, el comprometido con menos EXP queda Envenenado', () => {
-    const j = en('nat', ['dardos', 'calma', 'calma'], { tripulacion: ['baqueano'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('EXP 3 (2 con un Explorador): si superas, preparas un Cañón; si fallas, el comprometido con menos EXP queda Envenenado', () => {
+    const j = en('nat', ['dardos', 'calma', 'calma'], { tripulacion: ['baqueano'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('EXP', ['baqueano'])
     expect(dificultadConDestino(j.estado)).toBe(2)
     j.seguir().pasarOfertas()
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
     const k = en('nat', ['dardos', 'calma', 'calma'])
     k.comprometer('EXP', ['capitan']).seguir()
     expect(k.copia('capitan').estados).toContain('envenenado')
@@ -123,17 +123,17 @@ describe('224 · El guardián de jade', () => {
 })
 
 describe('130 · Galeón de la plata', () => {
-  it('antes de comprometer puedes gastar 1 munición: −2; si superas, robas 2 y ganas 1 munición', () => {
-    const j = en('mar', ['galeon', 'calma', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
+  it('antes de comprometer puedes agotar un Cañón: −2; si superas, robas 2 y preparas un Cañón', () => {
+    const j = en('mar', ['galeon', 'calma', 'calma'], { barco: { mejoras: ['bronce'] } })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige', carta: 'galeon' } })
     j.opcion('0').comprometer('COM', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
     j.seguir()
     expect(robas(j, 2)).toBe(true)
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
   })
 
-  it('sin munición no se pregunta; Abordaje: sin nadie, te faltan 5 → 3 heridas', () => {
+  it('sin Cañones preparados no se pregunta; Abordaje: sin nadie, te faltan 5 → 3 heridas', () => {
     const j = en('mar', ['galeon', 'calma', 'calma'])
     expect(j.decision.tipo).toBe('comprometer')
     j.comprometer('COM').seguir()
@@ -214,7 +214,7 @@ describe('225 · Cofres por la borda', () => {
 
 describe('095 · La Armada te persigue (rehecha, P51)', () => {
   it('Mar · Navío de línea: NAV 5 y los Cañones no suman; si superas, +1 Avance y la carta se queda en el mazo', () => {
-    const j = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
+    const j = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: ['bronce'] } })
     expect(j.registro).toContain('Revelas «La Armada te persigue»: Navío de línea de la Armada (Mar).')
     resolver(j.comprometer('NAV', ['capitan', 'viejo_lobo']))
     expect(j.registro).toContain('La Armada te persigue: +1 de Avance (1/5).')
@@ -229,10 +229,10 @@ describe('095 · La Armada te persigue (rehecha, P51)', () => {
     expect(k.zona('descartesPeligros')).toContain('armada')
   })
 
-  it('Naturaleza · Desembarco de casacas: EXP 4; si superas, +1 munición; si fallas, 2 heridas y el Barco Perseguido', () => {
-    const j = en('nat', ['armada', 'calma', 'calma'], { tripulacion: ['baqueano', 'herbolaria'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('Naturaleza · Desembarco de casacas: EXP 4; si superas, preparas un Cañón; si fallas, 2 heridas y el Barco Perseguido', () => {
+    const j = en('nat', ['armada', 'calma', 'calma'], { tripulacion: ['baqueano', 'herbolaria'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     resolver(j.comprometer('EXP', ['baqueano', 'herbolaria']))
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
     const k = en('nat', ['armada', 'calma', 'calma'])
     k.comprometer('EXP', ['capitan']).seguir()
     expect(k.copia('capitan').heridas).toBe(2)

@@ -93,8 +93,6 @@ export const adquirir: Manejador<'adquirir'> = (s, t) => {
   mover(s, t.carta, 'mejoras', 'abajo')
   const c = copia(s, t.carta)
   c.vinculadaA = t.destino
-  // Decisión N3: una carta con munición entra en juego con su munición al máximo.
-  c.municion = valor(s, { tipo: 'municionMaxima', carta: t.carta })
   const destino = t.destino === 'barco' ? 'el Barco' : nombre(s, t.destino)
   anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}.`, { tipo: 'adquirir', carta: c.id })
   return 'hecha'

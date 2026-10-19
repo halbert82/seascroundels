@@ -16,7 +16,6 @@ export type Marca = 'legal' | 'elegida' | 'atenuada' | null
 export interface FichasCarta {
   heridas?: number
   vida?: number
-  municion?: number
   avance?: number
   /** Fichas del contador de una carta de Peligro en juego. */
   contador?: number
@@ -158,7 +157,7 @@ export function CartaMesa(p: PropsCartaMesa) {
 
 function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | undefined }) {
   if (!fichas) return null
-  const { heridas = 0, vida, municion, avance, contador, entrenamiento = [] } = fichas
+  const { heridas = 0, vida, avance, contador, entrenamiento = [] } = fichas
   return (
     <div className="fichas" style={abajo !== undefined ? { bottom: abajo } : undefined}>
       {heridas > 0 && (
@@ -168,12 +167,6 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
             {heridas}
             {vida ? <small>/{vida}</small> : null}
           </b>
-        </span>
-      )}
-      {municion !== undefined && (
-        <span className="ficha ficha-municion" title={`${municion} de munición`}>
-          <span className={claseIcono('municion')} />
-          <b>{municion}</b>
         </span>
       )}
       {avance !== undefined && avance > 0 && (

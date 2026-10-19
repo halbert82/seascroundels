@@ -151,12 +151,12 @@ describe('4 · Niebla', () => {
     expect(j.zona('rehenes')).toHaveLength(1)
   })
 
-  it('Mar: con un Vigía la dificultad es 2; si superas, +1 munición', () => {
-    const j = en('mar', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['vigia'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('Mar: con un Vigía la dificultad es 2; si superas, preparas un Cañón', () => {
+    const j = en('mar', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['vigia'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('COM', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(2)
     j.seguir()
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
   })
 
   it('Naturaleza: los Vigías no suman; si fallas, el comprometido con menos EXP se pierde', () => {
@@ -238,11 +238,11 @@ describe('6 · Arrecife', () => {
     expect(j.zona('mazoPeligros')[0]).toBe('calma')
   })
 
-  it('Mar: si fallas, 2 daños al Barco y pierdes 1 munición', () => {
-    const j = en('mar', ['p2_arrecife', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+  it('Mar: si fallas, 2 daños al Barco y agota 1 Cañón (fase 10b)', () => {
+    const j = en('mar', ['p2_arrecife', 'chubasco', 'calma'], { barco: { mejoras: ['bronce'] } })
     j.comprometer('NAV', []).seguir()
     expect(j.estado.danoBarco).toBe(2)
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(true)
   })
 
   it('Ciudad: NAV 2 solo si comprometes a un Marinero', () => {
@@ -276,15 +276,15 @@ describe('6 · Arrecife', () => {
 })
 
 describe('7 · Fuego a bordo', () => {
-  it('Mar, «Anegar la santabárbara»: pierdes toda la munición y el Barco queda con Pólvora mojada', () => {
-    const j = en('mar', ['p2_fuego', 'calma', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+  it('Mar, «Anegar la santabárbara»: agotas todos los Cañones y el Barco queda con Pólvora mojada', () => {
+    const j = en('mar', ['p2_fuego', 'calma', 'calma'], { barco: { mejoras: ['bronce'] } })
     j.opcion('0')
-    expect(j.copia('bronce').municion).toBe(0)
+    expect(j.copia('bronce').agotada).toBe(true)
     expect(j.estadosBarco).toEqual(['polvoraMojada'])
   })
 
-  it('Mar, «Atacar el fuego»: +1 con 2 o más munición; si fallas, 1 daño y Pólvora mojada (fase 10b)', () => {
-    const j = en('mar', ['p2_fuego', 'chubasco', 'calma', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+  it('Mar, «Atacar el fuego»: +1 con algún Cañón preparado; si fallas, 1 daño y Pólvora mojada (fase 10b)', () => {
+    const j = en('mar', ['p2_fuego', 'chubasco', 'calma', 'calma'], { barco: { mejoras: ['bronce'] } })
     j.opcion('1').comprometer('NAV', [])
     expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
@@ -328,10 +328,13 @@ describe('7 · Fuego a bordo', () => {
     expect(k.estado.reputacion).toBe(2)
   })
 
-  it('Destino «Pavesas»: +1, o +2 con 3 o más munición', () => {
-    const j = en('mar', ['chubasco', 'p2_fuego', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 3 }] } })
+  it('Destino «Pavesas»: −1, o −2 con 2 o más Cañones preparados (fase 10b)', () => {
+    const j = en('mar', ['chubasco', 'p2_fuego', 'calma'], { barco: { mejoras: ['bronce', 'culebrina'] } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(4)
+    const k = en('mar', ['chubasco', 'p2_fuego', 'calma'], { barco: { mejoras: ['bronce'] } })
+    k.comprometer('NAV', ['capitan'])
+    expect(dificultadConDestino(k.estado)).toBe(3)
   })
 })
 

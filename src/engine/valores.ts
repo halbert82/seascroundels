@@ -102,10 +102,6 @@ function base(s: Estado, c: Consulta): number {
       const e = porId(copia(s, c.carta).id)
       return e.tipo === 'capitan' || e.tipo === 'tripulante' ? e.carta.mejoras : 0
     }
-    case 'municionMaxima': {
-      const e = porId(copia(s, c.carta).id)
-      return e.tipo === 'mejoraBarco' ? e.carta.municion : 0
-    }
     case 'coste': {
       const e = porId(copia(s, c.carta).id).carta
       return 'coste' in e && typeof e.coste === 'number' ? e.coste : 0

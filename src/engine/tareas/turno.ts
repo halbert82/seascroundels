@@ -7,7 +7,6 @@ import { tieneEstadoBarco } from '../estados.ts'
 import { puedePrepararse } from './peligros2.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { puedeZarpar } from './mision.ts'
-import { valor } from '../valores.ts'
 import { arriba, mover } from '../zonas.ts'
 import { robarCartas } from './cartas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
@@ -53,9 +52,8 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       }
       tareas.push(
         { tipo: 'prepararTodo' },
-        { tipo: 'recargar' },
         { tipo: 'evento', ev: { tipo: 'inicioTurno' }, fase: 'antes', cancelado: false, usadas: [] },
-        // Decisión N4: la pausa del Inicio va al final del paso, después de preparar y recargar.
+        // Decisión N4: la pausa del Inicio va al final del paso, después de preparar.
         { tipo: 'ventanaLibre', momento: 'inicio' },
       )
       encolar(s, ...tareas)
@@ -138,9 +136,16 @@ export const aplicarEscenario: Manejador<'aplicarEscenario'> = (s, t) => {
   return 'hecha'
 }
 
-/** Prepara todas tus cartas agotadas (menos las que «no se preparan»). Se acaban los «en tu próximo Inicio». */
+/**
+ * Prepara todas tus cartas agotadas (menos las que «no se preparan»). Se acaban los «en tu próximo Inicio». Fase 10b:
+ * con Pólvora mojada o «Escasez de pertrechos» (revelada antes, en el paso 1 del Inicio), los Cañones no se preparan.
+ */
 export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
+  const motivo = s.temporales.some((x) => x.clave === 'escasez.turno') ? 'Escasez de pertrechos' : tieneEstadoBarco(s, 'polvoraMojada') ? 'Pólvora mojada' : null
+  const canones = s.zonas.mejoras.filter((c) => esCanon(copia(s, c).id) && copia(s, c).agotada)
+  if (motivo && canones.length > 0) anotar(s, 'aviso', `${motivo}: tus Cañones no se preparan.`)
   for (const c of [...s.zonas.tripulacion, ...s.zonas.mejoras]) {
+    if (motivo && canones.includes(c)) continue
     if (!puedePrepararse(s, c)) {
       if (copia(s, c).agotada) anotar(s, 'efecto', `${nombre(s, c)} no se prepara.`)
       continue
@@ -148,24 +153,6 @@ export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
     copia(s, c).agotada = false
   }
   s.temporales = s.temporales.filter((x) => x.hasta !== 'inicio')
-  return 'hecha'
-}
-
-/** Recarga: las cartas con munición la recuperan hasta su máximo (sin bajar si una carta la subió más). */
-export const recargar: Manejador<'recargar'> = (s) => {
-  // «Escasez de pertrechos»: este turno no recargas munición (la carta se revela antes, en el paso 1 del Inicio; P58).
-  if (s.temporales.some((x) => x.clave === 'escasez.turno')) {
-    if (s.zonas.mejoras.some((c) => valor(s, { tipo: 'municionMaxima', carta: c }) > 0)) anotar(s, 'aviso', 'Escasez de pertrechos: este turno no recargas munición.')
-    return 'hecha'
-  }
-  // Pólvora mojada: los Cañones no recargan en el Inicio.
-  const mojada = tieneEstadoBarco(s, 'polvoraMojada')
-  if (mojada && s.zonas.mejoras.some((c) => esCanon(copia(s, c).id))) anotar(s, 'aviso', 'Pólvora mojada: los Cañones no recargan.')
-  for (const c of s.zonas.mejoras) {
-    if (mojada && esCanon(copia(s, c).id)) continue
-    const maximo = valor(s, { tipo: 'municionMaxima', carta: c })
-    if (maximo > 0) copia(s, c).municion = Math.max(copia(s, c).municion, maximo)
-  }
   return 'hecha'
 }
 

@@ -508,7 +508,7 @@
   border-color: #e7a07f;
 }
 
-.ficha-municion .ic {
+.ficha-contador-tesoro .ic {
   color: #d9b16a;
 }
 
@@ -625,7 +625,7 @@
   white-space: nowrap;
 }
 
-.chip-municion {
+.chip-fichas {
   display: inline-flex;
   align-items: center;
   gap: 1px;

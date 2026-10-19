@@ -8,7 +8,7 @@ import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
 import { huecosLibres, plazasLibres } from '../valores.ts'
-import { canonesSinCargar, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroRevelado, reclutablesGratis } from './comun.ts'
+import { canonesAgotados, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroRevelado, reclutablesGratis } from './comun.ts'
 
 const texto = (id: CartaId) => textoDe(id)
 
@@ -43,9 +43,9 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('vendas'), 'herida'), modo: 'repartir' }],
   }),
   evento('polvora_c', 'libre', {
-    // «Añade 1 munición a un Cañón.»
-    requisito: (s) => canonesSinCargar(s).length > 0,
-    efecto: () => [{ tipo: 'anadirMunicion', n: numeroConIcono(texto('polvora_c'), 'municion') }],
+    // «Prepara todos tus Cañones.» (fase 10b)
+    requisito: (s) => canonesAgotados(s).length > 0,
+    efecto: () => [{ tipo: 'prepararCanon', todos: true }],
   }),
 
   // Acción.

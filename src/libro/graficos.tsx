@@ -928,7 +928,7 @@ const ICONOS_TEXTO: [RegExp, string][] = [
   [/\brobar\b/, 'robar'],
   [/\bcurar\b/, 'curar'],
   [/\bmapa\b/, 'avance'],
-  [/\bbarril\b/, 'municion'],
+  [/\bquitar Estado\b/, 'quitarestado'],
   [/\bMejora\b/, 'mejora'],
   [/^Rehén$/, 'rehen'],
   [/^Calavera$/, 'rep'],

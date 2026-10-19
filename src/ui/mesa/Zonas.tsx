@@ -185,12 +185,7 @@ function Chip({ inst }: { inst: InstId }) {
     >
       <Icono id={tesoro ? 'doblon' : 'mejora'} />
       <span className="chip-nombre">{nombreDe(c.id)}</span>
-      {f.municion !== undefined && (
-        <span className="chip-municion">
-          <Icono id="municion" />
-          {f.municion}
-        </span>
-      )}
+      {f.contador !== undefined && <span className="chip-fichas">{f.contador}</span>}
       {c.agotada && <Icono id="agotar" className="chip-agotada" />}
     </motion.button>
   )

@@ -17,8 +17,6 @@ export const ICONOS = [
   'herida',
   'dano',
   'avance',
-  // TODO: la munición ya no existe; se quita cuando la mesa, el libro y los datos dejen de usarla.
-  'municion',
   'robar',
   'curar',
   // Quitar un Estado (no es lo mismo que curar heridas): una ficha con un aspa.

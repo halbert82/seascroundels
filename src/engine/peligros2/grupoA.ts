@@ -24,13 +24,13 @@ import {
   mas,
   mejorasDeBarco,
   menos,
-  municion,
-  municionTotal,
+  preparaCanon,
+  canonesListos,
   noSuman,
   participantesCon,
   participantesCtx,
   pierdesAvance,
-  pierdesMunicion,
+  agotaCanones,
   preparar,
   reparar,
   reputacion,
@@ -109,7 +109,7 @@ registrarPeligro('p2_calma', {
 registrarPeligro('p2_niebla', {
   encuentros: {
     // COM 3 (2 si tienes un Vigía). Éxito: +1 munición. Fallo: Abordaje.
-    mar: { abordaje: true, exito: [municion(1)] },
+    mar: { abordaje: true, exito: [preparaCanon()] },
     // Los Vigías no suman. Fallo: el comprometido con menos EXP se pierde hasta que superes otra Prueba o acabe la misión.
     nat: {
       capacidades: [noSuman('vigias', (s, c) => tieneRasgo(s, c, 'Vigía'))],
@@ -161,8 +161,8 @@ registrarPeligro('p2_bajamar', {
 // 6. Arrecife · Duro
 registrarPeligro('p2_arrecife', {
   encuentros: {
-    mar: { exito: [{ tipo: 'descartarArriba', n: 1 }], fallo: [dano(2), pierdesMunicion(1)] },
-    nat: { exito: [municion(1), robar(1)], fallo: [heridasAsignados(2)] },
+    mar: { exito: [{ tipo: 'descartarArriba', n: 1 }], fallo: [dano(2), agotaCanones(1)] },
+    nat: { exito: [preparaCanon(), robar(1)], fallo: [heridasAsignados(2)] },
     // NAV 4 (2 si comprometes a un Marinero).
     ciu: {
       exito: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia'], n: -2 } }],
@@ -178,26 +178,17 @@ registrarPeligro('p2_arrecife', {
 })
 
 // 7. Fuego a bordo · Duro
-registrarCodigo('p2_fuego.anegar', (s) => {
-  let total = 0
-  for (const m of s.zonas.mejoras) {
-    total += copia(s, m).municion
-    copia(s, m).municion = 0
-  }
-  if (total > 0) anotar(s, 'efecto', `Pierdes toda tu munición (${total}).`)
-  return []
-})
 registrarPeligro('p2_fuego', {
   encuentros: {
     mar: {
       elige: [
         {
-          texto: 'Anegar la santabárbara: pierdes toda tu munición y el Barco queda con Pólvora mojada',
-          efectos: [codigo('p2_fuego.anegar'), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
+          texto: 'Anegar la santabárbara: agota todos tus Cañones y el Barco queda con Pólvora mojada',
+          efectos: [agotaCanones('todos'), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
         },
-        { texto: 'Atacar el fuego: Prueba de NAV 4 (+1 si tienes 2 o más munición)', prueba: true, modSi: { condicion: { tipo: 'municion', minimo: 2 }, n: 1 } },
+        { texto: 'Atacar el fuego: Prueba de NAV 4 (+1 si tienes algún Cañón preparado)', prueba: true, modSi: { condicion: { tipo: 'canonesPreparados', minimo: 1 }, n: 1 } },
       ],
-      exito: [municion(1)],
+      exito: [preparaCanon()],
       // Fase 10b: fuera Incendio a bordo: 1 daño y Pólvora mojada.
       fallo: [dano(1), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
     },
@@ -231,7 +222,7 @@ registrarPeligro('p2_fuego', {
     },
   },
   // +1; +2 en su lugar si tienes 3 o más munición. Sin oposición: pierdes 1 munición.
-  destino: { modificador: (s) => (municionTotal(s) >= 3 ? 2 : 1), sinOposicion: [pierdesMunicion(1)] },
+  destino: { modificador: (s) => (canonesListos(s) >= 2 ? 2 : 1), sinOposicion: [agotaCanones(1)] },
 })
 
 // 8. La broma · Duro

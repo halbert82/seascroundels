@@ -164,25 +164,18 @@ describe('N1 · Un Tesoro nunca acaba en el mazo de muelle', () => {
   })
 })
 
-describe('N3 · Una carta con munición entra en juego con su munición al máximo', () => {
-  it('los Cañones de bronce recién adquiridos tienen sus 2 de munición (3 con la Pólvora del Rey)', () => {
-    const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'] })
-    j.adquirir('bronce', 'barco').elegir('ojo', 'timon')
-    expect(j.copia('bronce').municion).toBe(2)
-    const conPolvora = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'], barco: { mejoras: ['polvora_rey'] } })
-    conPolvora.adquirir('bronce', 'barco').elegir('ojo', 'timon')
-    expect(conPolvora.copia('bronce').municion).toBe(3)
-  })
-  it('adquieres los Cañones y zarpas contra los Piratas rivales (COM 4): ya puedes gastar 1 de munición para +2', () => {
+describe('N3 (fase 10b: sin munición) · Los Cañones entran en juego preparados', () => {
+  it('adquieres los Cañones y zarpas contra los Piratas rivales (COM 4): ya puedes agotarlos para +2', () => {
     const j = Jugador.en({ mano: ['ojo', 'timon'], muelle: ['bronce'], misiones: ['prueba-I'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['pruebas-calma'] })
     j.adquirir('bronce', 'barco').elegir('ojo', 'timon')
+    expect(j.copia('bronce').agotada).toBe(false)
     j.zarpar('prueba-I').comprometer('COM', ['capitan']).usar('bronce.disparar').seguir()
     expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(true)
   })
 })
 
-describe('N4 · La pausa del Inicio va al final del paso, después de preparar y recargar', () => {
+describe('N4 · La pausa del Inicio va al final del paso, después de preparar', () => {
   it('el Carpintero usado en la pausa del Inicio se queda agotado en Jugar cartas', () => {
     quitar = registrarParaPruebas({
       clave: 'prueba.carpintero',
@@ -401,7 +394,7 @@ describe('Decisiones que dependen de cartas concretas', () => {
   it('D4 · la Patrulla española (COM 4 / NAV 4) se puede descartar con las Velas de tormenta y con el Pedrero', () => {
     const velas = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['velas_tormenta'] }, mazoPeligros: ['ley', 'calma', 'calma'] })
     expect(velas.ofreceCapacidad('velas_tormenta.esquivar')).toBe(true)
-    const pedrero = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: [{ id: 'pedrero', municion: 1 }] }, mazoPeligros: ['ley', 'calma', 'calma'] })
+    const pedrero = Jugador.enMision({ misiones: ['prueba-I'], barco: { mejoras: ['pedrero'] }, mazoPeligros: ['ley', 'calma', 'calma'] })
     expect(pedrero.ofreceCapacidad('pedrero.disparar')).toBe(true)
   })
 
@@ -549,11 +542,11 @@ describe('N17 · Una Prueba superada automáticamente cuenta como superada, sin 
   })
 })
 
-describe('N18 · Son Cañones las cuatro Mejoras con munición, y solo se usan en el Mar', () => {
+describe('N18 · Son Cañones las cuatro Mejoras con el Rasgo Cañón, y solo se usan en el Mar', () => {
   it('el Pedrero no se usa en Ciudad; «Los Cañones no suman» anula también la Culebrina', () => {
-    const tierra = Jugador.enMision({ barco: { mejoras: [{ id: 'pedrero', municion: 2 }] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
+    const tierra = Jugador.enMision({ barco: { mejoras: ['pedrero'] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     expect(tierra.ofreceCapacidad('pedrero.disparar')).toBe(false)
-    const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: ['culebrina'] }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     niebla.comprometer('NAV', ['capitan']).usar('culebrina.disparar')
     expect(totalSinDestinoPrueba(niebla.estado)).toBe(2 + 1)
   })

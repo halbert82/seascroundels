@@ -11,7 +11,7 @@ const EN_JUEGO: ReadonlySet<Zona> = new Set<Zona>(['tripulacion', 'mejoras', 're
 /** Crea una copia física de una carta en una zona. */
 export function crearCopia(s: Estado, id: CartaId, zona: Zona, donde: 'arriba' | 'abajo' = 'abajo'): InstId {
   const inst: InstId = `i${s.sigInst++}`
-  s.cartas[inst] = { id, agotada: false, heridas: 0, municion: 0, avance: 0, vinculadaA: null, entrenamiento: [] }
+  s.cartas[inst] = { id, agotada: false, heridas: 0, avance: 0, vinculadaA: null, entrenamiento: [] }
   if (donde === 'arriba') s.zonas[zona].unshift(inst)
   else s.zonas[zona].push(inst)
   return inst
@@ -26,7 +26,7 @@ export function estaEn(s: Estado, inst: InstId, zona: Zona): boolean {
   return s.zonas[zona].includes(inst)
 }
 
-/** Mueve una copia a otra zona. Si sale del juego, pierde heridas, fichas, munición y vínculos. */
+/** Mueve una copia a otra zona. Si sale del juego, pierde heridas, fichas y vínculos. */
 export function mover(s: Estado, inst: InstId, destino: Zona, donde: 'arriba' | 'abajo' = 'arriba'): void {
   const origen = zonaDe(s, inst)
   s.zonas[origen] = s.zonas[origen].filter((x) => x !== inst)
@@ -34,7 +34,6 @@ export function mover(s: Estado, inst: InstId, destino: Zona, donde: 'arriba' | 
   if (EN_JUEGO.has(origen) && !EN_JUEGO.has(destino)) {
     c.agotada = false
     c.heridas = 0
-    c.municion = 0
     c.vinculadaA = null
     c.entrenamiento = []
     delete c.estados

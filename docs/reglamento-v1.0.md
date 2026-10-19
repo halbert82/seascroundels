@@ -102,7 +102,7 @@ Las cartas que no empiezan la partida en ningún mazo forman el **mazo de histor
 
 **Fichas**
 
-- Fichas de herida, de daño, de Avance y de munición.
+- Fichas de herida, de daño y de Avance.
 - Fichas de Entrenamiento (+1).
 - Fichas de Estado (Envenenado, Borracho, Asustado, Sangrando, Buscado y Maldito para los Tripulantes; Vía de agua, Velas rotas, Perseguido y Pólvora mojada para el Barco) y fichas de Ventaja (Inspirado y Aguerrido).
 - Fichas de misión, todas iguales, para las misiones y las cartas que llevan la cuenta de algo.
@@ -137,7 +137,7 @@ El Capitán muestra además su **Mando** en una pestaña de la derecha. El Mando
 
 #### Mejoras
 
-Las Mejoras tienen coste, nombre, tipo, Rasgos (si los tienen) y texto, igual que un Tripulante. Las **Mejoras de barco** indican el Espacio que ocupan con cuadros dorados bajo el título, a la derecha: un cuadro por cada punto de Espacio. Si no llevan cuadros, no ocupan Espacio. Cada Mejora de tripulante ocupa un hueco de Mejora. Las cartas con **munición** la indican en una pestaña de la derecha.
+Las Mejoras tienen coste, nombre, tipo, Rasgos (si los tienen) y texto, igual que un Tripulante. Las **Mejoras de barco** indican el Espacio que ocupan con cuadros dorados bajo el título, a la derecha: un cuadro por cada punto de Espacio. Si no llevan cuadros, no ocupan Espacio. Cada Mejora de tripulante ocupa un hueco de Mejora. Los **Cañones** llevan el Rasgo Cañón: disparan agotándose y se preparan al empezar el turno, como cualquier carta.
 
 > [!grafico] anatomia mejora
 
@@ -284,9 +284,8 @@ La partida se juega en turnos. Cada turno empieza y termina en puerto y consta d
 #### 1. Fase de Inicio
 
 1. Revela la carta de arriba del mazo de Escenario y aplica su efecto. Si dice **Elige**, decide en ese momento qué opción aplicar. Si no queda ninguna carta, este es el último turno (ver «Ganar y perder»).
-2. Prepara todas tus cartas agotadas.
-3. **Recarga:** todas las cartas con munición la recuperan hasta su máximo.
-4. Se aplican los efectos que dicen «al empezar el turno».
+2. Prepara todas tus cartas agotadas, también los Cañones.
+3. Se aplican los efectos que dicen «al empezar el turno».
 
 #### 2. Fase de Reclutamiento
 
@@ -609,7 +608,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 
 A continuación se describe el primer turno de una partida normal con Diego en Tortuga.
 
-**Fase de Inicio.** El jugador revela la primera carta del mazo de Escenario: «Rumores del tesoro», que dice «Al zarpar este turno: gana 1 de Avance (2 si es un capítulo II o III)». Diego ya está preparado y el jugador todavía no tiene cartas con munición.
+**Fase de Inicio.** El jugador revela la primera carta del mazo de Escenario: «Rumores del tesoro», que dice «Al zarpar este turno: gana 1 de Avance (2 si es un capítulo II o III)». Diego ya está preparado, así que no hay nada que preparar.
 
 **Fase de Reclutamiento.** El jugador tiene 5 cartas en la mano: «¡Al abordaje!», «Mano firme al timón», «Ojo avizor», «Reflejos de gato» y «Soborno». En el muelle de Tortuga hay cuatro cartas: el Rufián de cubierta (coste 1), el Bucanero veterano (coste 2), el Sable de abordaje (coste 1) y el Matasanos (coste 2).
 
@@ -774,6 +773,21 @@ Para buscar un Tripulante o una Mejora, el jugador lo localiza en su mazo de mue
 
 Un efecto cancelado no se aplica. Un Destino cancelado no tiene ningún efecto: no se aplican ni su modificador ni su efecto Sin oposición.
 
+### Cañón
+
+Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carronadas, la Culebrina de proa y el Pedrero de borda. Un Cañón dispara agotándose («Agotar:») y se prepara en la Fase de Inicio, como cualquier otra carta.
+
+- Los Cañones solo pueden usarse en misiones de Mar, y en las Pruebas que indique su texto.
+- **Agota N Cañones:** el jugador elige N de sus Cañones preparados y los agota. Si tiene menos, agota los que tenga. Como pago de un «Elige», solo se ofrece si tiene N Cañones preparados.
+- **Prepara un Cañón:** el jugador elige uno de sus Cañones agotados y lo prepara.
+- **Los Cañones no suman:** lo que un Cañón añade a esa Prueba no cuenta.
+- Con **Pólvora mojada**, o con «Escasez de pertrechos», los Cañones no se preparan en la Fase de Inicio.
+
+> [!ejemplo]
+> El jugador lleva los Cañones de bronce. En una Prueba de COM en el Mar, los agota y la Prueba recibe +2. Ya no puede volver a usarlos en ese turno, salvo que el Cañonero los prepare («Agotar: Prepara un Cañón»). Al empezar el turno siguiente, se preparan con las demás cartas.
+
+*Véase también:* Rasgo.
+
 ### Capítulo
 
 Un capítulo es cada una de las cartas de misión de una travesía. Su sello indica su número (I, II o III). Los capítulos I empiezan en el mazo de Misiones; los capítulos II y III, en el mazo de historia. Al superar un capítulo, su recompensa indica qué carta se añade al mazo de Misiones.
@@ -801,7 +815,7 @@ El coste de una carta es el número que aparece en el timón. Para pagarlo, el j
 
 ### Coste de una capacidad (los dos puntos)
 
-En el texto de una carta, lo que va antes de los dos puntos es el coste, y lo que va después es el efecto. «Gasta 1 munición: +2 COM» significa que se gasta 1 de munición y se suman 2 a la Prueba. Si el jugador no puede pagar el coste entero, no obtiene el efecto. Algunos costes se escriben con «para»: «Agota a un Oficial para ganar 2 de Avance».
+En el texto de una carta, lo que va antes de los dos puntos es el coste, y lo que va después es el efecto. «Agotar: Una Prueba de COM recibe +2» significa que se agota la carta y la Prueba recibe +2. **Destina X** también es un coste (ver Destina). Si el jugador no puede pagar el coste entero, no obtiene el efecto. Algunos costes se escriben con «para»: «Agota a un Oficial para ganar 2 de Avance».
 
 ### Curar y reparar
 
@@ -887,7 +901,7 @@ Elige es una palabra clave que indica que el encuentro, el Destino o la carta of
 
 - En un encuentro, el jugador elige antes de asignar a ningún Tripulante.
 - En una carta de Escenario, el jugador elige al revelarla. Si no puede cumplir entera ninguna de sus opciones, no ocurre nada.
-- Una opción que consiste en un pago (descartar cartas, agotar Tripulantes, perder munición…) no se ofrece si el jugador no puede pagarla entera.
+- Una opción que consiste en un pago (descartar cartas, agotar Tripulantes o Cañones…) no se ofrece si el jugador no puede pagarla entera.
 - Si una opción consiste en pagar y la otra en hacer la Prueba, pagar se considera superar la Prueba: el jugador gana el primer número de su Avance (X) sin hacer la Prueba ni revelar Destino.
 
 > [!ejemplo]
@@ -962,7 +976,7 @@ Un Evento es una carta del mazo del capitán con un efecto propio. Para jugarlo,
 
 ### Fichas de misión
 
-Las fichas de misión son fichas genéricas con las que una misión, o una carta que se queda en juego, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha y Defensa. Estas fichas se descartan al terminar la misión.
+Las fichas de misión son fichas genéricas con las que una misión, o una carta que se queda en juego, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha y Defensa. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
 
 ### Final con elección
 
@@ -1067,16 +1081,6 @@ Una misión es una carta que tiene un Entorno y el Avance que se necesita para s
 ### Muelle
 
 El muelle está formado por las cartas del mazo de muelle que están boca arriba junto al puerto del jugador. El puerto indica cuántas son. Solo pueden reclutarse Tripulantes y adquirirse Mejoras desde el muelle. Al terminar la Fase de Reclutamiento, se descarta el muelle entero y se repone.
-
-### Munición
-
-Algunas cartas, como los Cañones, tienen munición. Su máximo se indica en una pestaña de la derecha.
-
-- «Gasta 1 munición» es un coste: se quita 1 de munición de esa carta.
-- **Recarga:** al empezar cada turno, las cartas del jugador con munición la recuperan hasta su máximo. La munición nunca supera su máximo, salvo que una carta lo indique.
-- Si una carta indica que este turno no se recarga, como «Escasez de pertrechos», el jugador omite la Recarga: la munición que tiene se conserva, pero la gastada no vuelve hasta el turno siguiente. Ganar munición mediante otra carta sí está permitido.
-- Los Cañones solo pueden usarse en misiones de Mar, y en las Pruebas que indique su texto.
-- **Pierdes N de munición:** las cartas del jugador pierden N de munición en total, repartida como él decida.
 
 ### Nivel
 
@@ -1187,7 +1191,7 @@ Los Estados se quitan antes de curar o reparar. De este modo, la curación no se
 
 ### Rasgo
 
-El Rasgo es el oficio de un Tripulante y aparece en cursiva sobre su texto: Marinero, Bucanero, Artillero, Contrabandista, Vigía, Piloto, Cirujano, Carpintero, Oficial, Explorador o Animal. Algunas Pruebas, misiones y cartas favorecen al jugador si tiene un Tripulante preparado con cierto Rasgo. En una Prueba, basta con que esté preparado al asignar, sea asignado o no, salvo que la Prueba diga «si asignas a un».
+El Rasgo es el oficio de un Tripulante y aparece en cursiva sobre su texto: Marinero, Bucanero, Artillero, Contrabandista, Vigía, Piloto, Cirujano, Carpintero, Oficial, Explorador o Animal. Algunas Mejoras de barco también tienen Rasgo: **Cañón** (ver Cañón). Algunas Pruebas, misiones y cartas favorecen al jugador si tiene un Tripulante preparado con cierto Rasgo. En una Prueba, basta con que esté preparado al asignar, sea asignado o no, salvo que la Prueba diga «si asignas a un».
 
 ### Reclutar
 
@@ -1259,6 +1263,7 @@ Un Tesoro es una carta única que otorgan algunos capítulos («Pon en juego el 
 
 - Un Tesoro no ocupa Espacio ni hueco de Mejora.
 - Si su portador queda derrotado, el jugador vincula el Tesoro a otro de sus Tripulantes.
+- Un Tesoro que se descarta no va a ningún mazo de descartes: vuelve al mazo de historia y sale de la partida.
 
 ### Tipos de encuentro
 
@@ -1304,7 +1309,7 @@ Volver al muelle es un efecto por el que el jugador elige a uno de sus Tripulant
 
 ### Secuencia del turno
 
-1. **Fase de Inicio:** revela una carta de Escenario y aplícala · prepara las cartas · recarga la munición · efectos de «al empezar el turno».
+1. **Fase de Inicio:** revela una carta de Escenario y aplícala · prepara las cartas · efectos de «al empezar el turno».
 2. **Fase de Reclutamiento:** recluta, adquiere Mejoras, juega Eventos y despide, en cualquier orden · al terminar, descarta y repón el muelle.
 3. **Fase de Rumbo:** quédate en puerto (dos opciones distintas del puerto) o zarpa a una misión disponible.
 4. **Fase de Final de turno:** descarta las cartas que quieras · roba hasta tu Mando (si el mazo del capitán se acaba, se pierde un día) · efectos de «al final de cada turno».
@@ -1329,7 +1334,6 @@ Volver al muelle es un efecto por el que el jugador elige a uno de sus Tripulant
 | N y curar | Cura N heridas |
 | N y quitar Estado | Quita N Estados (los que diga la carta) |
 | −N y mapa · «−Todo» y mapa | Se pierden N de Avance · se pierde todo el Avance |
-| −N y barril | Se pierden N de munición |
 | −N y Mejora | Se pierden N Mejoras |
 | −1 día · −1 Mando | Se pierde un día · este turno se roba una carta menos |
 | Rehén · ↩ al muelle · Recluta | Ver sus entradas en la Referencia de reglas |

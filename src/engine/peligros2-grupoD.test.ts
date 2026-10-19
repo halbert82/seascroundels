@@ -17,9 +17,9 @@ const avance = (j: Jugador, entorno: keyof typeof MISION) => j.avance(MISION[ent
 const ids = (j: Jugador, lista: readonly string[]) => lista.map((c) => j.estado.cartas[c as `i${number}`]?.id)
 
 describe('34 · Hermanos de la Costa', () => {
-  it('Mar: +1 munición y reparas 1; con un Bucanero (Diego lo es), +1 munición más', () => {
-    const j = en('mar', ['p2_hermanos', 'calma'], { barco: { dano: 2, mejoras: [{ id: 'bronce', municion: 0 }] } })
-    expect(j.copia('bronce').municion).toBe(2)
+  it('Mar: preparas un Cañón y reparas 1; con un Bucanero (Diego lo es), preparas otro Cañón', () => {
+    const j = en('mar', ['p2_hermanos', 'calma'], { barco: { dano: 2, mejoras: [{ id: 'bronce', agotada: true }] } })
+    expect(j.copia('bronce').agotada).toBe(false)
     expect(j.estado.danoBarco).toBe(1)
     expect(avance(j, 'mar')).toBe(3)
   })
@@ -47,16 +47,16 @@ describe('34 · Hermanos de la Costa', () => {
     expect(j.zona('descartesCapitan')).toContain('ojo')
   })
 
-  it('Destino «Código de la Costa»: −2 si el encuentro es Pirata y comprometiste a un Bucanero; Sin oposición: pierdes 1 munición', () => {
+  it('Destino «Código de la Costa»: −2 si el encuentro es Pirata y comprometiste a un Bucanero; Sin oposición: agota 1 Cañón (fase 10b)', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'])
     j.comprometer('COM', ['capitan']) // Pulso en el muelle es Pirata; Diego es Bucanero
     expect(dificultadConDestino(j.estado)).toBe(0)
     const k = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('COM', ['vigia'])
     expect(dificultadConDestino(k.estado)).toBe(1)
-    const l = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+    const l = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'], { barco: { mejoras: ['bronce'] } })
     l.comprometer('COM', [])
-    expect(l.copia('bronce').municion).toBe(1)
+    expect(l.copia('bronce').agotada).toBe(true)
   })
 })
 
@@ -69,14 +69,14 @@ describe('35 · Barril de ron', () => {
     expect(j.copia('bucanero').agotada).toBe(false)
   })
 
-  it('Naturaleza: si superas, +1 munición y preparas a 1; si fallas, 1 herida al comprometido con más EXP', () => {
+  it('Naturaleza: si superas, preparas un Cañón y preparas a 1; si fallas, 1 herida al comprometido con más EXP', () => {
     const j = en('nat', ['p2_barril', 'chubasco', 'calma'], {
       tripulacion: [{ id: 'bucanero', agotada: true }],
       mano: ['ojo'],
-      barco: { mejoras: [{ id: 'bronce', municion: 0 }] },
+      barco: { mejoras: [{ id: 'bronce', agotada: true }] },
     })
     j.comprometer('EXP', ['capitan'], ['ojo']).seguir()
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(false)
     j.elegir('bucanero')
     expect(j.copia('bucanero').agotada).toBe(false)
     const k = en('nat', ['p2_barril', 'chubasco', 'calma'])
@@ -187,10 +187,10 @@ describe('37 · El tahúr', () => {
     expect(k.estado.danoBarco).toBe(0)
   })
 
-  it('Naturaleza: si superas, +2 munición; si fallas, agotas a 1 Tripulante preparado', () => {
-    const j = en('nat', ['p2_tahur', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('Naturaleza: si superas, preparas un Cañón; si fallas, agotas a 1 Tripulante preparado', () => {
+    const j = en('nat', ['p2_tahur', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('COM', ['capitan']).seguir()
-    expect(j.copia('bronce').municion).toBe(2)
+    expect(j.copia('bronce').agotada).toBe(false)
     const k = en('nat', ['p2_tahur', 'chubasco', 'calma'])
     k.comprometer('COM', []).seguir()
     expect(k.copia('capitan').agotada).toBe(true)
@@ -285,19 +285,20 @@ describe('38 · Paga atrasada', () => {
 })
 
 describe('39 · A sueldo', () => {
-  it('Mar, Elige: le das 2 munición (si las tienes) y haces la Prueba, o la Prueba recibe +2', () => {
-    const j = en('mar', ['p2_sueldo', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+  it('Mar, Elige (fase 10b): agotas 2 Cañones (si los tienes preparados) y haces la Prueba, o la Prueba recibe +2', () => {
+    const j = en('mar', ['p2_sueldo', 'chubasco', 'calma'], { barco: { mejoras: ['bronce', 'culebrina'] } })
     j.opcion('0')
-    expect(j.copia('bronce').municion).toBe(0)
+    expect(j.copia('bronce').agotada).toBe(true)
+    expect(j.copia('culebrina').agotada).toBe(true)
     j.comprometer('EXP', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
-    // Sin munición, solo queda la otra opción: se aplica sola.
-    const k = en('mar', ['p2_sueldo', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
+    // Con un solo Cañón, solo queda la otra opción: se aplica sola.
+    const k = en('mar', ['p2_sueldo', 'chubasco', 'calma'], { barco: { mejoras: ['bronce'] } })
     k.comprometer('EXP', ['capitan'])
     expect(dificultadConDestino(k.estado)).toBe(5)
     k.seguir()
     expect(k.estado.danoBarco).toBe(1)
-    expect(k.copia('bronce').municion).toBe(0)
+    expect(k.copia('bronce').agotada).toBe(true)
   })
 
   it('Naturaleza: si superas, la siguiente Prueba recibe −1; si fallas, pierdes 1 Avance y el de más NAV sufre 1 herida', () => {
@@ -371,16 +372,16 @@ describe('40 · La sombra de Bastián', () => {
 })
 
 describe('41 · Los holandeses de Curazao', () => {
-  it('Mar: puedes gastar 1 munición: −1, o −2 si comprometes a un Artillero', () => {
-    const j = en('mar', ['p2_curazao', 'chubasco', 'calma'], { tripulacion: ['canonero'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+  it('Mar (fase 10b): puedes agotar un Cañón: −1, o −2 si asignas a un Artillero', () => {
+    const j = en('mar', ['p2_curazao', 'chubasco', 'calma'], { tripulacion: ['canonero'], barco: { mejoras: ['bronce'] } })
     j.opcion('1')
-    expect(j.copia('bronce').municion).toBe(1)
+    expect(j.copia('bronce').agotada).toBe(true)
     j.comprometer('COM', ['canonero'])
     expect(dificultadConDestino(j.estado)).toBe(3)
-    const k = en('mar', ['p2_curazao', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+    const k = en('mar', ['p2_curazao', 'chubasco', 'calma'], { barco: { mejoras: ['bronce'] } })
     k.opcion('1').comprometer('COM', ['capitan'])
     expect(dificultadConDestino(k.estado)).toBe(4)
-    const l = en('mar', ['p2_curazao', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
+    const l = en('mar', ['p2_curazao', 'chubasco', 'calma'], { barco: { mejoras: ['bronce'] } })
     l.opcion('0').comprometer('COM', ['capitan'])
     expect(dificultadConDestino(l.estado)).toBe(5)
   })
@@ -422,15 +423,15 @@ describe('41 · Los holandeses de Curazao', () => {
 })
 
 describe('42 · Viejas cuentas', () => {
-  it('Mar: Sin ayuda; si mandas a otro en lugar del Capitán, +1; si ganas, +2 munición y tu duelista queda Inspirado', () => {
+  it('Mar: Sin ayuda; si mandas a otro en lugar del Capitán, +1; si ganas, preparas un Cañón y tu duelista queda Inspirado', () => {
     const j = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(5)
-    const k = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { mano: ['abordaje'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+    const k = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { mano: ['abordaje'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     k.comprometer('COM', ['capitan'], ['abordaje'])
     expect(dificultadConDestino(k.estado)).toBe(4)
     k.seguir()
-    expect(k.copia('bronce').municion).toBe(2)
+    expect(k.copia('bronce').agotada).toBe(false)
     expect(k.estados('capitan')).toEqual(['inspirado'])
   })
 
@@ -525,12 +526,12 @@ describe('43 · Motín', () => {
 })
 
 describe('44 · El cazador de piratas', () => {
-  it('Mar: EXP 5 (4 si comprometes a un Vigía); si superas, +2 munición', () => {
-    const j = en('mar', ['p2_cazador', 'chubasco', 'calma'], { tripulacion: ['vigia'], mano: ['ojo'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
+  it('Mar: EXP 5 (4 si comprometes a un Vigía); si superas, preparas un Cañón', () => {
+    const j = en('mar', ['p2_cazador', 'chubasco', 'calma'], { tripulacion: ['vigia'], mano: ['ojo'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('EXP', ['vigia'], ['ojo'])
     expect(j.estado.prueba?.dificultadBase).toBe(4) // (+1 de «El bloqueo del lago» a los encuentros Militares)
     j.seguir() // 2 + 1 de Diego + 2 = 5 contra 5
-    expect(j.copia('bronce').municion).toBe(2)
+    expect(j.copia('bronce').agotada).toBe(false)
   })
 
   it('Naturaleza: si superas, reclutas gratis un Tripulante de coste 2 o menos; sin Capacidad, robas 2', () => {

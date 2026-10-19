@@ -104,17 +104,6 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
   alPortador('coleto', 'vida'),
   alPortador('espada', 'COM'),
   {
-    clave: 'polvora_rey.municion',
-    carta: 'polvora_rey',
-    ventana: 'constante',
-    desde: 'juego',
-    modifica: (ctx, _yo, c) => {
-      if (c.tipo !== 'municionMaxima') return 0
-      const destino = DATOS.mejorasBarco.find((m) => m.id === copia(ctx.s, c.carta).id)
-      return destino?.canon ? numeroConIcono(textoDe('polvora_rey'), 'municion') : 0
-    },
-  },
-  {
     clave: 'mapa_calas.avance',
     carta: 'mapa_calas',
     ventana: 'constante',

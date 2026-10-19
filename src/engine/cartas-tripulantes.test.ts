@@ -98,16 +98,16 @@ describe('009 · Filibustero borracho', () => {
 })
 
 describe('010 · Cañonero', () => {
-  it('se agota y añade 1 de munición a un Cañón, sin pasar de su máximo', () => {
-    const j = Jugador.en({ tripulacion: ['canonero'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
-    j.usar('canonero.municion')
-    expect(j.copia('bronce').municion).toBe(2)
+  it('se agota y prepara un Cañón (fase 10b)', () => {
+    const j = Jugador.en({ tripulacion: ['canonero'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
+    j.usar('canonero.preparar')
+    expect(j.copia('bronce').agotada).toBe(false)
     expect(j.copia('canonero').agotada).toBe(true)
   })
 
-  it('no se ofrece si todos los Cañones están llenos', () => {
-    const j = Jugador.en({ tripulacion: ['canonero'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
-    expect(j.ofrece('usar', 'canonero.municion')).toBe(false)
+  it('no se ofrece si todos los Cañones están preparados', () => {
+    const j = Jugador.en({ tripulacion: ['canonero'], barco: { mejoras: ['bronce'] } })
+    expect(j.ofrece('usar', 'canonero.preparar')).toBe(false)
   })
 })
 

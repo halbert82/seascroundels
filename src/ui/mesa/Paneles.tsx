@@ -166,7 +166,7 @@ export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
           <h3>Secuencia del turno</h3>
           <ol>
             <li>
-              <b>Fase de Inicio:</b> revela una carta de Escenario y aplícala · prepara tus cartas · recarga la munición · efectos de «al empezar el turno».
+              <b>Fase de Inicio:</b> revela una carta de Escenario y aplícala · prepara tus cartas · efectos de «al empezar el turno».
             </li>
             <li>
               <b>Fase de Reclutamiento:</b> recluta, adquiere Mejoras, juega Eventos y despide, en cualquier orden · al terminar, descarta y repón el muelle.

@@ -40,8 +40,9 @@ export interface CopiaInicial {
 
 export interface MejoraInicial {
   id: CartaId
-  municion?: number
   agotada?: boolean
+  /** Fichas sobre la carta (la Pólvora del Rey). */
+  fichas?: number
 }
 
 export interface OpcionesSituacion {
@@ -185,8 +186,8 @@ export function montar(op: OpcionesSituacion = {}): Estado {
     const datos = typeof m === 'string' ? { id: m } : m
     const c = copiaDe(s, crearCopia(s, datos.id, 'mejoras'))
     c.vinculadaA = 'barco'
-    c.municion = datos.municion ?? 0
     c.agotada = datos.agotada ?? false
+    if (datos.fichas !== undefined) c.fichas = datos.fichas
   }
   s.danoBarco = op.barco?.dano ?? 0
   if (op.barco?.estados && op.barco.estados.length > 0) s.estadosBarco = [...op.barco.estados]
@@ -275,7 +276,7 @@ export function comprobarInvariantes(s: Estado, { json = true }: { json?: boolea
   if (json) comprobarJson(s, 'estado')
 
   for (const [inst, c] of Object.entries(s.cartas)) {
-    if (c.heridas < 0 || c.municion < 0 || c.avance < 0) throw new Error(`Contador negativo en ${inst}`)
+    if (c.heridas < 0 || (c.fichas ?? 0) < 0 || c.avance < 0) throw new Error(`Contador negativo en ${inst}`)
   }
   if (s.danoBarco < 0 || s.reputacion < 0) throw new Error('Contador negativo en la partida')
 

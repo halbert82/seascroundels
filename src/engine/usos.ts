@@ -8,6 +8,7 @@ import { cartaDeEstado } from './infoEstados.ts'
 import type { Capacidad, Coste, Estado, Evento, InstId, Uso, Ventana } from './tipos.ts'
 import { destinoVigente, mejoraActiva, valor } from './valores.ts'
 import { estaEn } from './zonas.ts'
+import { canonesPreparados } from './capacidades/comun.ts'
 
 /** Cada capacidad con la carta que la da, según desde dónde funciona. */
 /** Ventanas de las capacidades que «se usan»: un Tripulante Encadenado no puede usarlas. */
@@ -63,8 +64,6 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
       return fuente !== null
     case 'pagar':
       return s.zonas.mano.filter((c) => c !== fuente).length >= coste.n
-    case 'municion':
-      return fuente !== null && copia(s, fuente).municion >= coste.n
     case 'herida':
       return fuente !== null && estaEn(s, fuente, 'tripulacion')
     case 'agotarCapitan':
@@ -73,8 +72,8 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
       const rasgos = coste.rasgos ?? (coste.rasgo === null ? null : [coste.rasgo])
       return s.zonas.tripulacion.some((c) => !copia(s, c).agotada && (rasgos === null || rasgos.some((r) => rasgosDe(copia(s, c).id).includes(r))))
     }
-    case 'gastarMunicion':
-      return s.zonas.mejoras.reduce((n, m) => n + copia(s, m).municion, 0) >= coste.n
+    case 'agotarCanon':
+      return canonesPreparados(s).length > 0
     case 'agotarVarios': {
       const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
       return preparados.length >= coste.n || (coste.oRasgo !== undefined && preparados.some((c) => rasgosDe(copia(s, c).id).includes(coste.oRasgo ?? '')))

@@ -24,11 +24,11 @@ import {
   habilidadDe,
   heridasAsignados,
   mas,
-  municion,
-  municionTotal,
+  preparaCanon,
+  canonesListos,
   participantesCtx,
   pierdesAvance,
-  pierdesMunicion,
+  agotaCanones,
   preparar,
   reparar,
   reputacion,
@@ -47,7 +47,7 @@ function comprometidoLleva(s: Estado, id: CartaId): boolean {
 registrarPeligro('p2_desertores', {
   encuentros: {
     // Sin Prueba: gana 2 munición.
-    mar: { efecto: [municion(2)] },
+    mar: { efecto: [preparaCanon()] },
     nat: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'heridas', n: 1 })] },
     // Sin Prueba: el siguiente encuentro #Guardia# o #Militar# de esta misión recibe −2.
     ciu: { efecto: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia', 'Militar'], n: -2 } }] },
@@ -107,10 +107,10 @@ registrarPeligro('p2_aduana', {
     mar: {
       alRevelarse: [{ tipo: 'si', condicion: tienesLa('patente'), entonces: [{ tipo: 'incautar', que: 'mano', n: 1 }], sino: [{ tipo: 'incautar', que: 'mano', n: 2 }] }],
       exito: [{ tipo: 'recuperarIncautadas' }, robar(1)],
-      fallo: [pierdesMunicion(1)],
+      fallo: [agotaCanones(1)],
     },
     // No puedes comprometer más de 2 Tripulantes.
-    nat: { restriccion: { maximo: 2 }, fallo: [pierdesMunicion(1), comprometidoCon(mas('NAV'), { tipo: 'heridas', n: 1 })] },
+    nat: { restriccion: { maximo: 2 }, fallo: [agotaCanones(1), comprometidoCon(mas('NAV'), { tipo: 'heridas', n: 1 })] },
     ciu: {
       elige: [
         { texto: 'Le untas la mano: descarta 2 cartas y ganas el Avance sin Prueba', efectos: [descartar(2)] },
@@ -225,7 +225,7 @@ registrarPeligro('p2_rebato', {
       ],
       fallo: [dano(1), comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 })],
     },
-    nat: { exito: [municion(1)], fallo: [{ tipo: 'estadoBarco', estado: 'perseguido' }] },
+    nat: { exito: [preparaCanon()], fallo: [{ tipo: 'estadoBarco', estado: 'perseguido' }] },
     // Se queda en juego. Al terminar cada encuentro, 1 ficha; con 3, el agotado con menos Vida queda rehén y se
     // descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
     ciu: {
@@ -266,9 +266,9 @@ registrarPeligro('p2_quinto', {
   encuentros: {
     // +1 si tienes 3 o más munición.
     mar: {
-      capacidades: [dificultad('bodega', (ctx) => (municionTotal(ctx.s) >= 3 ? 1 : 0))],
-      exito: [municion(1), robar(1)],
-      fallo: [pierdesMunicion(2)],
+      capacidades: [dificultad('bodega', (ctx) => (canonesListos(ctx.s) >= 2 ? 1 : 0))],
+      exito: [preparaCanon(), robar(1)],
+      fallo: [agotaCanones(2)],
     },
     // Al revelarse: si tienes 5 o más cartas en la mano, +1.
     nat: {
@@ -282,7 +282,7 @@ registrarPeligro('p2_quinto', {
   // +0. Si superas, descarta 1 carta (con la Patente de corso, no pagas). Sin oposición: pierdes 1 munición.
   destino: {
     siSuperas: [{ tipo: 'si', condicion: { tipo: 'no', condicion: tienesLa('patente') }, entonces: [descartar(1)] }],
-    sinOposicion: [pierdesMunicion(1)],
+    sinOposicion: [agotaCanones(1)],
   },
 })
 
@@ -336,7 +336,7 @@ registrarPeligro('p2_morro', {
       },
     },
     // COM 6 (4 con un Artillero). Fallo: 3 heridas repartidas entre los comprometidos.
-    nat: { exito: [municion(2)], fallo: [heridasAsignados(3)] },
+    nat: { exito: [preparaCanon()], fallo: [heridasAsignados(3)] },
     ciu: {
       exito: [{ tipo: 'rescatarRehenes', siNo: [avance(1)] }],
       fallo: [
@@ -370,7 +370,7 @@ registrarPeligro('p2_horca', {
     mar: {
       capacidades: [habilidadDe('supersticiosos', (ctx, c) => (tieneRasgo(ctx.s, c, 'Marinero') ? -1 : 0))],
       exito: [robar(2)],
-      fallo: [dano(2), pierdesMunicion(1)],
+      fallo: [dano(2), agotaCanones(1)],
     },
     // +2 si algún Tripulante está Buscado.
     nat: {

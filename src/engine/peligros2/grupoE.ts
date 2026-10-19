@@ -27,7 +27,7 @@ import {
   heridasAsignados,
   mas,
   menos,
-  municion,
+  preparaCanon,
   participantesCtx,
   pierdesAvance,
   preparar,
@@ -197,7 +197,7 @@ registrarPeligro('p2_restos', {
               texto: 'Abrís el de ron: preparas a todos los Tripulantes agotados, pero quedan Borrachos',
               efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', cada: true }, hacer: varios({ tipo: 'preparar' }, estado('borracho')) }],
             },
-            { texto: 'Abrís el de pólvora: ganas 2 munición', efectos: [municion(2)] },
+            { texto: 'Abrís el de pólvora: ganas 2 munición', efectos: [preparaCanon()] },
           ],
         },
       ],
@@ -222,7 +222,7 @@ registrarPeligro('p2_presa', {
           tipo: 'elegir',
           opciones: [
             { texto: 'Saqueáis la bodega: robas 2', efectos: [robar(2)] },
-            { texto: 'Saqueáis la santabárbara: ganas 2 munición', efectos: [municion(2)] },
+            { texto: 'Saqueáis la santabárbara: ganas 2 munición', efectos: [preparaCanon()] },
           ],
         },
       ],
@@ -461,7 +461,7 @@ registrarPeligro('p2_serpiente_marina', {
     // Cada Artillero comprometido suma +1. Éxito: +2 munición. Fallo: 2 daños y, si ya tenía 2 o más, Velas rotas.
     mar: {
       capacidades: [habilidadDe('artilleros', (ctx, c) => (tieneRasgo(ctx.s, c, 'Artillero') ? 1 : 0))],
-      exito: [municion(2)],
+      exito: [preparaCanon()],
       // La condición se mira al aplicar el recuadro, antes de que llegue el daño («si ya tenía»).
       fallo: [dano(2), { tipo: 'si', condicion: { tipo: 'danoBarco', minimo: 2 }, entonces: [{ tipo: 'estadoBarco', estado: 'velasRotas' }] }],
     },

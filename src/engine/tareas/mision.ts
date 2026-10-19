@@ -302,6 +302,9 @@ export const ponerTesoro: Manejador<'ponerTesoro'> = (s, t, e) => {
   const vincular = (destino: InstId | 'barco') => {
     mover(s, t.carta, 'mejoras', 'abajo')
     copia(s, t.carta).vinculadaA = destino
+    // «Al entrar en juego, pon 3 fichas sobre esta carta» (Pólvora del Rey, fase 10b).
+    const fichas = /Al entrar en juego, pon (\d+) fichas/.exec(e2.carta.texto)?.[1]
+    if (fichas) copia(s, t.carta).fichas = Number(fichas)
     anotar(s, 'efecto', `Ganas el Tesoro «${e2.carta.nombre}» (${destino === 'barco' ? 'en el Barco' : `lo lleva ${nombre(s, destino)}`}).`)
   }
   if (e2.carta.tipo === 'Mejora de barco') {
