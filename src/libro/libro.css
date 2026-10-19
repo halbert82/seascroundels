@@ -1,0 +1,2166 @@
+/*
+ * Estilo del reglamento: pergamino claro que se imprima bien, IM Fell English SC en títulos, Alegreya en el texto y
+ * Alegreya Sans en notas y recuadros. La página A4 tiene una columna principal (reglas) y una exterior estrecha
+ * (notas temáticas, consejos y cartas), a la derecha en las impares y a la izquierda en las pares.
+ * Las reglas de página (@page, cabeceras, números) están en paginas.css, que lee Paged.js.
+ */
+
+:root {
+  --papel: #fbf7ec;
+  --papel-2: #f4ead4;
+  --papel-3: #e9d9b6;
+  --tinta: #2b2119;
+  --tinta-2: #4b3a2b;
+  --sepia: #7a5a3a;
+  --sepia-2: #a98a62;
+  --rojo: #9b2d20;
+  --oro: #b08636;
+  --oro-claro: #d8b86a;
+  --azul: #2d5c7d;
+  --verde: #4b6b36;
+  --ocre: #94650f;
+
+  /* Columna exterior y su separación de la principal. */
+  --lateral: 46mm;
+  --hueco: 6mm;
+  --desplaza: calc(var(--lateral) + var(--hueco));
+  --sangria: 5.5mm;
+}
+
+/* ------------------------------------------------------------------ */
+/* Pantalla: el libro sobre la mesa, con su barra                      */
+
+html,
+body {
+  margin: 0;
+}
+
+@media screen {
+  body {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232, 200, 119, 0.1), transparent 70%),
+      linear-gradient(180deg, #2a1f17 0%, #17110d 100%) fixed;
+    min-height: 100vh;
+    font-family: 'Alegreya Sans', sans-serif;
+  }
+
+  #origen {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 178mm;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  #cargando {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #eadcbf;
+    font: italic 20px 'Alegreya', serif;
+    letter-spacing: 0.02em;
+  }
+
+  .pagedjs_pages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 76px 0 48px;
+  }
+
+  body.doble .pagedjs_pages {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    width: calc(210mm * 2);
+    margin: 0 auto;
+    gap: 22px 0;
+  }
+
+  body.doble .pagedjs_first_page {
+    margin-left: 210mm;
+  }
+
+  .pagedjs_page {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 18px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  body.doble .pagedjs_left_page {
+    box-shadow: -14px 18px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  body.doble .pagedjs_right_page {
+    box-shadow: 14px 18px 40px rgba(0, 0, 0, 0.55);
+  }
+
+  /* Pliegue del lomo. */
+  body.doble .pagedjs_left_page .pagedjs_sheet {
+    background-image: linear-gradient(270deg, rgba(60, 40, 20, 0.16), transparent 9mm);
+  }
+
+  body.doble .pagedjs_right_page .pagedjs_sheet {
+    background-image: linear-gradient(90deg, rgba(60, 40, 20, 0.16), transparent 9mm);
+  }
+
+  body.imprimir .pagedjs_pages {
+    padding: 0;
+    gap: 0;
+  }
+
+  body.imprimir .pagedjs_page {
+    box-shadow: none;
+  }
+
+  .barra-libro {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 22px;
+    background: rgba(23, 17, 13, 0.92);
+    border-bottom: 1px solid rgba(201, 164, 92, 0.38);
+    backdrop-filter: blur(4px);
+    font-family: 'Alegreya Sans', sans-serif;
+  }
+
+  .barra-libro a {
+    color: #eadcbf;
+    text-decoration: none;
+  }
+
+  .barra-juego {
+    font-family: 'IM Fell English SC', serif;
+    font-size: 21px;
+    color: #e8c877 !important;
+  }
+
+  .barra-libros {
+    display: flex;
+    gap: 4px;
+    margin: 0 auto;
+  }
+
+  .barra-libros a {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    border: 1px solid transparent;
+  }
+
+  .barra-libros a.actual {
+    border-color: rgba(232, 200, 119, 0.6);
+    background: rgba(232, 200, 119, 0.12);
+    color: #f2e6cd;
+  }
+
+  .barra-libros a:hover,
+  .barra-juego:hover {
+    color: #fff;
+  }
+
+  .barra-pdf {
+    padding: 7px 16px;
+    border-radius: 6px;
+    font-weight: 800;
+    font-size: 14px;
+    background: linear-gradient(180deg, #e8c877, #c9a45c);
+    color: #2a2118 !important;
+  }
+}
+
+@media print {
+  #barra,
+  #cargando {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Página                                                              */
+
+.pagedjs_page {
+  background: var(--papel);
+}
+
+.pagedjs_sheet {
+  background-color: var(--papel);
+}
+
+/* Columna principal y exterior: en las impares la exterior queda a la derecha; en las pares, a la izquierda. */
+.pagedjs_right_page .flujo > :not(.ancho, .nota-tema, .consejo, .cartas-lado) {
+  margin-right: var(--desplaza);
+}
+
+.pagedjs_left_page .flujo > :not(.ancho, .nota-tema, .consejo, .cartas-lado) {
+  margin-left: var(--desplaza);
+}
+
+.libro {
+  font-family: 'Alegreya', Georgia, serif;
+  font-size: 9.9pt;
+  line-height: 1.4;
+  color: var(--tinta);
+  font-variant-numeric: lining-nums;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  text-rendering: optimizeLegibility;
+}
+
+.libro p {
+  margin: 0 0 2.2mm;
+  orphans: 2;
+  widows: 2;
+}
+
+.libro .md > :last-child {
+  margin-bottom: 0;
+}
+
+.libro .md {
+  margin-bottom: 2.6mm;
+}
+
+.libro strong {
+  font-weight: 700;
+  color: #22180f;
+}
+
+.libro em {
+  font-style: italic;
+}
+
+.libro ul,
+.libro ol {
+  margin: 0 0 2.4mm;
+  padding-left: var(--sangria);
+}
+
+.libro li {
+  margin-bottom: 1.1mm;
+}
+
+.libro ul > li::marker {
+  content: '◆  ';
+  color: var(--oro);
+  font-size: 0.62em;
+}
+
+.libro .md ol {
+  list-style: none;
+  counter-reset: paso;
+  padding-left: 6.6mm;
+}
+
+.libro .md ol > li {
+  counter-increment: paso;
+  position: relative;
+}
+
+/* Pasos numerados: el mismo círculo rojo que los marcadores de los gráficos. */
+.libro .md ol > li::before {
+  content: counter(paso);
+  position: absolute;
+  left: -6.6mm;
+  top: 0.45mm;
+  width: 4.5mm;
+  height: 4.5mm;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c0392b, #8e2219 75%);
+  color: #fff;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 900;
+  font-size: 7pt;
+  line-height: 4.5mm;
+  text-align: center;
+}
+
+.libro a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Remisiones: «véase «Destino», pág. 14». */
+.libro a.ref {
+  font-style: italic;
+}
+
+.libro .pag {
+  color: var(--sepia);
+  white-space: nowrap;
+}
+
+/* Página a la que remite un término en negrita (Referencia de reglas). */
+.libro a.pagref {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 0.66em;
+  font-weight: 700;
+  color: var(--sepia-2);
+  vertical-align: 0.42em;
+  margin-left: 0.12em;
+  letter-spacing: 0.02em;
+}
+
+/* Iconos en el texto. */
+.libro .ic {
+  display: inline-block;
+  width: 1.12em;
+  height: 1.12em;
+  vertical-align: -0.2em;
+  background-color: currentColor;
+  -webkit-mask: var(--m) center / contain no-repeat;
+  mask: var(--m) center / contain no-repeat;
+}
+
+.libro .hab {
+  white-space: nowrap;
+  font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 0.92em;
+  letter-spacing: 0.03em;
+}
+
+.libro .hab .ic {
+  margin-right: 0.12em;
+}
+
+.libro .hab-nav {
+  color: var(--azul);
+}
+
+.libro .hab-com {
+  color: var(--rojo);
+}
+
+.libro .hab-exp {
+  color: var(--ocre);
+}
+
+.libro .ic-ficha {
+  margin-right: 0.14em;
+}
+
+.libro .ic-ficha.i-herida {
+  color: #a3271c;
+}
+
+.libro .ic-ficha.i-dano {
+  color: #3d4a57;
+}
+
+.libro .ic-ficha.i-avance {
+  color: #6d4a22;
+}
+
+.libro .ic-ficha.i-municion {
+  color: #5b4630;
+}
+
+.libro .ic-ficha.i-rep {
+  color: #2b2119;
+}
+
+/* Iconos que no usan las cartas. */
+.i-timon {
+  --m: url(../../assets/iconos/timon.svg);
+}
+
+.i-capacidad {
+  --m: url(../../assets/iconos/capacidad.svg);
+}
+
+/* Tablas del texto. */
+.libro table.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.8pt;
+  line-height: 1.3;
+  margin: 1mm 0 3mm;
+}
+
+.libro table.tabla th {
+  text-align: left;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--sepia);
+  border-bottom: 0.8pt solid var(--sepia-2);
+  padding: 1.2mm 2mm;
+}
+
+.libro table.tabla td {
+  border-bottom: 0.4pt solid var(--papel-3);
+  padding: 1.2mm 2mm;
+  vertical-align: top;
+}
+
+.libro table.tabla tr:nth-child(even) td {
+  background: rgba(233, 217, 182, 0.28);
+}
+
+.pendiente {
+  color: #b0342a !important;
+  font-family: 'Alegreya Sans', sans-serif !important;
+  font-style: normal !important;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Ornamentos                                                          */
+
+.filete {
+  display: flex;
+  align-items: center;
+  gap: 2.4mm;
+  color: var(--oro);
+  margin: 1.6mm 0 3mm;
+}
+
+.filete-linea {
+  flex: 1;
+  height: 2.2pt;
+  border-top: 0.7pt solid currentColor;
+  border-bottom: 0.3pt solid currentColor;
+  opacity: 0.8;
+}
+
+.rosa {
+  flex: none;
+  color: var(--oro);
+}
+
+.marcador {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 6.2mm;
+  height: 6.2mm;
+  margin: -3.1mm 0 0 -3.1mm;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c0392b, #8e2219 75%);
+  color: #fff;
+  border: 0.7mm solid #fff;
+  box-shadow: 0 0.6mm 1.4mm rgba(0, 0, 0, 0.35);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 900;
+  font-size: 8.4pt;
+  line-height: 1;
+}
+
+.marcador.pequeno {
+  position: static;
+  margin: 0;
+  width: 4.6mm;
+  height: 4.6mm;
+  border-width: 0.45mm;
+  font-size: 6.8pt;
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Cubierta                                                            */
+
+.cubierta {
+  height: 297mm;
+  width: 210mm;
+  box-sizing: border-box;
+  padding: 9mm;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 40%, rgba(214, 170, 92, 0.18), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 120%, rgba(0, 0, 0, 0.6), transparent 70%),
+    linear-gradient(180deg, #2b1f16 0%, #1a120d 100%);
+  color: #f2e6cd;
+}
+
+.cubierta-marco {
+  height: 100%;
+  box-sizing: border-box;
+  border: 0.8mm solid #c9a45c;
+  outline: 0.3mm solid rgba(201, 164, 92, 0.6);
+  outline-offset: -2.2mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14mm 14mm 10mm;
+}
+
+.cubierta-juego {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 46pt;
+  line-height: 1;
+  color: #e8c877;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1mm 2mm rgba(0, 0, 0, 0.6);
+}
+
+.cubierta-lema {
+  margin-top: 3mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 700;
+  font-size: 9.5pt;
+  letter-spacing: 0.22em;
+  color: #c9a45c;
+}
+
+.cubierta-arte {
+  margin: 9mm 0 7mm;
+  padding: 2mm;
+  background: linear-gradient(135deg, #e8c877, #8c6a2c 50%, #e8c877);
+  box-shadow: 0 2mm 6mm rgba(0, 0, 0, 0.6);
+}
+
+.cubierta-arte img {
+  display: block;
+  width: 118mm;
+  height: 158mm;
+  object-fit: cover;
+}
+
+.cubierta-referencia .cubierta-arte img {
+  height: 150mm;
+  width: 150mm;
+}
+
+.cubierta .filete {
+  width: 100mm;
+  color: #c9a45c;
+  margin: 0 0 4mm;
+}
+
+.cubierta-libro {
+  margin: 0;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 34pt;
+  line-height: 1.05;
+  color: #f2e6cd;
+}
+
+.cubierta-pie {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4mm;
+  font-family: 'Alegreya', serif;
+  font-style: italic;
+  font-size: 11pt;
+  color: #d9c7a3;
+}
+
+.cubierta-version {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 8pt;
+  letter-spacing: 0.24em;
+  color: #a98a62;
+}
+
+/* ------------------------------------------------------------------ */
+/* Preliminares: cómo usar este libro, índice, créditos               */
+
+.preliminar,
+.creditos {
+  break-before: page;
+}
+
+.pagina-indice {
+  break-before: page;
+}
+
+.titulo-preliminar,
+.titulo-indice {
+  margin: 0;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 26pt;
+  line-height: 1.1;
+  color: var(--tinta);
+}
+
+.como-usar-texto {
+  font-size: 10.5pt;
+  max-width: 132mm;
+}
+
+.como-usar-libros {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5mm;
+  margin-top: 8mm;
+}
+
+.como-usar-libro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4mm;
+  padding: 5mm;
+  border: 0.4mm solid var(--papel-3);
+  border-radius: 1.5mm;
+  background: var(--papel-2);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9pt;
+}
+
+.como-usar-libro.actual {
+  border-color: var(--oro);
+  box-shadow: inset 0 0 0 0.3mm var(--oro);
+}
+
+.cul-titulo {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 15pt;
+}
+
+.indice ol {
+  list-style: none;
+  padding: 0;
+  margin: 6mm 0 0;
+  columns: 2;
+  column-gap: 10mm;
+}
+
+.indice-referencia ol {
+  columns: 3;
+  column-gap: 7mm;
+}
+
+.indice-linea {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2mm;
+  margin: 0 0 1.25mm;
+  break-inside: avoid;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9pt;
+}
+
+.indice-linea.nivel-1 {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 11.5pt;
+  margin-top: 2.6mm;
+}
+
+.indice-aprende .indice-linea.nivel-1:first-child {
+  margin-top: 0;
+}
+
+.indice-linea.nivel-2 {
+  padding-left: 4mm;
+  color: var(--tinta-2);
+}
+
+.indice-referencia .indice-linea {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.6pt;
+  margin: 0 0 0.9mm;
+}
+
+.indice-puntos {
+  flex: 1;
+  border-bottom: 0.9pt dotted var(--sepia-2);
+  transform: translateY(-0.9mm);
+  min-width: 4mm;
+}
+
+.indice-linea .num-pag {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 700;
+  font-size: 8.6pt;
+  color: var(--sepia);
+  min-width: 5mm;
+  text-align: right;
+}
+
+.creditos-lista {
+  display: grid;
+  grid-template-columns: 46mm 1fr;
+  gap: 3mm 6mm;
+  margin: 8mm 0;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9.5pt;
+}
+
+.creditos-lista dt {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--sepia);
+}
+
+.creditos-lista dd {
+  margin: 0;
+}
+
+.creditos-pie {
+  font-style: italic;
+  color: var(--tinta-2);
+  font-size: 9pt;
+}
+
+/* ------------------------------------------------------------------ */
+/* Apertura y capítulos                                               */
+
+.apertura {
+  break-before: page;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6mm 18mm 10mm;
+  text-align: center;
+}
+
+.apertura-ornamento {
+  color: var(--oro);
+  margin-bottom: 4mm;
+}
+
+.apertura-texto {
+  font-size: 12.5pt;
+  line-height: 1.5;
+  color: var(--tinta-2);
+}
+
+.apertura-texto p::first-letter {
+  font-family: 'IM Fell English SC', serif;
+  font-style: normal;
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.8;
+  margin: 0.06em 0.08em 0 0;
+  color: var(--rojo);
+}
+
+.apertura-texto p {
+  text-align: justify;
+}
+
+.capitulo.pagina-nueva {
+  break-before: page;
+}
+
+.capitulo:not(.pagina-nueva):not(.primero) {
+  margin-top: 7mm;
+}
+
+.cabecera-capitulo {
+  margin-bottom: 4mm;
+  break-after: avoid;
+}
+
+.titulo-capitulo {
+  margin: 0;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 23pt;
+  line-height: 1.05;
+  color: var(--tinta);
+}
+
+.cabecera-capitulo .filete {
+  margin: 1.4mm 0 2.4mm;
+}
+
+.epigrafe {
+  font-family: 'Alegreya', serif;
+  font-style: italic;
+  font-size: 10.5pt;
+  color: var(--tinta-2);
+  padding-left: 18mm;
+  text-align: right;
+}
+
+.epigrafe-texto p {
+  margin: 0;
+}
+
+.epigrafe-autor {
+  margin-top: 0.8mm;
+  font-style: normal;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 700;
+  font-size: 8pt;
+  letter-spacing: 0.1em;
+  color: var(--sepia);
+}
+
+.epigrafe.pendiente {
+  font-size: 9pt;
+}
+
+.subtitulo {
+  margin: 4.6mm 0 1.6mm;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 14pt;
+  line-height: 1.1;
+  color: var(--rojo);
+  break-after: avoid;
+}
+
+.subtitulo::before {
+  content: '';
+  display: inline-block;
+  width: 2.2mm;
+  height: 2.2mm;
+  margin-right: 2mm;
+  vertical-align: 0.5mm;
+  background: var(--oro);
+  transform: rotate(45deg);
+}
+
+/* Términos de juego la primera vez. */
+.libro strong.termino {
+  font-weight: 700;
+}
+
+/* Definiciones: «Agotado —». */
+.libro li > strong:first-child,
+.libro p > strong:first-child {
+  color: #1d140d;
+}
+
+/* ------------------------------------------------------------------ */
+/* Columna exterior: notas temáticas, consejos y cartas al lado       */
+
+.nota-tema {
+  width: var(--lateral);
+  box-sizing: border-box;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-style: italic;
+  font-size: 8.7pt;
+  line-height: 1.38;
+  color: #7a5a3a;
+  break-inside: avoid;
+}
+
+.nota-tema p {
+  margin: 0;
+}
+
+.pagedjs_right_page .nota-tema {
+  float: right;
+  clear: right;
+  margin: 0.6mm calc(-1 * var(--desplaza)) 3mm 0;
+  padding-left: 3mm;
+  border-left: 0.5pt solid var(--sepia-2);
+}
+
+.pagedjs_left_page .nota-tema {
+  float: left;
+  clear: left;
+  margin: 0.6mm 0 3mm calc(-1 * var(--desplaza));
+  padding-right: 3mm;
+  border-right: 0.5pt solid var(--sepia-2);
+  text-align: right;
+}
+
+/* Una nota suelta en el flujo ya está en el borde de la columna exterior. */
+.pagedjs_right_page .flujo > .nota-tema,
+.pagedjs_right_page .flujo > .consejo,
+.pagedjs_right_page .flujo > .cartas-lado {
+  margin-right: 0;
+}
+
+.pagedjs_left_page .flujo > .nota-tema,
+.pagedjs_left_page .flujo > .consejo,
+.pagedjs_left_page .flujo > .cartas-lado {
+  margin-left: 0;
+}
+
+/* Dentro de una lista, el borde del punto está más adentro. */
+.pagedjs_left_page li > .nota-tema {
+  margin-left: calc(-1 * var(--desplaza) - var(--sangria));
+}
+
+.nota-tema.pendiente {
+  font-style: normal;
+  font-size: 8.4pt;
+}
+
+.consejo {
+  width: var(--lateral);
+  box-sizing: border-box;
+  padding: 3mm 3.2mm;
+  border-radius: 1.4mm;
+  background: #e8efe0;
+  border: 0.4mm solid #9db08a;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.6pt;
+  line-height: 1.36;
+  break-inside: avoid;
+}
+
+.pagedjs_right_page .consejo {
+  float: right;
+  clear: right;
+  margin: 0 calc(-1 * var(--desplaza)) 3mm 0;
+}
+
+.pagedjs_left_page .consejo {
+  float: left;
+  clear: left;
+  margin: 0 0 3mm calc(-1 * var(--desplaza));
+}
+
+.consejo-cabecera {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--verde);
+  margin-bottom: 1mm;
+}
+
+.consejo p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Recuadros: ejemplo e importante                                    */
+
+.ejemplo {
+  margin: 1mm 0 4mm;
+  padding: 2.6mm 3.6mm 3mm;
+  background: var(--papel-2);
+  border-left: 1.1mm solid var(--oro);
+  border-radius: 0 1.6mm 1.6mm 0;
+  box-shadow: inset 0 0 0 0.25mm rgba(176, 134, 54, 0.35);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9pt;
+  line-height: 1.38;
+  break-inside: avoid;
+}
+
+.ejemplo-cabecera {
+  display: flex;
+  align-items: baseline;
+  gap: 2mm;
+  margin-bottom: 1.4mm;
+}
+
+.ejemplo-etiqueta {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 8pt;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: var(--oro);
+  padding: 0.3mm 1.8mm 0.5mm;
+  border-radius: 0.8mm;
+}
+
+.ejemplo-titulo {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 11.5pt;
+  color: var(--tinta);
+}
+
+.ejemplo-cuerpo {
+  display: flow-root;
+}
+
+.ejemplo-cartas {
+  float: right;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1.6mm;
+  max-width: 47mm;
+  margin: 0.4mm 0 1.6mm 3mm;
+}
+
+.ejemplo-texto p {
+  margin: 0 0 1.4mm;
+}
+
+.ejemplo-texto ol {
+  counter-reset: paso;
+  list-style: none;
+  padding-left: 0;
+}
+
+.ejemplo-texto ol > li {
+  counter-increment: paso;
+  position: relative;
+  padding-left: 6.4mm;
+}
+
+.ejemplo-texto ol > li::before {
+  content: counter(paso);
+  position: absolute;
+  left: 0;
+  top: 0.3mm;
+  width: 4.4mm;
+  height: 4.4mm;
+  border-radius: 50%;
+  background: var(--oro);
+  color: #fff;
+  font-weight: 900;
+  font-size: 7pt;
+  display: grid;
+  place-items: center;
+}
+
+.importante {
+  margin: 1mm 0 4mm;
+  padding: 2.6mm 3.6mm 3mm;
+  background: #f7e3dc;
+  border: 0.5mm solid var(--rojo);
+  border-radius: 1.6mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9.2pt;
+  break-inside: avoid;
+}
+
+.importante-cabecera {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--rojo);
+  margin-bottom: 1mm;
+}
+
+/* Cartas en pequeño. */
+.miniatura {
+  flex: none;
+  border-radius: 1.1mm;
+  overflow: hidden;
+  box-shadow: 0 0.5mm 1.4mm rgba(43, 33, 25, 0.38);
+  line-height: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Componentes                                                        */
+
+.componentes {
+  margin: 1mm 0 5mm;
+}
+
+.componentes-grupo {
+  margin: 0 0 2.6mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 10pt;
+  letter-spacing: 0.12em;
+  color: var(--sepia);
+  border-bottom: 0.5pt solid var(--sepia-2);
+  padding-bottom: 1mm;
+}
+
+.componentes-rejilla {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.2mm 4mm;
+}
+
+.componente {
+  display: flex;
+  gap: 2.4mm;
+  align-items: center;
+  break-inside: avoid;
+}
+
+.componente-abanico {
+  position: relative;
+  flex: none;
+  width: 25mm;
+  height: 26mm;
+}
+
+.componente-abanico .miniatura {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  transform-origin: 50% 120%;
+}
+
+.componente-texto {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.2pt;
+  line-height: 1.28;
+}
+
+.componente-nombre {
+  display: block;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 11.5pt;
+  line-height: 1.1;
+}
+
+.componente-cantidad {
+  display: inline-block;
+  margin-left: 1.4mm;
+  vertical-align: 0.4mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 900;
+  font-size: 8.4pt;
+  color: #fff;
+  background: var(--rojo);
+  border-radius: 999px;
+  padding: 0.1mm 1.6mm 0.3mm;
+}
+
+.componente-uso {
+  color: var(--tinta-2);
+  margin-top: 0.6mm;
+}
+
+.componente-numeros {
+  margin-top: 0.6mm;
+  font-weight: 700;
+  font-size: 7.4pt;
+  color: var(--sepia);
+  letter-spacing: 0.04em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Anatomía                                                           */
+
+.anatomia {
+  margin: 2mm 0 5mm;
+  break-inside: avoid;
+}
+
+.anatomia.numerada {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2mm 6mm;
+  align-items: start;
+}
+
+.anatomia.numerada .anatomia-leyenda {
+  padding-top: 3mm;
+}
+
+.anatomia.con-letras {
+  display: flex;
+  gap: 8mm;
+  align-items: center;
+}
+
+.anatomia-cartas {
+  display: flex;
+  gap: 0;
+  padding: 3mm 0;
+}
+
+.anatomia.con-letras .anatomia-letras {
+  min-width: 52mm;
+}
+
+.carta-anotada {
+  position: relative;
+  flex: none;
+}
+
+.lineas-guia {
+  position: absolute;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.lineas-guia line {
+  stroke: #8e2219;
+  stroke-width: 0.9;
+}
+
+.lineas-guia circle {
+  fill: #8e2219;
+  stroke: #fff;
+  stroke-width: 0.5;
+}
+
+.carta-anotada .miniatura {
+  border-radius: 2.2mm;
+  box-shadow: 0 1.2mm 3.6mm rgba(43, 33, 25, 0.42);
+}
+
+.anatomia-leyenda,
+.anatomia-letras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.8pt;
+  line-height: 1.34;
+}
+
+.anatomia-leyenda li,
+.anatomia-letras li {
+  display: flex;
+  gap: 2.2mm;
+  align-items: baseline;
+  margin-bottom: 1.6mm;
+}
+
+.anatomia-leyenda .marcador.pequeno,
+.anatomia-letras .marcador.pequeno {
+  transform: translateY(0.9mm);
+}
+
+/* ------------------------------------------------------------------ */
+/* Mesa                                                               */
+
+.mesa-diagrama {
+  margin: 2mm 0 5mm;
+  break-inside: avoid;
+}
+
+.mesa-tablero {
+  position: relative;
+  border-radius: 2.4mm;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(255, 250, 235, 0.6), transparent 80%),
+    repeating-linear-gradient(90deg, rgba(122, 90, 58, 0.06) 0 0.4mm, transparent 0.4mm 22mm),
+    #ecdfc2;
+  border: 0.4mm solid var(--sepia-2);
+  box-shadow: inset 0 0 6mm rgba(122, 90, 58, 0.22);
+}
+
+.mesa-pieza {
+  position: absolute;
+}
+
+.mesa-franja {
+  position: absolute;
+  left: 2mm;
+  right: 2mm;
+  border-top: 0.35mm dashed rgba(122, 90, 58, 0.45);
+  background: rgba(255, 250, 235, 0.35);
+  border-radius: 0 0 1.6mm 1.6mm;
+}
+
+.mesa-franja span {
+  position: absolute;
+  right: 3mm;
+  top: 1.4mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 6.6pt;
+  letter-spacing: 0.14em;
+  color: var(--sepia-2);
+}
+
+.mesa-hueco {
+  position: absolute;
+  box-sizing: border-box;
+  border: 0.35mm dashed var(--sepia-2);
+  border-radius: 1.2mm;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 1mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-style: italic;
+  font-size: 6.4pt;
+  line-height: 1.15;
+  color: var(--sepia);
+}
+
+.mesa-mano {
+  position: absolute;
+  width: 44mm;
+  height: 22mm;
+}
+
+.mesa-mano .miniatura {
+  position: absolute;
+  transform-origin: 50% 140%;
+}
+
+.mesa-reputacion {
+  display: flex;
+  align-items: center;
+  gap: 0.8mm;
+  height: 13mm;
+  padding: 0 2mm;
+  border-radius: 1.2mm;
+  background: rgba(255, 250, 235, 0.7);
+  border: 0.3mm solid var(--sepia-2);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 6.6pt;
+  color: var(--tinta-2);
+}
+
+.mesa-reputacion .ic {
+  width: 5mm;
+  height: 5mm;
+  color: var(--tinta);
+}
+
+.marca-rep {
+  width: 3.3mm;
+  height: 3.3mm;
+  border-radius: 50%;
+  border: 0.25mm solid var(--sepia-2);
+  display: grid;
+  place-items: center;
+  font-size: 5pt;
+}
+
+.marca-rep.actual {
+  background: var(--rojo);
+  border-color: var(--rojo);
+  color: #fff;
+}
+
+.mesa-rotulo {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 1mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 6.6pt;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  color: var(--tinta-2);
+}
+
+.mesa-pasos {
+  list-style: none;
+  margin: 5mm 0 0 !important;
+  padding: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2mm 8mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9pt;
+}
+
+.mesa-pasos li {
+  display: flex;
+  gap: 2mm;
+  align-items: center;
+  margin: 0 !important;
+}
+
+.mesa-pasos li::before {
+  content: none !important;
+}
+
+.mesa-diagrama figcaption,
+.anatomia figcaption {
+  margin-top: 1.6mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-style: italic;
+  font-size: 8.2pt;
+  color: var(--sepia);
+  text-align: center;
+}
+
+/* Dorsos de los mazos. */
+.dorso-libro {
+  position: relative;
+  box-sizing: border-box;
+  border-radius: 1.2mm;
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 42%, color-mix(in srgb, var(--dorso), #fff 16%), var(--dorso) 55%, color-mix(in srgb, var(--dorso), #000 55%));
+  box-shadow:
+    0.5mm 0.5mm 0 color-mix(in srgb, var(--dorso), #000 40%),
+    1mm 1mm 0 color-mix(in srgb, var(--dorso), #000 55%),
+    1.5mm 1.5mm 1.6mm rgba(0, 0, 0, 0.35);
+  padding: 0.8mm;
+}
+
+.dorso-libro-marco {
+  height: 100%;
+  box-sizing: border-box;
+  border: 0.3mm solid rgba(232, 200, 119, 0.75);
+  border-radius: 0.8mm;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8mm;
+  color: #e8c877;
+}
+
+.dorso-libro-icono {
+  width: 5mm !important;
+  height: 5mm !important;
+}
+
+.dorso-libro-nombre {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 5.6pt;
+  line-height: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* El turno                                                           */
+
+.turno {
+  margin: 1mm 0 5mm;
+  break-inside: avoid;
+}
+
+.turno-pasos {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  list-style: none;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.turno-paso {
+  position: relative;
+  margin: 0 !important;
+  padding: 3mm 6mm 3.2mm 4mm;
+  background: var(--papel-2);
+  border-top: 0.4mm solid var(--oro);
+  border-bottom: 0.4mm solid var(--oro);
+  clip-path: polygon(0 0, calc(100% - 4.5mm) 0, 100% 50%, calc(100% - 4.5mm) 100%, 0 100%, 4.5mm 50%);
+}
+
+.turno-paso:first-child {
+  clip-path: polygon(0 0, calc(100% - 4.5mm) 0, 100% 50%, calc(100% - 4.5mm) 100%, 0 100%);
+  border-left: 0.4mm solid var(--oro);
+}
+
+.turno-paso:nth-child(even) {
+  background: var(--papel-3);
+}
+
+.turno-paso + .turno-paso {
+  margin-left: -3mm !important;
+  padding-left: 7mm;
+}
+
+.turno-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 1.6mm;
+  margin-bottom: 1mm;
+}
+
+.turno-num {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 22pt;
+  line-height: 1;
+  color: var(--rojo);
+}
+
+.turno-icono {
+  width: 7mm !important;
+  height: 7mm !important;
+  color: var(--tinta-2);
+}
+
+.turno-titulo {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 12.5pt;
+  line-height: 1.1;
+}
+
+.turno-resumen {
+  margin-top: 1.2mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 7.4pt;
+  line-height: 1.3;
+  color: var(--tinta-2);
+}
+
+.turno-vuelta {
+  margin-top: 1.6mm;
+  text-align: right;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-style: italic;
+  font-size: 8pt;
+  color: var(--sepia);
+}
+
+.turno-vuelta span::before {
+  content: '↺ ';
+  font-style: normal;
+  color: var(--oro);
+}
+
+/* ------------------------------------------------------------------ */
+/* La Prueba                                                          */
+
+.prueba-flujo {
+  margin: 2mm 0 5mm;
+  padding: 4mm 4mm 4.4mm;
+  background: var(--papel-2);
+  border-radius: 2mm;
+  border: 0.35mm solid var(--papel-3);
+  font-family: 'Alegreya Sans', sans-serif;
+  break-inside: avoid;
+}
+
+.pf-fila {
+  display: flex;
+  align-items: stretch;
+}
+
+.pf-caja,
+.pf-salida {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8mm;
+  padding: 2.6mm 2.6mm 2.8mm;
+  background: var(--papel);
+  border: 0.35mm solid var(--sepia-2);
+  border-radius: 1.4mm;
+  font-size: 7.8pt;
+  line-height: 1.3;
+}
+
+.pf-num {
+  display: inline-grid;
+  place-items: center;
+  width: 4.4mm;
+  height: 4.4mm;
+  border-radius: 50%;
+  background: var(--rojo);
+  color: #fff;
+  font-weight: 900;
+  font-size: 7pt;
+  flex: none;
+}
+
+.pf-titulo {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 11pt;
+  line-height: 1.05;
+  color: var(--tinta);
+}
+
+.pf-texto {
+  color: var(--tinta-2);
+}
+
+.pf-nota {
+  margin-top: auto;
+  padding-top: 1mm;
+  border-top: 0.3pt dashed var(--sepia-2);
+  font-style: italic;
+  font-size: 7.2pt;
+  color: var(--sepia);
+}
+
+.pf-flecha {
+  flex: none;
+  width: 5mm;
+  align-self: center;
+  height: 3mm;
+  background: var(--sepia-2);
+  clip-path: polygon(0 35%, 60% 35%, 60% 0, 100% 50%, 60% 100%, 60% 65%, 0 65%);
+}
+
+.pf-ventana {
+  background: #fff6dc;
+  border: 0.5mm dashed var(--oro);
+  box-shadow: 0 0 0 1.2mm rgba(216, 184, 106, 0.28);
+}
+
+.pf-etiqueta {
+  position: absolute;
+  top: -2.6mm;
+  left: 2.6mm;
+  padding: 0.2mm 1.6mm 0.4mm;
+  border-radius: 0.8mm;
+  background: var(--oro);
+  color: #fff;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 6.6pt;
+  letter-spacing: 0.1em;
+}
+
+.pf-decision {
+  flex: 0.9;
+  display: grid;
+  place-items: center;
+}
+
+.pf-rombo {
+  position: relative;
+  width: 30mm;
+  height: 30mm;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-size: 7.8pt;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 6mm;
+  box-sizing: border-box;
+}
+
+.pf-rombo::before {
+  content: '';
+  position: absolute;
+  inset: 3.6mm;
+  transform: rotate(45deg);
+  background: var(--papel);
+  border: 0.35mm solid var(--sepia-2);
+  border-radius: 1mm;
+  z-index: 0;
+}
+
+.pf-rombo > * {
+  position: relative;
+  z-index: 1;
+}
+
+.pf-salidas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4mm;
+  margin-left: 40%;
+}
+
+.pf-si {
+  border-color: #7c9a64;
+  background: #edf3e6;
+}
+
+.pf-no {
+  border-color: #c07a6c;
+  background: #f8e9e4;
+}
+
+.pf-rama {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 900;
+  font-size: 7pt;
+  letter-spacing: 0.1em;
+}
+
+.pf-si .pf-rama {
+  color: var(--verde);
+}
+
+.pf-no .pf-rama {
+  color: var(--rojo);
+}
+
+.pf-avance {
+  display: block;
+  margin-top: 0.6mm;
+  font-weight: 700;
+}
+
+.pf-avance .pf-num {
+  margin-right: 1mm;
+  vertical-align: -0.3mm;
+}
+
+.pf-rama-flechas {
+  display: block;
+  width: 100%;
+  height: 4mm;
+  margin: 1.4mm 0 -1.2mm;
+  overflow: visible;
+}
+
+.pf-rama-flechas path {
+  fill: none;
+  stroke: var(--sepia-2);
+  stroke-width: 1.4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ------------------------------------------------------------------ */
+/* Ejemplo de juego a doble página                                     */
+
+.panel-ejemplo {
+  margin: 2mm 0 5mm;
+  padding: 4mm 4mm 3.4mm;
+  border-radius: 2.4mm;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(255, 250, 235, 0.6), transparent 80%),
+    repeating-linear-gradient(90deg, rgba(122, 90, 58, 0.06) 0 0.4mm, transparent 0.4mm 22mm),
+    #ecdfc2;
+  border: 0.4mm solid var(--sepia-2);
+  box-shadow: inset 0 0 6mm rgba(122, 90, 58, 0.22);
+}
+
+.panel-grupos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 4mm;
+}
+
+.panel-puerto .panel-grupos {
+  justify-content: flex-start;
+  gap: 4mm 8mm;
+}
+
+.panel-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+}
+
+.panel-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 1.4mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 7.6pt;
+  letter-spacing: 0.06em;
+  color: var(--tinta-2);
+}
+
+.panel-cartas {
+  display: flex;
+  gap: 1.8mm;
+  align-items: flex-start;
+}
+
+.panel-carta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2mm;
+}
+
+.panel-agotada {
+  position: relative;
+}
+
+.panel-agotada .miniatura {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.panel-insignia {
+  max-width: 24mm;
+  text-align: center;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 800;
+  font-size: 6.4pt;
+  line-height: 1.15;
+  padding: 0.3mm 1.4mm 0.5mm;
+  border-radius: 999px;
+  background: rgba(255, 250, 235, 0.85);
+  border: 0.25mm solid var(--sepia-2);
+  color: var(--tinta-2);
+}
+
+.panel-insignia.bien {
+  background: #e3eed8;
+  border-color: #7c9a64;
+  color: #2f4a1f;
+}
+
+.panel-insignia.mal {
+  background: #f6e0da;
+  border-color: #c07a6c;
+  color: #7a2318;
+}
+
+.panel-cuenta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4mm 6mm;
+  margin-top: 3.4mm;
+  padding-top: 2.4mm;
+  border-top: 0.35mm dashed var(--sepia-2);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.4pt;
+}
+
+.panel-resultado {
+  font-weight: 800;
+  color: var(--verde);
+}
+
+.paso-ejemplo .md {
+  margin-bottom: 2mm;
+}
+
+.ejemplo-de-juego .paso-ejemplo > .md > p:first-child > strong:first-child {
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 12pt;
+  color: var(--rojo);
+}
+
+/* ------------------------------------------------------------------ */
+/* Referencia de reglas                                               */
+
+.referencia {
+  break-before: page;
+}
+
+.aviso-referencia .md {
+  padding: 2.6mm 3.6mm;
+  background: #f7e3dc;
+  border: 0.5mm solid var(--rojo);
+  border-radius: 1.6mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9.2pt;
+  margin-bottom: 4mm;
+}
+
+.letra {
+  display: flex;
+  align-items: center;
+  gap: 3mm;
+  margin: 5mm 0 2.4mm;
+  color: var(--oro);
+  break-after: avoid;
+}
+
+.letra-linea {
+  flex: 1;
+  border-top: 0.5pt solid currentColor;
+}
+
+.letra-texto {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 20pt;
+  line-height: 1;
+  color: var(--rojo);
+}
+
+.entrada {
+  margin-bottom: 4mm;
+}
+
+.entrada-titulo {
+  margin: 0 0 1.2mm;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 13.5pt;
+  line-height: 1.1;
+  color: var(--tinta);
+  break-after: avoid;
+}
+
+.vease {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.4pt;
+  color: var(--tinta-2);
+  margin-top: 1mm !important;
+}
+
+.vease-rotulo {
+  font-style: italic;
+  color: var(--sepia);
+}
+
+.vease-termino {
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------------ */
+/* Contraportada: referencia rápida                                   */
+
+.contraportada {
+  height: 273mm;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8.5pt;
+  line-height: 1.32;
+}
+
+.cp-cabecera {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 3mm 5mm 3.4mm;
+  background: linear-gradient(180deg, #2b1f16, #1a120d);
+  border-radius: 1.6mm;
+  color: #f2e6cd;
+}
+
+.cp-juego {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 12pt;
+  color: #e8c877;
+}
+
+.cp-titulo {
+  margin: 0;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 22pt;
+}
+
+.cp-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  gap: 6mm;
+  margin-top: 4mm;
+  flex: 1;
+}
+
+.cp-apartado {
+  margin: 0 0 1.8mm;
+  padding-bottom: 0.8mm;
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 12.5pt;
+  color: var(--rojo);
+  border-bottom: 0.5pt solid var(--sepia-2);
+}
+
+.cp-apartado:not(:first-child) {
+  margin-top: 3.6mm;
+}
+
+.cp-turno,
+.cp-prueba {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cp-turno li,
+.cp-prueba li {
+  display: flex;
+  gap: 2mm;
+  margin-bottom: 1.4mm;
+}
+
+.cp-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 4.4mm;
+  height: 4.4mm;
+  border-radius: 50%;
+  background: var(--rojo);
+  color: #fff;
+  font-weight: 900;
+  font-size: 7pt;
+}
+
+.cp-paso {
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 10pt;
+  margin-right: 1mm;
+}
+
+.cp-ventana {
+  background: #fff3d2;
+  outline: 0.35mm dashed var(--oro);
+  outline-offset: 0.6mm;
+  border-radius: 0.6mm;
+}
+
+.cp-iconos {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cp-iconos td {
+  padding: 0.75mm 1mm;
+  border-bottom: 0.3pt solid var(--papel-3);
+  vertical-align: middle;
+}
+
+.cp-iconos td:first-child {
+  width: 30mm;
+}
+
+.simbolos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1mm;
+  align-items: center;
+}
+
+.simbolo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4mm;
+  padding: 0.2mm 1.2mm;
+  border-radius: 0.8mm;
+  background: var(--papel-2);
+  border: 0.25mm solid var(--papel-3);
+  font-weight: 900;
+  font-size: 7.4pt;
+  white-space: nowrap;
+}
+
+.simbolo .ic {
+  width: 3.8mm;
+  height: 3.8mm;
+}
+
+.simbolo-texto {
+  font-weight: 700;
+  font-size: 6.8pt;
+}
+
+.icono-herida .ic {
+  color: #a3271c;
+}
+
+.icono-rep .ic,
+.icono-agotar .ic,
+.icono-descartar .ic {
+  color: var(--tinta);
+}
+
+.ic.tachado {
+  position: relative;
+  opacity: 0.55;
+}
+
+.cp-estados-intro {
+  font-size: 7.6pt;
+  color: var(--tinta-2);
+  margin-bottom: 1.6mm;
+}
+
+.cp-estados {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 7.6pt;
+  line-height: 1.26;
+}
+
+.cp-estados th {
+  width: 23mm;
+  text-align: left;
+  vertical-align: top;
+  padding: 0.9mm 1.4mm 0.9mm 0;
+  font-weight: 800;
+}
+
+.cp-estados th small {
+  display: block;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 700;
+  font-size: 6pt;
+  letter-spacing: 0.06em;
+  color: var(--sepia);
+}
+
+.cp-estados td {
+  padding: 0.9mm 0;
+  vertical-align: top;
+}
+
+.cp-estados tr {
+  border-bottom: 0.3pt solid var(--papel-3);
+}
+
+.cp-clase-ventaja th {
+  color: var(--verde);
+}
+
+.cp-clase-barco th {
+  color: #2f4f69;
+}
+
+.cp-quita {
+  display: block;
+  margin-top: 0.3mm;
+  font-style: italic;
+  color: var(--sepia);
+}
+
+.cp-quita::before {
+  content: '↳ ';
+  font-style: normal;
+  color: var(--sepia-2);
+}
+
+.cp-quita:empty,
+.cp-quita.vacia {
+  display: none;
+}
+
+.cp-filete {
+  margin-top: 3mm;
+}
+
+/* Referencia de reglas: pestañas de letras en el borde exterior. */
+.pestanas-letras {
+  position: absolute;
+  top: 26mm;
+  bottom: 26mm;
+  width: 6.4mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 8.4pt;
+  line-height: 1;
+  text-align: center;
+  color: var(--sepia-2);
+}
+
+.pagedjs_right_page .pestanas-letras {
+  right: 0;
+}
+
+.pagedjs_left_page .pestanas-letras {
+  left: 0;
+}
+
+.pestanas-letras span {
+  padding: 0.9mm 0;
+}
+
+.pestanas-letras span.actual {
+  background: var(--rojo);
+  color: #fff;
+}
+
+.pagedjs_right_page .pestanas-letras span.actual {
+  border-radius: 1.2mm 0 0 1.2mm;
+}
+
+.pagedjs_left_page .pestanas-letras span.actual {
+  border-radius: 0 1.2mm 1.2mm 0;
+}
+
+.cp-estados-nota {
+  margin: 0 0 1mm !important;
+  font-style: italic;
+  font-size: 7.4pt;
+  color: var(--sepia);
+}
+
+/* Páginas en blanco (antes de la contraportada o de un capítulo a la izquierda): una rosa de los vientos. */
+.pagedjs_blank_page .pagedjs_sheet {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-10 -10 20 20'%3E%3Cpath d='M0-10L2-2 10 0 2 2 0 10-2 2-10 0-2-2Z' fill='%23d8c29a'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 22mm;
+}
+
+/* En la página donde empieza un capítulo no hace falta la cabecera corrida. */
+.pagina-de-apertura .pagedjs_margin-top-left,
+.pagina-de-apertura .pagedjs_margin-top-right {
+  visibility: hidden;
+}
+
+.libro h4.componentes-grupo {
+  margin-top: 2mm;
+}

@@ -115,3 +115,56 @@
 .portada .enlace:hover {
   color: var(--oro);
 }
+
+/* Los dos libros del reglamento. */
+.portada-reglamento {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 14px;
+  margin-top: 26px;
+}
+
+.portada-reglamento-rotulo {
+  font: 800 12px 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--texto-tenue);
+}
+
+.portada-libro {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid rgba(201, 164, 92, 0.55);
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(23, 17, 13, 0.55);
+}
+
+.portada-libro a {
+  text-decoration: none;
+  color: var(--texto-claro);
+  font: 700 15px 'Alegreya Sans', sans-serif;
+  padding: 8px 14px;
+}
+
+.portada-libro a.libro {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.portada-libro a.pdf {
+  border-left: 1px solid rgba(201, 164, 92, 0.4);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--oro);
+  display: grid;
+  place-items: center;
+}
+
+.portada-libro a:hover {
+  background: rgba(232, 200, 119, 0.14);
+  color: #fff;
+}

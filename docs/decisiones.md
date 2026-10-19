@@ -256,5 +256,43 @@ Cambio de regla de Albert: jugando, el Avance llegaba entero aunque no hicieras 
 - **Valor por defecto:** Y = la mitad de X, redondeando hacia abajo, en los 154 encuentros con Prueba (Peligros 2.0, La Armada y los mazos propios del Templo y la Escolta). Va en los datos de cada carta (`avanceSinSuperar`) para retocarlo carta a carta. Reparto: 40 encuentros de 1 / 0, 85 de 2 / 1, 27 de 3 / 1 y 2 de 4 / 2.
 - **En la carta y en la mesa:** el Avance se ve como «3 / 1», con el segundo más pequeño y atenuado. Antes de decidir, el panel de la Prueba avisa «Si la superas: +3 · Si no la superas: +1», con lo que da la misión de más (lo que depende de superarla por 2 o más no se cuenta en el aviso).
 - **Jugador automático:** cuenta el Avance que deja de ganar al fallar (X − Y) como parte del coste de fallar: al decidir a quién compromete, al elegir en un «Elige» y al valorar el riesgo de un encuentro.
-- **Informe de equilibrio:** compara tres reglas con las mismas partidas: como estaba (Avance entero siempre), la regla del juego (Y = mitad de X) y, solo simulada, Y = X − 1 (mínimo 0).
+- **Informe de equilibrio:** compara, con las mismas 1000 partidas, la regla del juego con cuatro variantes solo simuladas (19 de octubre de 2026, pedido por Albert; el juego no cambia):
 
+  | Variante | Victorias | Derrotas por tiempo | Derrotas por Capitán | Retiradas por partida | Turnos por partida |
+  | --- | --- | --- | --- | --- | --- |
+  | a) Regla del juego: Y = mitad de X, abajo (1/0, 2/1, 3/1, 4/2) | 19,5 % | 59,4 % | 21,1 % | 2,32 | 9,8 |
+  | b) Y = X − 1, mínimo 1 (1/1, 2/1, 3/2, 4/3) | 36,2 % | 48,6 % | 15,2 % | 1,54 | 9,9 |
+  | c) Y = mitad de X, arriba (1/1, 2/1, 3/2, 4/2) | 35,9 % | 49,0 % | 15,1 % | 1,56 | 9,9 |
+  | d) Como a), y cada misión pide 1 de Avance menos (mínimo 2) | 46,4 % | 39,0 % | 14,6 % | 1,36 | 9,9 |
+  | Referencia: como estaba antes, Avance entero siempre | 54,2 % | 36,6 % | 9,2 % | 1,05 | 10,0 |
+
+  b y c casi no se distinguen: solo cambian los encuentros de Avance 4 (6 en todo el juego). Lo que más pesa es que un encuentro de Avance 1 dé 1 aunque falles (hay 64) y uno de 3 dé 2 (hay 47).
+
+### Pendiente de Albert
+
+- **Variante del Avance doble:** elegir a, b, c o d (o dejar a). No se ha aplicado ninguna.
+
+
+## Fase 9: reglamento en dos libros, ampliación junto a la carta y barra fija (19 de octubre de 2026)
+
+### Hecho (sin cambiar reglas)
+
+- **Glosario de Estados** (reglamento, entrada «Estado» y tabla de la referencia rápida): cada Estado «se quita con la Taberna (o el Astillero) o con cualquier carta que lo diga», con una o dos cartas de ejemplo.
+- **Reglamento en dos libros** («Aprende a jugar» y «Referencia de reglas»), generados con `npm run reglamento` desde docs/reglamento-v1.0.md, publicados en la web (reglamento/aprende-a-jugar.html y referencia-de-reglas.html) y en PDF (se generan al publicar). Marcas nuevas en el reglamento: `[!tema]`, `[!ejemplo] Título`, `[!importante]`, `[!consejo]`, `[!epigrafe] Autor` y `[!grafico] nombre` (explicadas en un comentario al principio del reglamento).
+- **Las 8 notas temáticas** pedidas, en su sitio. La de Diego («Un capitán manda desde el alcázar…») va en la entrada «Comprometer» de la Referencia: «Aprende a jugar» no tiene un párrafo con esa regla (solo la cuenta el ejemplo de juego).
+- **Barra superior que desaparecía:** la causa era el registro de partida, no el Destino (ver el commit «Mesa: la barra superior ya no desaparece»). Prueba: `npm run comprobar:barra`.
+
+### Pendiente de Albert (TODO(diseño))
+
+- **Títulos de los ejemplos.** Los 40 ejemplos llevan ahora la marca `[!ejemplo] Título`; los títulos («Pagar en el muelle», «Un Abordaje sin nadie comprometido»…) los he puesto yo. Cámbialos en el reglamento si quieres otros.
+- **«Consulta también» → «Véase también».** Cambiado en el reglamento (también en el aviso «¡Alto!»), como pedías para el final de cada entrada.
+- **«Véase también» automático.** Además de las remisiones escritas, cada entrada añade hasta 4 términos que nombra (sin Tripulante, Capitán, Prueba, Barco, Misión ni Encuentro, que salen en casi todas). Alternativa: solo las escritas.
+- **Términos en negrita en la Referencia:** la primera vez que una entrada nombra otro término con entrada, va en negrita y con su página en pequeño (Prueba¹⁹). En «Aprende a jugar», cada término va en negrita solo la primera vez que sale en el libro.
+- **Remisiones entre libros** («véase «Capacidades de las cartas» en *Aprende a jugar*») van sin número de página; las del mismo libro, con página.
+- **Iconos en el texto:** NAV, COM y EXP siempre con su icono; heridas, daño, Avance, munición y reputación solo cuando van con número («3 [daño] daños»).
+- **Epígrafes y notas que faltan:** cada capítulo sin epígrafe muestra «[epígrafe pendiente]» y cada capítulo sin nota, «[nota pendiente]» en la columna exterior. Los créditos dejan «[pendiente]» en pruebas de juego y agradecimientos; el resto del texto de créditos es provisional.
+- **Ejemplo de juego a doble página:** los dos paneles (qué cartas pagan, quién se recluta, la cuenta de la Prueba) están escritos a mano para ese ejemplo; si cambia el ejemplo, hay que cambiarlos (`src/libro/graficos.tsx`).
+- **Anatomía de Misión:** uso «La selva» (119) en vez de «El prisionero de Portobelo» de la lámina, porque la recompensa de Portobelo (con el Pasajero) no cabe en su recuadro y el texto se monta. Ese defecto es de la carta dibujada (también en la galería y en la mesa): está por arreglar.
+- **Páginas:** empiezan en página nueva Componentes, Anatomía, Preparación (a la izquierda, para que mire al diagrama de la mesa), El turno, Las misiones, Heridas…, Ejemplo de juego (a la izquierda: doble página) y Construir tu mazo. La contraportada va siempre en página par; si hace falta, queda una página en blanco antes (con una rosa de los vientos).
+- **Ampliación en tableta (parte C):** tocar una carta la amplía y, si la carta tiene una acción, el mismo toque también la hace (como ratón encima + clic). Alternativa: que el primer toque solo amplíe y la acción pida un segundo toque o una pulsación larga.
+- **Glosario de la mesa:** sigue nombrando todas las cartas que quitan cada Estado (el reglamento ya no). ¿Lo hago genérico también?

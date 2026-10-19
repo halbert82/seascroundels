@@ -82,6 +82,7 @@ export function CartaMesa(p: PropsCartaMesa) {
       {...(esPeligro && v2 && p.entorno ? { 'data-entorno': p.entorno } : {})}
       style={{ width: ancho * p.escala, height: alto * p.escala }}
       // Con el dedo, tocarla también la amplía; primero la ampliación, para que un menú de la carta la quite.
+      // TODO(diseño): en tableta, un toque amplía y además hace la acción de la carta (docs/decisiones.md, fase 9).
       onClick={(e) => {
         ampliable.alPulsar(e.currentTarget)
         p.onClick?.(e.currentTarget)

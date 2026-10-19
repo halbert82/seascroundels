@@ -1,0 +1,170 @@
+/*
+ * Reglas de página del reglamento. Las lee Paged.js (no Vite): A4 con márgenes en espejo, cabecera corrida y número
+ * de página en el borde exterior. Las impares (recto) llevan la columna exterior a la derecha; las pares, a la
+ * izquierda (ver libro.css).
+ */
+
+@page {
+  size: A4;
+  margin-top: 21mm;
+  margin-bottom: 19mm;
+
+  @top-left {
+    font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+    font-weight: 800;
+    font-size: 7.4pt;
+    letter-spacing: 0.14em;
+    color: #8a6a45;
+    vertical-align: bottom;
+    padding-bottom: 4.5mm;
+  }
+  @top-right {
+    font-family: 'Alegreya Sans SC', 'Alegreya Sans', sans-serif;
+    font-weight: 800;
+    font-size: 7.4pt;
+    letter-spacing: 0.14em;
+    color: #8a6a45;
+    vertical-align: bottom;
+    padding-bottom: 4.5mm;
+  }
+  @bottom-left {
+    font-family: 'IM Fell English SC', Georgia, serif;
+    font-size: 11pt;
+    color: #5a4330;
+    vertical-align: top;
+    padding-top: 5mm;
+  }
+  @bottom-right {
+    font-family: 'IM Fell English SC', Georgia, serif;
+    font-size: 11pt;
+    color: #5a4330;
+    vertical-align: top;
+    padding-top: 5mm;
+  }
+}
+
+@page :right {
+  margin-left: 19mm;
+  margin-right: 13mm;
+  @top-right {
+    content: string(libro) '  ·  ' string(seccion, first);
+    text-align: right;
+  }
+  @bottom-right {
+    content: counter(page);
+    text-align: right;
+  }
+}
+
+@page :left {
+  margin-left: 13mm;
+  margin-right: 19mm;
+  @top-left {
+    content: string(libro) '  ·  ' string(seccion, first);
+    text-align: left;
+  }
+  @bottom-left {
+    content: counter(page);
+    text-align: left;
+  }
+}
+
+@page cubierta {
+  margin: 0;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page contraportada {
+  margin: 12mm 12mm 12mm 12mm;
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+@page preliminar {
+  @top-left { content: none; }
+  @top-right { content: none; }
+}
+
+@page :blank {
+  @top-left { content: none; }
+  @top-right { content: none; }
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+.cubierta {
+  page: cubierta;
+}
+
+.contraportada {
+  page: contraportada;
+  break-before: left;
+}
+
+.preliminar {
+  page: preliminar;
+}
+
+.nombre-libro {
+  string-set: libro content(text);
+}
+
+.titulo-capitulo,
+.entrada-titulo,
+.marca-seccion {
+  string-set: seccion content(text);
+}
+
+/* Números de página de las remisiones, del índice y de los términos de la Referencia. */
+a.num-pag::after,
+a.pagref::after {
+  content: target-counter(attr(href), page);
+}
+
+/* Saltos de página (Paged.js solo los ve si están en esta hoja). */
+.preliminar,
+.pagina-indice,
+.apertura,
+.capitulo.pagina-nueva,
+.referencia,
+.creditos {
+  break-before: page;
+}
+
+.ejemplo-de-juego,
+#a-preparacion-de-la-partida {
+  break-before: left;
+}
+
+.panel-mision {
+  break-before: right;
+}
+
+.cabecera-capitulo,
+.subtitulo,
+.entrada-titulo,
+.letra,
+.componentes-grupo {
+  break-after: avoid;
+}
+
+.ejemplo,
+.importante,
+.consejo,
+.nota-tema,
+.cartas-lado,
+.anatomia,
+.mesa-diagrama,
+.turno,
+.prueba-flujo,
+.panel-ejemplo,
+.componente,
+.indice-linea,
+.cp-estados tr {
+  break-inside: avoid;
+}

@@ -3,6 +3,7 @@
 import { motion } from 'motion/react'
 import arteGaleon from '../../../assets/arte/cap_galeon.jpg'
 import { partidaGuardada } from '../mesa/usePartida.ts'
+import { LIBROS } from '../reglamento.ts'
 import './portada.css'
 
 export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: () => void }) {
@@ -31,6 +32,19 @@ export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: ()
             Nueva partida
             <small>Diego «Garra» Mendoza en Tortuga · partida normal</small>
           </button>
+        </div>
+        <div className="portada-reglamento">
+          <span className="portada-reglamento-rotulo">Reglamento</span>
+          {LIBROS.map((l) => (
+            <span key={l.nombre} className="portada-libro">
+              <a className="libro" href={l.web}>
+                {l.nombre}
+              </a>
+              <a className="pdf" href={l.pdf} download title={`Descargar «${l.nombre}» en PDF`}>
+                PDF
+              </a>
+            </span>
+          ))}
         </div>
         <button type="button" className="enlace" onClick={() => irA('/galeria')}>
           Galería de cartas

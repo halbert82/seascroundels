@@ -2964,3 +2964,38 @@
   border: 1px solid var(--acento);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
+
+/* Enlaces al reglamento en la ayuda. */
+.ayuda-libros {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 4px 0 16px;
+  font: 700 14px 'Alegreya Sans', sans-serif;
+  color: var(--texto-tenue);
+}
+
+.ayuda-libro {
+  display: inline-flex;
+  border: 1px solid rgba(201, 164, 92, 0.5);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.ayuda-libro a {
+  padding: 5px 11px;
+  color: var(--texto-claro);
+  text-decoration: none;
+}
+
+.ayuda-libro a.pdf {
+  border-left: 1px solid rgba(201, 164, 92, 0.4);
+  color: var(--oro);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.ayuda-libro a:hover {
+  background: rgba(232, 200, 119, 0.14);
+}

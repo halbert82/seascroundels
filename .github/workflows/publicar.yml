@@ -27,6 +27,9 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      # Los dos libros del reglamento en PDF (Paged.js y el Chromium de Playwright), junto a la web.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run reglamento:pdf
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

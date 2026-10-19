@@ -101,6 +101,8 @@ Recursos visuales:
 7. **Misiones 2.0:** reglas y recompensas nuevas de las 12 misiones, capítulos II-a/II-b, Pasajeros, fichas de misión, Gesta, finales con elección, «¡La guardia!» y los mazos propios con el formato 2.0 (cartas 218–225). Para las pruebas de cartas y reglas generales hay misiones de prueba sin reglas (`pruebas-mar5`, `pruebas-nat3`…).
 8. **Reglamento al día, Estados y Ventajas, puertos y Escenario 2.0:** el reglamento recoge las reglas de Peligro de la fase 6; Inspirado y Aguerrido pasan a ser Ventajas; Taberna y Astillero quitan los Estados; las 14 cartas de Escenario nuevas. Para las pruebas que solo necesitan pasar turnos hay una carta de Escenario de prueba sin efecto (`pruebas-calma`).
 
+9. **Reglamento maquetado:** dos libros («Aprende a jugar» y «Referencia de reglas») generados desde `docs/reglamento-v1.0.md` con `npm run reglamento` (React + Paged.js en `src/libro/`, PDF con el Chromium de Playwright; la publicación los genera). Las marcas `[!tema]`, `[!ejemplo]`, `[!importante]`, `[!consejo]`, `[!epigrafe]` y `[!grafico]` están explicadas al principio del reglamento. No se toca nada a mano: si algo sale mal maquetado, se arregla en la maqueta o en el reglamento.
+
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
 ## Decisiones de reglas

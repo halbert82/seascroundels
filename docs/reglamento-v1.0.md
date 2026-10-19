@@ -1,3 +1,19 @@
+<!--
+Marcas para la maqueta (npm run reglamento). Van como citas de Markdown:
+
+> [!tema]                 Nota temática. Justo después del párrafo que comenta (o dentro de un punto de lista,
+> Texto…                  sangrada como él): sale en la columna exterior, alineada con ese párrafo.
+> [!ejemplo] Título       Ejemplo de juego. Las cartas que nombra salen en pequeño; si lleva una lista
+> Texto…                  numerada, se dibuja como pasos.
+> [!importante]           Recuadro destacado para las reglas que más se olvidan.
+> [!consejo]              Consejo de estrategia para la primera partida.
+> [!epigrafe] Autor       Cita al principio de un capítulo (justo después de su título «###»). La primera
+> «Texto…»                línea tras la marca es la atribución; el resto, la cita.
+> [!grafico] nombre       Lugar de un gráfico: anatomia <tipo>, mesa, turno, prueba, ejemplo-de-juego.
+
+Sin [!epigrafe], el capítulo muestra «[epígrafe pendiente]»; sin ninguna [!tema], «[nota pendiente]».
+-->
+
 # Reglamento — v1.0
 
 Oct 18, 2026 · @Albert
@@ -77,7 +93,7 @@ Esta sección explica qué información lleva cada tipo de carta y dónde está.
 
 #### Capitán y Tripulantes
 
-&#91;image: Anatomía de una carta de Tripulante\]
+> [!grafico] anatomia tripulante
 
 1. **Coste:** el número del timón, arriba a la izquierda. El Capitán no tiene coste.
 2. **Nombre.** Una estrella (★) delante indica que la carta es única.
@@ -96,21 +112,29 @@ El Capitán lleva además su **Mando** en una pestaña de la derecha: el número
 
 Tienen coste, nombre, tipo, Rasgos (si los tienen) y texto, igual que un Tripulante. Las **Mejoras de barco** indican el Espacio que ocupan con cuadros dorados bajo el título, a la derecha: un cuadro por punto de Espacio. Si no llevan cuadros, no ocupan Espacio. Las Mejoras de tripulante ocupan un hueco de Mejora cada una. Las cartas con **munición** la indican en una pestaña de la derecha.
 
+> [!grafico] anatomia mejora
+
 #### Eventos y Habilidades
 
 Los **Eventos** tienen coste, texto y uno o dos **iconos de habilidad** en las pestañas de la izquierda. Las **Habilidades** no tienen coste ni texto: solo iconos de habilidad.
+
+> [!grafico] anatomia evento
 
 #### Barco
 
 A la derecha, de arriba abajo: **Daño máximo** (el barco), **Capacidad** (las tres figuras) y **Espacio** (la caja). Debajo, su texto de juego.
 
+> [!grafico] anatomia barco
+
 #### Puerto
 
 La carta de puerto tiene el texto a la izquierda y la ilustración a la derecha. Indica el tamaño de su **muelle** (arriba a la derecha) y las opciones que tienes si te quedas en puerto.
 
+> [!grafico] anatomia puerto
+
 #### Misión
 
-&#91;image: Anatomía de una carta de Misión\]
+> [!grafico] anatomia mision
 
 1. **Sello:** el número de capítulo y cuántos tiene la travesía («II de III»).
 2. **Travesía y nombre.** Encima del nombre va la travesía a la que pertenece, «Aventura» o «Misión inicial».
@@ -124,7 +148,7 @@ La carta de puerto tiene el texto a la izquierda y la ilustración a la derecha.
 
 Cada carta de Peligro tiene **tres encuentros** y una **franja de Destino**.
 
-&#91;image: Anatomía de una carta de Peligro\]
+> [!grafico] anatomia peligro
 
 1. **Entorno del encuentro:** la franja de color de la izquierda (azul Mar, verde Naturaleza, marrón Ciudad). Durante una misión solo lees el encuentro de su Entorno.
 2. **Nombre y palabras clave** del encuentro.
@@ -136,6 +160,8 @@ Cada carta de Peligro tiene **tres encuentros** y una **franja de Destino**.
 #### Escenario
 
 Nombre, texto y frase de ambientación. Su efecto se aplica al revelarla, al empezar el turno. Si dice **Elige**, decides en ese momento qué opción aplicas. Lo que dice «este turno» dura hasta el final del turno.
+
+> [!grafico] anatomia escenario
 
 ### Las reglas de oro
 
@@ -161,7 +187,8 @@ El texto de juego de una carta se compone de capacidades. Cada una empieza de un
 
 Una capacidad con **(Límite de una vez por turno.)** solo se puede usar una vez cada turno. Las palabras clave, como Indestructible, van en la primera línea del texto, cada una seguida de un punto.
 
-> *Ejemplo:* el Grumete leal dice «**Interrupción:** Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para evitarlas». Un Tiburón va a hacerle 1 herida a Diego: antes de que la sufra, descartas al Grumete y Diego no se lleva nada.
+> [!ejemplo] Una Interrupción
+> El Grumete leal dice «**Interrupción:** Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para evitarlas». Un Tiburón va a hacerle 1 herida a Diego: antes de que la sufra, descartas al Grumete y Diego no se lleva nada.
 
 ### Preparación de la partida
 
@@ -185,7 +212,7 @@ Prepara la partida siguiendo estos pasos:
 
 Ya puedes empezar el primer turno. Tu tripulación empieza con el Capitán solo: tus primeros Tripulantes los reclutarás en el primer turno.
 
-&#91;embedded content: la mesa al empezar · esquema provisional\]
+> [!grafico] mesa
 
 ### El turno
 
@@ -195,6 +222,8 @@ La partida se juega en turnos. Cada turno empieza y acaba en puerto, y tiene cua
 2. Jugar cartas
 3. Quedarte o zarpar
 4. Final
+
+> [!grafico] turno
 
 #### 1. Inicio
 
@@ -214,9 +243,13 @@ En este paso puedes hacer estas acciones tantas veces como quieras y en el orden
 
 Para **pagar un coste**, descarta de tu mano tantas cartas como indique el timón.
 
+> [!tema]
+> Cada carta de tu mano es tiempo, contactos y favores. Lo que gastas en reclutar a un buen marinero es lo que ya no podrás hacer con ellos.
+
 Cuando reclutas o adquieres una carta del muelle, su hueco se queda vacío. Al terminar este paso, descarta todas las cartas que queden en el muelle y revela otras nuevas hasta llenarlo. Así, las cartas nuevas se quedan disponibles mientras resuelves la misión y podrás adquirirlas el turno siguiente.
 
-> *Ejemplo:* tienes 5 cartas en la mano. En el muelle están el Bucanero veterano (coste 2) y los Cañones de bronce (coste 2). Si coges los dos, pagas 4 cartas y zarpas con 1 en la mano. Si solo reclutas al Bucanero, zarpas con 3 cartas para añadir a tus Pruebas, pero los Cañones se descartan al reponer el muelle.
+> [!ejemplo] Pagar en el muelle
+> Tienes 5 cartas en la mano. En el muelle están el Bucanero veterano (coste 2) y los Cañones de bronce (coste 2). Si coges los dos, pagas 4 cartas y zarpas con 1 en la mano. Si solo reclutas al Bucanero, zarpas con 3 cartas para añadir a tus Pruebas, pero los Cañones se descartan al reponer el muelle.
 
 #### 3. Quedarte o zarpar
 
@@ -234,7 +267,8 @@ Los dos puertos de El Caribe, Tortuga y Nassau, tienen las mismas tres opciones 
 
 Como tú decides el orden de los efectos que se aplican a la vez, en la Taberna quitas primero los Estados y después curas: así la curación no se gasta en quitar Envenenado o Sangrando. Lo mismo en el Astillero con la Vía de agua. Los Estados que dicen «se quita con el Astillero» (Velas rotas, Pólvora mojada) se quitan por esta misma regla. Alguna carta de Escenario puede cerrar una opción durante un turno: ese turno no la puedes elegir.
 
-> *Ejemplo:* vuelves a Tortuga con 3 daños y Velas rotas en el Barco, 2 heridas en Diego y el Bucanero veterano Buscado e Inspirado, y entre las misiones disponibles hay una de Ciudad que no te conviene. Si eliges Taberna y Astillero, lo dejas todo como nuevo: el Barco sin daño ni Velas rotas, Diego curado y el Bucanero sin Buscado, pero todavía Inspirado, porque la Taberna no quita las Ventajas. Si eliges Tablón de encargos y Taberna, cambias esa misión y curas a Diego, pero zarpas con las velas rotas.
+> [!ejemplo] Elegir en puerto
+> Vuelves a Tortuga con 3 daños y Velas rotas en el Barco, 2 heridas en Diego y el Bucanero veterano Buscado e Inspirado, y entre las misiones disponibles hay una de Ciudad que no te conviene. Si eliges Taberna y Astillero, lo dejas todo como nuevo: el Barco sin daño ni Velas rotas, Diego curado y el Bucanero sin Buscado, pero todavía Inspirado, porque la Taberna no quita las Ventajas. Si eliges Tablón de encargos y Taberna, cambias esa misión y curas a Diego, pero zarpas con las velas rotas.
 
 #### 4. Final
 
@@ -257,9 +291,13 @@ Para zarpar, elige una misión disponible.
 
 Las misiones de Naturaleza y de Ciudad que están lejos de tu isla llevan una franja azul con un número bajo el icono de Entorno: es su **Distancia**, y son **misiones lejanas**. Para zarpar a ellas, tienes que **cubrir la Distancia**: agota Tripulantes cuya NAV sume al menos ese número. Son los que llevan el barco y se quedan a bordo. La NAV que da tu Barco también cuenta. Si no llegas, puedes completar la diferencia descartando cartas de tu mano con icono de NAV. Si ni así llegas, no puedes zarpar a esa misión.
 
+> [!tema]
+> Llegar ya cansa: alguien ha llevado el timón muchas noches seguidas.
+
 Una misión sin franja azul tiene Distancia 0: está en tu propia isla. Las misiones de Mar no tienen Distancia, porque navegar ya es la misión.
 
-> *Ejemplo:* «El prisionero de Portobelo» es una misión de Ciudad 5 con Distancia 3. Si agotas al Viejo lobo de mar (NAV 3), ya la cubres. Sin él, puedes agotar al Bucanero veterano (NAV 1, más 1 por Diego mientras Diego esté preparado) y contar el −1 a la Distancia de tu Barco: necesitas 2 y tienes 2. Llegas a Portobelo con un hombre menos, pero con Diego.
+> [!ejemplo] Cubrir una Distancia
+> «El prisionero de Portobelo» es una misión de Ciudad 5 con Distancia 3. Si agotas al Viejo lobo de mar (NAV 3), ya la cubres. Sin él, puedes agotar al Bucanero veterano (NAV 1, más 1 por Diego mientras Diego esté preparado) y contar el −1 a la Distancia de tu Barco: necesitas 2 y tienes 2. Llegas a Portobelo con un hombre menos, pero con Diego.
 
 #### Al empezar la misión
 
@@ -272,19 +310,27 @@ Revela la carta de arriba del mazo de Peligros y lee **solo el encuentro de su E
 
 Cada encuentro te da Avance. Un **encuentro sin Prueba** solo da su Avance y aplica su efecto, sin revelar Destino. Un **encuentro con Prueba** pone a prueba a tu tripulación y lleva dos valores de Avance, «Avance 3 / 1»: si superas la Prueba ganas el primero y, si no la superas (la fallas o no comprometes a nadie), el segundo.
 
+> [!tema]
+> El mar te deja avanzar aunque te venza, pero no tanto como si lo dominas.
+
 #### Resolver una Prueba
 
 Una Prueba indica una habilidad y una dificultad («COM 3»). Resuélvela con estos pasos:
 
 1. **Compromete a tu tripulación.** Compromete a uno o varios Tripulantes preparados: agótalos y suma esa habilidad de todos ellos, con las bonificaciones constantes de sus Mejoras. Puedes añadir cartas de tu mano por sus iconos de esa habilidad: cada icono suma 1. Es el único momento en que las cartas de tu mano suman por sus iconos: después de revelar el Destino ya no se pueden añadir. También puedes no comprometer a nadie.
 2. **Revela el Destino.** Revela la carta de arriba del mazo de Peligros, lee solo su franja de Destino y aplícala: cambia la dificultad o añade un efecto. Si no comprometiste a nadie, aplica también su línea Sin oposición, si la tiene.
+   > [!tema]
+   > El mar no es justo ni injusto. Es el mar.
 3. **Ventana de acción.** Antes de resolver la Prueba puedes usar las capacidades de tus cartas en juego (Tripulantes, Mejoras, Cañones…), como gastar munición de tus Cañones, y jugar los Eventos que tienen su propio momento escrito, como «Reflejos de gato». Aquí ya no se descartan cartas por sus iconos.
 4. **Resuelve la Prueba.** Si tu total iguala o supera la dificultad, superas la Prueba y aplicas el recuadro verde. Si no, o si no comprometiste a nadie, la fallas y aplicas el recuadro rojo.
 5. **Gana el Avance** del encuentro: el primer número si superaste la Prueba y el segundo si no la superaste. Ponlo en fichas sobre la carta de misión.
 
+> [!grafico] prueba
+
 Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con un Vigía»). La dificultad suma todos sus modificadores a la vez, el del Destino incluido; solo si el resultado final queda por debajo de 0 cuenta como 0.
 
-> *Ejemplo:* en Ciudad revelas la «Leva forzosa» (COM 4). Comprometes a Diego (COM 3) y, por si el Destino se tuerce, añades «¡Al abordaje!», que tiene dos iconos de COM: sumas 5. El Destino es «Cuerpo a cuerpo»: +1 a la dificultad y, como la Prueba es de COM, el comprometido con la habilidad más alta sufre 1 herida. Diego se lleva la herida y ahora necesitas 5. Con 5, superas la Prueba.
+> [!ejemplo] Una Prueba de COM
+> En Ciudad revelas la «Leva forzosa» (COM 4). Comprometes a Diego (COM 3) y, por si el Destino se tuerce, añades «¡Al abordaje!», que tiene dos iconos de COM: sumas 5. El Destino es «Cuerpo a cuerpo»: +1 a la dificultad y, como la Prueba es de COM, el comprometido con la habilidad más alta sufre 1 herida. Diego se lleva la herida y ahora necesitas 5. Con 5, superas la Prueba.
 
 #### Lo que dicen los encuentros
 
@@ -292,31 +338,38 @@ Los encuentros de Peligro usan unas cuantas expresiones que conviene conocer ant
 
 **Elige.** El encuentro te da dos opciones y escoges una antes de comprometer a nadie. Si una opción es un pago (descartar cartas, agotar Tripulantes…) y no puedes pagarla entera, no se ofrece. Cuando una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance sin hacer la Prueba ni revelar Destino.
 
-> *Ejemplo:* en Ciudad revelas «Carestía» (Avance 1 / 0): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano puedes pagar 2 y ganar 1 de Avance sin Prueba. Con 1 sola carta no puedes pagar: tienes que regatear y, si no superas la Prueba, no ganas Avance.
+> [!ejemplo] Elige: pagar o regatear
+> En Ciudad revelas «Carestía» (Avance 1 / 0): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano puedes pagar 2 y ganar 1 de Avance sin Prueba. Con 1 sola carta no puedes pagar: tienes que regatear y, si no superas la Prueba, no ganas Avance.
 
 **Sin ayuda.** Solo un Tripulante puede comprometerse a esa Prueba. Puedes añadir cartas de Habilidad de tu mano por sus iconos, pero no Eventos (ni por sus iconos), y durante esa Prueba no puedes jugar Eventos. Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
 
-> *Ejemplo:* en el Mar revelas «La fiera en la bodega» (COM 5, Sin ayuda). Comprometes solo a Diego (COM 3) y añades «¡Al abordaje!», una Habilidad con dos iconos de COM: 5. No podrías añadir «¡A por ellos!» por sus iconos, porque es un Evento, ni jugar «Reflejos de gato» para cancelar el Destino.
+> [!ejemplo] Una Prueba Sin ayuda
+> En el Mar revelas «La fiera en la bodega» (COM 5, Sin ayuda). Comprometes solo a Diego (COM 3) y añades «¡Al abordaje!», una Habilidad con dos iconos de COM: 5. No podrías añadir «¡A por ellos!» por sus iconos, porque es un Evento, ni jugar «Reflejos de gato» para cancelar el Destino.
 
 **El comprometido con más (o menos) habilidad.** Se mira el número impreso en la carta, sin bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. Si empatan, eliges tú. En un Destino, «la habilidad más alta» o «más baja» es la de la habilidad de esa Prueba. Del mismo modo, «el Tripulante con menos Vida» mira la Vida impresa, y «el de menor coste» no cuenta al Capitán.
 
-> *Ejemplo:* en «Registro casa por casa» (EXP 4) comprometes a la Vigía inexperta, que lleva el Catalejo de latón (EXP 2 + 1), y al Rastreador de la selva (EXP 3). Fallas: «el comprometido con más EXP queda rehén». Con el Catalejo, la Vigía suma tanto como el Rastreador, pero su EXP impresa es 2 y la de él, 3: el rehén es el Rastreador.
+> [!ejemplo] El comprometido con más EXP
+> En «Registro casa por casa» (EXP 4) comprometes a la Vigía inexperta, que lleva el Catalejo de latón (EXP 2 + 1), y al Rastreador de la selva (EXP 3). Fallas: «el comprometido con más EXP queda rehén». Con el Catalejo, la Vigía suma tanto como el Rastreador, pero su EXP impresa es 2 y la de él, 3: el rehén es el Rastreador.
 
 **Abordaje.** El enemigo salta a tu cubierta. Si fallas la Prueba, sufres 1 herida por cada punto que te falte (como máximo 3) y, si te faltan 3 o más, además uno de los comprometidos queda rehén. Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas se reparten entre los comprometidos, como en cualquier fallo; si no comprometiste a nadie, las heridas las sufre el Tripulante que elijas y el rehén se elige al azar.
 
-> *Ejemplo:* en el Mar revelas «Proa en la niebla» (COM 3, Abordaje). No comprometes a nadie y el Destino es «Coral bajo la quilla» (+1): la Prueba pide 4 y te faltan 4 puntos. Sufres 3 heridas, el máximo, que das al Tripulante que elijas, y un Tripulante al azar queda rehén. Además, por no comprometer a nadie, aplicas la línea Sin oposición del Destino: 1 daño al Barco. Si hubieras comprometido al Bucanero veterano (COM 2, más 1 por Diego), te habría faltado 1 punto: 1 herida y ningún rehén.
+> [!ejemplo] Un Abordaje sin nadie comprometido
+> En el Mar revelas «Proa en la niebla» (COM 3, Abordaje). No comprometes a nadie y el Destino es «Coral bajo la quilla» (+1): la Prueba pide 4 y te faltan 4 puntos. Sufres 3 heridas, el máximo, que das al Tripulante que elijas, y un Tripulante al azar queda rehén. Además, por no comprometer a nadie, aplicas la línea Sin oposición del Destino: 1 daño al Barco. Si hubieras comprometido al Bucanero veterano (COM 2, más 1 por Diego), te habría faltado 1 punto: 1 herida y ningún rehén.
 
 **Persigue.** Algunos Destinos dicen «después de aplicar este Destino, pon esta carta encima del mazo de Peligros»: esa carta será tu siguiente encuentro. Si la misión termina antes, la carta sigue encima del mazo y sale en tu próxima misión, con el encuentro del Entorno que toque. No la confundas con el Estado Perseguido del Barco.
 
-> *Ejemplo:* en «El Paso de los Vientos» sale como Destino «Os da alcance» (+1), de la carta «Turbonada». Después de aplicarlo, la Turbonada va encima del mazo: el siguiente Peligro que reveles será «Turbonada a popa». Si te retiras antes, será el primer encuentro de tu próxima misión; si esa misión es de Ciudad, te tocará «La riada». «Virar y dar la cara» puede mandarla al fondo del mazo.
+> [!ejemplo] Una carta que persigue
+> En «El Paso de los Vientos» sale como Destino «Os da alcance» (+1), de la carta «Turbonada». Después de aplicarlo, la Turbonada va encima del mazo: el siguiente Peligro que reveles será «Turbonada a popa». Si te retiras antes, será el primer encuentro de tu próxima misión; si esa misión es de Ciudad, te tocará «La riada». «Virar y dar la cara» puede mandarla al fondo del mazo.
 
 **Incautado.** Cartas de tu mano, una Mejora o un Tripulante van debajo de la carta de misión. Si superas la misión, lo recuperas: las cartas vuelven a tu mano, la Mejora vuelve a su portador (si ya no está en juego, se descarta) y el Tripulante vuelve a tu tripulación. Si no la superas, lo pierdes: sale del juego, salvo que la carta diga que se descarta. Las cartas incautadas las eliges tú, salvo que la carta diga «al azar» o «las de más coste». Un Tripulante incautado sigue ocupando su plaza en el Barco.
 
-> *Ejemplo:* en el Mar revelas «Registro del guardacostas»: «Incautado: pon 2 cartas de tu mano debajo de la carta de misión; con la Patente de corso, solo 1». Diego lleva la Patente: pones solo «Coraje de ron». Si superas la Prueba, la recuperas ya y robas 1; si la fallas, la recuperarás al superar la misión, y si te retiras, la pierdes.
+> [!ejemplo] Cartas incautadas
+> En el Mar revelas «Registro del guardacostas»: «Incautado: pon 2 cartas de tu mano debajo de la carta de misión; con la Patente de corso, solo 1». Diego lleva la Patente: pones solo «Coraje de ron». Si superas la Prueba, la recuperas ya y robas 1; si la fallas, la recuperarás al superar la misión, y si te retiras, la pierdes.
 
 **Ocupar el muelle.** Algunos fallos dicen «pon esta carta en el muelle». Cuando termina el encuentro, la carta de Peligro ocupa el sitio de la carta de coste más alto del muelle (si empatan, la de más a la izquierda), que se descarta. Se queda en el muelle de un turno a otro y ocupa un hueco: al reponer el muelle, revelas una carta menos. No se puede reclutar ni adquirir, y no cuenta para los efectos que miran el muelle, como «la carta de más a la izquierda». En el paso de Jugar cartas puedes pagar las cartas que indica para descartarla.
 
-> *Ejemplo:* en Ciudad fallas «Tu cara en el muelle». En el muelle de Tortuga están el Contrabandista del bajo Caribe (coste 3), el Matasanos (2), la Vela mayor (1) y el Grumete leal (1): el cartel ocupa el sitio del Contrabandista, que se descarta. Al reponer el muelle solo revelas 3 cartas nuevas hasta que, en un paso de Jugar cartas, pagues 2 cartas para descartar el cartel.
+> [!ejemplo] Una carta que ocupa el muelle
+> En Ciudad fallas «Tu cara en el muelle». En el muelle de Tortuga están el Contrabandista del bajo Caribe (coste 3), el Matasanos (2), la Vela mayor (1) y el Grumete leal (1): el cartel ocupa el sitio del Contrabandista, que se descarta. Al reponer el muelle solo revelas 3 cartas nuevas hasta que, en un paso de Jugar cartas, pagues 2 cartas para descartar el cartel.
 
 #### Cartas que se quedan en juego
 
@@ -330,7 +383,8 @@ Algunos encuentros dicen **Se queda en juego**. La carta no se descarta al resol
 - Muchas se pueden quitar con una Acción que indica su texto. «Cortar por lo sano» descarta cualquiera que no sea de nivel Terrible.
 - Al terminar la misión (superada, retirada o con el Barco hundido) se descartan con sus fichas.
 
-> *Ejemplo:* en «Un soplo en Port Royal» (Ciudad 4) revelas «Campanas a rebato», que se queda en juego: ganas su Avance (1) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión le pones 1 ficha; con 3 fichas llega la guarnición y tu Tripulante agotado con menos Vida queda rehén. Para callarlas antes, su texto te da una Acción: agota a un Oficial (Diego lo es) o supera una Prueba de COM 3. También podrías jugar «Cortar por lo sano», porque la carta es de nivel Duro. Si superas la misión antes de las 3 fichas, las campanas se descartan con ella.
+> [!ejemplo] Una carta que se queda en juego
+> En «Un soplo en Port Royal» (Ciudad 4) revelas «Campanas a rebato», que se queda en juego: ganas su Avance (1) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión le pones 1 ficha; con 3 fichas llega la guarnición y tu Tripulante agotado con menos Vida queda rehén. Para callarlas antes, su texto te da una Acción: agota a un Oficial (Diego lo es) o supera una Prueba de COM 3. También podrías jugar «Cortar por lo sano», porque la carta es de nivel Duro. Si superas la misión antes de las 3 fichas, las campanas se descartan con ella.
 
 #### Pruebas que nacen de una Acción
 
@@ -339,13 +393,15 @@ Algunas capacidades de **Acción** te piden hacer una Prueba: la de «La cadena 
 - No tiene Avance propio: solo ganas lo que diga su texto.
 - No puedes empezarla durante otra Prueba. Se hace en una ventana de acción fuera de una Prueba: en Jugar cartas o después de resolver una carta de Peligro.
 
-> *Ejemplo:* en el Mar revelas «La cadena de la bocana», que se queda en juego: mientras esté, no puedes superar la misión. Tras resolverla, usas su Acción: «Prueba de COM 5 (4 con un Carpintero)». Tienes preparado al Carpintero de a bordo, así que pide 4. Comprometes al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añades «¡Al abordaje!»: 5. El Destino es «Coral bajo la quilla» (+1): la Prueba pide 5 y la superas. Descartas la cadena y ganas 1 de Avance, como dice su texto. Si la hubieras fallado, el Barco habría sufrido 2 daños.
+> [!ejemplo] Una Prueba que nace de una Acción
+> En el Mar revelas «La cadena de la bocana», que se queda en juego: mientras esté, no puedes superar la misión. Tras resolverla, usas su Acción: «Prueba de COM 5 (4 con un Carpintero)». Tienes preparado al Carpintero de a bordo, así que pide 4. Comprometes al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añades «¡Al abordaje!»: 5. El Destino es «Coral bajo la quilla» (+1): la Prueba pide 5 y la superas. Descartas la cadena y ganas 1 de Avance, como dice su texto. Si la hubieras fallado, el Barco habría sufrido 2 daños.
 
 #### Fichas de misión
 
 Algunas misiones llevan la cuenta de algo con fichas sobre su carta: las fichas de Ladrón de «El ladrón del puerto», la Alarma de una casa o de una fortaleza, la Sospecha del espía, la Persecución de la flota, la Mecha del polvorín o la Defensa de Panamá. La misión dice cuándo se ponen y se quitan, y qué pasa al llegar a cierto número. Las fichas de misión se descartan al terminar la misión, la superes o no.
 
-> *Ejemplo:* en «La casa del gobernador», cada Prueba de COM que superes pone 1 ficha de Alarma. Con 2 fichas, la misión necesita 1 de Avance más. Con 3, pones en juego «¡La guardia!» junto a la misión: mientras esté, todas las Pruebas reciben +1.
+> [!ejemplo] Fichas de Alarma
+> En «La casa del gobernador», cada Prueba de COM que superes pone 1 ficha de Alarma. Con 2 fichas, la misión necesita 1 de Avance más. Con 3, pones en juego «¡La guardia!» junto a la misión: mientras esté, todas las Pruebas reciben +1.
 
 Algunas misiones dicen que **la misión falla** («Con 3, el espía te descubre: la misión falla»). Es como retirarte: no la superas, pierdes su Avance y eliges si la dejas disponible o la pones al fondo del mazo de Misiones.
 
@@ -361,7 +417,11 @@ Un **Pasajero** es una carta que viaja contigo: Don Anselmo, el comerciante, o E
 
 Después de resolver una carta de Peligro, puedes retirarte y volver a puerto. La misión no se supera y pierdes todo su Avance. Alguna misión te deja cobrar algo si te retiras («Saqueo» en «La casa del gobernador»), y otras dicen que no puedes retirarte de ellas.
 
-> *Ejemplo:* en «Rumbo a la isla» (Mar 5) llevas 3 de Avance y solo te queda preparado el Rufián. Con él solo, lo más probable es no superar la Prueba de la siguiente carta y ganar únicamente su Avance pequeño, y una Fragata cazadora (COM 5, 3 daños al Barco) podría hundirte. Si te retiras, no te llevas nada.
+> [!tema]
+> Una retirada a medias no existe: el botín o está en tu bodega o no está.
+
+> [!ejemplo] ¿Retirarse o seguir?
+> En «Rumbo a la isla» (Mar 5) llevas 3 de Avance y solo te queda preparado el Rufián. Con él solo, lo más probable es no superar la Prueba de la siguiente carta y ganar únicamente su Avance pequeño, y una Fragata cazadora (COM 5, 3 daños al Barco) podría hundirte. Si te retiras, no te llevas nada.
 
 #### Superar una misión
 
@@ -375,7 +435,8 @@ En cuanto reúnes el Avance que pide la misión, la superas. Tienes que resolver
 
 Como el capítulo nuevo se baraja antes de reponer, puede salir enseguida o mucho más tarde.
 
-> *Ejemplo:* superas «Un soplo en Port Royal» y ganas 1 de reputación. Su recompensa indica la carta 136: buscas «Seguirle por los muelles» en el mazo de historia y la barajas en el mazo de Misiones. Después repones y sale «Niebla en el estrecho». El espía tendrá que esperar.
+> [!ejemplo] Superar un capítulo
+> Superas «Un soplo en Port Royal» y ganas 1 de reputación. Su recompensa indica la carta 136: buscas «Seguirle por los muelles» en el mazo de historia y la barajas en el mazo de Misiones. Después repones y sale «Niebla en el estrecho». El espía tendrá que esperar.
 
 #### No superar una misión
 
@@ -399,9 +460,13 @@ Si un efecto te obliga a agotar a un Tripulante y no tienes ninguno preparado, u
 
 Tu Barco solo recibe daño en las misiones de Mar. En una misión de Naturaleza o de Ciudad, un efecto que daña el Barco no se aplica, salvo que la carta diga expresamente que lo daña en tierra: entonces manda la carta.
 
+> [!tema]
+> En tierra, la Sombra del Alba espera fondeada en una cala. Lo que sangra allí es tu tripulación.
+
 Los Destinos se leen en cualquier Entorno, así que los que dañan el Barco dicen qué hacen en tierra: «en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante». Aplica la parte del Entorno de tu misión.
 
-> *Ejemplo:* en una misión de Ciudad no comprometes a nadie y sale el Destino «Coral bajo la quilla». Su línea Sin oposición dice «en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante»: uno de tus Tripulantes sufre 1 herida y el Barco no sufre nada. En cambio, si en Ciudad fallas «Te roban el barco», el Barco sufre 2 daños: los holandeses se lo llevan mientras estás en tierra, y la carta lo dice expresamente.
+> [!ejemplo] Daño al Barco en tierra
+> En una misión de Ciudad no comprometes a nadie y sale el Destino «Coral bajo la quilla». Su línea Sin oposición dice «en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante»: uno de tus Tripulantes sufre 1 herida y el Barco no sufre nada. En cambio, si en Ciudad fallas «Te roban el barco», el Barco sufre 2 daños: los holandeses se lo llevan mientras estás en tierra, y la carta lo dice expresamente.
 
 #### El Barco se hunde
 
@@ -419,9 +484,12 @@ Las cartas de Peligro y de Escenario usan iconos para sus penalizaciones más co
 - **Pierdes una Mejora:** elige una del Barco o de un Tripulante y descártala.
 - **Agota una Mejora:** elige una y agótala. Una Mejora agotada no aplica su texto hasta que se prepare.
 - **Rehén:** uno de tus Tripulantes es capturado. Si superas la misión, lo rescatas; si no, lo pierdes para siempre y pierdes 1 de reputación.
+  > [!tema]
+  > En el Caribe todo se cambia por algo, también un hombre. Mientras sigas en la misión, aún puedes ir a buscarlo.
 - **Pierdes un día:** descarta la carta de arriba del mazo de Escenario sin aplicarla.
 
-> *Ejemplo:* en una misión de Ciudad fallas «Carestía»: −1 Mando en tu próximo turno. Al final de este turno robas hasta 5 cartas, como siempre; al final del siguiente, solo hasta 4. Al otro vuelves a robar hasta 5.
+> [!ejemplo] Menos Mando
+> En una misión de Ciudad fallas «Carestía»: −1 Mando en tu próximo turno. Al final de este turno robas hasta 5 cartas, como siempre; al final del siguiente, solo hasta 4. Al otro vuelves a robar hasta 5.
 
 #### Estados y Ventajas
 
@@ -439,7 +507,8 @@ Las dos funcionan igual:
 
 Cada ficha dice lo que hace y cómo se quita: encontrarás la lista completa en su entrada de la Referencia de reglas y en la tabla de la Referencia rápida. Muchos se quitan solos al cumplirse algo («se quita al final del turno»); otros, con cartas como la Herbolaria o el Práctico del puerto. Y en puerto, la **Taberna** quita todos los Estados de tus Tripulantes y el **Astillero** todos los del Barco.
 
-> *Ejemplo:* fallas «Cazadores con perros» y el Bucanero veterano queda Buscado: desde ahora, en las misiones de Ciudad, los encuentros Guardia y Militar en los que participe reciben +1. La ficha se queda hasta que te quedes en puerto y elijas la Taberna. Más tarde superas «Luces en los mástiles» con Diego y el Viejo lobo de mar comprometidos, y el comprometido con más NAV queda Inspirado: es el Viejo lobo (NAV 3). En su próxima Prueba suma 1 más y, al comprometerse, gasta la ficha. La Taberna no se la habría quitado, porque es una Ventaja.
+> [!ejemplo] Buscado e Inspirado
+> Fallas «Cazadores con perros» y el Bucanero veterano queda Buscado: desde ahora, en las misiones de Ciudad, los encuentros Guardia y Militar en los que participe reciben +1. La ficha se queda hasta que te quedes en puerto y elijas la Taberna. Más tarde superas «Luces en los mástiles» con Diego y el Viejo lobo de mar comprometidos, y el comprometido con más NAV queda Inspirado: es el Viejo lobo (NAV 3). En su próxima Prueba suma 1 más y, al comprometerse, gasta la ficha. La Taberna no se la habría quitado, porque es una Ventaja.
 
 ### Ganar y perder
 
@@ -454,9 +523,12 @@ Cada ficha dice lo que hace y cómo se quita: encontrarás la lista completa en 
 - Se acaba el tiempo: cuando, al empezar un turno, no queda ninguna carta en el mazo de Escenario, juegas ese último turno entero. Al terminarlo, pierdes.
 - No queda ninguna misión disponible ni en el mazo de Misiones.
 
-> *Ejemplo:* llegas al último turno con 15 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que da 3. Reclutas todo lo que puedes pagar y zarpas. Si la superas, llegas a 18 y ganas. Si te retiras o te hundes, pierdes.
+> [!ejemplo] El último turno
+> Llegas al último turno con 15 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que da 3. Reclutas todo lo que puedes pagar y zarpas. Si la superas, llegas a 18 y ganas. Si te retiras o te hundes, pierdes.
 
 ### Ejemplo de juego
+
+> [!grafico] ejemplo-de-juego
 
 Así transcurre el primer turno de una partida normal con Diego en Tortuga.
 
@@ -492,11 +564,12 @@ Al construir tus mazos, sigue estas reglas:
 - De cada carta única (★) solo puedes incluir 1 copia.
 - Tu Capitán, tu Barco y las cartas de escenario no forman parte de tus mazos.
 
-> **Consejo.** El mazo del capitán es tu reloj personal: cuanto más corto sea, antes tendrás que rebarajarlo y perder un día. Un mazo de 40 cartas aguanta más, pero tarda más en traerte las cartas que necesitas.
+> [!consejo]
+> El mazo del capitán es tu reloj personal: cuanto más corto sea, antes tendrás que rebarajarlo y perder un día. Un mazo de 40 cartas aguanta más, pero tarda más en traerte las cartas que necesitas.
 
 ## Parte 2 · Referencia de reglas
 
-**¡Alto!** Si es tu primera partida, lee antes Aprende a jugar. Esta parte recoge todas las reglas del juego, ordenadas alfabéticamente. Si una entrada no responde tu duda, consulta las entradas que indica su línea *Consulta también*.
+**¡Alto!** Si es tu primera partida, lee antes Aprende a jugar. Esta parte recoge todas las reglas del juego, ordenadas alfabéticamente. Si una entrada no responde tu duda, consulta las entradas que indica su línea *Véase también*.
 
 ### Abordaje
 
@@ -506,9 +579,10 @@ Texto de algunos encuentros con Prueba. Si fallas la Prueba, sufres 1 herida por
 - Las heridas se reparten entre los Tripulantes comprometidos, como las de cualquier fallo.
 - Si no comprometiste a nadie, las heridas las sufre el Tripulante que elijas y el rehén se elige al azar entre tus Tripulantes (nunca el Capitán).
 
-> *Ejemplo:* contra el «Navío de línea de la Armada» (NAV 5, Abordaje) comprometes a Diego (NAV 2) y al Bucanero veterano (NAV 1): con el +1 del Barco en las Pruebas de NAV en el Mar, sumas 4. El Destino es «Coral bajo la quilla» (+1): la Prueba pide 6 y te faltan 2 puntos. Sufres 2 heridas, que repartes entre Diego y el Bucanero, y no hay rehén.
+> [!ejemplo] Un Abordaje
+> Contra el «Navío de línea de la Armada» (NAV 5, Abordaje) comprometes a Diego (NAV 2) y al Bucanero veterano (NAV 1): con el +1 del Barco en las Pruebas de NAV en el Mar, sumas 4. El Destino es «Coral bajo la quilla» (+1): la Prueba pide 6 y te faltan 2 puntos. Sufres 2 heridas, que repartes entre Diego y el Bucanero, y no hay rehén.
 
-*Consulta también:* Rehén.
+*Véase también:* Rehén.
 
 ### Acción
 
@@ -520,7 +594,7 @@ Etiqueta de capacidad. Una capacidad de **Acción:** se usa en una ventana de ac
 
 Una Acción que pide hacer una Prueba no se puede usar durante otra Prueba.
 
-*Consulta también:* Capacidades de las cartas (en Aprende a jugar), Prueba de una Acción.
+*Véase también:* Capacidades de las cartas (en Aprende a jugar), Prueba de una Acción.
 
 ### Agotar y preparar
 
@@ -531,7 +605,7 @@ Una carta está **preparada** (en vertical) o **agotada** (girada). Solo un Trip
 - Una capacidad que empieza con «Agotar:» solo se puede usar si la carta está preparada. Una capacidad que no pide agotar se puede usar aunque la carta esté agotada, salvo en una Mejora: una Mejora agotada no aplica su texto.
 - Si un efecto te obliga a agotar a un Tripulante y no tienes ninguno preparado, uno de tus Tripulantes sufre 1 herida en su lugar.
 
-*Consulta también:* Distancia, Mejora, Prueba.
+*Véase también:* Distancia, Mejora, Prueba.
 
 ### Al zarpar
 
@@ -545,14 +619,15 @@ Lo que reúnes durante una misión. Se marca con fichas de Avance sobre la carta
 - En un «Elige», si pagas en vez de hacer la Prueba, cuenta como superada: ganas X.
 - Lo que una misión da de más al superar una Prueba («cada Prueba de NAV que superes da 1 de Avance más») se suma a X.
 
-> *Ejemplo:* en «La goleta del correo», que da 1 de Avance más por cada Prueba de NAV que superes, revelas «Arrecife de los Colorados» (NAV 4, Avance 3 / 1). Si la superas, ganas 3 + 1 = 4; si no comprometes a nadie, solo 1.
+> [!ejemplo] Avance de más al superar
+> En «La goleta del correo», que da 1 de Avance más por cada Prueba de NAV que superes, revelas «Arrecife de los Colorados» (NAV 4, Avance 3 / 1). Si la superas, ganas 3 + 1 = 4; si no comprometes a nadie, solo 1.
 
 - Tienes que resolver al menos una carta de Peligro para superar una misión, aunque empieces con el Avance suficiente.
 - Las fichas de Avance que una carta pone sobre una misión antes de zarpar se quedan sobre ella y cuentan cuando zarpes. Si la misión deja de estar disponible, descártalas.
 - Si no superas la misión, descarta todas sus fichas de Avance.
 - **Pierdes N de Avance:** quita N fichas de la misión, nunca por debajo de 0.
 
-*Consulta también:* Misión, Puerto.
+*Véase también:* Misión, Puerto.
 
 ### Aventura
 
@@ -570,7 +645,7 @@ Tu Barco solo recibe daño en las misiones de Mar, salvo que la carta diga expre
 
 El Barco puede tener Estados: Vía de agua, Incendio a bordo, Velas rotas, Perseguido y Pólvora mojada. El Astillero del puerto los quita todos.
 
-*Consulta también:* Daño, Distancia, Estado, Hundirse, Mejora.
+*Véase también:* Daño, Distancia, Estado, Hundirse, Mejora.
 
 ### Buscar
 
@@ -586,7 +661,7 @@ Cada carta de misión de una travesía. Su sello indica su número (I, II o III)
 
 - **Salida doble:** dos travesías tienen dos capítulos II, «II-a» y «II-b». Su capítulo I dice cuál añades según cómo lo superes; el otro sale de la partida.
 
-*Consulta también:* Travesía.
+*Véase también:* Travesía.
 
 ### Capitán
 
@@ -602,7 +677,10 @@ Cada Capitán y cada carta de jugador pertenece a una Clase o es Neutral. Al con
 
 Asignar Tripulantes preparados a una Prueba. Los Tripulantes comprometidos se agotan y suman su habilidad, con las bonificaciones constantes de sus Mejoras. Solo puedes comprometer Tripulantes en el primer paso de la Prueba. Una capacidad que funciona «mientras esté preparado», como la de Diego, deja de aplicarse en el momento en que ese Tripulante se agota, también para los que se comprometen a la vez que él. Las cartas dicen que los Tripulantes comprometidos participan en la Prueba.
 
-*Consulta también:* Prueba.
+> [!tema]
+> Un capitán manda desde el alcázar. Cuando baja a la refriega, ya no ve a toda su gente.
+
+*Véase también:* Prueba.
 
 ### Comprometido con más (o menos)
 
@@ -612,7 +690,8 @@ Asignar Tripulantes preparados a una Prueba. Los Tripulantes comprometidos se ag
 - En un Destino, «el comprometido con la habilidad más alta (o más baja)» se refiere a la habilidad de esa Prueba.
 - Las expresiones parecidas funcionan igual: «el Tripulante con menos Vida» mira la Vida impresa (el Coleto de cuero no cuenta), y en «el Tripulante de menor coste» el Capitán no cuenta.
 
-> *Ejemplo:* fallas «Noche de niebla» (EXP 2) con el Rastreador de la selva (EXP 3) y Catalina (EXP 3) comprometidos: «el comprometido con más EXP queda Buscado». Empatan a 3: eliges tú cuál de los dos queda Buscado.
+> [!ejemplo] Empate en la habilidad más alta
+> Fallas «Noche de niebla» (EXP 2) con el Rastreador de la selva (EXP 3) y Catalina (EXP 3) comprometidos: «el comprometido con más EXP queda Buscado». Empatan a 3: eliges tú cuál de los dos queda Buscado.
 
 ### Coste
 
@@ -632,7 +711,8 @@ En el texto de una carta, lo que va antes de los dos puntos es el coste y lo que
 - Curar a un Tripulante Envenenado o Sangrando quita primero esas fichas, en ese orden, y después las heridas: cada ficha gasta 1 punto de curación.
 - Reparar con el Barco con Vía de agua quita primero esa ficha: gasta 1 punto de reparación.
 
-> *Ejemplo:* el Bucanero veterano tiene 1 herida y está Envenenado; juegas «Vendas y aguardiente» (cura 2) sobre él: el primer punto le quita Envenenado y el segundo, la herida.
+> [!ejemplo] Curar a un Envenenado
+> El Bucanero veterano tiene 1 herida y está Envenenado; juegas «Vendas y aguardiente» (cura 2) sobre él: el primer punto le quita Envenenado y el segundo, la herida.
 
 ### Daño
 
@@ -641,9 +721,10 @@ El daño del Barco se marca con fichas de daño y se queda de un turno a otro ha
 - Tu Barco solo recibe daño en las misiones de Mar. En una misión de Naturaleza o de Ciudad, un efecto que daña el Barco no se aplica, salvo que la carta diga expresamente lo contrario: entonces manda la carta.
 - Los Destinos que dañan el Barco indican qué hacen en tierra («en Naturaleza o Ciudad, 1 herida a un Tripulante»): aplica la parte del Entorno de tu misión.
 
-> *Ejemplo:* en una misión de Ciudad fallas «Te roban el barco»: el Barco sufre 2 daños, porque la carta lo dice para la Ciudad. Si en esa misma misión sale el Destino «Las baterías del castillo» sin nadie comprometido, su línea Sin oposición no daña el Barco: en Ciudad, el Capitán sufre 1 herida.
+> [!ejemplo] Daño en Ciudad
+> En una misión de Ciudad fallas «Te roban el barco»: el Barco sufre 2 daños, porque la carta lo dice para la Ciudad. Si en esa misma misión sale el Destino «Las baterías del castillo» sin nadie comprometido, su línea Sin oposición no daña el Barco: en Ciudad, el Capitán sufre 1 herida.
 
-*Consulta también:* Barco, Hundirse.
+*Véase también:* Barco, Hundirse.
 
 ### Derrotado
 
@@ -668,13 +749,13 @@ La franja inferior de cada carta de Peligro. Se revela en cada Prueba, después 
 - Cada carta de Peligro sale una sola vez por vuelta del mazo: como encuentro o como Destino.
 - Algunos Destinos ponen su carta encima del mazo de Peligros: ver Persigue.
 
-*Consulta también:* Persigue, Prueba, Sin oposición.
+*Véase también:* Persigue, Prueba, Sin oposición.
 
 ### Día (perder un día)
 
 Descarta la carta de arriba del mazo de Escenario sin aplicarla. Si no quedan cartas de Escenario, no ocurre nada.
 
-*Consulta también:* Mazo del capitán.
+*Véase también:* Mazo del capitán.
 
 ### Distancia
 
@@ -686,7 +767,8 @@ La NAV que necesitas para zarpar a una misión de tierra lejos de tu isla. Se in
 - Una misión con Distancia es una **misión lejana**.
 - Algunas cartas de Escenario suben o bajan 1 las Distancias de todas las misiones durante un turno, sea cual sea su Entorno. Una misión sin Distancia sigue en 0.
 
-> *Ejemplo:* con «Temporada de huracanes», «La selva» pasa de Distancia 2 a 3 y, con el −1 de tu Barco, tienes que cubrir 2. Con «Vientos alisios» pasa a 1 y, con el Barco, a 0: zarpas sin agotar a nadie. «Cobrar la deuda», en tu isla, sigue en 0 con cualquiera de las dos.
+> [!ejemplo] Distancias con el Escenario
+> Con «Temporada de huracanes», «La selva» pasa de Distancia 2 a 3 y, con el −1 de tu Barco, tienes que cubrir 2. Con «Vientos alisios» pasa a 1 y, con el Barco, a 0: zarpas sin agotar a nadie. «Cobrar la deuda», en tu isla, sigue en 0 con cualquiera de las dos.
 
 ### Elige
 
@@ -697,7 +779,8 @@ El encuentro, el Destino o la carta te da varias opciones y escoges una.
 - Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece.
 - Si una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance (X) sin hacer la Prueba ni revelar Destino.
 
-> *Ejemplo:* en Ciudad revelas «El aduanero tiene precio»: «Elige: le untas la mano (descarta 2 cartas y gana el Avance sin Prueba), o pasas el género por tu cuenta: Prueba de EXP 3 (1 con un Contrabandista)». Llevas al Contrabandista del bajo Caribe y solo 2 cartas en la mano: prefieres la Prueba, que pide 1, y guardar las cartas.
+> [!ejemplo] Pagar o hacer la Prueba
+> En Ciudad revelas «El aduanero tiene precio»: «Elige: le untas la mano (descarta 2 cartas y gana el Avance sin Prueba), o pasas el género por tu cuenta: Prueba de EXP 3 (1 con un Contrabandista)». Llevas al Contrabandista del bajo Caribe y solo 2 cartas en la mano: prefieres la Prueba, que pide 1, y guardar las cartas.
 
 ### Encuentro
 
@@ -732,7 +815,8 @@ El **mazo de Escenario** es el reloj de la partida. El Caribe trae 14 cartas de 
 - Si la carta dice **Elige**, decides qué opción aplicas al revelarla. Una opción que es un pago y no puedes pagar entera no se ofrece. Si no puedes cumplir ninguna, no pasa nada.
 - Lo que dice «este turno» dura hasta el final del turno en que se revela.
 
-> *Ejemplo:* al empezar el turno revelas «Rumores del tesoro»: si zarpas este turno, empiezas la misión con 1 de Avance, o con 2 si es un capítulo II o III. Si te quedas en puerto, el efecto se pierde al terminar el turno.
+> [!ejemplo] Una carta de Escenario
+> Al empezar el turno revelas «Rumores del tesoro»: si zarpas este turno, empiezas la misión con 1 de Avance, o con 2 si es un capítulo II o III. Si te quedas en puerto, el efecto se pierde al terminar el turno.
 
 ### Estado
 
@@ -759,9 +843,10 @@ En puerto, la **Taberna** quita todos los Estados de tus Tripulantes y el **Asti
 - **Perseguido:** tu próxima misión de Mar empieza revelando un Peligro de más, que se resuelve entero antes del primero, sin ventana para retirarte entre ambos; cuenta como carta resuelta y da su Avance. La ficha se quita entonces. También se quita con el Astillero o con cualquier carta que lo diga (por ejemplo, superar «Fragata a popa»).
 - **Pólvora mojada:** tus Cañones no recargan en el Inicio. Se quita con el Astillero o con cualquier carta que lo diga.
 
-> *Ejemplo:* el Bucanero veterano está Asustado y Sangrando. No puede comprometerse solo, así que lo comprometes con Diego a una Prueba de COM; al agotarse sufre 1 herida por Sangrando. Superáis la Prueba y deja de estar Asustado. Al volver a puerto eliges la Taberna: le quitas Sangrando y después le curas la herida, sin gastar curación en la ficha.
+> [!ejemplo] Asustado y Sangrando
+> El Bucanero veterano está Asustado y Sangrando. No puede comprometerse solo, así que lo comprometes con Diego a una Prueba de COM; al agotarse sufre 1 herida por Sangrando. Superáis la Prueba y deja de estar Asustado. Al volver a puerto eliges la Taberna: le quitas Sangrando y después le curas la herida, sin gastar curación en la ficha.
 
-*Consulta también:* Ventaja, Puerto.
+*Véase también:* Ventaja, Puerto.
 
 ### Evento
 
@@ -795,7 +880,7 @@ Cuando un efecto inflige heridas «a un Tripulante», eliges a cualquiera, prepa
 
 - Las heridas se quedan de un turno a otro hasta que te cures.
 
-*Consulta también:* Derrotado, Vida.
+*Véase también:* Derrotado, Vida.
 
 ### Hundirse
 
@@ -810,7 +895,8 @@ Texto de algunos encuentros: cartas de tu mano, una Mejora o un Tripulante van d
 - Si no superas la misión, lo pierdes: sale del juego, salvo que la carta diga que se descarta. Un Tripulante incautado se pierde con sus Mejoras.
 - Un Tripulante incautado sigue ocupando su plaza en el Barco.
 
-> *Ejemplo:* en Ciudad revelas «Requisa del Santo Oficio»: «Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto, tiene que ser él». El Bucanero lleva el Amuleto vudú: va debajo de la misión. Si te retiras, lo pierdes para siempre; si superas la misión, vuelve al Bucanero.
+> [!ejemplo] Incautar una Mejora
+> En Ciudad revelas «Requisa del Santo Oficio»: «Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto, tiene que ser él». El Bucanero lleva el Amuleto vudú: va debajo de la misión. Si te retiras, lo pierdes para siempre; si superas la misión, vuelve al Bucanero.
 
 ### Indestructible
 
@@ -868,7 +954,7 @@ Carta que adquieres del muelle pagando su coste y que vinculas a tu Barco o a un
 
 Carta con un Entorno y el Avance que necesitas para superarla. Siempre hay tres **misiones disponibles**: son a las que puedes zarpar.
 
-*Consulta también:* Aventura, Capítulo, Distancia.
+*Véase también:* Aventura, Capítulo, Distancia.
 
 ### Muelle
 
@@ -915,7 +1001,8 @@ Texto de algunos fallos: «pon esta carta en el muelle». Cuando termina el encu
 - No se puede reclutar ni adquirir, y no cuenta para los efectos que eligen una carta del muelle, como «la carta de más a la izquierda».
 - En el paso de Jugar cartas puedes pagar las cartas que indica para descartarla. Va a la pila de descartes de Peligros.
 
-> *Ejemplo:* fallas «Embargo del recaudador» y la carta ocupa el muelle de Nassau (3 cartas) en lugar de los Cañones de bronce, la carta más cara. Durante unos turnos el muelle solo tiene 2 cartas que puedas usar; en cuanto tienes 3 cartas de sobra en Jugar cartas, las pagas y el muelle vuelve a tener sus 3 huecos al reponerlo.
+> [!ejemplo] El muelle ocupado
+> Fallas «Embargo del recaudador» y la carta ocupa el muelle de Nassau (3 cartas) en lugar de los Cañones de bronce, la carta más cara. Durante unos turnos el muelle solo tiene 2 cartas que puedas usar; en cuanto tienes 3 cartas de sobra en Jugar cartas, las pagas y el muelle vuelve a tener sus 3 huecos al reponerlo.
 
 ### Palabras clave
 
@@ -933,9 +1020,10 @@ Texto de algunos Destinos: «después de aplicar este Destino, pon esta carta en
 - «Virar y dar la cara» la manda al fondo del mazo en su lugar.
 - No es lo mismo que el Estado Perseguido del Barco.
 
-> *Ejemplo:* en una Prueba sale el Destino «Alas en la noche» (+1), de la carta «Murciélagos vampiro». Después de aplicarlo, la carta va encima del mazo: tu siguiente encuentro será el de los Murciélagos vampiro de tu Entorno.
+> [!ejemplo] Una carta que persigue
+> En una Prueba sale el Destino «Alas en la noche» (+1), de la carta «Murciélagos vampiro». Después de aplicarlo, la carta va encima del mazo: tu siguiente encuentro será el de los Murciélagos vampiro de tu Entorno.
 
-*Consulta también:* Destino.
+*Véase también:* Destino.
 
 ### Portador
 
@@ -955,9 +1043,10 @@ El desafío de un encuentro: una habilidad y una dificultad («COM 3»), con un 
 - Si fallas una Prueba con Tripulantes comprometidos, sus heridas se reparten entre ellos.
 - **La dificultad** es el número de la Prueba más todos sus modificadores (los de tus cartas, la misión, el Escenario y el Destino), sumados a la vez. Solo el resultado final, si queda por debajo de 0, cuenta como 0: no hay tope intermedio.
 
-> *Ejemplo:* en «Desembarco nocturno», que da −1 a las Pruebas de EXP, viaja contigo el Guía del istmo (−1 a las Pruebas de EXP en Naturaleza) y revelas «Manzanillas de la muerte»: EXP 3, o 1 con un Explorador. Comprometes al Rastreador de la selva y el Destino es «Canto lejano»: +1, y el comprometido con la habilidad más baja no suma. La dificultad es 1 − 1 − 1 + 1 = 0: aunque tu total sea 0, superas la Prueba. No se cuenta 1 − 1 − 1 = −1 → 0 y después +1. Si el Destino hubiera sido «Aguja de marear» (−2 con un Explorador), la cuenta daría −3 y la dificultad sería 0.
+> [!ejemplo] La dificultad suma todo
+> En «Desembarco nocturno», que da −1 a las Pruebas de EXP, viaja contigo el Guía del istmo (−1 a las Pruebas de EXP en Naturaleza) y revelas «Manzanillas de la muerte»: EXP 3, o 1 con un Explorador. Comprometes al Rastreador de la selva y el Destino es «Canto lejano»: +1, y el comprometido con la habilidad más baja no suma. La dificultad es 1 − 1 − 1 + 1 = 0: aunque tu total sea 0, superas la Prueba. No se cuenta 1 − 1 − 1 = −1 → 0 y después +1. Si el Destino hubiera sido «Aguja de marear» (−2 con un Explorador), la cuenta daría −3 y la dificultad sería 0.
 
-*Consulta también:* Prueba de una Acción, Sin ayuda.
+*Véase también:* Prueba de una Acción, Sin ayuda.
 
 ### Prueba de una Acción
 
@@ -966,7 +1055,8 @@ Algunas capacidades de Acción te piden hacer una Prueba («**Acción:** haz una
 - No tiene Avance propio: solo ganas lo que diga su texto.
 - No puedes hacerla durante otra Prueba: se usa en Jugar cartas o después de resolver una carta de Peligro.
 
-> *Ejemplo:* en «La casa del gobernador» la Alarma llega a 3 y «¡La guardia!» entra en juego junto a la misión. Tras resolver una carta de Peligro, usas su Acción: Prueba de COM 5, que con el +1 de la propia guardia pide 6. Comprometes a Diego (COM 3) y al Bucanero veterano (COM 2; no recibe el +1 de Diego, que se agota a la vez) y añades «¡Al abordaje!» (dos iconos de COM): 7. El Destino es «Coral bajo la quilla» (+1): la Prueba pide 7 y la superas, así que ¡La guardia! vuelve a apartarse. No ganas Avance por esta Prueba.
+> [!ejemplo] Prueba de una Acción
+> En «La casa del gobernador» la Alarma llega a 3 y «¡La guardia!» entra en juego junto a la misión. Tras resolver una carta de Peligro, usas su Acción: Prueba de COM 5, que con el +1 de la propia guardia pide 6. Comprometes a Diego (COM 3) y al Bucanero veterano (COM 2; no recibe el +1 de Diego, que se agota a la vez) y añades «¡Al abordaje!» (dos iconos de COM): 7. El Destino es «Coral bajo la quilla» (+1): la Prueba pide 7 y la superas, así que ¡La guardia! vuelve a apartarse. No ganas Avance por esta Prueba.
 
 ### Puerto
 
@@ -980,7 +1070,8 @@ Tortuga y Nassau tienen las mismas tres opciones comunes, además de su opción 
 
 Quitas los Estados antes de curar o reparar, así la curación no se gasta en Envenenado o Sangrando ni la reparación en Vía de agua. Si una carta cierra una opción durante un turno («Cuarentena» cierra la Taberna), ese turno no puedes elegirla.
 
-> *Ejemplo:* el Barco tiene 2 daños y Vía de agua. Eliges el Astillero: quitas la Vía de agua y reparas los 2 daños; el tercer punto de reparación se pierde.
+> [!ejemplo] El Astillero
+> El Barco tiene 2 daños y Vía de agua. Eliges el Astillero: quitas la Vía de agua y reparas los 2 daños; el tercer punto de reparación se pierde.
 
 ### Rasgo
 
@@ -1028,9 +1119,10 @@ Texto de algunos encuentros. La carta no se descarta al resolverla: se queda jun
 - Se quita como dice su texto (a menudo con una Acción) o con «Cortar por lo sano», si no es de nivel Terrible.
 - Al terminar la misión, la superes, te retires o se hunda el Barco, se descarta con sus fichas.
 
-> *Ejemplo:* en el Mar revelas «Varados en el banco»: ganas su Avance (2) y la carta se queda en juego. Mientras esté, no puedes superar la misión ni retirarte. Cada vez que revelas un Peligro, pones 1 ficha de Marea; con 2, el Barco flota y la descartas. Si quieres salir antes, su Acción te deja agotar a 2 Tripulantes (o a 1 Marinero) para poner 1 ficha de Marea.
+> [!ejemplo] Varados en el banco
+> En el Mar revelas «Varados en el banco»: ganas su Avance (2) y la carta se queda en juego. Mientras esté, no puedes superar la misión ni retirarte. Cada vez que revelas un Peligro, pones 1 ficha de Marea; con 2, el Barco flota y la descartas. Si quieres salir antes, su Acción te deja agotar a 2 Tripulantes (o a 1 Marinero) para poner 1 ficha de Marea.
 
-*Consulta también:* Prueba de una Acción.
+*Véase también:* Prueba de una Acción.
 
 ### Sin ayuda
 
@@ -1040,7 +1132,8 @@ Texto de algunos encuentros con Prueba. Solo un Tripulante puede comprometerse a
 - Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
 - Un Tripulante Asustado no puede comprometerse solo, así que tampoco a una Prueba Sin ayuda.
 
-> *Ejemplo:* en «La última mano» (EXP 3, Sin ayuda) comprometes solo a Catalina (EXP 3). Añades «Ojo avizor» (Habilidad, dos iconos de EXP); cada carta que comprometas suma 1 más, como dice el encuentro: 3 + 2 + 1 = 6. No podrías añadir «Rumores de taberna» por su icono, porque es un Evento.
+> [!ejemplo] Una Prueba Sin ayuda
+> En «La última mano» (EXP 3, Sin ayuda) comprometes solo a Catalina (EXP 3). Añades «Ojo avizor» (Habilidad, dos iconos de EXP); cada carta que comprometas suma 1 más, como dice el encuentro: 3 + 2 + 1 = 6. No podrías añadir «Rumores de taberna» por su icono, porque es un Evento.
 
 ### Sin oposición
 
@@ -1076,9 +1169,10 @@ Ficha que solo ayuda a un Tripulante. Hay dos: Inspirado y Aguerrido. Funciona c
 
 Un efecto que solo ayuda es una Ventaja; uno que perjudica o limita es un Estado.
 
-> *Ejemplo:* juegas «Ron para los valientes» sobre el Bucanero veterano: queda Borracho (un Estado) y Aguerrido (una Ventaja). Después fallas una Prueba y le tocan 2 heridas: Aguerrido evita 1 y sufre la otra. Al final del turno deja de estar Borracho.
+> [!ejemplo] Un Estado y una Ventaja
+> Juegas «Ron para los valientes» sobre el Bucanero veterano: queda Borracho (un Estado) y Aguerrido (una Ventaja). Después fallas una Prueba y le tocan 2 heridas: Aguerrido evita 1 y sufre la otra. Al final del turno deja de estar Borracho.
 
-*Consulta también:* Estado.
+*Véase también:* Estado.
 
 ### Vida
 

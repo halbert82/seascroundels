@@ -1,6 +1,7 @@
 // Paneles de la mesa: lo último que ha pasado, registro, ayuda, menú, menú de carta, fin de misión y fin de partida.
 
 import { AnimatePresence, motion } from 'motion/react'
+import { LIBROS } from '../reglamento.ts'
 import { useEffect, useRef, type ReactNode } from 'react'
 import { esCarta, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { partesDeRecompensa } from '../textos/decisiones.ts'
@@ -123,6 +124,19 @@ export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
   return (
     <Capa alCerrar={alCerrar} clase="ayuda">
       <h2>Referencia rápida</h2>
+      <nav className="ayuda-libros" aria-label="Reglamento">
+        <span>El reglamento completo:</span>
+        {LIBROS.map((l) => (
+          <span key={l.nombre} className="ayuda-libro">
+            <a href={l.web} target="_blank" rel="noreferrer">
+              {l.nombre}
+            </a>
+            <a className="pdf" href={l.pdf} download>
+              PDF
+            </a>
+          </span>
+        ))}
+      </nav>
       <div className="ayuda-columnas">
         <section>
           <h3>Secuencia del turno</h3>
@@ -156,7 +170,7 @@ export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
         <h3>En la mesa</h3>
         <ul>
           <li>Lo que puedes hacer ahora brilla en dorado. Pulsa la carta para hacerlo.</li>
-          <li>Pasa el ratón por encima de una carta para verla en grande, con sus reglas explicadas al lado (en tableta, mantenla pulsada).</li>
+          <li>Pasa el ratón por encima de una carta para verla en grande, junto a ella y con sus reglas explicadas al lado (en tableta, tócala).</li>
           <li>Pasa el ratón por encima de una ficha (un Estado, una Ventaja, una ficha de misión…) o púlsala para ver qué hace y cómo se quita.</li>
           <li>«Deshacer» vuelve atrás la última decisión mientras no se haya revelado nada nuevo.</li>
         </ul>
