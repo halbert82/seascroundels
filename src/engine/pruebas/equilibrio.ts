@@ -53,6 +53,8 @@ export interface Partida {
   motivo: string
   hundimientos: number
   muertes: number
+  /** Heridas sufridas durante las misiones (de que zarpas a que vuelves a puerto). */
+  heridasEnMision: number
   pruebas: { encuentro: string; superada: boolean }[]
   /** Misiones (por carta): ofrecidas para zarpar, elegidas y su resultado. */
   ofrecidas: CartaId[]
@@ -116,6 +118,7 @@ export function jugarPartida(
     motivo: '',
     hundimientos: 0,
     muertes: 0,
+    heridasEnMision: 0,
     pruebas: [],
     ofrecidas: [],
     zarpes: [],
@@ -181,6 +184,7 @@ export function jugarPartida(
         }
         case 'heridas':
           if (enCurso) danoDe(p, enCurso).heridas += dato.n
+          if (s.mision || enCurso) p.heridasEnMision += dato.n
           break
         case 'dano':
           if (enCurso) danoDe(p, enCurso).dano += dato.n

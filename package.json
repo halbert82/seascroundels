@@ -23,7 +23,8 @@
     "reglamento": "npm run build && node scripts/reglamento.mjs",
     "reglamento:pdf": "node scripts/reglamento.mjs --solo-pdf",
     "reglamento:paginas": "node scripts/paginas-libro.mjs",
-    "comprobar:reglamento": "npm run build && node scripts/comprobar-reglamento.mjs"
+    "comprobar:reglamento": "npm run build && node scripts/comprobar-reglamento.mjs",
+    "medir": "MEDIR=1 vitest run src/engine/medir.informe.test.ts"
   },
   "dependencies": {
     "@fontsource/alegreya": "^5.3.0",
