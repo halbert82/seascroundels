@@ -55,6 +55,20 @@ const URLS_ARTE = import.meta.glob<string>('../../../assets/arte/*.jpg', {
   import: 'default',
 })
 
+/** Copias pequeñas para la mesa y la galería (npm run arte:mesa): las grandes son para el reglamento impreso. */
+const URLS_ARTE_MESA = import.meta.glob<string>('../../../assets/arte/mesa/*.jpg', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+})
+
+let arteGrande = false
+
+/** El reglamento dibuja las cartas con las ilustraciones grandes (en papel, las pequeñas se verían blandas). */
+export function usarIlustracionesGrandes(): void {
+  arteGrande = true
+}
+
 export interface Arte {
   url: string
   encuadre: string
@@ -63,9 +77,10 @@ export interface Arte {
 export function arteDe(id: string): Arte | undefined {
   const arte = ARTE[id]
   if (!arte) return undefined
-  const url = URLS_ARTE[`../../../${arte.archivo}`]
-  if (!url) throw new Error(`No encuentro la ilustración ${arte.archivo} de «${id}»`)
-  return { url, encuadre: arte.encuadre }
+  const grande = URLS_ARTE[`../../../${arte.archivo}`]
+  if (!grande) throw new Error(`No encuentro la ilustración ${arte.archivo} de «${id}»`)
+  const pequena = URLS_ARTE_MESA[`../../../${arte.archivo.replace('assets/arte/', 'assets/arte/mesa/')}`]
+  return { url: arteGrande || !pequena ? grande : pequena, encuadre: arte.encuadre }
 }
 
 // ---------------------------------------------------------------------------
@@ -208,6 +223,7 @@ export interface VistaPuerto {
   comunes: Segmento[][]
   propia: { nombre: string; texto: Segmento[] }
   ambientacion: string
+  arte?: Arte
 }
 
 export type VistaCarta = VistaJugador | VistaPeligro | VistaMazoPropio | VistaCapitulo | VistaPuerto
@@ -556,6 +572,7 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
         comunes: c.opcionesComunes.map((t) => parsearTexto(t)),
         propia: { nombre: c.habilidadPropia.nombre, texto: parsearTexto(c.habilidadPropia.texto) },
         ambientacion: c.ambientacion,
+        ...conArte(entrada.id),
       }
     }
   }

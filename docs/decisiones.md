@@ -346,8 +346,22 @@ Aplicados todos los cambios de texto de Albert (el documento queda en docs/archi
 - **Escritorio sin cambios:** 1440 × 900 y 1920 × 1080 salen idénticos píxel a píxel (puerto, Prueba y fin de misión). La barra sigue fija (`npm run comprobar:barra`). Escenas nuevas para capturas: `#/escena/mano5` y `#/escena/mano8`.
 - **Abierto:** la zona de Tripulación sigue siendo más alta que en escritorio (unas 100 de más en 1024 × 768), así que con pocos Tripulantes queda hueco debajo. Es lo pedido (lo que sobra va arriba); si se quiere más compacta, habría que decidir en qué se gasta esa altura (por ejemplo, cartas de tripulación más grandes).
 
-### Pendiente de Albert
+### Decididas por Albert (19 de octubre de 2026, tras los textos)
 
-- **«Monstruo»:** no lo he añadido a las palabras clave porque ninguna carta de la caja lo lleva (ver arriba). Por defecto se queda fuera. Si prefieres listarlo igualmente (por ejemplo, para cartas futuras), hay que quitar de la prueba la comprobación de que la lista es exactamente la de las cartas.
-- **Páginas solo con la rosa (13 y 37 de «Aprende a jugar»):** por defecto se quedan. La 13 desaparecería si «Preparación» pudiera empezar en impar (dejaría de mirar al diagrama de la mesa); la 37, si los créditos fueran al pie de la página de «Mazos de inicio».
-- **Epígrafe de la Referencia de reglas:** por defecto no lleva. Si quieres uno, basta con la marca `[!epigrafe]` bajo «## Parte 2 · Referencia de reglas».
+- **«Monstruo»:** se queda fuera de las palabras clave (ninguna carta de la caja la lleva).
+- **Epígrafe de la Referencia de reglas:** sin epígrafe.
+- **Páginas 13 y 37 de «Aprende a jugar»:** se quedan, pero con una ilustración a página entera en vez de la rosa (ver «Ilustraciones nuevas»).
+- **Tableta, hueco en la zona de Tripulación:** se usa para que las cartas de la tripulación salgan más grandes (ver «Ilustraciones nuevas»).
+
+## Ilustraciones nuevas (19 de octubre de 2026)
+
+Sin cambiar ninguna regla ni ningún texto de reglas.
+
+- **24 ilustraciones nuevas** en sus cartas (assets/arte/ y data/arte.json): el Barco, Catalina, diez Tripulantes (Rufián, Grumete, Bucanero, Contrabandista, Carpintero, Matasanos, Viejo lobo, Rastreador, Herbolaria y Práctico), cuatro Mejoras (Vela mayor, Chalupa, Patente de corso y Coleto de cuero), Coraje de ron, Mapa robado, Temporada de huracanes, Tortuga, Nassau y tres misiones (La selva, Desembarco nocturno y El prisionero de Portobelo). Cada una con un encuadre que deja la cara o el objeto a la vista en el hueco de la carta; la Patente, cuadrada en un hueco apaisado, enseña el rollo, el sello rojo y el pergamino.
+- **Tamaño:** van grandes (1312 px de ancho, 768 las verticales), como llegan, para el reglamento. La mesa y la galería usan una copia pequeña (assets/arte/mesa/, 756 px las apaisadas y cuadradas y 440 las verticales), que se genera con `npm run arte:mesa` al añadir o cambiar una ilustración. La web solo descarga las grandes en las páginas del reglamento.
+- **Cartas de puerto:** dibujan su ilustración en la franja de la derecha, como las misiones en la suya, con la frase de ambientación encima, abajo, sobre un oscurecido para que se lea.
+- **Reglamento, cabeceras:** el Matasanos en «Heridas, daño y penalizaciones» y Catalina en «Construir tu mazo». Las demás siguen como las aprobó Albert (probé el Mapa robado en «Preparación», pero en la franja de la cabecera solo se veían el brazo y un perro: se queda el casco en la playa). Las verticales nunca van a lo ancho. **Viñetas:** entran todas las nuevas apaisadas y cuadradas.
+- **Láminas a página entera** en las páginas que quedaban en blanco por empezar lo siguiente en página par, con un margen fino y un filete dorado, sin texto: Tortuga en la 13 (antes de «Preparación») y la Sombra del Alba en la 37 (antes de la contraportada). La Sombra del Alba es apaisada: en la página vertical se ve la proa y las velas. Ninguna repite ilustración con su doble página.
+- **Láminas en papel:** Tortuga mide 768 px de ancho y a página entera queda a unos 100 ppp; la Sombra del Alba, recortada en vertical, a unos 80. Se ven bien en pantalla, pero en papel algo blandas: para imprimir, harían falta versiones de unos 2000 px de ancho (Tortuga) y 2500 de alto (el barco).
+- **Revisión automática:** ninguna ilustración de adorno (cabecera, viñeta o lámina) repite en su doble página la de una carta o la de otro adorno. Antes solo se miraban las viñetas.
+- **Mesa en tableta:** las cartas de la tripulación usan la altura de más de su zona. En 1024 × 768 miden 0,41 (las del muelle, 0,33; antes, 0,29), con huecos de 155 de ancho y 216 de alto; caben el Capitán y 4 Tripulantes (y hasta 6 en dos filas; 7 o más, en tres) sin montarse. Al agotarse, una carta gira y se encoge hasta caber en su hueco (como en escritorio, 0,29). En escritorio no cambia nada (huecos cuadrados, la carta mide lo que cabe girada).

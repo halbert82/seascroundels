@@ -29,7 +29,7 @@ try {
     await document.fonts.ready
     // Espera a que carguen las ilustraciones (son fondos CSS).
     const urls = new Set()
-    for (const el of document.querySelectorAll('.art, .chapart')) {
+    for (const el of document.querySelectorAll('.art, .chapart, .ptoart')) {
       const m = /url\("?([^")]+)"?\)/.exec(getComputedStyle(el).backgroundImage)
       if (m) urls.add(m[1])
     }

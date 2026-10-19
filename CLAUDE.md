@@ -27,7 +27,7 @@ Recursos visuales:
 - `referencia/estilo-cartas.css` y `referencia/plantilla-cartas.html`: la maquetación original de las cartas, con el CSS y una plantilla en una sintaxis de plantillas propia. `referencia/ejemplo-datos-render.json` contiene datos de ejemplo para esa plantilla. Pórtala a componentes React.
 - `referencia/anatomia/`: tres láminas que explican las partes de las cartas de Tripulante, Misión y Peligro.
 - `assets/iconos/*.svg`: iconos del juego. Se usan como máscara CSS y se colorean con `background-color`, como hace el CSS original.
-- `assets/arte/*.jpg` y `data/arte.json`: las ilustraciones que ya existen y a qué carta van. El resto de cartas aún no tiene ilustración; lleva un hueco con el texto «Ilustración pendiente».
+- `assets/arte/*.jpg` y `data/arte.json`: las ilustraciones que ya existen, a qué carta van y su encuadre. Van grandes (1312 px de ancho, 768 las verticales) porque el reglamento las usa a todo el ancho; la mesa y la galería usan una copia pequeña en `assets/arte/mesa/`, que se genera con `npm run arte:mesa` al añadir o cambiar una. El resto de cartas aún no tiene ilustración; lleva un hueco con el texto «Ilustración pendiente».
 
 ## Alcance de la versión 0
 

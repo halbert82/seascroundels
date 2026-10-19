@@ -18,7 +18,7 @@ import { Explicable } from './Explicacion.tsx'
 import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, fichasDe, useMesa } from './contexto.tsx'
-import { ESCALA_MANO, IZQ, abanico, anchoCentro, escalaPara, pieDeLaMano, repartirAltoDeMas } from './disposicion.ts'
+import { ESCALA_MANO, abanico, anchoCentro, escalaPara, medidasTripulacion, pieDeLaMano, repartirAltoDeMas, type MedidasTripulacion } from './disposicion.ts'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
 import { useLienzo } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
@@ -231,14 +231,13 @@ function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: Ayuda }
 }
 
 /** Hueco fijo de un Tripulante: cabe la carta derecha y la carta girada, así nada se mueve al agotar o preparar. */
-function Tripulante({ inst, escala, rehen, pasajero }: { inst: InstId; escala: number; rehen?: boolean; pasajero?: boolean }) {
+function Tripulante({ inst, m, rehen, pasajero }: { inst: InstId; m: MedidasTripulacion; rehen?: boolean; pasajero?: boolean }) {
   const { s } = useMesa()
-  const lado = 528 * escala
   const mejoras = vinculadas(s, inst)
   return (
-    <div className={`tripulante${rehen ? ' rehen' : ''}${pasajero ? ' pasajero' : ''}`} style={{ width: lado }}>
-      <div className="hueco" style={{ width: lado, height: lado }}>
-        <CartaDe inst={inst} escala={escala} />
+    <div className={`tripulante${rehen ? ' rehen' : ''}${pasajero ? ' pasajero' : ''}`} style={{ width: m.anchoHueco }}>
+      <div className="hueco" style={{ width: m.anchoHueco, height: m.altoHueco }}>
+        <CartaDe inst={inst} escala={m.escala} encogeAgotada={m.encogeAgotada} />
         {!pasajero && <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />}
         {rehen && (
           <Explicable ayuda={AYUDA_REGLA.rehen} className="rehen-marca">
@@ -263,24 +262,21 @@ function Tripulante({ inst, escala, rehen, pasajero }: { inst: InstId; escala: n
 export function ZonaTripulacion() {
   const { s } = useMesa()
   const total = s.zonas.tripulacion.length + s.zonas.rehenes.length + s.zonas.pasajeros.length
-  // Tres huecos por fila; si hay más de seis, se achican para que quepan tres filas.
-  const porFila = 3
-  const filas = Math.max(2, Math.ceil(total / porFila))
-  const ladoPorAncho = Math.floor((IZQ - 30 - (porFila - 1) * 12) / porFila)
-  const ladoPorAlto = (548 - 22 - 30 - (filas - 1) * 10) / filas - 28
-  const escala = Math.min(ladoPorAncho, ladoPorAlto) / 528
+  // Tres huecos por fila; si hay más de seis, se achican para que quepan tres filas. En una tableta, más grandes.
+  const { alto } = useLienzo()
+  const m = medidasTripulacion(total, repartirAltoDeMas(alto).zonas)
   return (
     <section className="zona zona-tripulacion">
       <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{valor(s, { tipo: 'capacidad' })} · el Capitán no cuenta{s.zonas.pasajeros.length > 0 ? ', los Pasajeros sí' : ''}</span>}>Tripulación</Rotulo>
       <div className="tripulacion">
         {s.zonas.tripulacion.map((c) => (
-          <Tripulante key={c} inst={c} escala={escala} />
+          <Tripulante key={c} inst={c} m={m} />
         ))}
         {s.zonas.rehenes.map((c) => (
-          <Tripulante key={c} inst={c} escala={escala} rehen />
+          <Tripulante key={c} inst={c} m={m} rehen />
         ))}
         {s.zonas.pasajeros.map((c) => (
-          <Tripulante key={c} inst={c} escala={escala} pasajero />
+          <Tripulante key={c} inst={c} m={m} pasajero />
         ))}
       </div>
     </section>

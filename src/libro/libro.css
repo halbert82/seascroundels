@@ -2378,6 +2378,31 @@ body {
   background-size: 22mm;
 }
 
+/* Una lámina a página entera (Tortuga, la Sombra del Alba) en vez de la rosa: con un margen fino y un filete dorado. */
+.pagedjs_blank_page.con-lamina .pagedjs_sheet {
+  position: relative;
+  background-image: none;
+}
+
+.lamina {
+  position: absolute;
+  inset: 7mm;
+  z-index: 5;
+  overflow: hidden;
+  background: #1a130e;
+  box-shadow:
+    0 0 0 0.45mm var(--oro),
+    0 0 0 1.4mm var(--papel),
+    0 0 0 1.75mm var(--oro-claro);
+}
+
+.lamina img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* En la página donde empieza un capítulo no hace falta la cabecera corrida. */
 .pagina-de-apertura .pagedjs_margin-top-left,
 .pagina-de-apertura .pagedjs_margin-top-right {

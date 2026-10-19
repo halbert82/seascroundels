@@ -58,5 +58,101 @@
  "flota-II": {
   "archivo": "assets/arte/cap_galeon.jpg",
   "encuadre": "center"
+ },
+ "barco": {
+  "archivo": "assets/arte/barco.jpg",
+  "encuadre": "center"
+ },
+ "capitan2": {
+  "archivo": "assets/arte/catalina.jpg",
+  "encuadre": "center 20%"
+ },
+ "marinero_p": {
+  "archivo": "assets/arte/rufian.jpg",
+  "encuadre": "center"
+ },
+ "grumete": {
+  "archivo": "assets/arte/grumete.jpg",
+  "encuadre": "center 20%"
+ },
+ "bucanero": {
+  "archivo": "assets/arte/bucanero.jpg",
+  "encuadre": "center"
+ },
+ "contrabandista": {
+  "archivo": "assets/arte/contrabandista.jpg",
+  "encuadre": "center"
+ },
+ "carpintero": {
+  "archivo": "assets/arte/carpintero.jpg",
+  "encuadre": "center"
+ },
+ "matasanos": {
+  "archivo": "assets/arte/matasanos.jpg",
+  "encuadre": "center"
+ },
+ "viejo_lobo": {
+  "archivo": "assets/arte/viejo_lobo.jpg",
+  "encuadre": "center 25%"
+ },
+ "baqueano": {
+  "archivo": "assets/arte/rastreador.jpg",
+  "encuadre": "center"
+ },
+ "herbolaria": {
+  "archivo": "assets/arte/herbolaria.jpg",
+  "encuadre": "center"
+ },
+ "practico": {
+  "archivo": "assets/arte/practico.jpg",
+  "encuadre": "center 20%"
+ },
+ "vela": {
+  "archivo": "assets/arte/vela.jpg",
+  "encuadre": "center"
+ },
+ "chalupa": {
+  "archivo": "assets/arte/chalupa.jpg",
+  "encuadre": "center"
+ },
+ "patente": {
+  "archivo": "assets/arte/patente.jpg",
+  "encuadre": "center 25%"
+ },
+ "coleto": {
+  "archivo": "assets/arte/coleto.jpg",
+  "encuadre": "center"
+ },
+ "coraje": {
+  "archivo": "assets/arte/coraje.jpg",
+  "encuadre": "center"
+ },
+ "mapa": {
+  "archivo": "assets/arte/mapa.jpg",
+  "encuadre": "center"
+ },
+ "huracanes": {
+  "archivo": "assets/arte/huracanes.jpg",
+  "encuadre": "center"
+ },
+ "tortuga": {
+  "archivo": "assets/arte/tortuga.jpg",
+  "encuadre": "center 15%"
+ },
+ "nassau": {
+  "archivo": "assets/arte/nassau.jpg",
+  "encuadre": "center 37%"
+ },
+ "templo-II": {
+  "archivo": "assets/arte/mision-119.jpg",
+  "encuadre": "center 60%"
+ },
+ "sanfelipe-I": {
+  "archivo": "assets/arte/mision-143.jpg",
+  "encuadre": "center 60%"
+ },
+ "panama-I": {
+  "archivo": "assets/arte/mision-151.jpg",
+  "encuadre": "center 12%"
  }
 }

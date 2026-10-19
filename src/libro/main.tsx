@@ -7,13 +7,14 @@ import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import fuente from '../../docs/reglamento-v1.0.md?raw'
 import '../estilos/fuentes.ts'
-import { VINETAS } from './arte.ts'
+import { LAMINAS, VINETAS } from './arte.ts'
 import { CortesDePagina } from './cortes.ts'
 import { Barra } from './Barra.tsx'
 import { leerReglamento, type LibroId } from './fuente.ts'
 import { Libro, TITULO } from './Libro.tsx'
 import { cortarRecortes } from './piezas.tsx'
 import { silabear } from './silabas.ts'
+import { usarIlustracionesGrandes } from '../ui/cartas/vista.ts'
 import './libro.css'
 import paginas from './paginas.css?raw'
 
@@ -90,6 +91,31 @@ function marcarAperturas(): void {
     if (!contenido || !cabecera) continue
     if (cabecera.getBoundingClientRect().top - contenido.getBoundingClientRect().top < 40) pagina.classList.add('pagina-de-apertura')
   }
+}
+
+/**
+ * Láminas: en una página que queda en blanco porque lo que sigue empieza en página par, una ilustración a página entera
+ * (ver LAMINAS en arte.ts) en vez de la rosa de los vientos.
+ */
+function laminas(): void {
+  const paginas = [...document.querySelectorAll<HTMLElement>('.pagedjs_page')]
+  paginas.forEach((pagina, i) => {
+    if (!pagina.classList.contains('pagedjs_blank_page')) return
+    const siguiente = paginas[i + 1]
+    const lamina = LAMINAS.find((l) => siguiente?.querySelector(l.antesDe))
+    const hoja = pagina.querySelector<HTMLElement>('.pagedjs_sheet')
+    if (!lamina || !hoja) return
+    pagina.classList.add('con-lamina')
+    const marco = document.createElement('div')
+    marco.className = 'lamina'
+    marco.dataset.arte = lamina.arte.nombre
+    const img = document.createElement('img')
+    img.src = lamina.arte.url
+    img.alt = ''
+    img.style.objectPosition = lamina.arte.encuadre
+    marco.append(img)
+    hoja.append(marco)
+  })
 }
 
 /** Milímetros en píxeles CSS. */
@@ -196,6 +222,7 @@ async function principal(): Promise<void> {
   if (barra && !imprimir) createRoot(barra).render(<Barra libro={libro} />)
 
   await cargarTipografias()
+  usarIlustracionesGrandes()
   const reglamento = leerReglamento(fuente)
   const origen = document.getElementById('origen')
   const destino = document.getElementById('paginas')
@@ -227,6 +254,7 @@ async function principal(): Promise<void> {
   cerrarCadenas()
   marcarAperturas()
   if (libro === 'referencia') indiceLateral()
+  laminas()
   vinetas()
   await cargarImagenes(destino)
   document.getElementById('cargando')?.remove()

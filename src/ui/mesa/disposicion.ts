@@ -76,6 +76,39 @@ export function repartirAltoDeMas(altoLienzo: number): { mano: number; zonas: nu
   return { mano, zonas: extra - mano }
 }
 
+// ---------------------------------------------------------------------------
+// La tripulación
+
+export interface MedidasTripulacion {
+  /** Escala de las cartas (sobre 378×528). */
+  escala: number
+  anchoHueco: number
+  altoHueco: number
+  /** Cuánto se encoge una carta al agotarse para caber girada en su hueco (1: nada). */
+  encogeAgotada: number
+}
+
+/**
+ * Tamaño de las cartas de la tripulación: tres huecos por fila, en dos filas como mínimo (tres si son más de seis).
+ * Con la mesa a 900 de alto (escritorio), cada hueco es cuadrado, con sitio para la carta girada: la carta mide lo que
+ * cabe girada. Si las zonas de arriba crecen (en una tableta), la carta derecha crece hasta llenar el ancho de su hueco
+ * (o el alto de su fila), para que sus números y su texto se lean sin tocarla; al agotarse, gira y se encoge hasta caber
+ * en el hueco.
+ */
+export function medidasTripulacion(total: number, extraZonas: number): MedidasTripulacion {
+  const porFila = 3
+  const filas = Math.max(2, Math.ceil(total / porFila))
+  const ancho = Math.floor((IZQ - 30 - (porFila - 1) * 12) / porFila)
+  // Lo que deja cada fila para la carta: sin el rótulo, el margen y las Mejoras que van debajo de cada carta.
+  const altoFila = (ALTO_ZONAS + extraZonas - 22 - 30 - (filas - 1) * 10) / filas - 28
+  if (extraZonas <= 0) {
+    const lado = Math.min(ancho, altoFila)
+    return { escala: lado / 528, anchoHueco: lado, altoHueco: lado, encogeAgotada: 1 }
+  }
+  const escala = Math.min(ancho / 378, altoFila / 528)
+  return { escala, anchoHueco: ancho, altoHueco: 528 * escala, encogeAgotada: Math.min(1, ancho / (528 * escala)) }
+}
+
 /** Escala de carta (sobre 378×528) para que `n` cartas de ese ancho quepan en `disponible` con `hueco` entre ellas. */
 export function escalaPara(disponible: number, n: number, anchoCarta: number, hueco: number, minima: number, maxima: number): number {
   if (n <= 0) return maxima

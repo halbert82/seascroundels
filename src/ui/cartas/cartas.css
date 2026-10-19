@@ -472,3 +472,7 @@
 .card.enc.solo.v2 .soloh{height:26px}
 .card.enc.solo.v2 .encp.v2{flex:1 1 auto}
 .card.enc.solo.v2 .dest.v2{max-height:30%}
+/* v1.0: el puerto con su ilustración: oscurece el pie para que la frase se lea encima */
+.ptoart.con-arte::before{content:'';position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,rgba(12,9,6,0) 0%,rgba(12,9,6,.62) 45%,rgba(12,9,6,.86) 100%);pointer-events:none}
+.ptoart.con-arte::after{content:'';position:absolute;inset:0;box-shadow:inset 0 12px 14px -10px rgba(0,0,0,.6),inset 14px 0 16px -12px rgba(0,0,0,.55);pointer-events:none}
+.ptoart.con-arte .ptofl{color:#F3E6C8;text-shadow:0 1px 2px rgba(0,0,0,.95),0 0 8px rgba(0,0,0,.7)}

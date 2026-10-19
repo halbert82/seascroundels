@@ -41,7 +41,7 @@ export function fichasDe(s: Estado, inst: InstId): FichasCarta {
 }
 
 /** Una carta de la mesa enlazada al estado: fichas, agotada, marca y qué pasa al pulsarla. */
-export function CartaDe({ inst, escala, revelar, girar = true }: { inst: InstId; escala: number; revelar?: TipoDorso; girar?: boolean }) {
+export function CartaDe({ inst, escala, revelar, girar = true, encogeAgotada }: { inst: InstId; escala: number; revelar?: TipoDorso; girar?: boolean; encogeAgotada?: number }) {
   const { s, inter, pulsar } = useMesa()
   const c = copia(s, inst)
   const opciones = inter.opciones.get(inst) ?? []
@@ -54,6 +54,7 @@ export function CartaDe({ inst, escala, revelar, girar = true }: { inst: InstId;
       id={c.id}
       escala={escala}
       agotada={girar && c.agotada}
+      {...(encogeAgotada !== undefined && encogeAgotada < 1 ? { encogeAgotada } : {})}
       participa={participa}
       marca={inter.marcas.get(inst) ?? null}
       {...(numero !== undefined && numero > 0 ? { numero } : {})}

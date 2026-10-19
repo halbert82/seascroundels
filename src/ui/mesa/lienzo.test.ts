@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { medir } from './Lienzo.tsx'
-import { ALTO_PARA_MANO_ENTERA, ESCALA_MANO, MARGEN_PIE_MANO, bajadaDelAbanico, pieDeLaMano, repartirAltoDeMas } from './disposicion.ts'
+import { ALTO_PARA_MANO_ENTERA, ALTO_ZONAS, ESCALA_MANO, IZQ, MARGEN_PIE_MANO, bajadaDelAbanico, medidasTripulacion, pieDeLaMano, repartirAltoDeMas } from './disposicion.ts'
 
 const ALTO_CARTA = 528 * ESCALA_MANO
 /** Dónde acaba el panel de decisión (con su alto mínimo), según lo que crecen las zonas de arriba (mesa.css). */
@@ -81,5 +81,42 @@ describe('La altura de más: primero la mano, después las zonas de arriba', () 
     expect(repartirAltoDeMas(960)).toEqual({ mano: 60, zonas: 0 })
     // Las cartas suben todo lo que pueden: les faltan 40 con 900 de alto; con 60 de más, sobran 20 al pie.
     expect(pieDeLaMano(5, 60)).toBe(20)
+  })
+})
+
+describe('Las cartas de la tripulación', () => {
+  /** Alto que ocupan las filas de la tripulación (rótulo, margen, cartas, Mejoras debajo y separación). */
+  const altoOcupado = (filas: number, altoHueco: number) => 22 + 30 + filas * (altoHueco + 28) + (filas - 1) * 10
+  const extraTableta = repartirAltoDeMas(medir(1024, 768).alto).zonas
+
+  it('en escritorio no cambian: huecos cuadrados con sitio para la carta girada (escala 0,29)', () => {
+    const m = medidasTripulacion(5, 0)
+    expect(m.escala).toBeCloseTo(155 / 528, 5)
+    expect(m).toMatchObject({ anchoHueco: 155, altoHueco: 155, encogeAgotada: 1 })
+  })
+
+  it('en una tableta (1024×768) son más grandes que las del muelle (0,41 contra 0,33) y caben en el ancho de su hueco', () => {
+    const m = medidasTripulacion(5, extraTableta)
+    expect(m.escala).toBeGreaterThan(0.4)
+    expect(m.escala).toBeGreaterThan(0.33)
+    expect(378 * m.escala).toBeLessThanOrEqual(m.anchoHueco)
+  })
+
+  it('en una tableta, la tripulación entera (Capitán y 4 Tripulantes) cabe en la zona sin montarse', () => {
+    const m = medidasTripulacion(5, extraTableta)
+    expect(3 * m.anchoHueco + 2 * 12).toBeLessThanOrEqual(IZQ - 30)
+    expect(altoOcupado(2, m.altoHueco)).toBeLessThanOrEqual(ALTO_ZONAS + extraTableta)
+  })
+
+  it('en una tableta, una carta agotada gira y se encoge hasta caber en su hueco', () => {
+    const m = medidasTripulacion(5, extraTableta)
+    expect(m.encogeAgotada).toBeLessThan(1)
+    expect(528 * m.escala * m.encogeAgotada).toBeCloseTo(m.anchoHueco, 5)
+  })
+
+  it('con siete o más (tres filas) también caben en una tableta', () => {
+    const m = medidasTripulacion(7, extraTableta)
+    expect(altoOcupado(3, m.altoHueco)).toBeLessThanOrEqual(ALTO_ZONAS + extraTableta + 0.001)
+    expect(378 * m.escala).toBeLessThanOrEqual(m.anchoHueco)
   })
 })

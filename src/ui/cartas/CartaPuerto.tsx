@@ -14,12 +14,15 @@ export function CartaPuerto({ v }: { v: VistaPuerto }) {
           <b>{v.muelle}</b>
         </div>
       </div>
-      <div className="ptoart">
-        <span>
-          Ilustración
-          <br />
-          del puerto
-        </span>
+      {/* La ilustración en la franja de la derecha, como la de una misión en la suya; la frase, encima y abajo. */}
+      <div className={`ptoart ${v.arte ? 'con-arte' : ''}`} style={v.arte ? { background: `url("${v.arte.url}") ${v.arte.encuadre}/cover no-repeat` } : undefined}>
+        {!v.arte && (
+          <span>
+            Ilustración
+            <br />
+            del puerto
+          </span>
+        )}
         {v.ambientacion && <div className="ptofl">{v.ambientacion}</div>}
       </div>
       <div className="ptor">

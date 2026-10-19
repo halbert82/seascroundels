@@ -12,6 +12,7 @@
     "typecheck": "tsc -b",
     "capturas": "node scripts/capturar-cartas.mjs",
     "comparar": "node scripts/comparar-cartas.mjs",
+    "arte:mesa": "node scripts/arte-mesa.mjs",
     "capturas:galeria": "npm run build && node scripts/capturar-galeria.mjs",
     "equilibrio": "INFORME=1 vitest run src/engine/equilibrio.informe.test.ts",
     "capturas:mesa": "npm run build && node scripts/capturar-mesa.mjs",

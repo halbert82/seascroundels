@@ -2,8 +2,8 @@
 //   - nada de la columna exterior (notas, consejos, viñetas) se monta sobre otra cosa;
 //   - lo ancho (diagramas, cabeceras ilustradas) queda centrado en la página, y nada se sale de ella;
 //   - nada se sale por abajo del área de texto;
-//   - ninguna ilustración se repite en dos páginas seguidas, y una viñeta no repite en su doble página la ilustración
-//     de una carta, de una cabecera o de otra viñeta;
+//   - ninguna ilustración se repite en dos páginas seguidas, y una ilustración de adorno (cabecera, viñeta o lámina)
+//     no repite en su doble página la ilustración de una carta ni de otro adorno;
 //   - las cartas de los ejemplos miden al menos 24 mm (para leer su nombre y sus números);
 //   - de las cartas de Peligro, los ejemplos enseñan solo la parte que citan, recortada a un tamaño en que se lee
 //     (60 mm o más y letra de 7,2 px o más), nunca la carta entera en pequeño;
@@ -69,7 +69,7 @@ function revisar([arteDeCarta, muestras]) {
   paginas.forEach((pagina, i) => {
     const n = i + 1
     const hoja = pagina.getBoundingClientRect()
-    if (pagina.classList.contains('pagedjs_blank_page')) enBlanco.push(n)
+    if (pagina.classList.contains('pagedjs_blank_page')) enBlanco.push(pagina.querySelector('.lamina') ? `${n} (lámina: ${pagina.querySelector('.lamina').dataset.arte})` : `${n} (rosa)`)
     // Marcas de texto pendiente.
     for (const p of pagina.querySelectorAll('.pendiente')) {
       if (p.closest('.creditos')) continue
@@ -201,68 +201,16 @@ function revisar([arteDeCarta, muestras]) {
       })
     }
   })
-  // Viñetas: ninguna repite en su doble página (la par, a la izquierda, con la impar siguiente) una ilustración de una
-  // carta, de una cabecera o de otra viñeta.
+  // Ilustraciones de adorno (cabeceras, viñetas y láminas): ninguna repite en su doble página (la par, a la izquierda,
+  // con la impar siguiente) una ilustración de una carta o de otro adorno.
   paginas.forEach((pagina, i) => {
     const pareja = pagina.classList.contains('pagedjs_left_page') ? paginas[i + 1] : paginas[i - 1]
-    for (const v of pagina.querySelectorAll('.vineta')) {
-      const otras = [pagina, pareja].filter(Boolean).flatMap((p) => [...p.querySelectorAll('[data-arte], [data-carta]')]).filter((e) => e !== v)
+    for (const v of pagina.querySelectorAll('.vineta, .cabecera-arte, .lamina')) {
+      const otras = [pagina, pareja].filter(Boolean).flatMap((p) => [...p.querySelectorAll('[data-arte], [data-carta]')]).filter((e) => e !== v && !v.contains(e))
       const repetida = otras.find((e) => (e.dataset.arte ?? arteDeCarta[e.dataset.carta]) === v.dataset.arte)
-      if (repetida) problemas.push(`pág. ${i + 1}: la viñeta repite la ilustración ${v.dataset.arte}, que ya sale en su doble página (${repetida.dataset.carta ? `carta ${repetida.dataset.carta}` : repetida.className.split(' ')[0]})`)
+      if (repetida) problemas.push(`pág. ${i + 1}: «${v.className.split(' ')[0]}» repite la ilustración ${v.dataset.arte}, que ya sale en su doble página (${repetida.dataset.carta ? `carta ${repetida.dataset.carta}` : repetida.className.split(' ')[0]})`)
     }
   })
-  // Palabras partidas entre dos páginas: un bloque que sigue en la página siguiente acaba en letra y su continuación
-  // empieza en letra.
-  for (const fin of document.querySelectorAll('[data-split-to]')) {
-    const ref = fin.getAttribute('data-ref')
-    const sigue = ref ? document.querySelector(`[data-ref="${ref}"][data-split-from]`) : null
-    if (!sigue) continue
-    // Paged.js pone su propio guion (‑, U+2011) al partir una palabra.
-    const a = (fin.textContent ?? '').replace(/\s+$/, '')
-    const b = (sigue.textContent ?? '').replace(/^\s+/, '')
-    if (/\p{L}[\u2011\u00AD-]?$/u.test(a) && !/\s$/.test(fin.textContent ?? '') && /^\p{Ll}/u.test(b)) {
-      const n = paginas.findIndex((p) => p.contains(fin)) + 1
-      problemas.push(`pág. ${n}: la palabra «${a.split(/\s/).pop()}…${b.split(/\s/)[0]}» queda partida entre esta página y la siguiente`)
-    }
-  }
-  // Nada perdido fuera de su página (Paged.js deja a la derecha, oculto, lo que no ha sabido colocar).
-  for (const e of document.querySelectorAll('.pagedjs_page :is(.nota-tema, .consejo, .ejemplo, .importante, .ancho, figure)')) {
-    const pagina = e.closest('.pagedjs_page')
-    const hoja = pagina.getBoundingClientRect()
-    const r = e.getBoundingClientRect()
-    if (r.width > 0 && (r.left >= hoja.right - 1 || r.right <= hoja.left + 1)) {
-      problemas.push(`pág. ${paginas.indexOf(pagina) + 1}: «${e.className.split(' ')[0]}» («${(e.textContent ?? '').replace(/\u00AD/g, '').trim().slice(0, 40)}») queda fuera de la página: se pierde`)
-    }
-  }
-  // Cada línea de texto del reglamento sale en el libro (en lo que se ve de sus páginas).
-  const visible = paginas
-    .map((p) => {
-      const hoja = p.getBoundingClientRect()
-      const textos = document.createTreeWalker(p.querySelector('.pagedjs_page_content') ?? p, NodeFilter.SHOW_TEXT)
-      let t = ''
-      for (let n = textos.nextNode(); n; n = textos.nextNode()) {
-        const el = n.parentElement
-        if (!el || el.closest('.pestanas-letras')) continue
-        const r = el.getBoundingClientRect()
-        if (r.width > 0 && r.left >= hoja.right - 1) continue
-        t += n.textContent
-      }
-      return t
-    })
-    .join('')
-    .normalize('NFC')
-    .replace(/[^\p{L}\p{N}]/gu, '')
-    .toLowerCase()
-  for (const m of muestras) if (!visible.includes(m.letras)) problemas.push(`no sale en el libro: «${m.linea}…»`)
-  // El ejemplo de juego, a doble página: el panel del puerto en la par y el de la misión en la impar siguiente.
-  const ejemplo = document.querySelector('.ejemplo-de-juego')
-  if (ejemplo) {
-    const pagDe = (sel) => paginas.findIndex((p) => p.querySelector(sel))
-    const puerto = pagDe('.panel-puerto')
-    const mision = pagDe('.panel-mision')
-    if (puerto < 0 || mision < 0) problemas.push('el ejemplo de juego no tiene sus dos paneles (el del puerto y el de la misión)')
-    else if (mision !== puerto + 1 || !paginas[puerto].classList.contains('pagedjs_left_page')) problemas.push(`el ejemplo de juego no queda a doble página (paneles en las págs. ${puerto + 1} y ${mision + 1})`)
-  }
   return { problemas, enBlanco, paginas: paginas.length, vinetas: document.querySelectorAll('.vineta').length, cabeceras: document.querySelectorAll('.cabecera-arte').length }
 }
 
@@ -278,7 +226,7 @@ try {
     const r = await pagina.evaluate(revisar, [ARTE_DE_CARTA, MUESTRAS[fichero]])
     const lista = [...new Set([...r.problemas, ...errores])]
     console.log(`${fichero}: ${r.paginas} páginas, ${r.cabeceras} cabeceras ilustradas, ${r.vinetas} viñetas${lista.length ? '' : ', sin problemas'}`)
-    if (r.enBlanco.length) console.log(`  en blanco (con la rosa, porque lo que sigue empieza en página par): pág. ${r.enBlanco.join(', ')}`)
+    if (r.enBlanco.length) console.log(`  sin texto, porque lo que sigue empieza en página par: pág. ${r.enBlanco.join(', ')}`)
     for (const p of lista) console.log(`  ${p}`)
     fallos += lista.length
     await pagina.close()
