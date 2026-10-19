@@ -1,5 +1,7 @@
 // Medidas de la mesa (en unidades del lienzo: 900 de alto o algo más, y entre 1440 y 1920 de ancho).
 
+import { ALTO } from './Lienzo.tsx'
+
 export const MARGEN = 14
 export const HUECO = 12
 /** Columna izquierda: la tripulación, en huecos fijos con sitio para la carta girada. */
@@ -7,11 +9,71 @@ export const IZQ = 520
 /** Columna derecha: lo último que ha pasado, el Barco y los mazos. */
 export const DER = 256
 export const ARRIBA = 66
-/** Alto de las zonas de arriba con la mesa a 900 de alto (si la mesa crece, ellas crecen lo mismo). */
+/** Alto de las zonas de arriba con la mesa a 900 de alto (si la mesa crece, crecen con lo que no se lleva la mano). */
 export const ALTO_ZONAS = 548
 
 export function anchoCentro(anchoLienzo: number): number {
   return anchoLienzo - 2 * MARGEN - IZQ - DER - 2 * HUECO
+}
+
+// ---------------------------------------------------------------------------
+// La mano
+
+/** Tamaño de las cartas de la mano (sobre 378×528). */
+export const ESCALA_MANO = 0.4
+const ANCHO_CARTA_MANO = 378 * ESCALA_MANO
+const ALTO_CARTA_MANO = 528 * ESCALA_MANO
+/** Con la mesa a 900 de alto, las cartas de la mano asoman: les faltan 40 por abajo (suben al pasar por encima). */
+export const MANO_ESCONDIDA = 40
+/** Margen al pie, bajo la carta más baja, cuando la mano se ve entera. */
+export const MARGEN_PIE_MANO = 10
+/** La mano se ve entera hasta con estas cartas (5 es el Mando del Capitán; 8, una mano muy llena). */
+export const CARTAS_MANO_ENTERA = 8
+
+/** La mano en abanico: cuánto se aparta cada carta del centro, cuánto gira (grados) y cuánto baja. */
+export function abanico(n: number): { x: number; giro: number; caida: number }[] {
+  const separacion = n <= 6 ? 128 : Math.max(70, 760 / n)
+  return Array.from({ length: n }, (_, i) => {
+    const desvio = i - (n - 1) / 2
+    return { x: desvio * separacion, giro: desvio * 2.2, caida: Math.abs(desvio) * 5 }
+  })
+}
+
+/**
+ * Cuánto más abajo que la carta del centro llega la esquina más baja de las cartas de los extremos: bajan (`caida`) y,
+ * al girar sobre un punto por debajo de la carta (a 1,2 veces su alto), una esquina de abajo baja algo más.
+ */
+export function bajadaDelAbanico(n: number): number {
+  let bajada = 0
+  for (const { giro, caida } of abanico(n)) {
+    const g = (Math.abs(giro) * Math.PI) / 180
+    bajada = Math.max(bajada, caida + (ANCHO_CARTA_MANO / 2) * Math.sin(g) + 0.2 * ALTO_CARTA_MANO * (1 - Math.cos(g)))
+  }
+  return bajada
+}
+
+/** Lo que necesita la mano, además de su sitio con la mesa a 900 de alto, para verse entera con su margen al pie. */
+export const ALTO_PARA_MANO_ENTERA = Math.ceil(MANO_ESCONDIDA + bajadaDelAbanico(CARTAS_MANO_ENTERA) + MARGEN_PIE_MANO)
+
+/**
+ * A qué altura sobre el borde de abajo de la mesa queda el pie de la carta del centro de la mano (negativo: asoma).
+ * Con la mesa a 900 de alto, a −40, como siempre. Con altura de más para la mano (`extraMano`), sube lo justo para que
+ * la carta más baja del abanico quede a su margen del pie: con menos cartas, el abanico baja menos y la mano, pegada al
+ * pie, queda más baja.
+ */
+export function pieDeLaMano(n: number, extraMano: number): number {
+  return Math.min(extraMano - MANO_ESCONDIDA, MARGEN_PIE_MANO + bajadaDelAbanico(n))
+}
+
+/**
+ * Si la mesa crece de alto (en una tableta), la altura de más se reparte así: primero la mano, hasta que sus cartas se
+ * ven enteras (`ALTO_PARA_MANO_ENTERA`); lo que sobre después, las zonas de arriba (tripulación, misión o puerto y la
+ * columna derecha). El panel de decisión va siempre justo debajo de las zonas.
+ */
+export function repartirAltoDeMas(altoLienzo: number): { mano: number; zonas: number } {
+  const extra = Math.max(0, altoLienzo - ALTO)
+  const mano = Math.min(extra, ALTO_PARA_MANO_ENTERA)
+  return { mano, zonas: extra - mano }
 }
 
 /** Escala de carta (sobre 378×528) para que `n` cartas de ese ancho quepan en `disponible` con `hueco` entre ellas. */

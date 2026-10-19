@@ -21,7 +21,7 @@ const TODOS = [
 ]
 const TAMANOS = process.env.TAMANOS ? TODOS.filter((t) => process.env.TAMANOS.split(',').some((n) => t.nombre.startsWith(n))) : TODOS
 
-const servidor = await preview({ logLevel: 'error', preview: { port: 5195 } })
+const servidor = await preview({ logLevel: 'error', preview: { port: Number(process.env.PUERTO ?? 5195) } })
 const raiz = servidor.resolvedUrls?.local[0]
 if (!raiz) throw new Error('El servidor no ha arrancado')
 const base = raiz.endsWith('/seascroundels/') ? raiz : new URL('seascroundels/', raiz).href

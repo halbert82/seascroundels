@@ -18,7 +18,7 @@ import { Explicable } from './Explicacion.tsx'
 import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
 import { CartaDe, fichasDe, useMesa } from './contexto.tsx'
-import { IZQ, anchoCentro, escalaPara } from './disposicion.ts'
+import { ESCALA_MANO, IZQ, abanico, anchoCentro, escalaPara, pieDeLaMano, repartirAltoDeMas } from './disposicion.ts'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
 import { useLienzo } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
@@ -459,19 +459,21 @@ function EsteTurno() {
 export function Mano() {
   const { s } = useMesa()
   const mano = s.zonas.mano
-  const n = mano.length
-  const separacion = n <= 6 ? 128 : Math.max(70, 760 / n)
+  const posiciones = abanico(mano.length)
+  // En una tableta, la mano tiene altura de más y sus cartas suben hasta verse enteras (disposicion.ts).
+  const { alto } = useLienzo()
+  const pie = pieDeLaMano(mano.length, repartirAltoDeMas(alto).mano)
   return (
-    <section className="mano" aria-label="Tu mano">
+    <section className="mano" aria-label="Tu mano" style={{ '--pie-mano': `${pie}px` } as CSSProperties}>
       {mano.map((c, i) => {
-        const desvio = i - (n - 1) / 2
+        const p = posiciones[i] ?? { x: 0, giro: 0, caida: 0 }
         return (
-          <div key={c} className="mano-carta" style={{ '--x': `${desvio * separacion}px`, '--giro': `${desvio * 2.2}deg`, '--caida': `${Math.abs(desvio) * 5}px`, zIndex: i } as CSSProperties}>
-            <CartaDe inst={c} escala={0.4} />
+          <div key={c} className="mano-carta" style={{ '--x': `${p.x}px`, '--giro': `${p.giro}deg`, '--caida': `${p.caida}px`, zIndex: i } as CSSProperties}>
+            <CartaDe inst={c} escala={ESCALA_MANO} />
           </div>
         )
       })}
-      {n === 0 && <div className="mano-vacia">Tu mano está vacía</div>}
+      {mano.length === 0 && <div className="mano-vacia">Tu mano está vacía</div>}
     </section>
   )
 }
