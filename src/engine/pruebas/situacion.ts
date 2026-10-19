@@ -436,6 +436,17 @@ export class Jugador {
     return this.responder({ tipo: 'pasar' })
   }
 
+  /** Otear (fase 10b, también el mazo de Misiones): deja todas las cartas arriba, en el orden en que estaban. */
+  resolverOteo(): this {
+    while (this.estado.pendiente && ['otear', 'ordenarOteo'].includes(this.decision.motivo.clave)) {
+      const d = this.decision
+      if (d.tipo === 'elegirOpcion') this.responder({ tipo: 'opcion', clave: 'arriba' })
+      else if (d.tipo === 'elegirCartas') this.responder({ tipo: 'cartas', ids: [...d.candidatas] })
+      else break
+    }
+    return this
+  }
+
   /** Pasa todas las Interrupciones y Respuestas que se ofrezcan ahora, hasta la siguiente decisión de otro tipo. */
   pasarOfertas(): this {
     while (this.estado.pendiente?.tipo === 'ofrecer') this.pasar()

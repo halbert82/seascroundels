@@ -22,13 +22,14 @@ function evento(ev: Extract<NuevaTarea, { tipo: 'evento' }>['ev']): NuevaTarea {
 
 /** Otear N: mira las N primeras cartas del mazo de Peligros activo y deja cada una arriba o al fondo. */
 export const otear: Manejador<'otear'> = (s, t, e) => {
-  const { mazo, descartes } = mazoActivo(s)
+  // Fase 10b: «Otea N del mazo X». El de Misiones no tiene descartes (las misiones van a su fondo).
+  const { mazo, descartes } = t.mazo === 'misiones' ? { mazo: 'mazoMisiones' as const, descartes: null } : mazoActivo(s)
   if (t.cartas.length + t.arriba.length + t.fondo.length === 0) {
-    if (s.zonas[mazo].length === 0 && s.zonas[descartes].length > 0) rebarajar(s, descartes, mazo)
+    if (descartes && s.zonas[mazo].length === 0 && s.zonas[descartes].length > 0) rebarajar(s, descartes, mazo)
     t.cartas = s.zonas[mazo].slice(0, t.n)
     if (t.cartas.length === 0) return 'hecha'
     s.infoRevelada++
-    anotar(s, 'revelar', `Oteas: ${nombres(s, t.cartas)}.`)
+    anotar(s, 'revelar', `Oteas ${t.mazo === 'misiones' ? 'del mazo de Misiones' : 'del mazo de Peligros'}: ${nombres(s, t.cartas)}.`)
     return 'sigue'
   }
   // «Ordénalas como quieras» (ninguna al fondo) o «pon N al fondo»: se decide de una vez.

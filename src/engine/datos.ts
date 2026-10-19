@@ -238,6 +238,12 @@ export interface RecompensaDatos {
   /** Buscar en el mazo de muelle: Tripulante, Mejora de barco o Mejora. */
   search?: 'crew' | 'ship' | 'up'
   draw?: number
+  /** Fase 10b: recluta sin coste un Tripulante del muelle de este coste o menos (si cabe). */
+  reclutaGratis?: number
+  /** Fase 10b: adquiere sin coste una Mejora del muelle de este coste o menos. */
+  adquiereGratis?: number
+  /** Fase 10b: otea N del mazo de Misiones (antes de reponer las misiones disponibles). */
+  oteaMisiones?: number
   /** id del Tesoro que se gana. */
   tesoro?: string
   victoria?: boolean

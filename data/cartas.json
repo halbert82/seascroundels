@@ -320,7 +320,7 @@
    "EXP": 2,
    "vida": 1,
    "mejoras": 1,
-   "texto": "[agotar]: Otea 1.",
+   "texto": "[agotar]: Otea 1 del mazo de Peligros.",
    "ambientacion": "«¡Vela a babor! …Creo.»"
   },
   {
@@ -739,7 +739,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "Otea 2.",
+   "texto": "Otea 2 del mazo de Peligros.",
    "ambientacion": "«Por un vaso de ron, el tabernero lo cuenta todo.»"
   },
   {
@@ -9262,7 +9262,7 @@
      "ambientacion": "«En Tortuga las deudas se pagan con oro o con sangre. Que elija él.»",
      "recompensa": {
       "rep": 1,
-      "search": "crew"
+      "oteaMisiones": 3
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -9291,7 +9291,7 @@
      "ambientacion": "«A ver de qué está hecha esta vieja.»",
      "recompensa": {
       "rep": 1,
-      "search": "ship"
+      "adquiereGratis": 1
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -9318,8 +9318,8 @@
      ],
      "ambientacion": "«Agua dulce, leña seca y ni un alma. Casi demasiado fácil.»",
      "recompensa": {
-      "rep": 1,
-      "draw": 2
+      "rep": 0,
+      "reclutaGratis": 2
      },
      "siguiente": [],
      "textoSiguiente": ""

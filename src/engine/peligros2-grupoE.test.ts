@@ -547,7 +547,7 @@ describe('55 · El Holandés errante', () => {
   it('Ciudad: si superas, miras las 5 de arriba; si fallas, Perseguido y descartas 2', () => {
     const j = en('ciu', ['p2_holandes', 'chubasco', 'calma', 'calma'], { tripulacion: ['baqueano', 'viejo_lobo'] })
     j.comprometer('EXP', ['baqueano', 'viejo_lobo']).pasarOfertas().seguir().pasarOfertas()
-    expect(j.registro.some((r) => r.startsWith('Oteas:'))).toBe(true)
+    expect(j.registro.some((r) => r.startsWith('Oteas del mazo de Peligros:'))).toBe(true)
     const k = en('ciu', ['p2_holandes', 'chubasco', 'calma'], { mano: ['ojo', 'timon'] })
     k.comprometer('EXP', []).seguir()
     expect(k.estadosBarco).toEqual(['perseguido'])

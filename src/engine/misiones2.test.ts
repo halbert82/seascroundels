@@ -32,7 +32,7 @@ describe('113 · Cobrar la deuda', () => {
     // Pelea de taberna (Pirata): COM 3 − 1 = 2.
     j.comprometer('COM', ['capitan']).seguir()
     expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
-    j.seguir().elegir('bucanero') // Hora de la siesta: 4 de 3; busca un Tripulante
+    j.seguir().resolverOteo() // Hora de la siesta: 4 de 3; otea 3 del mazo de Misiones (fase 10b)
     expect(j.zona('misionesSuperadas')).toEqual(['deuda-I'])
     expect(j.registro).toContain('Recuperas «Ojo avizor».')
     expect(j.zona('mano')).toEqual(expect.arrayContaining(['ojo', 'timon', 'coraje']))
@@ -63,18 +63,18 @@ describe('114 · Rumbo a mar abierto', () => {
   })
 
   it('Gesta: superada sin que el Barco haya sufrido daño en esta misión, +1 de reputación', () => {
-    const j = enPuerto({ misiones: ['prueba-I'], mazoMuelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
+    const j = enPuerto({ misiones: ['prueba-I'], muelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
     j.zarpar('prueba-I').elegir('vela')
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
     expect(j.estado.reputacion).toBe(2)
   })
 
   it('P50: el daño que el Barco traía de antes no cuenta para la Gesta; el que evita la carena, tampoco', () => {
-    const antes = enPuerto({ misiones: ['prueba-I'], barco: { dano: 2 }, mazoMuelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
+    const antes = enPuerto({ misiones: ['prueba-I'], barco: { dano: 2 }, muelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
     antes.zarpar('prueba-I').elegir('vela')
     expect(antes.estado.reputacion).toBe(2)
     // Bajíos fallados: su daño lo evita la carena; después, Viento de popa la supera.
-    const evitado = enPuerto({ misiones: ['prueba-I'], mazoMuelle: ['vela'], mazoPeligros: ['escollos', 'chubasco', 'racha', 'calma'] })
+    const evitado = enPuerto({ misiones: ['prueba-I'], muelle: ['vela'], mazoPeligros: ['escollos', 'chubasco', 'racha', 'calma'] })
     evitado.zarpar('prueba-I').comprometer('NAV').seguir().seguir().elegir('vela')
     expect(evitado.estado.danoBarco).toBe(0)
     expect(evitado.estado.reputacion).toBe(2)

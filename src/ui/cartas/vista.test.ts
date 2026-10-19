@@ -81,7 +81,10 @@ describe('vista de las cartas', () => {
 
     const deuda = vistaDeCarta(carta(113)) as VistaCapitulo
     expect([deuda.sello, deuda.de, deuda.travesia]).toEqual(['I', 'I', 'Misión inicial'])
-    expect(deuda.recompensaTexto).toBe('y busca un Tripulante')
+    expect(deuda.recompensaTexto).toBe('Otea 3 del mazo de Misiones') // fase 10b
+    const aguada = vistaDeCarta(carta(115)) as VistaCapitulo
+    expect(aguada.recompensa).toEqual([{ texto: '0', icono: 'rep' }])
+    expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos')
     expect(deuda.pie).toBe('Misión inicial · a la vista al empezar')
 
     expect((vistaDeCarta(carta(153)) as VistaCapitulo).recompensaTexto).toBe('¡Victoria!')

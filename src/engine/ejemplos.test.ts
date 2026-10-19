@@ -101,7 +101,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, busca los Cañones y roba cuatro', () => {
+  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, adquiere gratis la Vela mayor y roba cuatro (fase 10b)', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'pruebas-calma'],
@@ -125,7 +125,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     // NAV en el Mar: 6 (N12).
     j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(6)
-    // El Destino de la carta «Arrecife»: −1 (−0 con un Vigía asignado). La Prueba pide 4 y el total queda en 6 − 1 = 5.
+    // El Destino de la carta «Arrecife»: −1 (0 con un Vigía asignado). La Prueba pide 4 y el total queda en 6 − 1 = 5.
     expect(j.registro).toContain('Destino de la carta «Arrecife»: −1.')
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 4 } })
     j.seguir()
@@ -137,12 +137,15 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.zona('mazoPeligros').at(-1)).toBe('p2_turbonada')
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
-    // Recompensa: 1 de reputación y, como el Barco no tiene ningún daño, la Gesta da 1 más. Busca una Mejora de
-    // barco: los Cañones de bronce.
+    // Recompensa: 1 de reputación y, como el Barco no tiene ningún daño, la Gesta da 1 más. Adquiere sin coste una
+    // Mejora del muelle de coste 1 o menos: la Vela mayor (el muelle repuesto tiene la Vela, el Casco, la Vigía y el
+    // Carpintero).
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
     expect(j.estado.reputacion).toBe(2)
-    j.elegir('bronce')
-    expect(j.zona('muelle')).toContain('bronce')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })
+    expect((j.decision as { candidatas: string[] }).candidatas).toEqual([j.inst('vela')])
+    j.elegir('vela')
+    expect(j.zona('mejoras')).toEqual(['vela'])
 
     // Final: se queda «¡Al abordaje!» y roba cuatro para tener cinco.
     j.ninguna()

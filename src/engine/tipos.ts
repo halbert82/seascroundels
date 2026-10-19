@@ -451,7 +451,8 @@ export type Tarea = { id: number } & (
    * Otear N: mira las N primeras del mazo de Peligros activo y deja cada una arriba o al fondo.
    * `fondoMax`: cuántas se pueden poner al fondo como mucho; `fondoMin`, como poco («pon 1 al fondo»).
    */
-  | { tipo: 'otear'; n: number; cartas: InstId[]; arriba: InstId[]; fondo: InstId[]; fondoMax?: number; fondoMin?: number }
+  /** Otea N de un mazo (fase 10b: el de Peligros, por defecto, o el de Misiones). */
+  | { tipo: 'otear'; n: number; mazo?: 'misiones'; cartas: InstId[]; arriba: InstId[]; fondo: InstId[]; fondoMax?: number; fondoMin?: number }
   /** Quita la carta de Peligro revelada sin resolverla (no cuenta como resuelta, D5b). */
   | { tipo: 'quitarEncuentro'; modo: 'descartar' | 'fondo'; avance: boolean }
   /** Cancela el Destino revelado, o lo descarta y revela otro. */

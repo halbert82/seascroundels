@@ -304,6 +304,8 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'preparar':
       return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, 1) }
     case 'ordenarOteo':
+      // Fase 10b: del mazo de Misiones, la mejor misión arriba; del de Peligros, el menos peligroso.
+      if (d.candidatas.some((c) => porId(copia(s, c).id).tipo === 'capitulo')) return { tipo: 'cartas', ids: por((c) => -puntuacionMision(s, c)) }
       return { tipo: 'cartas', ids: por((c) => riesgoDelEncuentro(s, c)) }
     case 'alFondo':
       return { tipo: 'cartas', ids: por((c) => -riesgoDelEncuentro(s, c)).slice(0, n) }
@@ -389,6 +391,8 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     case 'otear': {
       const tarea = tareaDe(s, d)
       const carta = tarea?.tipo === 'otear' ? tarea.cartas[0] : undefined
+      // Fase 10b: del mazo de Misiones, deja arriba las que le convienen.
+      if (tarea?.tipo === 'otear' && tarea.mazo === 'misiones') return elegir(carta && puntuacionMision(s, carta) > 0 ? 'arriba' : 'fondo')
       return elegir(carta && riesgoDelEncuentro(s, carta) >= 1.5 ? 'fondo' : 'arriba')
     }
     case 'opcionAutomatica': {

@@ -261,6 +261,10 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   }
   if (r.search) tareas.push({ tipo: 'buscarMuelle', filtro: r.search === 'crew' ? 'tripulante' : r.search === 'ship' ? 'mejoraBarco' : 'mejora' })
   if (r.draw) tareas.push({ tipo: 'robar', n: r.draw })
+  // Misiones iniciales (fase 10b): reclutar o adquirir gratis del muelle, u otear el mazo de Misiones.
+  if (r.reclutaGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.reclutaGratis, que: 'tripulante' })
+  if (r.adquiereGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.adquiereGratis, que: 'mejora' })
+  if (r.oteaMisiones) tareas.push({ tipo: 'otear', n: r.oteaMisiones, mazo: 'misiones', cartas: [], arriba: [], fondo: [] })
   if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
   // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda y el otro sale de la partida.
   const posibles = e.carta.siguiente

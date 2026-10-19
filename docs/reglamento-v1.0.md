@@ -612,7 +612,7 @@ A continuación se describe el primer turno de una partida normal con Diego en T
 
 **Fase de Reclutamiento.** El jugador tiene 5 cartas en la mano: «¡Al abordaje!», «Mano firme al timón», «Ojo avizor», «Reflejos de gato» y «Soborno». En el muelle de Tortuga hay cuatro cartas: el Rufián de cubierta (coste 1), el Bucanero veterano (coste 2), el Sable de abordaje (coste 1) y el Matasanos (coste 2).
 
-El jugador recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y al Rufián descartando «Reflejos de gato». Se queda con dos cartas: «¡Al abordaje!» (dos iconos de COM) y «Mano firme al timón» (dos iconos de NAV). Al terminar la fase, descarta el Sable y el Matasanos y revela cuatro cartas nuevas para el muelle.
+El jugador recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y al Rufián descartando «Reflejos de gato». Se queda con dos cartas: «¡Al abordaje!» (dos iconos de COM) y «Mano firme al timón» (dos iconos de NAV). Al terminar la fase, descarta el Sable y el Matasanos y revela cuatro cartas nuevas para el muelle: la Vela mayor (coste 1), el Casco reforzado (coste 2), la Vigía inexperta (coste 2) y el Carpintero de a bordo (coste 2).
 
 **Fase de Rumbo.** El jugador zarpa a «Rumbo a mar abierto», una misión de Mar 3. Es una misión inicial, así que, al zarpar, «Rumores del tesoro» le da 1 de Avance: empieza con 1. La misión indica que el Barco acaba de salir de carena, de modo que la primera vez que fuera a sufrir daño en ella, lo evitaría.
 
@@ -621,11 +621,11 @@ El jugador recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor»
 
 El jugador revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 con Avance 3 / 2 (3 si la supera y 2 si no). Asigna a Diego (NAV 2) y al Bucanero (NAV 1), que suman 3. La Sombra del Alba otorga +1 a las Pruebas de NAV en el Mar, por lo que el total es 4. Ambos Tripulantes quedan agotados. El Bucanero no recibe el +1 de Diego, porque Diego solo lo otorga mientras está preparado y, al ser asignado, se agota. Con 4 contra 4 sería suficiente, pero el Destino puede restar del total y, después, ya no se pueden añadir cartas de la mano. Por ello, el jugador añade en este momento «Mano firme al timón», con dos iconos de NAV: el total es 6.
 
-El jugador revela el Destino de la carta «Arrecife»: −1 (sería −0 con un Vigía asignado). El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por superar la Turbonada, 1 más; además, la Turbonada queda atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
+El jugador revela el Destino de la carta «Arrecife»: −1 (sería 0 con un Vigía asignado). El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por superar la Turbonada, 1 más; además, la Turbonada queda atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
 
-**Recompensa.** El jugador gana 1 de reputación y, como el Barco no ha sufrido daño en esta misión, cumple la Gesta y gana 1 más. A continuación busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y el jugador vuelve a puerto.
+**Recompensa.** El jugador gana 1 de reputación y, como el Barco no ha sufrido daño en esta misión, cumple la Gesta y gana 1 más. A continuación adquiere sin coste una Mejora del muelle de coste 1 o menos: la única es la Vela mayor, que pone en el Barco. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y el jugador vuelve a puerto.
 
-**Fase de Final de turno.** El jugador conserva «¡Al abordaje!» y roba cuatro cartas para tener cinco. Los Cañones de bronce, que siguen en el muelle, pueden adquirirse en el turno siguiente.
+**Fase de Final de turno.** El jugador conserva «¡Al abordaje!» y roba cuatro cartas para tener cinco. La Vela mayor le dará 1 de Avance al zarpar a su próxima misión de Mar.
 
 ### Construir tu mazo
 
@@ -1101,9 +1101,15 @@ El número de colección es el número situado abajo a la derecha de cada carta.
 
 Obligado es una etiqueta de capacidad. Una capacidad **Obligado:** se aplica siempre que ocurre lo que indica, aunque no beneficie al jugador. No es opcional.
 
-### Otear N
+### Otear
 
-Otear N consiste en mirar las N primeras cartas del mazo de Peligros y devolverlas encima o al fondo del mazo, en el orden que el jugador elija.
+Otear consiste en mirar las primeras cartas de un mazo y devolverlas encima o al fondo de ese mismo mazo, en el orden que el jugador elija. La carta indica cuántas y de qué mazo: «Otea 2 del mazo de Peligros», «Otea 3 del mazo de Misiones».
+
+- Las cartas oteadas no se revelan ni se resuelven: solo se miran.
+- Cuando una misión superada da «Otea N del mazo de Misiones», el jugador otea antes de reponer las misiones disponibles.
+
+> [!ejemplo]
+> El jugador supera «Cobrar la deuda» y otea 3 del mazo de Misiones: «Rumbo a la isla», «El Paso de los Vientos» y «El ladrón del puerto». Pone «Rumbo a la isla» al fondo y deja las otras dos encima, con «El ladrón del puerto» primero. Al reponer las misiones disponibles, sale «El ladrón del puerto».
 
 ### Ocupar el muelle
 

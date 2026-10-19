@@ -552,7 +552,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       const c = entrada.carta
       const m = entrada.mision
       const r = c.recompensa
-      const recompensa: Ficha[] = r.rep && !r.texto ? [{ texto: `+${r.rep}`, icono: 'rep' }] : []
+      // Fase 10b: una misión inicial puede dar 0 de reputación («Agua y leña»): se ve el 0.
+      const recompensa: Ficha[] = r.rep !== undefined && !r.texto ? [{ texto: r.rep > 0 ? `+${r.rep}` : `${r.rep}`, icono: 'rep' }] : []
       let recompensaTexto: string | undefined
       if (r.texto) recompensaTexto = undefined
       else if (r.victoria) recompensaTexto = '¡Victoria!'
@@ -560,6 +561,9 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       else if (r.search === 'ship') recompensaTexto = 'y busca una Mejora de barco'
       else if (r.search === 'up') recompensaTexto = 'y busca una Mejora'
       else if (r.draw) recompensaTexto = `y roba ${r.draw}`
+      else if (r.reclutaGratis !== undefined) recompensaTexto = `Recluta sin coste un Tripulante del muelle de coste ${r.reclutaGratis} o menos`
+      else if (r.adquiereGratis !== undefined) recompensaTexto = `Adquiere sin coste una Mejora del muelle de coste ${r.adquiereGratis} o menos`
+      else if (r.oteaMisiones) recompensaTexto = `Otea ${r.oteaMisiones} del mazo de Misiones`
       const vista: VistaCapitulo = {
         forma: 'capitulo',
         num: entrada.num,

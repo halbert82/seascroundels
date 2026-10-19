@@ -82,6 +82,7 @@ describe('Al empezar la misión', () => {
     j.zarpar('deuda-I')
     expect(j.registro).toContain('Rumores del tesoro: +1 de Avance (2/3).')
     expect(j.registro).toContain('Ganas 1 de Avance (3/3).') // «Tarde de lluvia»
+    j.resolverOteo() // la recompensa de «Cobrar la deuda»: otea 3 del mazo de Misiones
     expect(j.zona('misionesSuperadas')).toEqual(['deuda-I'])
   })
 
@@ -304,13 +305,25 @@ describe('Superar una misión', () => {
     expect(j.copia('espada').vinculadaA).toBe(j.inst('bucanero'))
   })
 
-  it('las recompensas de las misiones iniciales: buscar un Tripulante, una Mejora de barco o robar 2', () => {
-    const deuda = enPuerto({ avance: { 'deuda-I': 3 }, mazoMuelle: ['bucanero', 'vela'], mazoPeligros: ['calma'] })
-    deuda.zarpar('deuda-I').elegir('bucanero')
-    expect(deuda.zona('muelle')).toEqual(['bucanero'])
-    const aguada = enPuerto({ avance: { 'aguada-I': 3 }, mazoPeligros: ['calma'], mano: [] })
-    aguada.zarpar('aguada-I')
-    expect(aguada.zona('mano')).toHaveLength(2)
+  it('fase 10b · las recompensas de las misiones iniciales: otear 3 del mazo de Misiones, adquirir o reclutar gratis', () => {
+    // «Cobrar la deuda» (+1): otea 3 del mazo de Misiones antes de reponer las disponibles.
+    const deuda = enPuerto({ avance: { 'deuda-I': 3 }, mazoMisiones: ['templo-I', 'flota-I', 'ladron-I', 'gobernador-I'], mazoPeligros: ['calma'] })
+    deuda.zarpar('deuda-I')
+    expect(deuda.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'templo-I' } })
+    deuda.opcion('fondo').opcion('arriba').opcion('arriba').elegir('ladron-I', 'flota-I')
+    expect(deuda.estado.reputacion).toBe(1)
+    // Se repone con la de arriba: el Ladrón, que ha quedado encima.
+    expect(deuda.zona('misionesDisponibles')).toContain('ladron-I')
+    expect(deuda.zona('mazoMisiones')).toEqual(['flota-I', 'gobernador-I', 'templo-I'])
+    // «Rumbo a mar abierto» (+1): adquiere sin coste una Mejora del muelle de coste 1 o menos.
+    const prueba = enPuerto({ misiones: ['prueba-I'], avance: { 'prueba-I': 3 }, muelle: ['vela', 'casco'], mazoPeligros: ['calma'] })
+    prueba.zarpar('prueba-I').elegir('vela')
+    expect(prueba.zona('mejoras')).toEqual(['vela'])
+    // «Agua y leña» (0): recluta sin coste un Tripulante del muelle de coste 2 o menos, si cabe.
+    const aguada = enPuerto({ avance: { 'aguada-I': 3 }, muelle: ['bucanero', 'contrabandista'], mazoPeligros: ['calma'], tripulacion: ['vigia'] })
+    aguada.zarpar('aguada-I').elegir('bucanero') // Distancia 1 − 1 del Barco: 0, no se agota a nadie (P3)
+    expect(aguada.zona('tripulacion')).toContain('bucanero')
+    expect(aguada.estado.reputacion).toBe(0)
   })
 
   it('«Las puertas de Panamá»: ¡victoria! (sin fichas de Defensa)', () => {
@@ -346,7 +359,7 @@ describe('D5a · Superar al reunir el Avance; la primera carta se resuelve siemp
     const j = enPuerto({ avance: { 'deuda-I': 3 }, tripulacion: ['bucanero'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.zarpar('deuda-I')
     expect(j.decision.motivo.clave).toBe('comprometer') // Pelea de taberna: hay que resolverla
-    j.comprometer('COM', ['bucanero']).seguir()
+    j.comprometer('COM', ['bucanero']).seguir().resolverOteo()
     expect(j.zona('misionesSuperadas')).toEqual(['deuda-I'])
   })
 
@@ -391,7 +404,7 @@ describe('D5b · Una carta descartada sin resolverla no cuenta como resuelta', (
     } satisfies Capacidad)
     const j = enPuerto({ avance: { 'deuda-I': 3 }, mazoPeligros: ['rivales', 'calma', 'chubasco'] })
     j.zarpar('deuda-I')
-    j.usar('prueba.descartarAlRevelar') // descarta la Pelea de taberna sin resolverla
+    j.usar('prueba.descartarAlRevelar').resolverOteo() // descarta la Pelea de taberna sin resolverla
     expect(j.zona('misionesSuperadas')).toEqual(['deuda-I']) // se resolvió «Hora de la siesta»
     expect(j.registro.filter((t) => t.startsWith('Revelas'))).toHaveLength(2)
   })
