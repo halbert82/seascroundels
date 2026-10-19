@@ -31,6 +31,25 @@ export function Lienzo({ children }: { children: ReactNode }) {
     window.addEventListener('resize', alCambiar)
     return () => window.removeEventListener('resize', alCambiar)
   }, [])
+  // La página y la mesa no se desplazan nunca: solo las zonas hechas para ello (con «overflow: auto»), como el
+  // centro o el registro. Si algo desplaza otra cosa (un «scrollIntoView», el foco…), vuelve a su sitio.
+  useEffect(() => {
+    const alDesplazar = (e: Event) => {
+      const el = e.target
+      if (el === document || el === document.documentElement || el === document.body) {
+        if (window.scrollX || window.scrollY) window.scrollTo(0, 0)
+        return
+      }
+      if (!(el instanceof HTMLElement) || !el.closest('.lienzo-marco')) return
+      if (!el.scrollTop && !el.scrollLeft) return
+      const { overflowX, overflowY } = getComputedStyle(el)
+      if (/auto|scroll/.test(overflowX + overflowY)) return
+      el.scrollTop = 0
+      el.scrollLeft = 0
+    }
+    document.addEventListener('scroll', alDesplazar, true)
+    return () => document.removeEventListener('scroll', alDesplazar, true)
+  }, [])
   const { ancho, escala } = medida
   return (
     <Contexto.Provider value={medida}>

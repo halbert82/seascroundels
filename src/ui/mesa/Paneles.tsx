@@ -76,8 +76,13 @@ function Capa({ children, alCerrar, clase = '' }: { children: ReactNode; alCerra
 
 /** Registro de partida completo, agrupado por turnos. */
 export function Registro({ s, alCerrar }: { s: Estado; alCerrar: () => void }) {
-  const fin = useRef<HTMLDivElement>(null)
-  useEffect(() => fin.current?.scrollIntoView(), [])
+  const cuerpo = useRef<HTMLDivElement>(null)
+  // Abre por el final. Solo baja el propio registro: «scrollIntoView» desplazaba también la mesa entera (y la barra
+  // superior se salía de la pantalla) y en los navegadores nuevos devuelve una promesa que React no admite.
+  useEffect(() => {
+    const el = cuerpo.current
+    if (el) el.scrollTop = el.scrollHeight
+  }, [])
   const turnos = new Map<number, EntradaRegistro[]>()
   for (const r of s.registro) turnos.set(r.turno, [...(turnos.get(r.turno) ?? []), r])
   return (
@@ -88,7 +93,7 @@ export function Registro({ s, alCerrar }: { s: Estado; alCerrar: () => void }) {
           ×
         </button>
       </div>
-      <div className="cajon-cuerpo">
+      <div className="cajon-cuerpo" ref={cuerpo}>
         {[...turnos].map(([turno, lineas]) => (
           <section key={turno} className="registro-turno">
             <h3>{turno === 0 ? 'Preparación' : `Turno ${turno}`}</h3>
@@ -101,7 +106,6 @@ export function Registro({ s, alCerrar }: { s: Estado; alCerrar: () => void }) {
             </ol>
           </section>
         ))}
-        <div ref={fin} />
       </div>
     </div>
   )
