@@ -388,13 +388,13 @@ export function ZonaPuerto() {
           {s.zonas.muelle.map((c) =>
             s.peligrosEnMuelle?.[c] !== undefined ? (
               <div key={c} className="peligro-muelle">
-                <CartaDe inst={c} escala={escalaMuelle} />
+                <CartaDe inst={c} escala={escalaMuelle} igualAlto />
                 <Explicable ayuda={ayudaMuelleOcupado(s.peligrosEnMuelle[c] ?? 0)} className="peligro-muelle-nota">
                   Ocupa el muelle · paga {s.peligrosEnMuelle[c]}
                 </Explicable>
               </div>
             ) : (
-              <CartaDe key={c} inst={c} escala={escalaMuelle} />
+              <CartaDe key={c} inst={c} escala={escalaMuelle} igualAlto />
             ),
           )}
           {n === 0 && <span className="vacio">El muelle está vacío</span>}

@@ -48,7 +48,8 @@ function enJuego(): PartidaEnMesa {
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje', 'cataplasma'],
     tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, { id: 'practico', estados: ['aguerrido'] }],
-    barco: { estados: ['viaDeAgua', 'velasRotas'], mejoras: [{ id: 'bronce', agotada: true }, 'vela'] },
+    // Sin Vía de agua: desde la fase 10b, al final de cada Peligro pregunta si achicas, y la escena se pararía ahí.
+    barco: { estados: ['perseguido', 'velasRotas'], mejoras: [{ id: 'bronce', agotada: true }, 'vela'] },
     reputacion: 6,
   })
   // Una carta de la mano, incautada bajo la misión.
@@ -62,7 +63,7 @@ function enJuego(): PartidaEnMesa {
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
 }
 
-/** Fase 6, en puerto: el pecio del «Huracán» ocupa el muelle y se libera a un Encadenado con una Prueba. */
+/** Fase 6, en puerto: el pecio del «Huracán» ocupa el muelle (Encadenado ya no existe desde la fase 10b). */
 function muelleOcupado(): PartidaEnMesa {
   const j = Jugador.enMision({
     misiones: ['ladron-I'],
@@ -82,7 +83,6 @@ function muelleOcupado(): PartidaEnMesa {
     else if (d.tipo === 'repartir') j.responder({ tipo: 'reparto', n: {} })
     else j.terminar()
   }
-  j.usar('estado:encadenado.liberar').comprometer('COM', ['bucanero']).pasarOfertas()
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
 }
 

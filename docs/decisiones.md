@@ -518,3 +518,24 @@ Hecha desde la sesión de diseño (Claude en la nube), sin la sesión de Claude 
 
 - El color del marco y de la placa es siempre la Clase (Piratería rojo, Neutral verde). Las cartas de jugador sin Clase en los datos (todas las Mejoras, Eventos y Habilidades) son Neutrales. El nombre de la Clase va al pie.
 - Tripulante: no cambia. Mejora de barco: la ilustración en un cuadro con esquinas de latón. Mejora de tripulante: en un óvalo con el mismo filete que el arco del Evento (sin sellos ni iconos). Evento: ilustración en arco y nombre en el centro, con «Evento» debajo. Habilidad: sin coste, las mismas pestañas de icono que el Evento, la ilustración larga y la caja de texto corta. Los Tesoros que son Mejoras se enmarcan como las Mejoras.
+
+### Medidas de la reputación (sin aplicar: elige Albert)
+
+1000 partidas por fila (semillas 1–1000, mazos de inicio, el mismo jugador automático). Variantes solo para medir: `MEDIR_VARIANTE` en `src/engine/pruebas/variantesMedida.ts` (`npm run medir`).
+
+- **R1:** capítulo I 0, II 1, III 2 (3 en las travesías Difíciles); aventuras 1; misiones iniciales 0. **R2:** como R1 con el capítulo I a 1. **R3:** capítulo I 1, II 2, III 3; aventuras 1; iniciales 0. La Gesta sigue dando +1.
+- **A1:** las Pruebas fáciles (dificultad 3 o menos) dan Avance 1 / 1 en vez de 2 / 1.
+- **I1:** misiones iniciales más pequeñas (Tripulante de coste 1 o menos; Mejora de coste 0). **I2:** con precio (Agua y leña: el Barco sufre 1 daño; Rumbo a mar abierto: un Tripulante sufre 1 herida).
+
+| Variante | Reputación para ganar | Victorias | Reputación por misión superada | Heridas por misión | Capitán derrotado |
+| --- | --- | --- | --- | --- | --- |
+| Lo publicado | 18 | 45,6 % | 1,91 | 0,79 | 18,5 % |
+| R1 (cualquiera) | 10 | 0–0,2 % | 0,52 | 0,73 | 10 % |
+| R2 + A1 + I0 | 10 | 26,0 % | 0,97 | 0,89 | 18,3 % |
+| R2 + A1 + I1 | 10 | 24,5 % | 0,97 | 0,88 | 18,9 % |
+| R2 + I2 | 10 | 28,7 % | 0,97 | 0,78 | 19,0 % |
+| R3 + A1 + I2 | 12 | 27,1 % | 1,18 | 0,93 | 23,0 % |
+| R3 + A1 + I0 | 12 | 31,3 % | 1,20 | 0,92 | 20,1 % |
+| R3 + I0 | 12 | 42,2 % | 1,22 | 0,77 | 16,4 % |
+
+R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y III salen del mazo de Misiones), y sin reputación en el capítulo I la media no pasa de 4. Partida corta y larga con R3 + A1 + I2: corta con 9 de reputación, 26,3 % (con 8, 37,6 %); larga con 16, 28,7 % (con 17, 22,4 %). Partida de aprendizaje (sin Escenario): con lo publicado, 54,1 % (frente a 45,6 %); con R3 + A1 + I2 y 12, 30,6 % (frente a 27,1 %).

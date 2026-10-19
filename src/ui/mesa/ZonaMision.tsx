@@ -130,8 +130,9 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
               En juego
             </Explicable>
             <div className="en-juego-cartas">
+              {/* Las de Peligro son tarot: a la misma altura que las demás, para que la fila no crezca. */}
               {[...s.zonas.cartasMision, ...s.zonas.peligrosEnJuego].map((c) => (
-                <CartaDe key={c} inst={c} escala={0.26} />
+                <CartaDe key={c} inst={c} escala={0.26} igualAlto />
               ))}
             </div>
           </div>

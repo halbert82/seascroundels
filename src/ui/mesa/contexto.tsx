@@ -5,6 +5,7 @@ import { porId } from '../../engine/catalogo.ts'
 import { copia } from '../../engine/estado.ts'
 import type { Estado, InstId } from '../../engine/tipos.ts'
 import { valor } from '../../engine/valores.ts'
+import { esTarot, MEDIDAS } from '../cartas/Carta.tsx'
 import { CartaMesa, type FichasCarta } from './CartaMesa.tsx'
 import type { TipoDorso } from './Dorso.tsx'
 import type { Interaccion, Objetivo } from './interaccion.ts'
@@ -40,9 +41,11 @@ export function fichasDe(s: Estado, inst: InstId): FichasCarta {
 }
 
 /** Una carta de la mesa enlazada al estado: fichas, agotada, marca y qué pasa al pulsarla. */
-export function CartaDe({ inst, escala, revelar, girar = true, encogeAgotada }: { inst: InstId; escala: number; revelar?: TipoDorso; girar?: boolean; encogeAgotada?: number }) {
+/** `igualAlto`: una carta tarot (Peligro) se escala para ocupar el mismo alto que una normal a esa escala (fase 10c). */
+export function CartaDe({ inst, escala: escalaPedida, revelar, girar = true, encogeAgotada, igualAlto = false }: { inst: InstId; escala: number; revelar?: TipoDorso; girar?: boolean; encogeAgotada?: number; igualAlto?: boolean }) {
   const { s, inter, pulsar } = useMesa()
   const c = copia(s, inst)
+  const escala = igualAlto && esTarot(porId(c.id)) && porId(c.id).tipo !== 'puerto' ? (escalaPedida * MEDIDAS.normal.alto) / MEDIDAS.tarot.alto : escalaPedida
   const opciones = inter.opciones.get(inst) ?? []
   const numero = inter.numeros.get(inst)
   const esPeligro = porId(c.id).tipo === 'peligro' && (s.zonas.encuentro.includes(inst) || s.zonas.peligrosEnJuego.includes(inst))
