@@ -2,6 +2,10 @@
 // a la carta, por el lado con sitio y sin salirse de la pantalla (ver colocacion.ts). Junto a ella, por el lado libre,
 // se explican las palabras de regla, Estados y fichas que nombra. Con el dedo se cierra al tocar fuera; tocar la propia
 // ampliación solo la cierra, sin tocar lo que haya debajo.
+//
+// Con el dedo, el primer toque sobre una carta solo la amplía: lo que la carta puede hacer sale como botones dentro de
+// la ampliación («Reclutar», «Comprometer»…). Un segundo toque sobre la carta ya ampliada también lo hace, como un clic.
+// Con el ratón no cambia nada: pasar por encima amplía y el clic hace la acción.
 
 import { motion } from 'motion/react'
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent, type PointerEvent as PointerEventReact, type ReactNode } from 'react'
@@ -25,17 +29,30 @@ interface CartaAmpliada {
   tactil: boolean
   /** Cambia con cada apertura (para animar la entrada). */
   vez: number
+  /** Lo que puede hacer la carta (solo con el dedo): sale como botones en la ampliación. */
+  acciones?: AccionesZoom
+}
+
+/** Las acciones de una carta, leídas al dibujar (así no se quedan viejas si la partida avanza con la carta ampliada). */
+export interface AccionesZoom {
+  /** Rótulos de los botones; vacío si ahora no puede hacer nada. */
+  etiquetas: () => readonly string[]
+  /** Hace la acción `opcion` (sin opción: como un clic en la carta). */
+  hacer: (ancla: HTMLElement, opcion?: number) => void
 }
 
 interface OpcionesMostrar {
   /** Sin la espera del ratón. */
   inmediata?: boolean
   tactil?: boolean
+  acciones?: AccionesZoom | undefined
 }
 
 interface ContextoZoom {
   mostrar: (id: string, elemento: HTMLElement, opciones?: OpcionesMostrar) => void
   ocultar: () => void
+  /** La carta ampliada ahora mismo (sin redibujar a quien pregunta). */
+  ampliadaAhora: () => CartaAmpliada | null
 }
 
 // Separados: las cartas solo necesitan mostrar y ocultar (que no cambian), y así no se redibujan al ampliar otra.
@@ -52,16 +69,16 @@ export function ProveedorZoom({ children }: { children: ReactNode }) {
     if (temporizador.current) window.clearTimeout(temporizador.current)
     temporizador.current = null
   }
-  const mostrar = useCallback((id: string, ancla: HTMLElement, { inmediata = false, tactil = false }: OpcionesMostrar = {}) => {
+  const mostrar = useCallback((id: string, ancla: HTMLElement, { inmediata = false, tactil = false, acciones }: OpcionesMostrar = {}) => {
     parar()
     const abrir = () => {
       const a = actual.current
       if (a && a.id === id && a.ancla === ancla) {
-        if (tactil && !a.tactil) setAmpliada({ ...a, tactil })
+        if (tactil && !a.tactil) setAmpliada({ ...a, tactil, ...(acciones ? { acciones } : {}) })
         return
       }
       veces.current += 1
-      setAmpliada({ id, ancla, tactil, vez: veces.current })
+      setAmpliada({ id, ancla, tactil, vez: veces.current, ...(tactil && acciones ? { acciones } : {}) })
     }
     if (inmediata) abrir()
     else temporizador.current = window.setTimeout(abrir, ESPERA_RATON)
@@ -91,7 +108,8 @@ export function ProveedorZoom({ children }: { children: ReactNode }) {
       window.removeEventListener('keydown', alTeclear)
     }
   }, [ampliada, ocultar])
-  const acciones = useMemo(() => ({ mostrar, ocultar }), [mostrar, ocultar])
+  const ampliadaAhora = useCallback(() => actual.current, [])
+  const acciones = useMemo(() => ({ mostrar, ocultar, ampliadaAhora }), [mostrar, ocultar, ampliadaAhora])
   return (
     <Contexto.Provider value={acciones}>
       <ContextoAmpliada.Provider value={ampliada}>{children}</ContextoAmpliada.Provider>
@@ -107,9 +125,10 @@ export function useZoom(): ContextoZoom {
 
 /**
  * Lo que hace ampliable una carta de la mesa: con el ratón, al pasar por encima; con el dedo, al tocarla o al mantenerla
- * pulsada. `alPulsar` va en el clic de la carta, antes de lo que haga ella (así un menú que abra la carta gana).
+ * pulsada. `alPulsar` va en el clic de la carta, antes de lo que haga ella: devuelve `true` si el toque solo amplía
+ * (y entonces la carta no hace nada). `acciones`: lo que puede hacer la carta, para los botones de la ampliación.
  */
-export function useAmpliable(id: string | null) {
+export function useAmpliable(id: string | null, acciones?: AccionesZoom) {
   const zoom = useZoom()
   const puntero = useRef('mouse')
   return {
@@ -124,10 +143,19 @@ export function useAmpliable(id: string | null) {
     },
     onContextMenu: (e: MouseEvent<HTMLElement>) => {
       e.preventDefault()
-      if (id) zoom.mostrar(id, e.currentTarget, { inmediata: true, tactil: puntero.current !== 'mouse' })
+      if (id) zoom.mostrar(id, e.currentTarget, { inmediata: true, tactil: puntero.current !== 'mouse', acciones })
     },
-    alPulsar: (elemento: HTMLElement) => {
-      if (id && puntero.current !== 'mouse') zoom.mostrar(id, elemento, { inmediata: true, tactil: true })
+    alPulsar: (elemento: HTMLElement): boolean => {
+      if (!id || puntero.current === 'mouse') return false
+      const a = zoom.ampliadaAhora()
+      const conAccion = (acciones?.etiquetas().length ?? 0) > 0
+      // Segundo toque sobre la carta ya ampliada: hace lo que haría un clic.
+      if (conAccion && a?.tactil && a.ancla === elemento) {
+        zoom.ocultar()
+        return false
+      }
+      zoom.mostrar(id, elemento, { inmediata: true, tactil: true, acciones })
+      return true
     },
     /** Último tipo de puntero que la pulsó ('mouse', 'touch' o 'pen'). */
     puntero,
@@ -146,6 +174,7 @@ function misma(a: Colocacion | null, b: Colocacion): boolean {
   return (
     a !== null &&
     a.lado === b.lado &&
+    a.reduccion === b.reduccion &&
     r(a.carta.x) === r(b.carta.x) &&
     r(a.carta.y) === r(b.carta.y) &&
     (a.ayudas === null) === (b.ayudas === null) &&
@@ -207,6 +236,12 @@ export function CapaZoom() {
 
   if (!ampliada || !entrada) return null
   const t = duracion(velocidad, 0.13)
+  const etiquetas = ampliada.tactil ? (ampliada.acciones?.etiquetas() ?? []) : []
+  const hacer = (i: number) => {
+    const { acciones, ancla } = ampliada
+    ocultar()
+    acciones?.hacer(ancla, i)
+  }
   const tarjetas = ayudas.map((a) => <TarjetaAyuda key={a.clave} ayuda={a} className="compacta" />)
   const animar = t > 0 ? { initial: { opacity: 0, scale: 0.96 }, animate: { opacity: 1, scale: 1 }, transition: { duration: t, ease: 'easeOut' as const } } : {}
   return (
@@ -231,7 +266,24 @@ export function CapaZoom() {
       {pos && (
         <>
           <motion.div key={`c${ampliada.vez}`} className="zoom-carta" style={{ left: pos.carta.x, top: pos.carta.y, transformOrigin: ORIGEN[pos.lado] }} {...animar}>
-            <CartaEscalada entrada={entrada} escala={escala} />
+            <CartaEscalada entrada={entrada} escala={escala * (pos.reduccion ?? 1)} />
+            {etiquetas.length > 0 && (
+              <div className="zoom-acciones">
+                {etiquetas.map((e, i) => (
+                  <button
+                    key={e}
+                    type="button"
+                    className="boton principal"
+                    onClick={(ev) => {
+                      ev.stopPropagation()
+                      hacer(i)
+                    }}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            )}
           </motion.div>
           {pos.ayudas && ayudas.length > 0 && (
             <motion.div

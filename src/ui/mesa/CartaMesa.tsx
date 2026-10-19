@@ -2,14 +2,14 @@
 // girada si está agotada, volteada al revelarse y volando entre zonas (layoutId = su copia).
 
 import { motion } from 'motion/react'
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { porId } from '../../engine/catalogo.ts'
 import type { Entorno } from '../../engine/datos.ts'
 import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
-import { useAmpliable } from './Zoom.tsx'
+import { useAmpliable, type AccionesZoom } from './Zoom.tsx'
 
 export type Marca = 'legal' | 'elegida' | 'atenuada' | null
 
@@ -41,9 +41,12 @@ export interface PropsCartaMesa {
   revelar?: TipoDorso
   /** En una carta de Peligro, el encuentro que se lee (los otros dos se atenúan). */
   entorno?: Entorno | null
-  onClick?: (elemento: HTMLElement) => void
+  /** Al pulsarla; `opcion`, si se eligió una de `acciones` en la ampliación (con el dedo). */
+  onClick?: (elemento: HTMLElement, opcion?: number) => void
   /** Texto de ayuda al pasar el ratón (qué pasa si la pulsas). */
   ayuda?: string
+  /** Lo que puede hacer la carta, uno por opción: con el dedo salen como botones en la ampliación. */
+  acciones?: readonly string[]
   children?: ReactNode
 }
 
@@ -53,7 +56,17 @@ export function CartaMesa(p: PropsCartaMesa) {
   const entrada = porId(p.id)
   const { ancho, alto } = dimensiones(entrada)
   const velocidad = useVelocidad()
-  const ampliable = useAmpliable(p.id)
+  // Las acciones se leen de las props más recientes: la ampliación puede seguir abierta mientras la partida avanza.
+  const ultimas = useRef(p)
+  ultimas.current = p
+  const accionesZoom = useMemo<AccionesZoom>(
+    () => ({
+      etiquetas: () => (ultimas.current.onClick ? (ultimas.current.acciones ?? [ultimas.current.ayuda ?? 'Usar esta carta']) : []),
+      hacer: (ancla, opcion) => ultimas.current.onClick?.(ancla, opcion),
+    }),
+    [],
+  )
+  const ampliable = useAmpliable(p.id, accionesZoom)
   const t = duracion(velocidad, 0.28)
   // Agotada: girada 90° sin encogerse (el hueco de la carta ya tiene sitio para ella).
   const giro = p.agotada ? { rotate: 90 } : { rotate: 0 }
@@ -81,10 +94,9 @@ export function CartaMesa(p: PropsCartaMesa) {
       data-carta={p.id}
       {...(esPeligro && v2 && p.entorno ? { 'data-entorno': p.entorno } : {})}
       style={{ width: ancho * p.escala, height: alto * p.escala }}
-      // Con el dedo, tocarla también la amplía; primero la ampliación, para que un menú de la carta la quite.
-      // TODO(diseño): en tableta, un toque amplía y además hace la acción de la carta (docs/decisiones.md, fase 9).
+      // Con el dedo, el primer toque solo la amplía (la acción, con los botones de la ampliación o con otro toque).
       onClick={(e) => {
-        ampliable.alPulsar(e.currentTarget)
+        if (ampliable.alPulsar(e.currentTarget)) return
         p.onClick?.(e.currentTarget)
       }}
       onPointerDown={ampliable.onPointerDown}

@@ -80,8 +80,10 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
     } else if (o.seleccion) setSel(o.seleccion)
   }
 
-  const pulsar = (objetivo: Objetivo, elemento: HTMLElement) => {
+  const pulsar = (objetivo: Objetivo, elemento: HTMLElement, opcion?: number) => {
     const opciones = inter.opciones.get(objetivo) ?? []
+    const elegida = opcion !== undefined ? opciones[opcion] : undefined
+    if (elegida) return ejecutar(elegida)
     const unica = opciones[0]
     if (opciones.length === 1 && unica) return ejecutar(unica)
     if (opciones.length === 0) return

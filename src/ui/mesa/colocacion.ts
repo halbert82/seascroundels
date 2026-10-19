@@ -6,8 +6,8 @@
 // - Las explicaciones de sus palabras de regla van pegadas a la ampliación, por el lado libre (el contrario a la carta
 //   original). Si a dos columnas no caben, se prueba a una; si de lado tampoco, encima o debajo de la ampliación; y si
 //   tampoco, al otro lado de la carta original.
-// - Se evita tapar la carta original. Si no hay forma de no taparla, se elige la colocación que menos la tapa, siempre
-//   dentro de lo visible.
+// - Se evita tapar la carta original. Si no hay forma de no taparla, se prueba con la ampliación algo más pequeña (hasta
+//   el 80 %); y si tampoco, se elige la colocación que menos la tapa, siempre dentro de lo visible.
 //
 // Todo en unidades del lienzo. Función pura, sin DOM, para poder probarla.
 
@@ -46,6 +46,21 @@ export interface Colocacion {
   ayudas: { x: number; y: number; columnas: 1 | 2 } | null
   /** No había sitio libre: la ampliación (o sus explicaciones) tapa algo de la carta original. */
   tapa: boolean
+  /** Si para no tapar la carta la ampliación sale más pequeña: la fracción de su tamaño (sin esto, entera). */
+  reduccion?: number
+}
+
+/** Tamaños de la ampliación que se prueban si a tamaño entero tapa la carta original. */
+const REDUCCIONES = [0.95, 0.9, 0.85, 0.8]
+
+export function colocarAmpliacion(p: PeticionColocacion): Colocacion {
+  const entera = colocarConTamano(p)
+  if (!entera.tapa) return entera
+  for (const f of REDUCCIONES) {
+    const k = colocarConTamano({ ...p, carta: { ancho: p.carta.ancho * f, alto: p.carta.alto * f } })
+    if (!k.tapa) return { ...k, reduccion: f }
+  }
+  return entera
 }
 
 export const MARGEN_AMPLIACION = 8
@@ -84,7 +99,7 @@ interface Candidata extends Colocacion {
   cajas: Caja[]
 }
 
-export function colocarAmpliacion(p: PeticionColocacion): Colocacion {
+function colocarConTamano(p: PeticionColocacion): Colocacion {
   const margen = p.margen ?? MARGEN_AMPLIACION
   const sep = p.separacion ?? SEPARACION_AMPLIACION
   const o = p.original

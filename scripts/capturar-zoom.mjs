@@ -1,5 +1,6 @@
 // Capturas de la carta ampliada junto a su carta de la mesa: una carta en cada esquina de la mesa, una de la mano, una
-// del muelle, una misión, el Peligro y el Destino, en 1440×900 y 1920×1080, y con el dedo en una tableta (1024×768).
+// del muelle, una misión, el Peligro y el Destino, en 1440×900 y 1920×1080, y con el dedo en una tableta (1024×768):
+// el primer toque solo amplía; la acción de la carta, con el botón de la ampliación o con un segundo toque.
 // Comprueba en cada una que la ampliación está pegada a la carta, dentro de la pantalla, sin taparla, y que sus
 // explicaciones van por el lado libre. Las deja en capturas/zoom/.
 //
@@ -170,6 +171,56 @@ try {
   await p.waitForTimeout(300)
   if ((await capa.count()) !== 0) fallos.push('tableta: tocar fuera no cierra la ampliación')
   await p.close()
+
+  // Una carta con acción: el primer toque solo la amplía, con sus acciones como botones; el botón la hace.
+  // Todo lo que dice la mesa, sin la ampliación: si cambia, la carta ha hecho algo.
+  const panel = (pg) =>
+    pg.evaluate(() => {
+      const l = document.querySelector('.lienzo')?.cloneNode(true)
+      l?.querySelectorAll('.capa-zoom').forEach((e) => e.remove())
+      return l?.textContent ?? ''
+    })
+  const conAccionEn = (pg) => (pg.locator('.muelle .carta-mesa.pulsable').count().then((n) => (n ? pg.locator('.muelle .carta-mesa.pulsable') : pg.locator('.carta-mesa.pulsable'))))
+  const q = await abrir(contexto, 'tableta', 'puerto')
+  const conAccion = (await conAccionEn(q)).first()
+  if (!(await conAccion.count())) fallos.push('tableta: la escena no tiene ninguna carta con acción')
+  else {
+    const nombre = await conAccion.getAttribute('data-carta')
+    const antes = await panel(q)
+    await conAccion.tap()
+    await q.waitForTimeout(400)
+    const botones = q.locator('.capa-zoom .zoom-acciones button')
+    if ((await q.locator('.capa-zoom.tactil').count()) !== 1) fallos.push(`tableta: tocar ${nombre} (con acción) no lo amplía`)
+    if ((await q.locator('.menu-carta').count()) || (await panel(q)) !== antes) fallos.push(`tableta: el primer toque sobre ${nombre} ya hace su acción`)
+    if (!(await botones.count())) fallos.push(`tableta: la ampliación de ${nombre} no trae los botones de su acción`)
+    else notas.push(`tableta: ${nombre} ampliada con ${await botones.count()} botón(es): ${(await botones.allInnerTexts()).join(', ')}`)
+    ruta = new URL('tableta-1024x768-accion-en-la-ampliacion.png', destino).pathname
+    await q.screenshot({ path: ruta })
+    hechas.push(ruta)
+    if (await botones.count()) {
+      await botones.first().tap()
+      await q.waitForTimeout(400)
+      if ((await q.locator('.capa-zoom').count()) !== 0) fallos.push('tableta: el botón de la ampliación no la cierra')
+      if (!(await q.locator('.menu-carta').count()) && (await panel(q)) === antes) fallos.push(`tableta: el botón de la ampliación no hace la acción de ${nombre}`)
+      ruta = new URL('tableta-1024x768-tras-el-boton.png', destino).pathname
+      await q.screenshot({ path: ruta })
+      hechas.push(ruta)
+    }
+  }
+  await q.close()
+
+  // Lo mismo con un segundo toque sobre la carta ya ampliada.
+  const r = await abrir(contexto, 'tableta', 'puerto')
+  const otra = (await conAccionEn(r)).first()
+  if (await otra.count()) {
+    const antes = await panel(r)
+    await otra.tap()
+    await r.waitForTimeout(400)
+    await otra.tap({ force: true })
+    await r.waitForTimeout(400)
+    if (!(await r.locator('.menu-carta').count()) && (await panel(r)) === antes) fallos.push('tableta: el segundo toque sobre la carta ampliada no hace su acción')
+  }
+  await r.close()
   await contexto.close()
 
   console.log(hechas.join('\n'))

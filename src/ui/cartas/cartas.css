@@ -460,11 +460,12 @@
 .seal.rama b{font-size:19px;letter-spacing:-.02em}
 .seal.rama b i{font-style:normal;font-family:'Alegreya Sans',sans-serif;font-weight:800;font-size:13px;margin-left:1px}
 .reward.marcada{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;padding:5px 12px 7px;flex-wrap:nowrap;flex:none}
-.reward.marcada .rcab{display:flex;align-items:center;justify-content:space-between;gap:10px}
+/* Si «Añade la carta N a…» no cabe junto a «Recompensa», baja de línea (a la derecha) y la letra se ajusta. */
+.reward.marcada .rcab{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:10px;row-gap:3px}
 .reward.marcada .rtexto{display:block;font-size:calc(var(--fsr,16px) * .9);line-height:1.28;color:#24401C;text-align:left}
 .reward.marcada .rtexto .ic{font-size:1.3em;vertical-align:-.3em}
 .reward.marcada .rtexto .num{font-weight:900;white-space:nowrap}
-.reward.marcada .next{flex:none;font-size:13px;white-space:nowrap;margin-left:0}
+.reward.marcada .next{flex:none;font-size:calc(var(--fsr,16px) * .8);white-space:nowrap;margin-left:auto}
 /* Mazo propio con el formato de los Peligros 2.0: menos ilustración y más texto. */
 .card.enc.solo.v2{padding:7px 7px 18px}
 .card.enc.solo.v2 .soloart{height:96px}

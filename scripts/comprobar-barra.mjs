@@ -65,8 +65,8 @@ async function comprobar(pagina, tamano, accion) {
 
 /** Ampliar una carta: con ratón, pasar por encima; en tableta, tocarla (y tocar fuera para cerrar). */
 async function ampliar(pagina, tamano, selector) {
-  // En tableta, tocar una carta con acción también la hace: se tocan solo cartas sin acción, para no cambiar la partida.
-  const carta = pagina.locator(tamano.toque ? `${selector}:not(.pulsable)` : selector).first()
+  // En tableta, el primer toque solo amplía (también una carta con acción): no cambia la partida.
+  const carta = pagina.locator(selector).first()
   if (!(await carta.count())) return
   if (tamano.toque) {
     await carta.tap({ force: true })

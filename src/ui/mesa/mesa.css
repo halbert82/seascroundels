@@ -1636,6 +1636,25 @@
   filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.75));
 }
 
+/* Con el dedo: lo que puede hacer la carta, en botones sobre el pie de la ampliación. */
+.zoom-acciones {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.zoom-acciones .boton {
+  min-height: 44px;
+  padding: 8px 20px;
+  font-size: 17px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
 /* Copias invisibles de las explicaciones, a una y a dos columnas, para medirlas antes de colocar. */
 .zoom-medidas {
   position: absolute;

@@ -13,9 +13,12 @@ export function CartaCapitulo({ v }: { v: VistaCapitulo }) {
   useLayoutEffect(() => {
     const caja = ref.current
     if (!caja) return
+    // Cabe si no se sale ni por abajo ni por los lados (la recompensa también cuenta).
+    const cabe = () =>
+      caja.scrollHeight <= caja.clientHeight + 0.5 && [...caja.querySelectorAll<HTMLElement>('.reward, .rcab')].every((el) => el.scrollWidth <= el.clientWidth + 0.5)
     for (const t of TAMANOS) {
       caja.style.setProperty('--fsr', `${t}px`)
-      if (caja.scrollHeight <= caja.clientHeight + 0.5) break
+      if (cabe()) break
     }
   })
   return (

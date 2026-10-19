@@ -13,7 +13,8 @@ function colocar(original: Caja, extra: Partial<PeticionColocacion> = {}): Coloc
 }
 
 function cajas(r: Colocacion, ayudas: PeticionColocacion['ayudas']): Caja[] {
-  const lista: Caja[] = [{ ...r.carta, ...CARTA }]
+  const f = r.reduccion ?? 1
+  const lista: Caja[] = [{ ...r.carta, ancho: CARTA.ancho * f, alto: CARTA.alto * f }]
   if (r.ayudas && ayudas) lista.push({ x: r.ayudas.x, y: r.ayudas.y, ...(r.ayudas.columnas === 2 && ayudas.dos ? ayudas.dos : ayudas.una) })
   return lista
 }
@@ -93,6 +94,25 @@ describe('Colocación de la carta ampliada', () => {
     expect(r.lado).toBe('izquierda')
     expect(r.carta.x).toBe(560 - 12 - 348)
     expect(r.ayudas).toEqual({ x: 560 + 188 + 12, y: 219, columnas: 2 })
+  })
+
+  it('si a tamaño entero solo cabe tapando la carta, sale algo más pequeña: el Destino en el centro con 6 explicaciones', () => {
+    // La ventana del Destino en 1440×900: a su derecha faltan 39 px para la ampliación entera; a su izquierda no caben
+    // a la vez la ampliación y sus explicaciones (a una columna miden 1234 de alto).
+    const original = { x: 763.5, y: 411.5, ancho: 343.9, alto: 125.4 }
+    const ayudas = { una: { ancho: 292, alto: 1234 }, dos: { ancho: 596, alto: 676 } }
+    const r = colocar(original, { ayudas })
+    expect(r.tapa).toBe(false)
+    expect(r.reduccion).toBe(0.9)
+    expect(r.lado).toBe('derecha')
+    for (const c of cajas(r, ayudas)) {
+      expect(dentro(c)).toBe(true)
+      expect(cruza(c, original)).toBe(false)
+    }
+  })
+
+  it('a tamaño entero cuando cabe, aunque sea apretada', () => {
+    expect(colocar({ x: 20, y: 20, ancho: 75, alto: 105 }, { ayudas: { una: UNA, dos: DOS } }).reduccion).toBeUndefined()
   })
 
   it('si no hay sitio libre en ningún lado, la tapa lo menos posible, pero nunca se sale de la mesa', () => {

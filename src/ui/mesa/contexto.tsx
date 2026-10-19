@@ -13,7 +13,8 @@ import { entornoActual } from '../../engine/peligros.ts'
 export interface ContextoMesa {
   s: Estado
   inter: Interaccion
-  pulsar: (o: Objetivo, elemento: HTMLElement) => void
+  /** Pulsar una carta; `opcion`: una de sus opciones, elegida en la ampliación (con el dedo). */
+  pulsar: (o: Objetivo, elemento: HTMLElement, opcion?: number) => void
 }
 
 export const Contexto = createContext<ContextoMesa | null>(null)
@@ -59,7 +60,7 @@ export function CartaDe({ inst, escala, revelar, girar = true }: { inst: InstId;
       fichas={fichasDe(s, inst)}
       {...(revelar ? { revelar } : {})}
       entorno={esPeligro ? entornoActual(s) : null}
-      {...(opciones.length > 0 ? { onClick: (el: HTMLElement) => pulsar(inst, el), ayuda: opciones.map((o) => o.etiqueta).join(' · ') } : {})}
+      {...(opciones.length > 0 ? { onClick: (el: HTMLElement, i?: number) => pulsar(inst, el, i), ayuda: opciones.map((o) => o.etiqueta).join(' · '), acciones: opciones.map((o) => o.etiqueta) } : {})}
     />
   )
 }

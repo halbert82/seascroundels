@@ -12,6 +12,14 @@ export async function pulsarCarta(pagina, inst, etiqueta) {
     throw new Error(`No está en la mesa la carta ${inst}: ${donde}`)
   }
   await carta.dispatchEvent('click')
+  // En tableta, el primer toque solo amplía la carta: la acción se hace con su botón en la ampliación o, si no hay uno
+  // con ese nombre, tocándola otra vez (y entonces sale el menú, si tiene varias).
+  const botones = pagina.locator('.capa-zoom .zoom-acciones button')
+  if (await botones.count()) {
+    const suyo = botones.filter({ hasText: etiqueta })
+    if (await suyo.count()) return suyo.first().click()
+    await carta.dispatchEvent('click')
+  }
   const menu = pagina.locator('.menu-carta')
   if (await menu.count()) {
     const opcion = menu.locator('button', { hasText: etiqueta })

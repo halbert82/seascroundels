@@ -1,7 +1,7 @@
 // Zonas de la mesa: barra superior, tripulación, Barco, puerto y muelle, mano y mazos.
 
 import { motion } from 'motion/react'
-import type { CSSProperties, ReactNode } from 'react'
+import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { esCarta, nombreDe, porId } from '../../engine/catalogo.ts'
 import { reputacionMinima } from '../../engine/capacidades/misiones.ts'
 import { copia } from '../../engine/estado.ts'
@@ -22,7 +22,7 @@ import { IZQ, anchoCentro, escalaPara } from './disposicion.ts'
 import { DorsoEscalado, type TipoDorso } from './Dorso.tsx'
 import { useLienzo } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
-import { useAmpliable, useZoom } from './Zoom.tsx'
+import { useAmpliable, useZoom, type AccionesZoom } from './Zoom.tsx'
 
 export function Icono({ id, className = '' }: { id: IconoId; className?: string }) {
   return <span className={`${claseIcono(id)} ${className}`} />
@@ -146,9 +146,19 @@ function Marcas({ n, maximo, clase }: { n: number; maximo: number; clase: string
 function Chip({ inst }: { inst: InstId }) {
   const { s, inter, pulsar } = useMesa()
   const c = copia(s, inst)
-  const ampliable = useAmpliable(c.id)
-  const e = porId(c.id)
   const opciones = inter.opciones.get(inst) ?? []
+  // Con el dedo, lo que puede hacer sale en la ampliación (leído al dibujarla, por si la partida ha avanzado).
+  const ultimas = useRef({ opciones, pulsar })
+  ultimas.current = { opciones, pulsar }
+  const acciones = useMemo<AccionesZoom>(
+    () => ({
+      etiquetas: () => ultimas.current.opciones.map((o) => o.etiqueta),
+      hacer: (ancla, i) => ultimas.current.pulsar(inst, ancla, i),
+    }),
+    [inst],
+  )
+  const ampliable = useAmpliable(c.id, acciones)
+  const e = porId(c.id)
   const marca = inter.marcas.get(inst)
   const f = fichasDe(s, inst)
   const tesoro = e.tipo === 'tesoro'
@@ -161,7 +171,7 @@ function Chip({ inst }: { inst: InstId }) {
       data-inst={inst}
       data-carta={c.id}
       onClick={(ev) => {
-        ampliable.alPulsar(ev.currentTarget)
+        if (ampliable.alPulsar(ev.currentTarget)) return
         if (opciones.length > 0) pulsar(inst, ev.currentTarget)
       }}
       onPointerDown={ampliable.onPointerDown}
@@ -292,7 +302,7 @@ export function BloqueBarco() {
           id="barco"
           escala={0.2}
           marca={inter.marcas.get('barco') ?? null}
-          {...(opcionesBarco.length > 0 ? { onClick: (el: HTMLElement) => pulsar('barco', el) } : {})}
+          {...(opcionesBarco.length > 0 ? { onClick: (el: HTMLElement, i?: number) => pulsar('barco', el, i), acciones: opcionesBarco.map((o) => o.etiqueta) } : {})}
         />
         <div className="barco-datos">
           <div className="dato-fila" title="El Barco se hunde cuando su daño llega al máximo.">
@@ -508,7 +518,7 @@ function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona
                 id={copia(s, arriba).id}
                 escala={ESCALA_PILA}
                 {...(enBandeja ? { sinVuelo: true, marca: inter.marcas.get(arriba) ?? null } : {})}
-                {...(opciones.length > 0 ? { onClick: (el: HTMLElement) => pulsar(arriba, el), ayuda: opciones.map((o) => o.etiqueta).join(' · ') } : {})}
+                {...(opciones.length > 0 ? { onClick: (el: HTMLElement, i?: number) => pulsar(arriba, el, i), ayuda: opciones.map((o) => o.etiqueta).join(' · '), acciones: opciones.map((o) => o.etiqueta) } : {})}
               />
             ) : (
               hueco
