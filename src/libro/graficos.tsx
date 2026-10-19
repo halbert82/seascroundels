@@ -7,7 +7,8 @@ import arte from '../../data/arte.json'
 import { CATALOGO, type EntradaCatalogo, type TipoCarta } from '../engine/catalogo.ts'
 import type { Bloque, Capitulo, FilaComponente, Reglamento } from './fuente.ts'
 import { BloqueVista, ContextoReglamento, InicioCapitulo } from './Libro.tsx'
-import { Dorso, Filete, Icono, Marcador, Miniatura } from './piezas.tsx'
+import type { ParteCarta } from './cartasNombradas.ts'
+import { Dorso, Filete, FragmentoPeligro, Icono, Marcador, Miniatura } from './piezas.tsx'
 
 function Html({ html, className = '' }: { html: string; className?: string }) {
   return <div className={`md ${className}`} dangerouslySetInnerHTML={{ __html: html }} />
@@ -123,7 +124,8 @@ export function Componentes({ grupo, filas }: { grupo: string; filas: FilaCompon
 // ---------------------------------------------------------------------------
 // Anatomía de las cartas
 
-type Donde = 'izq' | 'der' | 'arr' | 'aba' | 'arr-izq' | 'arr-der' | 'centro'
+/** A qué lado de la carta va el marcador (y por qué borde de la parte llega su línea). */
+type Donde = 'izq' | 'der'
 
 interface Llamada {
   /** Número o letra del marcador. */
@@ -131,9 +133,8 @@ interface Llamada {
   /** Parte de la carta (selector dentro de la carta dibujada). */
   sel: string
   donde: Donde
-  /** Desplazamiento en milímetros. */
-  dx?: number
-  dy?: number
+  /** Señala un texto (un nombre, unas reglas): la línea llega junto a sus letras, no al borde de su caja. */
+  texto?: boolean
 }
 
 interface CartaAnotadaDef {
@@ -156,16 +157,16 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         id: 'vigia',
         ancho: 58,
         llamadas: [
-          { n: '1', sel: '.costb', donde: 'arr-izq', dx: 2, dy: 2 },
-          { n: '2', sel: '.plate .name', donde: 'der' },
+          { n: '1', sel: '.costb', donde: 'izq' },
+          { n: '2', sel: '.plate .name', donde: 'der', texto: true },
           { n: '3', sel: '.tabs:not(.r) .tab:nth-child(2)', donde: 'izq' },
           { n: '4', sel: '.tabs.r .tab', donde: 'der' },
           { n: '5', sel: '.vida', donde: 'der' },
-          { n: '6', sel: '.ribbon', donde: 'izq', dx: 4 },
-          { n: '7', sel: '.traits', donde: 'izq' },
-          { n: '8', sel: '.rules', donde: 'izq' },
-          { n: '9', sel: '.flavor', donde: 'izq' },
-          { n: '10', sel: '.foot span:last-child', donde: 'der' },
+          { n: '6', sel: '.ribbon', donde: 'izq' },
+          { n: '7', sel: '.traits', donde: 'izq', texto: true },
+          { n: '8', sel: '.rules', donde: 'izq', texto: true },
+          { n: '9', sel: '.flavor', donde: 'izq', texto: true },
+          { n: '10', sel: '.foot span:last-child', donde: 'der', texto: true },
         ],
       },
     ],
@@ -176,12 +177,12 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         id: 'bronce',
         ancho: 46,
         llamadas: [
-          { n: 'A', sel: '.costb', donde: 'arr-izq', dx: 2, dy: 2 },
-          { n: 'B', sel: '.plate .name', donde: 'der' },
+          { n: 'A', sel: '.costb', donde: 'izq' },
+          { n: 'B', sel: '.plate .name', donde: 'der', texto: true },
           { n: 'C', sel: '.espq', donde: 'der' },
           { n: 'D', sel: '.tabs.r .tab', donde: 'der' },
-          { n: 'E', sel: '.ribbon', donde: 'izq', dx: 4 },
-          { n: 'F', sel: '.rules', donde: 'izq' },
+          { n: 'E', sel: '.ribbon', donde: 'izq' },
+          { n: 'F', sel: '.rules', donde: 'izq', texto: true },
         ],
       },
     ],
@@ -200,9 +201,9 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         id: 'reflejos',
         ancho: 40,
         llamadas: [
-          { n: 'A', sel: '.costb', donde: 'arr-izq', dx: 2, dy: 2 },
+          { n: 'A', sel: '.costb', donde: 'izq' },
           { n: 'B', sel: '.tabs:not(.r) .tab', donde: 'izq' },
-          { n: 'C', sel: '.rules', donde: 'izq' },
+          { n: 'C', sel: '.rules', donde: 'izq', texto: true },
         ],
       },
       { id: 'abordaje', ancho: 40, llamadas: [{ n: 'B', sel: '.tabs:not(.r) .tab', donde: 'izq' }] },
@@ -222,7 +223,7 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
           { n: 'A', sel: '.tabs.r .tab:nth-child(1)', donde: 'der' },
           { n: 'B', sel: '.tabs.r .tab:nth-child(2)', donde: 'der' },
           { n: 'C', sel: '.tabs.r .tab:nth-child(3)', donde: 'der' },
-          { n: 'D', sel: '.rules', donde: 'izq' },
+          { n: 'D', sel: '.rules', donde: 'izq', texto: true },
         ],
       },
     ],
@@ -239,7 +240,7 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         id: 'tortuga',
         ancho: 56,
         llamadas: [
-          { n: 'A', sel: '.ptoh .chapn', donde: 'izq' },
+          { n: 'A', sel: '.ptoh .chapn', donde: 'izq', texto: true },
           { n: 'B', sel: '.muelleb', donde: 'der' },
           { n: 'C', sel: '.ptor .opt', donde: 'izq' },
           { n: 'D', sel: '.ptoab', donde: 'izq' },
@@ -262,13 +263,13 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         id: 'panama-I',
         ancho: 58,
         llamadas: [
-          { n: '1', sel: '.seal', donde: 'arr-izq', dx: 1, dy: 1 },
-          { n: '2', sel: '.chapt .chapn', donde: 'der' },
+          { n: '1', sel: '.seal', donde: 'izq' },
+          { n: '2', sel: '.chapt .chapn', donde: 'der', texto: true },
           { n: '3', sel: '.tabs .tab:first-child', donde: 'izq' },
           { n: '4', sel: '.tabs .tab.dark', donde: 'izq' },
-          { n: '5', sel: '.chapr .rules', donde: 'der' },
+          { n: '5', sel: '.chapr .rules', donde: 'der', texto: true },
           { n: '6', sel: '.reward', donde: 'der' },
-          { n: '7', sel: '.foot span:first-child', donde: 'izq' },
+          { n: '7', sel: '.foot span:first-child', donde: 'izq', texto: true },
         ],
       },
     ],
@@ -280,10 +281,10 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         ancho: 60,
         llamadas: [
           { n: '1', sel: '.encp .ent', donde: 'izq' },
-          { n: '2', sel: '.encp .encn', donde: 'izq' },
-          { n: '3', sel: '.encp .test2', donde: 'der' },
+          { n: '2', sel: '.encp .encn', donde: 'izq', texto: true },
+          { n: '3', sel: '.encp .test2', donde: 'der', texto: true },
           { n: '4', sel: '.encp .av', donde: 'der' },
-          { n: '5', sel: '.encp .t2.win', donde: 'der' },
+          { n: '5', sel: '.encp .t2.win', donde: 'der', texto: true },
           { n: '6', sel: '.dest', donde: 'izq' },
         ],
       },
@@ -295,8 +296,8 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         id: 'rumores',
         ancho: 44,
         llamadas: [
-          { n: 'A', sel: '.plate .name', donde: 'der' },
-          { n: 'B', sel: '.rules', donde: 'izq' },
+          { n: 'A', sel: '.plate .name', donde: 'der', texto: true },
+          { n: 'B', sel: '.rules', donde: 'izq', texto: true },
           { n: 'C', sel: '.flavor', donde: 'izq' },
         ],
       },
@@ -323,7 +324,60 @@ interface Punto {
   ty: number
 }
 
-/** Una carta con sus llamadas: el marcador fuera de la carta y una línea fina hasta la parte que señala. */
+/** Radio del punto en que acaba cada línea de llamada (px) y aire que deja con lo que no puede tapar. */
+const RADIO_PUNTO = 1.5
+const AIRE_PUNTO = 1.2
+
+interface Caja {
+  x0: number
+  y0: number
+  x1: number
+  y1: number
+}
+
+/** Letras e iconos de una carta dibujada: el punto de una llamada no puede taparlos (en unidades del lienzo). */
+function letrasEIconos(raiz: HTMLElement, base: DOMRect, k: number): Caja[] {
+  const cajas: Caja[] = []
+  const anade = (r: DOMRect) => {
+    if (r.width > 0 && r.height > 0) cajas.push({ x0: (r.left - base.left) / k, y0: (r.top - base.top) / k, x1: (r.right - base.left) / k, y1: (r.bottom - base.top) / k })
+  }
+  const textos = document.createTreeWalker(raiz, NodeFilter.SHOW_TEXT)
+  for (let n = textos.nextNode(); n; n = textos.nextNode()) {
+    if (!(n.textContent ?? '').trim()) continue
+    const rango = document.createRange()
+    rango.selectNodeContents(n)
+    for (const r of rango.getClientRects()) anade(r)
+  }
+  for (const icono of raiz.querySelectorAll('.ic, svg, img')) anade(icono.getBoundingClientRect())
+  return cajas
+}
+
+/** Lo que ocupan las letras e iconos de un texto de la carta, que puede ser mucho más estrecho que su caja (un nombre en una
+ *  cabecera ancha). */
+function cajaDeTexto(el: Element): DOMRect {
+  const caja = el.getBoundingClientRect()
+  const partes: DOMRect[] = []
+  const textos = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+  for (let n = textos.nextNode(); n; n = textos.nextNode()) {
+    if (!(n.textContent ?? '').trim()) continue
+    const rango = document.createRange()
+    rango.selectNodeContents(n)
+    partes.push(...[...rango.getClientRects()].filter((r) => r.width > 0))
+  }
+  for (const icono of el.querySelectorAll('.ic, svg, img')) partes.push(icono.getBoundingClientRect())
+  if (partes.length === 0) return caja
+  const x0 = Math.min(...partes.map((r) => r.left))
+  const y0 = Math.min(...partes.map((r) => r.top))
+  return new DOMRect(x0, y0, Math.max(...partes.map((r) => r.right)) - x0, Math.max(...partes.map((r) => r.bottom)) - y0)
+}
+
+const tapa = (x: number, y: number, c: Caja) => x + RADIO_PUNTO + AIRE_PUNTO > c.x0 && x - RADIO_PUNTO - AIRE_PUNTO < c.x1 && y + RADIO_PUNTO + AIRE_PUNTO > c.y0 && y - RADIO_PUNTO - AIRE_PUNTO < c.y1
+
+/**
+ * Una carta con sus llamadas: el marcador fuera de la carta y una línea fina hasta la parte que señala. El punto en que
+ * acaba la línea queda en el borde de esa parte (por fuera, a media altura) y nunca encima de una letra o un icono: si
+ * los toca, se aparta hacia fuera hasta quedar libre.
+ */
 function CartaAnotada({ def }: { def: CartaAnotadaDef }) {
   const ref = useRef<HTMLDivElement>(null)
   const [puntos, setPuntos] = useState<Punto[]>([])
@@ -336,19 +390,21 @@ function CartaAnotada({ def }: { def: CartaAnotadaDef }) {
     const k = raiz.offsetWidth ? base.width / raiz.offsetWidth : 1
     const MMPX = 96 / 25.4
     const W = base.width / k
+    const obstaculos = letrasEIconos(raiz, base, k)
     const lista: Punto[] = []
     for (const l of def.llamadas) {
       const el = raiz.querySelector(l.sel)
       if (!el) continue
-      const r = el.getBoundingClientRect()
+      const r = l.texto ? cajaDeTexto(el) : el.getBoundingClientRect()
       const x0 = (r.left - base.left) / k
       const y0 = (r.top - base.top) / k
       const w = r.width / k
       const h = r.height / k
-      const izquierda = l.donde === 'izq' || l.donde === 'arr-izq'
-      const dentro = Math.min(0.9 * MMPX, w / 2)
-      const ty = (l.donde.startsWith('arr') ? y0 + Math.min(h / 2, 3 * MMPX) : y0 + h / 2) + (l.dy ?? 0) * MMPX
-      const tx = (izquierda ? x0 + dentro : x0 + w - dentro) + (l.dx ?? 0) * MMPX
+      const izquierda = l.donde === 'izq'
+      const fuera = izquierda ? -1 : 1
+      const ty = y0 + h / 2
+      let tx = (izquierda ? x0 : x0 + w) + fuera * (RADIO_PUNTO + AIRE_PUNTO)
+      for (let paso = 0; paso < 80 && obstaculos.some((c) => tapa(tx, ty, c)); paso++) tx += fuera * 0.5
       lista.push({ n: l.n, tx, ty, mx: izquierda ? -FUERA * MMPX : W + FUERA * MMPX, my: ty })
     }
     // Que no se pisen los marcadores de un mismo lado.
@@ -374,7 +430,7 @@ function CartaAnotada({ def }: { def: CartaAnotadaDef }) {
           return (
             <g key={i}>
               <line x1={borde + dx} y1={p.my} x2={p.tx + dx} y2={p.ty} />
-              <circle cx={p.tx + dx} cy={p.ty} r={1.5} />
+              <circle cx={p.tx + dx} cy={p.ty} r={RADIO_PUNTO} />
             </g>
           )
         })}
@@ -682,6 +738,8 @@ export function PruebaFlujo() {
 
 interface CartaPanel {
   id: string
+  /** De una carta de Peligro, la parte que se enseña (recortada, a un ancho en que se lee). */
+  parte?: ParteCarta
   insignia?: string
   tono?: 'bien' | 'mal' | 'neutro'
   agotada?: boolean
@@ -721,7 +779,7 @@ const PANEL_PUERTO: GrupoPanel[] = [
 
 const PANEL_MISION: GrupoPanel[] = [
   { rotulo: 'Misión', paso: 3, cartas: [{ id: 'prueba-I', insignia: 'Empieza con 1 · pide 3' }] },
-  { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', insignia: 'NAV 4 · Avance 3 / 2' }] },
+  { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', parte: 'mar', insignia: 'NAV 4 · Avance 3 / 2' }] },
   {
     rotulo: 'Comprometidos',
     paso: 3,
@@ -731,14 +789,16 @@ const PANEL_MISION: GrupoPanel[] = [
       { id: 'timon', insignia: '+2 NAV', tono: 'bien' },
     ],
   },
-  { rotulo: 'Destino', paso: 3, cartas: [{ id: 'p2_arrecife', insignia: '+1 a la dificultad', tono: 'mal' }] },
+  { rotulo: 'Destino', paso: 3, cartas: [{ id: 'p2_arrecife', parte: 'destino', insignia: '+1 a la dificultad', tono: 'mal' }] },
 ]
 
 function CartaDePanel({ c, ancho }: { c: CartaPanel; ancho: number }) {
   const largo = ancho * (528 / 378)
   return (
     <div className="panel-carta">
-      {c.agotada ? (
+      {c.parte ? (
+        <FragmentoPeligro id={c.id} partes={[c.parte]} />
+      ) : c.agotada ? (
         <div className="panel-agotada" style={{ width: `${largo}mm`, height: `${ancho}mm` }}>
           <Miniatura id={c.id} ancho={ancho} style={{ transform: `translate(${largo}mm, 0) rotate(90deg)`, transformOrigin: '0 0' }} />
         </div>
@@ -794,7 +854,7 @@ export function EjemploDeJuego({ c }: { c: Capitulo }) {
           </div>
         ))}
         {derecha.length > 0 && (
-          <PanelEjemplo grupos={PANEL_MISION} ancho={17} className="panel-mision">
+          <PanelEjemplo grupos={PANEL_MISION} ancho={18.5} className="panel-mision">
             <div className="panel-cuenta">
               <span>
                 <b>Total:</b> Diego 2 + Bucanero 1 + Barco 1 + «Mano firme al timón» 2 = <b>6</b>

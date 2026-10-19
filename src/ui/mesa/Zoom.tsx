@@ -15,7 +15,6 @@ import { ayudasDeCarta } from '../textos/glosario.ts'
 import { colocarAmpliacion, type Caja, type Colocacion } from './colocacion.ts'
 import { enLienzo } from './disposicion.ts'
 import { TarjetaAyuda } from './Explicacion.tsx'
-import { ALTO } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
 
 /** Lo que tarda en salir al pasar el ratón (para que no parpadee al cruzar la mesa). */
@@ -163,10 +162,10 @@ export function useAmpliable(id: string | null, acciones?: AccionesZoom) {
 }
 
 /** Caja de la carta tal y como se ve: si está girada (agotada), la girada. */
-function cajaVisible(ancla: HTMLElement): { caja: Caja; anchoLienzo: number } {
+function cajaVisible(ancla: HTMLElement): { caja: Caja; anchoLienzo: number; altoLienzo: number } {
   const giro = ancla.querySelector<HTMLElement>(':scope > .carta-giro')
   const a = enLienzo(giro ?? ancla)
-  return { caja: { x: a.x, y: a.y, ancho: a.ancho, alto: a.alto }, anchoLienzo: a.anchoLienzo }
+  return { caja: { x: a.x, y: a.y, ancho: a.ancho, alto: a.alto }, anchoLienzo: a.anchoLienzo, altoLienzo: a.altoLienzo }
 }
 
 function misma(a: Colocacion | null, b: Colocacion): boolean {
@@ -205,14 +204,14 @@ export function CapaZoom() {
     if (!ampliada) return
     // La carta se ha ido de donde estaba (ha cambiado de zona): la ampliación se va con ella.
     if (!ampliada.ancla.isConnected) return ocultar()
-    const { caja, anchoLienzo } = cajaVisible(ampliada.ancla)
+    const { caja, anchoLienzo, altoLienzo } = cajaVisible(ampliada.ancla)
     const u = una.current
     const d = dos.current
     const r = colocarAmpliacion({
       original: caja,
       carta: { ancho, alto },
       ayudas: u ? { una: { ancho: u.offsetWidth, alto: u.offsetHeight }, dos: d ? { ancho: d.offsetWidth, alto: d.offsetHeight } : undefined } : null,
-      limites: { x: 0, y: 0, ancho: anchoLienzo, alto: ALTO },
+      limites: { x: 0, y: 0, ancho: anchoLienzo, alto: altoLienzo },
     })
     setPos((antes) => (misma(antes, r) ? antes : r))
   }, [ampliada, ancho, alto, ocultar])

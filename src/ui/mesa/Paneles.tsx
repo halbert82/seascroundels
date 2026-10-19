@@ -14,6 +14,7 @@ import { Icono, Numero } from './Zonas.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { glosarioCompleto } from '../textos/glosario.ts'
 import { Explicable } from './Explicacion.tsx'
+import { ALTO, useLienzo } from './Lienzo.tsx'
 
 const ICONO_REGISTRO: Partial<Record<EntradaRegistro['tipo'], IconoId>> = {
   revelar: 'robar',
@@ -36,6 +37,9 @@ function Linea({ r }: { r: EntradaRegistro }) {
 /** Las líneas del registro desde tu última decisión. */
 export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
   const velocidad = useVelocidad()
+  // Cinco líneas; si la mesa crece de alto (en una tableta), una más por cada 40 de alto que gana.
+  const { alto } = useLienzo()
+  const cuantas = 5 + Math.max(0, Math.floor((alto - ALTO) / 40))
   const nuevas = s.registro.slice(desde).filter((r) => r.tipo !== 'turno')
   const anteriores = nuevas.length === 0 ? s.registro.filter((r) => r.tipo !== 'turno').slice(-3) : []
   return (
@@ -45,7 +49,7 @@ export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
       </h2>
       <ol className="lineas">
         <AnimatePresence initial={false}>
-          {(nuevas.length > 0 ? nuevas.slice(-5) : anteriores).map((r, i) => (
+          {(nuevas.length > 0 ? nuevas.slice(-cuantas) : anteriores).map((r, i) => (
             <motion.div
               key={`${desde}-${i}-${r.texto}`}
               initial={duracion(velocidad, 1) > 0 ? { opacity: 0, x: 12 } : false}
@@ -57,7 +61,7 @@ export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
           ))}
         </AnimatePresence>
       </ol>
-      {nuevas.length > 5 && <span className="mas-en-registro">y {nuevas.length - 5} más en el registro</span>}
+      {nuevas.length > cuantas && <span className="mas-en-registro">y {nuevas.length - cuantas} más en el registro</span>}
     </section>
   )
 }

@@ -18,10 +18,7 @@ function arte(nombre: string, encuadre = 'center'): Arte {
   return { nombre, url, encuadre }
 }
 
-/**
- * Cabecera de cada capítulo de «Aprende a jugar» (por título), de las ilustraciones apaisadas.
- * TODO(diseño): qué ilustración va en cada capítulo lo he elegido yo (docs/decisiones.md, fase 9).
- */
+/** Cabecera de cada capítulo de «Aprende a jugar» (por título), de las ilustraciones apaisadas (aprobadas por Albert). */
 export const ARTE_CAPITULO: Record<string, Arte> = {
   'Resumen del juego': arte('vigia3', 'center 30%'),
   'Objetivo del juego': arte('brujula', 'center 55%'),

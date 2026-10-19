@@ -4,20 +4,23 @@
 import { createContext, Fragment } from 'react'
 import arteAprende from '../../assets/arte/cap_galeon.jpg'
 import arteReferencia from '../../assets/arte/abordaje.jpg'
-import { porId } from '../engine/catalogo.ts'
-import { dimensiones } from '../ui/cartas/Carta.tsx'
 import { ARTE_CAPITULO } from './arte.ts'
 import type { Bloque, Capitulo, Entrada, LibroId, Reglamento } from './fuente.ts'
 import { Anatomia, Componentes, Contraportada, EjemploDeJuego, Mesa, PruebaFlujo, Turno } from './graficos.tsx'
-import { Filete, Miniatura, Rosa } from './piezas.tsx'
+import { Ejemplo } from './Ejemplo.tsx'
+import { Filete, Rosa } from './piezas.tsx'
 
 /** El reglamento entero, para los gráficos que toman textos de otra parte (la Prueba, de la Referencia rápida). */
 export const ContextoReglamento = createContext<Reglamento | null>(null)
 
 export const TITULO: Record<LibroId, string> = { aprende: 'Aprende a jugar', referencia: 'Referencia de reglas' }
 
-/** Capítulos de «Aprende a jugar» que empiezan en página nueva. */
-const PAGINA_NUEVA = new Set(['Componentes', 'Anatomía de las cartas', 'Preparación de la partida', 'El turno', 'Las misiones', 'Heridas, daño y penalizaciones', 'Construir tu mazo'])
+/**
+ * Capítulos de «Aprende a jugar» que empiezan en página nueva. «Ganar y perder» también, porque es el que va antes del
+ * ejemplo de juego (que empieza en página par): si no, el libro dejaba una página derecha en blanco entre los dos.
+ */
+// TODO(diseño): «Ganar y perder» en página nueva lo he decidido yo (docs/decisiones.md, fase 9, «Última ronda de maqueta»).
+const PAGINA_NUEVA = new Set(['Componentes', 'Anatomía de las cartas', 'Preparación de la partida', 'El turno', 'Las misiones', 'Heridas, daño y penalizaciones', 'Ganar y perder', 'Construir tu mazo'])
 
 function Html({ html, className = '' }: { html: string; className?: string }) {
   return <div className={`md ${className}`} dangerouslySetInnerHTML={{ __html: html }} />
@@ -142,50 +145,6 @@ function IndiceReferencia({ entradas }: { entradas: Entrada[] }) {
 
 // ---------------------------------------------------------------------------
 // Bloques del texto
-
-/** Ancho útil dentro de un recuadro de ejemplo (mm) y separación entre sus cartas. */
-const ANCHO_EJEMPLO = 116
-const SEPARACION_CARTAS = 2.5
-/** Las cartas de un ejemplo, lo más grandes que quepan en una fila, hasta 30 mm y no menos de 24 (así se leen su nombre
- *  y sus números): si no caben a 24, se enseñan menos (las primeras que nombra el texto). */
-const CARTA_EJEMPLO = 30
-const CARTA_EJEMPLO_MINIMA = 24
-
-/** Ancho de las cartas de un ejemplo (de su lado corto) para que quepan todas en una fila del recuadro. */
-function anchoCartasEjemplo(ids: readonly string[]): number {
-  const proporcion = ids.reduce((n, id) => {
-    const d = dimensiones(porId(id))
-    return n + (d.ancho > d.alto ? d.ancho / d.alto : 1)
-  }, 0)
-  return Math.min(CARTA_EJEMPLO, (ANCHO_EJEMPLO - SEPARACION_CARTAS * (ids.length - 1)) / proporcion)
-}
-
-function Ejemplo({ b }: { b: Bloque & { tipo: 'ejemplo' } }) {
-  // Una carta, al lado del texto; varias, en una fila debajo.
-  let ids = b.cartas
-  while (ids.length > 1 && anchoCartasEjemplo(ids) < CARTA_EJEMPLO_MINIMA) ids = ids.slice(0, -1)
-  const ancho = anchoCartasEjemplo(ids)
-  const cartas = ids.length > 0 && (
-    <div className={`ejemplo-cartas ${ids.length === 1 ? 'una' : 'fila'}`}>
-      {ids.map((id) => (
-        <Miniatura key={id} id={id} ancho={ancho} />
-      ))}
-    </div>
-  )
-  return (
-    <div className={`ejemplo ${b.pasos ? 'con-pasos' : ''}`}>
-      <div className="ejemplo-cabecera">
-        <span className="ejemplo-etiqueta">Ejemplo</span>
-        {b.titulo && <span className="ejemplo-titulo">{b.titulo}</span>}
-      </div>
-      <div className="ejemplo-cuerpo">
-        {ids.length === 1 && cartas}
-        <Html html={b.html} className="ejemplo-texto" />
-        {ids.length > 1 && cartas}
-      </div>
-    </div>
-  )
-}
 
 export function BloqueVista({ b }: { b: Bloque }) {
   switch (b.tipo) {

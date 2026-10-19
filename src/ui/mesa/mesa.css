@@ -1211,7 +1211,8 @@
 
 .ultimo {
   flex: none;
-  height: 168px;
+  /* Si la mesa crece de alto (en una tableta), lo que crece es esta lista. */
+  height: calc(168px + var(--extra, 0px));
   overflow: hidden;
 }
 
@@ -1343,7 +1344,7 @@
   position: absolute;
   left: 14px;
   right: 14px;
-  top: 622px;
+  top: calc(622px + var(--extra, 0px));
   min-height: 76px;
   display: flex;
   align-items: center;
@@ -1588,7 +1589,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 706px;
+  top: calc(706px + var(--extra, 0px));
   height: 194px;
 }
 

@@ -86,8 +86,13 @@ async function capturar(pagina, libro) {
     await guardar('9-el-turno.png', await capturaDePagina(pagina, await paginaCon(pagina, '.turno')))
     await guardar('10-cabecera-de-capitulo.png', await capturaDePagina(pagina, await paginaCon(pagina, '#a-las-misiones')))
     await guardar('11-anatomia-mision.png', await capturaDePagina(pagina, await paginaCon(pagina, '.anatomia-mision')))
+    await guardar('12-el-turno-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '.turno')))
+    for (const tipo of ['puerto', 'mision', 'peligro']) await guardar(`13-anatomia-${tipo}-de-cerca.png`, await pagina.locator(`.anatomia-${tipo} .anatomia-cartas`).screenshot())
+    await guardar('14-ejemplo-de-juego-panel-de-la-mision.png', await pagina.locator('.panel-mision').screenshot())
   } else {
     await guardar('6-referencia-de-reglas-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '#r-destino')))
+    await guardar('15-ejemplo-dano-en-ciudad.png', await pagina.locator('.ejemplo', { hasText: 'Daño en Ciudad' }).screenshot())
+    await guardar('16-dano-en-ciudad-pagina.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-dano')))
   }
 }
 

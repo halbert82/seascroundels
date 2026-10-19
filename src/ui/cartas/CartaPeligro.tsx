@@ -135,7 +135,7 @@ function Encuentro2({ e }: { e: VistaEncuentro }) {
   const t = e.textos
   if (!t) return null
   return (
-    <div className="encp v2">
+    <div className="encp v2" data-entorno={e.entorno}>
       {e.entorno && (
         <div className="ent" style={{ '--ec': COLOR_ENTORNO[e.entorno] } as CSSProperties}>
           <span className={claseIcono(e.entorno)} />

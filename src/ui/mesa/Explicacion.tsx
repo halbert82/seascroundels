@@ -7,7 +7,6 @@ import { AnimatePresence, motion } from 'motion/react'
 import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { NOMBRE_CLASE, type Ayuda } from '../textos/glosario.ts'
 import { enLienzo } from './disposicion.ts'
-import { ALTO } from './Lienzo.tsx'
 import { duracion, useVelocidad } from './preferencias.ts'
 
 /** Lo que tarda en salir al pasar el ratón (para que no parpadee al cruzar la mesa). */
@@ -173,8 +172,8 @@ export function CapaExplicacion() {
     // offsetHeight ya está en unidades del lienzo (la escala del lienzo es una transformación).
     const alto = el.offsetHeight
     const abajo = a.y + a.alto + MARGEN
-    const lado: Posicion['lado'] = abajo + alto <= ALTO - 8 || a.y - MARGEN - alto < 8 ? 'abajo' : 'arriba'
-    const top = lado === 'abajo' ? Math.min(abajo, ALTO - 8 - alto) : a.y - MARGEN - alto
+    const lado: Posicion['lado'] = abajo + alto <= a.altoLienzo - 8 || a.y - MARGEN - alto < 8 ? 'abajo' : 'arriba'
+    const top = lado === 'abajo' ? Math.min(abajo, a.altoLienzo - 8 - alto) : a.y - MARGEN - alto
     const centro = a.x + a.ancho / 2
     const left = Math.max(8, Math.min(a.anchoLienzo - ANCHO - 8, centro - ANCHO / 2))
     setPos({ left, top: Math.max(8, top), lado, flecha: Math.max(16, Math.min(ANCHO - 16, centro - left)) })

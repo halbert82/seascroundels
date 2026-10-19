@@ -1069,6 +1069,105 @@ body {
   margin: 2mm 0 0.6mm;
 }
 
+/* Cartas de Peligro en los ejemplos: solo la parte que cita el texto (un encuentro, el Destino), recortada de la carta
+   y con su nombre encima, a un ancho en que se lee (Libro.tsx lo calcula con la letra de la carta). Ese recuadro ocupa
+   la página entera, centrado como lo ancho, y sus piezas van en una fila si caben. */
+.ejemplo.con-recortes {
+  clear: both;
+  padding-left: 3mm;
+  padding-right: 3mm;
+}
+
+/* Dentro de una entrada de la Referencia (que ya deja libre la columna exterior), lo ancho también sale a ella. */
+.pagedjs_right_page .entrada > .ancho {
+  margin-right: calc(var(--centrar) - var(--desplaza)) !important;
+}
+
+.pagedjs_left_page .entrada > .ancho {
+  margin-left: calc(var(--centrar) - var(--desplaza)) !important;
+}
+
+/* Los recortes al lado del texto (a la derecha, como una carta sola); las demás cartas, bajo el texto. */
+.ejemplo-cuerpo.al-lado {
+  display: flex;
+  align-items: flex-start;
+  gap: 3.5mm;
+}
+
+.ejemplo-columna {
+  flex: 1;
+  min-width: 0;
+}
+
+.ejemplo-columna .ejemplo-cartas.fila {
+  margin: 2.4mm 0 0.6mm;
+}
+
+.ejemplo-piezas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3mm;
+  margin: 2.4mm 0 0.6mm;
+}
+
+.ejemplo-piezas.una-fila {
+  align-items: flex-start;
+}
+
+.ejemplo-piezas.filas {
+  flex-direction: column;
+}
+
+.ejemplo-piezas .ejemplo-cartas.fila {
+  margin: 0;
+}
+
+.ejemplo-fragmentos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.4mm;
+  flex: none;
+}
+
+.ejemplo-fragmentos.juntos {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 3mm;
+}
+
+.fragmento {
+  margin: 0;
+  flex: none;
+}
+
+.fragmento-nombre {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 9.5pt;
+  line-height: 1.1;
+  color: var(--tinta);
+  margin: 0 0 0.9mm 0.5mm;
+}
+
+.recorte {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.3mm;
+  box-shadow: 0 0.5mm 1.4mm rgba(43, 33, 25, 0.38);
+  line-height: 0;
+}
+
+.recorte + .recorte {
+  margin-top: 1.3mm;
+}
+
+.recorte-lienzo {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
 .ejemplo-texto p {
   margin: 0 0 1.4mm;
 }
@@ -1791,6 +1890,16 @@ body {
   justify-content: space-between;
   align-items: flex-start;
   gap: 4mm;
+}
+
+/* El panel de la misión, en dos columnas que se leen por filas (1 Misión, 2 Encuentro, 3 Comprometidos, 4 Destino):
+   a la derecha, las dos partes de las cartas de Peligro, recortadas a un tamaño en que se leen. */
+.panel-mision .panel-grupos {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  justify-content: space-between;
+  align-items: start;
+  gap: 4mm 6mm;
 }
 
 .panel-puerto .panel-grupos {

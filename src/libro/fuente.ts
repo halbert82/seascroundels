@@ -7,7 +7,7 @@
 
 import MarkdownIt from 'markdown-it'
 import type { Token } from 'markdown-it'
-import { cartasNombradas } from './cartasNombradas.ts'
+import { cartasYPartes, type CartaNombrada } from './cartasNombradas.ts'
 
 export type LibroId = 'aprende' | 'referencia'
 
@@ -15,7 +15,7 @@ export type Bloque =
   /** Texto corrido (párrafo, lista, tabla). Puede llevar notas temáticas dentro, ya colocadas antes de lo que comentan. */
   | { tipo: 'html'; html: string; tema?: boolean }
   | { tipo: 'subtitulo'; id: string; texto: string }
-  | { tipo: 'ejemplo'; titulo: string; html: string; cartas: string[]; pasos: boolean }
+  | { tipo: 'ejemplo'; titulo: string; html: string; cartas: CartaNombrada[]; pasos: boolean }
   | { tipo: 'importante' | 'consejo'; html: string }
   /** Sitio de un gráfico. `leyenda`: la lista numerada que lo acompaña (anatomías); `pasos`: la lista que sustituye (turno). */
   | { tipo: 'grafico'; nombre: string; arg: string; leyenda?: string[]; pasos?: string[] }
@@ -527,7 +527,7 @@ function bloquesDe(md: MarkdownIt, tokens: Token[], e: Entorno, opciones: { comp
       soltarTema()
       if (tipo === 'ejemplo') {
         const pasos = limpio.some((x) => x.type === 'ordered_list_open')
-        bloques.push({ tipo: 'ejemplo', titulo: resto, html: renderizar(md, limpio, sinTerminos), cartas: cartasNombradas(`${resto}\n${textoPlano(limpio)}`, MAX_CARTAS_EJEMPLO), pasos })
+        bloques.push({ tipo: 'ejemplo', titulo: resto, html: renderizar(md, limpio, sinTerminos), cartas: cartasYPartes(`${resto}\n${textoPlano(limpio)}`, MAX_CARTAS_EJEMPLO), pasos })
       } else if (tipo === 'importante' || tipo === 'consejo') {
         bloques.push({ tipo, html: renderizar(md, limpio, sinTerminos) })
       } else if (tipo === 'epigrafe') {

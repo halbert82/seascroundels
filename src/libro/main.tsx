@@ -1,16 +1,18 @@
 // Página de un libro del reglamento: dibuja el libro entero con React, lo reparte en páginas A4 con Paged.js y lo
 // enseña como un libro (a doble página en pantallas anchas). Con «?imprimir» se prepara para sacar el PDF.
 
-import { Previewer } from 'pagedjs'
+import { Previewer, registerHandlers } from 'pagedjs'
 import { StrictMode } from 'react'
 import { flushSync } from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import fuente from '../../docs/reglamento-v1.0.md?raw'
 import '../estilos/fuentes.ts'
 import { VINETAS } from './arte.ts'
+import { CortesDePagina } from './cortes.ts'
 import { Barra } from './Barra.tsx'
 import { leerReglamento, type LibroId } from './fuente.ts'
 import { Libro, TITULO } from './Libro.tsx'
+import { cortarRecortes } from './piezas.tsx'
 import './libro.css'
 import paginas from './paginas.css?raw'
 
@@ -98,11 +100,14 @@ const AIRE_VINETA = 5
 /**
  * Viñetas en la columna exterior: en cada página de texto cuya columna exterior quede libre en más de la mitad de su
  * alto, una ilustración pequeña en el hueco libre más grande. Ninguna ilustración se repite en dos páginas seguidas
- * (las cabeceras de los capítulos también cuentan). El ejemplo de juego a doble página no lleva.
+ * (las cabeceras de los capítulos también cuentan), y una viñeta no repite la ilustración de una carta de su doble
+ * página. El ejemplo de juego a doble página no lleva.
  */
 function vinetas(): void {
   const paginas = [...document.querySelectorAll<HTMLElement>('.pagedjs_page')]
   const usadas = paginas.map((p) => new Set([...p.querySelectorAll<HTMLElement>('[data-arte]')].map((e) => e.dataset.arte ?? '')))
+  // Las ilustraciones de las cartas dibujadas (ejemplos, diagramas): una viñeta no las repite en su doble página.
+  const deCartas = paginas.map((p) => new Set([...p.querySelectorAll<HTMLElement>('[data-arte-carta]')].map((e) => e.dataset.arteCarta ?? '')))
   let turno = 0
   paginas.forEach((pagina, i) => {
     if (!pagina.querySelector('.capitulo .flujo, .referencia .flujo')) return
@@ -135,8 +140,10 @@ function vinetas(): void {
     const finTexto = Math.max(...[...area.querySelectorAll<HTMLElement>('.flujo > *')].map((e) => e.getBoundingClientRect().bottom), a.top)
     const junto: [number, number] = [hueco[0], Math.min(hueco[1], finTexto)]
     const sitio: [number, number] = junto[1] - junto[0] >= alto ? junto : [hueco[0], hueco[0] + alto]
-    // Una ilustración que no esté en esta página ni en las de al lado.
-    const vecinas = new Set([...(usadas[i - 1] ?? []), ...(usadas[i] ?? []), ...(usadas[i + 1] ?? [])])
+    // Una ilustración que no esté en esta página ni en las de al lado (cabeceras y viñetas), ni en una carta de su doble
+    // página (la par, a la izquierda, con la impar que la sigue).
+    const pareja = pagina.classList.contains('pagedjs_left_page') ? i + 1 : i - 1
+    const vecinas = new Set([...(usadas[i - 1] ?? []), ...(usadas[i] ?? []), ...(usadas[i + 1] ?? []), ...(deCartas[i] ?? []), ...(deCartas[pareja] ?? [])])
     for (let k = 0; k < VINETAS.length; k++) {
       const arte = VINETAS[(turno + k) % VINETAS.length]
       if (!arte || vecinas.has(arte.nombre)) continue
@@ -203,6 +210,7 @@ async function principal(): Promise<void> {
   )
   await cargarImagenes(origen)
   await new Promise((ok) => requestAnimationFrame(() => ok(null)))
+  cortarRecortes(origen)
 
   // Paged.js reparte una copia estática del libro; React ya no la toca.
   const contenido = document.createDocumentFragment()
@@ -210,6 +218,7 @@ async function principal(): Promise<void> {
   raiz.unmount()
   origen.remove()
 
+  registerHandlers(CortesDePagina)
   const previsor = new Previewer()
   const flujo = await previsor.preview(contenido, [{ [new URL('paginas.css', window.location.href).href]: paginas }], destino)
   window.__libroPaginas = flujo.total

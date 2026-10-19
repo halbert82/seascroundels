@@ -1,7 +1,7 @@
 // La mesa de juego: junta las zonas, el panel de decisión, la mano y los paneles, y responde al motor.
 
 import { LayoutGroup } from 'motion/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { jugadorConCriterio } from '../../engine/pruebas/jugadores.ts'
 import { textoUso } from '../textos/decisiones.ts'
 import type { Decision, Estado } from '../../engine/tipos.ts'
@@ -40,7 +40,7 @@ export function Mesa(props: Props) {
 }
 
 function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
-  const { ancho } = useLienzo()
+  const { ancho, alto } = useLienzo()
   const juego = usePartida(inicial, guardar)
   const s = juego.estado
   const d = s.pendiente
@@ -90,7 +90,7 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
     // El menú sale junto a la carta: la ampliación se quita para no taparlo.
     zoom.ocultar()
     const p = enLienzo(elemento)
-    setMenuCarta({ x: Math.min(p.anchoLienzo - 280, Math.max(10, p.x + p.ancho / 2 - 130)), y: Math.max(70, Math.min(ALTO - 220, p.y - 20)), opciones })
+    setMenuCarta({ x: Math.min(p.anchoLienzo - 280, Math.max(10, p.x + p.ancho / 2 - 130)), y: Math.max(70, Math.min(p.altoLienzo - 220, p.y - 20)), opciones })
   }
 
   const elegir = (e: Parameters<typeof juego.elegir>[0]) => {
@@ -123,12 +123,14 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
     </div>
   )
 
-  const zona = { top: ARRIBA, height: ALTO_ZONAS }
+  // Si la mesa crece de alto (en una pantalla más cuadrada), crecen las zonas de arriba; el panel y la mano siguen al pie.
+  const extra = alto - ALTO
+  const zona = { top: ARRIBA, height: ALTO_ZONAS + extra }
   return (
     <ProveedorExplicacion>
       <Contexto.Provider value={{ s, inter, pulsar }}>
         <LayoutGroup>
-          <div className={`mesa vel-${velocidad}`} style={{ width: ancho }}>
+          <div className={`mesa vel-${velocidad}`} style={{ width: ancho, height: alto, '--extra': `${extra}px` } as CSSProperties}>
             <BarraSuperior botones={botones} />
             <div className="col-izq" style={{ ...zona, left: MARGEN, width: IZQ }}>
               <ZonaTripulacion />

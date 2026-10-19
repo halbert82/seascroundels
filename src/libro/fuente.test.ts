@@ -1,7 +1,7 @@
 // El reglamento leído para la maqueta: los dos libros, las marcas nuevas y las remisiones.
 
 import { describe, expect, it } from 'vitest'
-import { cartasNombradas } from './cartasNombradas.ts'
+import { cartasNombradas, cartasYPartes } from './cartasNombradas.ts'
 import fuente from '../../docs/reglamento-v1.0.md?raw'
 import { leerReglamento, type Bloque, type Capitulo } from './fuente.ts'
 
@@ -51,7 +51,7 @@ describe('Marcas nuevas', () => {
 
   it('los ejemplos llevan título y las cartas que nombran', () => {
     const ejemplo = capitulo('Capacidades de las cartas').bloques.find((b) => b.tipo === 'ejemplo')
-    expect(ejemplo).toMatchObject({ tipo: 'ejemplo', titulo: 'Una Interrupción', cartas: ['grumete', 'capitan'] })
+    expect(ejemplo).toMatchObject({ tipo: 'ejemplo', titulo: 'Una Interrupción', cartas: [{ id: 'grumete', partes: [] }, { id: 'capitan', partes: [] }] })
   })
 
   it('no queda ningún ejemplo con la marca antigua', () => {
@@ -116,6 +116,20 @@ describe('Cartas nombradas en un texto', () => {
       'p2_turbonada',
       'p2_arrecife',
     ])
+  })
+
+  it('de los Peligros apunta qué parte se nombra: el encuentro de un Entorno o el Destino', () => {
+    expect(cartasYPartes('Fallas «Te roban el barco»; después sale el Destino «Las baterías del castillo».')).toEqual([
+      { id: 'p2_curazao', partes: ['ciu'] },
+      { id: 'p2_morro', partes: ['destino'] },
+    ])
+    // Dos partes de la misma carta: las dos, en el orden de la carta.
+    expect(cartasYPartes('Sale «Os da alcance» y luego «Turbonada a popa».')).toEqual([{ id: 'p2_turbonada', partes: ['mar', 'destino'] }])
+  })
+
+  it('el ejemplo «Daño en Ciudad» enseña el encuentro de Ciudad de una carta y el Destino de la otra', () => {
+    const dano = r.referencia.entradas.find((e) => e.titulo === 'Daño')?.bloques.find((b) => b.tipo === 'ejemplo')
+    expect(dano).toMatchObject({ titulo: 'Daño en Ciudad', cartas: [{ id: 'p2_curazao', partes: ['ciu'] }, { id: 'p2_morro', partes: ['destino'] }] })
   })
 
   it('no confunde una palabra suelta con el nombre de una carta', () => {

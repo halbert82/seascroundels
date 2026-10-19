@@ -1,4 +1,4 @@
-// Medidas de la mesa (en unidades del lienzo: 900 de alto y entre 1440 y 1920 de ancho).
+// Medidas de la mesa (en unidades del lienzo: 900 de alto o algo más, y entre 1440 y 1920 de ancho).
 
 export const MARGEN = 14
 export const HUECO = 12
@@ -7,6 +7,7 @@ export const IZQ = 520
 /** Columna derecha: lo último que ha pasado, el Barco y los mazos. */
 export const DER = 256
 export const ARRIBA = 66
+/** Alto de las zonas de arriba con la mesa a 900 de alto (si la mesa crece, ellas crecen lo mismo). */
 export const ALTO_ZONAS = 548
 
 export function anchoCentro(anchoLienzo: number): number {
@@ -20,10 +21,10 @@ export function escalaPara(disponible: number, n: number, anchoCarta: number, hu
 }
 
 /** Posición de un elemento en unidades del lienzo (para menús, ampliaciones y explicaciones). */
-export function enLienzo(elemento: HTMLElement): { x: number; y: number; ancho: number; alto: number; anchoLienzo: number } {
+export function enLienzo(elemento: HTMLElement): { x: number; y: number; ancho: number; alto: number; anchoLienzo: number; altoLienzo: number } {
   const lienzo = elemento.closest<HTMLElement>('.lienzo')
   const caja = elemento.getBoundingClientRect()
-  if (!lienzo) return { x: caja.left, y: caja.top, ancho: caja.width, alto: caja.height, anchoLienzo: window.innerWidth }
+  if (!lienzo) return { x: caja.left, y: caja.top, ancho: caja.width, alto: caja.height, anchoLienzo: window.innerWidth, altoLienzo: window.innerHeight }
   const base = lienzo.getBoundingClientRect()
   const escala = base.width / lienzo.offsetWidth
   return {
@@ -32,5 +33,6 @@ export function enLienzo(elemento: HTMLElement): { x: number; y: number; ancho: 
     ancho: caja.width / escala,
     alto: caja.height / escala,
     anchoLienzo: lienzo.offsetWidth,
+    altoLienzo: lienzo.offsetHeight,
   }
 }
