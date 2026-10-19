@@ -476,3 +476,16 @@ El informe (docs/informe-equilibrio.md) pasa de 35,9 % a 35,2 % de victorias; co
 
 - Sin niveles (cartas, reglamento y la tabla de Nivel). Avance según la guía de Albert: Prueba fácil (dificultad 3 o menos) 2 / 1; Prueba dura (4 o más, o X) 3 / 1, o 3 / 2 si su fallo es grave (Abordaje, rehén, 2 o más heridas o daños, retirarse, reputación, Ocupa el muelle, Incautado, pierdes 2 Avance, vuelve al muelle, no puedes retirarte); sin Prueba: 0 con un premio grande, 1 con uno pequeño o sin nada, 2 si se queda en juego y perjudica. La tabla de antes y después está en el informe de la fase 10b.
 
+
+### Equilibrio de la fase 10b (1000 partidas, semillas 1–1000, el mismo jugador automático)
+
+| Reglas | Victorias | Heridas por misión | Misiones falladas por partida |
+| --- | --- | --- | --- |
+| Antes de la fase 10b | 35,2 % | 0,85 | 1,64 |
+| Solo Estados y Ventajas (con P1–P7, Destina y Cortar) | 30,7 % (−4,5) | 0,88 | 1,64 |
+| Solo fuera la munición | 35,2 % (0) | 0,85 | 1,63 |
+| Solo las misiones iniciales nuevas | 42,1 % (+6,9) | 0,86 | 1,71 |
+| Solo el Avance nuevo | 41,0 % (+5,8) | 0,75 | 1,45 |
+| Todo lo de la fase 10b | 45,6 % (+10,4) | 0,79 | 1,46 |
+
+Cada cambio «solo» se midió en una copia del repositorio en el commit anterior a la fase con ese commit aplicado encima. Objetivo de Albert: ~25 %. No se ha tocado nada para acercarse; opciones medidas sobre lo publicado (pendiente de Albert, Q1): Pruebas fáciles a 1 / 1, 35,5 %; solo dificultad 1–2 a 1 / 1, 40,5 %; 20 de reputación, 32,1 %; las dos primeras con 20 de reputación, 24,1 % y 26,4 %.
