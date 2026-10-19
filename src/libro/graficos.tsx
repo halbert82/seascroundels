@@ -9,6 +9,7 @@ import type { Bloque, Capitulo, FilaComponente, Reglamento } from './fuente.ts'
 import { BloqueVista, ContextoReglamento, InicioCapitulo } from './Libro.tsx'
 import type { ParteCarta } from './cartasNombradas.ts'
 import { Dorso, Filete, FragmentoPeligro, Icono, Marcador, Miniatura } from './piezas.tsx'
+import { DorsoEscalado } from '../ui/mesa/Dorso.tsx'
 
 function Html({ html, className = '' }: { html: string; className?: string }) {
   return <div className={`md ${className}`} dangerouslySetInnerHTML={{ __html: html }} />
@@ -110,7 +111,7 @@ export function Componentes({ grupo, filas }: { grupo: string; filas: FilaCompon
                   <span dangerouslySetInnerHTML={{ __html: f.nombre }} />
                   <span className="componente-cantidad" dangerouslySetInnerHTML={{ __html: f.cantidad }} />
                 </div>
-                <div className="componente-uso" dangerouslySetInnerHTML={{ __html: f.html }} />
+                {f.html && <div className="componente-uso" dangerouslySetInnerHTML={{ __html: f.html }} />}
                 {cartas.length > 0 && <div className="componente-numeros">Nº {rango(cartas)}</div>}
               </div>
             </div>
@@ -241,19 +242,21 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         ancho: 56,
         llamadas: [
           { n: 'A', sel: '.ptoh .chapn', donde: 'izq', texto: true },
-          { n: 'B', sel: '.muelleb', donde: 'der' },
-          { n: 'C', sel: '.ptor .opt', donde: 'izq' },
-          { n: 'D', sel: '.ptoab', donde: 'izq' },
-          { n: 'E', sel: '.ptoart', donde: 'der' },
+          { n: 'B', sel: '.ptovals .muelleb:first-child', donde: 'der' },
+          { n: 'C', sel: '.ptovals .muelleb:last-child', donde: 'der' },
+          { n: 'D', sel: '.ptor .opt', donde: 'izq' },
+          { n: 'E', sel: '.ptoab', donde: 'izq' },
+          { n: 'F', sel: '.ptoart', donde: 'der' },
         ],
       },
     ],
     letras: [
       { letra: 'A', texto: 'Nombre del puerto' },
-      { letra: 'B', texto: 'Tamaño del muelle' },
-      { letra: 'C', texto: 'Opciones comunes' },
-      { letra: 'D', texto: 'Opción propia del puerto' },
-      { letra: 'E', texto: 'Ilustración' },
+      { letra: 'B', texto: 'Misiones disponibles' },
+      { letra: 'C', texto: 'Tamaño del muelle' },
+      { letra: 'D', texto: 'Opciones comunes' },
+      { letra: 'E', texto: 'Opción propia del puerto' },
+      { letra: 'F', texto: 'Ilustración' },
     ],
   },
   // «El prisionero de Portobelo», como la lámina de referencia (su recompensa ya cabe: la letra se ajusta sola).
@@ -282,10 +285,11 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
         llamadas: [
           { n: '1', sel: '.encp .ent', donde: 'izq' },
           { n: '2', sel: '.encp .encn', donde: 'izq', texto: true },
-          { n: '3', sel: '.encp .test2', donde: 'der', texto: true },
+          { n: '3', sel: '.encp .test2', donde: 'izq', texto: true },
           { n: '4', sel: '.encp .av', donde: 'der' },
           { n: '5', sel: '.encp .t2.win', donde: 'der', texto: true },
-          { n: '6', sel: '.dest', donde: 'izq' },
+          { n: '6', sel: '.dest .mod', donde: 'izq' },
+          { n: '7', sel: '.dest .so2', donde: 'der', texto: true },
         ],
       },
     ],
@@ -294,7 +298,7 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
     cartas: [
       {
         id: 'rumores',
-        ancho: 44,
+        ancho: 24,
         llamadas: [
           { n: 'A', sel: '.plate .name', donde: 'der', texto: true },
           { n: 'B', sel: '.rules', donde: 'izq', texto: true },
@@ -444,7 +448,42 @@ function CartaAnotada({ def }: { def: CartaAnotadaDef }) {
   )
 }
 
+/**
+ * Cartas del mazo de historia (fase 10): el anverso, con su número bien visible, y el dorso del mazo al que va, con el
+ * mismo número. Un capítulo II (al mazo de Misiones) y un Tesoro (al de muelle).
+ */
+function AnatomiaHistoria() {
+  const MMPX = 96 / 25.4
+  const pares: { id: string; num: number; dorso: 'misiones' | 'muelle'; apaisado: boolean; ancho: number; texto: string }[] = [
+    { id: 'espia-II', num: 136, dorso: 'misiones', apaisado: true, ancho: 13, texto: 'Un capítulo II: va al mazo de Misiones' },
+    { id: 'espada', num: 121, dorso: 'muelle', apaisado: false, ancho: 12, texto: 'Un Tesoro: va al mazo de muelle' },
+  ]
+  return (
+    <figure className="anatomia anatomia-historia ancho">
+      <div className="historia-pares">
+        {pares.map((p) => (
+          <div key={p.id} className="historia-par">
+            <div className="historia-caras">
+              <div className="historia-cara">
+                <Miniatura id={p.id} ancho={p.ancho} />
+                <span className="historia-rotulo">{p.dorso === 'misiones' ? 'Capítulo II' : 'Tesoro'}</span>
+              </div>
+              <div className="historia-cara">
+                <div className="miniatura dorso-carta">
+                  <DorsoEscalado tipo={p.dorso} escala={(p.ancho * MMPX) / 378} numero={p.num} apaisado={p.apaisado} />
+                </div>
+                <span className="historia-rotulo">{p.dorso === 'misiones' ? 'Su dorso: Misiones' : 'Su dorso: muelle'}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </figure>
+  )
+}
+
 export function Anatomia({ tipo, leyenda }: { tipo: string; leyenda: string[] }) {
+  if (tipo === 'historia') return <AnatomiaHistoria />
   const def = ANATOMIAS[tipo]
   if (!def) return <div className="pendiente">[anatomía de «{tipo}» pendiente]</div>
   const numerada = leyenda.length > 0
@@ -521,52 +560,39 @@ function En({ x, y, children, style }: { x: number; y: number; children: ReactNo
 export function Mesa() {
   const W = 14.5 // lado corto de una carta (mm)
   const H = W * (528 / 378)
-  const filas = [8, 58, 110]
+  // Fase 10: el puerto en medio, con el mazo de Peligros y las misiones disponibles a sus lados y el muelle debajo.
+  const filas = [6, 36, 67, 100]
   const pasos = pasosDePreparacion(useContext(ContextoReglamento))
   const bajo = (y: number, alto = H) => y + alto + 2
+  const [f0 = 0, f1 = 0, f2 = 0, f3 = 0] = filas
+  const ancho = W * (528 / 378) // ancho de una carta apaisada
+  const xMisiones = 52
   const zonas: Zona[] = [
-    { x: 4, y: bajo(filas[0] ?? 0), rotulo: 'Mazo de Escenario', paso: 1, ancho: 18 },
-    { x: 22, y: bajo(filas[0] ?? 0), rotulo: 'Peligros · descartes', paso: 4, ancho: 33 },
-    { x: 60, y: bajo(filas[0] ?? 0, W), rotulo: 'Misiones disponibles', paso: 5, ancho: 66 },
-    { x: 130, y: bajo(filas[0] ?? 0, W), rotulo: 'Mazo de Misiones', paso: 5, ancho: 22 },
-    { x: 155, y: bajo(filas[0] ?? 0, W), rotulo: 'Mazo de historia', paso: 5, ancho: 22 },
-    { x: 4, y: (filas[1] ?? 0) + 15, rotulo: 'Reputación', paso: 1, ancho: 40 },
-    { x: 48, y: bajo(filas[1] ?? 0, 16), rotulo: 'Puerto', paso: 3, ancho: 24 },
-    { x: 76, y: bajo(filas[1] ?? 0), rotulo: 'Muelle', paso: 6, ancho: 66 },
-    { x: 148, y: bajo(filas[1] ?? 0), rotulo: 'Mazo de muelle', paso: 6, ancho: 28 },
-    { x: 4, y: bajo(filas[2] ?? 0), rotulo: 'Capitán y Barco', paso: 2, ancho: 33 },
-    { x: 40, y: bajo(filas[2] ?? 0), rotulo: 'Tus Tripulantes', ancho: 50 },
-    { x: 98, y: bajo(filas[2] ?? 0), rotulo: 'Mazo del capitán', paso: 7, ancho: 22 },
-    { x: 126, y: bajo(filas[2] ?? 0), rotulo: 'Tu mano', paso: 7, ancho: 40 },
+    { x: 4, y: bajo(f0), rotulo: 'Mazo de Escenario', paso: 1, ancho: 18 },
+    { x: 24, y: f0 + 15, rotulo: 'Reputación', paso: 1, ancho: 40 },
+    { x: 4, y: bajo(f1), rotulo: 'Mazo de Peligros', paso: 4, ancho: 18 },
+    { x: 24, y: bajo(f1, 16), rotulo: 'Puerto', paso: 3, ancho: 24 },
+    { x: xMisiones, y: bajo(f1, W), rotulo: 'Misiones disponibles', paso: 5, ancho: 66 },
+    { x: 122, y: bajo(f1, W), rotulo: 'Mazo de Misiones', paso: 5, ancho: 22 },
+    { x: 147, y: bajo(f1, W), rotulo: 'Mazo de historia', paso: 5, ancho: 22 },
+    { x: 24, y: bajo(f2), rotulo: 'Muelle', paso: 6, ancho: 66 },
+    { x: 95, y: bajo(f2), rotulo: 'Mazo de muelle', paso: 6, ancho: 28 },
+    { x: 4, y: bajo(f3), rotulo: 'Capitán y Barco', paso: 2, ancho: 33 },
+    { x: 40, y: bajo(f3), rotulo: 'Tus Tripulantes', ancho: 50 },
+    { x: 98, y: bajo(f3), rotulo: 'Mazo del capitán', paso: 7, ancho: 22 },
+    { x: 126, y: bajo(f3), rotulo: 'Tu mano', paso: 7, ancho: 40 },
   ]
-  const [f0 = 0, f1 = 0, f2 = 0] = filas
   return (
     <figure className="mesa-diagrama ancho">
-      <div className="mesa-tablero" style={{ height: `${f2 + H + 10}mm` }}>
-        <div className="mesa-franja" style={{ top: `${f2 - 5}mm`, height: `${H + 13}mm` }}>
+      <div className="mesa-tablero" style={{ height: `${f3 + H + 10}mm` }}>
+        <div className="mesa-franja" style={{ top: `${f3 - 5}mm`, height: `${H + 13}mm` }}>
           <span>Tu zona</span>
         </div>
-        {/* Arriba: el reloj, los Peligros y las misiones. */}
+        {/* Arriba: el reloj y la reputación. */}
         <En x={4} y={f0}>
           <Dorso tipo="escenario" ancho={W} grosor={4} />
         </En>
-        <En x={22} y={f0}>
-          <Dorso tipo="peligros" ancho={W} grosor={6} />
-        </En>
-        <Hueco x={39.5} y={f0} w={W} h={H} />
-        {INICIALES.map((id, i) => (
-          <En key={id} x={60 + i * 22.5} y={f0}>
-            <Miniatura id={id} ancho={W} />
-          </En>
-        ))}
-        <En x={130} y={f0}>
-          <Dorso tipo="misiones" ancho={W} apaisado grosor={4} />
-        </En>
-        <En x={155} y={f0}>
-          <Dorso tipo="historia" ancho={W} apaisado grosor={5} />
-        </En>
-        {/* En medio: la reputación, el puerto y el muelle. */}
-        <En x={4} y={f1}>
+        <En x={24} y={f0}>
           <div className="mesa-reputacion">
             <Icono id="rep" />
             {[0, 3, 6, 9, 12, 15, 18].map((n) => (
@@ -576,31 +602,47 @@ export function Mesa() {
             ))}
           </div>
         </En>
-        <En x={48} y={f1}>
+        {/* En medio: el puerto, con el mazo de Peligros a un lado y las misiones disponibles al otro. */}
+        <En x={4} y={f1}>
+          <Dorso tipo="peligros" ancho={W} grosor={6} />
+        </En>
+        <En x={24} y={f1}>
           <Miniatura id="tortuga" ancho={16} />
         </En>
-        {MUELLE.map((id, i) => (
-          <En key={id} x={76 + i * 17} y={f1}>
+        {INICIALES.map((id, i) => (
+          <En key={id} x={xMisiones + i * (ancho + 2.2)} y={f1}>
             <Miniatura id={id} ancho={W} />
           </En>
         ))}
-        <En x={148} y={f1}>
+        <En x={122} y={f1}>
+          <Dorso tipo="misiones" ancho={W} apaisado grosor={4} />
+        </En>
+        <En x={147} y={f1}>
+          <Dorso tipo="historia" ancho={W} apaisado grosor={5} />
+        </En>
+        {/* Debajo del puerto, el muelle. */}
+        {MUELLE.map((id, i) => (
+          <En key={id} x={24 + i * 17} y={f2}>
+            <Miniatura id={id} ancho={W} />
+          </En>
+        ))}
+        <En x={95} y={f2}>
           <Dorso tipo="muelle" ancho={W} grosor={4} />
         </En>
         {/* Abajo: tu gente, tu mazo y tu mano. */}
-        <En x={4} y={f2}>
+        <En x={4} y={f3}>
           <Miniatura id="capitan" ancho={W} />
         </En>
-        <En x={21} y={f2}>
+        <En x={21} y={f3}>
           <Miniatura id="barco" ancho={W} />
         </En>
         {[0, 1, 2].map((i) => (
-          <Hueco key={i} x={40 + i * 17} y={f2} w={W} h={H} texto={i === 0 ? 'Los reclutas en tu turno' : undefined} />
+          <Hueco key={i} x={40 + i * 17} y={f3} w={W} h={H} texto={i === 0 ? 'Los reclutas en tu turno' : undefined} />
         ))}
-        <En x={98} y={f2}>
+        <En x={98} y={f3}>
           <Dorso tipo="capitan" ancho={W} grosor={5} />
         </En>
-        <div className="mesa-mano" style={{ left: '124mm', top: `${f2 - 1}mm` }}>
+        <div className="mesa-mano" style={{ left: '124mm', top: `${f3 - 1}mm` }}>
           {MANO.map((id, i) => (
             <Miniatura key={id} id={id} ancho={W} girada={(i - 2) * 6} style={{ left: `${i * 8.5}mm`, top: `${Math.abs(i - 2) * 1}mm` }} />
           ))}
@@ -628,7 +670,7 @@ export function Mesa() {
 }
 
 // ---------------------------------------------------------------------------
-// El turno en 4 pasos
+// El turno en 4 fases
 
 const ICONO_PASO = ['acampar', 'doblon', 'timon', 'robar']
 
@@ -648,9 +690,6 @@ export function Turno({ pasos }: { pasos: string[] }) {
           </li>
         ))}
       </ol>
-      <div className="turno-vuelta">
-        <span>Siguiente turno: vuelves al paso 1</span>
-      </div>
     </figure>
   )
 }
@@ -664,7 +703,7 @@ function lineaRapida(html: string): { titulo: string; texto: string } {
 // ---------------------------------------------------------------------------
 // La Prueba: diagrama de flujo con la ventana de acción
 
-const PASOS_PRUEBA = ['Comprometer', 'Destino', 'Ventana de acción', 'Resolver', 'Avance']
+const PASOS_PRUEBA = ['Asignar', 'Destino', 'Ventana de acción', 'Resolver', 'Avance']
 
 export function PruebaFlujo() {
   const textos = useContext(ContextoReglamento)?.rapida.prueba ?? []
@@ -679,8 +718,8 @@ export function PruebaFlujo() {
         <div className="pf-caja">
           <span className="pf-num">1</span>
           <span className="pf-titulo">{PASOS_PRUEBA[0]}</span>
-          <span className="pf-texto" dangerouslySetInnerHTML={{ __html: t(0, 'Compromete a tu tripulación y añade cartas de tu mano.') }} />
-          <span className="pf-nota">Única ocasión de sumar cartas de la mano</span>
+          <span className="pf-texto" dangerouslySetInnerHTML={{ __html: t(0, 'Asigna Tripulantes y añade cartas de tu mano.') }} />
+          <span className="pf-nota">Única ocasión de sumar cartas de la mano · sin nadie asignado, se falla</span>
         </div>
         <span className="pf-flecha" />
         <div className="pf-caja">
@@ -688,7 +727,7 @@ export function PruebaFlujo() {
           <span className="pf-titulo">{PASOS_PRUEBA[1]}</span>
           <span className="pf-texto" dangerouslySetInnerHTML={{ __html: t(1, 'Revela el Destino y aplícalo.') }} />
           <span className="pf-nota">
-            <Icono id="sinop" /> ¿Nadie comprometido? También Sin oposición
+            <Icono id="sinop" /> ¿Nadie asignado? También su efecto Sin oposición
           </span>
         </div>
         <span className="pf-flecha" />
@@ -719,7 +758,7 @@ export function PruebaFlujo() {
           </span>
         </div>
         <div className="pf-salida pf-no">
-          <span className="pf-rama">No (o nadie comprometido)</span>
+          <span className="pf-rama">No (o nadie asignado)</span>
           <span className="pf-titulo">Fallas la Prueba</span>
           <span className="pf-texto">Aplica el efecto de fallo.</span>
           <span className="pf-avance">
@@ -781,7 +820,7 @@ const PANEL_MISION: GrupoPanel[] = [
   { rotulo: 'Misión', paso: 3, cartas: [{ id: 'prueba-I', insignia: 'Empieza con 1 · pide 3' }] },
   { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', parte: 'mar', insignia: 'NAV 4 · Avance 3 / 2' }] },
   {
-    rotulo: 'Comprometidos',
+    rotulo: 'Asignados',
     paso: 3,
     cartas: [
       { id: 'capitan', insignia: 'NAV 2', agotada: true },
@@ -789,7 +828,7 @@ const PANEL_MISION: GrupoPanel[] = [
       { id: 'timon', insignia: '+2 NAV', tono: 'bien' },
     ],
   },
-  { rotulo: 'Destino', paso: 3, cartas: [{ id: 'p2_arrecife', parte: 'destino', insignia: '+1 a la dificultad', tono: 'mal' }] },
+  { rotulo: 'Destino', paso: 3, cartas: [{ id: 'p2_arrecife', parte: 'destino', insignia: '−1 al total', tono: 'mal' }] },
 ]
 
 function CartaDePanel({ c, ancho }: { c: CartaPanel; ancho: number }) {
@@ -833,8 +872,8 @@ function PanelEjemplo({ grupos, ancho, className = '', children }: { grupos: Gru
   )
 }
 
-/** ¿Empieza este bloque por «**Zarpar —**» (con su nota temática delante, si la lleva)? Desde ahí, el texto va en la página derecha. */
-const empiezaZarpar = (b: Bloque) => b.tipo === 'html' && /^(<aside class="nota-tema">[\s\S]*?<\/aside>\s*)?<p><strong>Zarpar\b/.test(b.html)
+/** ¿Empieza este bloque por «**Fase de Rumbo —**» (con su nota temática delante, si la lleva)? Desde ahí, el texto va en la página derecha. */
+const empiezaZarpar = (b: Bloque) => b.tipo === 'html' && /^(<aside class="nota-tema">[\s\S]*?<\/aside>\s*)?<p><strong>Fase de Rumbo\b/.test(b.html)
 
 export function EjemploDeJuego({ c }: { c: Capitulo }) {
   const corte = c.bloques.findIndex(empiezaZarpar)
@@ -857,10 +896,10 @@ export function EjemploDeJuego({ c }: { c: Capitulo }) {
           <PanelEjemplo grupos={PANEL_MISION} ancho={18.5} className="panel-mision">
             <div className="panel-cuenta">
               <span>
-                <b>Total:</b> Diego 2 + Bucanero 1 + Barco 1 + «Mano firme al timón» 2 = <b>6</b>
+                <b>Total:</b> Diego 2 + Bucanero 1 + Barco 1 + «Mano firme al timón» 2 − Destino 1 = <b>5</b>
               </span>
               <span>
-                <b>Dificultad:</b> 4 + Destino 1 = <b>5</b>
+                <b>Dificultad:</b> <b>4</b>
               </span>
               <span className="panel-resultado">Superada: 1 + 3 + 1 = 5 de Avance, y la misión pedía 3</span>
             </div>
@@ -933,7 +972,7 @@ export function Contraportada({ rapida }: { rapida: Reglamento['rapida'] }) {
       </div>
       <div className="cp-columnas">
         <div className="cp-col">
-          <h3 className="cp-apartado">El turno en 4 pasos</h3>
+          <h3 className="cp-apartado">El turno en 4 fases</h3>
           <ol className="cp-turno">
             {rapida.turno.map((html, i) => {
               const l = lineaRapida(html)

@@ -64,6 +64,8 @@ export const avance = (n: number): Efecto => ({ tipo: 'ganarAvance', n })
 export const pierdesAvance = (n: number): Efecto => ({ tipo: 'perderAvance', n })
 export const dano = (n: number): Efecto => ({ tipo: 'dano', n })
 export const heridas = (n: number): Efecto => ({ tipo: 'heridas', n })
+/** «N heridas repartidas entre los Tripulantes asignados», «un Tripulante asignado sufre N heridas» (fase 10). */
+export const heridasAsignados = (n: number): Efecto => ({ tipo: 'heridas', n, asignados: true })
 export const robar = (n: number): Efecto => ({ tipo: 'robar', n })
 export const descartar = (n: number): Efecto => ({ tipo: 'descartar', n })
 export const municion = (n: number): Efecto => ({ tipo: 'ganarMunicion', n })

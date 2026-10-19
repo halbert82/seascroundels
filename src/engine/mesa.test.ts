@@ -27,7 +27,7 @@ function partidaCompleta(semilla: number): { final: Estado; estados: Estado[] } 
 }
 
 describe('Desglose de la Prueba', () => {
-  it('ejemplo: Niebla espesa con «Corriente traicionera»: Diego 2 · Bucanero 1 · Barco +1 · Mano firme +2 = 6 contra 3 + 2 = 5', () => {
+  it('ejemplo: Niebla espesa con el Destino de «Aguas traicioneras»: Diego 2 · Bucanero 1 · Mano firme +2 · Barco +1 · Destino −2 = 4 contra 3', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['bucanero'], mano: ['timon'], mazoPeligros: ['niebla', 'arrecifes', 'calma'] })
     j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
     const total = desgloseTotal(j.estado)
@@ -36,11 +36,10 @@ describe('Desglose de la Prueba', () => {
       ['Bucanero veterano', 1],
       ['Mano firme al timón', 2],
       ['La Sombra del Alba', 1],
+      ['Destino de «Aguas traicioneras»', -2],
     ])
-    expect(desgloseDificultad(j.estado).map((p) => [p.etiqueta, p.n])).toEqual([
-      ['Niebla espesa', 3],
-      ['Corriente traicionera', 2],
-    ])
+    // Fase 10: el Destino ya no está en la dificultad, sino en el total.
+    expect(desgloseDificultad(j.estado).map((p) => [p.etiqueta, p.n])).toEqual([['Niebla espesa', 3]])
   })
 
   it('en partidas reales, las partes suman siempre el total y la dificultad que usa el motor', { timeout: 120_000 }, () => {

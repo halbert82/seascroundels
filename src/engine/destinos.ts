@@ -8,9 +8,12 @@ import { reglasDe, tieneReglas } from './definiciones.ts'
 
 export interface Destino {
   nombre: string
-  /** Modificador tal y como se imprime: «+1», «−1», «✕». */
+  /** Modificador tal y como se imprime: «+1», «−1», «✕». Se suma al total del jugador: «+1» es bueno, «−1» malo. */
   impreso: string
-  /** Modificador a la dificultad, o «fallo» (✕: fallas la Prueba). */
+  /**
+   * El modificador en sentido de la dificultad (el impreso con el signo cambiado: «−1» impreso es 1 aquí), o «fallo»
+   * (✕: fallas la Prueba). Las reglas de las cartas lo calculan así; la Prueba lo resta del total del jugador.
+   */
   modificador: number | 'fallo'
   /** «Si el encuentro es Militar o Guardia, +2 en su lugar». */
   siClave?: { claves: string[]; n: number }
@@ -32,11 +35,18 @@ function numero(texto: string): number {
   return Number(texto.replace('−', '-').replace('+', ''))
 }
 
+/** Del modificador impreso («+1» suma al total) al de la dificultad (−1). */
+function haciaDificultad(impreso: string): number | 'fallo' {
+  if (impreso === '✕') return 'fallo'
+  const n = -numero(impreso)
+  return n === 0 ? 0 : n
+}
+
 export function interpretarDestino(d: DestinoDatos): Destino {
   const destino: Destino = {
     nombre: d.nombre,
     impreso: d.mod,
-    modificador: d.mod === '✕' ? 'fallo' : numero(d.mod),
+    modificador: haciaDificultad(d.mod),
     sinOposicion: interpretarEfectos(d.textoSinOposicion),
   }
   let texto = d.texto.trim()
@@ -85,7 +95,7 @@ export function destinoDe(id: CartaId): Destino {
     const destino: Destino = {
       nombre: d.nombre,
       impreso: d.mod,
-      modificador: d.mod === '✕' ? 'fallo' : numero(d.mod),
+      modificador: haciaDificultad(d.mod),
       sinOposicion: r?.sinOposicion ?? [],
     }
     if (r?.persigue) destino.persigue = true

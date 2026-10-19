@@ -2,8 +2,8 @@
 // Los Peligros de las pruebas son los antiguos (retirados del mazo), porque sus números son sencillos.
 
 import { describe, expect, it } from 'vitest'
-import { dificultadPrueba } from './prueba.ts'
-import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
+
+import { Jugador, type OpcionesSituacion, dificultadConDestino } from './pruebas/situacion.ts'
 import { plazasOcupadas } from './valores.ts'
 
 const MAZO_CAPITAN = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada', 'estrellas', 'ojo', 'ojo', 'timon', 'timon']
@@ -139,7 +139,7 @@ describe('117 · La casa del gobernador', () => {
     expect(j.zona('cartasMision')).toEqual(['guardia'])
     expect(j.ofreceCapacidad('guardia.palos') && j.ofreceCapacidad('guardia.tejados')).toBe(true)
     j.seguir().comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3) // 3 + 1 (¡La guardia!) − 1 (Ocasión)
+    expect(dificultadConDestino(j.estado)).toBe(3) // 3 + 1 (¡La guardia!) − 1 (Ocasión)
   })
 
   it('cada vez que un Tripulante queda Buscado, 1 de Alarma', () => {
@@ -251,7 +251,7 @@ describe('126 · El Paso de los Vientos', () => {
     j.elegir('viejo_lobo')
     expect(j.avance('flota-I')).toBe(2)
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3) // Chubasco repentino: NAV 2 + 1
+    expect(dificultadConDestino(j.estado)).toBe(3) // Chubasco repentino: NAV 2 + 1
   })
 })
 
@@ -268,7 +268,7 @@ describe('127 · El galeón rezagado', () => {
     k.zarpar('flota-II').comprometer('COM', ['capitan', 'reinaldo'])
     if (k.decision.motivo.clave === 'herir') k.elegir('reinaldo') // «Puñal escondido»
     k.seguir()
-    expect(k.registro.some((r) => r.startsWith('Total 7 contra 5: superas'))).toBe(true)
+    expect(k.registro.some((r) => r.startsWith('Total 6 contra 4: superas'))).toBe(true)
     expect(k.registro.some((r) => r.startsWith('Robas 1:'))).toBe(true)
   })
 })
@@ -287,8 +287,8 @@ describe('128 · La huida con la plata', () => {
     expect(j.registro).toContain('Revelas «La Armada te persigue»: Navío de línea de la Armada (Mar). Te ha alcanzado.')
     j.comprometer('NAV').seguir() // Abordaje sin nadie: te faltan 5 → 3 heridas
     expect(j.copia('capitan').heridas).toBe(3)
-    expect(j.zona('apartados')).toContain('armada')
-    expect(j.registro).toContain('«La Armada te persigue» vuelve a apartarse.')
+    expect(j.zona('mazoHistoria')).toContain('armada')
+    expect(j.registro).toContain('«La Armada te persigue» vuelve al mazo de historia.')
   })
 
   it('cada Prueba de NAV superada por 2 o más quita 1; superada, 5 de reputación y el Mascarón', () => {
@@ -400,7 +400,7 @@ describe('218 · La barra de noche (II-a)', () => {
     j.zarpar('maracaibo-II-a')
     expect(j.valor({ tipo: 'dificultad', base: 4, hab: 'COM', claves: ['Militar'] })).toBe(6)
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(1)
+    expect(dificultadConDestino(j.estado)).toBe(1)
     j.seguir()
     expect(j.zona('misionesSuperadas')).toEqual(['maracaibo-II-a'])
     expect(j.estado.reputacion).toBe(3) // 2 + 1 de la Gesta
@@ -457,7 +457,7 @@ describe('143 · Desembarco nocturno', () => {
     j.zarpar('sanfelipe-I').cubrir('viejo_lobo')
     expect(j.valor({ tipo: 'dificultad', base: 3, hab: 'EXP', claves: [] })).toBe(2)
     j.comprometer('COM', ['capitan', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     if (j.decision.motivo.clave === 'herir') j.elegir('bucanero')
     j.seguir()
     expect(enMisiones(j)).toContain('sanfelipe-II-b')
@@ -582,7 +582,7 @@ describe('152 · Cruzar el istmo', () => {
     expect(sin.valor({ tipo: 'distancia', mision: sin.inst('panama-II') })).toBe(1)
     sin.zarpar('panama-II').cubrir('viejo_lobo')
     sin.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(sin.estado)).toBe(2) // Lluvia torrencial: EXP 1 + 1
+    expect(dificultadConDestino(sin.estado)).toBe(2) // Lluvia torrencial: EXP 1 + 1
     sin.seguir()
     expect(acciones(sin)).not.toContain('retirarse')
   })
@@ -631,7 +631,7 @@ describe('220 · ¡La guardia!', () => {
     j.comprometer('COM', ['isabela']).seguir()
     expect(j.zona('cartasMision')).toEqual(['guardia'])
     j.usar('guardia.palos').comprometer('COM', ['capitan', 'reinaldo'])
-    expect(dificultadPrueba(j.estado)).toBe(5) // 5 + 1 (¡La guardia!) − 1 (Ocasión)
+    expect(dificultadConDestino(j.estado)).toBe(5) // 5 + 1 (¡La guardia!) − 1 (Ocasión)
     j.seguir()
     expect(j.zona('cartasMision')).toEqual([])
     expect(j.registro).toContain('Os quitáis de encima a la guardia: «¡La guardia!» vuelve a apartarse.')

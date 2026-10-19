@@ -2,8 +2,8 @@
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { registrarParaPruebas } from './capacidades/index.ts'
-import { desgloseDificultad, dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
+import { desgloseDificultad, desgloseTotal, dificultadPrueba, totalPrueba } from './prueba.ts'
+import { Jugador, type OpcionesSituacion, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
 import type { Capacidad } from './tipos.ts'
 
@@ -213,28 +213,35 @@ describe('D1b · La rebaja por Rasgo se mantiene aunque ese Tripulante se compro
 })
 
 describe('D2 · Heridas de un fallo', () => {
-  it('D2a · sin comprometidos, cada icono de herida va a un Tripulante: «1 · 1» se puede repartir; «2» va a uno', () => {
+  // Fase 10 (heridas libres; sustituye a D2a y N6): las heridas de un fallo se reparten como quiera el jugador entre
+  // todos sus Tripulantes, preparados o agotados, Capitán incluido, haya asignado a alguien o no.
+  it('heridas libres: sin asignados, «1 · 1» y «2» se reparten como quieras entre todos tus Tripulantes', () => {
     const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
     j.comprometer('EXP').seguir() // Escorbuto fallado: 1 herida · 1 herida
-    j.elegir('capitan').elegir('bucanero')
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2, motivo: { clave: 'heridas', n: 2 } })
+    j.repartir({ capitan: 1, bucanero: 1 })
     expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([1, 1])
     const tigre = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
-    tigre.comprometer('COM').seguir() // Tiburón tigre: 2 heridas a un solo Tripulante
-    expect(tigre.decision).toMatchObject({ tipo: 'elegirCartas', min: 1, max: 1, motivo: { clave: 'herir', n: 2 } })
-    tigre.elegir('capitan')
-    expect(tigre.copia('capitan').heridas).toBe(2)
+    tigre.comprometer('COM').seguir() // Tiburón tigre: 2 heridas, también a dos Tripulantes
+    expect(tigre.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
+    tigre.repartir({ capitan: 1, bucanero: 1 })
+    expect([tigre.copia('capitan').heridas, tigre.copia('bucanero').heridas]).toEqual([1, 1])
+  })
+
+  it('heridas libres: con asignados, las heridas del fallo pueden ir a un Tripulante que no se asignó', () => {
+    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
+    j.comprometer('EXP', ['bucanero']).seguir() // Escorbuto fallado con el Bucanero asignado: 1 herida · 1 herida
+    expect(Object.keys(j.decision.tipo === 'repartir' ? j.decision.maximos : {}).length).toBe(2)
+    j.repartir({ capitan: 2 })
+    expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([2, 0])
   })
 
   it('D2b · con «cada efecto de fallo inflige además 1 herida», fallar la Fiebre amarilla («1 · 1») son 3 heridas en total', () => {
     quitar = registrarParaPruebas(heridaExtraEn('pruebas-nat3'))
     const j = enMision({ misiones: ['pruebas-nat3'], tripulacion: ['viejo_lobo'], mazoPeligros: ['fiebre', 'calma', 'calma'] })
     j.comprometer('EXP').seguir()
-    let heridas = 0
-    while (j.decision.motivo.clave === 'herir') {
-      j.elegir('capitan')
-      heridas++
-    }
-    expect(heridas).toBe(3)
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 3 })
+    j.repartir({ capitan: 3 })
     expect(j.copia('capitan').heridas).toBe(3)
   })
 
@@ -339,7 +346,8 @@ describe('D9 · «Las cartas de tu mano no suman» anula también las añadidas 
   it('la Vigía con «Ojo avizor» contra Espíritus de la selva y «Mal fario»: 3 contra 4, fallas', () => {
     const j = enMision({ misiones: ['aguada-I'], tripulacion: ['vigia'], mano: ['ojo'], mazoPeligros: ['sirenas', 'sirenas', 'calma'] })
     j.comprometer('EXP', ['vigia'], ['ojo']).seguir()
-    expect(j.registro).toContain('Total 3 contra 4: fallas la Prueba.')
+    // Fase 10: «Mal fario» (−1) resta del total: 3 − 1 = 2 contra 3.
+    expect(j.registro).toContain('Total 2 contra 3: fallas la Prueba.')
   })
 })
 
@@ -380,7 +388,7 @@ describe('Decisiones que dependen de cartas concretas', () => {
   it('D1c · el Loro que se une tras el Destino con Diego ya agotado suma su EXP 1, sin el +1', () => {
     const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['loro'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     j.comprometer('EXP', ['capitan']).usar('loro.unirse')
-    expect(totalPrueba(j.estado)).toBe(1 + 1)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(1 + 1)
   })
 
   it('D3 · un Destino «Fallo» en el Mar no se puede mandar al fondo con «Cambio de rumbo» ni da Avance con «¡A toda vela!»', () => {
@@ -431,6 +439,7 @@ describe('Decisiones que dependen de cartas concretas', () => {
     expect(j.copia('viejo_lobo').agotada).toBe(true)
     j.usar('viveres.preparar').seguir() // tras el Claro tranquilo
     j.comprometer('EXP', ['viejo_lobo']).pasar().seguir() // Serpientes con el Destino «Fallo»: 1 herida
+    j.repartir({ viejo_lobo: 1 }) // heridas libres (fase 10): las reparte el jugador entre todos
     expect(j.copia('viejo_lobo').heridas).toBe(1)
   })
 
@@ -454,7 +463,7 @@ describe('N13 · Una herida pagada como coste se puede evitar o desviar', () => 
     const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: ['filibustero', 'grumete'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
     j.comprometer('COM', ['filibustero']).usar('filibustero.furia').usar('grumete.salvar')
     expect(j.copia('filibustero').heridas).toBe(0)
-    expect(totalPrueba(j.estado)).toBe(6)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
   })
 
   it('también se desvía con «Ni un hombre atrás»', () => {
@@ -467,7 +476,7 @@ describe('N13 · Una herida pagada como coste se puede evitar o desviar', () => 
     const j = Jugador.enMision({ misiones: ['prueba-I'], tripulacion: [{ id: 'filibustero', heridas: 1 }, 'isabela'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
     j.comprometer('COM', ['filibustero']).usar('filibustero.furia').usar('isabela.salvar')
     expect(j.copia('filibustero').heridas).toBe(1)
-    expect(totalPrueba(j.estado)).toBe(6)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
   })
 })
 
@@ -485,7 +494,8 @@ describe('N14 · El Loro que se une a una Prueba sin comprometidos anula Sin opo
     expect(j.registro.some((t) => t.startsWith('Pierdes'))).toBe(false)
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba' } })
     j.seguir()
-    expect(j.registro).toContain('Total 1 contra 4: fallas la Prueba.')
+    // Fase 10: «Contratiempo» (−1) resta del total: 1 − 1 = 0 contra 3.
+    expect(j.registro).toContain('Total 0 contra 3: fallas la Prueba.')
     expect(j.zona('mano')).toEqual(['ojo', 'estrellas'])
   })
 })
@@ -501,9 +511,12 @@ describe('N15 · «Perdidos en la espesura» ignora el recuadro rojo y la herida
     quitar = registrarParaPruebas(heridaExtraEn('pruebas-nat3'))
     const sin = montarTemplo([])
     sin.comprometer('EXP', ['capitan']).seguir()
+    expect(sin.decision).toMatchObject({ tipo: 'repartir', cantidad: 4 })
+    sin.repartir({ capitan: 4 })
     expect(sin.copia('capitan').heridas).toBe(4)
     const con = montarTemplo(['espesura', 'ojo'])
     con.comprometer('EXP', ['capitan']).seguir().usar('espesura.jugar').elegir('ojo')
+    con.repartir({ capitan: 1 })
     expect(con.copia('capitan').heridas).toBe(1)
   })
 })
@@ -542,7 +555,7 @@ describe('N18 · Son Cañones las cuatro Mejoras con munición, y solo se usan e
     expect(tierra.ofreceCapacidad('pedrero.disparar')).toBe(false)
     const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     niebla.comprometer('NAV', ['capitan']).usar('culebrina.disparar')
-    expect(totalPrueba(niebla.estado)).toBe(2 + 1)
+    expect(totalSinDestinoPrueba(niebla.estado)).toBe(2 + 1)
   })
 })
 
@@ -571,7 +584,7 @@ describe('Barco hundido: las Mejoras que se pierden activan sus efectos «despu�
   })
 })
 
-describe('P61 · La dificultad suma todos los modificadores, el Destino incluido; solo el resultado final no baja de 0', () => {
+describe('P61 y fase 10 · La dificultad suma sus modificadores y el Destino va al total; los dos, si quedan por debajo de 0, cuentan como 0', () => {
   // «Desembarco nocturno»: las Pruebas de EXP reciben −1. El Guía del istmo: −1 a EXP en Naturaleza.
   // «Manzanillas de la muerte» (El hambre): EXP 3, o 1 con un Explorador (el Rastreador de la selva).
   const manzanillas = (destino: string) =>
@@ -579,31 +592,38 @@ describe('P61 · La dificultad suma todos los modificadores, el Destino incluido
       misiones: ['sanfelipe-I'],
       tripulacion: ['baqueano'],
       pasajeros: ['guia'],
-      mano: ['timon'],
-      cubrir: ['timon'],
+      // Fase 10: la Distancia se cubre agotando al menos a un Tripulante (Diego, NAV 2).
+      cubrir: ['capitan'],
       mazoPeligros: ['p2_hambre', destino, 'calma', 'calma'],
     }).comprometer('EXP', ['baqueano'])
 
-  it('el ejemplo del reglamento: 1 − 1 − 1 + 1 de «Canto lejano» = 0, y con total 0 superas la Prueba', () => {
+  it('el ejemplo del reglamento: la dificultad 1 − 1 − 1 cuenta como 0; con «Canto lejano» (−1) el total 0 − 1 cuenta como 0, y superas', () => {
     const j = manzanillas('p2_sirena')
     expect(dificultadPrueba(j.estado)).toBe(0)
     expect(desgloseDificultad(j.estado).map((p) => [p.etiqueta, p.n])).toEqual([
       ['Manzanillas de la muerte', 1],
       ['Desembarco nocturno', -1],
       ['El guía del istmo', -1],
-      ['Canto lejano', 1],
+      ['No baja de 0', 1],
+    ])
+    // «Canto lejano»: el Tripulante asignado con la habilidad más baja (el Rastreador, solo) no suma.
+    expect(totalPrueba(j.estado)).toBe(0)
+    expect(desgloseTotal(j.estado).map((p) => [p.etiqueta, p.n, p.anulada ?? false])).toEqual([
+      ['Rastreador de la selva', 3, true],
+      ['Destino de «La sirena»', -1, false],
+      ['No baja de 0', 1, false],
     ])
     j.seguir()
     expect(j.registro).toContain('Total 0 contra 0: superas la Prueba.')
   })
 
-  it('si el total final queda por debajo de 0, cuenta como 0, con una sola línea «No baja de 0» al final del desglose', () => {
-    // «Aguja de marear»: −1, o −2 si comprometiste a un Explorador. 1 − 1 − 1 − 2 = −3 → 0.
+  it('el Destino suma al total: «Aguja de marear» (+2 con un Explorador asignado) lleva al Rastreador de 3 a 5', () => {
     const j = manzanillas('p2_sinrumbo')
     expect(dificultadPrueba(j.estado)).toBe(0)
     const partes = desgloseDificultad(j.estado)
-    expect(partes.filter((p) => p.etiqueta === 'No baja de 0')).toEqual([{ etiqueta: 'No baja de 0', n: 3, tipo: 'modificador' }])
+    expect(partes.filter((p) => p.etiqueta === 'No baja de 0')).toEqual([{ etiqueta: 'No baja de 0', n: 1, tipo: 'modificador' }])
     expect(partes.at(-1)?.etiqueta).toBe('No baja de 0')
     expect(partes.reduce((n, p) => n + p.n, 0)).toBe(0)
+    expect(totalPrueba(j.estado)).toBe(5)
   })
 })

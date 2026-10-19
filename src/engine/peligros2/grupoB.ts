@@ -19,7 +19,7 @@ import {
   dano,
   descartar,
   dificultad,
-  heridas,
+  heridasAsignados,
   mas,
   mejorasDeBarco,
   menos,
@@ -259,7 +259,7 @@ registrarPeligro('p2_tiburones', {
     },
     // Los Tripulantes heridos no pueden comprometerse.
     nat: {
-      restriccion: { veto: (s, c) => (copia(s, c).heridas > 0 ? `${nombre(s, c)} está herido: no puede comprometerse` : null) },
+      restriccion: { veto: (s, c) => (copia(s, c).heridas > 0 ? `${nombre(s, c)} está herido: no puede ser asignado` : null) },
       exito: [{ tipo: 'descartarArriba', n: 1 }],
       fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
     },
@@ -375,7 +375,7 @@ registrarEspecial('p2_jaguar.cazar', (s, t, e) => {
       palabrasClave: ['Bestia'],
       opciones: [explorador ? { hab: 'EXP', dificultad: 3 } : { hab: 'COM', dificultad: 5 }],
       exito: [robar(2), { tipo: 'descartarEsta' }],
-      fallo: [heridas(1)],
+      fallo: [heridasAsignados(1)],
       soloCon: cazador,
     },
   })
@@ -385,7 +385,7 @@ registrarCodigo('p2_jaguar.cazar', (_s, fuente): NuevaTarea[] => [{ tipo: 'espec
 registrarPeligro('p2_jaguar', {
   encuentros: {
     // Sin ayuda. Fallo: el Tripulante sufre 2 heridas y queda Asustado.
-    mar: { sinAyuda: true, exito: [robar(3)], fallo: [heridas(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'asustado' })] },
+    mar: { sinAyuda: true, exito: [robar(3)], fallo: [heridasAsignados(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'asustado' })] },
     // Se queda en juego. Obligado: al final de cada encuentro siguiente, el agotado con menos Vida sufre 1 herida.
     // Acción: agota a un preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador).
     nat: {

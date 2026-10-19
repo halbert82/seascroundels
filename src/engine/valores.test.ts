@@ -16,12 +16,12 @@ describe('Valores calculados', () => {
     expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'NAV' })).toBe(1)
   })
 
-  it('las Mejoras de tripulante suman a su portador; agotadas no aplican su texto', () => {
+  it('las Mejoras de tripulante suman a su portador, también agotadas (fase 10)', () => {
     const j = Jugador.en({ tripulacion: [{ id: 'bucanero', mejoras: ['sable'] }, { id: 'marinero_p', mejoras: ['coleto'] }] })
     expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })).toBe(4)
     expect(j.valor({ tipo: 'vida', carta: j.inst('marinero_p') })).toBe(2)
     j.estado.cartas[j.inst('sable')]!.agotada = true
-    expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })).toBe(3)
+    expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })).toBe(4)
   })
 
   it('la Espada del sacerdote da +2 COM a su portador', () => {

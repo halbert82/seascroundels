@@ -102,9 +102,9 @@ export async function jugarDecision(pagina) {
       break
     case 'compromiso':
       if (d.opciones.length > 1) await pagina.locator('.opcion-prueba').nth(e.opcion).click()
-      for (const id of e.tripulantes) await pulsarCarta(pagina, id, 'Comprometer')
+      for (const id of e.tripulantes) await pulsarCarta(pagina, id, 'Asignar')
       for (const id of e.cartas) await pulsarCarta(pagina, id, 'Añadir')
-      await boton(pagina, e.tripulantes.length > 0 ? 'Comprometer' : 'No comprometer a nadie')
+      await boton(pagina, e.tripulantes.length > 0 ? 'Asignar' : 'No asignar a nadie')
       break
   }
   // Esperar a que el motor avance.

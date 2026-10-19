@@ -1,5 +1,7 @@
 # Cartas de jugador nuevas (para probar con los Peligros 2.0)
 
+> **Fase 10 (19 de octubre de 2026):** los textos de este documento son anteriores a la revisión del reglamento («asignar» en lugar de «comprometer», el Destino que suma al total, heridas libres, «Al zarpar», el mazo de historia…). Los textos buenos son los de `data/cartas.json`.
+
 Nueve cartas de la caja básica que responden a las reglas nuevas de Peligro (Estados y Ventajas, cartas que se quedan en juego, rehenes, Persigue). Ninguna respuesta sale gratis: todas piden agotar, pagar cartas, gastar munición o superar una Prueba.
 
 Formato igual que el resto de `cartas.json`. Iconos: [NAV] [COM] [EXP]. Las líneas «Ejemplo» son notas de diseño, no van en la carta.

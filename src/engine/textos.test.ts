@@ -128,8 +128,9 @@ describe('Textos de las cartas que lee el motor', () => {
   it('entiende todos los Destinos y coinciden con las ayudas del prototipo', () => {
     for (const [id, d] of destinos()) {
       const x = interpretarDestino(d)
+      // Fase 10: el impreso se suma al total; el motor lo lleva en sentido de la dificultad (con el signo cambiado).
       if (d.mod === '✕') expect(x.modificador, id).toBe('fallo')
-      else expect(x.modificador, id).toBe(d.modificador)
+      else expect(x.modificador, id).toBe(d.modificador === 0 ? 0 : -(d.modificador as number))
       expect(x.siClave ? { kw: x.siClave.claves, n: x.siClave.n } : undefined, id).toEqual(d.modKw)
       expect(x.siHabilidad ? { hab: x.siHabilidad.hab, n: x.siHabilidad.n } : undefined, id).toEqual(d.modHab)
       expect(x.heridaComprometido, id).toBe(d.sentWound)

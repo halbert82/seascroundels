@@ -110,7 +110,7 @@ registrarMision('flota-III', {
 registrarCodigo('mision.alcance', (s) => {
   const m = s.mision
   if (!m) return []
-  const armada = [...s.zonas.apartados, ...s.zonas.mazoPeligros, ...s.zonas.descartesPeligros, ...s.zonas.mazoMision, ...s.zonas.descartesMision].find(
+  const armada = [...s.zonas.mazoHistoria, ...s.zonas.apartados, ...s.zonas.mazoPeligros, ...s.zonas.descartesPeligros, ...s.zonas.mazoMision, ...s.zonas.descartesMision].find(
     (c) => copia(s, c).id === 'armada',
   )
   m.fichas = { ...m.fichas, persecucion: 1 }

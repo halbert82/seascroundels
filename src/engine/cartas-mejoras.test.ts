@@ -1,8 +1,8 @@
 // Una prueba (al menos) por cada Mejora de barco, Mejora de tripulante y Tesoro.
 
 import { describe, expect, it } from 'vitest'
-import { dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador } from './pruebas/situacion.ts'
+
+import { Jugador, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 
 describe('Mejoras de barco', () => {
   it('021 · Casco reforzado: +1 al daño máximo', () => {
@@ -23,10 +23,10 @@ describe('Mejoras de barco', () => {
   it('024 · Bandera negra: +1 a las Pruebas de COM en el Mar; en tierra, no', () => {
     const mar = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['bandera'] }, mazoPeligros: ['fauna', 'chubasco', 'calma'] })
     mar.comprometer('COM', ['capitan'])
-    expect(totalPrueba(mar.estado)).toBe(3 + 1)
+    expect(totalSinDestinoPrueba(mar.estado)).toBe(3 + 1)
     const tierra = Jugador.enMision({ barco: { mejoras: ['bandera'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     tierra.comprometer('COM', ['capitan'])
-    expect(totalPrueba(tierra.estado)).toBe(3)
+    expect(totalSinDestinoPrueba(tierra.estado)).toBe(3)
   })
 
   it('025 · Chalupa: +1 de Avance al zarpar hacia una misión de Naturaleza o Ciudad', () => {
@@ -63,11 +63,11 @@ describe('Mejoras de barco', () => {
   it('029 · Cañones de bronce: gastas 1 de munición y la Prueba de COM recibe +2; con «Los Cañones no suman», nada', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('bronce.disparar')
-    expect(totalPrueba(j.estado)).toBe(5)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(5)
     expect(j.copia('bronce').municion).toBe(1)
     const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: [{ id: 'bronce', municion: 2 }] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     niebla.comprometer('COM', ['capitan']).usar('bronce.disparar')
-    expect(totalPrueba(niebla.estado)).toBe(3)
+    expect(totalSinDestinoPrueba(niebla.estado)).toBe(3)
   })
 
   it('030 · Carronadas: antes de comprometer, superas una Prueba de COM de dificultad 4 o menos sin revelar Destino', () => {
@@ -82,10 +82,10 @@ describe('Mejoras de barco', () => {
   })
 
   it('031 · Culebrina de proa: gastas 1 de munición y una Prueba de NAV en el Mar recibe +2', () => {
-    // Niebla espesa (NAV 3) con «Refuerzos» (+1): pide 4. Diego 2 + 1 (Barco) = 3; con la Culebrina, 5.
+    // Niebla espesa (NAV 3) con el Destino de «Fauna» (−1). Diego 2 + 1 (Barco) = 3; con la Culebrina, 5; con el Destino, 4.
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'culebrina', municion: 2 }] }, mazoPeligros: ['niebla', 'fauna', 'calma'] })
     j.comprometer('NAV', ['capitan']).usar('culebrina.disparar').seguir()
-    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
+    expect(j.registro).toContain('Total 4 contra 3: superas la Prueba.')
   })
 
   it('032 · Pedrero de borda: gastas 1 de munición y descartas una carta de Peligro con Prueba de COM; solo en el Mar (N18)', () => {
@@ -127,7 +127,7 @@ describe('Mejoras de tripulante', () => {
   it('038 · Escapulario del Carmen: se agota y cancela el Destino de una Prueba en la que participa su portador', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['escapulario'] }, mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('escapulario.cancelar').pasarOfertas().seguir()
-    expect(j.registro).toContain('Cancelas el Destino «Fallo»: no se aplica nada de él.')
+    expect(j.registro).toContain('Cancelas el Destino de la carta «Bestias de leyenda»: no se aplica nada de él.')
     expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
   })
 
@@ -154,7 +154,7 @@ describe('Mejoras de tripulante', () => {
     // Patrulla española (Militar, COM 4): pide 3.
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['patente'] }, mazoPeligros: ['ley', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
   })
 
   it('042 · Coleto de cuero: +1 a la Vida del portador', () => {
@@ -202,7 +202,7 @@ describe('Tesoros', () => {
   it('150 · Farol de los ahogados: descarta un Destino y revela otro, una vez por misión', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['farol'] }, mazoPeligros: ['fauna', 'leyenda', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('farol.destino')
-    expect(j.registro).toContain('Descartas «Fallo». Nuevo Destino: «Sin novedad» (+0).')
+    expect(j.registro).toContain('Descartas el Destino de la carta «Bestias de leyenda». Nuevo Destino, de la carta «Chubasco»: −0.')
     expect(j.ofreceCapacidad('farol.destino')).toBe(false)
   })
 })

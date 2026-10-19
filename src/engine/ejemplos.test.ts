@@ -1,8 +1,8 @@
 // Ejemplos del reglamento (docs/reglamento-v1.0.md) convertidos en pruebas.
 
 import { describe, expect, it } from 'vitest'
-import { totalPrueba } from './prueba.ts'
-import { Jugador } from './pruebas/situacion.ts'
+
+import { Jugador, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 
 const MAZO = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada', 'estrellas', 'timon', 'ojo']
 
@@ -101,7 +101,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, «Turbonada a popa», compromete con «Mano firme al timón», «Coral bajo la quilla», supera con su Gesta, busca los Cañones y roba cuatro', () => {
+  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, busca los Cañones y roba cuatro', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'pruebas-calma'],
@@ -124,12 +124,12 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     // «Mano firme al timón» añade sus 2 iconos de NAV antes del Destino y La Sombra del Alba da +1 a las Pruebas de
     // NAV en el Mar: 6 (N12).
     j.comprometer('NAV', ['capitan', 'bucanero'], ['timon'])
-    expect(totalPrueba(j.estado)).toBe(6)
-    // «Coral bajo la quilla»: +1 (sería +0 con un Vigía comprometido). NAV 4 + 1: la Prueba pide 5 y Albert tiene 6.
-    expect(j.registro).toContain('Destino: «Coral bajo la quilla» (+1).')
-    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 5 } })
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
+    // El Destino de la carta «Arrecife»: −1 (−0 con un Vigía asignado). La Prueba pide 4 y el total queda en 6 − 1 = 5.
+    expect(j.registro).toContain('Destino de la carta «Arrecife»: −1.')
+    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 4 } })
     j.seguir()
-    expect(j.registro).toContain('Total 6 contra 5: superas la Prueba.')
+    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
     // Por superar la Turbonada, 1 de Avance más y la carta va al fondo del mazo; con sus 3, la misión llega a 5 de 3.
     expect(j.registro).toContain('Turbonada: +1 de Avance (2/3).')
     expect(j.registro).toContain('Ganas 3 de Avance (5/3).')
@@ -151,7 +151,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
 })
 
 describe('Ejemplo · Resolver una Prueba (Diego contra el Jaguar)', () => {
-  it('Diego compromete con «¡Al abordaje!» (5); «Zarpazo»: +1 y Diego se lleva la herida; 5 contra 4', () => {
+  it('Diego asignado con «¡Al abordaje!» (5); el Destino de «Bestias» (−1) hiere a Diego; 4 contra 3', () => {
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
       escenario: ['pruebas-calma'],
@@ -163,9 +163,9 @@ describe('Ejemplo · Resolver una Prueba (Diego contra el Jaguar)', () => {
     j.zarpar('aguada-I')
     expect(j.registro).toContain('Revelas «Bestias»: Jaguar (Naturaleza).')
     j.comprometer('COM', ['capitan'], ['abordaje'])
-    expect(j.registro).toContain('Destino: «Zarpazo» (+1).')
+    expect(j.registro).toContain('Destino de la carta «Bestias»: −1.')
     expect(j.copia('capitan').heridas).toBe(1)
     j.seguir()
-    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
+    expect(j.registro).toContain('Total 4 contra 3: superas la Prueba.')
   })
 })

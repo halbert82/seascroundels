@@ -180,7 +180,7 @@ export function sePuedePagarEntero(s: Estado, efectos: readonly Efecto[]): boole
         if (e.n < 0 && s.reputacion < -e.n) return false
         break
       case 'agotarMejora':
-        if (!s.zonas.mejoras.some((m) => mejoraActiva(s, m) && !esIndestructible(copia(s, m).id))) return false
+        if (!s.zonas.mejoras.some((m) => mejoraActiva(s, m) && !copia(s, m).agotada && !esIndestructible(copia(s, m).id))) return false
         break
       case 'porCada': {
         const k = Math.max(e.minimo ?? 0, Math.min(medir(s, e.medida), e.maximo ?? Infinity))
@@ -223,10 +223,13 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
   const tareas: NuevaTarea[] = []
   for (const e of efectos) {
     switch (e.tipo) {
-      case 'heridas':
+      case 'heridas': {
         if (e.soloEnTierra && enMar) break
-        tareas.push({ tipo: 'herirUno', n: e.n, entre: e.capitan ? [s.capitan] : [...s.zonas.tripulacion] })
+        const asignados = e.asignados ? comprometidosEnJuego(s) : []
+        if (asignados.length > 1) tareas.push({ tipo: 'repartirHeridas', n: e.n, entre: asignados })
+        else tareas.push({ tipo: 'herirUno', n: e.n, entre: e.capitan ? [s.capitan] : asignados.length === 1 ? asignados : [...s.zonas.tripulacion] })
         break
+      }
       case 'dano':
         // El Barco solo recibe daño en el Mar; en tierra se aplica la alternativa («/ 1 herida»), si la hay, salvo que la
         // carta diga expresamente que lo daña en tierra (P19).
@@ -479,10 +482,11 @@ export const aplicarEfectos: Manejador<'aplicarEfectos'> = (s, t) => {
 }
 
 /**
- * Recuadro rojo de la Prueba en curso. Con comprometidos en juego, todas las heridas del fallo se reparten
- * libremente entre ellos (N6); sin ellos, cada icono de herida va a un Tripulante (D2a). Las reglas de misión
- * «cada efecto de fallo inflige además 1 herida» suman una vez por recuadro con algo (D2b, D2c), y el Destino
- * «si fallas, sufre además 1 herida», siempre.
+ * Recuadro rojo de la Prueba en curso. Fase 10 (heridas libres): las heridas del fallo se reparten como quiera el
+ * jugador entre todos sus Tripulantes, preparados o agotados, Capitán incluido, haya asignado a alguien o no; solo las
+ * que la carta da «entre los Tripulantes asignados» (o a «un Tripulante asignado») se reparten entre ellos. Las reglas
+ * de misión «cada efecto de fallo inflige además 1 herida» suman una vez por recuadro con algo (D2b, D2c), y el
+ * Destino «si fallas, sufre además 1 herida», siempre.
  */
 export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
   const p = pruebaEnCurso(s)
@@ -492,12 +496,13 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
   }
   // «Perdidos en la espesura»: sin recuadro rojo tampoco hay herida extra de la misión (D2c); la del Destino, sí (N15).
   const def = definicionActual(s)
-  // «1 herida por cada punto que te falte»: son heridas del fallo como las demás (se reparten entre los comprometidos).
+  // «1 herida por cada punto que te falte»: son heridas del fallo como las demás (libres, o entre los asignados si lo dice).
   const efectos = (p.ignorarFallo ? [] : def.fallo).flatMap((e): Efecto[] => {
     if (e.tipo !== 'porCada' || !e.efectos.every((x) => x.tipo === 'heridas' && !x.capitan && !x.soloEnTierra)) return [e]
     const k = Math.max(e.minimo ?? 0, Math.min(medir(s, e.medida), e.maximo ?? Infinity))
     const n = k * e.efectos.reduce((t, x) => t + (x.tipo === 'heridas' ? x.n : 0), 0)
-    return n > 0 ? [{ tipo: 'heridas', n }] : []
+    const asignados = e.efectos.every((x) => x.tipo === 'heridas' && x.asignados)
+    return n > 0 ? [asignados ? { tipo: 'heridas', n, asignados } : { tipo: 'heridas', n }] : []
   })
   if (p.ignorarFallo) anotar(s, 'efecto', 'Ignoras los efectos de fallo del encuentro.')
   const comprometidos = comprometidosEnJuego(s)
@@ -505,11 +510,17 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
   const extras = [extraMision, p.heridaSiFallas].filter((n) => n > 0)
   const enMar = entornoActual(s) === 'mar'
   const tareas: NuevaTarea[] = []
+  // Heridas libres (entre todos) y las que la carta da a los asignados, cada montón en el sitio de su primera herida.
   let monton = 0
   let posicion = -1
+  let deAsignados = 0
+  let posicionAsignados = -1
   for (const e of efectos) {
     const esHerida = e.tipo === 'heridas' && !e.capitan && !(e.soloEnTierra && enMar)
-    if (esHerida && comprometidos.length > 0) {
+    if (esHerida && e.asignados && comprometidos.length > 0) {
+      if (posicionAsignados < 0) posicionAsignados = tareas.length
+      deAsignados += e.n
+    } else if (esHerida) {
       if (posicion < 0) posicion = tareas.length
       monton += e.n
     } else {
@@ -523,16 +534,18 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
     const faltan = Math.max(1, dificultadPrueba(s) - totalPrueba(s))
     const heridas = Math.min(3, faltan)
     anotar(s, 'efecto', `Abordaje: te faltan ${faltan} ${faltan === 1 ? 'punto' : 'puntos'}: ${heridas} ${heridas === 1 ? 'herida' : 'heridas'}${faltan >= 3 ? ' y un rehén' : ''}.`)
-    if (comprometidos.length > 0) monton += heridas
-    else tareas.push({ tipo: 'herirUno', n: heridas, entre: [...s.zonas.tripulacion] })
+    monton += heridas
     rehenAbordaje = faltan >= 3
   }
-  if (comprometidos.length > 0) {
-    monton += extras.reduce((a, b) => a + b, 0)
-    if (monton > 0) tareas.splice(posicion < 0 ? tareas.length : posicion, 0, { tipo: 'repartirHeridas', n: monton, entre: comprometidos })
-  } else {
-    for (const n of extras) tareas.push({ tipo: 'herirUno', n, entre: [...s.zonas.tripulacion] })
-  }
+  monton += extras.reduce((a, b) => a + b, 0)
+  const libres: NuevaTarea | null = monton > 0 ? { tipo: 'repartirHeridas', n: monton, entre: [...s.zonas.tripulacion] } : null
+  const asignadas: NuevaTarea | null = deAsignados > 0 ? { tipo: 'repartirHeridas', n: deAsignados, entre: comprometidos } : null
+  // Se insertan de atrás adelante para que las posiciones no se muevan.
+  const inserciones = [
+    ...(libres ? [{ en: posicion < 0 ? tareas.length : posicion, t: libres }] : []),
+    ...(asignadas ? [{ en: posicionAsignados, t: asignadas }] : []),
+  ].sort((a, b) => b.en - a.en)
+  for (const x of inserciones) tareas.splice(x.en, 0, x.t)
   if (rehenAbordaje) tareas.push({ tipo: 'rehen', entre: comprometidos })
   encolar(s, ...tareas)
   return 'hecha'
@@ -595,9 +608,9 @@ export const agotarTripulantes: Manejador<'agotarTripulantes'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** Agota una Mejora (ni Tesoros ni indestructibles). */
+/** Agota una Mejora preparada (ni Tesoros ni indestructibles). Agotada sigue aplicando su texto (fase 10). */
 export const agotarMejora: Manejador<'agotarMejora'> = (s, _t, e) => {
-  const candidatas = s.zonas.mejoras.filter((m) => mejoraActiva(s, m) && !esIndestructible(copia(s, m).id))
+  const candidatas = s.zonas.mejoras.filter((m) => mejoraActiva(s, m) && !copia(s, m).agotada && !esIndestructible(copia(s, m).id))
   const agotar = (m: InstId) => {
     copia(s, m).agotada = true
     anotar(s, 'efecto', `Se agota «${nombre(s, m)}».`)
@@ -702,9 +715,12 @@ export const cambiarReputacion: Manejador<'cambiarReputacion'> = (s, t) => {
   return 'hecha'
 }
 
-/** Una carta apartada entra en el mazo de Peligros normal (N10), aunque la misión use un mazo mezclado. */
+/**
+ * Una carta del mazo de historia («La Armada te persigue», la carta 95) entra en el mazo de Peligros normal (N10),
+ * aunque la misión use un mazo mezclado. (Las partidas de antes de la fase 10 la tienen en «apartados».)
+ */
 export const entrarEnMazo: Manejador<'entrarEnMazo'> = (s, t) => {
-  const carta = s.zonas.apartados.find((c) => copia(s, c).id === t.carta)
+  const carta = [...s.zonas.mazoHistoria, ...s.zonas.apartados].find((c) => copia(s, c).id === t.carta)
   if (!carta) return 'hecha'
   mover(s, carta, 'mazoPeligros')
   barajar(s, 'mazoPeligros')

@@ -2,8 +2,8 @@
 // encuentros y su Destino.
 
 import { describe, expect, it } from 'vitest'
-import { dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
+
+import { Jugador, type OpcionesSituacion, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
 /** Misiones sin reglas que estorben: Mar (5 de Avance), Naturaleza (3, Distancia 0 con el Barco), Ciudad (4). */
@@ -50,10 +50,10 @@ describe('34 · Hermanos de la Costa', () => {
   it('Destino «Código de la Costa»: −2 si el encuentro es Pirata y comprometiste a un Bucanero; Sin oposición: pierdes 1 munición', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'])
     j.comprometer('COM', ['capitan']) // Pulso en el muelle es Pirata; Diego es Bucanero
-    expect(dificultadPrueba(j.estado)).toBe(0)
+    expect(dificultadConDestino(j.estado)).toBe(0)
     const k = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('COM', ['vigia'])
-    expect(dificultadPrueba(k.estado)).toBe(1)
+    expect(dificultadConDestino(k.estado)).toBe(1)
     const l = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
     l.comprometer('COM', [])
     expect(l.copia('bronce').municion).toBe(1)
@@ -99,10 +99,10 @@ describe('35 · Barril de ron', () => {
   it('Destino «Valor de barril»: −2 si comprometiste a un Borracho; Sin oposición: el preparado con más NAV queda Borracho', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_barril', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['borracho'] }] })
     j.comprometer('COM', ['bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(0)
+    expect(dificultadConDestino(j.estado)).toBe(0)
     const k = en('ciu', ['p2_hermanos', 'p2_barril', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('COM', ['bucanero'])
-    expect(dificultadPrueba(k.estado)).toBe(1)
+    expect(dificultadConDestino(k.estado)).toBe(1)
     const l = en('ciu', ['p2_hermanos', 'p2_barril', 'calma'], { tripulacion: ['bucanero'] })
     l.comprometer('COM', [])
     expect(l.estados('capitan')).toEqual(['borracho']) // Diego NAV 2 contra el Bucanero NAV 1
@@ -114,7 +114,7 @@ describe('36 · Sangre caliente', () => {
     const j = en('mar', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['filibustero', 'isabela', 'bucanero'] })
     expect(ids(j, (j.decision as { tripulantes: string[] }).tripulantes)).toEqual(['capitan', 'bucanero'])
     j.comprometer('COM', ['capitan'])
-    expect(totalPrueba(j.estado)).toBe(4) // Diego COM 3 + 1 por ser Oficial
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego COM 3 + 1 por ser Oficial
   })
 
   it('Mar: si hay empate en el corte, eliges a quién; si fallas, los dos que se pegaban sufren 1 herida cada uno', () => {
@@ -171,7 +171,7 @@ describe('37 · El tahúr', () => {
     const j = en('mar', ['p2_tahur', 'chubasco', 'calma'], { mano: ['ojo', 'coraje'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige' } })
     j.opcion('1').comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.zona('mano')).toEqual([])
     expect(j.estado.danoBarco).toBe(1)
@@ -200,7 +200,7 @@ describe('37 · El tahúr', () => {
     const j = en('ciu', ['p2_tahur', 'chubasco', 'calma'], { mano: ['ojo'] })
     expect(j.decision).toMatchObject({ tipo: 'comprometer', sinAyuda: true })
     j.comprometer('EXP', ['capitan'], ['ojo'])
-    expect(totalPrueba(j.estado)).toBe(4) // EXP 1 + 2 iconos + 1 por la carta
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // EXP 1 + 2 iconos + 1 por la carta
     j.seguir()
     expect(j.zona('mano')).toHaveLength(3)
     const k = en('ciu', ['p2_tahur', 'chubasco', 'calma'])
@@ -212,14 +212,14 @@ describe('37 · El tahúr', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_tahur', 'calma'], { mazoCapitan: ['abordaje', 'ojo', 'timon'] })
     j.comprometer('COM', ['capitan'])
     expect(j.zona('descartesCapitan')).toEqual(['abordaje'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('ciu', ['p2_hermanos', 'p2_tahur', 'calma'], { mazoCapitan: ['ojo', 'timon'] })
     k.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(1)
+    expect(dificultadConDestino(k.estado)).toBe(1)
     const l = en('ciu', ['p2_hermanos', 'p2_tahur', 'calma'], { mazoCapitan: ['timon', 'ojo', 'coraje', 'abordaje'] })
     l.comprometer('COM', [])
     expect(l.zona('descartesCapitan')).toEqual(['coraje', 'ojo', 'timon'])
-    expect(dificultadPrueba(l.estado)).toBe(2) // «Mano firme al timón» solo tiene NAV: +0
+    expect(dificultadConDestino(l.estado)).toBe(2) // «Mano firme al timón» solo tiene NAV: +0
   })
 })
 
@@ -269,7 +269,7 @@ describe('38 · Paga atrasada', () => {
     // Sin cartas para pagar, solo queda plantarse.
     const k = en('ciu', ['p2_paga', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(5) // 3 + Diego y el Bucanero
+    expect(dificultadConDestino(k.estado)).toBe(5) // 3 + Diego y el Bucanero
     k.seguir()
     expect(k.copia('capitan').heridas).toBe(1)
   })
@@ -277,7 +277,7 @@ describe('38 · Paga atrasada', () => {
   it('Destino «Demasiadas voces»: +2 con 3 o más comprometidos; Sin oposición: −1 Mando en tu próximo turno', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     j.comprometer('COM', ['capitan', 'bucanero', 'vigia'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'])
     k.comprometer('COM', [])
     expect(k.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'menosMando', desdeTurno: k.estado.turno + 1 }))
@@ -290,11 +290,11 @@ describe('39 · A sueldo', () => {
     j.opcion('0')
     expect(j.copia('bronce').municion).toBe(0)
     j.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     // Sin munición, solo queda la otra opción: se aplica sola.
     const k = en('mar', ['p2_sueldo', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
     k.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(5)
+    expect(dificultadConDestino(k.estado)).toBe(5)
     k.seguir()
     expect(k.estado.danoBarco).toBe(1)
     expect(k.copia('bronce').municion).toBe(0)
@@ -331,7 +331,7 @@ describe('39 · A sueldo', () => {
   it('Destino «Lealtad comprada»: con dos o más comprometidos, el de menor coste no suma; Sin oposición: descartas 2', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_sueldo', 'calma'], { tripulacion: ['bucanero', 'isabela'] })
     j.comprometer('COM', ['bucanero', 'isabela'])
-    expect(totalPrueba(j.estado)).toBe(4) // solo Isabela: COM 3 + 1 de Diego
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // solo Isabela: COM 3 + 1 de Diego
     const k = en('ciu', ['p2_hermanos', 'p2_sueldo', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     k.comprometer('COM', []).elegir('ojo', 'timon')
     expect(k.zona('mano')).toEqual(['coraje'])
@@ -342,7 +342,7 @@ describe('40 · La sombra de Bastián', () => {
   it('Mar: +1 si el Barco tiene 2 o más daños; si superas por 2 o más, la carta se retira del juego', () => {
     const j = en('mar', ['p2_bastian', 'chubasco', 'calma'], { barco: { dano: 2 }, tripulacion: ['viejo_lobo'], mano: ['timon'] })
     j.comprometer('NAV', ['viejo_lobo'], ['timon'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     j.pasarOfertas().seguir() // 3 + 1 de Diego + 1 del Barco + 2 = 7 contra 5
     expect(j.zona('fueraDeJuego')).toContain('p2_bastian')
   })
@@ -376,13 +376,13 @@ describe('41 · Los holandeses de Curazao', () => {
     j.opcion('1')
     expect(j.copia('bronce').municion).toBe(1)
     j.comprometer('COM', ['canonero'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('mar', ['p2_curazao', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
     k.opcion('1').comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     const l = en('mar', ['p2_curazao', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
     l.opcion('0').comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(l.estado)).toBe(5)
+    expect(dificultadConDestino(l.estado)).toBe(5)
   })
 
   it('Mar: Abordaje: si fallas, 1 herida por cada punto que falte', () => {
@@ -425,10 +425,10 @@ describe('42 · Viejas cuentas', () => {
   it('Mar: Sin ayuda; si mandas a otro en lugar del Capitán, +1; si ganas, +2 munición y tu duelista queda Inspirado', () => {
     const j = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     const k = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { mano: ['abordaje'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
     k.comprometer('COM', ['capitan'], ['abordaje'])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     k.seguir()
     expect(k.copia('bronce').municion).toBe(2)
     expect(k.estados('capitan')).toEqual(['inspirado'])
@@ -444,7 +444,7 @@ describe('42 · Viejas cuentas', () => {
   it('Naturaleza: −2 si comprometes al Capitán; si fallas, 2 heridas al comprometido con más EXP', () => {
     const j = en('nat', ['p2_cuentas', 'chubasco', 'calma'])
     j.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(2)
     const k = en('nat', ['p2_cuentas', 'chubasco', 'calma'])
     k.comprometer('EXP', ['capitan']).seguir() // EXP 1 contra 4 − 2
     expect(k.copia('capitan').heridas).toBe(2)
@@ -463,7 +463,7 @@ describe('42 · Viejas cuentas', () => {
   it('Destino «El que te conoce»: +2 si el Capitán está comprometido; Sin oposición: el Capitán sufre 1 herida', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_cuentas', 'calma'])
     j.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('ciu', ['p2_hermanos', 'p2_cuentas', 'calma'])
     k.comprometer('COM', [])
     expect(k.copia('capitan').heridas).toBe(1)
@@ -475,7 +475,7 @@ describe('43 · Motín', () => {
     const j = en('mar', ['p2_motin', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'isabela', 'marinero_p'] })
     expect(ids(j, (j.decision as { tripulantes: string[] }).tripulantes)).toEqual(['capitan', 'isabela'])
     j.comprometer('COM', ['capitan', 'isabela'])
-    expect(dificultadPrueba(j.estado)).toBe(7)
+    expect(dificultadConDestino(j.estado)).toBe(7)
   })
 
   it('Mar: si fallas, te retiras de la misión y el Capitán sufre 1 herida', () => {
@@ -514,10 +514,10 @@ describe('43 · Motín', () => {
   it('Destino «Puñal en la espalda»: +4 si no has comprometido a ningún Oficial; Sin oposición: 2 heridas repartidas', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_motin', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(6)
+    expect(dificultadConDestino(j.estado)).toBe(6)
     const k = en('ciu', ['p2_hermanos', 'p2_motin', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     const l = en('ciu', ['p2_hermanos', 'p2_motin', 'calma'], { tripulacion: ['bucanero'] })
     l.comprometer('COM', [])
     expect(l.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })

@@ -51,16 +51,23 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
   // 3. Puerto.
   s.puerto = m.puertoInicial
 
-  // 4. Mazo de Peligros, con las cartas que solo entran si una carta lo indica, aparte.
+  // 4. Mazo de Peligros: todas las cartas de Peligro. Las que solo entran si una carta lo indica («La Armada te
+  //    persigue») están en el mazo de historia (fase 10), y se buscan por su número.
   for (const id of [...m.mazoDePeligros, ...(peligrosExtra ?? [])]) crearCopia(s, id, 'mazoPeligros')
   barajar(s, 'mazoPeligros')
-  for (const id of m.apartadosDePeligros) crearCopia(s, id, 'apartados')
+  for (const id of m.apartadosDePeligros) crearCopia(s, id, 'mazoHistoria')
 
   // 5. Misiones: las tres iniciales disponibles; capítulos I y aventuras en el mazo de Misiones;
   //    capítulos II y III, Tesoros, mazos propios, Pasajeros y cartas de misión en el mazo de historia.
   for (const id of DATOS.ordenMisiones.iniciales) crearCopia(s, `${id}-I`, 'misionesDisponibles')
   for (const id of [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras]) crearCopia(s, `${id}-I`, 'mazoMisiones')
   barajar(s, 'mazoMisiones')
+  // Tantas misiones disponibles como indique la carta de puerto (fase 10): si pide más de tres, se reponen del mazo.
+  const disponibles = DATOS.puertos.find((p) => p.id === s.puerto)?.misiones ?? 3
+  while (s.zonas.misionesDisponibles.length < disponibles && s.zonas.mazoMisiones.length > 0) {
+    const siguiente = s.zonas.mazoMisiones[0]
+    if (siguiente) mover(s, siguiente, 'misionesDisponibles', 'abajo')
+  }
   for (const e of CATALOGO) {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') crearCopia(s, e.id, 'mazoHistoria')
     if (e.tipo === 'tesoro') crearCopia(s, e.id, 'mazoHistoria')

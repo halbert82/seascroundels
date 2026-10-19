@@ -1,5 +1,7 @@
 # Escenario 2.0 (14 cartas, para probar jugando)
 
+> **Fase 10 (19 de octubre de 2026):** los textos de este documento son anteriores a la revisión del reglamento («asignar» en lugar de «comprometer», el Destino que suma al total, heridas libres, «Al zarpar», el mazo de historia…). Los textos buenos son los de `data/cartas.json`.
+
 Sustituye a las 14 cartas de Escenario actuales. El mazo sigue teniendo 14 cartas y cada modo usa las que usaba (partida normal: 11).
 
 Criterios:

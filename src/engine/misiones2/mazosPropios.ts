@@ -14,6 +14,7 @@ import {
   dificultad,
   encuentroEs,
   heridas,
+  heridasAsignados,
   mas,
   menos,
   municion,
@@ -41,7 +42,7 @@ registrarCodigo('esqueleto.levantarse', (s, fuente) => {
   return []
 })
 registrarPeligro('esqueleto', {
-  encuentros: { unico: { exito: [{ tipo: 'seRetira' }], fallo: [heridas(2)] } },
+  encuentros: { unico: { exito: [{ tipo: 'seRetira' }], fallo: [heridasAsignados(2)] } },
   destino: { siFallas: [codigo('esqueleto.levantarse')], sinOposicion: [heridas(1)] },
 })
 
@@ -50,7 +51,8 @@ registrarPeligro('dardos', {
   encuentros: { unico: { exito: [municion(1)], fallo: [comprometidoCon(menos('EXP'), { tipo: 'estado', estado: 'envenenado' })] } },
   destino: {
     efectos: [comprometidoCon(menos('prueba'), { tipo: 'heridas', n: 1 })],
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados' }, hacer: { tipo: 'heridas', n: 1 } }],
+    // Sin oposición: inflige 1 herida a un Tripulante (fase 10: ya no tiene que estar preparado).
+    sinOposicion: [heridas(1)],
   },
 })
 

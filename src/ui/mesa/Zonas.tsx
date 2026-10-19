@@ -56,7 +56,9 @@ function Rotulo({ children, extra }: { children: ReactNode; extra?: ReactNode })
 // ---------------------------------------------------------------------------
 // Barra superior
 
-const PASOS = ['Inicio', 'Jugar cartas', 'Quedarte o zarpar', 'Final'] as const
+// Las cuatro fases del turno (fase 10: «Reclutamiento» era «Jugar cartas» y «Rumbo», «Quedarte o zarpar»).
+const PASOS = ['Fase de Inicio', 'Fase de Reclutamiento', 'Fase de Rumbo', 'Fase de Final de turno'] as const
+const CORTO = ['Inicio', 'Reclutamiento', 'Rumbo', 'Final de turno']
 
 function pasoActual(s: Estado): number {
   switch (s.paso) {
@@ -88,9 +90,10 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
         <span className="turno">Turno {s.turno}</span>
         <ol className="pasos">
           {PASOS.map((p, i) => (
-            <li key={p} className={i === paso ? 'actual' : i < paso ? 'hecho' : ''}>
+            // La fase en curso, con su nombre completo; las demás, con el corto, para que quepa el nombre de la misión.
+            <li key={p} className={i === paso ? 'actual' : i < paso ? 'hecho' : ''} title={p}>
               <span className="paso-num">{i + 1}</span>
-              {p}
+              {i === paso ? p : CORTO[i]}
             </li>
           ))}
         </ol>
@@ -194,7 +197,7 @@ function Chip({ inst }: { inst: InstId }) {
 }
 
 /**
- * Fichas de Estado (en rojo) y de Ventaja (en verde), y lo que dura «no se prepara», «no puede comprometerse». Al pasar
+ * Fichas de Estado (en rojo) y de Ventaja (en verde), y lo que dura «no se prepara», «no puede ser asignado». Al pasar
  * el ratón o al pulsarlas, explican qué hacen y cómo se quitan.
  */
 export function FichasEstado({ estados, extra = [] }: { estados: readonly (FichaTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: Ayuda }[] }) {
@@ -215,7 +218,7 @@ export function FichasEstado({ estados, extra = [] }: { estados: readonly (Ficha
   )
 }
 
-/** «No se prepara» y «no puede comprometerse» de un Tripulante, por las cartas de Peligro. */
+/** «No se prepara» y «no puede ser asignado» de un Tripulante, por las cartas de Peligro. */
 function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: Ayuda }[] {
   const lista: { texto: string; ayuda: Ayuda }[] = []
   for (const t of s.temporales) {
@@ -225,7 +228,7 @@ function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: Ayuda }
     const ayuda = ayudaLimitacion(t.clave, t.hasta, fuente, carta)
     // Dos iguales (dos cartas que impiden prepararse) se enseñan una vez: basta con una para que no se prepare.
     if (lista.some((x) => x.ayuda.clave === ayuda.clave)) continue
-    lista.push({ texto: t.clave === 'noPrepara' ? 'No se prepara' : 'No compromete', ayuda })
+    lista.push({ texto: t.clave === 'noPrepara' ? 'No se prepara' : 'No puede ser asignado', ayuda })
   }
   return lista
 }
@@ -363,7 +366,7 @@ function ayudaMuelleOcupado(paga: number): Ayuda {
     ...base,
     partes: [
       ...base.partes.slice(0, 1),
-      { rotulo: 'Cómo se quita', texto: `En el paso de Jugar cartas puedes pagar ${paga} ${paga === 1 ? 'carta' : 'cartas'} para descartarla. Va a la pila de descartes de Peligros.` },
+      { rotulo: 'Cómo se quita', texto: `En la Fase de Reclutamiento puedes pagar ${paga} ${paga === 1 ? 'carta' : 'cartas'} para descartarla. Va a la pila de descartes de Peligros.` },
     ],
   }
 }
@@ -380,7 +383,7 @@ export function ZonaPuerto() {
   return (
     <section className="zona zona-puerto">
       <div className="bloque">
-        <Rotulo extra={<span className="dato">Se repone al terminar Jugar cartas</span>}>Muelle</Rotulo>
+        <Rotulo extra={<span className="dato">Se repone al terminar la Fase de Reclutamiento</span>}>Muelle</Rotulo>
         <div className="fila-cartas muelle">
           {s.zonas.muelle.map((c) =>
             s.peligrosEnMuelle?.[c] !== undefined ? (

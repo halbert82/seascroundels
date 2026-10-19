@@ -22,7 +22,7 @@ import {
   encuentroEs,
   enElMar,
   habilidadDe,
-  heridas,
+  heridasAsignados,
   mas,
   municion,
   municionTotal,
@@ -336,7 +336,7 @@ registrarPeligro('p2_morro', {
       },
     },
     // COM 6 (4 con un Artillero). Fallo: 3 heridas repartidas entre los comprometidos.
-    nat: { exito: [municion(2)], fallo: [heridas(3)] },
+    nat: { exito: [municion(2)], fallo: [heridasAsignados(3)] },
     ciu: {
       exito: [{ tipo: 'rescatarRehenes', siNo: [avance(1)] }],
       fallo: [
@@ -416,7 +416,7 @@ registrarPeligro('p2_armada', {
       capacidades: [dificultad('velas', (ctx) => (tieneEstadoBarco(ctx.s, 'velasRotas') ? 2 : 0))],
       exito: [{ tipo: 'quitarEstadoBarco', estado: 'perseguido' }],
     },
-    nat: { exito: [preparar('comprometidos')], fallo: [heridas(2), pierdesAvance(1)] },
+    nat: { exito: [preparar('comprometidos')], fallo: [heridasAsignados(2), pierdesAvance(1)] },
     ciu: { fallo: [{ tipo: 'descartarAzar', n: 3 }] },
   },
   // +1. Persigue. Sin oposición: pierdes 1 Avance.

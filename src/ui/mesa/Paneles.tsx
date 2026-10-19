@@ -166,27 +166,27 @@ export function Ayuda({ alCerrar }: { alCerrar: () => void }) {
           <h3>Secuencia del turno</h3>
           <ol>
             <li>
-              <b>Inicio:</b> revela una carta de Escenario y aplícala · prepara tus cartas · recarga la munición · efectos de «al empezar el turno».
+              <b>Fase de Inicio:</b> revela una carta de Escenario y aplícala · prepara tus cartas · recarga la munición · efectos de «al empezar el turno».
             </li>
             <li>
-              <b>Jugar cartas:</b> recluta, adquiere Mejoras, juega Eventos y despide, en cualquier orden · al terminar, descarta y repón el muelle.
+              <b>Fase de Reclutamiento:</b> recluta, adquiere Mejoras, juega Eventos y despide, en cualquier orden · al terminar, descarta y repón el muelle.
             </li>
             <li>
-              <b>Quedarte o zarpar:</b> dos opciones distintas del puerto, o una misión disponible.
+              <b>Fase de Rumbo:</b> quédate en puerto (dos opciones distintas del puerto) o zarpa a una misión disponible.
             </li>
             <li>
-              <b>Final:</b> descarta las cartas que quieras · roba hasta tu Mando (si el mazo del capitán se acaba, pierdes un día) · efectos de «al final de cada turno».
+              <b>Fase de Final de turno:</b> descarta las cartas que quieras · roba hasta tu Mando (si el mazo del capitán se acaba, pierdes un día) · efectos de «al final de cada turno».
             </li>
           </ol>
         </section>
         <section>
           <h3>Resolver una Prueba</h3>
           <ol>
-            <li>Compromete a tu tripulación (o a nadie) y añade cartas de tu mano: es tu única ocasión.</li>
-            <li>Revela el Destino y aplícalo; si no comprometiste a nadie, también Sin oposición.</li>
-            <li>Ventana de acción: capacidades de tus cartas en juego y Eventos con su momento.</li>
-            <li>Resuelve la Prueba.</li>
-            <li>Gana el Avance del encuentro.</li>
+            <li>Asigna Tripulantes (o a nadie: fallas) y añade cartas de tu mano: es tu única ocasión para hacerlo.</li>
+            <li>Revela el Destino: su modificador se suma a tu total; si no has asignado a nadie, aplica también Sin oposición.</li>
+            <li>Ventana de acción: capacidades de tus cartas en juego y Eventos con su propio momento.</li>
+            <li>Resuelve la Prueba: la superas si tu total es igual o mayor que la dificultad.</li>
+            <li>Gana el Avance: X si la superas, Y si no («Avance X / Y»).</li>
           </ol>
         </section>
       </div>

@@ -1,5 +1,7 @@
 # Misiones 2.0 (para probar jugando)
 
+> **Fase 10 (19 de octubre de 2026):** los textos de este documento son anteriores a la revisión del reglamento («asignar» en lugar de «comprometer», el Destino que suma al total, heridas libres, «Al zarpar», el mazo de historia…). Los textos buenos son los de `data/cartas.json`.
+
 Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen los nombres de las misiones, sus textos de introducción y sus Tesoros. Los dos mazos propios (Templo y Escolta) se rehacen con el formato de los Peligros 2.0.
 
 ## Cómo leer este documento

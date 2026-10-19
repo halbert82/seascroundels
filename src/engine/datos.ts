@@ -294,6 +294,8 @@ export interface PuertoDatos {
   num: number
   nombre: string
   muelle: number
+  /** Cuántas misiones disponibles hay (fase 10: lo dice la carta de puerto, junto al muelle). */
+  misiones: number
   habilidadPropia: { nombre: string; texto: string }
   opcionesComunes: string[]
   ambientacion: string

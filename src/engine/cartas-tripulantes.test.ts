@@ -3,8 +3,8 @@
 import { describe, expect, it } from 'vitest'
 import { capacidadesDe } from './capacidades/index.ts'
 import { DATOS } from './datos.ts'
-import { totalPrueba } from './prueba.ts'
-import { Jugador } from './pruebas/situacion.ts'
+
+import { Jugador, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 
 describe('Cartas sin texto', () => {
   it('Rufián de cubierta y Bucanero veterano solo aportan sus números', () => {
@@ -36,6 +36,7 @@ describe('005 · Grumete leal', () => {
     // Tiburones (COM 2, fallo: 1 herida) con el Destino «Fallo»: Diego falla y va a sufrir 1 herida.
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['grumete'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['capitan']).seguir()
+    j.repartir({ capitan: 1 }) // heridas libres (fase 10): el jugador elige a quién
     expect(j.ofreceCapacidad('grumete.salvar')).toBe(true)
     j.usar('grumete.salvar')
     expect(j.copia('capitan').heridas).toBe(0)
@@ -76,23 +77,23 @@ describe('008 · Contrabandista del bajo Caribe', () => {
 
 describe('009 · Filibustero borracho', () => {
   it('en la ventana de la Prueba: sufre 1 herida y tiene +2 COM; una vez por turno', () => {
-    // Piratas rivales (COM 4) con «Refuerzos» (+1): pide 5. Filibustero 3 + 1 (Diego) = 4; con la furia, 6.
+    // Piratas rivales (COM 4) con el Destino de «Fauna» (−1). Filibustero 3 + 1 (Diego) = 4; con la furia, 6; con el Destino, 5.
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['filibustero'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
     j.comprometer('COM', ['filibustero'])
-    expect(totalPrueba(j.estado)).toBe(4)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4)
     j.usar('filibustero.furia')
     expect(j.copia('filibustero').heridas).toBe(1)
-    expect(totalPrueba(j.estado)).toBe(6)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
     expect(j.ofreceCapacidad('filibustero.furia')).toBe(false)
     j.seguir()
-    expect(j.registro).toContain('Total 6 contra 5: superas la Prueba.')
+    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
   })
 
   it('también antes de comprometer, en la pausa tras revelar el encuentro', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['filibustero'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     expect(j.ofreceCapacidad('filibustero.furia')).toBe(true)
     j.usar('filibustero.furia').comprometer('COM', ['filibustero'])
-    expect(totalPrueba(j.estado)).toBe(6)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
   })
 })
 
@@ -146,7 +147,7 @@ describe('013 · Rodrigo «Carnicero» Ortega', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['reinaldo'], mazoPeligros: ['fauna', 'chubasco', 'fauna', 'chubasco', 'calma'] })
     j.comprometer('COM', ['reinaldo']).seguir()
     expect(j.copia('reinaldo').agotada).toBe(false)
-    expect(j.registro).toContain('Rodrigo «Carnicero» Ortega se compromete sin agotarse.')
+    expect(j.registro).toContain('Rodrigo «Carnicero» Ortega es asignado sin agotarse.')
     j.seguir() // trasEncuentro: siguiente carta
     j.comprometer('COM', ['reinaldo']).seguir()
     expect(j.copia('reinaldo').agotada).toBe(true)
@@ -178,10 +179,10 @@ describe('016 · Espadachín errante', () => {
     // Tiburón tigre (COM 3), Destino «Sin novedad».
     const solo = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     solo.comprometer('COM', ['espadachin'])
-    expect(totalPrueba(solo.estado)).toBe(3 + 1 + 2)
+    expect(totalSinDestinoPrueba(solo.estado)).toBe(3 + 1 + 2)
     const juntos = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     juntos.comprometer('COM', ['espadachin', 'bucanero'])
-    expect(totalPrueba(juntos.estado)).toBe(3 + 1 + (2 + 1))
+    expect(totalSinDestinoPrueba(juntos.estado)).toBe(3 + 1 + (2 + 1))
   })
 })
 
@@ -201,7 +202,7 @@ describe('018 · Viejo lobo de mar', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'leyenda', 'chubasco', 'calma'] })
     j.comprometer('NAV', ['viejo_lobo'])
     j.usar('viejo_lobo.destino')
-    expect(j.registro).toContain('Descartas «Fallo». Nuevo Destino: «Sin novedad» (+0).')
+    expect(j.registro).toContain('Descartas el Destino de la carta «Bestias de leyenda». Nuevo Destino, de la carta «Chubasco»: −0.')
     expect(j.ofreceCapacidad('viejo_lobo.destino')).toBe(false)
     j.seguir()
     expect(j.registro.some((t) => t.includes('superas la Prueba'))).toBe(true)
@@ -225,6 +226,6 @@ describe('020 · Loro parlanchín', () => {
     expect(j.estado.prueba?.comprometidos).toContain(j.inst('loro'))
     expect(j.copia('loro').agotada).toBe(true)
     // Bucanero EXP 0 + 1 (Diego preparado) y el Loro EXP 1 + 1.
-    expect(totalPrueba(j.estado)).toBe(3)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(3)
   })
 })

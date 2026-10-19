@@ -58,7 +58,7 @@ describe('vista de las cartas', () => {
       { texto: '1', icono: 'dano' },
       { texto: '1', icono: 'mejora', rota: true },
     ])
-    expect(v.destino.mod).toBe('+0')
+    expect(v.destino.mod).toBe('−0') // fase 10: el signo del Destino se invierte
 
     const fiebres = vistaDeCarta(carta(87)) as VistaPeligro
     expect(fiebres.encuentros[0]?.opciones[0]?.alternativa).toEqual({ texto: '1 con', rasgo: 'Cirujano' })
@@ -75,7 +75,7 @@ describe('vista de las cartas', () => {
     const selva = vistaDeCarta(carta(119)) as VistaCapitulo
     expect([selva.sello, selva.de, selva.travesia]).toEqual(['II', 'III', 'El templo perdido'])
     expect(selva.distancia).toBe(2)
-    expect(selva.siguiente).toBe('Añade la carta 120 a Misiones')
+    expect(selva.siguiente).toBe('Añade la carta 120 al mazo de Misiones')
     expect(selva.pie).toBe('Mazo de historia')
 
     const deuda = vistaDeCarta(carta(113)) as VistaCapitulo

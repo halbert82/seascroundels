@@ -168,6 +168,8 @@ export function validarEleccion(s: Estado, d: Decision, e: Eleccion): void {
       const tripulantes = e.ids.filter((i) => d.tripulantes.includes(i))
       const cartas = e.ids.filter((i) => d.cartas.includes(i))
       if (tripulantes.length + cartas.length !== e.ids.length) invalida('alguna carta no sirve para cubrir la Distancia')
+      // Fase 10: hay que agotar siempre al menos un Tripulante; las cartas con NAV solo completan.
+      if (tripulantes.length === 0) invalida('hay que agotar al menos a un Tripulante preparado')
       const nav = navParaDistancia(s, tripulantes) + cartas.reduce((n, c) => n + iconosDe(copia(s, c).id, 'NAV'), 0)
       if (nav < d.distancia) invalida(`con eso sumas ${nav} y la Distancia es ${d.distancia}`)
       return
@@ -181,7 +183,7 @@ export function validarEleccion(s: Estado, d: Decision, e: Eleccion): void {
       if (e.cartas.some((c) => !d.cartas.includes(c) || iconosDe(copia(s, c).id, opcion.hab) === 0)) {
         invalida(`alguna carta no tiene iconos de ${opcion.hab}`)
       }
-      if (e.tripulantes.length === 0 && e.cartas.length > 0) invalida('sin comprometer a nadie no puedes añadir cartas')
+      if (e.tripulantes.length === 0 && e.cartas.length > 0) invalida('sin asignar a nadie no puedes añadir cartas')
       const problema = problemaCompromiso(s, definicionActual(s), opcion.hab, e.tripulantes, e.cartas)
       if (problema) invalida(problema)
       return

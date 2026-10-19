@@ -115,7 +115,7 @@ describe('Glosario de la mesa', () => {
     const a = ayudaLimitacion('noPrepara', 'carta', 'La paga', 'La paga')
     expect(a.partes[0]?.texto).toContain('«La paga»')
     expect(a.partes[1]?.texto).toBe('Cuando «La paga» deje de estar en juego.')
-    expect(ayudaLimitacion('noPrepara', 'inicio', null, null).partes[1]?.texto).toBe('Después de tu próximo Inicio (en ese Inicio no se prepara).')
+    expect(ayudaLimitacion('noPrepara', 'inicio', null, null).partes[1]?.texto).toBe('Después de tu próxima Fase de Inicio (en esa fase no se prepara).')
   })
 
   it('la Referencia rápida lo recoge todo, sin repetir', () => {
@@ -134,9 +134,9 @@ describe('Lo que se explica junto a una carta ampliada', () => {
 
   it('«La Armada te persigue» (Navío de línea): Abordaje, Perseguido, rehén…', () => {
     const n = nombres('armada')
-    for (const x of ['Abordaje', 'Perseguido', 'Rehén', 'El comprometido con más (o menos)', 'Sin oposición']) expect(n).toContain(x)
+    for (const x of ['Abordaje', 'Perseguido', 'Rehén', 'El Tripulante asignado con más (o menos)', 'Sin oposición']) expect(n).toContain(x)
     // Las expresiones de casi todas las cartas de Peligro van al final.
-    expect(n.slice(-2)).toEqual(['El comprometido con más (o menos)', 'Sin oposición'])
+    expect(n.slice(-2)).toEqual(['El Tripulante asignado con más (o menos)', 'Sin oposición'])
   })
 
   it('las palabras de los Peligros 2.0: Se queda en juego, Elige, Sin ayuda, Incautado, Persigue, Ocupa el muelle', () => {

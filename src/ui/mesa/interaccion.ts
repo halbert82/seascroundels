@@ -208,7 +208,7 @@ export function interaccion(s: Estado, d: Decision, sel: Seleccion): Interaccion
       const hab = habilidadElegida(d, sel)
       for (const c of d.tripulantes) {
         elegir(c)
-        anadir(opciones, c, { etiqueta: sel.cartas.includes(c) ? 'No comprometerlo' : 'Comprometer', seleccion: alternar(sel, c) })
+        anadir(opciones, c, { etiqueta: sel.cartas.includes(c) ? 'No asignarlo' : 'Asignar', seleccion: alternar(sel, c) })
       }
       for (const c of d.cartas) {
         if (!hab || iconosDe(copia(s, c).id, hab) === 0) continue

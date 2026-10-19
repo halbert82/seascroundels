@@ -1,19 +1,18 @@
 // Peligros 2.0 · Grupo C (La ley, cartas 23–33): al menos una prueba por carta, con sus encuentros y su Destino.
 
 import { describe, expect, it } from 'vitest'
-import { dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
+
+import { Jugador, type OpcionesSituacion, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
 /**
  * Misiones sin reglas que estorben a estas cartas: Mar «Fantasma I» (5 de Avance; sus Cañones no suman, y aquí no se
- * usan), Naturaleza «Maracaibo III» (4 de Avance; su Distancia 1 se cubre con «Mano firme al timón») y Ciudad
- * «El ladrón del puerto» (4). Maracaibo II sube los encuentros Militares y La aguada se supera con 3 de Avance.
+ * usan), Naturaleza de prueba de 4 de Avance en la isla (antes «Maracaibo III», cuya Distancia se cubría con «Mano
+ * firme al timón»; desde la fase 10 hay que agotar a un Tripulante) y Ciudad «El ladrón del puerto» (4).
  */
-const MISION = { mar: 'fantasma-I', nat: 'maracaibo-III', ciu: 'ladron-I' } as const
+const MISION = { mar: 'fantasma-I', nat: 'pruebas-nat4', ciu: 'ladron-I' } as const
 
 function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
-  if (entorno === 'nat') return Jugador.enMision({ misiones: [MISION.nat], mazoPeligros, ...op, mano: [...(op.mano ?? []), 'timon'], cubrir: ['timon'] })
   return Jugador.enMision({ misiones: [MISION[entorno]], mazoPeligros, ...op })
 }
 
@@ -44,19 +43,19 @@ describe('23 · Desertores del rey', () => {
     const j = en('ciu', ['p2_desertores', 'p2_sebusca', 'chubasco', 'calma'])
     expect(j.estado.mision?.modsSiguientes).toEqual([{ de: 'encuentro', claves: ['Guardia', 'Militar'], n: -2 }])
     j.seguir().comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(0) // «Tu cara en el muelle» EXP 2 − 2
+    expect(dificultadConDestino(j.estado)).toBe(0) // «Tu cara en el muelle» EXP 2 − 2
   })
 
   it('Destino «Chivatazo del desertor»: −1 (−2 si el encuentro es Militar o Guardia); sin oposición, +1 y, si fallas, Perseguido', () => {
     const j = conDestino('p2_desertores')
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(1)
+    expect(dificultadConDestino(j.estado)).toBe(1)
     const k = en('ciu', ['p2_sebusca', 'p2_desertores', 'calma', 'calma'])
     k.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(0)
+    expect(dificultadConDestino(k.estado)).toBe(0)
     const m = conDestino('p2_desertores')
     m.comprometer('NAV', [])
-    expect(dificultadPrueba(m.estado)).toBe(3)
+    expect(dificultadConDestino(m.estado)).toBe(3)
     m.seguir()
     expect(m.estadosBarco).toEqual(['perseguido'])
   })
@@ -66,10 +65,10 @@ describe('24 · Se busca', () => {
   it('Mar: +1 si llevas la Bandera negra; si fallas, el Barco queda Perseguido', () => {
     const j = en('mar', ['p2_sebusca', 'chubasco', 'calma'], { barco: { mejoras: ['bandera'] } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('mar', ['p2_sebusca', 'chubasco', 'calma'])
     k.comprometer('NAV', [])
-    expect(dificultadPrueba(k.estado)).toBe(3)
+    expect(dificultadConDestino(k.estado)).toBe(3)
     k.seguir()
     expect(k.estadosBarco).toEqual(['perseguido'])
   })
@@ -77,7 +76,7 @@ describe('24 · Se busca', () => {
   it('Naturaleza: +1 si un comprometido está herido; si fallas, el comprometido con menos Vida sufre 1 herida y queda Buscado', () => {
     const j = en('nat', ['p2_sebusca', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', heridas: 1 }] })
     j.comprometer('EXP', ['bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('nat', ['p2_sebusca', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('EXP', ['bucanero']).seguir() // EXP 0 + 1 de Diego contra 3
     expect(k.copia('bucanero').heridas).toBe(1)
@@ -87,7 +86,7 @@ describe('24 · Se busca', () => {
   it('Ciudad: EXP 3 con 9 o más de reputación; si fallas, ocupa el muelle (pagas 2 para quitarla)', () => {
     const j = en('ciu', ['p2_sebusca', 'chubasco', 'calma'], { reputacion: 9 })
     j.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('ciu', ['p2_sebusca', 'chubasco', 'calma'], { muelle: ['bucanero', 'sable', 'vigia', 'matasanos'] })
     k.comprometer('EXP', []).seguir()
     expect(k.zona('muelle')).toContain('p2_sebusca')
@@ -98,10 +97,10 @@ describe('24 · Se busca', () => {
   it('Destino «Precio por tu cabeza»: +1, +2 si un comprometido está Buscado; sin oposición, el Capitán sufre 1 herida', () => {
     const j = conDestino('p2_sebusca', { tripulacion: ['bucanero'] })
     j.comprometer('NAV', ['bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     const k = conDestino('p2_sebusca', { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
     k.comprometer('NAV', ['bucanero'])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     const m = conDestino('p2_sebusca')
     m.comprometer('NAV', [])
     expect(m.copia('capitan').heridas).toBe(1)
@@ -153,7 +152,7 @@ describe('25 · La aduana del rey', () => {
   it('Destino «Doble fondo»: −1 si comprometiste a un Contrabandista; sin oposición, 1 al azar y, si fallas, otra', () => {
     const j = conDestino('p2_aduana', { tripulacion: ['contrabandista'] })
     j.comprometer('NAV', ['contrabandista'])
-    expect(dificultadPrueba(j.estado)).toBe(1)
+    expect(dificultadConDestino(j.estado)).toBe(1)
     const k = conDestino('p2_aduana', { mano: ['ojo', 'timon', 'coraje'] })
     k.comprometer('NAV', [])
     expect(k.zona('mano')).toHaveLength(2)
@@ -187,12 +186,12 @@ describe('26 · Ojos del gobernador', () => {
     j.opcion('0').elegir('ojo', 'timon')
     expect(j.decision).toMatchObject({ tipo: 'comprometer' })
     j.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(2)
     j.seguir()
     expect(j.registro.some((r) => r.startsWith('Robas 2'))).toBe(true)
     const k = en('ciu', ['p2_ojos', 'chubasco', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     k.opcion('1').comprometer('COM', [])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     k.seguir()
     expect(k.estados('capitan')).toEqual(['buscado'])
   })
@@ -200,7 +199,7 @@ describe('26 · Ojos del gobernador', () => {
   it('Destino «Oídos en la pared»: +1 y no se juegan Eventos; sin oposición, robas 1 menos al final del turno', () => {
     const j = conDestino('p2_ojos', { mano: ['vendas', 'ojo'], capitan: { heridas: 1 } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     expect(j.ofreceCapacidad('vendas.jugar')).toBe(false)
     const control = conDestino('chubasco', { mano: ['vendas', 'ojo'], capitan: { heridas: 1 } })
     control.comprometer('NAV', ['capitan'])
@@ -249,7 +248,7 @@ describe('27 · Los grilletes del rey', () => {
   it('Destino «Grilletes en los tobillos»: no se usan capacidades de Tripulantes; sin oposición, uno preparado queda Encadenado', () => {
     const j = conDestino('p2_grilletes', { tripulacion: ['carpintero'], barco: { dano: 1 } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     expect(j.ofreceCapacidad('carpintero.reparar')).toBe(false)
     const k = conDestino('p2_grilletes', { tripulacion: ['carpintero'] })
     k.comprometer('NAV', []).elegir('carpintero')
@@ -265,7 +264,7 @@ describe('28 · El Santo Oficio', () => {
     const k = en('mar', ['p2_santooficio', 'chubasco', 'p2_corriente', 'chubasco', 'calma'])
     k.comprometer('EXP', []).seguir().seguir()
     k.comprometer('NAV', ['capitan'])
-    expect(totalPrueba(k.estado)).toBe(2) // sin el +1 del Barco
+    expect(totalSinDestinoPrueba(k.estado)).toBe(2) // sin el +1 del Barco
   })
 
   it('Naturaleza: si superas, curas 2; si fallas, 1 herida a cada comprometido (máximo 3)', () => {
@@ -303,10 +302,10 @@ describe('28 · El Santo Oficio', () => {
   it('Destino «Agua bendita»: +1; +2 si un comprometido lleva el Amuleto; +0 con el Escapulario; sin oposición, descartas 2', () => {
     const conAmuleto = conDestino('p2_santooficio', { tripulacion: [{ id: 'bucanero', mejoras: ['amuleto'] }] })
     conAmuleto.comprometer('NAV', ['bucanero'])
-    expect(dificultadPrueba(conAmuleto.estado)).toBe(4)
+    expect(dificultadConDestino(conAmuleto.estado)).toBe(4)
     const conEscapulario = conDestino('p2_santooficio', { tripulacion: [{ id: 'bucanero', mejoras: ['escapulario'] }] })
     conEscapulario.comprometer('NAV', ['bucanero']).pasarOfertas()
-    expect(dificultadPrueba(conEscapulario.estado)).toBe(2)
+    expect(dificultadConDestino(conEscapulario.estado)).toBe(2)
     const k = conDestino('p2_santooficio', { mano: ['ojo', 'timon', 'coraje'] })
     k.comprometer('NAV', []).elegir('ojo', 'timon')
     expect(k.zona('mano')).toEqual(['coraje'])
@@ -317,7 +316,7 @@ describe('29 · Toque a rebato', () => {
   it('Mar: +1 por cada encuentro Militar o Guardia ya resuelto; si fallas, 1 daño y el de más COM sufre 1 herida', () => {
     const j = en('mar', ['p2_desertores', 'p2_rebato', 'chubasco', 'calma'])
     j.seguir().comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     const k = en('mar', ['p2_rebato', 'chubasco', 'calma'])
     k.comprometer('COM', []).seguir()
     expect(k.estado.danoBarco).toBe(1)
@@ -363,7 +362,7 @@ describe('29 · Toque a rebato', () => {
     j.comprometer('NAV', ['capitan']).elegir('vigia')
     expect(j.copia('vigia').agotada).toBe(true)
     expect(j.copia('bucanero').agotada).toBe(false)
-    expect(dificultadPrueba(j.estado)).toBe(1)
+    expect(dificultadConDestino(j.estado)).toBe(1)
     const k = conDestino('p2_rebato', { tripulacion: ['bucanero', 'vigia'] })
     k.comprometer('NAV', []).elegir('capitan', 'vigia')
     expect(k.copia('capitan').agotada).toBe(true)
@@ -376,14 +375,14 @@ describe('30 · El quinto del rey', () => {
   it('Mar: +1 con 3 o más munición; si superas, +1 munición y robas 1; si fallas, pierdes 2 de munición', () => {
     const j = en('mar', ['p2_quinto', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { mejoras: [{ id: 'bronce', municion: 3 }] } })
     j.comprometer('COM', ['capitan', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     const exito = en('mar', ['p2_quinto', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
     exito.comprometer('COM', ['capitan', 'bucanero']).seguir()
     expect(exito.copia('bronce').municion).toBe(2)
     expect(exito.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
     const k = en('mar', ['p2_quinto', 'chubasco', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
     k.comprometer('COM', [])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     k.seguir()
     expect(k.copia('bronce').municion).toBe(0)
   })
@@ -391,10 +390,10 @@ describe('30 · El quinto del rey', () => {
   it('Naturaleza: +1 si al revelarla tienes 5 o más cartas; si fallas, el de más COM sufre 1 herida y pierdes 1 Avance', () => {
     const j = en('nat', ['p2_quinto', 'chubasco', 'calma'], { mano: ['ojo', 'ojo', 'timon', 'timon', 'coraje'] })
     j.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     const k = en('nat', ['p2_quinto', 'chubasco', 'calma'], { mano: ['ojo', 'ojo', 'timon', 'timon'], avance: { [MISION.nat]: 1 } })
     k.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     k.seguir()
     expect(k.copia('capitan').heridas).toBe(1)
     expect(avance(k, 'nat')).toBe(1) // 1 − 1 + 1 (Avance 2 / 1: no la supera)
@@ -429,7 +428,7 @@ describe('31 · Bajo los cañones del Morro', () => {
     expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
     expect(avance(j, 'mar')).toBe(3)
     j.usar('p2_morro.mar.quitar0').comprometer('COM', ['capitan', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.zona('peligrosEnJuego')).toEqual([])
     expect(avance(j, 'mar')).toBe(4)
@@ -438,7 +437,7 @@ describe('31 · Bajo los cañones del Morro', () => {
   it('Mar: con un Carpintero la Prueba es de COM 4; si la fallas, 2 daños al Barco', () => {
     const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['carpintero'] })
     j.usar('p2_morro.mar.quitar0').comprometer('COM', [])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
     expect(j.estado.danoBarco).toBe(2)
     expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
@@ -447,7 +446,7 @@ describe('31 · Bajo los cañones del Morro', () => {
   it('Naturaleza: COM 6 (4 con un Artillero); si superas, +2 munición; si fallas, 3 heridas repartidas entre los comprometidos', () => {
     const j = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'canonero'], barco: { mejoras: ['bronce'] } })
     j.comprometer('COM', ['capitan', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
     expect(j.copia('bronce').municion).toBe(2)
     const k = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
@@ -477,14 +476,14 @@ describe('31 · Bajo los cañones del Morro', () => {
     j.comprometer('NAV', ['capitan'])
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'baterias' } })
     j.opcion('no')
-    expect(dificultadPrueba(j.estado)).toBe(6)
+    expect(dificultadConDestino(j.estado)).toBe(6)
     const k = conDestino('p2_morro', { mano: ['ojo', 'timon', 'coraje'] })
     k.comprometer('NAV', ['capitan']).opcion('descartar').elegir('ojo', 'timon')
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
     expect(k.zona('mano')).toEqual(['coraje'])
     const m = conDestino('p2_morro')
     m.comprometer('NAV', [])
-    expect(dificultadPrueba(m.estado)).toBe(6) // sin 2 cartas en la mano, +4
+    expect(dificultadConDestino(m.estado)).toBe(6) // sin 2 cartas en la mano, +4
     expect(m.estado.danoBarco).toBe(1)
   })
 
@@ -501,7 +500,7 @@ describe('32 · La horca', () => {
   it('Mar: cada Marinero comprometido suma 1 menos; si fallas, 2 daños y pierdes 1 munición', () => {
     const j = en('mar', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: [{ id: 'bronce', municion: 1 }] } })
     j.comprometer('NAV', ['viejo_lobo'])
-    expect(totalPrueba(j.estado)).toBe(4) // 3 + 1 de Diego − 1 + 1 del Barco
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // 3 + 1 de Diego − 1 + 1 del Barco
     j.pasarOfertas().seguir()
     expect(j.estado.danoBarco).toBe(2)
     expect(j.copia('bronce').municion).toBe(0)
@@ -510,7 +509,7 @@ describe('32 · La horca', () => {
   it('Naturaleza: +2 si algún Tripulante está Buscado; si fallas, el comprometido con menos Vida queda rehén', () => {
     const j = en('nat', ['p2_horca', 'chubasco', 'calma'], { tripulacion: [{ id: 'vigia', estados: ['buscado'] }, 'bucanero'] })
     j.comprometer('EXP', ['vigia', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(7)
+    expect(dificultadConDestino(j.estado)).toBe(7)
     j.seguir()
     expect(j.zona('rehenes')).toEqual(['vigia'])
   })
@@ -544,7 +543,7 @@ describe('32 · La horca', () => {
   it('Ciudad: −2 con 12 o más de reputación; si superas, +1 reputación', () => {
     const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 12 })
     j.comprometer('COM', ['capitan', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
     expect(j.estado.reputacion).toBe(13)
   })
@@ -552,7 +551,7 @@ describe('32 · La horca', () => {
   it('Destino «La soga»: +2; si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén; sin oposición, el Capitán queda Buscado', () => {
     const j = conDestino('p2_horca')
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('nat', ['p2_ojos', 'p2_horca', 'calma', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('NAV', ['vigia']).seguir() // 0 + 1 de Diego contra 3 + 2
     expect(k.zona('rehenes')).toEqual(['vigia'])
@@ -566,7 +565,7 @@ describe('33 · La Armada de Barlovento', () => {
   it('Mar: +2 con Velas rotas; si superas, quita Perseguido; si fallas, Abordaje', () => {
     const j = en('mar', ['p2_armada', 'chubasco', 'calma'], { barco: { estados: ['velasRotas'] } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(8)
+    expect(dificultadConDestino(j.estado)).toBe(8)
     // Perseguido durante la misión (fallas «El guardacostas os reconoce») y luego le ganas el barlovento a la fragata.
     const k = en('mar', ['p2_sebusca', 'chubasco', 'p2_armada', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', []).seguir()
@@ -599,7 +598,7 @@ describe('33 · La Armada de Barlovento', () => {
   it('Destino «La Armada os da caza»: +1 y persigue (vuelve encima del mazo); sin oposición, pierdes 1 Avance', () => {
     const j = conDestino('p2_armada')
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     j.seguir()
     expect(j.zona('mazoPeligros')[0]).toBe('p2_armada')
     const k = en('mar', ['p2_corriente', 'p2_armada', 'calma'], { avance: { [MISION.mar]: 2 } })

@@ -385,3 +385,42 @@ Sin cambiar ninguna regla.
 - **Distancia con cartas: el reglamento sigue al motor (opción b).** El motor no cambia. Regla nueva en «Zarpar» (*Aprende a jugar*) y en «Distancia» (*Referencia de reglas*): «Para cubrir la Distancia, el jugador agota Tripulantes preparados, descarta cartas de su mano con iconos de NAV, o combina ambas cosas, hasta que la NAV de los Tripulantes agotados más los iconos de NAV de las cartas descartadas sume al menos la Distancia. Las cartas que reducen la Distancia, como el Barco, se aplican antes. Si no puede alcanzarla, no puede zarpar a esa misión.» *Ejemplo* (el del reglamento, «Cubrir una Distancia»): «El prisionero de Portobelo» tiene Distancia 3, 2 con el Barco; basta con agotar al Viejo lobo de mar (NAV 3), o con descartar «Mano firme al timón» (dos iconos de NAV) sin agotar a nadie, y así el Viejo lobo llega preparado; sin ninguno de los dos, con el Bucanero veterano (NAV 1 + 1 de Diego). Prueba: «ejemplo del reglamento: «El prisionero de Portobelo»…» en src/engine/mision.test.ts. La ayuda de la mesa dice lo mismo («Agota Tripulantes preparados, descarta cartas de tu mano con iconos de NAV, o las dos cosas, hasta sumar al menos ese número. Lo que reduce la Distancia, como el Barco, ya está descontado.»). La entrada «Evento» y «Habilidades» ya lo decían así (descartar «para cubrir una Distancia», sin «si hace falta»); la referencia rápida no habla de la Distancia.
 - **Espacio vertical apretado** (párrafos 2 mm, bloques 2,4, títulos de apartado 3,5, ejemplos 3,2): se queda, para que «Aprende a jugar» siga en 38 páginas.
 - **Páginas tras el cambio:** «Aprende a jugar», 38; «Referencia de reglas», 30. Solo cambian la página 19 de «Aprende a jugar» («Zarpar») y la 10 de la Referencia («Distancia»); las demás salen idénticas. En la Referencia, la regla va en una sola viñeta: partida en dos ocupaba una línea más, la lista empujaba a la página 11 su última viñeta y el ejemplo «Pagar o hacer la Prueba» saltaba a la 12, dejando un tercio de la 11 en blanco.
+
+## Fase 10: primera revisión de Albert del reglamento (19 de octubre de 2026)
+
+### Cambios de regla (pedidos por Albert)
+
+- **«Comprometer» pasa a ser «asignar»** en todo lo que se ve: cartas, mesa (ayudas, registro y botones), reglamento, índice y referencia rápida. Las cartas de la mano se «añaden». Entradas nuevas «Asignar» y «Asignado con más (o menos)»; el paso 1 de la Prueba es «Asignar Tripulantes». Dentro del motor los nombres internos no cambian.
+- **El Destino suma al total del jugador.** Su modificador se suma al total (+N en verde ayuda, −N en rojo perjudica); todos los Destinos impresos se invierten («+0 con un Vigía» pasa a «−0 con un Vigía»). Los demás modificadores siguen cambiando la dificultad. La dificultad no baja de 0 y el total con el Destino tampoco. Prueba: «P61: …» y «D9…» en src/engine/decisiones.test.ts. Dentro del motor el Destino se sigue guardando en el sentido de la dificultad y se resta del total: el resultado es el mismo salvo en los suelos de 0.
+- **Heridas libres.** Las heridas de una Prueba fallada (y cualquier herida sin destinatario) las reparte el jugador entre todos sus Tripulantes, preparados o agotados, el Capitán incluido. Solo las que dicen «uno de los Tripulantes asignados» o «el Tripulante asignado con…» van a los asignados. Abordaje igual: sus heridas son libres; el rehén, uno de los asignados (al azar si no hay ninguno). Las cartas que nombran a los asignados están marcadas en las reglas de cada carta (Río abajo, Raqueros, la cacería del jaguar, la fiera, el fortín, los dragones, la última mano, el duelo, los ahogados y el esqueleto). Si nadie está asignado y la carta pide «uno de los asignados», las heridas pasan a ser libres.
+- **Una Mejora agotada sigue aplicando su texto.** Solo deja de poder agotarse otra vez para pagar.
+- **Distancia:** siempre se agota al menos un Tripulante preparado (aunque tenga NAV 0); las cartas con NAV solo completan. No se puede cubrir solo con cartas. Prueba: «ejemplo del reglamento: «El prisionero de Portobelo»…» en src/engine/mision.test.ts (Viejo lobo solo, o Rufián + «Mano firme al timón»).
+- **Valor «Misiones» en la carta de puerto,** junto al de «Muelle» (Tortuga 3, Nassau 3). El tablón se repone hasta ese número; el reglamento ya no dice «tres».
+- **Todo lo que da Avance al empezar la misión es «Al zarpar:»** (Vela mayor, Chalupa, Mapa robado, Rumores del tesoro, San Juan y el resto). Desaparece «Avance inicial». Los Soplos no cambian; la entrada «Avance» dice que las fichas que ya hay cuentan.
+- **Textos de Destino literales:** sin nombre en la carta (se citan «el Destino de la carta X» en el registro y en el reglamento), la línea Sin oposición lleva solo el escudo y su efecto, y «1 herida a un Tripulante preparado» pasa a «Inflige 1 herida a un Tripulante».
+- **Mazo de historia** como en Arkham Horror 3.ª edición: las cartas que entran durante la partida (capítulos II y III, Tesoros, mazos propios, Pasajeros, «¡La guardia!», «La Armada te persigue») llevan su número en el anverso y en el dorso del mazo al que van; las cartas dicen «Añade la carta 33 al mazo de Misiones».
+- **Fases del turno:** Fase de Inicio, Fase de Reclutamiento, Fase de Rumbo (quedarse en puerto o zarpar) y Fase de Final de turno, en la mesa, el reglamento y la referencia rápida.
+- **«Tipos de encuentro»** (antes «Palabras clave»: Guardia, Militar…): «los encuentros de tipo Guardia». Lo que antes era «Lo que dicen los encuentros» se llama «Palabras clave de los encuentros».
+
+### Equilibrio (1000 partidas, semillas 1–1000, el mismo jugador automático)
+
+| Reglas | Victorias |
+| --- | --- |
+| Todas como antes de la fase 10 | 35,7 % |
+| Solo el Destino que suma al total | 35,9 % (+0,2) |
+| Solo la Mejora agotada que sigue aplicando su texto | 35,7 % (0) |
+| Solo las heridas libres | 34,9 % (−0,8) |
+| Solo la Distancia con al menos un Tripulante | 34,9 % (−0,8) |
+| Todas las de la fase 10 | 35,2 % (−0,5) |
+
+El informe (docs/informe-equilibrio.md) pasa de 35,9 % a 35,2 % de victorias; con mazos de muelle variados, de 37,1 % a 35,4 %. Todo dentro del ruido (±1,5 puntos). El jugador automático reparte ahora las heridas libres a quien más vida le quede, antes a un Tripulante agotado que a uno preparado, y al Capitán el último (con las heridas libres, repartirlas «a quien más vida le quede» sin mirar si está agotado bajaba al 33,6 %).
+
+### Lecturas tomadas (pendientes de que Albert las confirme)
+
+- Si nadie está asignado, las heridas de un fallo se juntan en un solo reparto y pueden partirse entre varios Tripulantes.
+- Un Destino que no cambia el total se imprime «−0» (antes «+0»), en el círculo (12 cartas) y en los textos («Con un Vigía asignado: −0 en su lugar»), en un color neutro (pardo). Alternativa: «0», sin signo.
+- Si lo que reduce la Distancia (el Barco, Vientos alisios) la deja en 0, no hay que agotar a nadie (como en P57). Marcado `TODO(regla)`.
+- «Los despachos del Rey» sigue diciendo «Respuesta: Después de zarpar, otea 2.» (no da Avance, así que no pasa a «Al zarpar»).
+- Pasajeros y «¡La guardia!» no van a ningún mazo: llevan el dorso de misión con su número.
+- Paso 1 de la preparación: se añade «Pon el marcador de reputación a 0.».
+- Penalización «agota una Mejora» (icono de Mejora tachada): solo la tenía «Escollos» (79), retirada. Se propone quitarla del reglamento y de la referencia rápida; mientras, sigue (reescrita con la regla nueva: se agota una Mejora preparada, que sigue aplicando su texto).

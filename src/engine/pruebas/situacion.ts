@@ -23,7 +23,8 @@ import {
   type Temporal,
   type Zona,
 } from '../tipos.ts'
-import { valor } from '../valores.ts'
+import { valor, valorSinMinimo } from '../valores.ts'
+import { clavesDelEncuentro, totalSinDestino } from '../prueba.ts'
 import type { EstadoBarco, FichaTripulante } from '../infoEstados.ts'
 import { crearCopia, zonaDe } from '../zonas.ts'
 
@@ -107,12 +108,20 @@ function capituloDePrueba(id: string, num: number, entorno: Entorno, avance: num
   registrarCartasExtra({ tipo: 'capitulo', num, id, copias: 1, carta, mision: MISION_DE_PRUEBA })
 }
 
-/** Misiones sin reglas: Mar 5, Mar 3, Naturaleza 3 (Distancia 1), Ciudad 4 y Ciudad 3. */
-export const MISIONES_DE_PRUEBA = { mar5: 'pruebas-mar5', mar3: 'pruebas-mar3', nat3: 'pruebas-nat3', ciu4: 'pruebas-ciu4', ciu3: 'pruebas-ciu3' } as const
+/** Misiones sin reglas: Mar 5, Mar 3, Naturaleza 3 (Distancia 1), Naturaleza 4 (en la isla), Ciudad 4 y Ciudad 3. */
+export const MISIONES_DE_PRUEBA = {
+  mar5: 'pruebas-mar5',
+  mar3: 'pruebas-mar3',
+  nat3: 'pruebas-nat3',
+  nat4: 'pruebas-nat4',
+  ciu4: 'pruebas-ciu4',
+  ciu3: 'pruebas-ciu3',
+} as const
 capituloDePrueba('pruebas-mar5', 9001, 'mar', 5, 0)
 capituloDePrueba('pruebas-mar3', 9002, 'mar', 3, 0)
 capituloDePrueba('pruebas-nat3', 9003, 'nat', 3, 1)
 capituloDePrueba('pruebas-ciu4', 9004, 'ciu', 4, 0)
+capituloDePrueba('pruebas-nat4', 9006, 'nat', 4, 0)
 capituloDePrueba('pruebas-ciu3', 9005, 'ciu', 3, 0)
 
 /** Carta de Escenario sin efecto, para las pruebas que solo necesitan que pase el tiempo. */
@@ -150,6 +159,23 @@ function ponerCopia(s: Estado, entrada: CartaId | CopiaInicial, zona: Zona): Ins
 }
 
 /** Monta una partida en una situación concreta y la deja esperando la primera decisión. */
+/**
+ * Para las pruebas escritas antes de la fase 10, cuando el Destino cambiaba la dificultad: la dificultad con el Destino
+ * dentro (la cuenta de entonces, con el mínimo de 0 al final) y el total sin él. Así cada prueba sigue comprobando el
+ * valor de cada Destino; las reglas nuevas (el Destino suma al total) tienen sus propias pruebas.
+ */
+export function dificultadConDestino(s: Estado): number {
+  const p = s.prueba
+  if (!p?.hab) return 0
+  const d = valorSinMinimo(s, { tipo: 'dificultad', base: p.dificultadBase, hab: p.hab, claves: clavesDelEncuentro(s, p.encuentro) })
+  return Math.max(0, d + p.modDestino + (p.modExtra ?? 0))
+}
+
+export function totalSinDestinoPrueba(s: Estado): number {
+  const p = s.prueba
+  return p?.hab ? totalSinDestino(s, p, p.hab) : 0
+}
+
 export function montar(op: OpcionesSituacion = {}): Estado {
   const s = estadoVacio(sembrar(op.semilla ?? 1))
   s.capitan = ponerCopia(s, { id: op.capitanId ?? DATOS.mazosPredefinidos.capitanInicial, ...op.capitan }, 'tripulacion')

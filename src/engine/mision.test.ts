@@ -54,14 +54,17 @@ describe('Zarpar', () => {
     expect(sinLobo.copia('bucanero').agotada).toBe(true)
     expect(sinLobo.registro).toContain('Cubres la Distancia 2: agotas a Bucanero veterano.')
 
-    // Distancia con cartas (Albert, opción b): las cartas valen aunque los Tripulantes llegaran solos, y sin agotar a nadie.
-    const conCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'bucanero'], mano: ['timon'], mazoPeligros: ['calma'] })
-    conCarta.zarpar('panama-I').cubrir('timon') // dos iconos de NAV
+    // Fase 10: hay que agotar siempre al menos un Tripulante (aunque tenga NAV 0); las cartas con NAV solo completan.
+    const soloCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
+    soloCarta.zarpar('panama-I')
+    expect(() => soloCarta.cubrir('timon')).toThrow('hay que agotar al menos a un Tripulante preparado')
+    const conCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
+    conCarta.zarpar('panama-I').cubrir('marinero_p', 'timon') // Rufián NAV 0 + 1 (Diego) y dos iconos de NAV
+    expect(conCarta.copia('marinero_p').agotada).toBe(true)
     expect(conCarta.copia('viejo_lobo').agotada).toBe(false)
-    expect(conCarta.copia('bucanero').agotada).toBe(false)
     expect(conCarta.copia('capitan').agotada).toBe(false)
     expect(conCarta.zona('descartesCapitan')).toEqual(['timon'])
-    expect(conCarta.registro).toContain('Cubres la Distancia 2: descartas Mano firme al timón.')
+    expect(conCarta.registro).toContain('Cubres la Distancia 2: agotas a Rufián de cubierta y descartas Mano firme al timón.')
   })
 
   it('no vale una combinación que no llega; Tripulantes y cartas con NAV se suman', () => {
@@ -118,7 +121,7 @@ describe('Revelar y resolver encuentros', () => {
     expect(j.registro).toContain('Revelas «Rivales»: Pelea de taberna (Ciudad).')
     // Pelea de taberna: COM 3, Pirata −1 por «Cobrar la deuda» → 2. Bucanero: COM 2 + 1 por Diego = 3.
     j.comprometer('COM', ['bucanero'])
-    expect(j.registro).toContain('Destino: «Sin novedad» (+0).')
+    expect(j.registro).toContain('Destino de la carta «Chubasco»: −0.')
     j.seguir()
     expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
     expect(j.avance('deuda-I')).toBe(2)
@@ -131,7 +134,8 @@ describe('Revelar y resolver encuentros', () => {
     expect(j.decision.motivo.clave).toBe('herir')
     j.elegir('bucanero')
     j.seguir()
-    expect(j.registro).toContain('Total 0 contra 3: fallas la Prueba (nadie comprometido).')
+    // Fase 10: el Destino resta del total (0 − 1 cuenta como 0); la Pelea de taberna pide 3 − 1 por la misión.
+    expect(j.registro).toContain('Total 0 contra 2: fallas la Prueba (nadie asignado).')
   })
 
   it('sin refuerzo: las cartas de la mano solo se añaden al comprometer; en la ventana de acción ya no se descartan por sus iconos', () => {
@@ -160,15 +164,15 @@ describe('Destinos', () => {
   it('«Alarma»: +2 si el encuentro es Militar o Guardia', () => {
     const j = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['bucanero', 'reinaldo'], mazoPeligros: ['ley', 'ley', 'calma'] })
     j.zarpar('fantasma-I').comprometer('COM', ['bucanero', 'reinaldo']).seguir()
-    // Patrulla española (Barco, Militar) COM 4 + 2 = 6. Bucanero 3 + Rodrigo 5 = 8.
-    expect(j.registro).toContain('Total 8 contra 6: superas la Prueba.')
+    // Patrulla española (Barco, Militar) COM 4. Bucanero 3 + Rodrigo 5 = 8, y el Destino «Alarma» resta 2: 6.
+    expect(j.registro).toContain('Total 6 contra 4: superas la Prueba.')
   })
 
   it('«Corriente traicionera»: +2 si la Prueba es de NAV; si no, +1', () => {
     const nav = enPuerto({ misiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'arrecifes', 'calma'] })
     nav.zarpar('fantasma-I').comprometer('NAV', ['viejo_lobo']).pasar().seguir() // pasa del Viejo lobo
-    // Niebla espesa NAV 3 + 2. Viejo lobo 3 + 1 (Diego) + 1 (Barco, NAV en el Mar) = 5.
-    expect(nav.registro).toContain('Total 5 contra 5: superas la Prueba.')
+    // Niebla espesa NAV 3. Viejo lobo 3 + 1 (Diego) + 1 (Barco, NAV en el Mar) = 5, y el Destino resta 2: 3.
+    expect(nav.registro).toContain('Total 3 contra 3: superas la Prueba.')
   })
 
   it('«Golpe de suerte»: si superas, 1 de Avance más; «Ánimo»: si superas, prepara a un comprometido', () => {

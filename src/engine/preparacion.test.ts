@@ -30,9 +30,10 @@ describe('Preparación de la partida', () => {
     // 2. Capitán en juego, preparado.
     expect(j.zona('tripulacion')).toEqual(['capitan'])
     expect(j.copia('capitan').agotada).toBe(false)
-    // 4. Peligros: el mazo, y «La Armada te persigue» aparte («Amigos en la costa» está fuera de la partida).
+    // 4. Peligros: todas las cartas de Peligro; «La Armada te persigue» está en el mazo de historia (fase 10).
     expect(j.zona('mazoPeligros')).toHaveLength(DATOS.mazosPredefinidos.mazoDePeligros.length)
-    expect(j.zona('apartados')).toEqual(['armada'])
+    expect(j.zona('apartados')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain('armada')
     // 5. Misiones.
     expect(j.zona('misionesDisponibles')).toEqual(['deuda-I', 'prueba-I', 'aguada-I'])
     const esperadas = [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras].map((m) => `${m}-I`)

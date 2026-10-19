@@ -1,5 +1,7 @@
 # Peligros 2.0 (55 cartas, aprobadas para probar jugando)
 
+> **Fase 10 (19 de octubre de 2026):** los textos de este documento son anteriores a la revisión del reglamento («asignar» en lugar de «comprometer», el Destino que suma al total, heridas libres, «Al zarpar», el mazo de historia…). Los textos buenos son los de `data/cartas.json`.
+
 Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una). Las cartas apartadas están al final, en «Cartas apartadas»; los Peligros propios de las misiones, en docs/misiones-2.0.md.
 
 ## Cómo leer estas cartas

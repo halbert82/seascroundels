@@ -24,7 +24,7 @@ import {
   dificultad,
   enElMar,
   habilidadDe,
-  heridas,
+  heridasAsignados,
   mas,
   menos,
   municion,
@@ -66,8 +66,9 @@ registrarCodigo('p2_estrella.loteria', (s) => {
   if (!carta) return []
   s.infoRevelada++
   const d = destinoDe(copia(s, carta).id)
+  // Favorable: +1 o +2 impreso (−1 o −2 en sentido de la dificultad).
   const premio = typeof d.modificador === 'number' && d.modificador <= -1
-  anotar(s, 'revelar', `Revelas «${nombre(s, carta)}»: su Destino es «${d.nombre}» (${d.impreso}).${premio ? ' ¡Te toca!' : ' No te toca.'}`)
+  anotar(s, 'revelar', `Revelas «${nombre(s, carta)}»: su Destino es ${d.impreso}.${premio ? ' ¡Te toca!' : ' No te toca.'}`)
   descartarPeligro(s, carta)
   return premio ? [{ tipo: 'robar', n: 3 }] : []
 })
@@ -540,7 +541,7 @@ registrarPeligro('p2_holandes', {
     },
     // Antes de resolver, cada preparado no comprometido sufre 1 herida. Éxito: robas 2. Fallo: 3 heridas repartidas
     // entre los comprometidos.
-    nat: { capacidades: [rezagados], exito: [robar(2)], fallo: [heridas(3)] },
+    nat: { capacidades: [rezagados], exito: [robar(2)], fallo: [heridasAsignados(3)] },
     // Éxito: mira las 5 de arriba; las que quieras al fondo y el resto encima, en el orden que quieras. Fallo: el Barco
     // queda Perseguido y descartas 2.
     ciu: { exito: [{ tipo: 'mirarOrdenar', n: 5, fondo: 'libre' }], fallo: [{ tipo: 'estadoBarco', estado: 'perseguido' }, descartar(2)] },

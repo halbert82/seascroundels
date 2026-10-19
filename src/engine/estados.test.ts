@@ -2,8 +2,8 @@
 
 import { describe, expect, it } from 'vitest'
 import { ESTADOS_BARCO, ESTADOS_TRIPULANTE, INFO_ESTADO, VENTAJAS, esVentaja } from './infoEstados.ts'
-import { dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
+
+import { Jugador, type OpcionesSituacion, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 import { valor } from './valores.ts'
 
@@ -66,7 +66,7 @@ describe('Estados de los Tripulantes', () => {
   it('Aturdido: la próxima vez que se comprometa no suma, y se quita entonces', () => {
     const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'chubasco', 'chubasco'], { tripulacion: [{ id: 'viejo_lobo', estados: ['aturdido'] }] })
     j.comprometer('NAV', ['viejo_lobo'])
-    expect(totalPrueba(j.estado)).toBe(1) // solo el Barco
+    expect(totalSinDestinoPrueba(j.estado)).toBe(1) // solo el Barco
     expect(j.estados('viejo_lobo')).toEqual([])
   })
 
@@ -90,10 +90,10 @@ describe('Estados de los Tripulantes', () => {
   it('Buscado: en Ciudad, los encuentros Guardia y Militar reciben +1 si participa', () => {
     const j = mision('pruebas-ciu4', ['ley', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
     j.comprometer('COM', ['bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(4) // COM 3 + 1
+    expect(dificultadConDestino(j.estado)).toBe(4) // COM 3 + 1
     const k = mision('pruebas-ciu4', ['ley', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['buscado'] }] })
     k.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(3)
+    expect(dificultadConDestino(k.estado)).toBe(3)
   })
 
   it('Maldito: cuando un Destino hiere a «uno de los comprometidos», tiene que ser él; se quita solo si participa en la Prueba Sobrenatural que se supera (P15)', () => {
@@ -125,7 +125,7 @@ describe('Estados de los Tripulantes', () => {
   it('Inspirado: +1 en su próxima Prueba', () => {
     const j = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['inspirado'] }] })
     j.comprometer('NAV', ['bucanero'])
-    expect(totalPrueba(j.estado)).toBe(4) // NAV 1 + 1 de Diego + 1 del Barco + 1
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // NAV 1 + 1 de Diego + 1 del Barco + 1
     expect(j.estados('bucanero')).toEqual([])
   })
 
@@ -133,7 +133,7 @@ describe('Estados de los Tripulantes', () => {
     const j = mision('pruebas-mar5', ['escollos', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
     j.comprometer('EXP', ['bucanero']).seguir() // Bajíos: falla, 1 daño y pierde una Mejora; sin heridas
     const k = mision('pruebas-nat3', ['escollos', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['aguerrido'] }] })
-    k.comprometer('EXP', ['bucanero']).seguir() // Barranco: 1 herida, que evita
+    k.comprometer('EXP', ['bucanero']).seguir().repartir({ bucanero: 1 }) // Barranco: 1 herida, que evita
     expect(k.copia('bucanero').heridas).toBe(0)
     expect(k.estados('bucanero')).toEqual([])
     void j

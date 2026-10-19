@@ -111,9 +111,14 @@ export const tablon: Manejador<'tablon'> = (s, _t, e) => {
   return 'hecha'
 }
 
-/** Repón las misiones disponibles hasta tener tres. */
+/** Cuántas misiones disponibles hay: lo dice la carta de puerto (fase 10). */
+export function misionesDelPuerto(s: Estado): number {
+  return DATOS.puertos.find((p) => p.id === s.puerto)?.misiones ?? 3
+}
+
+/** Repón las misiones disponibles hasta tener tantas como indica la carta de puerto. */
 export const reponerMisiones: Manejador<'reponerMisiones'> = (s) => {
-  while (s.zonas.misionesDisponibles.length < 3) {
+  while (s.zonas.misionesDisponibles.length < misionesDelPuerto(s)) {
     const m = arriba(s, 'mazoMisiones')
     if (!m) break
     mover(s, m, 'misionesDisponibles', 'abajo')

@@ -8,6 +8,8 @@ import { CATALOGO as TODAS, type EntradaCatalogo, type TipoCarta } from '../../e
 /** Las cartas de la caja: sin los Peligros antiguos, que solo se conservan para las pruebas del motor. */
 const CATALOGO = TODAS.filter((e) => !(e.tipo === 'peligro' && e.carta.retirada))
 import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
+import { dorsoDeHistoria } from '../cartas/historia.ts'
+import { DorsoEscalado } from '../mesa/Dorso.tsx'
 import './galeria.css'
 
 const URLS_REFERENCIA = import.meta.glob<string>('../../../referencia/cartas/*.webp', {
@@ -153,6 +155,12 @@ function Elemento({
         {modo === 'lado' && (
           <div className="gal-marco gal-marco-ref">
             <Referencia num={entrada.num} escala={escala} ancho={ancho} alto={alto} />
+          </div>
+        )}
+        {/* Mazo de historia (fase 10): el dorso del mazo al que va, con el número de la carta. */}
+        {modo === 'cartas' && dorsoDeHistoria(entrada) && (
+          <div className="gal-marco gal-dorso" title="Dorso">
+            <DorsoEscalado tipo={dorsoDeHistoria(entrada) ?? 'misiones'} escala={escala} numero={entrada.num} apaisado={ancho > alto} />
           </div>
         )}
       </div>

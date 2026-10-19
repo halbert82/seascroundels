@@ -63,11 +63,11 @@ function estado(e: FichaTripulante | EstadoBarco, hace: string, propia: string, 
 
 export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
   envenenado: estado('envenenado', 'Al final de cada turno, sufre 1 herida.', 'Curarle quita primero esta ficha, en vez de una herida.', 'la Herbolaria o «Cataplasma»'),
-  borracho: estado('borracho', 'Recibe +1 COM, pero no puede comprometerse a Pruebas de NAV ni de EXP.', 'Se quita al final del turno.'),
-  aturdido: estado('aturdido', 'La próxima vez que se comprometa a una Prueba, no suma.', 'Se quita entonces, al comprometerse.', 'la Herbolaria'),
+  borracho: estado('borracho', 'Recibe +1 COM, pero no puede ser asignado a Pruebas de NAV ni de EXP.', 'Se quita al final del turno.'),
+  aturdido: estado('aturdido', 'La próxima vez que sea asignado a una Prueba, no suma.', 'Se quita entonces, al ser asignado.', 'la Herbolaria'),
   asustado: estado(
     'asustado',
-    'No puede comprometerse solo a una Prueba (tampoco a una Prueba Sin ayuda).',
+    'No puede ser asignado solo a una Prueba (tampoco a una Prueba Sin ayuda).',
     'Se quita al superar una Prueba en la que participe.',
     'la Herbolaria',
   ),
@@ -80,16 +80,16 @@ export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
   buscado: estado('buscado', 'En Ciudad, los encuentros Guardia y Militar reciben +1 por cada Tripulante Buscado que participe en su Prueba.', ''),
   maldito: estado(
     'maldito',
-    'Cuando un Destino hiere a «uno de los comprometidos», tiene que ser un Tripulante Maldito, si hay alguno comprometido.',
+    'Cuando un Destino hiere a «uno de los Tripulantes asignados», tiene que ser un Tripulante Maldito, si hay alguno asignado.',
     'Se quita al superar la Prueba de un encuentro Sobrenatural en la que participe.',
     '«La mambo del mercado»',
   ),
   encadenado: estado(
     'encadenado',
-    'No puede comprometerse ni usar las capacidades de su carta; sus capacidades constantes y sus Mejoras siguen funcionando.',
+    'No puede ser asignado ni usar las capacidades de su carta; sus capacidades constantes y sus Mejoras siguen funcionando.',
     'Para quitarlo, Acción: haz una Prueba de COM 3 o de EXP 3 (no durante otra Prueba).',
   ),
-  inspirado: estado('inspirado', 'Recibe +1 en su próxima Prueba.', 'Al comprometerse: suma 1 más y la ficha se quita.'),
+  inspirado: estado('inspirado', 'Recibe +1 en su próxima Prueba.', 'Al ser asignado: suma 1 más y la ficha se quita.'),
   aguerrido: estado('aguerrido', 'Evita la próxima herida que vaya a sufrir. Solo evita 1, aunque reciba varias a la vez.', 'Se quita al evitar esa herida.'),
   viaDeAgua: estado(
     'viaDeAgua',
@@ -109,7 +109,7 @@ export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
     'Se quita al revelar ese Peligro de más.',
     'superar «Fragata a popa»',
   ),
-  polvoraMojada: estado('polvoraMojada', 'Tus Cañones no recargan en el Inicio.', ''),
+  polvoraMojada: estado('polvoraMojada', 'Tus Cañones no recargan en la Fase de Inicio.', ''),
 }
 
 // ---------------------------------------------------------------------------
@@ -217,11 +217,11 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   abordaje: regla(
     'abordaje',
     'Abordaje',
-    'Si fallas la Prueba, sufres 1 herida por cada punto que te falte, como máximo 3. Si te faltan 3 o más, además uno de los Tripulantes comprometidos queda rehén.',
+    'Si fallas la Prueba, sufres 1 herida por cada punto que te falte, como máximo 3. Si te faltan 3 o más, además uno de los Tripulantes asignados queda rehén.',
     {
       rotulo: 'Detalles',
       texto:
-        'Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas se reparten entre los comprometidos. Si no comprometiste a nadie, las sufre el Tripulante que elijas y el rehén se elige al azar (nunca el Capitán).',
+        'Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas las repartes como quieras entre tus Tripulantes, preparados o agotados, como cualquier otra herida. Si no asignaste a nadie, el rehén se elige al azar (nunca el Capitán).',
     },
   ),
   seQuedaEnJuego: regla(
@@ -236,17 +236,17 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   elige: regla(
     'elige',
     'Elige',
-    'Te da varias opciones y escoges una. En un encuentro, eliges antes de comprometer a nadie; en una carta de Escenario, al revelarla (si no puedes cumplir entera ninguna opción, no pasa nada).',
+    'Te da varias opciones y escoges una. En un encuentro, eliges antes de asignar a nadie; en una carta de Escenario, al revelarla (si no puedes cumplir entera ninguna opción, no pasa nada).',
     {
       rotulo: 'Detalles',
       texto:
         'Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece. Si una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance («3 / 2»: 3) sin hacer la Prueba ni revelar Destino.',
     },
   ),
-  sinAyuda: regla('sinAyuda', 'Sin ayuda', 'Solo un Tripulante puede comprometerse a esa Prueba.', {
+  sinAyuda: regla('sinAyuda', 'Sin ayuda', 'Solo un Tripulante puede ser asignado a esa Prueba.', {
     rotulo: 'Detalles',
     texto:
-      'Puedes añadir cartas de Habilidad de tu mano por sus iconos. Los Eventos no suman, ni siquiera por sus iconos, y durante esa Prueba no se pueden jugar Eventos. Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando. Un Tripulante Asustado no puede comprometerse.',
+      'Puedes añadir cartas de Habilidad de tu mano por sus iconos. Los Eventos no suman, ni siquiera por sus iconos, y durante esa Prueba no se pueden jugar Eventos. Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando. Un Tripulante Asustado no puede ser asignado.',
   }),
   incautado: regla(
     'incautado',
@@ -272,21 +272,21 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'ocuparMuelle',
     'Ocupa el muelle',
     'Cuando termina el encuentro, la carta de Peligro sustituye a la carta de coste más alto del muelle (si empatan, a la de más a la izquierda), que se descarta. Se queda de un turno a otro y ocupa un hueco: al reponer el muelle revelas una carta menos. No se puede reclutar ni adquirir, y no cuenta para los efectos que eligen una carta del muelle.',
-    { rotulo: 'Cómo se quita', texto: 'En el paso de Jugar cartas puedes pagar las cartas que indica para descartarla. Va a la pila de descartes de Peligros.' },
+    { rotulo: 'Cómo se quita', texto: 'En la Fase de Reclutamiento puedes pagar las cartas que indica para descartarla. Va a la pila de descartes de Peligros.' },
   ),
   sinOposicion: regla(
     'sinOposicion',
     'Sin oposición',
-    'Línea de algunos Destinos que solo se aplica cuando no comprometes a nadie a la Prueba. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
+    'Línea de algunos Destinos que solo se aplica cuando no asignas a nadie a la Prueba. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
     {
       rotulo: 'Avance',
-      texto: 'Sin nadie comprometido, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea diga que no se aplica el efecto de fallo.',
+      texto: 'Sin nadie asignado, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea diga que no se aplica el efecto de fallo.',
     },
   ),
   rehen: regla(
     'rehen',
     'Rehén',
-    'Uno de tus Tripulantes es capturado. Si había Tripulantes comprometidos en la Prueba, eliges a uno de ellos; si no, uno de tus Tripulantes al azar (nunca el Capitán). Apártalo: sigue ocupando Capacidad.',
+    'Uno de tus Tripulantes es capturado. Si había Tripulantes asignados a la Prueba, eliges a uno de ellos; si no, uno de tus Tripulantes al azar (nunca el Capitán). Apártalo: sigue ocupando Capacidad.',
     { rotulo: 'Cómo se recupera', texto: 'Si superas la misión, lo rescatas y vuelve a tu mesa. Si no la superas, se retira del juego con sus Mejoras y pierdes 1 de reputación.' },
   ),
   recluta: regla(
@@ -297,8 +297,8 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   ),
   comprometidoCon: regla(
     'comprometidoCon',
-    'El comprometido con más (o menos)',
-    'El Tripulante comprometido con el número impreso más alto (o más bajo) en esa habilidad, sin contar bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. Si empatan, eliges tú.',
+    'El Tripulante asignado con más (o menos)',
+    'El Tripulante asignado con el número impreso más alto (o más bajo) en esa habilidad, sin contar bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. Si empatan, eliges tú.',
     {
       rotulo: 'Detalles',
       texto:
@@ -328,10 +328,10 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   pruebaDeAccion: regla(
     'pruebaDeAccion',
     'Prueba de una Acción',
-    'Es una Prueba normal: comprometes a tus Tripulantes y añades cartas de tu mano, revelas el Destino y, si no comprometiste a nadie, aplicas su línea Sin oposición.',
+    'Es una Prueba normal: asignas a tus Tripulantes y añades cartas de tu mano, revelas el Destino y, si no asignaste a nadie, aplicas su línea Sin oposición.',
     {
       rotulo: 'Detalles',
-      texto: 'No tiene Avance propio: solo ganas lo que diga su texto. No puedes hacerla durante otra Prueba: se usa en Jugar cartas o después de resolver una carta de Peligro.',
+      texto: 'No tiene Avance propio: solo ganas lo que diga su texto. No puedes hacerla durante otra Prueba: se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro.',
     },
   ),
   misionFalla: regla(
@@ -342,7 +342,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   alZarpar: regla(
     'alZarpar',
     'Al zarpar',
-    'Se resuelve al empezar la misión, después de cubrir la Distancia. Si es opcional, decides en ese momento si la usas. Las capacidades de tus cartas que dicen «Después de zarpar» se resuelven en el mismo momento.',
+    'Se resuelve al empezar la misión, después de cubrir la Distancia. La tienen las misiones y las cartas que dan algo al empezar una misión, como el Avance de la Vela mayor. Si es opcional, decides en ese momento si la usas. Las capacidades de tus cartas que dicen «Después de zarpar» se resuelven en el mismo momento.',
   ),
   gesta: regla('gesta', 'Gesta', 'Si superas la misión de la manera que dice, ganas además 1 de reputación.'),
   finalConEleccion: regla(
@@ -358,7 +358,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   pasajero: regla(
     'pasajero',
     'Pasajero',
-    'Carta que viaja contigo. Ocupa 1 de Capacidad; si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle. No es un Tripulante: no se compromete, no se agota y no puede recibir heridas, Estados, Ventajas ni quedar rehén, salvo que su carta lo diga.',
+    'Carta que viaja contigo. Ocupa 1 de Capacidad; si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle. No es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados, Ventajas ni quedar rehén, salvo que su carta lo diga.',
     { rotulo: 'Cuándo se va', texto: 'Se queda en juego entre misiones hasta que su carta diga que se va.' },
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
@@ -389,14 +389,14 @@ export type ClaveLimitacion = 'noPrepara' | 'noCompromete'
 
 const HACE_LIMITACION: Record<ClaveLimitacion, { nombre: string; hace: string }> = {
   noPrepara: { nombre: 'No se prepara', hace: 'No se prepara mientras dure este efecto: si está agotado, sigue agotado.' },
-  noCompromete: { nombre: 'No compromete', hace: 'No puede comprometerse a las Pruebas mientras dure este efecto.' },
+  noCompromete: { nombre: 'No puede ser asignado', hace: 'No puede ser asignado a las Pruebas mientras dure este efecto.' },
 }
 
 /** Cuándo termina, según hasta cuándo lo apuntó el motor. */
 function finLimitacion(hasta: Temporal['hasta'], carta: string | null): string {
   switch (hasta) {
     case 'inicio':
-      return 'Después de tu próximo Inicio (en ese Inicio no se prepara).'
+      return 'Después de tu próxima Fase de Inicio (en esa fase no se prepara).'
     case 'finMision':
       return 'Al terminar la misión.'
     case 'superarPrueba':
@@ -535,7 +535,7 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   sinOposicion: /\bSin oposición\b/,
   rehen: /\breh[eé]n(es)?\b/i,
   recluta: /\bRecluta\b/,
-  comprometidoCon: /comprometid[oa]s? con (más|menos)|con (más|menos) (NAV|COM|EXP|Vida)\b|habilidad más (alta|baja)|de menor coste/,
+  comprometidoCon: /asignad[oa]s? con (más|menos)|con (más|menos) (NAV|COM|EXP|Vida)\b|con la (NAV|COM|EXP) más (alta|baja)|habilidad más (alta|baja)|de menor coste/,
   seRetira: /\bSe retira\b/,
   entraEnMazo: /\+ «|\+ La Armada|[Ee]ntra en el mazo de Peligros|(?<!esta carta |su carta )encima del mazo de Peligros/,
   volverMuelle: /\b[Vv]uelven? al muelle\b|↩/,

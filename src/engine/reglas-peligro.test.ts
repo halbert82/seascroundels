@@ -3,8 +3,8 @@
 
 import { describe, expect, it } from 'vitest'
 import { registrarPeligro } from './capacidades/peligros.ts'
-import { dificultadPrueba } from './prueba.ts'
-import { Jugador } from './pruebas/situacion.ts'
+
+import { Jugador, dificultadConDestino } from './pruebas/situacion.ts'
 
 // «Percances» (Mar, sin Prueba): se queda en juego; se quita superando NAV 3, agotando a un Oficial o pagando 2.
 // Mientras esté, las Pruebas de COM reciben +1 y, cada vez que falles una Prueba, un comprometido queda Asustado.
@@ -79,8 +79,9 @@ describe('Se queda en juego', () => {
   it('mientras está, cambia las Pruebas y reacciona cuando fallas', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'fauna', 'chubasco', 'calma'], tripulacion: ['carpintero'] })
     j.seguir().comprometer('COM', ['carpintero'])
-    expect(dificultadPrueba(j.estado)).toBe(3) // Bestia en el Mar COM 2 + 1 de «Percances»; el Destino es +0
+    expect(dificultadConDestino(j.estado)).toBe(3) // Bestia en el Mar COM 2 + 1 de «Percances»; el Destino es −0
     j.seguir()
+    if (j.decision.tipo === 'repartir') j.repartir({ capitan: 1 }) // heridas libres (fase 10)
     expect(j.estados('carpintero')).toEqual(['asustado'])
   })
 
@@ -102,7 +103,7 @@ describe('Sin ayuda', () => {
   it('solo un Tripulante; suman las Habilidades de la mano; no se juegan Eventos', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['bucanero'], mano: ['ojo', 'vendas'] })
     expect(j.decision).toMatchObject({ tipo: 'comprometer', sinAyuda: true })
-    expect(() => j.comprometer('EXP', ['capitan', 'bucanero'])).toThrow(/solo puede comprometerse un Tripulante/)
+    expect(() => j.comprometer('EXP', ['capitan', 'bucanero'])).toThrow(/solo puede ser asignado un Tripulante/)
     expect((j.decision as { cartas: `i${number}`[] }).cartas.map((c) => j.estado.cartas[c]?.id)).toEqual(['ojo']) // las Vendas (Evento) no
     j.comprometer('EXP', ['capitan'], ['ojo'])
     expect(j.ofreceCapacidad('vendas.jugar')).toBe(false)

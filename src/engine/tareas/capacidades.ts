@@ -91,10 +91,10 @@ export const quitarEncuentro: Manejador<'quitarEncuentro'> = (s, t) => {
 export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t) => {
   const p = s.prueba
   if (!p?.destino) return 'hecha'
-  const viejo = destinoDe(copia(s, p.destino).id)
+  const viejo = nombre(s, p.destino)
   if (t.modo === 'cancelar') {
     p.destinoCancelado = true
-    anotar(s, 'efecto', `Cancelas el Destino «${viejo.nombre}»: no se aplica nada de él.`)
+    anotar(s, 'efecto', `Cancelas el Destino de la carta «${viejo}»: no se aplica nada de él.`)
     return 'hecha'
   }
   descartarPeligro(s, p.destino)
@@ -102,14 +102,14 @@ export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t) => {
   p.destinoCancelado = false
   const carta = cartaDeArriba(s, 'destino')
   if (!carta) {
-    anotar(s, 'aviso', `Descartas el Destino «${viejo.nombre}» y no quedan cartas para revelar otro.`)
+    anotar(s, 'aviso', `Descartas el Destino de la carta «${viejo}» y no quedan cartas para revelar otro.`)
     return 'hecha'
   }
   mover(s, carta, 'destino')
   s.infoRevelada++
   p.destino = carta
   const d = destinoDe(copia(s, carta).id)
-  anotar(s, 'revelar', `Descartas «${viejo.nombre}». Nuevo Destino: «${d.nombre}» (${d.impreso}).`, { tipo: 'revelado', inst: carta, como: 'destino' })
+  anotar(s, 'revelar', `Descartas el Destino de la carta «${viejo}». Nuevo Destino, de la carta «${nombre(s, carta)}»: ${d.impreso}.`, { tipo: 'revelado', inst: carta, como: 'destino' })
   encolar(s, evento({ tipo: 'revelarDestino', carta }))
   return 'hecha'
 }
@@ -144,7 +144,7 @@ export const comprometerUno: Manejador<'comprometerUno'> = (s, t) => {
     }
   }
   p.comprometidos.push(t.carta)
-  anotar(s, 'jugada', `${nombre(s, t.carta)} se compromete en la Prueba.`)
+  anotar(s, 'jugada', `${nombre(s, t.carta)} es asignado a la Prueba.`)
   alComprometerse(s, p, t.carta, true)
   return 'hecha'
 }

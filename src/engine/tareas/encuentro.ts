@@ -119,8 +119,8 @@ function salidaDelEncuentro(s: Estado, carta: InstId): void {
   if (m?.alApartar === carta) {
     delete m.alApartar
     m.retirar = m.retirar.filter((c) => c !== carta)
-    mover(s, carta, 'apartados')
-    anotar(s, 'efecto', `«${nombre(s, carta)}» vuelve a apartarse.`)
+    mover(s, carta, 'mazoHistoria')
+    anotar(s, 'efecto', `«${nombre(s, carta)}» vuelve al mazo de historia.`)
     return
   }
   if (m?.alMuelle?.carta === carta) {
@@ -278,14 +278,14 @@ function revelarDestino(s: Estado, p: PruebaEnCurso): void {
         return m2 === 'fallo' ? Infinity : p.invertirDestino ? -m2 : m2
       }
       const [peor, mejor] = valorDe(otra) > valorDe(carta) ? [otra, carta] : [carta, otra]
-      anotar(s, 'revelar', `Revelas 2 Destinos: «${destinoDe(copia(s, carta).id).nombre}» y «${destinoDe(copia(s, otra).id).nombre}». Se aplica el peor.`)
+      anotar(s, 'revelar', `Revelas 2 Destinos: el de la carta «${nombre(s, carta)}» y el de la carta «${nombre(s, otra)}». Se aplica el peor.`)
       descartarPeligro(s, mejor)
       carta = peor
     }
   }
   p.destino = carta
   const d = destinoDe(copia(s, carta).id)
-  anotar(s, 'revelar', `Destino: «${d.nombre}» (${d.impreso}).`, { tipo: 'revelado', inst: carta, como: 'destino' })
+  anotar(s, 'revelar', `Destino de la carta «${nombre(s, carta)}»: ${d.impreso}.`, { tipo: 'revelado', inst: carta, como: 'destino' })
   encolar(s, evento({ tipo: 'revelarDestino', carta }))
 }
 
@@ -417,7 +417,7 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         if (modificadores(s, { tipo: 'sinAgotarAlComprometer', carta: x, hab: opcion.hab }) > 0) {
           const clave = claveUso('turno', x, `${copia(s, x).id}.sinAgotar`)
           s.usos[clave] = (s.usos[clave] ?? 0) + 1
-          anotar(s, 'jugada', `${nombre(s, x)} se compromete sin agotarse.`, { tipo: 'usar', carta: copia(s, x).id, clave: `${copia(s, x).id}.sinAgotar` })
+          anotar(s, 'jugada', `${nombre(s, x)} es asignado sin agotarse.`, { tipo: 'usar', carta: copia(s, x).id, clave: `${copia(s, x).id}.sinAgotar` })
           alComprometerse(s, p, x, false)
           continue
         }
@@ -428,10 +428,10 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
       for (const x of c.cartas) mover(s, x, 'descartesCapitan')
       p.cartas = [...c.cartas]
       p.iconos = c.cartas.reduce((n, x) => n + iconosDe(copia(s, x).id, opcion.hab), 0)
-      if (c.tripulantes.length === 0) anotar(s, 'jugada', `Prueba de ${opcion.hab} ${p.dificultadBase}: no comprometes a nadie.`)
+      if (c.tripulantes.length === 0) anotar(s, 'jugada', `Prueba de ${opcion.hab} ${p.dificultadBase}: no asignas a nadie.`)
       else {
         const conCartas = c.cartas.length > 0 ? ` y añades ${nombres(s, c.cartas)}` : ''
-        anotar(s, 'jugada', `Prueba de ${opcion.hab} ${p.dificultadBase}: comprometes a ${nombres(s, c.tripulantes)}${conCartas}.`)
+        anotar(s, 'jugada', `Prueba de ${opcion.hab} ${p.dificultadBase}: asignas a ${nombres(s, c.tripulantes)}${conCartas}.`)
       }
       encolar(s, evento({ tipo: 'comprometer' }))
       t.paso = 'destino'
@@ -486,7 +486,7 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         }
         s.mision.pruebas = [...(s.mision.pruebas ?? []), hecha]
       }
-      const motivo = p.falla ? ' (el Destino la hace fallar)' : p.comprometidos.length === 0 ? ' (nadie comprometido)' : ''
+      const motivo = p.falla ? ' (el Destino la hace fallar)' : p.comprometidos.length === 0 ? ' (nadie asignado)' : ''
       const texto = p.automatica ? 'Prueba superada automáticamente.' : `Total ${total} contra ${dificultad}: ${superada ? 'superas' : 'fallas'} la Prueba${motivo}.`
       anotar(s, 'jugada', texto, {
         tipo: 'prueba',

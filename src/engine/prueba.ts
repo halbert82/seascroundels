@@ -122,11 +122,8 @@ function bonoAnulado(s: Estado, p: PruebaEnCurso, b: Bono): boolean {
   return tipo === 'mejoraBarco' || tipo === 'mejoraTripulante' || tipo === 'tesoro'
 }
 
-/** Total de la Prueba en curso. */
-export function totalPrueba(s: Estado): number {
-  const p = pruebaEnCurso(s)
-  if (!p.hab) return 0
-  const hab = p.hab
+/** Total de la Prueba en curso sin el Destino. */
+export function totalSinDestino(s: Estado, p: PruebaEnCurso, hab: Habilidad): number {
   let total = 0
   for (const c of p.comprometidos) {
     if (s.zonas.tripulacion.includes(c) && !noSuma(s, c)) total += valor(s, { tipo: 'habilidad', carta: c, hab })
@@ -134,6 +131,16 @@ export function totalPrueba(s: Estado): number {
   if (!p.sinCartas) total += p.iconos
   for (const b of p.bonos) if (!bonoAnulado(s, p, b)) total += b.n
   return total + modificadores(s, { tipo: 'totalPrueba', hab })
+}
+
+/**
+ * Total de la Prueba en curso. El modificador del Destino se suma al total del jugador («+1» suma, «−1» resta; aquí va
+ * en sentido de la dificultad y se resta). Si con el Destino queda por debajo de 0, cuenta como 0 (fase 10).
+ */
+export function totalPrueba(s: Estado): number {
+  const p = pruebaEnCurso(s)
+  if (!p.hab) return 0
+  return Math.max(0, totalSinDestino(s, p, p.hab) - p.modDestino)
 }
 
 /** Palabras clave del encuentro en curso. */
@@ -157,10 +164,10 @@ export function modificadorDeDestino(s: Estado, destino: InstId, encuentro: Inst
 export function dificultadPrueba(s: Estado): number {
   const p = pruebaEnCurso(s)
   if (!p.hab) return 0
-  // P61: se suman todos los modificadores, el Destino incluido, y solo el resultado final, si es menor que 0, cuenta
-  // como 0. Sin tope intermedio: EXP 1 con −1, −1 y un Destino +1 pide 0.
+  // P61 y fase 10: la dificultad suma todos sus modificadores (los de las cartas, la misión, el Escenario y los Rasgos;
+  // el Destino ya no, que va al total) y solo el resultado final, si es menor que 0, cuenta como 0.
   const d = valorSinMinimo(s, { tipo: 'dificultad', base: p.dificultadBase, hab: p.hab, claves: clavesDelEncuentro(s, p.encuentro) })
-  return Math.max(0, d + p.modDestino + (p.modExtra ?? 0))
+  return Math.max(0, d + (p.modExtra ?? 0))
 }
 
 /**
@@ -202,18 +209,18 @@ export function problemaCompromiso(
 ): string | null {
   for (const c of tripulantes) {
     if (def.soloCon && c !== def.soloCon) return `Solo puede hacerla ${nombreDe(copia(s, def.soloCon).id)}`
-    if (tieneEstado(s, c, 'encadenado')) return `${nombreDe(copia(s, c).id)} está Encadenado: no puede comprometerse`
-    if (tieneEstado(s, c, 'borracho') && hab !== 'COM') return `${nombreDe(copia(s, c).id)} está Borracho: no puede comprometerse a ${hab}`
-    if (s.temporales.some((t) => t.clave === 'noCompromete' && t.inst === c)) return `${nombreDe(copia(s, c).id)} no puede comprometerse ahora`
+    if (tieneEstado(s, c, 'encadenado')) return `${nombreDe(copia(s, c).id)} está Encadenado: no puede ser asignado`
+    if (tieneEstado(s, c, 'borracho') && hab !== 'COM') return `${nombreDe(copia(s, c).id)} está Borracho: no puede ser asignado a ${hab}`
+    if (s.temporales.some((t) => t.clave === 'noCompromete' && t.inst === c)) return `${nombreDe(copia(s, c).id)} no puede ser asignado ahora`
     const veto = def.restriccion?.veto?.(s, c)
     if (veto) return veto
   }
   const maximo = def.maximo ?? def.restriccion?.maximo
-  if (maximo !== undefined && tripulantes.length > maximo) return `No puedes comprometer a más de ${maximo}`
+  if (maximo !== undefined && tripulantes.length > maximo) return `No puedes asignar a más de ${maximo}`
   const unico = tripulantes.length === 1 ? tripulantes[0] : undefined
-  if (unico && tieneEstado(s, unico, 'asustado')) return `${nombreDe(copia(s, unico).id)} está Asustado: no puede comprometerse solo`
+  if (unico && tieneEstado(s, unico, 'asustado')) return `${nombreDe(copia(s, unico).id)} está Asustado: no puede ser asignado solo`
   if (def.sinAyuda) {
-    if (tripulantes.length > 1) return 'Sin ayuda: solo puede comprometerse un Tripulante'
+    if (tripulantes.length > 1) return 'Sin ayuda: solo puede ser asignado un Tripulante'
     // Sin ayuda: los Eventos tampoco suman por sus iconos; solo las Habilidades (P7).
     if (cartas.some((c) => tipoDe(copia(s, c).id) !== 'habilidad')) return 'Sin ayuda: solo suman las Habilidades de tu mano'
   }
@@ -241,7 +248,7 @@ export interface ParteDesglose {
   anulada?: boolean
 }
 
-/** Desglose del total de la Prueba en curso. Las partes no anuladas suman exactamente `totalPrueba`. */
+/** Desglose del total de la Prueba en curso, con el Destino. Las partes no anuladas suman exactamente `totalPrueba`. */
 export function desgloseTotal(s: Estado): ParteDesglose[] {
   const p = pruebaEnCurso(s)
   if (!p.hab) return []
@@ -263,6 +270,13 @@ export function desgloseTotal(s: Estado): ParteDesglose[] {
     if (a.inst) parte.inst = a.inst
     partes.push(parte)
   }
+  // El Destino se suma al total («el Destino de la carta X»).
+  if (p.destino) {
+    partes.push({ etiqueta: `Destino de «${nombreDe(copia(s, p.destino).id)}»`, n: -p.modDestino, tipo: 'destino', inst: p.destino, anulada: p.destinoCancelado })
+  }
+  // Con el Destino, si el total queda por debajo de 0, cuenta como 0 (una sola línea, al final).
+  const suma = partes.filter((x) => !x.anulada).reduce((n, x) => n + x.n, 0)
+  if (suma < 0) partes.push({ etiqueta: 'No baja de 0', n: -suma, tipo: 'modificador' })
   return partes
 }
 
@@ -274,10 +288,6 @@ export function desgloseDificultad(s: Estado): ParteDesglose[] {
   const partes: ParteDesglose[] = [{ etiqueta: def.nombre, n: p.dificultadBase, tipo: 'base', inst: p.encuentro }]
   for (const a of aportaciones(s, { tipo: 'dificultad', base: p.dificultadBase, hab: p.hab, claves: clavesDelEncuentro(s, p.encuentro) })) {
     partes.push({ etiqueta: nombreDe(a.carta), n: a.n, tipo: 'modificador', carta: a.carta })
-  }
-  if (p.destino) {
-    const d = destinoDe(copia(s, p.destino).id)
-    partes.push({ etiqueta: d.nombre, n: p.modDestino, tipo: 'destino', inst: p.destino, anulada: p.destinoCancelado })
   }
   if (p.modExtra) partes.push({ etiqueta: 'Efecto del Peligro', n: p.modExtra, tipo: 'modificador' })
   // P61: si el total final queda por debajo de 0, cuenta como 0 (una sola línea, al final).

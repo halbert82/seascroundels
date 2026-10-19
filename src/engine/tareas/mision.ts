@@ -36,11 +36,15 @@ export function navMaximo(s: Estado): number {
   return mejor + cartasConNav(s).reduce((n, c) => n + iconosDe(copia(s, c).id, 'NAV'), 0)
 }
 
-/** ¿Se puede zarpar a esta misión ahora? (reputación mínima y Distancia que se pueda cubrir) */
+/**
+ * ¿Se puede zarpar a esta misión ahora? (reputación mínima y Distancia que se pueda cubrir). Fase 10: para cubrir una
+ * Distancia hay que agotar al menos a un Tripulante preparado, aunque tenga NAV 0; las cartas con NAV solo completan.
+ */
 export function puedeZarpar(s: Estado, mision: InstId): boolean {
   if (s.reputacion < reputacionMinima(copia(s, mision).id)) return false
   const distancia = valor(s, { tipo: 'distancia', mision })
-  return distancia === 0 || navMaximo(s) >= distancia
+  // TODO(regla): si lo que reduce la Distancia (el Barco, Vientos alisios) la deja en 0, no hay que agotar a nadie.
+  return distancia === 0 || (preparados(s).length > 0 && navMaximo(s) >= distancia)
 }
 
 function empezar(s: Estado, mision: InstId): void {
@@ -50,7 +54,10 @@ function empezar(s: Estado, mision: InstId): void {
   encolar(s, { tipo: 'mision', paso: 'inicio' })
 }
 
-/** Zarpar: si la misión es lejana, cubre su Distancia agotando Tripulantes a la vez y descartando cartas con NAV. */
+/**
+ * Zarpar: si la misión es lejana, cubre su Distancia agotando a la vez a uno o más Tripulantes (al menos uno) y,
+ * si hace falta, descartando cartas con NAV.
+ */
 export const zarpar: Manejador<'zarpar'> = (s, t, e) => {
   const distancia = valor(s, { tipo: 'distancia', mision: t.mision })
   if (distancia > 0 && !e) {
@@ -415,7 +422,7 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   const apartar = m.alApartar
   if (apartar && (s.zonas.mazoPeligros.includes(apartar) || s.zonas.mazoMision.includes(apartar))) {
     if (s.persigue === apartar) s.persigue = null
-    mover(s, apartar, 'apartados')
+    mover(s, apartar, 'mazoHistoria')
     anotar(s, 'efecto', `«${nombre(s, apartar)}» vuelve a apartarse.`)
   }
   // Las cartas de misión que estaban junto a ella («¡La guardia!») vuelven a apartarse.

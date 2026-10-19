@@ -139,7 +139,7 @@ function textoAccion(a: AccionSobre): string {
     case 'noPrepara':
       return 'no se prepara'
     case 'noCompromete':
-      return 'no puede comprometerse'
+      return 'no puede ser asignado'
     case 'noSuma':
       return 'no suma'
     case 'varios': {
@@ -205,11 +205,11 @@ export function aplicarAccion(s: Estado, c: InstId, a: AccionSobre, fuente?: Ins
       return
     case 'noPrepara':
       s.temporales.push({ clave: 'noPrepara', fuente: id, hasta: a.hasta, inst: c, ...(fuente ? { carta: fuente } : {}) })
-      anotar(s, 'efecto', `${nombre(s, c)} ${a.hasta === 'inicio' ? 'no se prepara en tu próximo Inicio' : 'no se prepara por ahora'}.`)
+      anotar(s, 'efecto', `${nombre(s, c)} ${a.hasta === 'inicio' ? 'no se prepara en tu próxima Fase de Inicio' : 'no se prepara por ahora'}.`)
       return
     case 'noCompromete':
       s.temporales.push({ clave: 'noCompromete', fuente: id, hasta: a.hasta, inst: c, ...(fuente ? { carta: fuente } : {}) })
-      anotar(s, 'efecto', `${nombre(s, c)} no puede comprometerse.`)
+      anotar(s, 'efecto', `${nombre(s, c)} no puede ser asignado.`)
       return
     case 'noSuma':
       if (s.prueba && !s.prueba.sinSumar?.includes(c)) {

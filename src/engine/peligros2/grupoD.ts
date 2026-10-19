@@ -22,6 +22,7 @@ import {
   encuentroEs,
   habilidadDe,
   heridas,
+  heridasAsignados,
   mas,
   municion,
   participantesCtx,
@@ -128,7 +129,7 @@ registrarEspecial('p2_sangre.bronca', (s, t, e) => {
     const faltan = 2 - seguros.length
     if (empatados.length > faltan) {
       if (!e) {
-        return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'se pelea (no puede comprometerse)', n: faltan }, candidatas: empatados, min: faltan, max: faltan })
+        return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'se pelea (no puede ser asignado)', n: faltan }, candidatas: empatados, min: faltan, max: faltan })
       }
       elegidos = [...seguros, ...eleccionDe(e, 'cartas').ids]
     } else elegidos = [...seguros, ...empatados]
@@ -137,7 +138,7 @@ registrarEspecial('p2_sangre.bronca', (s, t, e) => {
     s.temporales.push({ clave: 'noCompromete', fuente: 'p2_sangre', hasta: 'finPrueba', inst: c, ...(carta ? { carta } : {}) })
     s.temporales.push({ clave: PELEA, fuente: 'p2_sangre', hasta: 'finMision', inst: c, ...(carta ? { carta } : {}) })
   }
-  if (elegidos.length > 0) anotar(s, 'aviso', `${nombres(s, elegidos)} se están pegando: no pueden comprometerse.`)
+  if (elegidos.length > 0) anotar(s, 'aviso', `${nombres(s, elegidos)} se están pegando: no pueden ser asignados.`)
   return 'hecha'
 })
 registrarCodigo('p2_sangre.bronca', (_s, fuente) => [{ tipo: 'especial', clave: 'p2_sangre.bronca', ...(fuente ? { fuente } : {}), datos: {}, paso: 0 }])
@@ -263,7 +264,7 @@ registrarPeligro('p2_tahur', {
         { clave: 'naipes', ventana: 'constante', modifica: (ctx, _yo, q) => (q.tipo === 'totalPrueba' && ctx.s.prueba && !ctx.s.prueba.sinCartas ? ctx.s.prueba.cartas.length : 0) },
       ],
       exito: [robar(3)],
-      fallo: [heridas(2)],
+      fallo: [heridasAsignados(2)],
     },
   },
   destino: { efectos: [codigo('p2_tahur.dados')], sinOposicion: [codigo('p2_tahur.dados2')] },
@@ -382,7 +383,7 @@ registrarPeligro('p2_curazao', {
       alRevelarse: [codigo('p2_curazao.reset')],
       elige: [
         { texto: 'No gastar munición: Prueba de COM 5', prueba: true },
-        { texto: 'Gastar 1 munición: −1, o −2 si comprometes a un Artillero', prueba: true, efectos: [pierdesMunicion(1), codigo('p2_curazao.metralla')] },
+        { texto: 'Gastar 1 munición: −1, o −2 si asignas a un Artillero', prueba: true, efectos: [pierdesMunicion(1), codigo('p2_curazao.metralla')] },
       ],
       capacidades: [
         {
@@ -404,8 +405,8 @@ registrarPeligro('p2_curazao', {
     // «Te roban el barco»: la carta dice expresamente que daña el Barco en tierra (P19).
     ciu: { exito: [reparar(1), municion(1)], fallo: [{ tipo: 'dano', n: 2, enTierra: true }, descartar(1)] },
   },
-  // +1. Si la Prueba es de COM, el comprometido con la habilidad más alta sufre 1 herida, superes o no.
-  // Sin oposición: 1 herida a un Tripulante preparado.
+  // −1. Prueba de COM: el Tripulante asignado con la COM más alta sufre 1 herida.
+  // Sin oposición: inflige 1 herida a un Tripulante (fase 10: ya no tiene que estar preparado).
   destino: {
     efectos: [
       {
@@ -414,7 +415,7 @@ registrarPeligro('p2_curazao', {
         entonces: [comprometidoCon(mas('prueba'), { tipo: 'heridas', n: 1 })],
       },
     ],
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: 'eleccion' }, hacer: { tipo: 'heridas', n: 1 } }],
+    sinOposicion: [heridas(1)],
   },
 })
 
@@ -426,7 +427,7 @@ registrarPeligro('p2_cuentas', {
       sinAyuda: true,
       capacidades: [dificultad('vizcaino', (ctx) => (participantesCtx(ctx).some((c) => c !== ctx.s.capitan) ? 1 : 0))],
       exito: [municion(2), cadaComprometido({ tipo: 'estado', estado: 'inspirado' })],
-      fallo: [heridas(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'sangrando' })],
+      fallo: [heridasAsignados(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'sangrando' })],
     },
     // Si comprometes al Capitán, −2.
     nat: {
@@ -473,7 +474,7 @@ registrarPeligro('p2_motin', {
   encuentros: {
     // Solo pueden comprometerse el Capitán y los Oficiales. +1 por cada Tripulante preparado que no sea Oficial (máx. +3).
     mar: {
-      restriccion: { veto: (s, c) => (c === s.capitan || tieneRasgo(s, c, 'Oficial') ? null : 'Solo pueden comprometerse el Capitán y los Oficiales') },
+      restriccion: { veto: (s, c) => (c === s.capitan || tieneRasgo(s, c, 'Oficial') ? null : 'Solo pueden ser asignados el Capitán y los Oficiales') },
       capacidades: [
         dificultad('amotinados', (ctx) =>
           Math.min(3, ctx.s.zonas.tripulacion.filter((c) => c !== ctx.s.capitan && !ctx.agotada(c) && !tieneRasgo(ctx.s, c, 'Oficial')).length),

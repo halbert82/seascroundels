@@ -2,12 +2,12 @@
 
 import { Fragment, useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { Fichas, TextoCarta, claseIcono } from './TextoCarta.tsx'
-import { COLOR_ENTORNO, type VistaCapitulo } from './vista.ts'
+import { COLOR_ENTORNO, type HistoriaDeCarta, type VistaCapitulo } from './vista.ts'
 
 /** Tamaños de letra de las reglas que se prueban, de mayor a menor, hasta que todo cabe. */
 const TAMANOS = [16, 15.2, 14.4, 13.6, 12.8, 12, 11.4, 10.8]
 
-export function CartaCapitulo({ v }: { v: VistaCapitulo }) {
+export function CartaCapitulo({ v }: { v: VistaCapitulo & { historia?: HistoriaDeCarta } }) {
   const conDistancia = v.distancia > 0
   const ref = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
@@ -94,7 +94,14 @@ export function CartaCapitulo({ v }: { v: VistaCapitulo }) {
         )}
       </div>
       <div className="foot">
-        <span>{v.pie}</span>
+        {v.historia ? (
+          <span className="pie-historia">
+            {v.pie}
+            <b className="nh-num">{v.historia.num}</b>
+          </span>
+        ) : (
+          <span>{v.pie}</span>
+        )}
         <span>{v.codigo}</span>
       </div>
     </div>

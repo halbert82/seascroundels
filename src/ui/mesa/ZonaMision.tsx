@@ -188,8 +188,8 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
         <AvanceDeLaPrueba hab={hab} />
         <p className="prueba-nota">
           {p.destino
-            ? 'El Destino ya está a la vista (se aplica al comprometer). Pulsa Tripulantes y cartas de tu mano para comprometerlos.'
-            : 'Previsión antes del Destino. Pulsa Tripulantes y cartas de tu mano para comprometerlos.'}
+            ? 'El Destino ya está a la vista (se aplica al asignar). Pulsa Tripulantes y cartas de tu mano para asignarlos.'
+            : 'Previsión antes del Destino. Pulsa Tripulantes y cartas de tu mano para asignarlos.'}
         </p>
         {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={Math.min(ancho, 400)} />}
       </div>
@@ -217,7 +217,7 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
       <div className="desglose">
         <div className="desglose-fila">
           <span className="desglose-titulo">Total</span>
-          {desgloseTotal(s).length > 0 ? <Partes partes={desgloseTotal(s)} /> : <span className="vacio">nadie comprometido</span>}
+          {desgloseTotal(s).length > 0 ? <Partes partes={desgloseTotal(s)} /> : <span className="vacio">nadie asignado</span>}
         </div>
         <div className="desglose-fila">
           <span className="desglose-titulo">Dificultad</span>
@@ -264,7 +264,7 @@ function Marcador(p: { total: number; dificultad: number; prevision?: boolean; n
   const texto = p.falla
     ? 'El Destino la hace fallar'
     : p.nadie
-      ? 'Sin nadie comprometido, se falla'
+      ? 'Sin nadie asignado, se falla'
       : p.resultado === 'superada'
         ? 'Superada'
         : p.resultado === 'fallada'
@@ -344,7 +344,7 @@ function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: bo
       {conSinOposicion && (
         <p className="sin-oposicion">
           <span className="so-etiqueta">Sin oposición:</span> <span className="so-efecto">{describirEfectos(d.sinOposicion)}</span>
-          <span className="so-estado">{cancelado ? 'cancelado' : hayComprometidos ? 'no se aplica: hay Tripulantes comprometidos' : 'se aplica: no hay nadie comprometido'}</span>
+          <span className="so-estado">{cancelado ? 'cancelado' : hayComprometidos ? 'no se aplica: hay Tripulantes asignados' : 'se aplica: no hay nadie asignado'}</span>
         </p>
       )}
       {cancelado && <span className="sello cancelado">Cancelado</span>}

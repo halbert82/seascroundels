@@ -17,12 +17,11 @@ export function contexto(s: Estado, supuestasAgotadas?: ReadonlySet<InstId>, par
 }
 
 /**
- * Una Mejora aplica su texto si está preparada y su portador está en juego (el Barco o un Tripulante;
- * las de un rehén, no).
+ * Una Mejora aplica su texto si su portador está en juego (el Barco o un Tripulante; las de un rehén, no). Fase 10:
+ * también agotada; agotada solo quiere decir que no puede pagar otra vez una capacidad «Agotar:» hasta prepararse.
  */
 export function mejoraActiva(s: Estado, inst: InstId): boolean {
   const c = copia(s, inst)
-  if (c.agotada) return false
   return c.vinculadaA === 'barco' || (c.vinculadaA !== null && s.zonas.tripulacion.includes(c.vinculadaA))
 }
 

@@ -492,14 +492,13 @@ function repartir(s: Estado, d: Extract<Decision, { tipo: 'repartir' }>): Elecci
   let resto = d.cantidad
   const destinos = Object.keys(d.maximos) as InstId[]
   if (d.motivo.clave === 'heridas') {
-    // Una a una, a quien más vida le quede (el Capitán, el último).
+    // Una a una, a quien más vida le quede (el Capitán, el último). Fase 10: con las heridas libres puede elegir entre
+    // todos; antes que a un Tripulante preparado, a uno ya agotado (el preparado aún puede servir este turno).
     const recibidas: Partial<Record<InstId, number>> = {}
+    const prioridad = (c: InstId) => vidaRestante(s, c) - (recibidas[c] ?? 0) + (copia(s, c).agotada ? 100 : 0) - (c === s.capitan ? 500 : 0)
     while (resto > 0) {
-      const objetivo = [...destinos].sort((a, b) => {
-        const va = vidaRestante(s, a) - (recibidas[a] ?? 0) - (a === s.capitan ? 50 : 0)
-        const vb = vidaRestante(s, b) - (recibidas[b] ?? 0) - (b === s.capitan ? 50 : 0)
-        return vb - va
-      })[0]!
+      const objetivo = [...destinos].sort((a, b) => prioridad(b) - prioridad(a))[0]
+      if (!objetivo) break
       recibidas[objetivo] = (recibidas[objetivo] ?? 0) + 1
       resto--
     }
@@ -518,7 +517,8 @@ function repartir(s: Estado, d: Extract<Decision, { tipo: 'repartir' }>): Elecci
 function cubrirDistancia(s: Estado, d: Extract<Decision, { tipo: 'cubrirDistancia' }>): Eleccion {
   let mejor: { coste: number; ids: InstId[] } | null = null
   const cartas = [...d.cartas].sort((a, b) => iconos(s, b, 'NAV') - iconos(s, a, 'NAV'))
-  for (let mascara = 0; mascara < 1 << d.tripulantes.length; mascara++) {
+  // Fase 10: al menos un Tripulante (la máscara vacía no vale).
+  for (let mascara = 1; mascara < 1 << d.tripulantes.length; mascara++) {
     const grupo = d.tripulantes.filter((_, i) => mascara & (1 << i))
     let nav = navParaDistancia(s, grupo)
     const usadas: InstId[] = []

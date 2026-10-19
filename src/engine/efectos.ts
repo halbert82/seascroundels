@@ -6,8 +6,12 @@ import type { EstadoBarco, FichaTripulante } from './infoEstados.ts'
 import type { CartaId, InstId } from './tipos.ts'
 
 export type Efecto =
-  /** Heridas a un Tripulante. `capitan`: al Capitán. `soloEnTierra`: alternativa al daño fuera del Mar. */
-  | { tipo: 'heridas'; n: number; capitan?: boolean; soloEnTierra?: boolean }
+  /**
+   * Heridas a un Tripulante (en un fallo, repartidas como quiera el jugador entre todos sus Tripulantes). `capitan`: al
+   * Capitán. `soloEnTierra`: alternativa al daño fuera del Mar. `asignados`: la carta dice «entre los Tripulantes
+   * asignados» o «un Tripulante asignado» (si no queda ninguno en juego, a quien elija el jugador).
+   */
+  | { tipo: 'heridas'; n: number; capitan?: boolean; soloEnTierra?: boolean; asignados?: boolean }
   /**
    * Daño al Barco (solo en el Mar). `soloEnMar`: tiene alternativa en tierra. `enTierra`: la carta dice expresamente que
    * daña el Barco fuera del Mar («Te roban el barco», en Ciudad): la carta manda sobre la regla (P19).

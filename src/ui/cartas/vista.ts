@@ -3,6 +3,7 @@
 
 import arteJson from '../../../data/arte.json'
 import { codigoColeccion, type EntradaCatalogo } from '../../engine/catalogo.ts'
+import { dorsoDeHistoria, type DorsoHistoria } from './historia.ts'
 import type { DestinoDatos, EncuentroDatos, Entorno, Habilidad } from '../../engine/datos.ts'
 import { esTextoGrande } from './ajustes.ts'
 import { parsearFichas, parsearTexto, type Ficha, type IconoId, type Segmento } from './marcado.ts'
@@ -28,12 +29,13 @@ export const COLOR_TIPO = {
 export const COLOR_HABILIDAD: Record<Habilidad, string> = { NAV: '#24609A', COM: '#8E2B23', EXP: '#8A5E0F' }
 export const COLOR_ENTORNO: Record<Entorno, string> = { mar: '#1D5872', nat: '#3D6631', ciu: '#8A4F2E' }
 
+/** Color del modificador del Destino (fase 10: se suma al total del jugador; «+N» es bueno, en verde, y «−N», malo). */
 export const COLOR_MOD: Record<string, string> = {
-  '+0': '#6A5640',
-  '+1': '#8E2B23',
-  '+2': '#8E2B23',
-  '−1': '#3D6631',
-  '−2': '#37622B',
+  '−0': '#6A5640',
+  '−1': '#8E2B23',
+  '−2': '#8E2B23',
+  '+1': '#3D6631',
+  '+2': '#37622B',
   '✕': '#5E120B',
 }
 
@@ -220,13 +222,21 @@ export interface VistaPuerto {
   codigo: string
   nombre: string
   muelle: number
+  /** Cuántas misiones disponibles hay (fase 10). */
+  misiones: number
   comunes: Segmento[][]
   propia: { nombre: string; texto: Segmento[] }
   ambientacion: string
   arte?: Arte
 }
 
-export type VistaCarta = VistaJugador | VistaPeligro | VistaMazoPropio | VistaCapitulo | VistaPuerto
+/** Las cartas del mazo de historia llevan su número bien visible y el dorso del mazo al que van (fase 10). */
+export interface HistoriaDeCarta {
+  num: number
+  dorso: DorsoHistoria
+}
+
+export type VistaCarta = (VistaJugador | VistaPeligro | VistaMazoPropio | VistaCapitulo | VistaPuerto) & { historia?: HistoriaDeCarta }
 
 // ---------------------------------------------------------------------------
 
@@ -264,7 +274,7 @@ function base(entrada: EntradaCatalogo): Omit<VistaJugador, 'nombre' | 'color' |
 function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): VistaEncuentro {
   const opciones = e.prueba.map((p) => {
     const opcion: Opcion = { hab: p.hab, dificultad: p.dificultad }
-    if (p.alternativa) opcion.alternativa = { texto: `${p.alternativa.dificultad} ${p.alternativa.comprometido ? 'si comprometes un' : 'con'}`, rasgo: p.alternativa.rasgo }
+    if (p.alternativa) opcion.alternativa = { texto: `${p.alternativa.dificultad} ${p.alternativa.comprometido ? 'si asignas a un' : 'con'}`, rasgo: p.alternativa.rasgo }
     if (p.variable) opcion.variable = true
     return opcion
   })
@@ -311,9 +321,10 @@ function vistaDestino(d: DestinoDatos, v2 = false): VistaDestino {
     mod: d.mod,
     colorMod,
     ambientacion: d.ambientacion,
-    texto: parsearTexto(d.texto, { masEsMalo: true }),
+    // Fase 10: en el Destino, «+N» suma al total del jugador (verde) y «−N» le resta (rojo), como en el resto del texto.
+    texto: parsearTexto(d.texto),
     sinOposicion: v2 ? [] : parsearFichas(d.textoSinOposicion),
-    ...(v2 ? { sinOposicionTexto: parsearTexto(d.textoSinOposicion, { masEsMalo: true }) } : {}),
+    ...(v2 ? { sinOposicionTexto: parsearTexto(d.textoSinOposicion) } : {}),
   }
 }
 
@@ -321,6 +332,12 @@ const ROMANOS = ['', 'I', 'II', 'III']
 
 /** Construye la vista de cualquier carta del catálogo. */
 export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
+  const vista = vistaSinHistoria(entrada)
+  const dorso = dorsoDeHistoria(entrada)
+  return dorso ? { ...vista, historia: { num: entrada.num, dorso } } : vista
+}
+
+function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
   switch (entrada.tipo) {
     case 'capitan': {
       const c = entrada.carta
@@ -569,6 +586,7 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
         codigo: codigoColeccion(entrada.num),
         nombre: c.nombre,
         muelle: c.muelle,
+        misiones: c.misiones,
         comunes: c.opcionesComunes.map((t) => parsearTexto(t)),
         propia: { nombre: c.habilidadPropia.nombre, texto: parsearTexto(c.habilidadPropia.texto) },
         ambientacion: c.ambientacion,

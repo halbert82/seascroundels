@@ -1,8 +1,8 @@
 // Peligros 2.0 · Grupo A (Mar y clima, cartas 1–11): al menos una prueba por carta, con sus encuentros y su Destino.
 
 import { describe, expect, it } from 'vitest'
-import { dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
+
+import { Jugador, type OpcionesSituacion, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
 /** Misiones sin reglas que estorben: Mar (5 de Avance), Naturaleza (3, Distancia 0 con el Barco), Ciudad (4). */
@@ -53,10 +53,10 @@ describe('1 · La corriente del Golfo', () => {
   it('Destino «Chorro»: −1, o −2 si la Prueba es de NAV; Sin oposición: pierdes 1 Avance', () => {
     const j = en('mar', ['chubasco', 'p2_corriente', 'calma']) // Chubasco repentino: NAV 2
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(0)
+    expect(dificultadConDestino(j.estado)).toBe(0)
     const k = en('mar', ['escollos', 'p2_corriente', 'calma']) // Bajíos: NAV 2 o EXP 3
     k.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(2)
+    expect(dificultadConDestino(k.estado)).toBe(2)
     const l = en('mar', ['escollos', 'p2_corriente', 'calma'], { avance: { 'pruebas-mar5': 2 } })
     l.comprometer('EXP', []).seguir()
     expect(l.registro).toContain('Pierdes 1 de Avance.')
@@ -87,8 +87,8 @@ describe('2 · Cielo estrellado', () => {
 
   it('Destino «Estrella polar»: −1 y las cartas de tu mano no suman (las comprometidas no cuentan)', () => {
     const j = en('mar', ['chubasco', 'p2_cielo', 'calma'], { mano: ['timon', 'coraje'] })
-    const sinEstrella = totalPrueba(j.comprometer('NAV', ['capitan'], ['timon']).estado)
-    expect(dificultadPrueba(j.estado)).toBe(1)
+    const sinEstrella = totalSinDestinoPrueba(j.comprometer('NAV', ['capitan'], ['timon']).estado)
+    expect(dificultadConDestino(j.estado)).toBe(1)
     expect(sinEstrella).toBe(3) // Diego 2 + Barco 1: «Mano firme al timón» no suma
     expect(j.zona('descartesCapitan')).toContain('timon')
   })
@@ -126,7 +126,7 @@ describe('3 · Calma chicha', () => {
   it('Naturaleza: cada comprometido con heridas suma 1 menos; si fallas, agotas a 1 Tripulante', () => {
     const j = en('nat', ['p2_calma', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', heridas: 1 }] })
     j.comprometer('COM', ['bucanero'])
-    expect(totalPrueba(j.estado)).toBe(2) // COM 2 + 1 de Diego − 1 por la herida
+    expect(totalSinDestinoPrueba(j.estado)).toBe(2) // COM 2 + 1 de Diego − 1 por la herida
     j.seguir()
     expect(j.copia('capitan').agotada).toBe(true)
   })
@@ -134,8 +134,8 @@ describe('3 · Calma chicha', () => {
   it('Destino «Ni un soplo»: en una Prueba de NAV, el Barco no da su +1', () => {
     const j = en('mar', ['chubasco', 'p2_calma', 'calma'])
     j.comprometer('NAV', ['capitan'])
-    expect(totalPrueba(j.estado)).toBe(2)
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(3)
   })
 })
 
@@ -144,9 +144,9 @@ describe('4 · Niebla', () => {
     const j = en('mar', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'carpintero'] })
     j.comprometer('COM', [])
     j.seguir()
-    // Faltan 3 (COM 3 contra nadie): 3 heridas a quien elijas y un rehén.
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir', n: 3 } })
-    j.elegir('capitan')
+    // Faltan 3 (COM 3 contra nadie): 3 heridas repartidas como quieras (fase 10) y un rehén.
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 3, motivo: { clave: 'heridas', n: 3 } })
+    j.repartir({ capitan: 3 })
     expect(j.copia('capitan').heridas).toBe(3)
     expect(j.zona('rehenes')).toHaveLength(1)
   })
@@ -154,7 +154,7 @@ describe('4 · Niebla', () => {
   it('Mar: con un Vigía la dificultad es 2; si superas, +1 munición', () => {
     const j = en('mar', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['vigia'], barco: { mejoras: [{ id: 'bronce', municion: 0 }] } })
     j.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(2)
     j.seguir()
     expect(j.copia('bronce').municion).toBe(1)
   })
@@ -162,7 +162,7 @@ describe('4 · Niebla', () => {
   it('Naturaleza: los Vigías no suman; si fallas, el comprometido con menos EXP se pierde', () => {
     const j = en('nat', ['p2_niebla', 'chubasco', 'calma', 'calma'], { tripulacion: ['vigia'] })
     j.comprometer('EXP', ['capitan', 'vigia'])
-    expect(totalPrueba(j.estado)).toBe(1) // Diego 1; la Vigía no suma
+    expect(totalSinDestinoPrueba(j.estado)).toBe(1) // Diego 1; la Vigía no suma
     j.seguir()
     expect(j.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'noPrepara', inst: j.inst('capitan') }))
   })
@@ -176,7 +176,7 @@ describe('4 · Niebla', () => {
   it('Destino «Bruma»: +1, pero −1 si el encuentro es Barco, Pirata o Guardia', () => {
     const j = en('mar', ['chubasco', 'p2_niebla', 'calma'])
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(3)
   })
 })
 
@@ -232,7 +232,7 @@ describe('6 · Arrecife', () => {
   it('Mar: si superas, descartas la carta de arriba del mazo de Peligros sin resolverla', () => {
     const j = en('mar', ['p2_arrecife', 'chubasco', 'niebla', 'calma'], { tripulacion: ['vigia'] })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(2) // 2 con un Vigía
+    expect(dificultadConDestino(j.estado)).toBe(2) // 2 con un Vigía
     j.seguir()
     expect(j.zona('descartesPeligros')).toContain('niebla')
     expect(j.zona('mazoPeligros')[0]).toBe('calma')
@@ -248,19 +248,19 @@ describe('6 · Arrecife', () => {
   it('Ciudad: NAV 2 solo si comprometes a un Marinero', () => {
     const j = en('ciu', ['p2_arrecife', 'chubasco', 'calma'], { tripulacion: ['marinero_p', 'vigia'] })
     j.comprometer('NAV', ['marinero_p'])
-    expect(dificultadPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(2)
     const k = en('ciu', ['p2_arrecife', 'chubasco', 'calma'], { tripulacion: ['marinero_p', 'vigia'] })
     k.comprometer('NAV', ['vigia'])
-    expect(dificultadPrueba(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(4)
   })
 
   it('Destino «Coral bajo la quilla»: +1, o +0 si comprometiste a un Vigía', () => {
     const j = en('mar', ['chubasco', 'p2_arrecife', 'calma'], { tripulacion: ['vigia'] })
     j.comprometer('NAV', ['vigia'])
-    expect(dificultadPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(2)
     const k = en('mar', ['chubasco', 'p2_arrecife', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(3)
+    expect(dificultadConDestino(k.estado)).toBe(3)
   })
 
   it('Destino «Coral bajo la quilla», sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, 1 herida a un Tripulante', () => {
@@ -286,7 +286,7 @@ describe('7 · Fuego a bordo', () => {
   it('Mar, «Atacar el fuego»: +1 con 2 o más munición; si fallas, 1 daño e Incendio a bordo, que quema al revelar', () => {
     const j = en('mar', ['p2_fuego', 'chubasco', 'calma', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
     j.opcion('1').comprometer('NAV', [])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.estado.danoBarco).toBe(1)
     expect(j.estadosBarco).toEqual(['incendio'])
@@ -333,7 +333,7 @@ describe('7 · Fuego a bordo', () => {
   it('Destino «Pavesas»: +1, o +2 con 3 o más munición', () => {
     const j = en('mar', ['chubasco', 'p2_fuego', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 3 }] } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
   })
 })
 
@@ -342,13 +342,13 @@ describe('8 · La broma', () => {
     const mejoras = ['vela', 'hamacas', 'casco']
     const j = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras }, tripulacion: ['carpintero'] })
     j.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     const k = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras }, tripulacion: ['carpintero'] })
     k.comprometer('EXP', ['carpintero'])
-    expect(dificultadPrueba(k.estado)).toBe(3)
+    expect(dificultadConDestino(k.estado)).toBe(3)
     const l = en('mar', ['p2_broma', 'chubasco', 'calma'])
     l.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(l.estado)).toBe(3)
+    expect(dificultadConDestino(l.estado)).toBe(3)
   })
 
   it('Mar: si fallas, Vía de agua; si ya la tenía, 2 daños', () => {
@@ -364,7 +364,7 @@ describe('8 · La broma', () => {
   it('Naturaleza: +1 por cada comprometido después del primero; con uno solo, +1 Avance', () => {
     const j = en('nat', ['p2_broma', 'chubasco', 'calma'], { tripulacion: ['vigia', 'baqueano'] })
     j.comprometer('EXP', ['vigia', 'baqueano'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('nat', ['p2_broma', 'chubasco', 'calma'], { tripulacion: ['baqueano'] })
     k.comprometer('EXP', ['baqueano']).pasarOfertas().seguir().pasarOfertas()
     expect(k.registro.some((r) => r.includes('+1 de Avance'))).toBe(true)
@@ -379,7 +379,7 @@ describe('8 · La broma', () => {
   it('Destino «Carcoma»: las Mejoras no suman', () => {
     const j = en('mar', ['chubasco', 'p2_broma', 'calma'], { capitan: { mejoras: ['brujula'] } })
     j.comprometer('NAV', ['capitan'])
-    expect(totalPrueba(j.estado)).toBe(3) // Diego 2 + Barco 1; la Brújula no suma
+    expect(totalSinDestinoPrueba(j.estado)).toBe(3) // Diego 2 + Barco 1; la Brújula no suma
   })
 
   it('Destino «Carcoma», sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, descarta 1 carta', () => {
@@ -407,7 +407,7 @@ describe('9 · Turbonada', () => {
     j.comprometer('NAV', []).seguir()
     expect(j.estadosBarco).toEqual(['velasRotas'])
     j.seguir().comprometer('NAV', ['capitan'])
-    expect(totalPrueba(j.estado)).toBe(2)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(2)
   })
 
   it('Naturaleza: +1 por cada Tripulante ya agotado al revelarla (máx. +2); si fallas, el de menos Vida sufre 2 heridas', () => {
@@ -415,7 +415,7 @@ describe('9 · Turbonada', () => {
       tripulacion: [{ id: 'bucanero', agotada: true }, { id: 'carpintero', agotada: true }, { id: 'vigia', agotada: true }],
     })
     j.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.copia('vigia').heridas).toBe(0) // muere (Vida 1) y sale del juego
     expect(j.zona('tripulacion')).not.toContain('vigia')
@@ -440,7 +440,7 @@ describe('10 · Huracán', () => {
   it('Mar: −1 por cada Marinero comprometido; si fallas, 3 daños y te retiras', () => {
     const j = en('mar', ['p2_huracan', 'chubasco', 'calma'], { tripulacion: ['marinero_p', 'bucanero'] })
     j.comprometer('NAV', ['marinero_p', 'bucanero'])
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('mar', ['p2_huracan', 'chubasco', 'calma'])
     k.comprometer('NAV', []).seguir()
     expect(k.estado.danoBarco).toBe(3)
@@ -475,7 +475,7 @@ describe('10 · Huracán', () => {
     j.opcion('agotar')
     expect(j.copia('viejo_lobo').agotada).toBe(true)
     expect(j.estado.prueba?.falla).toBe(false)
-    expect(dificultadPrueba(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(4)
   })
 
   it('Destino «Vendaval», sin oposición: en el Mar, 2 daños al Barco; en Naturaleza o Ciudad, 2 heridas repartidas', () => {
@@ -517,6 +517,6 @@ describe('11 · Maremoto', () => {
     j.comprometer('NAV', []).seguir()
     expect(j.copia('capitan').heridas).toBe(1)
     j.seguir().comprometer('NAV', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(3) // 2 + 1
+    expect(dificultadConDestino(j.estado)).toBe(3) // 2 + 1
   })
 })

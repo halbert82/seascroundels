@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest'
 import { capacidadesDe } from './capacidades/index.ts'
 import { iconosDe } from './catalogo.ts'
 import { DATOS } from './datos.ts'
-import { dificultadPrueba, totalPrueba } from './prueba.ts'
-import { Jugador } from './pruebas/situacion.ts'
+
+import { Jugador, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 
 describe('Habilidades (sin texto)', () => {
   it('solo se usan por sus iconos: cada uno suma 1', () => {
@@ -86,7 +86,7 @@ describe('Eventos de Acción', () => {
     const j = Jugador.en({ mano: ['trampa'], tripulacion: ['bucanero'], misiones: ['pruebas-nat3'], mazoPeligros: ['rivales', 'chubasco', 'calma'], escenario: ['pruebas-calma'] })
     j.usar('trampa.jugar').zarpar('pruebas-nat3') // Distancia 1 − 1 del Barco = 0
     j.comprometer('COM', ['capitan'])
-    expect(dificultadPrueba(j.estado)).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(2)
   })
 })
 
@@ -139,7 +139,7 @@ describe('Otras Respuestas', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['todos', 'ojo'], tripulacion: ['bucanero'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan', 'bucanero'])
     j.usar('todos.jugar').elegir('ojo')
-    expect(totalPrueba(j.estado)).toBe(3 + 2 + 2)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(3 + 2 + 2)
   })
 
   it('060 · Prisionero liberado: tras superar una Prueba de COM, reclutas gratis del muelle a uno de coste 2 o menos', () => {
@@ -161,6 +161,7 @@ describe('Otras Respuestas', () => {
   it('064 · Lección aprendida: tras fallar, ficha de Entrenamiento de esa habilidad para un participante con hueco', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['leccion', 'ojo'], tripulacion: ['bucanero'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['bucanero']).seguir()
+    j.repartir({ bucanero: 1 }) // heridas libres (fase 10)
     j.usar('leccion.jugar').elegir('ojo')
     expect(j.copia('bucanero').entrenamiento).toEqual(['COM'])
   })

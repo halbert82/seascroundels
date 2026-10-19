@@ -63,10 +63,24 @@ export interface CartaNombrada {
 
 const ORDEN_PARTES: ParteCarta[] = ['mar', 'nat', 'ciu', 'encuentro', 'destino']
 
+/** Carta de Peligro (o de mazo propio) por su nombre impreso. */
+function peligroPorNombre(nombre: string): string | null {
+  const e = CATALOGO.find((x) => (x.tipo === 'peligro' && !x.carta.retirada) || x.tipo === 'mazoPropio' ? x.carta.nombre === nombre : false)
+  return e?.id ?? null
+}
+
 /** Cartas nombradas en el texto, en el orden en que salen (sin repetir), como mucho `maximo`, con sus partes. */
 export function cartasYPartes(texto: string, maximo = 5): CartaNombrada[] {
   const ocupado = new Array<boolean>(texto.length).fill(false)
   const encontradas: { pos: number; id: string; parte?: ParteCarta }[] = []
+  // Fase 10: los Destinos ya no muestran su nombre; se citan como «el Destino de la carta «X»» (y «el de la carta «X»»).
+  for (const m of texto.matchAll(/\b(?:Destino|el|los) de la carta «([^»]+)»/g)) {
+    const id = peligroPorNombre(m[1] ?? '')
+    if (!id || m.index === undefined) continue
+    const inicio = m.index + m[0].indexOf('«')
+    for (let i = inicio; i < inicio + (m[1] ?? '').length + 2; i++) ocupado[i] = true
+    encontradas.push({ pos: m.index, id, parte: 'destino' })
+  }
   for (const n of nombres()) {
     let desde = 0
     for (let pos = texto.indexOf(n.texto, desde); pos >= 0; pos = texto.indexOf(n.texto, desde)) {

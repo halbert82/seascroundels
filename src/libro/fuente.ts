@@ -331,11 +331,13 @@ function crearMarkdown(): MarkdownIt {
   r.blockquote_open = (tokens, i) => {
     const meta = tokens[i]?.meta as { tipo?: string } | null
     if (meta?.tipo === 'tema') return '<aside class="nota-tema">'
+    // Fase 10: aclaración de reglas, en la columna exterior como la nota temática, pero con otro estilo.
+    if (meta?.tipo === 'nota') return '<aside class="nota-tema nota-regla">'
     return '<blockquote>'
   }
   r.blockquote_close = (tokens, i) => {
     const meta = tokens[i]?.meta as { tipo?: string } | null
-    if (meta?.tipo === 'tema') return '</aside>\n'
+    if (meta?.tipo === 'tema' || meta?.tipo === 'nota') return '</aside>\n'
     return '</blockquote>\n'
   }
   r.table_open = (_t, _i, _o, env: Entorno) => {
@@ -393,11 +395,12 @@ function prepararMarcas(tokens: Token[]): Token[] {
     const corte = hijos.findIndex((h) => h.type === 'softbreak' || h.type === 'hardbreak')
     inline.children = corte >= 0 ? hijos.slice(corte + 1) : []
   }
-  // Notas temáticas: delante del bloque anterior del mismo nivel.
+  // Notas temáticas y aclaraciones: delante del bloque anterior del mismo nivel.
   const salida = [...tokens]
   for (let i = 0; i < salida.length; i++) {
     const t = salida[i]
-    if (!t || t.type !== 'blockquote_open' || (t.meta as { tipo?: string } | null)?.tipo !== 'tema') continue
+    const tipoNota = (t?.meta as { tipo?: string } | null)?.tipo
+    if (!t || t.type !== 'blockquote_open' || (tipoNota !== 'tema' && tipoNota !== 'nota')) continue
     const fin = cierre(salida, i)
     // Bloque anterior: retrocede hasta el token de apertura del mismo nivel.
     let j = i - 1
@@ -544,8 +547,9 @@ function bloquesDe(md: MarkdownIt, tokens: Token[], e: Entorno, opciones: { comp
       const limpio = cuerpo[1]?.type === 'inline' && cuerpo[1].content === '' ? cuerpo.slice(3) : cuerpo
       // En las notas y los recuadros no se marcan términos: la negrita de la primera vez va en el texto de reglas.
       const sinTerminos: Entorno = { ...e, terminos: [] }
-      if (tipo === 'tema') {
-        conTema = true
+      if (tipo === 'tema' || tipo === 'nota') {
+        // Solo las notas temáticas cuentan para el «[nota pendiente]» de un capítulo.
+        if (tipo === 'tema') conTema = true
         temaPendiente += renderizar(md, trozo, sinTerminos)
         continue
       }
@@ -686,7 +690,7 @@ function creadorDeAnclas(prefijo: string): (titulo: string) => string {
 // Índice de términos de la Referencia de reglas
 
 /** Entradas cuya primera frase es una lista («…: Barco, Bestia, … y Tripulación.»): cada palabra va al índice. */
-const LISTAS_DEL_INDICE: Record<string, string> = { 'Palabras clave': 'palabra clave', Rasgo: 'Rasgo', 'Fichas de misión': 'ficha de misión' }
+const LISTAS_DEL_INDICE: Record<string, string> = { 'Tipos de encuentro': 'tipo de encuentro', Rasgo: 'Rasgo', 'Fichas de misión': 'ficha de misión' }
 
 const mayuscula = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
 
@@ -704,7 +708,7 @@ export function claveIndice(t: string): string {
  *   - cada entrada, y cada parte de las que juntan dos términos («Curar y reparar» → «Reparar»);
  *   - lo que cada entrada pone en negrita para explicarlo («**Envenenado:**», «**misión lejana**»), con su página exacta:
  *     a esa negrita se le pone un ancla (el atributo `id` de su token);
- *   - cada palabra de las listas de «Palabras clave», «Rasgo» y «Fichas de misión».
+ *   - cada palabra de las listas de «Tipos de encuentro», «Rasgo» y «Fichas de misión».
  * No cuentan las negritas de los ejemplos, los pasos numerados ni los rótulos que van solos en su párrafo.
  */
 function indiceDeTerminos(secciones: Seccion[], ids: string[]): LineaIndice[] {
@@ -730,6 +734,8 @@ function indiceDeTerminos(secciones: Seccion[], ids: string[]): LineaIndice[] {
       if (t.type === 'ordered_list_open') enPasos++
       if (t.type === 'ordered_list_close') enPasos--
       if (t.type !== 'inline' || enCita > 0) continue
+      // La línea «Véase también» no es la lista de la entrada.
+      if (/^\*?(Véase|Consulta) también/.test(t.content)) continue
       if (clase && t.content.includes(':')) {
         const lista = /:\s*([^.]+)\./.exec(t.content)?.[1] ?? ''
         for (const palabra of lista.split(/,\s*|\s+y\s+|\s+o\s+/).map((x) => x.trim()).filter(Boolean)) poner({ termino: palabra, id, en: s.titulo, clase }, 5)

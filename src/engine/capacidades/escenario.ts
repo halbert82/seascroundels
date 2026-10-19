@@ -36,7 +36,7 @@ registrarCodigo('desercion.desertar', () => [{ tipo: 'desercion' }])
 
 /** «La Armada te persigue», si está apartada, en el mazo de Peligros o en sus descartes (de ahí se puede sacar). */
 function armadaQueSePuedeSacar(s: Estado): InstId | undefined {
-  return [...s.zonas.apartados, ...s.zonas.mazoPeligros, ...s.zonas.descartesPeligros].find((c) => copia(s, c).id === 'armada')
+  return [...s.zonas.mazoHistoria, ...s.zonas.apartados, ...s.zonas.mazoPeligros, ...s.zonas.descartesPeligros].find((c) => copia(s, c).id === 'armada')
 }
 
 // La Armada patrulla: «pon La Armada te persigue encima del mazo de Peligros: será el primer encuentro de tu próxima

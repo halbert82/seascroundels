@@ -1588,8 +1588,7 @@ body {
     radial-gradient(ellipse 90% 70% at 50% 42%, color-mix(in srgb, var(--dorso), #fff 16%), var(--dorso) 55%, color-mix(in srgb, var(--dorso), #000 55%));
   box-shadow:
     0.5mm 0.5mm 0 color-mix(in srgb, var(--dorso), #000 40%),
-    1mm 1mm 0 color-mix(in srgb, var(--dorso), #000 55%),
-    1.5mm 1.5mm 1.6mm rgba(0, 0, 0, 0.35);
+    1mm 1mm 0 color-mix(in srgb, var(--dorso), #000 55%);
   padding: 0.8mm;
 }
 
@@ -2618,4 +2617,132 @@ body {
   font-style: italic;
   font-size: 7.4pt;
   color: var(--sepia);
+}
+
+/* ------------------------------------------------------------------ */
+/* Fase 10: aclaraciones de reglas ([!nota]) en la columna exterior.  */
+/* Van como las notas temáticas, pero en letra derecha y en tinta.     */
+
+.nota-tema.nota-regla {
+  font-style: normal;
+  color: var(--tinta);
+  font-size: 8.4pt;
+  line-height: 1.36;
+}
+
+.nota-tema.nota-regla::before {
+  content: 'Nota';
+  display: block;
+  margin-bottom: 0.6mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 7.6pt;
+  letter-spacing: 0.14em;
+  color: var(--rojo);
+}
+
+.pagedjs_right_page .nota-tema.nota-regla {
+  border-left: 0.6mm solid var(--oro);
+}
+
+.pagedjs_left_page .nota-tema.nota-regla {
+  border-right: 0.6mm solid var(--oro);
+}
+
+/*
+ * Fase 10: sin sombras difuminadas en las cartas dibujadas, sus marcadores y los recortes. Al sacar el PDF, Chromium
+ * convierte cada sombra difuminada en una imagen gris aparte, y algunos visores de PDF la enseñan como un recuadro gris
+ * detrás de la carta o del número. En su lugar, un filete fino y nítido.
+ */
+.libro .miniatura,
+.libro .carta-anotada .miniatura,
+.libro .recorte {
+  box-shadow: 0 0 0 0.15mm rgba(43, 33, 25, 0.45);
+}
+
+.libro .miniatura .card,
+.libro .recorte .card {
+  box-shadow: none;
+}
+
+.libro .marcador {
+  box-shadow: none;
+}
+
+/* Fase 10: cartas del mazo de historia, por delante y por detrás. */
+.anatomia-historia .historia-pares {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12mm;
+}
+
+.historia-par {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6mm;
+}
+
+.historia-caras {
+  display: flex;
+  align-items: flex-end;
+  gap: 4mm;
+}
+
+.historia-cara {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1mm;
+}
+
+.historia-rotulo {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 7.6pt;
+  letter-spacing: 0.12em;
+  color: var(--sepia);
+}
+
+.miniatura.dorso-carta {
+  border-radius: 1.1mm;
+  overflow: hidden;
+  line-height: 0;
+}
+
+/* Fase 10: «Objetivo del juego» sigue en la página de la apertura (el texto nuevo es una línea más largo). */
+.capitulo.primero + .capitulo {
+  margin-top: 1mm;
+}
+
+.apertura-ornamento {
+  margin-bottom: 1mm;
+}
+
+.anatomia-historia figcaption {
+  margin-top: 0.4mm;
+  font-size: 7.6pt;
+}
+
+.anatomia-historia .historia-pares {
+  gap: 16mm;
+}
+
+/* En un recorte de una carta de Peligro (un encuentro o su Destino) no se enseña la pestaña del mazo de historia. */
+.recorte .num-historia {
+  display: none;
+}
+
+/* La anatomía de Escenario, más baja: así la de las cartas del mazo de historia cabe en la misma página. */
+.anatomia-escenario {
+  margin: 0 0 2mm;
+}
+
+.anatomia-escenario .anatomia-cartas {
+  padding: 1mm 0;
+}
+
+.anatomia.anatomia-historia {
+  margin: 1.5mm 0 0;
 }

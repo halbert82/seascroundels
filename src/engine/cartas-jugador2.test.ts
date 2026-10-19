@@ -3,8 +3,8 @@
 import { describe, expect, it } from 'vitest'
 import { registrarPeligro } from './capacidades/peligros.ts'
 import { DATOS } from './datos.ts'
-import { dificultadPrueba } from './prueba.ts'
-import { Jugador } from './pruebas/situacion.ts'
+
+import { Jugador, dificultadConDestino } from './pruebas/situacion.ts'
 
 // Una carta de Peligro que se queda en juego (de nivel Leve) para «Cortar por lo sano», solo en este fichero.
 registrarPeligro('percances', { encuentros: { mar: { queda: { quitar: [] } } } })
@@ -44,10 +44,10 @@ describe('La Lengua', () => {
   it('los encuentros Civil en los que participa reciben −1 de dificultad', () => {
     const j = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['civiles', 'chubasco', 'calma'], tripulacion: ['lengua'] })
     j.comprometer('EXP', ['lengua'])
-    expect(dificultadPrueba(j.estado)).toBe(2) // EXP 3 − 1
+    expect(dificultadConDestino(j.estado)).toBe(2) // EXP 3 − 1
     const k = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['civiles', 'chubasco', 'calma'], tripulacion: ['lengua'] })
     k.comprometer('EXP', ['capitan'])
-    expect(dificultadPrueba(k.estado)).toBe(3)
+    expect(dificultadConDestino(k.estado)).toBe(3)
   })
 })
 

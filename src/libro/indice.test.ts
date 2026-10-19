@@ -1,5 +1,5 @@
 // El índice de términos de la Referencia de reglas: que un jugador encuentre en él todo lo que lee en las cartas.
-// Si mañana una carta usa un término en negrita, una palabra clave o un Rasgo que el reglamento no explica, falla.
+// Si mañana una carta usa un término en negrita, un tipo de encuentro o un Rasgo que el reglamento no explica, falla.
 
 import { describe, expect, it } from 'vitest'
 import fuente from '../../docs/reglamento-v1.0.md?raw'
@@ -123,10 +123,11 @@ describe('Índice de términos de la Referencia de reglas', () => {
     expect(faltan).toEqual([])
   })
 
-  it('cada palabra clave de las cartas (también de los mazos propios) tiene su línea, y la lista de la Referencia es la de las cartas', () => {
+  // Fase 10: lo que antes se llamaba «Palabras clave» (Guardia, Militar…) son ahora los «Tipos de encuentro».
+  it('cada tipo de encuentro de las cartas (también de los mazos propios) tiene su línea, y la lista de la Referencia es la de las cartas', () => {
     expect(PALABRAS_CLAVE.size).toBeGreaterThan(8)
-    for (const p of PALABRAS_CLAVE) expect(indice).toContainEqual(expect.objectContaining({ termino: p, en: 'Palabras clave' }))
-    const lista = indice.filter((l) => l.en === 'Palabras clave').map((l) => l.termino)
+    for (const p of PALABRAS_CLAVE) expect(indice).toContainEqual(expect.objectContaining({ termino: p, en: 'Tipos de encuentro' }))
+    const lista = indice.filter((l) => l.en === 'Tipos de encuentro').map((l) => l.termino)
     expect(new Set(lista)).toEqual(PALABRAS_CLAVE)
   })
 

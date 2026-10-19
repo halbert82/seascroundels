@@ -9,9 +9,16 @@ export function CartaPuerto({ v }: { v: VistaPuerto }) {
       <div className="ptoh">
         <span className="chapm">Puerto · El Caribe</span>
         <span className="chapn">{v.nombre}</span>
-        <div className="muelleb">
-          <small>MUELLE</small>
-          <b>{v.muelle}</b>
+        {/* Fase 10: la carta de puerto dice también cuántas misiones disponibles hay. */}
+        <div className="ptovals">
+          <div className="muelleb">
+            <small>MISIONES</small>
+            <b>{v.misiones}</b>
+          </div>
+          <div className="muelleb">
+            <small>MUELLE</small>
+            <b>{v.muelle}</b>
+          </div>
         </div>
       </div>
       {/* La ilustración en la franja de la derecha, como la de una misión en la suya; la frase, encima y abajo. */}

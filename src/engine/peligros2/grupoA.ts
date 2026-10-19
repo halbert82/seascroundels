@@ -20,6 +20,7 @@ import {
   enElMar,
   habilidadDe,
   heridas,
+  heridasAsignados,
   mas,
   mejorasDeBarco,
   menos,
@@ -44,7 +45,7 @@ registrarPeligro('p2_corriente', {
     // Éxito: +1 Avance por cada punto que superes (máx. +2). Fallo: 1 daño al Barco.
     mar: { exito: [{ tipo: 'porCada', medida: 'margen', efectos: [avance(1)], maximo: 2 }], fallo: [dano(1)] },
     // Éxito: prepara 1 Tripulante. Fallo: un Tripulante comprometido sufre 1 herida.
-    nat: { exito: [preparar(1)], fallo: [heridas(1)] },
+    nat: { exito: [preparar(1)], fallo: [heridasAsignados(1)] },
     // Puedes agotar a 1 Tripulante para reclutar o adquirir gratis 1 carta del muelle de coste 2 o menos.
     ciu: {
       efecto: [
@@ -161,7 +162,7 @@ registrarPeligro('p2_bajamar', {
 registrarPeligro('p2_arrecife', {
   encuentros: {
     mar: { exito: [{ tipo: 'descartarArriba', n: 1 }], fallo: [dano(2), pierdesMunicion(1)] },
-    nat: { exito: [municion(1), robar(1)], fallo: [heridas(2)] },
+    nat: { exito: [municion(1), robar(1)], fallo: [heridasAsignados(2)] },
     // NAV 4 (2 si comprometes a un Marinero).
     ciu: {
       exito: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia'], n: -2 } }],
@@ -221,7 +222,7 @@ registrarPeligro('p2_fuego', {
           tipo: 'elegir',
           opciones: [
             { texto: 'Saqueáis los almacenes: robas 2', efectos: [robar(2)] },
-            { texto: 'Ayudáis con los cubos: preparas a todos los comprometidos', efectos: [preparar('comprometidos')] },
+            { texto: 'Ayudáis con los cubos: preparas a todos los Tripulantes asignados', efectos: [preparar('comprometidos')] },
           ],
         },
       ],
@@ -337,7 +338,7 @@ registrarPeligro('p2_huracan', {
             {
               tipo: 'elegir',
               opciones: [
-                { texto: '1 herida a un Tripulante comprometido', efectos: [comprometidoCon('eleccion', { tipo: 'heridas', n: 1 })] },
+                { texto: '1 herida a un Tripulante asignado', efectos: [comprometidoCon('eleccion', { tipo: 'heridas', n: 1 })] },
                 { texto: 'Pierdes 1 Avance', efectos: [pierdesAvance(1)] },
               ],
             },

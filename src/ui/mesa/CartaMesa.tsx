@@ -183,7 +183,8 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
         </span>
       )}
       {contador !== undefined && (
-        <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha' : 'fichas'} en esta carta`}>
+        // Fase 10: un solo tipo de ficha de misión, también para las cartas que se quedan en juego y llevan la cuenta de algo.
+        <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha de misión' : 'fichas de misión'} en esta carta`}>
           <b>{contador}</b>
           <small>{contador === 1 ? 'ficha' : 'fichas'}</small>
         </span>

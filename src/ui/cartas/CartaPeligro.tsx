@@ -3,7 +3,7 @@
 import { Fragment, useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { Fichas, TextoCarta, claseIcono } from './TextoCarta.tsx'
 import { esNombreEncuentroLargo } from './ajustes.ts'
-import { COLOR_ENTORNO, COLOR_HABILIDAD, type VistaDestino, type VistaEncuentro, type VistaMazoPropio, type VistaPeligro } from './vista.ts'
+import { COLOR_ENTORNO, COLOR_HABILIDAD, type TextosEncuentro, type VistaDestino, type VistaEncuentro, type VistaMazoPropio, type VistaPeligro } from './vista.ts'
 
 /** «3 / 2»: lo que ganas si superas la Prueba y, más pequeño, si no la superas. */
 function AvanceEncuentro({ e }: { e: VistaEncuentro }) {
@@ -109,10 +109,13 @@ export function Destino({ d, entraDuranteLaPartida }: { d: VistaDestino; entraDu
 // Peligros 2.0: cada encuentro con su texto completo (Texto, Éxito y Fallo). El alto se reparte según el texto de
 // cada encuentro y la letra se ajusta sola hasta que todo cabe.
 
-function Prueba2({ e }: { e: VistaEncuentro }) {
-  if (!e.conPrueba) return <span className="sinp">Sin Prueba</span>
+/**
+ * La Prueba (fase 10): a la izquierda, justo encima de Éxito y Fallo, con el icono y la dificultad grandes. Si es una X
+ * («X = 2 + tus Mejoras de barco…»), su nota va al lado.
+ */
+function Prueba2({ e, nota }: { e: VistaEncuentro; nota: TextosEncuentro['nota'] }) {
   return (
-    <span className="test2">
+    <p className="test2">
       {e.opciones.map((o, i) => (
         <Fragment key={i}>
           {i > 0 && <span className="sep">/</span>}
@@ -127,7 +130,12 @@ function Prueba2({ e }: { e: VistaEncuentro }) {
           )}
         </Fragment>
       ))}
-    </span>
+      {nota.length > 0 && (
+        <span className="alt nota">
+          <TextoCarta segmentos={nota} />
+        </span>
+      )}
+    </p>
   )
 }
 
@@ -156,18 +164,14 @@ function Encuentro2({ e }: { e: VistaEncuentro }) {
               {x}
             </span>
           ))}
-          <Prueba2 e={e} />
+          {!e.conPrueba && <span className="sinp">Sin Prueba</span>}
         </div>
-        {t.nota.length > 0 && (
-          <p className="t2 nota">
-            <TextoCarta segmentos={t.nota} />
-          </p>
-        )}
         {t.texto.length > 0 && (
           <p className="t2">
             <TextoCarta segmentos={t.texto} />
           </p>
         )}
+        {e.conPrueba && <Prueba2 e={e} nota={t.nota} />}
         {t.exito.length > 0 && (
           <p className="t2 win">
             <span className="lbl">Éxito</span>
@@ -185,33 +189,35 @@ function Encuentro2({ e }: { e: VistaEncuentro }) {
   )
 }
 
+/**
+ * El Destino (fase 10): sin nombre; el modificador en el círculo, a la izquierda, y su texto al lado. La línea Sin
+ * oposición lleva solo el escudo y su efecto.
+ */
 function Destino2({ d }: { d: VistaDestino }) {
   return (
-    <div className="dest v2">
-      <div className="desth">
-        <span className="destn">{d.nombre}</span>
-        <span className={d.mod === '✕' ? 'mod fallo' : 'mod'} style={{ '--dc': d.colorMod } as CSSProperties}>
-          {d.mod}
-        </span>
+    <div className="dest v2" title={`Destino: ${d.nombre}`}>
+      <span className={d.mod === '✕' ? 'mod fallo' : 'mod'} style={{ '--dc': d.colorMod } as CSSProperties}>
+        {d.mod}
+      </span>
+      <div className="dest-textos">
+        {d.texto.length > 0 && (
+          <p className="t2 destt">
+            <TextoCarta segmentos={d.texto} tema="oscuro" />
+          </p>
+        )}
+        {d.sinOposicionTexto && d.sinOposicionTexto.length > 0 && (
+          <p className="t2 so2">
+            <span className="ic i-sinop" />
+            <TextoCarta segmentos={d.sinOposicionTexto} tema="oscuro" />
+          </p>
+        )}
       </div>
-      {d.texto.length > 0 && (
-        <p className="t2 destt">
-          <TextoCarta segmentos={d.texto} tema="oscuro" />
-        </p>
-      )}
-      {d.sinOposicionTexto && d.sinOposicionTexto.length > 0 && (
-        <p className="t2 so2">
-          <span className="ic i-sinop" />
-          <span className="lbl">Sin oposición</span>
-          <TextoCarta segmentos={d.sinOposicionTexto} tema="oscuro" />
-        </p>
-      )}
     </div>
   )
 }
 
-/** Tamaños de letra que se prueban, de mayor a menor, hasta que el texto cabe. */
-const TAMANOS = [11.5, 11, 10.5, 10, 9.6, 9.2, 8.8, 8.4, 8, 7.6, 7.2]
+/** Tamaños de letra que se prueban, de mayor a menor, hasta que el texto cabe (fase 10: puede crecer más). */
+const TAMANOS = [14, 13.5, 13, 12.5, 12, 11.5, 11, 10.5, 10, 9.6, 9.2, 8.8, 8.4, 8, 7.6, 7.2]
 
 function CartaPeligro2({ v }: { v: VistaPeligro }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -270,15 +276,14 @@ function CartaMazoPropio2({ v }: { v: VistaMazoPropio }) {
       </div>
       <Encuentro2 e={v.encuentro} />
       <Destino2 d={v.destino} />
-      <div className="hznum">
-        <span>Mazo propio</span> · <span>{v.codigo}</span>
-      </div>
+      {/* Fase 10: es del mazo de historia; su pie deja sitio a la pestaña con el número (la cabecera ya dice su mazo). */}
+      <div className="hznum">{v.codigo}</div>
     </div>
   )
 }
 
 /** Las cartas de mazo propio tienen un solo encuentro: la letra puede ser algo mayor. */
-const TAMANOS_PROPIO = [14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.6, 9.2, 8.8]
+const TAMANOS_PROPIO = [17, 16, 15, 14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.6, 9.2, 8.8]
 
 export function CartaMazoPropio({ v }: { v: VistaMazoPropio }) {
   if (v.v2) return <CartaMazoPropio2 v={v} />

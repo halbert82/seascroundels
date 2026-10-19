@@ -1,0 +1,121 @@
+/* Dorsos de los mazos (en la mesa y en la galería). */
+
+.dorso {
+  position: relative;
+  width: 378px;
+  height: 528px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='378' height='528'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.008 0.45' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='378' height='528' filter='url(%23g)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 90% 70% at 50% 42%, color-mix(in srgb, var(--dorso), #fff 16%), var(--dorso) 55%, color-mix(in srgb, var(--dorso), #000 60%));
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.6);
+}
+
+.dorso-marco {
+  position: absolute;
+  inset: 14px;
+  border-radius: 12px;
+  border: 2.5px solid #d6b46e;
+  box-shadow:
+    inset 0 0 0 6px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 8px rgba(214, 180, 110, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.dorso-rosa {
+  position: relative;
+  width: 188px;
+  height: 188px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 3px solid #d6b46e;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.5));
+  box-shadow:
+    0 0 0 9px rgba(214, 180, 110, 0.16),
+    0 0 0 11px rgba(214, 180, 110, 0.5);
+}
+
+.dorso-rosa::before {
+  content: '';
+  position: absolute;
+  inset: -34px;
+  background: conic-gradient(from 0deg, rgba(214, 180, 110, 0.55) 0 2deg, transparent 2deg 45deg, rgba(214, 180, 110, 0.35) 45deg 46deg, transparent 46deg 90deg);
+  -webkit-mask: radial-gradient(circle, transparent 98px, #000 99px, #000 140px, transparent 141px);
+  mask: radial-gradient(circle, transparent 98px, #000 99px, #000 140px, transparent 141px);
+  border-radius: 50%;
+}
+
+.dorso-emblema {
+  font-size: 104px;
+  color: #ecd08a;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.65));
+}
+
+.dorso-titulo {
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 36px;
+  color: #f2deae;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
+}
+
+.dorso-nombre {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: 0.34em;
+  color: #d6b46e;
+}
+
+/* Dorso de una carta del mazo de historia (fase 10): el del mazo al que va, con su número en el centro. */
+.dorso-numero {
+  font-family: 'Alegreya', Georgia, serif;
+  font-weight: 900;
+  font-size: 84px;
+  line-height: 1;
+  color: #f2deae;
+  text-shadow: 0 3px 4px rgba(0, 0, 0, 0.7);
+}
+
+.dorso-historia {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  color: #f2deae;
+  margin-top: -10px;
+}
+
+/* Dorso apaisado (cartas de misión). */
+.dorso.apaisado {
+  width: 528px;
+  height: 378px;
+}
+
+.dorso.apaisado .dorso-marco {
+  gap: 12px;
+}
+
+.dorso.apaisado .dorso-rosa {
+  width: 150px;
+  height: 150px;
+}
+
+.dorso.apaisado .dorso-rosa::before {
+  inset: -24px;
+  -webkit-mask: radial-gradient(circle, transparent 76px, #000 77px, #000 105px, transparent 106px);
+  mask: radial-gradient(circle, transparent 76px, #000 77px, #000 105px, transparent 106px);
+}
+
+.dorso.apaisado .dorso-numero {
+  font-size: 70px;
+}
+
+.dorso.apaisado .dorso-titulo {
+  font-size: 28px;
+}

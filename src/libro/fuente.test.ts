@@ -49,9 +49,15 @@ describe('Marcas nuevas', () => {
     expect(html).toMatch(/<li>\s*<aside class="nota-tema">\s*<p>El mar no es justo ni injusto/)
   })
 
-  it('los ejemplos llevan título y las cartas que nombran', () => {
+  // Fase 10: los ejemplos van sin título («Ejemplo» y su texto).
+  it('los ejemplos van sin título y llevan las cartas que nombran', () => {
     const ejemplo = capitulo('Capacidades de las cartas').bloques.find((b) => b.tipo === 'ejemplo')
-    expect(ejemplo).toMatchObject({ tipo: 'ejemplo', titulo: 'Una Interrupción', cartas: [{ id: 'grumete', partes: [] }, { id: 'capitan', partes: [] }] })
+    expect(ejemplo).toMatchObject({ tipo: 'ejemplo', titulo: '', cartas: [{ id: 'grumete', partes: [] }, { id: 'capitan', partes: [] }] })
+    expect(fuente).not.toMatch(/^> \[!ejemplo\] \S/m)
+  })
+
+  it('la marca [!nota] es una aclaración en la columna exterior, con otro estilo que la nota temática', () => {
+    expect(htmlDe(capitulo('Las misiones').bloques)).toMatch(/<aside class="nota-tema nota-regla">\s*<p>Algunas son opcionales/)
   })
 
   it('no queda ningún ejemplo con la marca antigua', () => {
@@ -60,9 +66,9 @@ describe('Marcas nuevas', () => {
 
   it('los gráficos se colocan donde dice su marca; el del turno sustituye a la lista de cuatro pasos', () => {
     const turno = capitulo('El turno').bloques.find((b) => b.tipo === 'grafico')
-    expect(turno).toMatchObject({ nombre: 'turno', pasos: ['Inicio', 'Jugar cartas', 'Quedarte o zarpar', 'Final'] })
+    expect(turno).toMatchObject({ nombre: 'turno', pasos: ['Fase de Inicio', 'Fase de Reclutamiento', 'Fase de Rumbo', 'Fase de Final de turno'] })
     const anatomias = capitulo('Anatomía de las cartas').bloques.filter((b) => b.tipo === 'grafico').map((b) => (b.tipo === 'grafico' ? b.arg : ''))
-    expect(anatomias).toEqual(['tripulante', 'mejora', 'evento', 'barco', 'puerto', 'mision', 'peligro', 'escenario'])
+    expect(anatomias).toEqual(['tripulante', 'mejora', 'evento', 'barco', 'puerto', 'mision', 'peligro', 'escenario', 'historia'])
     const tripulante = capitulo('Anatomía de las cartas').bloques.find((b) => b.tipo === 'grafico' && b.arg === 'tripulante')
     expect(tripulante && 'leyenda' in tripulante ? tripulante.leyenda?.length : 0).toBe(10)
     expect(capitulo('Ejemplo de juego').especial).toBe('ejemplo-de-juego')
@@ -165,9 +171,9 @@ describe('Cartas nombradas en un texto', () => {
     expect(cartasYPartes('Sale «Os da alcance» y luego «Turbonada a popa».')).toEqual([{ id: 'p2_turbonada', partes: ['mar', 'destino'] }])
   })
 
-  it('el ejemplo «Daño en Ciudad» enseña el encuentro de Ciudad de una carta y el Destino de la otra', () => {
+  it('el ejemplo de «Daño» enseña el encuentro de Ciudad de una carta y el Destino de la otra («el Destino de la carta X»)', () => {
     const dano = r.referencia.entradas.find((e) => e.titulo === 'Daño')?.bloques.find((b) => b.tipo === 'ejemplo')
-    expect(dano).toMatchObject({ titulo: 'Daño en Ciudad', cartas: [{ id: 'p2_curazao', partes: ['ciu'] }, { id: 'p2_morro', partes: ['destino'] }] })
+    expect(dano).toMatchObject({ titulo: '', cartas: [{ id: 'p2_curazao', partes: ['ciu'] }, { id: 'p2_morro', partes: ['destino'] }] })
   })
 
   it('no confunde una palabra suelta con el nombre de una carta', () => {

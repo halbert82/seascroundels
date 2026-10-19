@@ -25,7 +25,7 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
     }
   }
   for (const inst of s.zonas.mejoras) {
-    if (!mejoraActiva(s, inst)) continue // Agotada o de un rehén: no aplica su texto.
+    if (!mejoraActiva(s, inst)) continue // De un rehén: no aplica su texto. Agotada, sí (solo no puede volver a agotarse).
     for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'juego' && !(sinMejoras && SE_USAN.has(cap.ventana))) yield [cap, inst]
   }
   for (const inst of s.zonas.mano) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'mano') yield [cap, inst]

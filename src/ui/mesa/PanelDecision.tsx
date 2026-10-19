@@ -157,13 +157,17 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
     }
     case 'cubrirDistancia': {
       const nav = navCubierta(s, d, sel.cartas)
+      // Fase 10: hay que agotar al menos a un Tripulante; las cartas con NAV solo completan.
+      const conTripulante = sel.cartas.some((c) => d.tripulantes.includes(c))
+      const vale = nav >= d.distancia && conTripulante
       centro = (
-        <span className={`pd-contador ${nav >= d.distancia ? 'bien' : 'mal'}`}>
+        <span className={`pd-contador ${vale ? 'bien' : 'mal'}`}>
           <Icono id="NAV" /> {nav} de {d.distancia}
+          {!conTripulante && sel.cartas.length > 0 && <small> · falta un Tripulante</small>}
         </span>
       )
       botones.push(
-        <Boton key="confirmar" principal desactivado={nav < d.distancia} onClick={() => confirmada && elegir(confirmada)}>
+        <Boton key="confirmar" principal desactivado={!vale} onClick={() => confirmada && elegir(confirmada)}>
           Zarpar
         </Boton>,
       )
@@ -194,7 +198,7 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
       const alguien = sel.cartas.some((c) => d.tripulantes.includes(c))
       botones.push(
         <Boton key="confirmar" principal onClick={() => confirmada && elegir(confirmada)}>
-          {alguien ? 'Comprometer' : 'No comprometer a nadie'}
+          {alguien ? 'Asignar' : 'No asignar a nadie'}
         </Boton>,
       )
       break
