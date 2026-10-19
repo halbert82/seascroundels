@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import arteJson from '../../data/arte.json'
 import { porId } from '../engine/catalogo.ts'
-import { CartaEscalada, dimensiones } from '../ui/cartas/Carta.tsx'
+import { CartaEscalada, dimensiones, MEDIDAS } from '../ui/cartas/Carta.tsx'
 import type { ParteCarta } from './cartasNombradas.ts'
 
 /** Píxeles CSS por milímetro (96 ppp). */
@@ -28,8 +28,8 @@ export function Miniatura({ id, ancho, anchoReal = false, girada = 0, className 
   )
 }
 
-/** Ancho de una carta de Peligro sin escalar (px). */
-const ANCHO_PELIGRO = 378
+/** Ancho de una carta de Peligro sin escalar (px): tamaño tarot desde la fase 10c. */
+export const ANCHO_PELIGRO = MEDIDAS.tarot.ancho
 /** Lo que se ve de la carta alrededor de la parte recortada, arriba y abajo (px sin escalar). */
 export const MARGEN_RECORTE = 3
 
@@ -147,8 +147,10 @@ const DORSOS: Record<TipoDorso, { nombre: string; color: string; icono: string }
 /** Dorso de un mazo, de `ancho` milímetros, con `grosor` cartas debajo (un mazo, no una carta). */
 export function Dorso({ tipo, ancho, grosor = 3, apaisado = false }: { tipo: TipoDorso; ancho: number; grosor?: number; apaisado?: boolean }) {
   const d = DORSOS[tipo]
-  const w = apaisado ? ancho * (528 / 378) : ancho
-  const h = apaisado ? ancho : ancho * (528 / 378)
+  // Fase 10c: el mazo de Peligros va en tamaño tarot (70 × 120 mm frente a 63 × 88): algo más ancho y mucho más alto.
+  const tarot = tipo === 'peligros' && !apaisado
+  const w = apaisado ? ancho * (528 / 378) : tarot ? ancho * (70 / 63) : ancho
+  const h = apaisado ? ancho : tarot ? w * (120 / 70) : ancho * (528 / 378)
   return (
     <div className="dorso-libro" style={{ width: `${w}mm`, height: `${h}mm`, '--dorso': d.color, '--grosor': grosor } as CSSProperties}>
       <div className="dorso-libro-marco">

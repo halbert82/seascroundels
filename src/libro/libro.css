@@ -2731,3 +2731,18 @@ body {
 .anatomia.anatomia-historia {
   margin: 1.5mm 0 0;
 }
+
+/*
+ * Fase 10c: al imprimir el PDF, Chromium partía las cartas dibujadas que caían al pie de una página (su caja sin escalar
+ * sigue midiendo 378 × 528 px y se salía de la página): salían en blanco salvo la cabecera. Con «contain: strict», la
+ * carta en miniatura es un bloque cerrado del tamaño que se ve, y no se parte.
+ */
+.libro .miniatura > div,
+.libro .miniatura.dorso-carta > div {
+  contain: strict;
+}
+
+/* Fase 10c: el dorso en miniatura recupera el interlineado (la miniatura lo pone a 0 y sus líneas se pisaban). */
+.libro .miniatura.dorso-carta .dorso {
+  line-height: normal;
+}

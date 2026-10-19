@@ -263,10 +263,10 @@ function Destino2({ d }: { d: VistaDestino }) {
 }
 
 /**
- * Tamaños de letra que se prueban, de mayor a menor, hasta que el texto cabe. No baja de 9 px: por debajo ya no se lee
+ * Tamaños de letra que se prueban, de mayor a menor, hasta que el texto cabe (fase 10c: la carta es tarot y empieza más grande). No baja de 9 px: por debajo ya no se lee
  * bien en la mesa. Si un texto no cabe ni así, hay que acortarlo (scripts/capturar-peligros.mjs lo avisa).
  */
-const TAMANOS = [14, 13.5, 13, 12.5, 12, 11.5, 11, 10.5, 10, 9.5, 9]
+const TAMANOS = [18, 17.5, 17, 16.5, 16, 15.5, 15, 14.5, 14, 13.5, 13, 12.5, 12, 11.5, 11, 10.5, 10, 9.5, 9]
 
 /**
  * Prueba los tamaños de letra de mayor a menor hasta que nada se desborda. Se repite cuando terminan de cargar las
@@ -345,7 +345,7 @@ function CartaMazoPropio2({ v }: { v: VistaMazoPropio }) {
 }
 
 /** Las cartas de mazo propio tienen un solo encuentro: la letra puede ser algo mayor (y tampoco baja de 9 px). */
-const TAMANOS_PROPIO = [17, 16, 15, 14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.5, 9]
+const TAMANOS_PROPIO = [21, 20, 19, 18, 17, 16, 15, 14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.5, 9]
 
 export function CartaMazoPropio({ v }: { v: VistaMazoPropio }) {
   if (v.v2) return <CartaMazoPropio2 v={v} />

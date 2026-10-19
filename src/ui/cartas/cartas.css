@@ -498,3 +498,71 @@
 /* Fase 10: Misiones y Muelle, juntos arriba a la derecha de la carta de puerto. */
 .ptovals{position:absolute;right:14px;top:9px;display:flex;gap:8px}
 .ptovals .muelleb{position:static;width:64px}
+
+/* ================= Fase 10c: tamaño tarot (70 × 120 mm, 420 × 720 px) ================= */
+/* Las cartas de Peligro y las de mazo propio: más alto para el texto de los tres encuentros, con letra mayor. */
+.card.enc.v2{width:420px;height:720px;padding:9px 9px 22px;gap:7px}
+.card.enc.v2 .encp.v2 .ent{width:34px;font-size:24px}
+.card.enc.v2 .encp.v2 .encb{padding:7px 9px 7px 10px;gap:3px}
+.card.enc.v2 .dest.v2{max-height:30%;padding:8px 12px 9px 9px;gap:10px}
+.card.enc.v2 .hznum{bottom:6px;font-size:10px}
+.card.enc.solo.v2{padding:9px 9px 22px}
+.card.enc.solo.v2 .soloh{height:32px;font-size:15px}
+.card.enc.solo.v2 .soloart{height:220px}
+.card.enc.solo.v2 .dest.v2{max-height:26%}
+/* La carta de puerto, apaisada: más sitio para las opciones y la ilustración. */
+.card.wide.pto2{width:720px;height:420px}
+.pto2 .ptoh{height:76px;padding:0 20px}
+.pto2 .ptoh .chapn{font-size:34px}
+.pto2 .ptovals{top:12px;right:16px}
+.pto2 .ptoart{top:76px;width:330px}
+.pto2 .ptor{left:11px;width:368px;top:87px;bottom:28px;padding:14px 15px 12px;gap:9px}
+.pto2 .opt .ot{font-size:15.5px;line-height:1.24}
+.pto2 .ptoab{padding:9px 11px 10px;gap:5px}
+.pto2 .ptoabh{font-size:16.5px}
+.pto2 .ptoab .rules{font-size:15.5px;line-height:1.28}
+.pto2 .ptofl{font-size:15.5px;left:18px;right:18px;bottom:16px}
+.pto2 .foot{right:342px}
+
+/* ================= Fase 10c: diseño por tipo de carta (opción 1 de Albert) ================= */
+/* El color de la Clase enmarca la carta entera, como en los LCG de Fantasy Flight. */
+.card.jug::before{content:'';position:absolute;inset:0;border-radius:18px;z-index:5;pointer-events:none;
+  box-shadow:inset 0 0 0 6px color-mix(in srgb,var(--cc),#000 18%),inset 0 0 0 7.5px rgba(214,180,110,.55)}
+.card.jug .costb{z-index:8}
+.card.jug .tabs{z-index:7}
+.card.jug .foot{z-index:6;left:20px;right:20px;bottom:8px}
+.card.jug .foot .cl{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;letter-spacing:.1em;color:color-mix(in srgb,var(--cc),#fff 55%)}
+.card.jug .tbox{left:13px;right:13px;bottom:27px}
+/* Cuerpo teñido de la Clase en las cartas con la ilustración enmarcada. */
+.card.t-mejoraBarco,.card.t-mejoraTripulante,.card.t-evento,.card.t-habilidad{background:radial-gradient(ellipse at 50% 30%,color-mix(in srgb,var(--cc),#000 38%) 0%,color-mix(in srgb,var(--cc),#000 72%) 100%)}
+
+/* Mejora de barco: nombre arriba e ilustración en un cuadro con esquinas de latón. */
+.card.t-mejoraBarco .art{left:20px;right:20px;top:68px;height:196px;border-radius:3px;box-shadow:0 0 0 2px #C9A45C,0 0 0 4px rgba(0,0,0,.55),0 6px 12px rgba(0,0,0,.5)}
+.card.t-mejoraBarco .marco{position:absolute;left:12px;right:12px;top:60px;height:212px;z-index:4;pointer-events:none;--c:#E2C783;
+  background:
+    linear-gradient(var(--c),var(--c)) left top/26px 3px no-repeat,linear-gradient(var(--c),var(--c)) left top/3px 26px no-repeat,
+    linear-gradient(var(--c),var(--c)) right top/26px 3px no-repeat,linear-gradient(var(--c),var(--c)) right top/3px 26px no-repeat,
+    linear-gradient(var(--c),var(--c)) left bottom/26px 3px no-repeat,linear-gradient(var(--c),var(--c)) left bottom/3px 26px no-repeat,
+    linear-gradient(var(--c),var(--c)) right bottom/26px 3px no-repeat,linear-gradient(var(--c),var(--c)) right bottom/3px 26px no-repeat;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.6))}
+/* Mejora de tripulante: la ilustración en un óvalo, con el mismo filete que el arco del Evento. */
+.card.t-mejoraTripulante .art{left:18px;right:18px;top:64px;height:204px;border-radius:50%;box-shadow:0 0 0 2px #C9A45C,0 0 0 4px rgba(0,0,0,.55)}
+.card.t-mejoraTripulante .art::after{border-radius:50%}
+.card.t-mejoraBarco .ribbon,.card.t-mejoraTripulante .ribbon{top:257px}
+.card.t-mejoraBarco .tbox,.card.t-mejoraTripulante .tbox{top:272px;padding-top:26px}
+.card.t-mejoraBarco .espq{top:46px}
+
+/* Evento: ilustración en arco y nombre en el centro de la carta, con «Evento» debajo. */
+.card.t-evento .art{left:16px;right:16px;top:14px;height:232px;border-radius:174px 174px 3px 3px/86px 86px 3px 3px;box-shadow:0 0 0 2px #C9A45C,0 0 0 4px rgba(0,0,0,.55)}
+.card.t-evento .art::after{border-radius:inherit}
+.card.t-evento .plate{top:250px;height:64px;flex-direction:column;gap:2px;padding:0 24px;border-top:2px solid #C9A45C}
+.card.t-evento .plate.cst{padding:0 24px}
+.card.t-evento .plate .sub{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:12.5px;letter-spacing:.18em;color:#F2DFA8;opacity:.9;line-height:1}
+.card.t-evento .tbox{top:314px;padding-top:16px;border-radius:0 0 12px 12px}
+
+/* Habilidad: sin coste, las mismas pestañas de icono que el Evento, la ilustración larga y la caja de texto corta. */
+.card.t-habilidad .art{left:0;right:0;top:56px;height:352px}
+.card.t-habilidad .ribbon{top:393px}
+.card.t-habilidad .tbox{top:408px;padding:20px 16px 8px;gap:3px;justify-content:center}
+.card.t-habilidad .rules{font-size:15px;line-height:1.28}
+.card.t-habilidad .flavor{margin:0;font-size:14px;line-height:1.2}

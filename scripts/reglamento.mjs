@@ -94,7 +94,8 @@ async function capturar(pagina, libro) {
     await guardar('18-mazos-de-inicio.png', await capturaDePagina(pagina, await paginaCon(pagina, '#a-mazos-de-inicio')))
   } else {
     await guardar('6-referencia-de-reglas-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '#r-destino')))
-    await guardar('15-ejemplo-dano-en-ciudad.png', await pagina.locator('.ejemplo', { hasText: 'Daño en Ciudad' }).screenshot())
+    // Los ejemplos ya no llevan título (fase 10b): se busca por su texto.
+    await guardar('15-ejemplo-dano-en-ciudad.png', await pagina.locator('.ejemplo', { hasText: 'Ciudad' }).first().screenshot())
     await guardar('16-dano-en-ciudad-pagina.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-dano')))
     await guardar('19-entrada-al-revelarse.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-al-revelarse')))
     await guardar('20-indice-de-terminos.png', await capturaDePagina(pagina, await paginaCon(pagina, '#indice-de-terminos')))

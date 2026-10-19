@@ -265,6 +265,7 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   if (r.reclutaGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.reclutaGratis, que: 'tripulante' })
   if (r.adquiereGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.adquiereGratis, que: 'mejora' })
   if (r.oteaMisiones) tareas.push({ tipo: 'otear', n: r.oteaMisiones, mazo: 'misiones', cartas: [], arriba: [], fondo: [] })
+  if (r.precio && r.precio.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: r.precio, contexto: 'efecto' })
   if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
   // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda y el otro sale de la partida.
   const posibles = e.carta.siguiente

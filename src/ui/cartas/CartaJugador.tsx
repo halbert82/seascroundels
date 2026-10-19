@@ -15,12 +15,14 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
   const estiloCarta = { '--cc': v.color } as CSSProperties
   const conCoste = v.coste !== undefined
   return (
-    <div className={['card', v.alta && 'tall', esTextoApretado(v.num) && 'tight'].filter(Boolean).join(' ')} style={estiloCarta}>
+    <div className={['card', v.alta && 'tall', esTextoApretado(v.num) && 'tight', v.diseno && `jug t-${v.diseno}`].filter(Boolean).join(' ')} style={estiloCarta}>
+      {v.diseno === 'mejoraBarco' && <div className="marco" />}
       <div className="art" style={{ background: fondoArte(v) }}>
         {v.arte ? '' : 'Ilustración pendiente'}
       </div>
       <div className={conCoste ? 'plate cst' : 'plate'}>
         <NombreCarta nombre={v.nombre} unica={v.unica} num={v.num} />
+        {v.diseno === 'evento' && <span className="sub">{v.tipoTexto}</span>}
       </div>
       {v.espacio > 0 && (
         <div className="espq">
@@ -67,7 +69,7 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
           <b>{v.vida}</b>
         </div>
       )}
-      <div className="ribbon">{v.tipoTexto}</div>
+      {v.diseno !== 'evento' && <div className="ribbon">{v.tipoTexto}</div>}
       <div className="tbox">
         {v.rasgos.length > 0 && (
           <>
@@ -83,7 +85,10 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
         {v.ambientacion && <div className="flavor">{v.ambientacion}</div>}
       </div>
       <div className="foot">
-        <span>{v.arte ? 'Ilus. Midjourney' : 'Ilustración pendiente'}</span>
+        <span>
+          {v.clase && <span className="cl">{v.clase} · </span>}
+          {v.arte ? 'Ilus. Midjourney' : 'Ilustración pendiente'}
+        </span>
         <span>{v.codigo}</span>
       </div>
     </div>

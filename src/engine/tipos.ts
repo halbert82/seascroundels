@@ -299,6 +299,11 @@ export interface Estado {
   paso: Paso
   /** No quedaba carta de Escenario al empezar este turno: al terminarlo, se pierde. */
   ultimoTurno: boolean
+  /**
+   * Partida de aprendizaje (fase 10c): sin mazo de Escenario. Un contador de días hace de reloj, con el mismo límite que
+   * tendría el mazo: cada turno gasta un día y «pierdes un día» gasta otro. Con 0 días, el turno es el último.
+   */
+  sinEscenario?: { dias: number; total: number }
   /** Misión en curso (la carta sigue en «misionesDisponibles» hasta que termina). */
   mision: MisionEnCurso | null
   /** Prueba en curso dentro de la misión. */

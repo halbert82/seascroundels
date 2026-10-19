@@ -421,3 +421,36 @@ describe('Jugador automático: La Armada patrulla', () => {
     expect(eleccion(j)).toEqual({ tipo: 'opcion', clave: '1' })
   })
 })
+
+describe('Partida de aprendizaje, sin Escenario (fase 10c)', () => {
+  it('no hay mazo de Escenario: un contador con tantos días como cartas tendría el modo', async () => {
+    const { nuevaPartida } = await import('./preparacion.ts')
+    const s = nuevaPartida({ semilla: 1, sinEscenario: true })
+    expect(s.zonas.mazoEscenario).toHaveLength(0)
+    expect(s.sinEscenario).toEqual({ dias: 11, total: 11 })
+    const corta = nuevaPartida({ semilla: 1, modo: 'corta', sinEscenario: true })
+    expect(corta.sinEscenario).toEqual({ dias: 8, total: 8 })
+  })
+
+  it('«pierdes un día» gasta un día del contador, y sin días no pasa nada más', async () => {
+    const { nuevaPartida } = await import('./preparacion.ts')
+    const { perderUnDia } = await import('./tareas/cartas.ts')
+    const s = nuevaPartida({ semilla: 1, sinEscenario: true })
+    perderUnDia(s)
+    expect(s.sinEscenario?.dias).toBe(10)
+    s.sinEscenario = { dias: 0, total: 11 }
+    perderUnDia(s)
+    expect(s.sinEscenario.dias).toBe(0)
+  })
+
+  it('como con el mazo: 11 días dan 12 turnos, y el último se juega y se pierde', async () => {
+    const { jugarPartida } = await import('./pruebas/equilibrio.ts')
+    const jugador = jugadorConCriterio()
+    for (const semilla of [1, 2, 3, 4, 5]) {
+      const p = jugarPartida(semilla, jugador, { sinEscenario: true, invariantes: true })
+      expect(p.turnoFinal).toBeLessThanOrEqual(12)
+      expect(p.final.zonas.escenarioEnCurso).toHaveLength(0)
+      if (!p.gana && p.motivo.startsWith('Se ha acabado el tiempo')) expect(p.motivo).toContain('no quedaban días')
+    }
+  })
+})

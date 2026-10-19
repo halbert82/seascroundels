@@ -119,3 +119,14 @@
 .dorso.apaisado .dorso-titulo {
   font-size: 28px;
 }
+
+/* Fase 10c: el dorso de Peligros, en tamaño tarot. */
+.dorso.tarot {
+  width: 420px;
+  height: 720px;
+}
+
+.dorso.tarot .dorso-marco {
+  inset: 16px;
+}
+

@@ -102,6 +102,8 @@ La Caja básica de Sea Scoundrels contiene 211 cartas, que se dividen en cartas 
 
 Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, la carta de misión y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
+Las cartas de Peligro, las de los mazos propios y las de puerto tienen tamaño tarot (70 × 120 mm), más grande que el del resto de cartas (63 × 88 mm), para que su texto se lea bien. Por eso el mazo de historia se guarda en dos montones, uno por tamaño: las cartas que van al mazo de Peligros (los mazos propios y «La Armada te persigue») están en el montón grande.
+
 **Fichas**
 
 - Fichas de herida, de daño y de Avance.
@@ -115,7 +117,7 @@ Las cartas que no empiezan la partida en ningún mazo forman el **mazo de histor
 > [!epigrafe] Catalina «la Enganchadora» Rojas
 > «Antes de subir a un hombre a bordo, mírale las manos. Dicen más que la boca.»
 
-Esta sección explica qué información contiene cada tipo de carta y dónde se encuentra.
+Esta sección explica qué información contiene cada tipo de carta y dónde se encuentra. El color del marco de una carta de jugador indica su Clase, sea del tipo que sea: rojo para Piratería y verde para Neutral. El tipo se reconoce por la forma de la carta.
 
 > [!tema]
 > Una carta de Tripulante es una ficha de enrole: lo que sabe hacer, lo que aguanta y lo que cuesta convencerle.
@@ -129,7 +131,7 @@ Esta sección explica qué información contiene cada tipo de carta y dónde se 
 3. **Habilidades:** son las pestañas de la izquierda; de arriba abajo, NAV (navegar), COM (combatir) y EXP (explorar).
 4. **Huecos de Mejora:** el saco de la derecha indica cuántas Mejoras de tripulante puede llevar la carta.
 5. **Vida:** es el corazón. Indica las heridas que aguanta antes de quedar derrotado.
-6. **Tipo y Clase**, en la cinta.
+6. **Tipo**, en la cinta. La Clase figura además al pie, a la izquierda.
 7. **Rasgos**, en cursiva sobre el texto.
 8. **Texto de juego.**
 9. **Frase de ambientación**, en cursiva. No tiene efecto de juego.
@@ -139,13 +141,13 @@ El Capitán muestra además su **Mando** en una pestaña de la derecha. El Mando
 
 #### Mejoras
 
-Las Mejoras tienen coste, nombre, tipo, Rasgos (si los tienen) y texto, igual que un Tripulante. Las **Mejoras de barco** indican el Espacio que ocupan con cuadros dorados bajo el título, a la derecha: un cuadro por cada punto de Espacio. Si no llevan cuadros, no ocupan Espacio. Cada Mejora de tripulante ocupa un hueco de Mejora. Los **Cañones** llevan el Rasgo Cañón: disparan agotándose y se preparan al empezar el turno, como cualquier carta.
+Las Mejoras tienen coste, nombre, tipo, Rasgos (si los tienen) y texto, igual que un Tripulante. Las **Mejoras de barco** indican el Espacio que ocupan con cuadros dorados bajo el título, a la derecha: un cuadro por cada punto de Espacio. Si no llevan cuadros, no ocupan Espacio. Cada Mejora de tripulante ocupa un hueco de Mejora. Los **Cañones** llevan el Rasgo Cañón: disparan agotándose y se preparan al empezar el turno, como cualquier carta. La ilustración de una Mejora de barco va en un cuadro con esquinas de latón; la de una Mejora de tripulante, en un óvalo.
 
 > [!grafico] anatomia mejora
 
 #### Eventos y Habilidades
 
-Los **Eventos** tienen coste, texto y uno o dos **iconos de habilidad** en las pestañas de la izquierda. Las **Habilidades** no tienen coste ni texto, solo iconos de habilidad.
+Los **Eventos** tienen coste, texto y uno o dos **iconos de habilidad** en las pestañas de la izquierda. Llevan la ilustración en un arco y el nombre en el centro de la carta. Las **Habilidades** no tienen coste ni texto, solo iconos de habilidad, y su ilustración ocupa casi toda la carta.
 
 > [!grafico] anatomia evento
 
@@ -255,6 +257,8 @@ La partida se prepara siguiendo estos pasos:
    | Corta | 12 | 8 |
    | Normal | 18 | 11 |
    | Larga | 24 | 14 (todas) |
+
+   Para las primeras partidas, el jugador puede jugar sin mazo de Escenario: en una **partida de aprendizaje**, un contador de días hace de reloj (ver «Partida de aprendizaje»).
 
 2. **Pon en juego a tu Capitán y tu Barco.** El Capitán empieza en juego preparado.
 3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa.
@@ -592,7 +596,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 **El jugador pierde la partida** en el momento en que se produce una de las siguientes situaciones:
 
 - El Capitán del jugador queda derrotado.
-- Se acaba el mazo de Escenario: cuando, al empezar un turno, no queda ninguna carta en el mazo de Escenario, se juega ese último turno entero. Al terminarlo, el jugador pierde.
+- Se acaba el mazo de Escenario: cuando, al empezar un turno, no queda ninguna carta en el mazo de Escenario, se juega ese último turno entero. Al terminarlo, el jugador pierde. En una partida de aprendizaje ocurre lo mismo cuando el contador de días está en 0 al empezar un turno.
 - No queda ninguna misión disponible ni en el mazo de Misiones.
 
 > [!tema]
@@ -859,9 +863,10 @@ Durante la Fase de Reclutamiento, el jugador puede despedir a un Tripulante. Par
 Destina es una palabra clave de coste: «**Destina X** [habilidad]: efecto». Para pagarlo, el jugador agota Tripulantes preparados cuya habilidad, sumada, sea al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano. Nunca aparece en los Peligros: un encuentro tiene una Prueba o un coste, no las dos cosas.
 
 - Si el jugador no puede llegar a X con sus Tripulantes preparados, no puede pagar el coste.
+- La habilidad de cada Tripulante cuenta con sus bonificaciones, igual que al cubrir una Distancia. Mientras Diego esté preparado, los demás Tripulantes suman 1 más.
 
 > [!ejemplo]
-> Una carta dice «**Destina 3** [NAV]: Gana 1 Avance». El jugador puede agotar al Viejo lobo de mar (NAV 3), o al Contrabandista del bajo Caribe (NAV 2) y al Grumete leal (NAV 1). No revela Destino y gana 1 de Avance.
+> Una carta dice «**Destina 3** [NAV]: Gana 1 Avance». El jugador puede agotar al Viejo lobo de mar (NAV 3), o al Contrabandista del bajo Caribe (NAV 2) y al Grumete leal (NAV 1). No revela Destino y gana 1 de Avance. Si Diego está preparado y no lo agota, el Grumete leal cuenta como NAV 2 y el Rufián de cubierta como NAV 1: agotando a los dos también paga el coste.
 
 *Véase también:* Coste de una capacidad (los dos puntos).
 
@@ -881,7 +886,7 @@ El Destino es la franja inferior de cada carta de Peligro. Se revela en cada Pru
 
 ### Día (perder un día)
 
-Perder un día consiste en descartar la carta de arriba del mazo de Escenario sin aplicarla. Si no quedan cartas de Escenario, no ocurre nada.
+Perder un día consiste en descartar la carta de arriba del mazo de Escenario sin aplicarla. Si no quedan cartas de Escenario, no ocurre nada. En una partida de aprendizaje, perder un día resta 1 al contador de días.
 
 *Véase también:* Mazo del capitán.
 
@@ -1044,6 +1049,11 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!» y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y «¡La guardia!» llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
 
+- El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
+
+> [!ejemplo]
+> Una carta dice «Añade la carta 95 al mazo de Peligros». Como va al mazo de Peligros, el jugador la busca en el montón grande. «Añade la carta 137 al mazo de Misiones» se busca en el montón normal.
+
 ### Mazo de Misiones
 
 El mazo de Misiones es el mazo del que salen las misiones que se reponen. Inicialmente contiene los siete capítulos I y dos aventuras. Las misiones que el jugador no supera o que cambia en el puerto van al fondo del mazo.
@@ -1118,6 +1128,19 @@ Ocupar el muelle es una palabra clave que aparece en el texto de algunos fallos:
 Las palabras clave son términos con una regla propia que aparecen en el texto de las cartas. Las de los encuentros de Peligro son Abordaje, Al revelarse, Elige, Incautado, Ocupar el muelle, Persigue, Se queda en juego y Sin ayuda; las de las cartas del jugador, como Indestructible, figuran en la primera línea de su texto. Cada una tiene su propia entrada en esta Referencia.
 
 *Véase también:* Tipos de encuentro.
+
+### Partida de aprendizaje
+
+La partida de aprendizaje es una forma de jugar sin mazo de Escenario, pensada para las primeras partidas. Se prepara igual que cualquier otra, pero sin mazo de Escenario: en su lugar, el jugador lleva la cuenta de los días con un contador que empieza en tantos días como cartas de Escenario indique la dificultad (11 en una partida normal).
+
+- Al empezar cada turno, el contador baja en 1 en lugar de revelarse una carta de Escenario. Si al empezar un turno el contador ya está en 0, ese turno es el último de la partida.
+- Perder un día también baja el contador en 1. Si ya está en 0, no ocurre nada.
+- Se gana y se pierde igual que en cualquier otra partida.
+
+> [!ejemplo]
+> En una partida de aprendizaje con dificultad normal, el contador empieza en 11. Al empezar el primer turno, baja a 10. Si el mazo del capitán se acaba y el jugador pierde un día, baja uno más. Cuando un turno empieza con el contador en 0, el jugador lo juega entero y, si al terminarlo no ha ganado, pierde.
+
+*Véase también:* Día (perder un día), Escenario.
 
 ### Pasajero
 

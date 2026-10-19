@@ -8,6 +8,7 @@ import { copia } from '../../engine/estado.ts'
 import { desgloseDificultad, desgloseTotal, dificultadPrueba, nombreDelEncuentro, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
 import type { Decision, Estado, InstId } from '../../engine/tipos.ts'
 import { valor } from '../../engine/valores.ts'
+import { MEDIDAS } from '../cartas/Carta.tsx'
 import { Destino } from '../cartas/CartaPeligro.tsx'
 import { vistaDeCarta } from '../cartas/vista.ts'
 import { describirEfectos } from '../textos/decisiones.ts'
@@ -71,8 +72,11 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
   const necesario = valor(s, { tipo: 'avanceNecesario', mision: m.carta })
   const enc = s.zonas.encuentro[0]
   const centro = anchoCentro(ancho) - 26
-  const escalaPeligro = Math.max(0.46, Math.min(0.62, (centro * 0.32) / 378))
-  const anchoPanel = centro - 378 * escalaPeligro - 16
+  // Fase 10c: la carta de Peligro es tarot (420 × 720). Ocupa el mismo alto que ocupaba la de 378 × 528 (así cabe
+  // en la zona sin bajar) y deja más ancho al panel de la Prueba; su letra, más grande, se lee igual.
+  const escalaNormal = Math.max(0.46, Math.min(0.62, (centro * 0.32) / MEDIDAS.normal.ancho))
+  const escalaPeligro = (escalaNormal * MEDIDAS.normal.alto) / MEDIDAS.tarot.alto
+  const anchoPanel = centro - MEDIDAS.tarot.ancho * escalaPeligro - 16
   const resuelta = !enc ? ultimaRevelada(s, desde) : null
   return (
     <section className="zona zona-mision">

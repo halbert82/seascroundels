@@ -32,7 +32,10 @@ describe('vista de las cartas', () => {
 
   it('Tripulante neutral con coste y Mejora de barco con Espacio y Rasgo «Cañón»', () => {
     const carpintero = vistaDeCarta(carta(14)) as VistaJugador
-    expect(carpintero.tipoTexto).toBe('Tripulante · Neutral')
+    // Fase 10c: la cinta dice el tipo; la Clase va en el color del marco y en el pie.
+    expect(carpintero.tipoTexto).toBe('Tripulante')
+    expect(carpintero.clase).toBe('Neutral')
+    expect(carpintero.diseno).toBe('tripulante')
     expect(carpintero.color).toBe(COLOR_TIPO.tripulanteNeutral)
     expect(carpintero.coste).toBe(2)
 
@@ -40,6 +43,10 @@ describe('vista de las cartas', () => {
     expect(canones.espacio).toBe(2)
     expect(canones.rasgos).toEqual(['Cañón'])
     expect(canones.pestanasDer).toEqual([]) // la munición ya no existe: sin pestaña a la derecha
+    // Sin Clase en los datos, una Mejora es Neutral: su marco es del color Neutral, no del de su tipo.
+    expect(canones.clase).toBe('Neutral')
+    expect(canones.diseno).toBe('mejoraBarco')
+    expect(canones.color).toBe(COLOR_TIPO.tripulanteNeutral)
   })
 
   it('las Mejoras con una sola cifra se dibujan grandes y las Habilidades no tienen texto', () => {

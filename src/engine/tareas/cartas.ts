@@ -11,6 +11,15 @@ import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
 /** Descarta la carta de arriba del mazo de Escenario sin aplicarla. */
 export function perderUnDia(s: Estado): void {
+  if (s.sinEscenario) {
+    if (s.sinEscenario.dias <= 0) {
+      anotar(s, 'aviso', 'Pierdes un día, pero ya no quedan días.')
+      return
+    }
+    s.sinEscenario.dias -= 1
+    anotar(s, 'aviso', `Pierdes un día: ${s.sinEscenario.dias === 1 ? 'queda 1 día' : `quedan ${s.sinEscenario.dias} días`}.`)
+    return
+  }
   const carta = arriba(s, 'mazoEscenario')
   if (!carta) {
     anotar(s, 'aviso', 'Pierdes un día, pero ya no quedan cartas de Escenario.')

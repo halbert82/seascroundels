@@ -8,7 +8,7 @@ import { copia } from '../estado.ts'
 import { LIMITES } from '../mazos.ts'
 import { responder } from '../motor.ts'
 import { nuevaPartida } from '../preparacion.ts'
-import type { CartaId, Estado, InstId } from '../tipos.ts'
+import type { CartaId, Estado, InstId, Modo } from '../tipos.ts'
 import { comprobarInvariantes } from './situacion.ts'
 import type { JugadorAutomatico } from './jugadores.ts'
 
@@ -105,9 +105,21 @@ export function mazoDeMuelleAlAzar(semilla: number): CartaId[] {
 export function jugarPartida(
   semilla: number,
   jugador: JugadorAutomatico,
-  { invariantes = false, mazoDeMuelle, variante }: { invariantes?: boolean; mazoDeMuelle?: CartaId[]; variante?: Estado['variante'] } = {},
+  {
+    invariantes = false,
+    mazoDeMuelle,
+    variante,
+    modo,
+    sinEscenario,
+  }: { invariantes?: boolean; mazoDeMuelle?: CartaId[]; variante?: Estado['variante']; modo?: Modo; sinEscenario?: boolean } = {},
 ): Partida {
-  let s = nuevaPartida({ semilla, ...(mazoDeMuelle ? { mazoDeMuelle } : {}), ...(variante ? { variante } : {}) })
+  let s = nuevaPartida({
+    semilla,
+    ...(mazoDeMuelle ? { mazoDeMuelle } : {}),
+    ...(variante ? { variante } : {}),
+    ...(modo ? { modo } : {}),
+    ...(sinEscenario ? { sinEscenario } : {}),
+  })
   const capitan = copia(s, s.capitan).id
   const p: Partida = {
     semilla,

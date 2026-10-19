@@ -7,7 +7,7 @@ import { costeImpreso, esIndestructible, iconosDe, porId, rasgosDe } from '../ca
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
-import { copia } from '../estado.ts'
+import { copia, diasRestantes } from '../estado.ts'
 import { entornoActual } from '../peligros.ts'
 import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
@@ -178,7 +178,7 @@ function puntuacionMision(s: Estado, m: InstId): number {
     .map((n) => e.mision.capitulos.filter((c) => c.capitulo === n))
     .filter((grupo) => grupo.length > 0)
   const futuro = posteriores.reduce((n, grupo) => n + Math.max(...grupo.map((c) => (c.recompensa.victoria ? VALOR_VICTORIA : reputacionDe(c)))), 0)
-  const holgura = s.zonas.mazoEscenario.length - 2 * posteriores.length
+  const holgura = diasRestantes(s) - 2 * posteriores.length
   const cadena = futuro * Math.min(PESO_CADENA, Math.max(0, holgura / 10)) * 2.2
   const distancia = valor(s, { tipo: 'distancia', mision: m })
   const enMar = e.carta.entorno === 'mar' ? 0.5 : 0
@@ -369,7 +369,7 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     case 'quedarseOZarpar': {
       const capitan = copia(s, s.capitan)
       const enPeligro = vidaRestante(s, s.capitan) <= 1 || s.danoBarco >= valor(s, { tipo: 'danoMaximo' }) - 1
-      const tarde = s.ultimoTurno || s.zonas.mazoEscenario.length <= 1
+      const tarde = s.ultimoTurno || diasRestantes(s) <= 1
       let mejor: { puntos: number; clave: string } | null = null
       for (const clave of claves.filter((c) => c.startsWith('zarpar:'))) {
         const puntos = puntuacionMision(s, clave.slice(7) as InstId)
@@ -490,7 +490,7 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
       // Perseguido restan un poco.
       const e = d.motivo.carta ? porId(d.motivo.carta) : null
       const opciones = e?.tipo === 'capitulo' ? (e.carta.recompensa.elige ?? []) : []
-      const quedan = s.zonas.mazoEscenario.length
+      const quedan = diasRestantes(s)
       // Con días por delante, un Tesoro vale como 3 de reputación (si empatan, la primera opción, que es la del Tesoro).
       const tesoro = quedan >= 3 ? 3 : quedan >= 1 ? 1.5 : 0
       const valorDe = (clave: string) => {

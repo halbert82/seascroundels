@@ -43,9 +43,9 @@ export function empezar(estado: Estado): PartidaEnMesa {
   return { ...conHistorial(estado), desde: estado.registro.length }
 }
 
-/** Una partida nueva con una semilla al azar. */
-export function partidaNueva(): PartidaEnMesa {
-  return empezar(nuevaPartida({ semilla: `${Date.now()}-${Math.random()}` }))
+/** Una partida nueva con una semilla al azar. `sinEscenario`: partida de aprendizaje, con un contador de días. */
+export function partidaNueva(op: { sinEscenario?: boolean } = {}): PartidaEnMesa {
+  return empezar(nuevaPartida({ semilla: `${Date.now()}-${Math.random()}`, ...(op.sinEscenario ? { sinEscenario: true } : {}) }))
 }
 
 /**

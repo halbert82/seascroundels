@@ -26,6 +26,14 @@ export const COLOR_TIPO = {
   cartaMision: '#6E2B26',
 } as const
 
+/** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
+export const COLOR_CLASE: Record<string, string> = { Piratería: '#7A2E22', Neutral: '#4E5A3A' }
+
+/** Las cartas de jugador sin Clase en los datos son Neutrales (reglamento, «Clase»). */
+function claseDe(c: object): string {
+  return 'senda' in c && typeof c.senda === 'string' ? c.senda : 'Neutral'
+}
+
 export const COLOR_HABILIDAD: Record<Habilidad, string> = { NAV: '#24609A', COM: '#8E2B23', EXP: '#8A5E0F' }
 export const COLOR_ENTORNO: Record<Entorno, string> = { mar: '#1D5872', nat: '#3D6631', ciu: '#8A4F2E' }
 
@@ -122,6 +130,14 @@ export interface VistaJugador {
   textoClase: '' | 'big' | 'center'
   ambientacion: string
   arte?: Arte
+  /**
+   * Diseño por tipo (fase 10c, opción 1 de Albert): el Tripulante con la ilustración a sangre; la Mejora de barco en un
+   * cuadro con esquinas de latón; la de tripulante, en un óvalo; el Evento con la ilustración en arco y el nombre en
+   * medio; la Habilidad, sin coste, con la ilustración larga. Sin él, la carta de siempre.
+   */
+  diseno?: 'tripulante' | 'mejoraBarco' | 'mejoraTripulante' | 'evento' | 'habilidad'
+  /** Clase de la carta (Piratería, Neutral…): su color enmarca la carta y su nombre va en el pie. */
+  clase?: string
 }
 
 export interface Opcion {
@@ -392,8 +408,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...base(entrada),
         nombre: c.nombre,
         unica: c.unico,
-        color: c.senda === 'Neutral' ? COLOR_TIPO.tripulanteNeutral : COLOR_TIPO.tripulantePirateria,
-        tipoTexto: `Tripulante · ${c.senda}`,
+        color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.tripulanteNeutral,
+        tipoTexto: 'Tripulante',
+        diseno: 'tripulante',
+        clase: claseDe(c),
         coste: c.coste,
         pestanasIzq: pestanasHabilidad(c),
         huecos: c.mejoras,
@@ -410,8 +428,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...base(entrada),
         nombre: c.nombre,
         unica: c.unico,
-        color: COLOR_TIPO.mejoraBarco,
+        color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.mejoraBarco,
         tipoTexto: 'Mejora de barco',
+        diseno: 'mejoraBarco',
+        clase: claseDe(c),
         coste: c.coste,
         espacio: c.espacio,
         rasgos: c.canon ? ['Cañón'] : [],
@@ -427,8 +447,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...base(entrada),
         nombre: c.nombre,
         unica: c.unico,
-        color: COLOR_TIPO.mejoraTripulante,
+        color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.mejoraTripulante,
         tipoTexto: 'Mejora de tripulante',
+        diseno: 'mejoraTripulante',
+        clase: claseDe(c),
         coste: c.coste,
         texto: parsearTexto(c.texto),
         textoClase: esCifraSola(c.texto) ? 'big' : '',
@@ -441,8 +463,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       return {
         ...base(entrada),
         nombre: c.nombre,
-        color: COLOR_TIPO.evento,
+        color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.evento,
         tipoTexto: 'Evento',
+        diseno: 'evento',
+        clase: claseDe(c),
         coste: c.coste,
         pestanasIzq: pestanasIconos(c.iconos),
         texto: parsearTexto(c.texto),
@@ -456,8 +480,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       return {
         ...base(entrada),
         nombre: c.nombre,
-        color: COLOR_TIPO.habilidad,
+        color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.habilidad,
         tipoTexto: 'Habilidad',
+        diseno: 'habilidad',
+        clase: claseDe(c),
         alta: true,
         pestanasIzq: pestanasIconos(c.iconos),
         pestanasIzqTop: 74,
@@ -488,6 +514,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         unica: true,
         color: COLOR_TIPO.tesoro,
         tipoTexto: `Tesoro · ${c.tipo}`,
+        // Un Tesoro que es Mejora se enmarca como las Mejoras (cuadro en el barco, óvalo en un Tripulante).
+        ...(c.tipo === 'Mejora de barco' ? { diseno: 'mejoraBarco' as const } : c.tipo === 'Mejora de tripulante' ? { diseno: 'mejoraTripulante' as const } : {}),
         pestanasIzqTop: 74,
         texto: parsearTexto(c.texto),
         ambientacion: c.ambientacion,

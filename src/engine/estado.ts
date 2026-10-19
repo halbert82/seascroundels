@@ -34,6 +34,11 @@ export function estadoVacio(azar: [number, number, number, number]): Estado {
   }
 }
 
+/** Días que quedan en el reloj: las cartas del mazo de Escenario o, sin Escenario, el contador. */
+export function diasRestantes(s: Estado): number {
+  return s.sinEscenario ? s.sinEscenario.dias : s.zonas.mazoEscenario.length
+}
+
 /** La copia física de una carta. */
 export function copia(s: Estado, inst: InstId): Copia {
   const c = s.cartas[inst]

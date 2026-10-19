@@ -6,11 +6,11 @@ import { partidaGuardada } from '../mesa/usePartida.ts'
 import { LIBROS } from '../reglamento.ts'
 import './portada.css'
 
-export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: () => void }) {
+export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: (sinEscenario?: boolean) => void }) {
   const guardada = partidaGuardada()
-  const empezarNueva = () => {
+  const empezarNueva = (sinEscenario = false) => {
     if (guardada && !window.confirm('¿Empezar una partida nueva? Se perderá la partida guardada.')) return
-    nueva()
+    nueva(sinEscenario)
   }
   return (
     <div className="portada" style={{ backgroundImage: `url(${arteGaleon})` }}>
@@ -28,9 +28,13 @@ export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: ()
               </small>
             </button>
           )}
-          <button type="button" className={`boton grande${guardada ? '' : ' principal'}`} onClick={empezarNueva}>
+          <button type="button" className={`boton grande${guardada ? '' : ' principal'}`} onClick={() => empezarNueva()}>
             Nueva partida
             <small>Diego «Garra» Mendoza en Tortuga · partida normal</small>
+          </button>
+          <button type="button" className="boton grande" onClick={() => empezarNueva(true)}>
+            Partida de aprendizaje
+            <small>Sin cartas de Escenario: un contador de 11 días hace de reloj</small>
           </button>
         </div>
         <div className="portada-reglamento">

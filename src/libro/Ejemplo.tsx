@@ -14,7 +14,7 @@ import { porId } from '../engine/catalogo.ts'
 import { dimensiones } from '../ui/cartas/Carta.tsx'
 import type { CartaNombrada, ParteCarta } from './cartasNombradas.ts'
 import type { Bloque } from './fuente.ts'
-import { anchoLegible, FragmentoPeligro, LETRA_LEGIBLE, LETRA_MINIMA, letraDeCarta, MARGEN_RECORTE, Miniatura, MM, selectorParte } from './piezas.tsx'
+import { ANCHO_PELIGRO, anchoLegible, FragmentoPeligro, LETRA_LEGIBLE, LETRA_MINIMA, letraDeCarta, MARGEN_RECORTE, Miniatura, MM, selectorParte } from './piezas.tsx'
 
 /** Ancho útil dentro de un recuadro de ejemplo de la columna principal (mm) y separación entre sus cartas. */
 const ANCHO_EJEMPLO = 116
@@ -132,7 +132,7 @@ function formas(b: Bloque & { tipo: 'ejemplo' }, m: Medidas, w: number): Forma[]
   const texto = parrafos(b.html)
   const espacio = ANCHO_EJEMPLO_PAGINA
   const altoFragmento = (c: CartaNombrada) =>
-    NOMBRE_FRAGMENTO + c.partes.reduce((n, p) => n + ((m.partes[`${c.id}:${p}`] ?? 130) + 2 * MARGEN_RECORTE) * (w / 378), 0) + ENTRE_RECORTES * (c.partes.length - 1)
+    NOMBRE_FRAGMENTO + c.partes.reduce((n, p) => n + ((m.partes[`${c.id}:${p}`] ?? 130) + 2 * MARGEN_RECORTE) * (w / ANCHO_PELIGRO), 0) + ENTRE_RECORTES * (c.partes.length - 1)
   const altoPila = recortes.reduce((n, c) => n + altoFragmento(c), 0) + ENTRE_FRAGMENTOS * (recortes.length - 1)
   const altoMayor = Math.max(...recortes.map(altoFragmento))
   const altoCartas = (ids: readonly string[], a: number) => (ids.length ? Math.max(...ids.map((id) => altoCarta(id, a))) : 0)

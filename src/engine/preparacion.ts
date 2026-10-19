@@ -27,10 +27,12 @@ export interface OpcionesPartida {
   peligrosExtra?: CartaId[]
   /** Solo para simular otra regla (ver `Estado.variante`). */
   variante?: Estado['variante']
+  /** Partida de aprendizaje: sin mazo de Escenario, con un contador de turnos (fase 10c). */
+  sinEscenario?: boolean
 }
 
 /** Prepara una partida con los mazos predefinidos y la deja esperando el cambio de mano inicial. */
-export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, variante }: OpcionesPartida): Estado {
+export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, variante, sinEscenario }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
   const errores = erroresDeMazos({ capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle })
@@ -41,9 +43,15 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
   if (variante) s.variante = variante
 
   // 1. Mazo de Escenario: se baraja y se queda con las cartas del modo; las demás vuelven a la caja sin mirarlas.
-  for (const e of DATOS.escenario) crearCopia(s, e.id, 'mazoEscenario')
-  barajar(s, 'mazoEscenario')
-  for (const sobra of s.zonas.mazoEscenario.slice(MODOS[s.modo].escenario)) mover(s, sobra, 'fueraDeJuego')
+  //    Partida de aprendizaje: sin mazo de Escenario; un contador con tantos días como cartas tendría.
+  if (sinEscenario) {
+    const dias = MODOS[s.modo].escenario
+    s.sinEscenario = { dias, total: dias }
+  } else {
+    for (const e of DATOS.escenario) crearCopia(s, e.id, 'mazoEscenario')
+    barajar(s, 'mazoEscenario')
+    for (const sobra of s.zonas.mazoEscenario.slice(MODOS[s.modo].escenario)) mover(s, sobra, 'fueraDeJuego')
+  }
 
   // 2. Capitán preparado y Barco sin daño.
   s.capitan = crearCopia(s, m.capitanInicial, 'tripulacion')

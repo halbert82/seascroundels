@@ -40,8 +40,17 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       s.paso = 'inicio'
       anotar(s, 'turno', `Turno ${s.turno}`)
       const tareas: NuevaTarea[] = []
-      const carta = arriba(s, 'mazoEscenario')
-      if (!carta) {
+      const carta = s.sinEscenario ? undefined : arriba(s, 'mazoEscenario')
+      if (s.sinEscenario) {
+        // Partida de aprendizaje: cada turno gasta un día del contador; sin días, este es el último turno.
+        if (s.sinEscenario.dias <= 0) {
+          s.ultimoTurno = true
+          anotar(s, 'aviso', 'No quedan días: este es tu último turno.')
+        } else {
+          s.sinEscenario.dias -= 1
+          anotar(s, 'efecto', `Pasa un día: ${diasTexto(s.sinEscenario.dias)}.`)
+        }
+      } else if (!carta) {
         s.ultimoTurno = true
         anotar(s, 'aviso', 'No queda ninguna carta de Escenario: este es tu último turno.')
       } else {
@@ -118,7 +127,7 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       for (const clave of Object.keys(s.usos)) if (clave.startsWith('turno:')) delete s.usos[clave]
       for (const c of [...s.zonas.escenarioEnCurso]) mover(s, c, 'descartesEscenario')
       if (s.ultimoTurno) {
-        s.resultado = { gana: false, motivo: 'Se ha acabado el tiempo: no quedaban cartas de Escenario.' }
+        s.resultado = { gana: false, motivo: s.sinEscenario ? 'Se ha acabado el tiempo: no quedaban días.' : 'Se ha acabado el tiempo: no quedaban cartas de Escenario.' }
         anotar(s, 'fin', 'Se acaba el tiempo. Has perdido la partida.')
         return 'hecha'
       }
@@ -171,4 +180,10 @@ export const descartarFinal: Manejador<'descartarFinal'> = (s, _t, e) => {
   for (const c of ids) mover(s, c, 'descartesCapitan')
   if (ids.length > 0) anotar(s, 'jugada', `Descartas ${ids.length} ${ids.length === 1 ? 'carta' : 'cartas'}.`)
   return 'hecha'
+}
+
+/** «quedan 3 días», «queda 1 día», «no queda ningún día». */
+export function diasTexto(n: number): string {
+  if (n <= 0) return 'no queda ningún día'
+  return n === 1 ? 'queda 1 día' : `quedan ${n} días`
 }

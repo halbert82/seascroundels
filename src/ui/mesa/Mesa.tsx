@@ -26,7 +26,8 @@ interface Props {
   inicial: () => PartidaEnMesa
   guardar: boolean
   irA: (ruta: string) => void
-  nueva: () => PartidaEnMesa
+  /** Una partida nueva; la mesa pide la misma clase de partida que la que se está jugando. */
+  nueva: (op?: { sinEscenario?: boolean }) => PartidaEnMesa
 }
 
 export function Mesa(props: Props) {
@@ -103,7 +104,7 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
   const nuevaPartida = () => {
     if (!s.resultado && !window.confirm('¿Empezar una partida nueva? Se perderá la que estás jugando.')) return
     setPanel(null)
-    juego.reiniciar(nueva())
+    juego.reiniciar(nueva({ sinEscenario: Boolean(s.sinEscenario) }))
   }
 
   const botones = (
@@ -152,7 +153,7 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
             {panel === 'registro' && <Registro s={s} alCerrar={() => setPanel(null)} />}
             {panel === 'ayuda' && <Ayuda alCerrar={() => setPanel(null)} />}
             {hayFinMision && !s.resultado && <FinDeMision s={s} desde={juego.partida.desde} alCerrar={() => setFinVisto(juego.partida.desde)} elegir={elegir} />}
-            {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva())} portada={() => irA('/')} />}
+            {s.resultado && <FinDePartida s={s} otra={() => juego.reiniciar(nueva({ sinEscenario: Boolean(s.sinEscenario) }))} portada={() => irA('/')} />}
             <CapaZoom />
             <CapaExplicacion />
           </div>

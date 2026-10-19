@@ -2,6 +2,7 @@
 // El motor no depende de React: este módulo es TypeScript puro.
 
 import datosJson from '../../data/cartas.json'
+import type { Efecto } from './efectos.ts'
 
 export type Habilidad = 'NAV' | 'COM' | 'EXP'
 export type Entorno = 'mar' | 'nat' | 'ciu'
@@ -241,6 +242,8 @@ export interface RecompensaDatos {
   adquiereGratis?: number
   /** Fase 10b: otea N del mazo de Misiones (antes de reponer las misiones disponibles). */
   oteaMisiones?: number
+  /** Fase 10c (solo para medir): lo que cuesta la recompensa («y el Barco sufre 1 daño»). */
+  precio?: Efecto[]
   /** id del Tesoro que se gana. */
   tesoro?: string
   victoria?: boolean

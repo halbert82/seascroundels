@@ -489,3 +489,32 @@ El informe (docs/informe-equilibrio.md) pasa de 35,9 % a 35,2 % de victorias; co
 | Todo lo de la fase 10b | 45,6 % (+10,4) | 0,79 | 1,46 |
 
 Cada cambio «solo» se midió en una copia del repositorio en el commit anterior a la fase con ese commit aplicado encima. Objetivo de Albert: ~25 %. No se ha tocado nada para acercarse; opciones medidas sobre lo publicado (pendiente de Albert, Q1): Pruebas fáciles a 1 / 1, 35,5 %; solo dificultad 1–2 a 1 / 1, 40,5 %; 20 de reputación, 32,1 %; las dos primeras con 20 de reputación, 24,1 % y 26,4 %.
+
+## Fase 10c: respuestas a la fase 10b, reputación medida, partida de aprendizaje, cartas tarot y diseño por tipo (20 de octubre de 2026)
+
+Hecha desde la sesión de diseño (Claude en la nube), sin la sesión de Claude Code del Mac.
+
+### Respuestas Q1–Q12 (de la fase 10b)
+
+- **Q2–Q7, Q9 y Q10:** como estaban (las opciones por defecto se quedan).
+- **Q8.** Destina cuenta las bonificaciones, como la Distancia. Escrito en la entrada «Destina», con el ejemplo de Diego: mientras está preparado y no se agota, el Grumete leal cuenta como NAV 2.
+- **Q12.** La letra mínima de las cartas de Peligro pasa de 10,5 a 13 px al hacerlas tarot (ver abajo).
+- **Q1 y Q11.** No se aplica ningún cambio de equilibrio: Albert no quiere subir la reputación para ganar, sino que cada punto sea escaso. Se mide la reputación de las misiones (abajo) y elige él.
+
+### Partida de aprendizaje (sin Escenario)
+
+- Opción nueva en la portada: «Partida de aprendizaje». No hay mazo de Escenario: un contador con tantos días como cartas tendría el modo (11 en normal) hace de reloj. Cada turno gasta un día y «pierdes un día» gasta otro; con 0 días al empezar un turno, ese turno es el último, como con el mazo (11 días dan 12 turnos).
+- Motor: `Estado.sinEscenario` ({ dias, total }) y `diasRestantes()`. Mesa: el reloj cuenta los días y no se dibuja el mazo de Escenario. Reglamento: frase en la preparación, en «Ganar y perder», en «Día» y entrada nueva «Partida de aprendizaje». Prueba en `src/engine/escenario.test.ts`.
+
+### Cartas tarot
+
+- Las cartas de Peligro, las de los mazos propios y las de puerto pasan a tamaño tarot (70 × 120 mm; 420 × 720 px en la app, 720 × 420 el puerto). El resto sigue en 63 × 88 mm. La letra de los Peligros empieza en 18 px y baja sola hasta que cabe: la mínima queda en 13 px (antes 10,5). Ninguna se desborda.
+- El mazo de historia se guarda en dos montones, uno por tamaño: los mazos propios y «La Armada te persigue» van en el grande (reglamento: Componentes y «Mazo de historia», con ejemplo).
+- En la mesa, la carta de Peligro ocupa el alto que ocupaba la normal y deja más ancho al panel de la Prueba; el mazo de Peligros, el mismo alto que los demás mazos.
+- Misiones: no cambian. Su letra mínima es 10,8 px (116) y 11,4 px (118); hay cuatro cartas entre 12 y 12,8 px. Queda como propuesta para Albert pasarlas también a tarot.
+- Reglamento: las cartas dibujadas al pie de una página salían en blanco al imprimir el PDF (su caja sin escalar se salía de la página; pasaba ya antes, con la figura del mazo de historia). Se arregla con `contain: strict` en las miniaturas. Los dorsos en miniatura recuperan su interlineado.
+
+### Diseño por tipo de carta (opción 1 de Albert)
+
+- El color del marco y de la placa es siempre la Clase (Piratería rojo, Neutral verde). Las cartas de jugador sin Clase en los datos (todas las Mejoras, Eventos y Habilidades) son Neutrales. El nombre de la Clase va al pie.
+- Tripulante: no cambia. Mejora de barco: la ilustración en un cuadro con esquinas de latón. Mejora de tripulante: en un óvalo con el mismo filete que el arco del Evento (sin sellos ni iconos). Evento: ilustración en arco y nombre en el centro, con «Evento» debajo. Habilidad: sin coste, las mismas pestañas de icono que el Evento, la ilustración larga y la caja de texto corta. Los Tesoros que son Mejoras se enmarcan como las Mejoras.

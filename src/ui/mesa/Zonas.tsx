@@ -4,11 +4,12 @@ import { motion } from 'motion/react'
 import { useMemo, useRef, type CSSProperties, type ReactNode } from 'react'
 import { esCarta, nombreDe, porId } from '../../engine/catalogo.ts'
 import { reputacionMinima } from '../../engine/capacidades/misiones.ts'
-import { copia } from '../../engine/estado.ts'
+import { copia, diasRestantes } from '../../engine/estado.ts'
 import { mazoActivo } from '../../engine/peligros.ts'
 import type { Estado, InstId, Zona } from '../../engine/tipos.ts'
 import { espacioOcupado, plazasOcupadas, valor } from '../../engine/valores.ts'
 import { vinculadas } from '../../engine/zonas.ts'
+import { MEDIDAS } from '../cartas/Carta.tsx'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
@@ -83,7 +84,7 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
   const escenario = s.zonas.escenarioEnCurso[0]
   const idEscenario = escenario ? copia(s, escenario).id : null
   const reloj = useAmpliable(idEscenario)
-  const dias = s.zonas.mazoEscenario.length
+  const dias = diasRestantes(s)
   return (
     <header className="barra">
       <div className="barra-turno">
@@ -107,7 +108,11 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
         <button
           type="button"
           className="reloj"
-          title="Cada turno se revela una carta de Escenario; cuando no quedan, es tu último turno. Pulsa para ver la carta de este turno."
+          title={
+            s.sinEscenario
+              ? `Partida de aprendizaje, sin Escenario: cada turno gasta un día de ${s.sinEscenario.total}; sin días, es tu último turno.`
+              : 'Cada turno se revela una carta de Escenario; cuando no quedan, es tu último turno. Pulsa para ver la carta de este turno.'
+          }
           onPointerDown={reloj.onPointerDown}
           onClick={(e) => idEscenario && zoom.mostrar(idEscenario, e.currentTarget, { inmediata: true, tactil: reloj.puntero.current !== 'mouse' })}
           onPointerLeave={reloj.onPointerLeave}
@@ -430,7 +435,15 @@ function EsteTurno() {
   if (!escenario) {
     return (
       <div className="este-turno">
-        <span className="vacio">{s.ultimoTurno ? 'No quedan cartas de Escenario: este es tu último turno.' : 'Sin carta de Escenario este turno.'}</span>
+        <span className="vacio">
+          {s.sinEscenario
+            ? s.ultimoTurno
+              ? 'No quedan días: este es tu último turno.'
+              : `Partida de aprendizaje, sin Escenario: ${s.sinEscenario.dias === 1 ? 'queda 1 día' : `quedan ${s.sinEscenario.dias} días`} en el contador.`
+            : s.ultimoTurno
+              ? 'No quedan cartas de Escenario: este es tu último turno.'
+              : 'Sin carta de Escenario este turno.'}
+        </span>
       </div>
     )
   }
@@ -476,11 +489,12 @@ export function Mano() {
 // Mazos y descartes
 
 /** Copias de arriba de un mazo, invisibles, para que las cartas «salgan» de él al robarse o revelarse. */
-function Origenes({ s, zona, escala }: { s: Estado; zona: Zona; escala: number }) {
+function Origenes({ s, zona, escala, tarot = false }: { s: Estado; zona: Zona; escala: number; tarot?: boolean }) {
+  const m = tarot ? MEDIDAS.tarot : MEDIDAS.normal
   return (
     <>
       {s.zonas[zona].slice(0, 4).map((c) => (
-        <motion.div key={c} layoutId={c} className="origen" style={{ width: 378 * escala, height: 528 * escala }} />
+        <motion.div key={c} layoutId={c} className="origen" style={{ width: m.ancho * escala, height: m.alto * escala }} />
       ))}
     </>
   )
@@ -491,7 +505,12 @@ const ESCALA_PILA = 0.13
 function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona; dorso: TipoDorso; nombre: string }) {
   const { s, inter, pulsar } = useMesa()
   const arriba = descartes ? s.zonas[descartes][0] : undefined
-  const hueco = <div className="pila-vacia" style={{ width: 378 * ESCALA_PILA, height: 528 * ESCALA_PILA }} />
+  // Fase 10c: el mazo de Peligros es de cartas tarot.
+  //            En la mesa ocupa el mismo alto que los demás mazos: se ve más estrecho, no más alto.
+  const tarot = dorso === 'peligros'
+  const m = tarot ? MEDIDAS.tarot : MEDIDAS.normal
+  const escala = (ESCALA_PILA * MEDIDAS.normal.alto) / m.alto
+  const hueco = <div className="pila-vacia" style={{ width: m.ancho * escala, height: m.alto * escala }} />
   // Si la carta de arriba de los descartes se puede elegir ahora (sale también en la bandeja del panel), se puede
   // pulsar desde aquí, y sin vuelo, para no competir con la copia de la bandeja.
   const opciones = arriba ? (inter.opciones.get(arriba) ?? []) : []
@@ -500,8 +519,8 @@ function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona
     <div className="pila">
       <div className="pila-mazo" title={`${nombre}: ${s.zonas[zona].length} cartas`}>
         <div className="pila-cartas">
-          {s.zonas[zona].length > 0 ? <DorsoEscalado tipo={dorso} escala={ESCALA_PILA} /> : hueco}
-          <Origenes s={s} zona={zona} escala={ESCALA_PILA} />
+          {s.zonas[zona].length > 0 ? <DorsoEscalado tipo={dorso} escala={escala} /> : hueco}
+          <Origenes s={s} zona={zona} escala={escala} tarot={tarot} />
         </div>
         <span className="pila-n">{s.zonas[zona].length}</span>
       </div>
@@ -512,7 +531,7 @@ function Pila({ zona, descartes, dorso, nombre }: { zona: Zona; descartes?: Zona
               <CartaMesa
                 inst={arriba}
                 id={copia(s, arriba).id}
-                escala={ESCALA_PILA}
+                escala={escala}
                 {...(enBandeja ? { sinVuelo: true, marca: inter.marcas.get(arriba) ?? null } : {})}
                 {...(opciones.length > 0 ? { onClick: (el: HTMLElement, i?: number) => pulsar(arriba, el, i), ayuda: opciones.map((o) => o.etiqueta).join(' · '), acciones: opciones.map((o) => o.etiqueta) } : {})}
               />
@@ -536,7 +555,7 @@ export function Mazos() {
       <Pila zona={peligros.mazo} descartes={peligros.descartes} dorso="peligros" nombre={peligros.mazo === 'mazoMision' ? 'Mazo de la misión' : 'Peligros'} />
       <Pila zona="mazoCapitan" descartes="descartesCapitan" dorso="capitan" nombre="Mazo del capitán" />
       <Pila zona="mazoMuelle" descartes="descartesMuelle" dorso="muelle" nombre="Mazo de muelle" />
-      <Pila zona="mazoEscenario" dorso="escenario" nombre="Escenario" />
+      {!s.sinEscenario && <Pila zona="mazoEscenario" dorso="escenario" nombre="Escenario" />}
     </section>
   )
 }

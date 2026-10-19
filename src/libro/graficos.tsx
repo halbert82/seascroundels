@@ -167,7 +167,7 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
           { n: '7', sel: '.traits', donde: 'izq', texto: true },
           { n: '8', sel: '.rules', donde: 'izq', texto: true },
           { n: '9', sel: '.flavor', donde: 'izq', texto: true },
-          { n: '10', sel: '.foot span:last-child', donde: 'der', texto: true },
+          { n: '10', sel: '.foot > span:last-child', donde: 'der', texto: true },
         ],
       },
     ],
@@ -281,7 +281,8 @@ const ANATOMIAS: Record<string, AnatomiaDef> = {
     cartas: [
       {
         id: 'p2_arrecife',
-        ancho: 60,
+        // Fase 10c: la carta es tarot; a 50 mm de ancho ocupa el alto que ocupaba la normal a 60, con la letra igual.
+        ancho: 50,
         llamadas: [
           { n: '1', sel: '.encp .ent', donde: 'izq' },
           { n: '2', sel: '.encp .encn', donde: 'izq', texto: true },
@@ -470,7 +471,7 @@ function AnatomiaHistoria() {
               </div>
               <div className="historia-cara">
                 <div className="miniatura dorso-carta">
-                  <DorsoEscalado tipo={p.dorso} escala={(p.ancho * MMPX) / 378} numero={p.num} apaisado={p.apaisado} />
+                  <DorsoEscalado tipo={p.dorso} escala={(p.ancho * MMPX) / 378}   numero={p.num} apaisado={p.apaisado} />
                 </div>
                 <span className="historia-rotulo">{p.dorso === 'misiones' ? 'Su dorso: Misiones' : 'Su dorso: muelle'}</span>
               </div>
@@ -570,8 +571,8 @@ export function Mesa() {
   const zonas: Zona[] = [
     { x: 4, y: bajo(f0), rotulo: 'Mazo de Escenario', paso: 1, ancho: 18 },
     { x: 24, y: f0 + 15, rotulo: 'Reputación', paso: 1, ancho: 40 },
-    { x: 4, y: bajo(f1), rotulo: 'Mazo de Peligros', paso: 4, ancho: 18 },
-    { x: 24, y: bajo(f1, 16), rotulo: 'Puerto', paso: 3, ancho: 24 },
+    { x: 4, y: bajo(f1, W * (70 / 63) * (120 / 70)), rotulo: 'Mazo de Peligros', paso: 4, ancho: 18 },
+    { x: 24, y: bajo(f1, 15), rotulo: 'Puerto', paso: 3, ancho: 24 },
     { x: xMisiones, y: bajo(f1, W), rotulo: 'Misiones disponibles', paso: 5, ancho: 66 },
     { x: 122, y: bajo(f1, W), rotulo: 'Mazo de Misiones', paso: 5, ancho: 22 },
     { x: 147, y: bajo(f1, W), rotulo: 'Mazo de historia', paso: 5, ancho: 22 },
@@ -607,7 +608,8 @@ export function Mesa() {
           <Dorso tipo="peligros" ancho={W} grosor={6} />
         </En>
         <En x={24} y={f1}>
-          <Miniatura id="tortuga" ancho={16} />
+          {/* Fase 10c: el puerto es tarot apaisado; a 15 mm de alto no toca las misiones. */}
+          <Miniatura id="tortuga" ancho={15} />
         </En>
         {INICIALES.map((id, i) => (
           <En key={id} x={xMisiones + i * (ancho + 2.2)} y={f1}>

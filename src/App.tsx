@@ -37,7 +37,7 @@ export function App() {
         key="partida"
         inicial={() => {
           const guardada = partidaGuardada()
-          return guardada ? empezar(guardada) : partidaNueva()
+          return guardada ? empezar(guardada) : partidaNueva({ sinEscenario: ruta.startsWith('/partida-aprendizaje') })
         }}
         guardar
         irA={irA}
@@ -48,9 +48,9 @@ export function App() {
   return (
     <Portada
       irA={irA}
-      nueva={() => {
+      nueva={(sinEscenario) => {
         borrarPartidaGuardada()
-        irA('/partida')
+        irA(sinEscenario ? '/partida-aprendizaje' : '/partida')
       }}
     />
   )

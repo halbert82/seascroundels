@@ -16,12 +16,13 @@ export const DORSOS: Record<TipoDorso, { nombre: string; color: string; emblema:
 }
 
 /**
- * Dorso a tamaño de carta (378×528); se escala desde fuera como las cartas. Con `numero`, es el de una carta del mazo
+ * Dorso a tamaño de carta (378×528; el de Peligros, tarot, 420×720); se escala desde fuera como las cartas. Con `numero`, es el de una carta del mazo
  * de historia (fase 10): el dorso del mazo al que va, con su número bien visible en el centro.
  */
 export function Dorso({ tipo, numero, apaisado = false }: { tipo: TipoDorso; numero?: number; apaisado?: boolean }) {
   const d = DORSOS[tipo]
-  const clase = ['dorso', numero !== undefined ? 'de-historia' : '', apaisado ? 'apaisado' : ''].filter(Boolean).join(' ')
+  // Fase 10c: el mazo de Peligros (y lo que se baraja en él) va en tamaño tarot.
+  const clase = ['dorso', numero !== undefined ? 'de-historia' : '', apaisado ? 'apaisado' : '', tipo === 'peligros' && !apaisado ? 'tarot' : ''].filter(Boolean).join(' ')
   return (
     <div className={clase} style={{ '--dorso': d.color } as CSSProperties}>
       <div className="dorso-marco">
@@ -37,11 +38,11 @@ export function Dorso({ tipo, numero, apaisado = false }: { tipo: TipoDorso; num
 }
 
 /** Dorso escalado que ocupa su tamaño final. */
-export function DorsoEscalado({ tipo, escala, numero, apaisado = false }: { tipo: TipoDorso; escala: number; numero?: number; apaisado?: boolean }) {
-  const [ancho, alto] = apaisado ? [528, 378] : [378, 528]
+export function DorsoEscalado({ tipo, escala, numero, apaisado = false, zoom = false }: { tipo: TipoDorso; escala: number; numero?: number; apaisado?: boolean; zoom?: boolean }) {
+  const [ancho, alto] = apaisado ? [528, 378] : tipo === 'peligros' ? [420, 720] : [378, 528]
   return (
     <div style={{ width: ancho * escala, height: alto * escala, position: 'relative', flex: 'none' }}>
-      <div style={{ position: 'absolute', left: 0, top: 0, transform: `scale(${escala})`, transformOrigin: '0 0' }}>
+      <div style={zoom ? { position: 'absolute', left: 0, top: 0, zoom: escala } : { position: 'absolute', left: 0, top: 0, transform: `scale(${escala})`, transformOrigin: '0 0' }}>
         <Dorso tipo={tipo} apaisado={apaisado} {...(numero !== undefined ? { numero } : {})} />
       </div>
     </div>
