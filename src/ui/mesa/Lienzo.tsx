@@ -1,8 +1,10 @@
 // La mesa mide al menos 900 de alto y entre 1440 y 1920 de ancho, según la forma de la pantalla, y se escala entera
 // para caber. Así, en 1920×1080 la mesa se ensancha (y sus cartas crecen) en vez de dejar bandas a los lados, y en una
-// pantalla más cuadrada (una tableta, 1024×768) crece de alto en vez de dejar bandas arriba y abajo: las zonas de
-// arriba se alargan y el panel y la mano siguen al pie.
-// TODO(diseño): que lo que crece en la tableta sean las zonas de arriba lo he decidido yo (docs/decisiones.md, fase 9).
+// pantalla más cuadrada (una tableta, 1024×768) crece de alto en vez de dejar bandas arriba y abajo.
+// La altura de más se reparte así (repartirAltoDeMas, en disposicion.ts): primero la mano, hasta que sus cartas se ven
+// enteras sin tocarlas (con 900 de alto solo asoman); lo que sobre después, las zonas de arriba (tripulación, misión o
+// puerto y la columna derecha). El panel de decisión va justo debajo de las zonas. En 1024×768 (mesa de 1440×1080), de
+// los 180 de más, 79 son para la mano y 101 para las zonas.
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
 

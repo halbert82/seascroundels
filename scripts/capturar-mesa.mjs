@@ -20,10 +20,10 @@ const TAMANOS = {
 const elegidos = (process.env.TAMANOS ?? '1440,1920,1024').split(',').map((t) => TAMANOS[t.trim()]).filter(Boolean)
 const ESCENAS = (process.env.ESCENAS ?? 'portada,puerto,prueba,finMision').split(',')
 
-const servidor = await preview({ logLevel: 'error', preview: { port: 5198 } })
+const servidor = await preview({ logLevel: 'error', preview: { port: Number(process.env.PUERTO ?? 5198) } })
 const raiz = servidor.resolvedUrls?.local[0]
 if (!raiz) throw new Error('El servidor no ha arrancado')
-const base = new URL('seascroundels/', raiz).href
+const base = raiz.endsWith('/seascroundels/') ? raiz : new URL('seascroundels/', raiz).href
 
 const navegador = await chromium.launch()
 const errores = []

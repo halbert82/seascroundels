@@ -8,14 +8,14 @@ import type { Decision, Estado } from '../../engine/tipos.ts'
 import { Contexto } from './contexto.tsx'
 import { claveDecision, interaccion, seleccionVacia, type Interaccion, type Objetivo, type OpcionCarta, type Seleccion } from './interaccion.ts'
 import { enLienzo } from './disposicion.ts'
-import { ALTO, Lienzo, useLienzo } from './Lienzo.tsx'
+import { Lienzo, useLienzo } from './Lienzo.tsx'
 import { PanelDecision } from './PanelDecision.tsx'
 import { Ayuda, FinDeMision, FinDePartida, Menu, MenuCarta, Registro, UltimoOcurrido } from './Paneles.tsx'
 import { useVelocidad } from './preferencias.ts'
 import { usePartida, type PartidaEnMesa } from './usePartida.ts'
 import { CapaZoom, ProveedorZoom, useZoom } from './Zoom.tsx'
 import { CapaExplicacion, ProveedorExplicacion } from './Explicacion.tsx'
-import { ALTO_ZONAS, ARRIBA, DER, HUECO, IZQ, MARGEN, anchoCentro } from './disposicion.ts'
+import { ALTO_ZONAS, ARRIBA, DER, HUECO, IZQ, MARGEN, anchoCentro, repartirAltoDeMas } from './disposicion.ts'
 import { BarraSuperior, BloqueBarco, Mano, Mazos, ZonaPuerto, ZonaTripulacion } from './Zonas.tsx'
 import { ZonaMision } from './ZonaMision.tsx'
 import './mesa.css'
@@ -123,14 +123,15 @@ function MesaEnLienzo({ inicial, guardar, irA, nueva }: Props) {
     </div>
   )
 
-  // Si la mesa crece de alto (en una pantalla más cuadrada), crecen las zonas de arriba; el panel y la mano siguen al pie.
-  const extra = alto - ALTO
-  const zona = { top: ARRIBA, height: ALTO_ZONAS + extra }
+  // Si la mesa crece de alto (en una pantalla más cuadrada, como una tableta), la altura de más va primero a la mano,
+  // para que sus cartas se vean enteras, y lo que sobre, a las zonas de arriba; el panel va justo debajo de ellas.
+  const extra = repartirAltoDeMas(alto)
+  const zona = { top: ARRIBA, height: ALTO_ZONAS + extra.zonas }
   return (
     <ProveedorExplicacion>
       <Contexto.Provider value={{ s, inter, pulsar }}>
         <LayoutGroup>
-          <div className={`mesa vel-${velocidad}`} style={{ width: ancho, height: alto, '--extra': `${extra}px` } as CSSProperties}>
+          <div className={`mesa vel-${velocidad}`} style={{ width: ancho, height: alto, '--extra-zonas': `${extra.zonas}px`, '--extra-mano': `${extra.mano}px` } as CSSProperties}>
             <BarraSuperior botones={botones} />
             <div className="col-izq" style={{ ...zona, left: MARGEN, width: IZQ }}>
               <ZonaTripulacion />

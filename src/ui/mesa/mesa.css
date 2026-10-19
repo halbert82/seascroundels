@@ -1211,8 +1211,8 @@
 
 .ultimo {
   flex: none;
-  /* Si la mesa crece de alto (en una tableta), lo que crece es esta lista. */
-  height: calc(168px + var(--extra, 0px));
+  /* Si las zonas de arriba crecen (en una tableta), lo que crece es esta lista. */
+  height: calc(168px + var(--extra-zonas, 0px));
   overflow: hidden;
 }
 
@@ -1344,7 +1344,8 @@
   position: absolute;
   left: 14px;
   right: 14px;
-  top: calc(622px + var(--extra, 0px));
+  /* Justo debajo de las zonas de arriba, que crecen en una tableta. */
+  top: calc(622px + var(--extra-zonas, 0px));
   min-height: 76px;
   display: flex;
   align-items: center;
@@ -1585,18 +1586,21 @@
 
 /* ------------------------------------------------------------------ Mano */
 
+/* Con la mesa a 900 de alto, las cartas asoman (les faltan 40 por abajo) y suben al pasar por encima. En una tableta,
+   la mano se lleva primero la altura de más (--extra-mano) y sus cartas suben hasta verse enteras (--pie-mano, que
+   calcula disposicion.ts). */
 .mano {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(706px + var(--extra, 0px));
-  height: 194px;
+  top: calc(706px + var(--extra-zonas, 0px));
+  height: calc(194px + var(--extra-mano, 0px));
 }
 
 .mano-carta {
   position: absolute;
   left: 50%;
-  bottom: -40px;
+  bottom: var(--pie-mano, -40px);
   transform: translateX(calc(-50% + var(--x))) translateY(var(--caida)) rotate(var(--giro));
   transform-origin: 50% 120%;
   transition: transform 0.18s ease-out;
@@ -1678,6 +1682,20 @@
   place-items: center;
   background: rgba(8, 5, 3, 0.62);
   backdrop-filter: blur(2px);
+}
+
+/* Con la mesa encogida (en una tableta), el velo va aparte, a tamaño de pantalla (VeloAparte, en Paneles.tsx). */
+.capa:has(> .capa-velo) {
+  background: none;
+  backdrop-filter: none;
+}
+
+.capa-velo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  background: rgba(8, 5, 3, 0.62);
 }
 
 .capa-panel {

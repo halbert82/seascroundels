@@ -8,7 +8,7 @@ import { Jugador } from '../../engine/pruebas/situacion.ts'
 import type { Estado, InstId } from '../../engine/tipos.ts'
 import { empezar, type PartidaEnMesa } from './usePartida.ts'
 
-export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision'] as const
+export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision', 'mano5', 'mano8'] as const
 export type Escena = (typeof ESCENAS)[number]
 
 function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): PartidaEnMesa | null {
@@ -25,7 +25,7 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
   return null
 }
 
-const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision'>, (s: Estado, desde: number) => boolean> = {
+const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8'>, (s: Estado, desde: number) => boolean> = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
   puerto: (s) => s.turno >= 3 && s.pendiente?.motivo.clave === 'jugarCartas' && s.zonas.tripulacion.length >= 3,
   // Una Prueba con comprometidos y el Destino revelado, en la ventana de acción.
@@ -121,7 +121,24 @@ function finalMision(): PartidaEnMesa {
   return { ...empezar(j.estado), desde: Math.max(0, desde) }
 }
 
+/**
+ * En puerto, en Jugar cartas, con la mano llena: 5 cartas (el Mando del Capitán) o, robando 3 más del mazo del capitán,
+ * 8 (una mano muy llena). Para ver que la mano se ve entera en una tableta.
+ */
+function manoDe(n: 5 | 8): PartidaEnMesa {
+  for (let semilla = 1; semilla < 60; semilla++) {
+    const p = buscar(semilla, (s) => s.turno >= 3 && s.pendiente?.motivo.clave === 'jugarCartas' && s.zonas.mano.length === 5 && s.zonas.tripulacion.length >= 3)
+    if (!p) continue
+    const s = p.estado
+    s.zonas.mano.push(...s.zonas.mazoCapitan.splice(0, n - 5))
+    return { ...empezar(s), desde: p.desde }
+  }
+  throw new Error(`No encuentro una mano de ${n} cartas`)
+}
+
 export function escena(nombre: Escena): PartidaEnMesa {
+  if (nombre === 'mano5') return manoDe(5)
+  if (nombre === 'mano8') return manoDe(8)
   if (nombre === 'enJuego') return enJuego()
   if (nombre === 'muelleOcupado') return muelleOcupado()
   if (nombre === 'alarma') return alarma()

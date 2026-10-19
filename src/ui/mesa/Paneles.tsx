@@ -14,7 +14,8 @@ import { Icono, Numero } from './Zonas.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { glosarioCompleto } from '../textos/glosario.ts'
 import { Explicable } from './Explicacion.tsx'
-import { ALTO, useLienzo } from './Lienzo.tsx'
+import { useLienzo } from './Lienzo.tsx'
+import { repartirAltoDeMas } from './disposicion.ts'
 
 const ICONO_REGISTRO: Partial<Record<EntradaRegistro['tipo'], IconoId>> = {
   revelar: 'robar',
@@ -37,9 +38,9 @@ function Linea({ r }: { r: EntradaRegistro }) {
 /** Las líneas del registro desde tu última decisión. */
 export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
   const velocidad = useVelocidad()
-  // Cinco líneas; si la mesa crece de alto (en una tableta), una más por cada 40 de alto que gana.
+  // Cinco líneas; si las zonas de arriba crecen (en una tableta), una más por cada 40 de alto que ganan.
   const { alto } = useLienzo()
-  const cuantas = 5 + Math.max(0, Math.floor((alto - ALTO) / 40))
+  const cuantas = 5 + Math.floor(repartirAltoDeMas(alto).zonas / 40)
   const nuevas = s.registro.slice(desde).filter((r) => r.tipo !== 'turno')
   const anteriores = nuevas.length === 0 ? s.registro.filter((r) => r.tipo !== 'turno').slice(-3) : []
   return (
@@ -66,9 +67,28 @@ export function UltimoOcurrido({ s, desde }: { s: Estado; desde: number }) {
   )
 }
 
+/**
+ * El velo de las ventanas (fin de misión, fin de partida, ayuda) oscurece y desenfoca la mesa que queda debajo. Cuando la
+ * mesa se encoge para caber en la pantalla (en una tableta), el navegador desenfoca mal lo que hay debajo de algo
+ * encogido: solo un trozo, del tamaño de la pantalla medido en medidas de la mesa, y el resto lo rellena con reflejos de
+ * la mesa. Por eso, con la mesa encogida, el velo va aparte: deshace el encogimiento (queda a tamaño de pantalla) y
+ * desenfoca en proporción, para verse igual que en escritorio. Con la mesa a su tamaño o agrandada, lo pone la capa.
+ */
+function VeloAparte() {
+  const { ancho, alto, escala } = useLienzo()
+  if (escala >= 1) return null
+  return (
+    <div
+      className="capa-velo"
+      style={{ width: Math.ceil(ancho * escala) + 1, height: Math.ceil(alto * escala) + 1, transform: `scale(${1 / escala})`, backdropFilter: `blur(${2 * escala}px)` }}
+    />
+  )
+}
+
 function Capa({ children, alCerrar, clase = '' }: { children: ReactNode; alCerrar: () => void; clase?: string }) {
   return (
     <div className={`capa ${clase}`} onClick={alCerrar}>
+      <VeloAparte />
       <div className="capa-panel" onClick={(e) => e.stopPropagation()}>
         <button type="button" className="cerrar" onClick={alCerrar} aria-label="Cerrar">
           ×
@@ -375,6 +395,7 @@ export function FinDePartida({ s, otra, portada }: { s: Estado; otra: () => void
   const velocidad = useVelocidad()
   return (
     <div className="capa fin-partida">
+      <VeloAparte />
       <motion.div className={`capa-panel ${r.gana ? 'victoria' : 'derrota'}`} initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: duracion(velocidad, 0.35) }}>
         <span className="fin-rotulo">{r.gana ? '¡Victoria!' : 'Derrota'}</span>
         <h2>{r.motivo}</h2>
