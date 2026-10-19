@@ -6,7 +6,7 @@ import { DATOS } from './datos.ts'
 
 import { Jugador, dificultadConDestino } from './pruebas/situacion.ts'
 
-// Una carta de Peligro que se queda en juego (de nivel Leve) para «Cortar por lo sano», solo en este fichero.
+// Una carta de Peligro que se queda en juego para «Cortar por lo sano», solo en este fichero.
 registrarPeligro('percances', { encuentros: { mar: { queda: { quitar: [] } } } })
 
 describe('Herbolaria', () => {

@@ -109,7 +109,7 @@ function capituloDePrueba(id: string, num: number, entorno: Entorno, avance: num
   registrarCartasExtra({ tipo: 'capitulo', num, id, copias: 1, carta, mision: MISION_DE_PRUEBA })
 }
 
-/** Misiones sin reglas: Mar 5, Mar 3, Naturaleza 3 (Distancia 1), Naturaleza 4 (en la isla), Ciudad 4 y Ciudad 3. */
+/** Misiones sin reglas: Mar 5, Mar 3, Naturaleza 3 (Distancia 1), Naturaleza 4 (en la isla), Ciudad 4 y Ciudad 3; y largas (9), para las cartas que tardan en hacer efecto. */
 export const MISIONES_DE_PRUEBA = {
   mar5: 'pruebas-mar5',
   mar3: 'pruebas-mar3',
@@ -117,6 +117,8 @@ export const MISIONES_DE_PRUEBA = {
   nat4: 'pruebas-nat4',
   ciu4: 'pruebas-ciu4',
   ciu3: 'pruebas-ciu3',
+  nat9: 'pruebas-nat9',
+  ciu9: 'pruebas-ciu9',
 } as const
 capituloDePrueba('pruebas-mar5', 9001, 'mar', 5, 0)
 capituloDePrueba('pruebas-mar3', 9002, 'mar', 3, 0)
@@ -124,6 +126,8 @@ capituloDePrueba('pruebas-nat3', 9003, 'nat', 3, 1)
 capituloDePrueba('pruebas-ciu4', 9004, 'ciu', 4, 0)
 capituloDePrueba('pruebas-nat4', 9006, 'nat', 4, 0)
 capituloDePrueba('pruebas-ciu3', 9005, 'ciu', 3, 0)
+capituloDePrueba('pruebas-nat9', 9007, 'nat', 9, 0)
+capituloDePrueba('pruebas-ciu9', 9008, 'ciu', 9, 0)
 
 /** Carta de Escenario sin efecto, para las pruebas que solo necesitan que pase el tiempo. */
 export const ESCENARIO_DE_PRUEBA = 'pruebas-calma'

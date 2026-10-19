@@ -199,7 +199,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'La carta no se descarta al resolverla: se queda junto a la misión, con su texto activo. Ganas su Avance impreso al revelarla y cuenta como carta resuelta. Puede impedirte superar la misión o retirarte mientras siga en juego.',
     {
       rotulo: 'Cómo se quita',
-      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano», si no es de nivel Terrible. Al terminar la misión se descarta con sus fichas.',
+      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano», salvo que su propio texto lo impida. Al terminar la misión se descarta con sus fichas.',
     },
   ),
   elige: regla(

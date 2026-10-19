@@ -65,7 +65,7 @@ describe('124 · Ídolo maldito', () => {
     expect(deja.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige', carta: 'idolo' } })
     deja.opcion('0')
     expect(deja.registro).toContain('Pierdes 1 de Avance.')
-    expect(deja.registro).toContain('Ganas 1 de Avance (1/3).')
+    expect(deja.registro).toContain('Ganas 3 de Avance (3/3).') // pagar cuenta como superar: X (fase 10b: 3 / 1)
     const coge = en('nat', ['idolo', 'calma', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     coge.opcion('1').comprometer('EXP', ['capitan']).seguir()
     expect(coge.copia('capitan').estados).toContain('maldito')
@@ -95,7 +95,7 @@ describe('223 · La losa giratoria', () => {
     const j = en('nat', ['losa', 'calma', 'calma'], { tripulacion: ['baqueano', 'viejo_lobo'] })
     expect(j.zona('peligrosEnJuego')).toEqual(['losa'])
     expect(j.estado.temporales.some((t) => t.clave === 'noCompromete' && t.inst === j.inst('baqueano'))).toBe(true)
-    expect(j.avance('pruebas-nat3')).toBe(1)
+    expect(j.avance('pruebas-nat3')).toBe(2)
     j.usar('losa.unico.accion0').elegir('capitan', 'viejo_lobo')
     expect(j.zona('peligrosEnJuego')).toEqual([])
     expect(j.estado.temporales.some((t) => t.clave === 'noCompromete')).toBe(false)
@@ -199,10 +199,10 @@ describe('225 · Cofres por la borda', () => {
     const recoge = en('mar', ['cofres', 'calma', 'calma'], { avance: { 'pruebas-mar5': 1 } })
     recoge.opcion('0')
     expect(robas(recoge, 3)).toBe(true)
-    expect(recoge.registro).toContain('Ganas 2 de Avance (2/5).')
+    expect(recoge.registro).toContain('Ganas 3 de Avance (3/5).')
     const sigue = en('mar', ['cofres', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], avance: { 'pruebas-mar5': 1 } })
     resolver(sigue.opcion('1').comprometer('NAV', ['capitan', 'viejo_lobo']))
-    expect(sigue.registro).toContain('Ganas 2 de Avance (5/5).')
+    expect(sigue.registro.some((r) => r.startsWith('Ganas 3 de Avance'))).toBe(true) // fase 10b: 3 / 1
   })
 
   it('Destino «El brillo de la plata»: si superas, robas 1; Sin oposición, descartas 1', () => {

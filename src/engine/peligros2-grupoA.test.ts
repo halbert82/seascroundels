@@ -69,13 +69,13 @@ describe('2 · Cielo estrellado', () => {
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
     j.elegir('racha', 'calma', 'chubasco')
     expect(j.zona('mazoPeligros').slice(0, 4)).toEqual(['racha', 'calma', 'chubasco', 'hallazgo'])
-    expect(avance(j, 'mar')).toBe(2) // 1 de la carta + 1 por el Piloto
+    expect(avance(j, 'mar')).toBe(1) // 0 de la carta (fase 10b) + 1 por el Piloto
   })
 
-  it('Mar: sin Piloto, solo el Avance de la carta', () => {
+  it('Mar: sin Piloto, solo el Avance de la carta (0, fase 10b)', () => {
     const j = en('mar', ['p2_cielo', 'calma', 'chubasco', 'racha'])
     j.elegir('calma', 'chubasco', 'racha')
-    expect(avance(j, 'mar')).toBe(1)
+    expect(avance(j, 'mar')).toBe(0)
   })
 
   it('Ciudad: si superas, el comprometido con más EXP queda Inspirado y robas 1', () => {
@@ -297,17 +297,17 @@ describe('7 · Fuego a bordo', () => {
       tripulacion: [{ id: 'bucanero', agotada: true }, { id: 'carpintero', agotada: true }],
     })
     expect(j.zona('peligrosEnJuego')).toEqual(['p2_fuego'])
-    // aguada-I solo pide 3: el Avance se reúne enseguida, así que lo comprobamos en otra misión más larga.
+    // Las misiones cortas se superan enseguida, así que lo comprobamos en una misión larga (Naturaleza 9).
     const k = Jugador.enMision({
-      misiones: ['panama-II'],
-      cubrir: ['capitan'],
+      misiones: ['pruebas-nat9'],
+      capitan: { agotada: true },
       mazoPeligros: ['p2_fuego', 'calma', 'calma', 'calma', 'calma'],
       tripulacion: [{ id: 'bucanero', agotada: true }, { id: 'carpintero', agotada: true }],
     })
     k.seguir().seguir().seguir()
     expect(k.copia('bucanero').heridas).toBe(1)
     expect(k.copia('carpintero').heridas).toBe(1)
-    expect(k.copia('capitan').heridas).toBe(1) // Diego se agotó al cubrir la Distancia
+    expect(k.copia('capitan').heridas).toBe(1)
     expect(k.zona('peligrosEnJuego')).toEqual([])
     void j
   })

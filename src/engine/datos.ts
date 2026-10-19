@@ -6,7 +6,6 @@ import datosJson from '../../data/cartas.json'
 export type Habilidad = 'NAV' | 'COM' | 'EXP'
 export type Entorno = 'mar' | 'nat' | 'ciu'
 export type Senda = 'Piratería' | 'Neutral'
-export type NivelPeligro = 'Favorable' | 'Leve' | 'Duro' | 'Terrible'
 
 /** Operación de ayuda heredada del prototipo: ["wound", 1], ["exhaustAll"]… */
 export type OperacionPrototipo = [string, ...(string | number)[]]
@@ -178,7 +177,6 @@ export interface PeligroDatos {
   id: string
   num: number
   nombre: string
-  nivel: NivelPeligro
   copias: number
   entraDuranteLaPartida: boolean
   /** 2: Peligros 2.0 (textos completos; lo que hacen está en sus reglas, no en los iconos). */
@@ -193,7 +191,6 @@ export interface CartaMazoPropioDatos {
   id: string
   num: number
   nombre: string
-  nivel: NivelPeligro
   /** 2: formato de los Peligros 2.0 (textos completos; lo que hacen está en sus reglas). */
   version?: 2
   encuentro: EncuentroDatos

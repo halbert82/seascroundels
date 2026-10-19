@@ -42,11 +42,11 @@ describe('Avance X / Y', () => {
     expect(j.registro).toContain('Ganas 2 de Avance (2/5).')
   })
 
-  it('en un «Elige», pagar en vez de hacer la Prueba cuenta como superada: «Carestía» (1 / 1) da 1', () => {
+  it('en un «Elige», pagar en vez de hacer la Prueba cuenta como superada: «Carestía» (2 / 1) da 2', () => {
     const paga = Jugador.enMision({ misiones: [ciu4], mano: ['ojo', 'timon', 'coraje'], mazoPeligros: ['p2_hambre', 'chubasco', 'calma'] })
     paga.opcion('0').elegir('ojo', 'timon')
-    expect(paga.registro).toContain('Ganas 1 de Avance (1/4).')
-    // Si regateas y no superas la Prueba (nadie comprometido), ganas Y, que en Carestía también es 1.
+    expect(paga.registro).toContain('Ganas 2 de Avance (2/4).')
+    // Si regateas y no superas la Prueba (nadie asignado), ganas Y, que en Carestía es 1.
     const regatea = Jugador.enMision({ misiones: [ciu4], mano: ['ojo', 'timon', 'coraje'], mazoPeligros: ['p2_hambre', 'chubasco', 'calma'] })
     regatea.opcion('1').comprometer('EXP').seguir()
     expect(regatea.registro).toContain('Ganas 1 de Avance (1/4).')
@@ -69,7 +69,7 @@ describe('Avance X / Y', () => {
 })
 
 describe('Avance X / Y: los datos de las cartas', () => {
-  it('todo encuentro con Prueba en juego lleva Y (la mitad de X hacia arriba); los demás, un solo valor', () => {
+  it('fase 10b · todo encuentro con Prueba en juego lleva 2 / 1, 3 / 1 o 3 / 2; los demás, un solo valor de 0 a 2', () => {
     const encuentros = [
       ...DATOS.peligros.filter((c) => !c.retirada).flatMap((c) => (['mar', 'nat', 'ciu'] as const).map((e) => ({ id: c.id, e, enc: c.encuentros[e] }))),
       ...DATOS.cartasDeMazoPropio.map((c) => ({ id: c.id, e: 'unico' as const, enc: c.encuentro })),
@@ -80,10 +80,11 @@ describe('Avance X / Y: los datos de las cartas', () => {
       if (enc.prueba.length > 0 && !queda) {
         expect(enc.avanceSinSuperar, `${id} (${e})`).toBeDefined()
         expect(enc.avanceSinSuperar ?? -1, `${id} (${e})`).toBeGreaterThanOrEqual(0)
-        expect(enc.avanceSinSuperar, `${id} (${e})`).toBe(Math.ceil(enc.avance / 2))
+        expect(['2/1', '3/1', '3/2'], `${id} (${e})`).toContain(`${enc.avance}/${enc.avanceSinSuperar}`)
         conDos++
       } else {
         expect(enc.avanceSinSuperar, `${id} (${e})`).toBeUndefined()
+        expect([0, 1, 2], `${id} (${e})`).toContain(enc.avance)
       }
     }
     expect(conDos).toBe(154)

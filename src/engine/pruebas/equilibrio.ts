@@ -408,18 +408,16 @@ function tablaDePeligros(partidas: readonly Partida[]): string[] {
     '',
     'Cada carta del mazo de Peligros, de la que más daño hace a la que menos, contando lo que pasa desde que se revela como encuentro hasta que sale la siguiente (su Prueba, su Destino y lo que haga si se queda en juego mientras es la carta en curso). «Índice»: heridas + daño al Barco + Avance perdido + 3 por rehén + 4 por Tripulante muerto + 3 si la misión acaba retirada o hundida, por cada vez que sale. «Como Destino»: veces que salió como Destino y % de esas Pruebas que se fallaron.',
     '',
-    '| Carta | Nivel | Sale | Pruebas | % fallo | Heridas / vez | Daño / vez | Avance perdido / vez | Rehenes | Muertes | Retiradas / hundidas | Índice | Como Destino | % fallo con su Destino |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Carta | Sale | Pruebas | % fallo | Heridas / vez | Daño / vez | Avance perdido / vez | Rehenes | Muertes | Retiradas / hundidas | Índice | Como Destino | % fallo con su Destino |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ]
   for (const { c, d } of filas) {
-    const e = porId(c)
-    const nivel = e.tipo === 'peligro' ? e.carta.nivel : ''
     if (!d) {
-      lineas.push(`| ${nombreDe(c)} | ${nivel} | 0 | — | — | — | — | — | — | — | — | — | — | — |`)
+      lineas.push(`| ${nombreDe(c)} | 0 | — | — | — | — | — | — | — | — | — | — | — |`)
       continue
     }
     lineas.push(
-      `| ${nombreDe(c)} | ${nivel} | ${d.reveladas} | ${d.pruebas} | ${porcentaje(d.fallos, d.pruebas)} | ${f1(d.heridas, d.reveladas)} | ${f1(d.dano, d.reveladas)} | ${f1(d.avancePerdido, d.reveladas)} | ${d.rehenes} | ${d.muertes} | ${d.retiradas} / ${d.hundidas} | ${indice(d).toFixed(2)} | ${d.destinos} | ${porcentaje(d.destinosFallados, d.destinos)} |`,
+      `| ${nombreDe(c)} | ${d.reveladas} | ${d.pruebas} | ${porcentaje(d.fallos, d.pruebas)} | ${f1(d.heridas, d.reveladas)} | ${f1(d.dano, d.reveladas)} | ${f1(d.avancePerdido, d.reveladas)} | ${d.rehenes} | ${d.muertes} | ${d.retiradas} / ${d.hundidas} | ${indice(d).toFixed(2)} | ${d.destinos} | ${porcentaje(d.destinosFallados, d.destinos)} |`,
     )
   }
   lineas.push('')

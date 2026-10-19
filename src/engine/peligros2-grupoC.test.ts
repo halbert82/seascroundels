@@ -25,7 +25,7 @@ describe('23 · Desertores del rey', () => {
   it('Mar, sin Prueba: preparas un Cañón y su Avance', () => {
     const j = en('mar', ['p2_desertores', 'calma'], { barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     expect(j.copia('bronce').agotada).toBe(false)
-    expect(avance(j, 'mar')).toBe(3)
+    expect(avance(j, 'mar')).toBe(1) // fase 10b: premio pequeño, Avance 1
   })
 
   it('Naturaleza: si superas, +1 Avance; si fallas, el comprometido con más EXP sufre 1 herida', () => {
@@ -142,7 +142,7 @@ describe('25 · La aduana del rey', () => {
     const j = en('ciu', ['p2_aduana', 'chubasco', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige' } })
     j.opcion('0').elegir('timon', 'coraje')
-    expect(avance(j, 'ciu')).toBe(1)
+    expect(avance(j, 'ciu')).toBe(2)
     expect(j.decision.motivo.clave).toBe('trasEncuentro')
     const k = en('ciu', ['p2_aduana', 'chubasco', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     k.opcion('1').comprometer('EXP', []).seguir()
@@ -172,9 +172,9 @@ describe('26 · Ojos del gobernador', () => {
   })
 
   it('Naturaleza: si superas, +2 Avance; si fallas, pierdes 1 Avance y agotas a 1 Tripulante', () => {
-    const j = en('nat', ['p2_ojos', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
+    const j = Jugador.enMision({ misiones: ['pruebas-nat9'], mazoPeligros: ['p2_ojos', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir() // 3 + 1 de Diego
-    expect(avance(j, 'nat')).toBe(3)
+    expect(j.avance('pruebas-nat9')).toBe(4) // 2 del encuentro + 2
     const k = en('nat', ['p2_ojos', 'chubasco', 'calma'], { tripulacion: ['vigia'], avance: { [MISION.nat]: 1 } })
     k.comprometer('NAV', ['capitan']).seguir()
     expect(k.copia('vigia').agotada).toBe(true)
@@ -333,9 +333,9 @@ describe('29 · Toque a rebato', () => {
   })
 
   it('Ciudad: se queda en juego; con 3 fichas, el agotado con menos Vida queda rehén', () => {
-    // «El gobernador» (Ciudad, 5 de Avance): con «Tarde de lluvia» (sin Prueba, 1 de Avance) no se acaba antes.
+    // En una misión larga (Ciudad 9), con «Tarde de lluvia» (sin Prueba, 1 de Avance) no se acaba antes.
     const j = Jugador.enMision({
-      misiones: ['gobernador-I'],
+      misiones: ['pruebas-ciu9'],
       mazoPeligros: ['p2_rebato', 'chubasco', 'chubasco', 'chubasco', 'calma'],
       tripulacion: [{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }],
     })
@@ -427,12 +427,12 @@ describe('31 · Bajo los cañones del Morro', () => {
   it('Mar: se queda en juego y no puedes superar la misión; se quita con una Prueba de COM 5 que, si la superas, da 1 Avance', () => {
     const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
-    expect(avance(j, 'mar')).toBe(3)
+    expect(avance(j, 'mar')).toBe(2)
     j.usar('p2_morro.mar.quitar0').comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.zona('peligrosEnJuego')).toEqual([])
-    expect(avance(j, 'mar')).toBe(4)
+    expect(avance(j, 'mar')).toBe(3) // 2 de la carta + 1 por cortar la cadena
   })
 
   it('Mar: con un Carpintero la Prueba es de COM 4; si la fallas, 2 daños al Barco', () => {
@@ -463,9 +463,9 @@ describe('31 · Bajo los cañones del Morro', () => {
     j.seguir().comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
     expect(j.zona('rehenes')).toEqual([])
     expect(j.zona('tripulacion')).toContain('bucanero')
-    const k = en('ciu', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
+    const k = Jugador.enMision({ misiones: ['pruebas-ciu9'], mazoPeligros: ['p2_morro', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
-    expect(avance(k, 'ciu')).toBe(3) // 2 + 1 (no había rehenes)
+    expect(k.avance('pruebas-ciu9')).toBe(4) // 3 + 1 (no había rehenes)
     const m = en('ciu', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     m.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir()
     expect(m.zona('rehenes')).toEqual(['viejo_lobo'])
@@ -589,7 +589,7 @@ describe('33 · La Armada de Barlovento', () => {
     const k = en('nat', ['p2_armada', 'chubasco', 'calma'], { avance: { [MISION.nat]: 1 } })
     k.comprometer('EXP', ['capitan']).seguir()
     expect(k.copia('capitan').heridas).toBe(2)
-    expect(avance(k, 'nat')).toBe(1) // 1 − 1 + 1 (Avance 2 / 1: no la supera)
+    expect(avance(k, 'nat')).toBe(2) // 1 − 1 + 2 (Avance 3 / 2: no la supera)
   })
 
   it('Ciudad: si fallas, descartas 3 cartas al azar', () => {

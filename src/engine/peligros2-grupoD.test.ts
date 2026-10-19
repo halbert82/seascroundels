@@ -21,7 +21,7 @@ describe('34 · Hermanos de la Costa', () => {
     const j = en('mar', ['p2_hermanos', 'calma'], { barco: { dano: 2, mejoras: [{ id: 'bronce', agotada: true }] } })
     expect(j.copia('bronce').agotada).toBe(false)
     expect(j.estado.danoBarco).toBe(1)
-    expect(avance(j, 'mar')).toBe(3)
+    expect(avance(j, 'mar')).toBe(1) // fase 10b: premio pequeño, Avance 1
   })
 
   it('Naturaleza: si no tenías heridas, preparas a 1 Tripulante; si las tenías, solo curas 2 repartidas', () => {
@@ -144,7 +144,7 @@ describe('36 · Sangre caliente', () => {
     const j = en('ciu', ['p2_sangre', 'chubasco', 'calma'])
     const antes = avance(j, 'ciu')
     j.comprometer('COM', ['capitan']).seguir()
-    expect(avance(j, 'ciu')).toBe(antes + 2)
+    expect(avance(j, 'ciu')).toBe(antes + 3) // fase 10b: 2 / 1, y +1 por superarla
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
     const k = en('ciu', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'], mano: ['ojo'] })
     k.comprometer('COM', ['vigia']).seguir() // COM 0 + 1 de Diego contra 3

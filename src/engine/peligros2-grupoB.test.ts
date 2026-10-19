@@ -29,7 +29,7 @@ describe('12 · Tortugas', () => {
     const j = en('nat', ['p2_tortugas', 'calma'], { tripulacion: [{ id: 'bucanero', heridas: 1, agotada: true }, 'loro'] })
     expect(j.copia('bucanero').heridas).toBe(0)
     expect(j.copia('bucanero').agotada).toBe(false)
-    expect(avance(j, 'nat')).toBe(2)
+    expect(avance(j, 'nat')).toBe(0) // fase 10b: sin Prueba y con premio, Avance 0
   })
 
   it('Ciudad: si superas, robas 2', () => {
@@ -126,7 +126,7 @@ describe('14 · El hambre', () => {
     const j = en('ciu', ['p2_hambre', 'calma', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     j.opcion('0').elegir('ojo', 'timon')
     expect(j.zona('mano')).toEqual(['coraje'])
-    expect(avance(j, 'ciu')).toBe(1)
+    expect(avance(j, 'ciu')).toBe(2) // pagar cuenta como superar: X (fase 10b: 2 / 1)
     const k = en('ciu', ['p2_hambre', 'chubasco', 'calma'], { mano: ['ojo', 'timon'] })
     const mando = k.valor({ tipo: 'objetivoRobo' })
     k.opcion('1').comprometer('EXP', []).seguir()

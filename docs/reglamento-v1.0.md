@@ -409,7 +409,7 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 **Elige.** El encuentro ofrece dos opciones, y el jugador escoge una antes de asignar a nadie. Si una opción es un pago (descartar cartas, agotar Tripulantes…) y el jugador no puede pagarla entera, esa opción no se ofrece. Cuando una opción consiste en pagar y la otra en hacer la Prueba, pagar se considera superar la Prueba: el jugador gana el primer número de su Avance sin hacer la Prueba ni revelar Destino.
 
 > [!ejemplo]
-> En Ciudad, el jugador revela «Carestía» (Avance 1 / 1): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano, puede pagar 2 y ganar 1 de Avance sin Prueba. Con 1 sola carta no puede pagar, por lo que debe regatear. Si no supera la Prueba, gana igualmente 1 de Avance, pero se aplica el fallo.
+> En Ciudad, el jugador revela «Carestía» (Avance 2 / 1): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano, puede pagar 2 y ganar 2 de Avance sin Prueba. Con 1 sola carta no puede pagar, por lo que debe regatear. Si no supera la Prueba, gana igualmente 1 de Avance, pero se aplica el fallo.
 
 **Sin ayuda.** Solo un Tripulante puede ser asignado a esa Prueba. El jugador puede añadir cartas de Habilidad de su mano por sus iconos, pero no Eventos (ni siquiera por sus iconos). Además, durante esa Prueba no puede jugar Eventos. Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
 
@@ -454,7 +454,7 @@ Algunos encuentros dicen **Se queda en juego**. Una carta con esta indicación n
 - Al terminar la misión (superada, retirada o con el Barco hundido), se descartan con sus fichas.
 
 > [!ejemplo]
-> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela «Campanas a rebato», que se queda en juego: gana su Avance (1) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión, se pone 1 ficha de misión sobre la carta; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitar la carta antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas se descartan con ella.
+> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela «Campanas a rebato», que se queda en juego: gana su Avance (2) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión, se pone 1 ficha de misión sobre la carta; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitar la carta antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas se descartan con ella.
 
 #### Pruebas que nacen de una Acción
 
@@ -621,7 +621,7 @@ El jugador recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor»
 > [!tema]
 > Una misión inicial es lo que hace todo capitán nuevo: salir, volver con algo y que se sepa.
 
-El jugador revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 con Avance 3 / 2 (3 si la supera y 2 si no). Asigna a Diego (NAV 2) y al Bucanero (NAV 1), que suman 3. La Sombra del Alba otorga +1 a las Pruebas de NAV en el Mar, por lo que el total es 4. Ambos Tripulantes quedan agotados. El Bucanero no recibe el +1 de Diego, porque Diego solo lo otorga mientras está preparado y, al ser asignado, se agota. Con 4 contra 4 sería suficiente, pero el Destino puede restar del total y, después, ya no se pueden añadir cartas de la mano. Por ello, el jugador añade en este momento «Mano firme al timón», con dos iconos de NAV: el total es 6.
+El jugador revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 con Avance 3 / 1 (3 si la supera y 1 si no). Asigna a Diego (NAV 2) y al Bucanero (NAV 1), que suman 3. La Sombra del Alba otorga +1 a las Pruebas de NAV en el Mar, por lo que el total es 4. Ambos Tripulantes quedan agotados. El Bucanero no recibe el +1 de Diego, porque Diego solo lo otorga mientras está preparado y, al ser asignado, se agota. Con 4 contra 4 sería suficiente, pero el Destino puede restar del total y, después, ya no se pueden añadir cartas de la mano. Por ello, el jugador añade en este momento «Mano firme al timón», con dos iconos de NAV: el total es 6.
 
 El jugador revela el Destino de la carta «Arrecife»: −1 (sería 0 con un Vigía asignado). El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por superar la Turbonada, 1 más; además, la Turbonada queda atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
 
@@ -1062,7 +1062,7 @@ El mazo de Peligros es el mazo del escenario del que se revelan encuentros y Des
 
 ### Mazo propio
 
-Un mazo propio está formado por las cartas de Peligro de una misión concreta, que tienen un solo encuentro sin Entorno (el de su misión), un nivel y un Destino. La capacidad Al zarpar de esa misión indica cuántas cartas del mazo de Peligros se barajan con él. Durante la misión, se revelan encuentros y Destinos de ese mazo mezclado. Al terminar la misión, se separa el mazo propio y se devuelve al mazo de historia.
+Un mazo propio está formado por las cartas de Peligro de una misión concreta, que tienen un solo encuentro sin Entorno (el de su misión) y un Destino. La capacidad Al zarpar de esa misión indica cuántas cartas del mazo de Peligros se barajan con él. Durante la misión, se revelan encuentros y Destinos de ese mazo mezclado. Al terminar la misión, se separa el mazo propio y se devuelve al mazo de historia.
 
 ### Mejora
 
@@ -1083,17 +1083,6 @@ Una misión es una carta que tiene un Entorno y el Avance que se necesita para s
 ### Muelle
 
 El muelle está formado por las cartas del mazo de muelle que están boca arriba junto al puerto del jugador. El puerto indica cuántas son. Solo pueden reclutarse Tripulantes y adquirirse Mejoras desde el muelle. Al terminar la Fase de Reclutamiento, se descarta el muelle entero y se repone.
-
-### Nivel
-
-Cada carta de Peligro tiene un nivel, y sus tres encuentros y su Destino pertenecen a ese nivel.
-
-| Nivel | Sus encuentros | Sus Destinos |
-| --- | --- | --- |
-| Favorable | Sin Prueba, o Pruebas que no castigan el fallo | +1 o efectos beneficiosos |
-| Leve | Pruebas de 1 a 3 con efectos de fallo pequeños | −0 o −1 |
-| Duro | Pruebas de 3 a 5 con efectos de fallo considerables | −1 o −2, a menudo con un efecto |
-| Terrible | Pruebas de 4 a 6 con efectos de fallo graves | Fallo directo, −2 con herida o −3 |
 
 ### Número de colección
 

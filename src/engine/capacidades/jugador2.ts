@@ -163,7 +163,7 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
   }),
 ]
 
-/** Cartas de Peligro en juego que «Cortar por lo sano» puede descartar (las que no son de nivel Terrible). */
+/** Cartas de Peligro en juego que «Cortar por lo sano» puede descartar (todas, fase 10b). */
 function cortables(s: Estado) {
   return [...s.zonas.peligrosEnJuego]
 }
