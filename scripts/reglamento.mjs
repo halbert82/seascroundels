@@ -101,7 +101,9 @@ async function capturar(pagina, libro) {
   }
 }
 
-const navegador = await chromium.launch()
+// En Linux (la máquina que publica), Chromium redondea el ancho de las letras y las líneas no caen donde en el Mac en
+// que se revisan los libros: sin ese redondeo, los PDF publicados salen como los revisados.
+const navegador = await chromium.launch({ args: ['--font-render-hinting=none'] })
 const errores = []
 try {
   for (const libro of LIBROS) {
