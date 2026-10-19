@@ -499,8 +499,8 @@ registrarPeligro('p2_serpiente_marina', {
 
 registrarPeligro('p2_compana', {
   encuentros: {
-    // NAV 4 (3 con un Vigía comprometido). Éxito: +1 Avance. Fallo: Incendio a bordo.
-    mar: { exito: [avance(1)], fallo: [{ tipo: 'estadoBarco', estado: 'incendio' }] },
+    // NAV 4 (3 con un Vigía comprometido). Éxito: +1 Avance. Fallo: Velas rotas (fase 10b, antes Incendio a bordo).
+    mar: { exito: [avance(1)], fallo: [{ tipo: 'estadoBarco', estado: 'velasRotas' }] },
     // Los Tripulantes con Escapulario suman +2. Éxito: robas 2. Fallo: el comprometido con menos EXP queda Asustado
     // y sufre 1 herida.
     nat: {

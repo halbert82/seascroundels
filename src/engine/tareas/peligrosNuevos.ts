@@ -6,9 +6,9 @@ import { entero } from '../azar.ts'
 import { costeImpreso, esIndestructible, rasgosDe, tipoDe } from '../catalogo.ts'
 import { definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
-import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, tieneEstado, tieneEstadoBarco } from '../estados.ts'
+import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, tieneEstado } from '../estados.ts'
 import { INFO_ESTADO } from '../infoEstados.ts'
-import { cerrarPrueba, descartarPeligro, entornoActual, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
+import { cerrarPrueba, descartarPeligro, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { mover, rebarajar } from '../zonas.ts'
@@ -183,7 +183,7 @@ export const quitarEstadoBarco_: Manejador<'quitarEstadoBarco'> = (s, t) => {
   return 'hecha'
 }
 
-/** Al final del turno: cada Envenenado sufre 1 herida; Borracho se quita. */
+/** Al final del turno: cada Envenenado sufre 1 herida; Borracho, Asustado e Inspirado se quitan (fase 10b). */
 export const estadosFinTurno: Manejador<'estadosFinTurno'> = (s, t) => {
   switch (t.paso) {
     case 'veneno': {
@@ -196,7 +196,9 @@ export const estadosFinTurno: Manejador<'estadosFinTurno'> = (s, t) => {
       return 'sigue'
     }
     case 'borracho':
-      for (const c of conEstado(s, 'borracho')) quitarEstadoAnotado(s, c, 'borracho', 'final del turno')
+      for (const e of ['borracho', 'asustado', 'inspirado'] as const) {
+        for (const c of conEstado(s, e)) quitarEstadoAnotado(s, c, e, 'final del turno')
+      }
       return 'hecha'
   }
 }
@@ -369,12 +371,3 @@ export const agotarParaPagar: Manejador<'agotarParaPagar'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** «Perseguido»: tu próxima misión de Mar empieza revelando un Peligro de más (sin ventana para retirarte entre ambos). */
-// El Peligro de más se resuelve entero antes que el primero, sin ventana de retirada entre ambos; cuenta y da Avance (P6).
-export const peligroDeMas: Manejador<'peligroDeMas'> = (s) => {
-  if (!s.mision || s.mision.fin || entornoActual(s) !== 'mar' || !tieneEstadoBarco(s, 'perseguido')) return 'hecha'
-  quitarEstadoBarco(s, 'perseguido')
-  anotar(s, 'aviso', 'Te persiguen: la misión empieza con un Peligro de más.')
-  encolar(s, { tipo: 'encuentro', carta: null, paso: 'revelar', sinVentana: true })
-  return 'hecha'
-}

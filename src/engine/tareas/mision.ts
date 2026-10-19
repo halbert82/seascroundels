@@ -6,7 +6,7 @@ import { CATALOGO, iconosDe, porId, rasgosDe } from '../catalogo.ts'
 import { reglasMision } from '../misiones2/registro.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { devolverPeligros, persigueVigente } from '../peligros.ts'
-import { agotar, tieneEstadoBarco } from '../estados.ts'
+import { agotar } from '../estados.ts'
 import { rescatarRehen } from './peligros2.ts'
 import { numeroConIcono, textoDe } from '../textos.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
@@ -43,7 +43,7 @@ export function navMaximo(s: Estado): number {
 export function puedeZarpar(s: Estado, mision: InstId): boolean {
   if (s.reputacion < reputacionMinima(copia(s, mision).id)) return false
   const distancia = valor(s, { tipo: 'distancia', mision })
-  // TODO(regla): si lo que reduce la Distancia (el Barco, Vientos alisios) la deja en 0, no hay que agotar a nadie.
+  // P3 (fase 10b): si lo que reduce la Distancia (el Barco, Vientos alisios) la deja en 0, no hay que agotar a nadie.
   return distancia === 0 || (preparados(s).length > 0 && navMaximo(s) >= distancia)
 }
 
@@ -128,8 +128,6 @@ export const mision: Manejador<'mision'> = (s, t) => {
       }
       // «Después de zarpar…»: Respuestas de las cartas del jugador.
       tareas.push({ tipo: 'evento', ev: { tipo: 'zarpar', mision: m.carta }, fase: 'antes', cancelado: false, usadas: [] })
-      // «Perseguido»: la misión de Mar empieza revelando un Peligro de más.
-      tareas.push({ tipo: 'peligroDeMas' })
       encolar(s, ...tareas)
       t.paso = 'encuentros'
       return 'sigue'
@@ -432,11 +430,6 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   }
   devolverPeligros(s)
   delete s.incautadas
-  // Al acabar la misión con Incendio, en cualquier Entorno, pierdes una Mejora de barco y la ficha se queda (P4).
-  if (tieneEstadoBarco(s, 'incendio')) {
-    anotar(s, 'aviso', 'El Incendio a bordo sigue sin apagar al acabar la misión: pierdes una Mejora de barco.')
-    encolar(s, { tipo: 'perderMejora', soloBarco: true })
-  }
   s.mision = null
   s.prueba = null
   // Lo que dura «hasta el final de la misión», «hasta que superes otra Prueba» o «mientras esta carta siga en juego».

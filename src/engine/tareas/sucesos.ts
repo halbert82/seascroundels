@@ -2,7 +2,7 @@
 
 import { nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada } from '../estado.ts'
-import { agotar, quitarEstado, quitarEstadoAnotado } from '../estados.ts'
+import { agotar, quitarEstadoAnotado, quitarEstadoBarco } from '../estados.ts'
 import { definicionActual } from '../prueba.ts'
 import { reglasDe } from '../definiciones.ts'
 import { mazoActivo, ponerAPerseguir } from '../peligros.ts'
@@ -65,11 +65,11 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
       tareas.push(...efectosDelDestino(s, 'siSuperas'))
       // «Hasta que superes otra Prueba» se acaba aquí.
       s.temporales = s.temporales.filter((x) => x.hasta !== 'superarPrueba')
-      // Asustado se quita al superar una Prueba en la que participe.
-      for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'asustado', 'supera la Prueba')
-      // Maldito se quita solo a quien participa en la Prueba del encuentro Sobrenatural que se supera (P15).
-      if (p.origen !== 'accion' && def.palabrasClave.includes('Sobrenatural')) {
-        for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'maldito', 'supera un encuentro Sobrenatural')
+      // Fase 10b: Maldito se quita al superar una Prueba a la que esté asignado (cualquiera), y Perseguido, al superar
+      // un encuentro de tipo Armada.
+      for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'maldito', 'supera la Prueba')
+      if (p.origen !== 'accion' && def.palabrasClave.includes('Armada') && quitarEstadoBarco(s, 'perseguido')) {
+        anotar(s, 'efecto', 'El Barco ya no está Perseguido (superas un encuentro de tipo Armada).')
       }
       encolar(s, ...tareas)
       return
@@ -79,13 +79,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
       return
     case 'heridas': {
       if (ev.cantidad <= 0 || !estaEn(s, ev.objetivo, 'tripulacion')) return
-      let n = ev.cantidad
-      // Aguerrido evita la próxima herida: 1, no todas las de ese golpe (P14).
-      if (quitarEstado(s, ev.objetivo, 'aguerrido')) {
-        n -= 1
-        anotar(s, 'efecto', `${nombre(s, ev.objetivo)} está Aguerrido: evita 1 herida.`)
-      }
-      if (n <= 0) return
+      const n = ev.cantidad
       copia(s, ev.objetivo).heridas += n
       anotar(s, 'efecto', `${nombre(s, ev.objetivo)} sufre ${n} ${n === 1 ? 'herida' : 'heridas'}.`, { tipo: 'heridas', inst: ev.objetivo, n })
       return

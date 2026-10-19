@@ -494,7 +494,6 @@ export type Tarea = { id: number } & (
   /** Agotar a un Tripulante preparado (con un Rasgo, si se pide) para pagar un coste. */
   | { tipo: 'agotarParaPagar'; rasgo: string | null; rasgos?: string[] }
   /** Al empezar una misión de Mar con el Barco «Perseguido»: una carta de Peligro de más. */
-  | { tipo: 'peligroDeMas' }
   // Peligros 2.0
   /** A quién le pasa algo (según el criterio de la carta; si hay empate, eliges). */
   | { tipo: 'aQuien'; quien: Selector; hacer: AccionSobre; fuente?: InstId }

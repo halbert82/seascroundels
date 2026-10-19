@@ -1,13 +1,13 @@
 // Lo que hacen las fichas de Estado mientras están puestas, como capacidades del registro: modificadores
-// (Borracho, Buscado, Velas rotas), Obligadas (Incendio a bordo, Vía de agua) y Acciones para quitarlas
-// (Encadenado, Incendio a bordo). Lo que pasa al final del turno, al curar, al reparar o al comprometerse lo
-// resuelven las tareas correspondientes.
+// (Borracho, Velas rotas, Perseguido), la Obligada de Vía de agua y la Acción que quita Buscado. Lo que pasa al final
+// del turno, al asignar (Asustado, Buscado, Aguerrido) o al superar una Prueba (Maldito, Perseguido) lo resuelven las
+// tareas correspondientes; Inspirado y Maldito suman al total en prueba.ts (fase 10b).
 // También está aquí la carta de Peligro que ocupa el muelle: pagar para descartarla.
 
-import { copia, nombre } from '../estado.ts'
+import { copia } from '../estado.ts'
 import { cartaDeEstado, type EstadoBarco, type FichaTripulante } from '../infoEstados.ts'
-import type { Capacidad, NuevaTarea } from '../tipos.ts'
-import { enEntorno, participantes } from './comun.ts'
+import type { Capacidad } from '../tipos.ts'
+import { enEntorno } from './comun.ts'
 
 function deTripulante(e: FichaTripulante, resto: Omit<Capacidad, 'carta' | 'desde' | 'clave'> & { clave: string }): Capacidad {
   return { ...resto, clave: `${cartaDeEstado(e)}.${resto.clave}`, carta: cartaDeEstado(e), desde: 'estado' }
@@ -17,81 +17,60 @@ function deBarco(e: EstadoBarco, resto: Omit<Capacidad, 'carta' | 'desde' | 'cla
   return { ...resto, clave: `${cartaDeEstado(e)}.${resto.clave}`, carta: cartaDeEstado(e), desde: 'estadoBarco' }
 }
 
-const unDano: NuevaTarea = { tipo: 'evento', ev: { tipo: 'danoBarco', cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] }
-
 export const CAPACIDADES_ESTADOS: Capacidad[] = [
-  // Borracho: +1 COM (no poder comprometerse a NAV ni EXP lo comprueba el compromiso).
+  // Borracho: +1 COM (no poder ser asignado a NAV ni EXP lo comprueba la asignación).
   deTripulante('borracho', {
     clave: 'com',
     ventana: 'constante',
     modifica: (_ctx, yo, c) => (c.tipo === 'habilidad' && c.hab === 'COM' && c.carta === yo ? 1 : 0),
   }),
-  // Buscado: en Ciudad, los encuentros Guardia y Militar reciben +1 si participa.
+  // Buscado (fase 10b): «Se quita descartando 1 carta en la Fase de Reclutamiento». No poder ser asignado en Ciudad lo
+  // comprueba la asignación.
   deTripulante('buscado', {
-    clave: 'dificultad',
-    ventana: 'constante',
-    modifica: (ctx, yo, c) =>
-      c.tipo === 'dificultad' &&
-      yo !== null &&
-      enEntorno(ctx.s, 'ciu') &&
-      c.claves.some((k) => k === 'Guardia' || k === 'Militar') &&
-      (ctx.participantes ?? participantes(ctx.s)).includes(yo)
-        ? 1
-        : 0,
-  }),
-  // Encadenado: «Prueba de COM o EXP 3 en una ventana de acción para quitarlo». No durante otra Prueba (P2).
-  deTripulante('encadenado', {
-    clave: 'liberar',
+    clave: 'quitar',
     ventana: 'accion',
-    requisito: (s, yo) => yo !== null && s.prueba === null,
-    efecto: (s, yo) =>
+    requisito: (s, yo) => yo !== null && s.paso === 'jugarCartas' && s.mision === null && s.zonas.mano.length >= 1,
+    efecto: (_s, yo) =>
       yo
         ? [
-            {
-              tipo: 'pruebaSuelta',
-              fuente: yo,
-              paso: 'empezar',
-              definicion: {
-                nombre: `Liberar a ${nombre(s, yo)}`,
-                palabrasClave: [],
-                opciones: [
-                  { hab: 'COM', dificultad: 3 },
-                  { hab: 'EXP', dificultad: 3 },
-                ],
-                exito: [{ tipo: 'quitarEstado', estado: 'encadenado', a: 'fuente' }],
-                fallo: [],
-              },
-            },
+            { tipo: 'pagar', cantidad: 1, motivo: 'estado:buscado' },
+            { tipo: 'aplicarEfectos', efectos: [{ tipo: 'quitarEstado', estado: 'buscado', a: 'fuente' }], contexto: 'efecto', fuente: yo },
           ]
         : [],
   }),
 
-  // Velas rotas: las Distancias son 1 mayores (el +1 de NAV del Barco lo anula la propia capacidad del Barco).
+  // Velas rotas (fase 10b): −1 al total de las Pruebas de NAV en el Mar, y las Distancias aumentan en 1.
   deBarco('velasRotas', {
     clave: 'distancia',
     ventana: 'constante',
     modifica: (_ctx, _yo, c) => (c.tipo === 'distancia' ? 1 : 0),
   }),
-  // Incendio a bordo: al revelar cada carta de Peligro, 1 daño, solo en misiones de Mar como Vía de agua (P4).
-  deBarco('incendio', {
-    clave: 'dano',
-    ventana: 'obligada',
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'revelarPeligro' && enEntorno(s, 'mar'),
-    efecto: () => [unDano],
+  deBarco('velasRotas', {
+    clave: 'nav',
+    ventana: 'constante',
+    modifica: (ctx, _yo, c) => (c.tipo === 'totalPrueba' && c.hab === 'NAV' && enEntorno(ctx.s, 'mar') ? -1 : 0),
   }),
-  // Incendio a bordo: se apaga agotando a un Tripulante en una ventana de acción.
-  deBarco('incendio', {
-    clave: 'apagar',
-    ventana: 'accion',
-    coste: [{ tipo: 'agotarTripulante', rasgo: null }],
-    efecto: () => [{ tipo: 'quitarEstadoBarco', estado: 'incendio' }],
+  // Perseguido (fase 10b): los encuentros de tipo Armada reciben +1 de dificultad.
+  deBarco('perseguido', {
+    clave: 'armada',
+    ventana: 'constante',
+    modifica: (_ctx, _yo, c) => (c.tipo === 'dificultad' && c.claves.includes('Armada') ? 1 : 0),
   }),
-  // Vía de agua: al final de cada carta de Peligro en el Mar, 1 daño.
+  // Vía de agua (fase 10b): en el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para
+  // achicar. Si no tienes a nadie preparado, solo queda el daño.
   deBarco('viaDeAgua', {
     clave: 'dano',
     ventana: 'obligada',
     disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'cartaResuelta' && enEntorno(s, 'mar'),
-    efecto: () => [unDano],
+    efecto: () => [
+      {
+        tipo: 'elegirEfectos',
+        opciones: [
+          { texto: 'Achicar: agota a un Tripulante', efectos: [{ tipo: 'agotarPago', n: 1 }] },
+          { texto: 'El Barco sufre 1 daño', efectos: [{ tipo: 'dano', n: 1 }] },
+        ],
+      },
+    ],
   }),
 
   // Carta de Peligro en el muelle: «En Jugar cartas puedes pagar N cartas para descartarla».

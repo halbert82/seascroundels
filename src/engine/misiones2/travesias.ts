@@ -174,13 +174,13 @@ registrarMision('maracaibo-I', {
 })
 
 registrarMision('maracaibo-II-a', {
-  capacidades: [dificultadHabilidad('sinLuces', 'NAV', -1), dificultadClaves('militar', ['Militar'], 2)],
+  capacidades: [dificultadHabilidad('sinLuces', 'NAV', -1), dificultadClaves('militar', ['Armada', 'Militar'], 2)],
   gesta: (s) => !hasSuperado(s, 'COM'),
   alNoSuperar: anselmoSeBaja,
 })
 
 registrarMision('maracaibo-II-b', {
-  capacidades: [dificultadClaves('militar', ['Militar'], 1), avancePrueba('com', 'COM', 1)],
+  capacidades: [dificultadClaves('militar', ['Armada', 'Militar'], 1), avancePrueba('com', 'COM', 1)],
   alNoSuperar: anselmoSeBaja,
 })
 

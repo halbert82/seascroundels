@@ -10,7 +10,8 @@ import type { Efecto } from '../efectos.ts'
 import { copia } from '../estado.ts'
 import { entornoActual } from '../peligros.ts'
 import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
-import { definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
+import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
+import { esVentaja } from '../infoEstados.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valores.ts'
@@ -377,7 +378,10 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     }
     case 'opcionPuerto': {
       const heridas = s.zonas.tripulacion.reduce((n, c) => n + copia(s, c).heridas, 0)
-      const preferidas = [heridas > 0 ? 'taberna' : '', s.danoBarco > 0 ? 'astillero' : '', 'propia', 'tablon', 'taberna', 'astillero']
+      // Fase 10b: curar ya no quita Estados; la Taberna y el Astillero, sí.
+      const males = s.zonas.tripulacion.some((c) => (copia(s, c).estados ?? []).some((e) => !esVentaja(e)))
+      const barco = (s.estadosBarco ?? []).length > 0
+      const preferidas = [heridas > 0 || males ? 'taberna' : '', s.danoBarco > 0 || barco ? 'astillero' : '', 'propia', 'tablon', 'taberna', 'astillero']
       return elegir(preferidas.find((p) => p && claves.includes(p)) ?? claves[0]!)
     }
     case 'alZarparDescartar':
@@ -460,6 +464,14 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
         case 'ribera':
           return elegir(s.danoBarco >= 2 ? '0' : '1')
         default:
+          // Vía de agua (fase 10b): achica (agota a uno) si el Barco está cerca de hundirse o sobra gente preparada.
+          if (d.opciones.some((o) => o.texto.startsWith('Achicar'))) {
+            const margen = valor(s, { tipo: 'danoMaximo' }) - s.danoBarco
+            const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
+            const achicar = d.opciones.find((o) => o.texto.startsWith('Achicar'))!.clave
+            const dano = d.opciones.find((o) => !o.texto.startsWith('Achicar'))!.clave
+            return elegir(margen <= 2 || preparados >= 3 ? achicar : dano)
+          }
           return elegir(claves[0]!)
       }
     }
@@ -657,7 +669,7 @@ function faltaAvance(s: Estado): number {
 
 /** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
 /** Capacidades que empiezan una Prueba (la de una Acción). */
-const PRUEBAS_DE_ACCION = new Set(['guardia.palos', 'estado:encadenado.liberar', 'p2_jaguar.nat.accion0', 'a_por_ellos.jugar'])
+const PRUEBAS_DE_ACCION = new Set(['guardia.palos', 'p2_jaguar.nat.accion0', 'a_por_ellos.jugar'])
 
 function empiezaUnaPrueba(s: Estado, uso: Uso): boolean {
   if (PRUEBAS_DE_ACCION.has(uso.clave)) return true
@@ -810,9 +822,9 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return carta && mano >= 3 && riesgoDelEncuentro(s, carta) >= 1 ? 3 : 0
     case 'espesura.jugar':
       return p && mano >= 2 && peligroDeFallo(s, p.encuentro) >= 1.5 ? 3 : 0
-    // Fase 6: Estados y cartas de Peligro en juego o en el muelle.
-    case 'estado:incendio.apagar':
-      return 3
+    // Fase 10b: quitar Buscado pagando 1 carta, si sobra mano.
+    case 'estado:buscado.quitar':
+      return d.motivo.clave === 'jugarCartas' && mano >= 3 ? 1 : 0
     // Cartas de jugador 2.0
     case 'herbolaria.quitar':
     case 'practico.barco':
@@ -827,8 +839,6 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return trasEncuentro && s.zonas.rehenes.length > 0 && s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? 3 : 0
     case 'ron_valientes.jugar':
       return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
-    case 'estado:encadenado.liberar':
-      return (d.motivo.clave === 'jugarCartas' || trasEncuentro) && alcanza(s, [{ hab: 'COM', dificultad: 3 }, { hab: 'EXP', dificultad: 3 }]) ? 1 : 0
     case 'p2_jaguar.nat.accion0':
       // Cazar al jaguar: uno solo, COM 5 (EXP 3 si es un Explorador).
       return trasEncuentro && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && cazaElJaguar(s, c)) ? 2 : 0
@@ -864,7 +874,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
  * real: con lo que le sumen la misión, «¡La guardia!» o «la siguiente Prueba recibe +1».
  */
 function alcanza(s: Estado, opciones: readonly { hab: 'NAV' | 'COM' | 'EXP'; dificultad: number }[]): boolean {
-  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !(copia(s, c).estados ?? []).includes('encadenado'))
+  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c))
   if (preparados.length === 0) return false
   return opciones.some((o) => {
     const total = preparados.reduce((n, c) => n + valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }), 0) + s.zonas.mano.reduce((n, c) => n + iconos(s, c, o.hab), 0)

@@ -192,7 +192,7 @@ registrarPeligro('p2_sangre', {
         { tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } },
       ],
     },
-    ciu: { exito: [avance(1), robar(1)], fallo: [comprometidoCon(mas('COM'), { tipo: 'estado', estado: 'aturdido' }), descartar(1)] },
+    ciu: { exito: [avance(1), robar(1)], fallo: [comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 }), descartar(1)] },
   },
   // +1. Si fallas con dos o más comprometidos, el más alto y el más bajo sufren 1 herida. Sin oposición: agota 1.
   destino: { siFallas: [codigo('p2_sangre.culpa')], sinOposicion: [agotar(1)] },
@@ -295,9 +295,9 @@ registrarPeligro('p2_paga', {
         ],
       },
     },
-    // Fallo: tu Tripulante de menor coste queda Encadenado.
+    // Fallo: tu Tripulante de menor coste deserta: vuelve al muelle (fase 10b, antes Encadenado).
     // P41 (confirmada): el Capitán no tiene coste impreso: no cuenta como «el de menor coste» (si no, siempre sería él).
-    nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menorCoste', sinCapitan: true }, hacer: { tipo: 'estado', estado: 'encadenado' } }] },
+    nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menorCoste', sinCapitan: true }, hacer: { tipo: 'alMuelle' } }] },
     // Elige: pagas (1 carta por cada Tripulante que tengas, máx. 3; el Capitán es un Tripulante) o Prueba de COM 3,
     // +1 por cada Bucanero que tengas (máx. +2).
     ciu: {

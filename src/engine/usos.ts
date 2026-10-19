@@ -3,7 +3,7 @@
 import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
 import { rasgosDe, tipoDe } from './catalogo.ts'
 import { claveUso, copia, encolar } from './estado.ts'
-import { estadosDe, tieneEstado } from './estados.ts'
+import { estadosDe } from './estados.ts'
 import { cartaDeEstado } from './infoEstados.ts'
 import type { Capacidad, Coste, Estado, Evento, InstId, Uso, Ventana } from './tipos.ts'
 import { destinoVigente, mejoraActiva, valor } from './valores.ts'
@@ -18,8 +18,7 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   const sinTripulantes = s.prueba?.sinCapTripulantes ?? false
   const sinMejoras = (s.prueba?.sinCapMejoras || s.prueba?.sinMejoras) ?? false
   for (const inst of s.zonas.tripulacion) {
-    // Encadenado bloquea las capacidades de su carta que se usan (no las constantes ni las de sus Mejoras) (P16).
-    const bloqueada = tieneEstado(s, inst, 'encadenado') || sinTripulantes
+    const bloqueada = sinTripulantes
     for (const cap of capacidadesDe(copia(s, inst).id)) {
       if (cap.desde === 'juego' && !(bloqueada && SE_USAN.has(cap.ventana))) yield [cap, inst]
     }

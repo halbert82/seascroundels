@@ -7,6 +7,7 @@ import type { ModSiguiente } from './efectos.ts'
 import { destinoDe } from './destinos.ts'
 import { copia } from './estado.ts'
 import { tieneEstado } from './estados.ts'
+import { entornoActual } from './peligros.ts'
 import type { Bono, Estado, InstId, PruebaEnCurso } from './tipos.ts'
 import { aportaciones, modificadores, valor, valorSinMinimo } from './valores.ts'
 
@@ -122,12 +123,27 @@ function bonoAnulado(s: Estado, p: PruebaEnCurso, b: Bono): boolean {
   return tipo === 'mejoraBarco' || tipo === 'mejoraTripulante' || tipo === 'tesoro'
 }
 
+/**
+ * Fase 10b: Inspirado da +1 y Maldito −1 al total de cada Prueba a la que esté asignado el Tripulante (aunque él no
+ * sume). Devuelve lo que aporta cada ficha, para el total y su desglose.
+ */
+export function fichasDelTotal(s: Estado, asignados: readonly InstId[]): { inst: InstId; estado: 'inspirado' | 'maldito'; n: number }[] {
+  const partes: { inst: InstId; estado: 'inspirado' | 'maldito'; n: number }[] = []
+  for (const c of asignados) {
+    if (!s.zonas.tripulacion.includes(c)) continue
+    if (tieneEstado(s, c, 'inspirado')) partes.push({ inst: c, estado: 'inspirado', n: 1 })
+    if (tieneEstado(s, c, 'maldito')) partes.push({ inst: c, estado: 'maldito', n: -1 })
+  }
+  return partes
+}
+
 /** Total de la Prueba en curso sin el Destino. */
 export function totalSinDestino(s: Estado, p: PruebaEnCurso, hab: Habilidad): number {
   let total = 0
   for (const c of p.comprometidos) {
     if (s.zonas.tripulacion.includes(c) && !noSuma(s, c)) total += valor(s, { tipo: 'habilidad', carta: c, hab })
   }
+  for (const f of fichasDelTotal(s, p.comprometidos)) total += f.n
   if (!p.sinCartas) total += p.iconos
   for (const b of p.bonos) if (!bonoAnulado(s, p, b)) total += b.n
   return total + modificadores(s, { tipo: 'totalPrueba', hab })
@@ -181,12 +197,13 @@ export function prevision(s: Estado, encuentro: InstId, opcion: number, tripulan
   const supuestas = new Set(tripulantes)
   let total = 0
   for (const c of tripulantes) {
-    // Aturdido (o lo que diga la carta): no suma. Inspirado: +1.
-    if (!tieneEstado(s, c, 'aturdido') && modificadores(s, { tipo: 'noSuma', carta: c }) <= 0) {
+    // Lo que diga la carta («los Vigías no suman»): no suma.
+    if (modificadores(s, { tipo: 'noSuma', carta: c }) <= 0) {
       total += valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }, supuestas, tripulantes)
     }
-    if (tieneEstado(s, c, 'inspirado')) total += 1
   }
+  // Inspirado +1 y Maldito −1 (fase 10b).
+  for (const f of fichasDelTotal(s, tripulantes)) total += f.n
   for (const c of cartas) total += iconosDe(copia(s, c).id, o.hab)
   total += modificadores(s, { tipo: 'totalPrueba', hab: o.hab })
   const base = dificultadDeOpcion(s, encuentro, opcion, tripulantes)
@@ -197,7 +214,7 @@ export function prevision(s: Estado, encuentro: InstId, opcion: number, tripulan
 }
 
 /**
- * Por qué no vale este compromiso (o null si vale): Encadenado, Borracho, Asustado y Sin ayuda.
+ * Por qué no vale este compromiso (o null si vale): Borracho, Buscado en Ciudad, Asustado y Sin ayuda.
  * Lo usan el motor al validar, la mesa para no dejar confirmar y los jugadores automáticos.
  */
 export function problemaCompromiso(
@@ -209,7 +226,7 @@ export function problemaCompromiso(
 ): string | null {
   for (const c of tripulantes) {
     if (def.soloCon && c !== def.soloCon) return `Solo puede hacerla ${nombreDe(copia(s, def.soloCon).id)}`
-    if (tieneEstado(s, c, 'encadenado')) return `${nombreDe(copia(s, c).id)} está Encadenado: no puede ser asignado`
+    if (buscadoEnCiudad(s, c)) return `${nombreDe(copia(s, c).id)} está Buscado: no puede ser asignado en Ciudad`
     if (tieneEstado(s, c, 'borracho') && hab !== 'COM') return `${nombreDe(copia(s, c).id)} está Borracho: no puede ser asignado a ${hab}`
     if (s.temporales.some((t) => t.clave === 'noCompromete' && t.inst === c)) return `${nombreDe(copia(s, c).id)} no puede ser asignado ahora`
     const veto = def.restriccion?.veto?.(s, c)
@@ -218,13 +235,18 @@ export function problemaCompromiso(
   const maximo = def.maximo ?? def.restriccion?.maximo
   if (maximo !== undefined && tripulantes.length > maximo) return `No puedes asignar a más de ${maximo}`
   const unico = tripulantes.length === 1 ? tripulantes[0] : undefined
-  if (unico && tieneEstado(s, unico, 'asustado')) return `${nombreDe(copia(s, unico).id)} está Asustado: no puede ser asignado solo`
+  if (unico && tieneEstado(s, unico, 'asustado')) return `${nombreDe(copia(s, unico).id)} está Asustado: no puede ser asignado él solo`
   if (def.sinAyuda) {
     if (tripulantes.length > 1) return 'Sin ayuda: solo puede ser asignado un Tripulante'
     // Sin ayuda: los Eventos tampoco suman por sus iconos; solo las Habilidades (P7).
     if (cartas.some((c) => tipoDe(copia(s, c).id) !== 'habilidad')) return 'Sin ayuda: solo suman las Habilidades de tu mano'
   }
   return null
+}
+
+/** Buscado (fase 10b): no puede ser asignado en misiones de Ciudad. */
+export function buscadoEnCiudad(s: Estado, c: InstId): boolean {
+  return tieneEstado(s, c, 'buscado') && entornoActual(s) === 'ciu'
 }
 
 /** Nombre del encuentro de una carta en la misión en curso. */
@@ -263,6 +285,9 @@ export function desgloseTotal(s: Estado): ParteDesglose[] {
   for (const c of p.cartas) {
     const n = iconosDe(copia(s, c).id, hab)
     if (n > 0) partes.push({ etiqueta: nombreDe(copia(s, c).id), n, tipo: 'carta', inst: c, anulada: p.sinCartas })
+  }
+  for (const f of fichasDelTotal(s, p.comprometidos)) {
+    partes.push({ etiqueta: `${nombreDe(copia(s, f.inst).id)}, ${f.estado === 'inspirado' ? 'Inspirado' : 'Maldito'}`, n: f.n, tipo: 'modificador', inst: f.inst, carta: `estado:${f.estado}` })
   }
   for (const b of p.bonos) partes.push({ etiqueta: nombreDe(b.fuente), n: b.n, tipo: 'bono', carta: b.fuente, anulada: bonoAnulado(s, p, b) })
   for (const a of aportaciones(s, { tipo: 'totalPrueba', hab })) {

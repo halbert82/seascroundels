@@ -121,7 +121,7 @@ describe('Revelar y resolver encuentros', () => {
     expect(j.registro).toContain('Revelas «Rivales»: Pelea de taberna (Ciudad).')
     // Pelea de taberna: COM 3, Pirata −1 por «Cobrar la deuda» → 2. Bucanero: COM 2 + 1 por Diego = 3.
     j.comprometer('COM', ['bucanero'])
-    expect(j.registro).toContain('Destino de la carta «Chubasco»: −0.')
+    expect(j.registro).toContain('Destino de la carta «Chubasco»: 0.')
     j.seguir()
     expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
     expect(j.avance('deuda-I')).toBe(2)

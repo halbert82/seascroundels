@@ -218,7 +218,11 @@ export function aplicarAccion(s: Estado, c: InstId, a: AccionSobre, fuente?: Ins
       }
       return
     case 'varios':
-      for (const x of a.acciones) aplicarAccion(s, c, x, fuente)
+      // En orden, una tras otra (las heridas se resuelven antes de que «quede rehén»): cada acción, su tarea.
+      encolar(
+        s,
+        ...a.acciones.map((x): NuevaTarea => ({ tipo: 'aplicarEfectos', efectos: [{ tipo: 'sobre', carta: c, hacer: x }], contexto: 'efecto', ...(fuente ? { fuente } : {}) })),
+      )
       return
     case 'marcar':
       // Queda señalado por esta carta hasta el final de la misión (lo que diga después: «ese Tripulante…»).

@@ -540,7 +540,8 @@ export class Jugador {
       }
     }
     if (this.estado.pendiente && this.decision.motivo.clave === 'descartarFinal') this.ninguna()
-    return this
+    // Al final del turno puede haber Interrupciones que ofrecer (Envenenado hiere, el Grumete puede evitarlo).
+    return this.pasarOfertas()
   }
 
   /** Identificadores de las cartas de una zona, de arriba abajo. */

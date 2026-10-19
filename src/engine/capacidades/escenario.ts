@@ -104,7 +104,7 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     anotar(s, 'aviso', 'Cuarentena: el puerto cierra la Taberna este turno.')
     return [
       esteTurno('cuarentena.turno', 'cuarentena'),
-      efectos([{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'estado', estado: 'aturdido' } }], inst),
+      efectos([{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'estado', estado: 'envenenado' } }], inst),
     ]
   }),
 

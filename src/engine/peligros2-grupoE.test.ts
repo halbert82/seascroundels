@@ -480,10 +480,10 @@ describe('53 · La serpiente marina', () => {
 })
 
 describe('54 · La Santa Compaña', () => {
-  it('Mar: si fallas, el Barco queda con Incendio a bordo', () => {
+  it('Mar: si fallas, el Barco queda con Velas rotas (fase 10b)', () => {
     const j = en('mar', ['p2_compana', 'chubasco', 'calma'])
     j.comprometer('NAV', []).seguir()
-    expect(j.estadosBarco).toEqual(['incendio'])
+    expect(j.estadosBarco).toEqual(['velasRotas'])
   })
 
   it('Naturaleza: los Tripulantes con Escapulario suman +2; si fallas, el comprometido con menos EXP queda Asustado y sufre 1 herida', () => {

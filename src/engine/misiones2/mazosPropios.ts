@@ -202,7 +202,7 @@ registrarPeligro('armada', {
   },
   // +1; +2 en su lugar si el encuentro es #Militar# o #Guardia#. Sin oposición: el Barco queda Perseguido.
   destino: {
-    modificador: (s) => (encuentroEs(s, 'Militar', 'Guardia') ? 2 : 1),
+    modificador: (s) => (encuentroEs(s, 'Armada', 'Militar', 'Guardia') ? 2 : 1),
     sinOposicion: [{ tipo: 'estadoBarco', estado: 'perseguido' }],
   },
 })

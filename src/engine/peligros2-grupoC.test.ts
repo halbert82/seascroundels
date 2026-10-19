@@ -245,14 +245,14 @@ describe('27 · Los grilletes del rey', () => {
     expect(k.zona('rehenes')).toEqual(['bucanero'])
   })
 
-  it('Destino «Grilletes en los tobillos»: no se usan capacidades de Tripulantes; sin oposición, uno preparado queda Encadenado', () => {
+  it('Destino «Grilletes en los tobillos»: no se usan capacidades de Tripulantes; sin oposición, agota a 1 Tripulante (fase 10b)', () => {
     const j = conDestino('p2_grilletes', { tripulacion: ['carpintero'], barco: { dano: 1 } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
     expect(j.ofreceCapacidad('carpintero.reparar')).toBe(false)
     const k = conDestino('p2_grilletes', { tripulacion: ['carpintero'] })
     k.comprometer('NAV', []).elegir('carpintero')
-    expect(k.estados('carpintero')).toEqual(['encadenado'])
+    expect(k.copia('carpintero').agotada).toBe(true)
   })
 })
 
@@ -455,7 +455,7 @@ describe('31 · Bajo los cañones del Morro', () => {
     expect(k.copia('bucanero').heridas).toBe(1)
   })
 
-  it('Ciudad: si superas, rescatas a los rehenes (si no hay, +1 Avance); si fallas, el de más NAV queda Encadenado y sufre 1 herida', () => {
+  it('Ciudad: si superas, rescatas a los rehenes (si no hay, +1 Avance); si fallas, el de más NAV sufre 1 herida y queda rehén (fase 10b)', () => {
     const j = en('ciu', ['p2_grilletes', 'chubasco', 'p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'viejo_lobo'] })
     j.comprometer('COM', ['bucanero']).seguir()
     expect(j.zona('rehenes')).toEqual(['bucanero'])
@@ -465,10 +465,10 @@ describe('31 · Bajo los cañones del Morro', () => {
     const k = en('ciu', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
     expect(avance(k, 'ciu')).toBe(3) // 2 + 1 (no había rehenes)
-    const m = en('ciu', ['p2_morro', 'chubasco', 'calma'])
-    m.comprometer('NAV', ['capitan']).seguir()
-    expect(m.estados('capitan')).toEqual(['encadenado'])
-    expect(m.copia('capitan').heridas).toBe(1)
+    const m = en('ciu', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
+    m.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir()
+    expect(m.zona('rehenes')).toEqual(['viejo_lobo'])
+    expect(m.copia('viejo_lobo').heridas).toBe(1)
   })
 
   it('Destino «Las baterías del castillo»: +4 salvo que descartes 2 cartas (entonces +2); sin oposición, 1 daño', () => {
@@ -562,15 +562,17 @@ describe('32 · La horca', () => {
 })
 
 describe('33 · La Armada de Barlovento', () => {
-  it('Mar: +2 con Velas rotas; si superas, quita Perseguido; si fallas, Abordaje', () => {
+  it('Mar: +2 con Velas rotas; tipo Armada: +1 si estás Perseguido y, si la superas, se quita (fase 10b); si fallas, Abordaje', () => {
     const j = en('mar', ['p2_armada', 'chubasco', 'calma'], { barco: { estados: ['velasRotas'] } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(8)
     // Perseguido durante la misión (fallas «El guardacostas os reconoce») y luego le ganas el barlovento a la fragata.
-    const k = en('mar', ['p2_sebusca', 'chubasco', 'p2_armada', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
+    const k = en('mar', ['p2_sebusca', 'chubasco', 'p2_armada', 'chubasco', 'calma'], { tripulacion: [{ id: 'viejo_lobo', mejoras: ['brujula'] }] })
     k.comprometer('NAV', []).seguir()
     expect(k.estadosBarco).toEqual(['perseguido'])
-    k.seguir().comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
+    k.seguir().comprometer('NAV', ['capitan', 'viejo_lobo'])
+    expect(dificultadConDestino(k.estado)).toBe(7)
+    k.pasarOfertas().seguir()
     expect(k.estadosBarco).toEqual([])
     // Abordaje: Diego (2 + 1 del Barco) contra 6: faltan 3, 3 heridas.
     const m = en('mar', ['p2_armada', 'chubasco', 'calma'])

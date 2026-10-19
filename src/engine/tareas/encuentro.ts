@@ -6,7 +6,7 @@ import { avanceSinSuperar, definicionEncuentro, reglasDe } from '../definiciones
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
 import { anotar, claveUso, copia, encolar, nombre, nombres } from '../estado.ts'
-import { agotar, quitarEstado, tieneEstado } from '../estados.ts'
+import { agotar, quitarEstado } from '../estados.ts'
 import { cartaDeArriba, cerrarPrueba, descartarPeligro, entornoActual, mazoActivo, ponerEnMuelle } from '../peligros.ts'
 import { impideRetirarse } from '../definiciones.ts'
 import { cumple, faltan, margen } from './efectos.ts'
@@ -22,6 +22,7 @@ import {
   nuevaPrueba,
   pruebaEnCurso,
   totalPrueba,
+  buscadoEnCiudad,
 } from '../prueba.ts'
 import type { Accion, Estado, InstId, NuevaTarea, PruebaEnCurso } from '../tipos.ts'
 import type { Habilidad } from '../datos.ts'
@@ -306,9 +307,7 @@ function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
   const tareas: NuevaTarea[] = []
   const comprometidos = p.comprometidos.filter((c) => s.zonas.tripulacion.includes(c))
   if (d.heridaComprometido && comprometidos.length > 0) {
-    // Maldito: cuando un Destino hiere a «uno de los comprometidos», tiene que ser él.
-    const malditos = comprometidos.filter((c) => tieneEstado(s, c, 'maldito'))
-    tareas.push({ tipo: 'herirUno', n: d.heridaComprometido, entre: malditos.length > 0 ? malditos : comprometidos })
+    tareas.push({ tipo: 'herirUno', n: d.heridaComprometido, entre: comprometidos })
   }
   if (d.heridaMasFuerte && comprometidos.length > 0) {
     const hab = p.hab
@@ -328,17 +327,17 @@ function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
   return tareas
 }
 
-/** Al comprometerse: Sangrando hiere al agotarse, Aturdido no suma (y se quita), Inspirado da +1 (y se quita). */
-export function alComprometerse(s: Estado, p: PruebaEnCurso, c: InstId, agotarlo: boolean): void {
-  if (agotarlo) agotar(s, c)
-  if (quitarEstado(s, c, 'aturdido')) {
-    p.sinSumar = [...(p.sinSumar ?? []), c]
-    anotar(s, 'efecto', `${nombre(s, c)} está Aturdido: no suma en esta Prueba.`)
+/**
+ * Al ser asignado se agota (Sangrando hiere al agotarse). Fase 10b: si está Aguerrido, es asignado sin agotarse y la
+ * ficha se quita. Inspirado y Maldito no se gastan: suman al total mientras duren (prueba.ts).
+ */
+export function alComprometerse(s: Estado, _p: PruebaEnCurso, c: InstId, agotarlo: boolean): void {
+  if (!agotarlo) return
+  if (quitarEstado(s, c, 'aguerrido')) {
+    anotar(s, 'efecto', `${nombre(s, c)} está Aguerrido: es asignado sin agotarse.`)
+    return
   }
-  if (quitarEstado(s, c, 'inspirado')) {
-    p.bonos.push({ n: 1, canon: false, fuente: 'estado:inspirado' })
-    anotar(s, 'efecto', `${nombre(s, c)} está Inspirado: +1 en esta Prueba.`)
-  }
+  agotar(s, c)
 }
 
 export const prueba: Manejador<'prueba'> = (s, t, e) => {
@@ -386,11 +385,11 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
           tipo: 'comprometer' as const,
           motivo: { clave: p.origen === 'accion' ? 'comprometerAccion' : 'comprometer', carta: copia(s, p.encuentro).id },
           opciones: def.opciones.map((o) => ({ ...o })),
-          // Encadenado, «no puede comprometerse» o lo que vete la carta: no se ofrecen.
+          // Buscado en Ciudad, «no puede comprometerse» o lo que vete la carta: no se ofrecen.
           tripulantes: def.soloCon
             ? [def.soloCon]
             : s.zonas.tripulacion.filter(
-                (c) => !copia(s, c).agotada && !tieneEstado(s, c, 'encadenado') && !vetadoAlComprometer(s, c) && !def.restriccion?.veto?.(s, c),
+                (c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c) && !vetadoAlComprometer(s, c) && !def.restriccion?.veto?.(s, c),
               ),
           // Sin ayuda: solo suman las Habilidades de la mano.
           cartas: s.zonas.mano.filter(

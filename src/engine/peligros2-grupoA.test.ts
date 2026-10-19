@@ -283,15 +283,13 @@ describe('7 · Fuego a bordo', () => {
     expect(j.estadosBarco).toEqual(['polvoraMojada'])
   })
 
-  it('Mar, «Atacar el fuego»: +1 con 2 o más munición; si fallas, 1 daño e Incendio a bordo, que quema al revelar', () => {
+  it('Mar, «Atacar el fuego»: +1 con 2 o más munición; si fallas, 1 daño y Pólvora mojada (fase 10b)', () => {
     const j = en('mar', ['p2_fuego', 'chubasco', 'calma', 'calma'], { barco: { mejoras: [{ id: 'bronce', municion: 2 }] } })
     j.opcion('1').comprometer('NAV', [])
     expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.estado.danoBarco).toBe(1)
-    expect(j.estadosBarco).toEqual(['incendio'])
-    j.seguir() // la siguiente carta: el Incendio hace 1 daño
-    expect(j.estado.danoBarco).toBe(2)
+    expect(j.estadosBarco).toEqual(['polvoraMojada'])
   })
 
   it('Naturaleza: se queda en juego; con 3 fichas, cada agotado sufre 1 herida y se descarta', () => {
@@ -355,9 +353,10 @@ describe('8 · La broma', () => {
     const j = en('mar', ['p2_broma', 'chubasco', 'calma'])
     j.comprometer('EXP', []).seguir()
     expect(j.estadosBarco).toEqual(['viaDeAgua'])
-    expect(j.estado.danoBarco).toBe(1) // Vía de agua: 1 daño al terminar la carta en el Mar
+    j.opcion('1') // Vía de agua al terminar la carta en el Mar: no achicas, 1 daño
+    expect(j.estado.danoBarco).toBe(1)
     const k = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { estados: ['viaDeAgua'] } })
-    k.comprometer('EXP', []).seguir()
+    k.comprometer('EXP', []).seguir().opcion('1')
     expect(k.estado.danoBarco).toBe(3)
   })
 

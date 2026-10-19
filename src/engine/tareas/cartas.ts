@@ -2,7 +2,7 @@
 
 import { costeImpreso, esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
-import { curable, curarTripulante, quitarEstadoBarco } from '../estados.ts'
+import { curable, curarTripulante } from '../estados.ts'
 import type { Estado, InstId, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { arriba, barajar, mover, rebarajar } from '../zonas.ts'
@@ -154,13 +154,9 @@ export const pagar: Manejador<'pagar'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** Reparar N. Con «Vía de agua», el primer punto quita la ficha en vez del daño. */
+/** Reparar N daños (fase 10b: reparar ya no quita la Vía de agua). */
 export const reparar: Manejador<'reparar'> = (s, t) => {
-  let n = t.n
-  if (n > 0 && quitarEstadoBarco(s, 'viaDeAgua')) {
-    n--
-    anotar(s, 'efecto', 'Tapas la Vía de agua.')
-  }
+  const n = t.n
   const antes = s.danoBarco
   s.danoBarco = Math.max(0, s.danoBarco - n)
   if (antes > s.danoBarco) anotar(s, 'efecto', `Reparas ${antes - s.danoBarco}: el Barco queda con ${s.danoBarco} de daño.`)
@@ -169,7 +165,7 @@ export const reparar: Manejador<'reparar'> = (s, t) => {
 
 /**
  * Curar N: «cadaUno» cura N a cada Tripulante; «repartir» reparte N como quiera el jugador; «uno», N a un Tripulante.
- * Curar quita primero las fichas de Envenenado y Sangrando (P13).
+ * Fase 10b: curar solo quita heridas (los Estados se quitan aparte).
  */
 export const curar: Manejador<'curar'> = (s, t, e) => {
   const heridos = s.zonas.tripulacion.filter((c) => curable(s, c) > 0)

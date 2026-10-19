@@ -99,29 +99,15 @@ export function agotar(s: Estado, inst: InstId): void {
   }
 }
 
-/** Lo que se le puede curar a un Tripulante: sus heridas más las fichas que se quitan curando (Envenenado, Sangrando). */
+/** Lo que se le puede curar a un Tripulante: sus heridas (fase 10b: curar ya no quita Estados). */
 export function curable(s: Estado, inst: InstId): number {
-  const c = copia(s, inst)
-  return c.heridas + (c.estados?.includes('envenenado') ? 1 : 0) + (c.estados?.includes('sangrando') ? 1 : 0)
+  return copia(s, inst).heridas
 }
 
-/**
- * Cura N a un Tripulante. Cada punto quita primero la ficha de Envenenado, luego la de Sangrando, y después
- * las heridas. Devuelve lo que ha hecho, para el registro.
- */
-// Curar quita primero las fichas (Envenenado y luego Sangrando) y después las heridas (P13).
+/** Cura N heridas a un Tripulante. Devuelve lo que ha hecho, para el registro. */
 export function curarTripulante(s: Estado, inst: InstId, n: number): string {
-  const partes: string[] = []
-  let resto = n
-  for (const e of ['envenenado', 'sangrando'] as const) {
-    if (resto > 0 && quitarEstado(s, inst, e)) {
-      resto--
-      partes.push(`le quita ${INFO_ESTADO[e].nombre}`)
-    }
-  }
   const c = copia(s, inst)
-  const curadas = Math.min(resto, c.heridas)
+  const curadas = Math.min(n, c.heridas)
   c.heridas -= curadas
-  if (curadas > 0) partes.push(`le cura ${curadas} ${curadas === 1 ? 'herida' : 'heridas'}`)
-  return partes.length > 0 ? `${nombre(s, inst)}: ${partes.join(' y ')}` : ''
+  return curadas > 0 ? `${nombre(s, inst)}: le cura ${curadas} ${curadas === 1 ? 'herida' : 'heridas'}` : ''
 }

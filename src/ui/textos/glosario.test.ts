@@ -45,13 +45,16 @@ describe('Glosario de la mesa', () => {
   })
 
   it('cómo se quita, genérico como el reglamento: la Taberna (o el Astillero) o cualquier carta que así lo indique, con un ejemplo', () => {
-    expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toBe(
-      'Curarle quita primero esta ficha, en vez de una herida. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).',
+    // Fase 10b: curar ya no quita Estados.
+    expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toBe('Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).')
+    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toBe(
+      'Se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Carpintero de a bordo o el Práctico del puerto).',
     )
-    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toContain('También se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Práctico del puerto).')
     expect(AYUDA_ESTADO.inspirado.partes[1]?.texto).toContain('La Taberna no quita las Ventajas')
-    // Buscado y Pólvora mojada no se quitan solos.
-    expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe('Se quita con la Taberna o con cualquier carta que así lo indique.')
+    expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe(
+      'Se quita descartando 1 carta en la Fase de Reclutamiento. También se quita con la Taberna o con cualquier carta que así lo indique.',
+    )
+    // Pólvora mojada no se quita sola.
     expect(AYUDA_ESTADO.polvoraMojada.partes[1]?.texto).toBe('Se quita con el Astillero o con cualquier carta que así lo indique.')
   })
 
@@ -68,10 +71,10 @@ describe('Glosario de la mesa', () => {
     }
   })
 
-  it('Perseguido: la próxima misión de Mar empieza con un Peligro de más; se quita al revelarlo o con el Astillero', () => {
+  it('Perseguido (fase 10b): los encuentros de tipo Armada reciben +1; se quita al superar uno o con el Astillero', () => {
     const [hace, quita] = AYUDA_ESTADO.perseguido.partes
-    expect(hace?.texto).toMatch(/^Tu próxima misión de Mar empieza revelando un Peligro de más/)
-    expect(quita?.texto).toMatch(/^Se quita al revelar ese Peligro de más\./)
+    expect(hace?.texto).toBe('Los encuentros de tipo Armada reciben +1 de dificultad.')
+    expect(quita?.texto).toMatch(/^Se quita al superar un encuentro de tipo Armada\./)
     expect(quita?.texto).toContain('Astillero')
   })
 
@@ -146,7 +149,7 @@ describe('Lo que se explica junto a una carta ampliada', () => {
     expect(nombres('p2_aduana')).toContain('Incautado')
     expect(nombres('p2_turbonada')).toContain('Persigue')
     expect(nombres('p2_huracan')).toContain('Ocupa el muelle')
-    expect(nombres('p2_serpientes')).toEqual(expect.arrayContaining(['Envenenado', 'Sangrando', 'Aturdido', 'Asustado']))
+    expect(nombres('p2_serpientes')).toEqual(expect.arrayContaining(['Envenenado', 'Sangrando', 'Asustado']))
   })
 
   it('«Persigue» no es «Entra en el mazo de Peligros», aunque las dos pongan la carta encima del mazo', () => {

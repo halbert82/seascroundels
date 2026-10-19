@@ -1,8 +1,7 @@
 // Cartas de jugador 2.0 (fase 6): responden a las reglas nuevas de Peligro (Estados, cartas que se quedan en
 // juego, rehenes, Persigue). 4 Tripulantes y 5 Eventos.
 
-import { porId } from '../catalogo.ts'
-import { anotar, copia, nombre } from '../estado.ts'
+import { anotar, nombre } from '../estado.ts'
 import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
 import type { FichaTripulante } from '../infoEstados.ts'
 import type { Capacidad, CartaId, Estado, NuevaTarea, Ventana } from '../tipos.ts'
@@ -16,10 +15,10 @@ function alguienCon(s: Estado, estados: readonly FichaTripulante[]): boolean {
   return s.zonas.tripulacion.some((c) => estados.some((e) => tieneEstado(s, c, e)))
 }
 
-const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
+const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'asustado']
 
 export const CAPACIDADES_JUGADOR2: Capacidad[] = [
-  // Herbolaria: «Agotar: Quita Envenenado, Sangrando, Aturdido o Asustado a un Tripulante.»
+  // Herbolaria: «Agotar: Quita 1 Estado a un Tripulante: Envenenado, Sangrando o Asustado.»
   {
     clave: 'herbolaria.quitar',
     carta: 'herbolaria',
@@ -97,15 +96,14 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
   },
 
   // Cataplasma: «Quita Envenenado o Sangrando a un Tripulante y cúrale 1 herida.»
-  // Solo se juega si algún Tripulante tiene Envenenado o Sangrando (P23), y la herida se cura como cualquier curación:
-  // si le queda la otra ficha, se quita esa primero (P13).
+  // Solo se juega si algún Tripulante tiene Envenenado o Sangrando (P23). Fase 10b: la curación solo quita heridas.
   evento('cataplasma', 'libre', {
     requisito: (s) => alguienCon(s, ['envenenado', 'sangrando']),
     efecto: () => [{ tipo: 'quitarUnEstado', estados: ['envenenado', 'sangrando'], curar: 1 }],
   }),
 
-  // Cortar por lo sano: «Acción: Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego,
-  // salvo si es de nivel Terrible.»
+  // Cortar por lo sano: «Acción: Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego.»
+  // Fase 10b: sin la excepción por nivel; la carta que no deba poder quitarse lo dirá en su texto.
   // Coste 0: solo cuesta las 2 cartas de su capacidad.
   evento('cortar', 'accion', {
     coste: [{ tipo: 'pagar', n: 2 }],
@@ -167,8 +165,5 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
 
 /** Cartas de Peligro en juego que «Cortar por lo sano» puede descartar (las que no son de nivel Terrible). */
 function cortables(s: Estado) {
-  return s.zonas.peligrosEnJuego.filter((c) => {
-    const e = porId(copia(s, c).id)
-    return !(e.tipo === 'peligro' || e.tipo === 'mazoPropio') || e.carta.nivel !== 'Terrible'
-  })
+  return [...s.zonas.peligrosEnJuego]
 }

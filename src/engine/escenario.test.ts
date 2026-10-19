@@ -164,9 +164,9 @@ describe('Escenario 2.0: mixtas', () => {
     expect(j.copia('capitan').estados).toBeUndefined()
   })
 
-  it('Cuarentena: la Taberna no se puede elegir este turno y el Tripulante con menos Vida queda Aturdido', () => {
+  it('Cuarentena: la Taberna no se puede elegir este turno y el Tripulante con menos Vida queda Envenenado (fase 10b)', () => {
     const j = revelar('cuarentena', { tripulacion: ['bucanero', 'grumete'] })
-    expect(j.copia('grumete').estados).toEqual(['aturdido'])
+    expect(j.copia('grumete').estados).toEqual(['envenenado'])
     expect(j.copia('bucanero').estados).toBeUndefined()
     j.terminar().opcion('quedarse')
     const d = j.decision
@@ -178,7 +178,7 @@ describe('Escenario 2.0: mixtas', () => {
     const j = revelar('cuarentena', { tripulacion: ['marinero_p', 'grumete'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } })
     j.elegir('marinero_p')
-    expect(j.copia('marinero_p').estados).toEqual(['aturdido'])
+    expect(j.copia('marinero_p').estados).toEqual(['envenenado'])
     j.pasarTurnoEnPuerto()
     j.terminar().opcion('quedarse')
     const d = j.decision

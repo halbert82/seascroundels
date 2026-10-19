@@ -198,7 +198,8 @@ registrarPeligro('p2_fuego', {
         { texto: 'Atacar el fuego: Prueba de NAV 4 (+1 si tienes 2 o más munición)', prueba: true, modSi: { condicion: { tipo: 'municion', minimo: 2 }, n: 1 } },
       ],
       exito: [municion(1)],
-      fallo: [dano(1), { tipo: 'estadoBarco', estado: 'incendio' }],
+      // Fase 10b: fuera Incendio a bordo: 1 daño y Pólvora mojada.
+      fallo: [dano(1), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
     },
     // Se queda en juego: cada otro Peligro revelado, 1 ficha; con 3, cada agotado sufre 1 herida (máx. 3) y se descarta.
     // Acción: agota a un Explorador, o a 2 Tripulantes, para descartarla.

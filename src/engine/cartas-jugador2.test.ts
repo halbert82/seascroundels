@@ -77,12 +77,19 @@ describe('Cataplasma', () => {
 })
 
 describe('Cortar por lo sano', () => {
-  it('Acción: descarta 2 cartas (su coste es 0) para descartar una carta de Peligro en juego que no sea Terrible', () => {
+  it('Acción: descarta 2 cartas (su coste es 0) para descartar una carta de Peligro que se quede en juego', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
     expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
     j.usar('cortar.jugar').elegir('timon', 'coraje')
     expect(j.zona('peligrosEnJuego')).toEqual([])
     expect(j.zona('mano')).toEqual(['ojo'])
+  })
+
+  it('fase 10b: también las que antes eran de nivel Terrible («La cadena de la bocana»)', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['p2_morro', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
+    expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
+    j.usar('cortar.jugar').elegir('timon', 'coraje')
+    expect(j.zona('peligrosEnJuego')).toEqual([])
   })
 
   it('no se puede jugar sin 2 cartas más en la mano', () => {

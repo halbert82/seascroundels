@@ -2,10 +2,10 @@
 //
 // Fase 8: un efecto que solo ayuda es una Ventaja (Inspirado, Aguerrido); uno que perjudica o limita es un Estado
 // (Borracho también, aunque dé +1 COM). Las dos funcionan igual: fichas sobre el Tripulante, sin repetir la misma.
-// La Taberna quita todos los Estados de tus Tripulantes, pero no las Ventajas.
+// La Taberna quita todos los Estados de tus Tripulantes, pero no las Ventajas. Fase 10b: lo que hace cada una.
 
-/** Estados de un Tripulante: perjudican o limitan. */
-export const ESTADOS_TRIPULANTE = ['envenenado', 'borracho', 'aturdido', 'asustado', 'sangrando', 'buscado', 'maldito', 'encadenado'] as const
+/** Estados de un Tripulante: perjudican o limitan. Fase 10b: fuera Aturdido y Encadenado. */
+export const ESTADOS_TRIPULANTE = ['envenenado', 'borracho', 'asustado', 'sangrando', 'buscado', 'maldito'] as const
 export type EstadoTripulante = (typeof ESTADOS_TRIPULANTE)[number]
 
 /** Ventajas de un Tripulante: solo ayudan. */
@@ -20,7 +20,8 @@ export function esVentaja(f: string): f is Ventaja {
   return (VENTAJAS as readonly string[]).includes(f)
 }
 
-export const ESTADOS_BARCO = ['viaDeAgua', 'incendio', 'velasRotas', 'perseguido', 'polvoraMojada'] as const
+/** Estados del Barco. Fase 10b: fuera Incendio a bordo. */
+export const ESTADOS_BARCO = ['viaDeAgua', 'velasRotas', 'perseguido', 'polvoraMojada'] as const
 export type EstadoBarco = (typeof ESTADOS_BARCO)[number]
 
 export interface InfoEstado {
@@ -31,32 +32,27 @@ export interface InfoEstado {
   ventaja?: boolean
 }
 
+// Fase 10b: curar solo quita heridas y reparar solo quita daño. Los Estados se quitan como dice cada uno, con la
+// Taberna (los de los Tripulantes), con el Astillero (los del Barco) o con una carta que lo diga.
 export const INFO_ESTADO: Record<FichaTripulante | EstadoBarco, InfoEstado> = {
-  envenenado: { nombre: 'Envenenado', texto: 'Al final de cada turno, 1 herida. Curar quita la ficha en vez de la herida.' },
+  envenenado: { nombre: 'Envenenado', texto: 'Al final de cada turno, 1 herida.' },
   borracho: { nombre: 'Borracho', texto: '+1 COM. No puede ser asignado a NAV ni EXP. Se quita al final del turno.' },
-  aturdido: { nombre: 'Aturdido', texto: 'La próxima vez que sea asignado, no suma. Se quita entonces.' },
-  asustado: { nombre: 'Asustado', texto: 'No puede ser asignado solo. Se quita al superar una Prueba en la que participe.' },
-  sangrando: { nombre: 'Sangrando', texto: 'Cada vez que se agota, 1 herida. Curar 1 lo quita.' },
-  buscado: { nombre: 'Buscado', texto: 'En Ciudad, los encuentros Guardia y Militar reciben +1 si participa. Se quita con la Taberna en puerto.' },
-  maldito: {
-    nombre: 'Maldito',
-    texto: 'Cuando un Destino hiere a «uno de los Tripulantes asignados», tiene que ser él. Se quita al superar la Prueba de un encuentro Sobrenatural en la que participe.',
+  asustado: { nombre: 'Asustado', texto: 'No puede ser asignado él solo a una Prueba. Se quita al final del turno.' },
+  sangrando: { nombre: 'Sangrando', texto: 'Cada vez que se agota, 1 herida.' },
+  buscado: {
+    nombre: 'Buscado',
+    texto: 'No puede ser asignado en misiones de Ciudad. Se quita descartando 1 carta en la Fase de Reclutamiento.',
   },
-  encadenado: {
-    nombre: 'Encadenado',
-    texto: 'No puede ser asignado ni usar capacidades. Prueba de COM o EXP 3 en una ventana de acción para quitarlo.',
+  maldito: { nombre: 'Maldito', texto: '−1 al total de cada Prueba a la que esté asignado. Se quita al superar una de ellas.' },
+  inspirado: { nombre: 'Inspirado', texto: '+1 al total de cada Prueba a la que esté asignado. Se quita al final del turno.', ventaja: true },
+  aguerrido: { nombre: 'Aguerrido', texto: 'Puede ser asignado a una Prueba sin agotarse. Se quita al hacerlo.', ventaja: true },
+  viaDeAgua: {
+    nombre: 'Vía de agua',
+    texto: 'En el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar.',
   },
-  inspirado: { nombre: 'Inspirado', texto: '+1 en su próxima Prueba.', ventaja: true },
-  aguerrido: { nombre: 'Aguerrido', texto: 'Evita la próxima herida.', ventaja: true },
-  viaDeAgua: { nombre: 'Vía de agua', texto: 'Al final de cada carta de Peligro en el Mar, 1 daño. Reparar 1 quita la ficha.' },
-  incendio: {
-    nombre: 'Incendio a bordo',
-    texto:
-      'En el Mar, al revelar cada carta de Peligro, 1 daño. Si acaba la misión sin apagarlo (en cualquier Entorno), pierdes una Mejora de barco y la ficha sigue. Se apaga agotando a un Tripulante en una ventana de acción.',
-  },
-  velasRotas: { nombre: 'Velas rotas', texto: 'El Barco no da su +1 de NAV y las Distancias son 1 mayores. Se quita con el Astillero en puerto.' },
-  perseguido: { nombre: 'Perseguido', texto: 'Tu próxima misión de Mar empieza revelando un Peligro de más.' },
-  polvoraMojada: { nombre: 'Pólvora mojada', texto: 'Los Cañones no recargan en la Fase de Inicio. Se quita con el Astillero en puerto.' },
+  velasRotas: { nombre: 'Velas rotas', texto: '−1 al total de las Pruebas de NAV en el Mar. Las Distancias aumentan en 1.' },
+  perseguido: { nombre: 'Perseguido', texto: 'Los encuentros de tipo Armada reciben +1 de dificultad. Se quita al superar uno.' },
+  polvoraMojada: { nombre: 'Pólvora mojada', texto: 'Los Cañones no se preparan en la Fase de Inicio.' },
 }
 
 /** Identificador de la «carta» de un Estado en el registro de capacidades («estado:borracho»). */

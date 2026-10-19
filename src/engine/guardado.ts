@@ -20,6 +20,17 @@ function migrar(s: Estado): void {
     const nuevo = ESCENARIO_RENOMBRADO[c.id]
     if (nuevo) c.id = nuevo
   }
+  // Fase 10b: fuera Aturdido, Encadenado e Incendio a bordo.
+  const fuera = new Set(['aturdido', 'encadenado', 'incendio'])
+  for (const c of Object.values(s.cartas ?? {})) {
+    if (!c.estados) continue
+    c.estados = c.estados.filter((e) => !fuera.has(e))
+    if (c.estados.length === 0) delete c.estados
+  }
+  if (s.estadosBarco) {
+    s.estadosBarco = s.estadosBarco.filter((e) => !fuera.has(e))
+    if (s.estadosBarco.length === 0) delete s.estadosBarco
+  }
   const fichas = s.mision?.fichas as Record<string, number> | undefined
   if (fichas && 'ventaja' in fichas) {
     fichas.ladron = fichas.ventaja ?? 0

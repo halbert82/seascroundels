@@ -225,7 +225,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     ventana: 'constante',
     desde: 'juego',
     modifica: (_ctx, _yo, c) =>
-      c.tipo === 'dificultad' && c.claves.some((k) => k === 'Militar' || k === 'Guardia') ? (numerosEntreLlaves(texto('patente'))[0] ?? 0) : 0,
+      c.tipo === 'dificultad' && c.claves.some((k) => k === 'Armada' || k === 'Militar' || k === 'Guardia') ? (numerosEntreLlaves(texto('patente'))[0] ?? 0) : 0,
   },
 
   // ---------------------------------------------------------------------------
@@ -258,13 +258,13 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
       return []
     },
   },
-  // Los despachos del Rey: «Respuesta: Después de zarpar, otea 2.»
+  // Los despachos del Rey: «Al zarpar: Otea 2 del mazo de Peligros.» (P4, fase 10b). Se aplica sola.
   {
     clave: 'despachos.otear',
     carta: 'despachos',
-    ventana: 'respuesta',
+    ventana: 'alZarpar',
     desde: 'juego',
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'zarpar' && s.zonas[mazoActivo(s).mazo].length + s.zonas[mazoActivo(s).descartes].length > 0,
+    requisito: (s) => s.zonas[mazoActivo(s).mazo].length + s.zonas[mazoActivo(s).descartes].length > 0,
     efecto: () => [{ tipo: 'otear', n: primerNumero(texto('despachos')), cartas: [], arriba: [], fondo: [] }],
   },
   // Farol de los ahogados: «Respuesta: Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)»

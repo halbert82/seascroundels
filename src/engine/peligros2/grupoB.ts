@@ -68,7 +68,8 @@ registrarPeligro('p2_sol', {
         { texto: 'Buscar agua por delante: Prueba de EXP 3', prueba: true },
       ],
       exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }],
-      fallo: [cadaComprometido({ tipo: 'estado', estado: 'aturdido' })],
+      // Fase 10b: fuera Aturdido: 1 herida a cada asignado.
+      fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
     },
     // EXP 2, +1 por cada Tripulante comprometido después del primero.
     ciu: {
@@ -153,7 +154,7 @@ registrarCapacidades({
 })
 
 // 16. Serpientes · Leve
-const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'aturdido', 'asustado']
+const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'asustado']
 registrarCodigo('p2_serpientes.muerde', (s): NuevaTarea[] => {
   // El no comprometido con menos Vida; si no queda ninguno, el comprometido con menos EXP.
   const comp = s.prueba?.comprometidos ?? []
@@ -205,8 +206,8 @@ registrarPeligro('p2_fiebre', {
   encuentros: {
     // NAV 4. Éxito: cura 1 herida a cada Tripulante. Fallo: no puedes retirarte de esta misión.
     mar: { exito: [{ tipo: 'curar', n: 1, modo: 'cadaUno' }], fallo: [{ tipo: 'noRetirarse' }] },
-    // EXP 4 (2 con un Cirujano). Éxito: cura 2 heridas. Fallo: cada Tripulante comprometido queda Aturdido.
-    nat: { exito: [{ tipo: 'curar', n: 2 }], fallo: [cadaComprometido({ tipo: 'estado', estado: 'aturdido' })] },
+    // EXP 4 (2 con un Cirujano). Éxito: cura 2 heridas. Fallo: cada Tripulante asignado queda Envenenado (fase 10b).
+    nat: { exito: [{ tipo: 'curar', n: 2 }], fallo: [cadaComprometido({ tipo: 'estado', estado: 'envenenado' })] },
     // EXP 3, +1 por cada Tripulante herido (máx. 5). Éxito: +1 Avance. Fallo: el comprometido con más EXP queda rehén
     // en el lazareto; si lo rescatas, vuelve sin heridas.
     ciu: {
@@ -223,8 +224,8 @@ registrarPeligro('p2_fiebre', {
       ],
     },
   },
-  // +1. Si fallas, cada comprometido que ya tenga heridas sufre 1 herida más. Sin oposición: el Capitán queda Aturdido.
-  destino: { siFallas: [codigo('p2_fiebre.vomito')], sinOposicion: [{ tipo: 'estado', estado: 'aturdido', a: 'capitan' }] },
+  // +1. Si fallas, cada comprometido que ya tenga heridas sufre 1 herida más. Sin oposición: el Capitán queda Envenenado.
+  destino: { siFallas: [codigo('p2_fiebre.vomito')], sinOposicion: [{ tipo: 'estado', estado: 'envenenado', a: 'capitan' }] },
 })
 // «Si lo rescatas, vuelve sin heridas (allí lo curan).»
 registrarCapacidades({

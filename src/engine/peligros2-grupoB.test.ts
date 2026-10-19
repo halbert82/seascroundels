@@ -63,14 +63,14 @@ describe('13 · Sol de justicia', () => {
     expect(k.estadosBarco).toContain('viaDeAgua')
   })
 
-  it('Naturaleza, Elige: volver al arroyo (pierdes 1 Avance y ganas el del encuentro) o la Prueba; si la fallas, Aturdidos', () => {
+  it('Naturaleza, Elige: volver al arroyo (pierdes 1 Avance y ganas el del encuentro) o la Prueba; si la fallas, 1 herida a cada asignado (fase 10b)', () => {
     const j = en('nat', ['p2_sol', 'calma', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige' } })
     j.opcion('0')
     expect(avance(j, 'nat')).toBe(2)
     const k = en('nat', ['p2_sol', 'chubasco', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     k.opcion('1').comprometer('EXP', ['capitan']).seguir()
-    expect(k.estados('capitan')).toEqual(['aturdido'])
+    expect(k.copia('capitan').heridas).toBe(1)
   })
 
   it('Naturaleza: sin Avance que perder, no se puede volver al arroyo: se hace la Prueba', () => {
@@ -257,11 +257,11 @@ describe('17 · Fiebre amarilla', () => {
     expect(j.copia('capitan').heridas).toBe(0)
   })
 
-  it('Naturaleza: si fallas, cada Tripulante comprometido queda Aturdido', () => {
+  it('Naturaleza: si fallas, cada Tripulante asignado queda Envenenado (fase 10b)', () => {
     const j = en('nat', ['p2_fiebre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
     j.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
-    expect(j.estados('bucanero')).toEqual(['aturdido'])
-    expect(j.estados('marinero_p')).toEqual(['aturdido'])
+    expect(j.estados('bucanero')).toEqual(['envenenado'])
+    expect(j.estados('marinero_p')).toEqual(['envenenado'])
     expect(j.estados('capitan')).toEqual([])
   })
 
@@ -297,7 +297,7 @@ describe('17 · Fiebre amarilla', () => {
     expect(j.copia('bucanero').heridas).toBe(0)
   })
 
-  it('Destino «Vómito negro»: +1; si fallas, cada comprometido que ya tenga heridas sufre 1 más; sin oposición, el Capitán queda Aturdido', () => {
+  it('Destino «Vómito negro»: +1; si fallas, cada comprometido que ya tenga heridas sufre 1 más; sin oposición, el Capitán queda Envenenado (fase 10b)', () => {
     const j = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3) // Chubasco repentino, NAV 2, +1
@@ -309,7 +309,7 @@ describe('17 · Fiebre amarilla', () => {
     expect(k.copia('marinero_p').heridas).toBe(0)
     const m = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
     m.comprometer('NAV', [])
-    expect(m.estados('capitan')).toEqual(['aturdido'])
+    expect(m.estados('capitan')).toEqual(['envenenado'])
   })
 })
 

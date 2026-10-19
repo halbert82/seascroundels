@@ -104,7 +104,7 @@ Las cartas que no empiezan la partida en ningún mazo forman el **mazo de histor
 
 - Fichas de herida, de daño, de Avance y de munición.
 - Fichas de Entrenamiento (+1).
-- Fichas de Estado (Envenenado, Borracho, Aturdido, Asustado, Sangrando, Buscado, Maldito y Encadenado para los Tripulantes; Vía de agua, Incendio a bordo, Velas rotas, Perseguido y Pólvora mojada para el Barco) y fichas de Ventaja (Inspirado y Aguerrido).
+- Fichas de Estado (Envenenado, Borracho, Asustado, Sangrando, Buscado y Maldito para los Tripulantes; Vía de agua, Velas rotas, Perseguido y Pólvora mojada para el Barco) y fichas de Ventaja (Inspirado y Aguerrido).
 - Fichas de misión, todas iguales, para las misiones y las cartas que llevan la cuenta de algo.
 - Un marcador de reputación.
 
@@ -225,6 +225,7 @@ El texto de juego de una carta se compone de capacidades. Cada capacidad empieza
 
 - **Sin etiqueta:** se trata de una capacidad constante, que se aplica mientras la carta esté en juego («Tus Pruebas de COM en el Mar reciben +1»). En un Evento, significa que puede jugarse en cualquier momento.
 - **Un coste y dos puntos:** lo que va antes de los dos puntos es el coste, y lo que va después, el efecto. «Agotar: Repara 1 daño» significa que se agota la carta para reparar 1 daño. Si el jugador no puede pagar el coste completo, no puede usar la capacidad.
+- **Destina X [habilidad]:** es un coste. El jugador agota Tripulantes preparados cuya habilidad sume al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano.
 - **Acción:** esta capacidad puede usarse en una ventana de acción, es decir, durante la Fase de Reclutamiento, después de resolver una carta de Peligro o durante una Prueba, después de revelar el Destino.
 - **Respuesta:** esta capacidad puede usarse justo después de que ocurra lo que indica («Después de que reveles un encuentro…»).
 - **Interrupción:** esta capacidad puede usarse cuando algo va a ocurrir, antes de que ocurra. Normalmente lo evita o lo modifica («Cuando el portador vaya a quedar derrotado…»).
@@ -320,7 +321,7 @@ Los dos puertos del escenario El Caribe, Tortuga y Nassau, tienen las mismas tre
 - **Tablón de encargos:** el jugador pone al fondo del mazo de Misiones las misiones disponibles que quiera y, a continuación, repone las misiones disponibles hasta tener tantas como indica la carta de puerto.
 - **La opción propia del puerto:** «Soplos de la Hermandad» en Tortuga (se ponen 2 de Avance en una misión disponible) y «Entrenamiento» en Nassau (un Tripulante recibe una ficha de Entrenamiento).
 
-Puesto que el jugador decide el orden de los efectos que se aplican a la vez, en la Taberna quita primero los Estados y después cura. De este modo, la curación no se gasta en quitar Envenenado o Sangrando. El Astillero se resuelve del mismo modo con respecto a la Vía de agua. Los Estados que dicen «se quita con el Astillero» (Velas rotas, Pólvora mojada) se quitan por esta misma regla. Algunas cartas de Escenario pueden cerrar una opción durante un turno; en ese turno, dicha opción no puede elegirse.
+Curar heridas y quitar Estados son efectos distintos, cada uno con su icono: la Taberna hace las dos cosas. Del mismo modo, reparar solo quita daño, y el Astillero, además, quita los Estados del Barco. Algunas cartas de Escenario pueden cerrar una opción durante un turno; en ese turno, dicha opción no puede elegirse.
 
 > [!ejemplo]
 > El jugador se encuentra en Tortuga con 3 daños y Velas rotas en el Barco, 2 heridas en Diego y el Bucanero veterano Buscado e Inspirado. Entre las misiones disponibles hay una de Ciudad que no le conviene. Si elige Taberna y Astillero, resuelve todos los daños, heridas y Estados: el Barco queda sin daño ni Velas rotas, Diego queda curado y el Bucanero pierde Buscado, pero sigue Inspirado, porque la Taberna no quita las Ventajas. Si elige Tablón de encargos y Taberna, cambia esa misión y cura a Diego, pero zarpa con Velas rotas en el Barco.
@@ -448,15 +449,15 @@ Algunos encuentros dicen **Se queda en juego**. Una carta con esta indicación n
 - Algunas llevan la cuenta de algo con fichas de misión que solo aumentan («cada vez que reveles otro Peligro, pon 1 ficha») y, al llegar a cierto número, se aplica el efecto que indica la carta.
 - Algunas impiden superar la misión, o retirarse, mientras sigan en juego.
 - Puede haber varias en juego a la vez.
-- Muchas pueden quitarse con una Acción que indica su texto. «Cortar por lo sano» descarta cualquiera que no sea de nivel Terrible.
+- Muchas pueden quitarse con una Acción que indica su texto. «Cortar por lo sano» descarta cualquiera; las que no deben poder quitarse así lo dicen en su propio texto.
 - Al terminar la misión (superada, retirada o con el Barco hundido), se descartan con sus fichas.
 
 > [!ejemplo]
-> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela «Campanas a rebato», que se queda en juego: gana su Avance (1) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión, se pone 1 ficha de misión sobre la carta; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitar la carta antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano», porque la carta es de nivel Duro. Si supera la misión antes de las 3 fichas, las campanas se descartan con ella.
+> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela «Campanas a rebato», que se queda en juego: gana su Avance (1) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión, se pone 1 ficha de misión sobre la carta; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitar la carta antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas se descartan con ella.
 
 #### Pruebas que nacen de una Acción
 
-Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de la bocana», la de «¡A por ellos!», la que quita Encadenado… Esta Prueba se resuelve como cualquier otra: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición. Existen dos diferencias:
+Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de la bocana», la de «¡A por ellos!», la de «Campanas a rebato»… Esta Prueba se resuelve como cualquier otra: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición. Existen dos diferencias:
 
 - No tiene Avance propio: el jugador solo gana lo que indique su texto.
 - No puede empezarse durante otra Prueba. Se hace en una ventana de acción fuera de una Prueba, es decir, en la Fase de Reclutamiento o después de resolver una carta de Peligro.
@@ -553,7 +554,6 @@ Si el daño del Barco llega a su Daño máximo, **el Barco se hunde** y se aplic
 Las cartas de Peligro y de Escenario usan iconos para sus penalizaciones más comunes. La lista completa se encuentra en la Referencia rápida, al final de este reglamento, y cada penalización se explica en la Referencia de reglas. Las más importantes son las siguientes:
 
 - **Pierdes una Mejora:** el jugador elige una Mejora del Barco o de un Tripulante y la descarta.
-- **Agota una Mejora:** el jugador elige una Mejora preparada y la agota. La Mejora sigue aplicando su texto, pero no puede pagar una capacidad que pida agotarla hasta que se prepare.
 - **Rehén:** uno de los Tripulantes del jugador es capturado. Si el jugador supera la misión, lo rescata; si no, el Tripulante se retira del juego y el jugador pierde 1 de reputación.
   > [!tema]
   > En el Caribe todo se cambia por algo, también un hombre. Mientras sigas en la misión, aún puedes ir a buscarlo.
@@ -569,12 +569,14 @@ Algunos efectos colocan sobre un Tripulante o sobre el Barco una ficha que modif
 - Un **Estado** es una ficha que perjudica o limita.
 - Una **Ventaja** es una ficha que solo ayuda.
 
-Una ficha de Estado o de Ventaja permanece de un turno a otro hasta que un efecto de juego la elimina. Un Tripulante o el Barco no puede tener dos veces el mismo Estado ni la misma Ventaja: si recibe uno que ya tiene, el nuevo no tiene ningún efecto. En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco.
+Una ficha de Estado o de Ventaja permanece de un turno a otro, también entre misiones, hasta que se quita: algunas se quitan solas al final del turno o cuando ocurre lo que indican, y todas pueden quitarse con una carta que así lo diga. Un Tripulante o el Barco no puede tener dos veces el mismo Estado ni la misma Ventaja: si recibe uno que ya tiene, el nuevo no tiene ningún efecto. En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco.
+
+Curar no quita Estados: solo quita heridas. Para quitar un Estado hace falta un efecto que lo diga.
 
 La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se quita, se encuentra en las entradas «Estado» y «Ventaja» de la Referencia de reglas y en la tabla de la Referencia rápida.
 
 > [!ejemplo]
-> El jugador falla «Cazadores con perros» y el Bucanero veterano queda Buscado: desde ese momento, en las misiones de Ciudad, los encuentros de tipo Guardia y Militar en los que participe reciben +1 de dificultad. La ficha permanece hasta que el jugador se quede en puerto y elija la Taberna. Más tarde, el jugador supera «Luces en los mástiles» con Diego y el Viejo lobo de mar asignados, y el Tripulante asignado con más NAV queda Inspirado: es el Viejo lobo (NAV 3). En su próxima Prueba suma 1 más y, al ser asignado, gasta la ficha. La Taberna no le habría quitado esta ficha, porque es una Ventaja.
+> El jugador falla «Cazadores con perros» y el Bucanero veterano queda Buscado: desde ese momento no puede ser asignado en las misiones de Ciudad. La ficha permanece hasta que, en una Fase de Reclutamiento, el jugador descarte 1 carta para quitarla, o hasta que elija la Taberna. Más tarde, el jugador supera «Luces en los mástiles» con Diego y el Viejo lobo de mar asignados, y el Tripulante asignado con más NAV queda Inspirado: es el Viejo lobo (NAV 3). Hasta el final del turno, cada Prueba a la que lo asigne recibe +1. La Taberna no le habría quitado esta ficha, porque es una Ventaja.
 
 ### Ganar y perder
 
@@ -708,7 +710,7 @@ Al zarpar es una etiqueta de capacidad. Una capacidad **Al zarpar:** se resuelve
 
 ### Asignar
 
-Asignar un Tripulante a una Prueba es hacer que participe en ella. Solo pueden asignarse Tripulantes preparados, y solo en el primer paso de la Prueba. Los Tripulantes asignados se agotan y suman su habilidad, más las bonificaciones de sus Mejoras. El jugador puede asignar a cualquier número de Tripulantes, incluido ninguno; si no asigna a nadie, falla la Prueba. Una capacidad que funciona «mientras esté preparado», como la de Diego, deja de aplicarse en el momento en que ese Tripulante se agota. Esto afecta también a los Tripulantes que son asignados a la vez que él. El texto de las cartas se refiere a los Tripulantes asignados como los Tripulantes que participan en la Prueba.
+Asignar un Tripulante a una Prueba es hacer que participe en ella. Solo pueden asignarse Tripulantes preparados, y solo en el primer paso de la Prueba. Los Tripulantes asignados se agotan (salvo que algo diga lo contrario, como la Ventaja Aguerrido) y suman su habilidad, más las bonificaciones de sus Mejoras. El jugador puede asignar a cualquier número de Tripulantes, incluido ninguno; si no asigna a nadie, falla la Prueba. Una capacidad que funciona «mientras esté preparado», como la de Diego, deja de aplicarse en el momento en que ese Tripulante se agota. Esto afecta también a los Tripulantes que son asignados a la vez que él. El texto de las cartas se refiere a los Tripulantes asignados como los Tripulantes que participan en la Prueba.
 
 Las cartas de la mano no se asignan: se añaden a la Prueba por sus iconos (ver Prueba).
 
@@ -760,7 +762,7 @@ El Barco del jugador tiene tres valores:
 
 El Barco solo recibe daño en las misiones de Mar, salvo que la carta diga expresamente lo contrario. Ver Daño.
 
-El Barco puede tener los siguientes Estados: Vía de agua, Incendio a bordo, Velas rotas, Perseguido y Pólvora mojada. El Astillero del puerto los quita todos.
+El Barco puede tener los siguientes Estados: Vía de agua, Velas rotas, Perseguido y Pólvora mojada. El Astillero del puerto los quita todos.
 
 *Véase también:* Daño, Distancia, Estado, Hundirse, Mejora.
 
@@ -805,11 +807,12 @@ En el texto de una carta, lo que va antes de los dos puntos es el coste, y lo qu
 
 **Curar N** quita N heridas de los Tripulantes del jugador. **Reparar N** quita N daños del Barco. Si el efecto no indica a quién cura, el jugador reparte la curación como quiera.
 
-- Curar a un Tripulante Envenenado o Sangrando quita primero esas fichas, en ese orden, y después las heridas. Cada ficha consume 1 punto de curación.
-- Reparar el Barco cuando tiene Vía de agua quita primero esa ficha, lo que consume 1 punto de reparación.
+- Curar no quita Estados y reparar no quita la Vía de agua. Quitar un Estado es un efecto distinto, con su propio icono: solo lo hacen las cartas que lo dicen, la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
 
 > [!ejemplo]
-> El Bucanero veterano tiene 1 herida y está Envenenado. El jugador juega «Vendas y aguardiente» (cura 2) sobre él: el primer punto le quita Envenenado y el segundo, la herida.
+> El Bucanero veterano tiene 1 herida y está Envenenado. El jugador juega «Vendas y aguardiente» (cura 2) sobre él: le cura la herida, pero sigue Envenenado. Con «Cataplasma» le quitaría Envenenado y le curaría 1 herida.
+
+*Véase también:* Estado.
 
 ### Daño
 
@@ -834,6 +837,17 @@ Un Tripulante con tantas heridas como su Vida queda derrotado y se descarta junt
 ### Despedir
 
 Durante la Fase de Reclutamiento, el jugador puede despedir a un Tripulante. Para ello, lo pone en la pila de descartes del mazo de muelle junto con sus Mejoras.
+
+### Destina
+
+Destina es una palabra clave de coste: «**Destina X** [habilidad]: efecto». Para pagarlo, el jugador agota Tripulantes preparados cuya habilidad, sumada, sea al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano. Nunca aparece en los Peligros: un encuentro tiene una Prueba o un coste, no las dos cosas.
+
+- Si el jugador no puede llegar a X con sus Tripulantes preparados, no puede pagar el coste.
+
+> [!ejemplo]
+> Una carta dice «**Destina 3** [NAV]: Gana 1 Avance». El jugador puede agotar al Viejo lobo de mar (NAV 3), o al Contrabandista del bajo Caribe (NAV 2) y al Grumete leal (NAV 1). No revela Destino y gana 1 de Avance.
+
+*Véase también:* Coste de una capacidad (los dos puntos).
 
 ### Destino
 
@@ -860,7 +874,7 @@ Perder un día consiste en descartar la carta de arriba del mazo de Escenario si
 La Distancia es la NAV que necesita el jugador para zarpar a una misión de tierra alejada de su isla. Se indica con una franja azul bajo el icono de Entorno.
 
 - Para **cubrir la Distancia**, el jugador agota al menos a un Tripulante preparado, aunque tenga NAV 0, y puede descartar además cartas de su mano con iconos de NAV, hasta que la NAV de los Tripulantes agotados más los iconos de NAV de las cartas descartadas sume al menos la Distancia. No se puede cubrir una Distancia solo con cartas. Las cartas que reducen la Distancia, como el Barco, se aplican antes. Si no puede alcanzarla, no puede zarpar a esa misión.
-- Si no hay franja azul, la Distancia es 0. Las misiones de Mar no tienen Distancia.
+- Si no hay franja azul, la Distancia es 0. Si lo que reduce la Distancia la deja en 0, tampoco se agota a nadie, como en una misión sin franja azul. Las misiones de Mar no tienen Distancia.
 - Una misión con Distancia es una **misión lejana**.
 - Algunas cartas de Escenario suben o bajan en 1 las Distancias de todas las misiones durante un turno, independientemente de su Entorno. Una misión sin Distancia sigue en 0.
 
@@ -919,29 +933,26 @@ El **mazo de Escenario** actúa como el reloj de la partida. El Caribe incluye 1
 
 Un Estado es una ficha que perjudica o limita a un Tripulante o al Barco. Esta ficha permanece de un turno a otro, también entre misiones, hasta que algún efecto la quita. Un Tripulante no puede tener dos veces el mismo Estado, y el Barco tampoco; si ya lo tiene, no ocurre nada. Cuando un Tripulante sale del juego, sus fichas salen del juego con él. Los Pasajeros no reciben Estados.
 
-En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Cualquier carta que así lo indique también puede quitar un Estado; a continuación se incluye un ejemplo para cada uno, aunque no son las únicas cartas que pueden hacerlo. Además, algunos Estados se quitan por sí solos cuando se cumple una condición:
+En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Cualquier carta que así lo indique también puede quitar un Estado; a continuación se incluye un ejemplo para cada uno, aunque no son las únicas cartas que pueden hacerlo. Curar no quita Estados, ni reparar quita la Vía de agua. Además, algunos Estados se quitan por sí solos cuando se cumple una condición:
 
 **Estados de los Tripulantes**
 
-- **Envenenado:** al final de cada turno, el Tripulante sufre 1 herida. Cuando se cura al Tripulante, la curación quita primero esta ficha, en vez de una herida. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).
+- **Envenenado:** al final de cada turno, el Tripulante sufre 1 herida. Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).
 - **Borracho:** el Tripulante recibe +1 COM, pero no puede ser asignado a Pruebas de NAV ni de EXP. Este Estado se quita al final del turno. También se quita con la Taberna o con cualquier carta que así lo indique.
-- **Aturdido:** la próxima vez que el Tripulante sea asignado a una Prueba, no suma. En ese momento, este Estado se quita. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria).
-- **Asustado:** el Tripulante no puede ser asignado solo a una Prueba (tampoco a una Prueba Sin ayuda). Este Estado se quita cuando se supera una Prueba en la que participa el Tripulante. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria).
-- **Sangrando:** cada vez que el Tripulante se agota, sufre 1 herida. Cuando se cura al Tripulante, 1 punto de curación quita esta ficha (después de Envenenado, si también tiene ese Estado). También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, «Cataplasma»).
-- **Buscado:** en Ciudad, los encuentros de tipo Guardia y Militar reciben +1 de dificultad por cada Tripulante Buscado que participe en su Prueba. Este Estado se quita con la Taberna o con cualquier carta que así lo indique.
-- **Maldito:** cuando un Destino hiere a «uno de los Tripulantes asignados», el herido debe ser un Tripulante Maldito, si hay alguno asignado. Este Estado se quita cuando se supera la Prueba de un encuentro de tipo Sobrenatural en la que participa el Tripulante. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, «La mambo del mercado»).
-- **Encadenado:** el Tripulante no puede ser asignado ni usar las capacidades de su carta; sus capacidades constantes y sus Mejoras siguen funcionando. Para quitar este Estado, el jugador puede usar la siguiente capacidad: **Acción:** realizar una Prueba de COM 3 o de EXP 3 (no durante otra Prueba); si la supera, se quita, y si la falla, el Tripulante sigue Encadenado. También se quita con la Taberna o con cualquier carta que así lo indique.
+- **Asustado:** el Tripulante no puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda). Este Estado se quita al final del turno. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria).
+- **Sangrando:** cada vez que el Tripulante se agota, sufre 1 herida. Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, «Cataplasma»).
+- **Buscado:** el Tripulante no puede ser asignado en las misiones de Ciudad. En la Fase de Reclutamiento, el jugador puede descartar 1 carta de su mano para quitar este Estado. También se quita con la Taberna o con cualquier carta que así lo indique.
+- **Maldito:** el total de cada Prueba a la que esté asignado el Tripulante recibe −1. Este Estado se quita cuando se supera una Prueba a la que está asignado. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, «La mambo del mercado»).
 
 **Estados del Barco**
 
-- **Vía de agua:** al final de cada carta de Peligro en una misión de Mar, el Barco sufre 1 daño. Cuando se repara el Barco, la reparación quita primero esta ficha, en vez de un daño. También se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Práctico del puerto).
-- **Incendio a bordo:** en una misión de Mar, el Barco sufre 1 daño cada vez que se revela una carta de Peligro. Si una misión termina, en cualquier Entorno, sin que se haya apagado el incendio, el jugador pierde una Mejora de barco y la ficha permanece. Para apagarlo, el jugador puede usar la siguiente capacidad: **Acción:** agotar a un Tripulante. También se quita con el Astillero o con cualquier carta que así lo indique.
-- **Velas rotas:** el Barco no aporta su +1 a las Pruebas de NAV en el Mar y las Distancias son 1 mayores. Este Estado se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Práctico del puerto).
-- **Perseguido:** la próxima misión de Mar del jugador empieza con la revelación de un Peligro adicional, que se resuelve por completo antes del primero, sin ventana para retirarse entre ambos. Este Peligro cuenta como carta resuelta y otorga su Avance. En ese momento, la ficha se quita. También se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, superar «Fragata a popa»).
-- **Pólvora mojada:** los Cañones del jugador no recargan en la Fase de Inicio. Este Estado se quita con el Astillero o con cualquier carta que así lo indique.
+- **Vía de agua:** en una misión de Mar, al final de cada carta de Peligro, el Barco sufre 1 daño, salvo que el jugador agote a un Tripulante preparado para achicar. Se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Carpintero de a bordo o el Práctico del puerto).
+- **Velas rotas:** el total de las Pruebas de NAV en el Mar recibe −1, y las Distancias aumentan en 1. Se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Práctico del puerto).
+- **Perseguido:** los encuentros de tipo Armada reciben +1 de dificultad. Este Estado se quita cuando se supera un encuentro de tipo Armada. También se quita con el Astillero o con cualquier carta que así lo indique.
+- **Pólvora mojada:** los Cañones del jugador no se preparan en la Fase de Inicio. Se quita con el Astillero o con cualquier carta que así lo indique.
 
 > [!ejemplo]
-> El Bucanero veterano está Asustado y Sangrando. No puede ser asignado solo, de modo que el jugador lo asigna junto con Diego a una Prueba de COM. Al agotarse, el Bucanero sufre 1 herida por Sangrando. El jugador supera la Prueba y el Bucanero deja de estar Asustado. Al volver a puerto, el jugador elige la Taberna: quita Sangrando al Bucanero y después le cura la herida, sin gastar curación en la ficha.
+> El Bucanero veterano está Asustado y Sangrando. No puede ser asignado él solo, de modo que el jugador lo asigna junto con Diego a una Prueba de COM. Al agotarse, el Bucanero sufre 1 herida por Sangrando. Al final del turno deja de estar Asustado, pero sigue Sangrando. En el turno siguiente, el jugador se queda en puerto y elige la Taberna: el Bucanero deja de estar Sangrando y se cura la herida.
 
 *Véase también:* Ventaja, Puerto.
 
@@ -1044,7 +1055,7 @@ Una Mejora es una carta que el jugador adquiere del muelle pagando su coste y qu
 - **Mejoras de barco:** cada una ocupa tanto Espacio como cuadros tenga. El Espacio que ocupan todas juntas no puede superar el Espacio del Barco.
 - **Mejoras de tripulante:** cada una ocupa un hueco de Mejora. Un Tripulante no puede llevar más Mejoras que huecos tenga.
 - **Pierdes una Mejora:** el jugador elige una, del Barco o de un Tripulante, y la descarta.
-- **Agota una Mejora:** el jugador elige una Mejora preparada y la agota. Una Mejora agotada sigue aplicando su texto y ocupando su sitio, pero no puede pagar una capacidad «Agotar:» hasta que se prepare, al empezar el turno siguiente.
+- Una Mejora agotada sigue aplicando su texto, pero no puede pagar una capacidad que pida agotarla hasta que se prepare.
 - Las Mejoras indestructibles, los Tesoros y las fichas de Entrenamiento no pueden perderse ni agotarse.
 
 ### Misión
@@ -1217,7 +1228,7 @@ Se queda en juego es una palabra clave que aparece en algunos encuentros. Una ca
 - Puede llevar la cuenta de algo con fichas de misión que solo aumentan («cada vez que reveles otro Peligro, pon 1 ficha»); al alcanzar el número que indica, se aplica lo que dice.
 - Puede impedir al jugador superar la misión o retirarse mientras siga en juego.
 - No existe límite: puede haber varias de estas cartas en juego a la vez.
-- Se quita como indica su texto (a menudo con una Acción) o con «Cortar por lo sano», si no es de nivel Terrible.
+- Se quita como indica su texto (a menudo con una Acción) o con «Cortar por lo sano», salvo que su propio texto lo impida.
 - Al terminar la misión, independientemente de que el jugador la supere, se retire o se hunda el Barco, la carta se descarta con sus fichas.
 
 > [!ejemplo]
@@ -1231,7 +1242,7 @@ Sin ayuda es una palabra clave que aparece en algunos encuentros con Prueba. Sol
 
 - El jugador puede añadir cartas de Habilidad de su mano por sus iconos. Los Eventos no suman, ni siquiera por sus iconos, y durante esa Prueba no pueden jugarse Eventos.
 - Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
-- Un Tripulante Asustado no puede ser asignado solo; por tanto, tampoco puede ser asignado a una Prueba Sin ayuda.
+- Un Tripulante Asustado no puede ser asignado él solo; por tanto, tampoco puede ser asignado a una Prueba Sin ayuda.
 
 > [!ejemplo]
 > En «La última mano» (EXP 3, Sin ayuda), el jugador asigna solo a Catalina (EXP 3). Añade «Ojo avizor» (Habilidad, dos iconos de EXP); cada carta que añade suma 1 más, como indica el encuentro: 3 + 2 + 1 = 6. El jugador no puede añadir «Rumores de taberna» por su icono, porque es un Evento.
@@ -1251,7 +1262,7 @@ Un Tesoro es una carta única que otorgan algunos capítulos («Pon en juego el 
 
 ### Tipos de encuentro
 
-Los tipos de encuentro son las palabras en versalitas que aparecen bajo el nombre de cada encuentro, a las que se refieren algunas reglas y cartas («los encuentros de tipo Guardia»): Barco, Bestia, Civil, Enfermedad, Guardia, Militar, Pirata, Sobrenatural, Terreno, Tormenta y Tripulación.
+Los tipos de encuentro son las palabras en versalitas que aparecen bajo el nombre de cada encuentro, a las que se refieren algunas reglas y cartas («los encuentros de tipo Guardia»): Armada, Barco, Bestia, Civil, Enfermedad, Guardia, Militar, Pirata, Sobrenatural, Terreno, Tormenta y Tripulación. **Armada** son las fuerzas navales del Rey (navíos, guardacostas, la flota) y **Militar**, las tropas en tierra y las fortalezas.
 
 *Véase también:* Palabras clave.
 
@@ -1269,15 +1280,15 @@ Una carta con una estrella delante del nombre es única. El jugador solo puede t
 
 ### Ventaja
 
-Una Ventaja es una ficha que solo ayuda a un Tripulante. Existen dos: Inspirado y Aguerrido. Una Ventaja funciona como un Estado: se mantiene de un turno a otro, también entre misiones, y un Tripulante no puede tener dos veces la misma. La Taberna no quita las Ventajas. Los Pasajeros no reciben Ventajas.
+Una Ventaja es una ficha que solo ayuda a un Tripulante. Existen dos: Inspirado y Aguerrido. Una Ventaja funciona como un Estado: se mantiene de un turno a otro, también entre misiones, hasta que se quita, y un Tripulante no puede tener dos veces la misma. La Taberna no quita las Ventajas. Los Pasajeros no reciben Ventajas.
 
-- **Inspirado:** el Tripulante recibe +1 en su próxima Prueba. Al ser asignado, suma 1 más y la ficha se quita.
-- **Aguerrido:** el Tripulante evita la próxima herida que vaya a sufrir. Solo evita 1, aunque reciba varias a la vez, y la ficha se quita en ese momento.
+- **Inspirado:** el total de cada Prueba a la que esté asignado el Tripulante recibe +1. La ficha se quita al final del turno.
+- **Aguerrido:** el Tripulante puede ser asignado a una Prueba sin agotarse. La ficha se quita al hacerlo; no caduca al final del turno.
 
 Un efecto que solo ayuda es una Ventaja; un efecto que perjudica o limita es un Estado.
 
 > [!ejemplo]
-> El jugador juega «Ron para los valientes» sobre el Bucanero veterano: queda Borracho (un Estado) y Aguerrido (una Ventaja). Después, el jugador falla una Prueba y decide que el Bucanero sufra 2 heridas: Aguerrido evita 1 y sufre la otra. Al final del turno, deja de estar Borracho.
+> El jugador juega «Ron para los valientes» sobre el Bucanero veterano: queda Borracho (un Estado) y Aguerrido (una Ventaja). En la siguiente Prueba de COM, el jugador lo asigna y el Bucanero no se agota: la ficha de Aguerrido se quita y el Bucanero sigue preparado para otra Prueba. Al final del turno, deja de estar Borracho.
 
 *Véase también:* Estado.
 
@@ -1316,9 +1327,10 @@ Volver al muelle es un efecto por el que el jugador elige a uno de sus Tripulant
 | N y descartar | Descarta N cartas de la mano |
 | +N y robar | Roba N cartas |
 | N y curar | Cura N heridas |
+| N y quitar Estado | Quita N Estados (los que diga la carta) |
 | −N y mapa · «−Todo» y mapa | Se pierden N de Avance · se pierde todo el Avance |
 | −N y barril | Se pierden N de munición |
-| −N y Mejora · Mejora tachada | Se pierden N Mejoras · agota una Mejora |
+| −N y Mejora | Se pierden N Mejoras |
 | −1 día · −1 Mando | Se pierde un día · este turno se roba una carta menos |
 | Rehén · ↩ al muelle · Recluta | Ver sus entradas en la Referencia de reglas |
 | «Añade la carta N» · «Se retira» | Busca esa carta por su número en el mazo de historia · esta carta sale del juego |
@@ -1331,18 +1343,15 @@ Un Tripulante o el Barco no puede tener dos veces la misma ficha. En puerto, la 
 
 | Ficha | Clase | Qué hace | Cómo se quita, además de en puerto o con cualquier carta que lo diga |
 | --- | --- | --- | --- |
-| Envenenado | Estado | Al final de cada turno, 1 herida | Curarle: el primer punto quita la ficha. Ejemplo: Herbolaria |
+| Envenenado | Estado | Al final de cada turno, 1 herida | Ejemplo: Herbolaria |
 | Borracho | Estado | +1 COM; no puede ser asignado a NAV ni EXP | Al final del turno |
-| Aturdido | Estado | La próxima vez que sea asignado, no suma | Al ser asignado. Ejemplo: Herbolaria |
-| Asustado | Estado | No puede ser asignado solo | Al superar una Prueba en la que participe. Ejemplo: Herbolaria |
-| Sangrando | Estado | Cada vez que se agota, 1 herida | Curarle 1. Ejemplo: «Cataplasma» |
-| Buscado | Estado | En Ciudad, los encuentros de tipo Guardia y Militar reciben +1 de dificultad por cada Buscado que participe | — |
-| Maldito | Estado | Si un Destino hiere a «uno de los Tripulantes asignados», debe ser él | Al superar la Prueba de un encuentro de tipo Sobrenatural en la que participe. Ejemplo: «La mambo del mercado» |
-| Encadenado | Estado | No puede ser asignado ni usar las capacidades de su carta | Acción: Prueba de COM 3 o EXP 3 (no durante otra Prueba); si la supera, se quita |
-| Vía de agua | Estado del Barco | En el Mar, al final de cada carta de Peligro, 1 daño | Reparar: el primer punto quita la ficha. Ejemplo: Práctico del puerto |
-| Incendio a bordo | Estado del Barco | En el Mar, al revelar cada carta de Peligro, 1 daño; si la misión termina sin apagarlo, se pierde una Mejora de barco | Acción: agota a un Tripulante |
-| Velas rotas | Estado del Barco | Sin el +1 a NAV en el Mar; Distancias +1 | Ejemplo: Práctico del puerto |
-| Perseguido | Estado del Barco | La próxima misión de Mar del jugador empieza con un Peligro de más | Al revelar ese Peligro de más. Ejemplo: «Fragata a popa» |
-| Pólvora mojada | Estado del Barco | Los Cañones no recargan en la Fase de Inicio | — |
-| Inspirado | Ventaja | +1 en su próxima Prueba | Al ser asignado |
-| Aguerrido | Ventaja | Evita la próxima herida (solo 1) | Al evitarla |
+| Asustado | Estado | No puede ser asignado él solo | Al final del turno |
+| Sangrando | Estado | Cada vez que se agota, 1 herida | Ejemplo: «Cataplasma» |
+| Buscado | Estado | No puede ser asignado en Ciudad | Descartando 1 carta en la Fase de Reclutamiento |
+| Maldito | Estado | −1 al total de cada Prueba a la que esté asignado | Al superar una Prueba a la que esté asignado |
+| Vía de agua | Estado del Barco | En el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar | Ejemplo: Carpintero de a bordo |
+| Velas rotas | Estado del Barco | −1 al total de las Pruebas de NAV en el Mar; Distancias +1 | Ejemplo: Práctico del puerto |
+| Perseguido | Estado del Barco | Los encuentros de tipo Armada reciben +1 de dificultad | Al superar un encuentro de tipo Armada |
+| Pólvora mojada | Estado del Barco | Los Cañones no se preparan en la Fase de Inicio | — |
+| Inspirado | Ventaja | +1 al total de cada Prueba a la que esté asignado | Al final del turno |
+| Aguerrido | Ventaja | Puede ser asignado sin agotarse | Al hacerlo |

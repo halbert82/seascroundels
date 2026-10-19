@@ -4,7 +4,7 @@
 import { esCanon, esUnica, porId } from '../catalogo.ts'
 import type { Entorno, Habilidad } from '../datos.ts'
 import { copia } from '../estado.ts'
-import { curable, tieneEstadoBarco } from '../estados.ts'
+import { curable } from '../estados.ts'
 import { encuentroDe, entornoActual } from '../peligros.ts'
 import type { Estado, Evento, InstId } from '../tipos.ts'
 import { plazasLibres, valor } from '../valores.ts'
@@ -70,14 +70,14 @@ export function destinoVigente(s: Estado, ev: Evento): ev is Extract<Evento, { t
   return ev.tipo === 'revelarDestino' && s.prueba !== null && s.prueba.destino === ev.carta && !s.prueba.destinoCancelado
 }
 
-/** Hay algo que curar: heridas, o fichas que se quitan curando (Envenenado, Sangrando). */
+/** Hay algo que curar: heridas. */
 export function hayHeridos(s: Estado): boolean {
   return s.zonas.tripulacion.some((c) => curable(s, c) > 0)
 }
 
-/** Hay algo que reparar: daño, o la ficha de Vía de agua. */
+/** Hay algo que reparar: daño. */
 export function hayQueReparar(s: Estado): boolean {
-  return s.danoBarco > 0 || tieneEstadoBarco(s, 'viaDeAgua')
+  return s.danoBarco > 0
 }
 
 export function hayAgotados(s: Estado): boolean {

@@ -3,7 +3,6 @@
 
 import { DATOS } from '../datos.ts'
 import { copia } from '../estado.ts'
-import { tieneEstadoBarco } from '../estados.ts'
 import { numeroConIcono, textoDe } from '../textos.ts'
 import type { Capacidad, Contexto, Consulta, InstId } from '../tipos.ts'
 import { estaEn } from '../zonas.ts'
@@ -84,7 +83,6 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
       c.hab === 'NAV' &&
       ctx.s.mision !== null &&
       entornoDeMision(ctx.s, ctx.s.mision.carta) === 'mar' &&
-      !tieneEstadoBarco(ctx.s, 'velasRotas') &&
       modificadores(ctx.s, { tipo: 'sinNavBarco' }) <= 0
         ? NAV_BARCO
         : 0,

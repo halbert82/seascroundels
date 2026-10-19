@@ -4,6 +4,8 @@
 import { tipoDe } from '../catalogo.ts'
 import { anotar, claveUso, copia, nombre } from '../estado.ts'
 import { mazoActivo } from '../peligros.ts'
+import { tieneEstadoBarco } from '../estados.ts'
+import type { Efecto } from '../efectos.ts'
 import { numeroConIcono, numerosEntreLlaves, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { valor } from '../valores.ts'
@@ -146,15 +148,29 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
       c.tipo === 'sinAgotarAlComprometer' && c.carta === yo && c.hab === 'COM' && (ctx.s.usos[claveUso('turno', yo, 'reinaldo.sinAgotar')] ?? 0) < 1 ? 1 : 0,
   },
 
-  // Carpintero de a bordo: «Agotar: Repara 1 daño.»
+  // Carpintero de a bordo: «Agotar: Repara 1 daño o quita Vía de agua del Barco.» (fase 10b)
   {
     clave: 'carpintero.reparar',
     carta: 'carpintero',
     ventana: 'libre',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    requisito: hayQueReparar,
-    efecto: () => [{ tipo: 'reparar', n: numeroConIcono(texto('carpintero'), 'dano') }],
+    requisito: (s) => hayQueReparar(s) || tieneEstadoBarco(s, 'viaDeAgua'),
+    efecto: (s) => {
+      const reparar: Efecto = { tipo: 'reparar', n: numeroConIcono(texto('carpintero'), 'dano') }
+      const tapar: Efecto = { tipo: 'quitarEstadoBarco', estado: 'viaDeAgua' }
+      if (!tieneEstadoBarco(s, 'viaDeAgua')) return [{ tipo: 'aplicarEfectos', efectos: [reparar], contexto: 'efecto' }]
+      if (!hayQueReparar(s)) return [{ tipo: 'aplicarEfectos', efectos: [tapar], contexto: 'efecto' }]
+      return [
+        {
+          tipo: 'elegirEfectos',
+          opciones: [
+            { texto: 'Repara 1 daño', efectos: [reparar] },
+            { texto: 'Quita Vía de agua del Barco', efectos: [tapar] },
+          ],
+        },
+      ]
+    },
   },
 
   // Matasanos: «Agotar: Cura 2 heridas a un Tripulante.»

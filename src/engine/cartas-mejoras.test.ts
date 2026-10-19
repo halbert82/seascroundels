@@ -181,9 +181,9 @@ describe('Tesoros', () => {
     expect(j.estado.danoBarco).toBe(0)
   })
 
-  it('138 · Los despachos del Rey: después de zarpar, oteas 2', () => {
+  it('138 · Los despachos del Rey: al zarpar, oteas 2 del mazo de Peligros (P4, fase 10b: sin preguntar si se usa)', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['despachos'] }, mazoPeligros: ['leyenda', 'cazadores', 'calma', 'calma'] })
-    j.usar('despachos.otear').opcion('fondo').opcion('fondo')
+    j.opcion('fondo').opcion('fondo')
     expect(j.zona('mazoPeligros').slice(-2)).toEqual(['leyenda', 'cazadores'])
     expect(j.zona('descartesPeligros')).toEqual(['calma']) // la primera carta revelada ya es el Mar en calma
   })
@@ -202,7 +202,7 @@ describe('Tesoros', () => {
   it('150 · Farol de los ahogados: descarta un Destino y revela otro, una vez por misión', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['farol'] }, mazoPeligros: ['fauna', 'leyenda', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('farol.destino')
-    expect(j.registro).toContain('Descartas el Destino de la carta «Bestias de leyenda». Nuevo Destino, de la carta «Chubasco»: −0.')
+    expect(j.registro).toContain('Descartas el Destino de la carta «Bestias de leyenda». Nuevo Destino, de la carta «Chubasco»: 0.')
     expect(j.ofreceCapacidad('farol.destino')).toBe(false)
   })
 })

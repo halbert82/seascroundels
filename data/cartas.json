@@ -243,7 +243,7 @@
    "EXP": 0,
    "vida": 2,
    "mejoras": 2,
-   "texto": "Puedes asignar a Rodrigo «Carnicero» Ortega a una Prueba de [COM] sin agotarlo. (Límite de una vez por turno.)",
+   "texto": "Rodrigo «Carnicero» Ortega puede ser asignado a una Prueba de [COM] sin agotarse. (Límite de una vez por turno.)",
    "ambientacion": "«En el Estrecho no se pide clemencia. Se paga.»"
   },
   {
@@ -263,7 +263,7 @@
    "EXP": 1,
    "vida": 2,
    "mejoras": 1,
-   "texto": "[agotar]: Repara {1 dano g}.",
+   "texto": "[agotar]: Repara {1 dano g} o quita **Vía de agua** del Barco.",
    "ambientacion": "«Si flota, lo arreglo. Si no flota, también.»"
   },
   {
@@ -398,7 +398,7 @@
    "EXP": 2,
    "vida": 1,
    "mejoras": 1,
-   "texto": "[agotar]: Quita a un Tripulante uno de estos Estados: **Envenenado**, **Sangrando**, **Aturdido** o **Asustado**.",
+   "texto": "[agotar]: Quita {1 quitarestado} a un Tripulante: **Envenenado**, **Sangrando** o **Asustado**.",
    "ambientacion": "«Para cada veneno, una hoja. Para cada hoja, un precio.»"
   },
   {
@@ -714,7 +714,7 @@
    "copias": 1,
    "coste": 2,
    "unico": false,
-   "texto": "Solo puede llevarla el Capitán.\nLos encuentros de tipo #Militar# y #Guardia# reciben {−1 g} de dificultad.",
+   "texto": "Solo puede llevarla el Capitán.\nLos encuentros de tipo #Armada#, #Militar# y #Guardia# reciben {−1 g} de dificultad.",
    "ambientacion": "«Pirata con permiso del Rey: corsario, señor.»",
    "soloCapitan": true
   },
@@ -1016,7 +1016,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "Quita **Envenenado** o **Sangrando** a un Tripulante y cúrale {1 herida g}.",
+   "texto": "Quita {1 quitarestado} a un Tripulante (**Envenenado** o **Sangrando**) y cúrale {1 herida g}.",
    "ambientacion": "«Barro, hojas y una oración. Funciona casi siempre.»"
   },
   {
@@ -1028,7 +1028,7 @@
    "iconos": [
     "COM"
    ],
-   "texto": "**Acción:** Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego, salvo si es de nivel Terrible.",
+   "texto": "**Acción:** Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego.",
    "ambientacion": "«Si no puedes desatar el nudo, córtalo.»"
   },
   {
@@ -1160,7 +1160,7 @@
    "num": 138,
    "nombre": "Los despachos del Rey",
    "tipo": "Mejora de barco",
-   "texto": "Indestructible.\n**Respuesta:** Después de zarpar, otea 2.",
+   "texto": "Indestructible.\n**Al zarpar:** Otea 2 del mazo de Peligros.",
    "ambientacion": "«Rutas, guarniciones y fechas: el Caribe en papel.»"
   },
   {
@@ -1324,7 +1324,7 @@
      ]
     },
     "texto": "Si superas la Prueba, gana {1 avance} más.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Hoy la suerte lleva bandera negra.»",
     "textoSinOposicion": "+1 [robar]"
    },
@@ -1378,7 +1378,7 @@
     "textoPrototipo": "+0. Si superas la Prueba, uno de los que mandaste vuelve a estar preparado.",
     "spare": 1,
     "texto": "Si superas la Prueba, prepara a uno de los Tripulantes comprometidos.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Un respiro. El Caribe no suele darlos.»",
     "textoSinOposicion": ""
    },
@@ -1648,7 +1648,7 @@
     "modificador": 0,
     "textoPrototipo": "+0.",
     "texto": "",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Agua del cielo, agua del mar. Lo de siempre.»",
     "textoSinOposicion": ""
    },
@@ -1840,7 +1840,7 @@
     "modificador": 0,
     "textoPrototipo": "+0.",
     "texto": "",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Sondad el fondo, y despacio.»",
     "textoSinOposicion": ""
    },
@@ -2130,7 +2130,7 @@
     "modificador": 0,
     "textoPrototipo": "+0.",
     "texto": "",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«No todo el que navega es enemigo.»",
     "textoSinOposicion": ""
    },
@@ -2840,7 +2840,7 @@
      ]
     },
     "texto": "Si el encuentro es #Militar# o #Guardia#, {+2} en su lugar.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Cada torre tiene ojos. Cada ojo, un mosquete.»",
     "textoSinOposicion": "1 [agotar]"
    },
@@ -3554,7 +3554,7 @@
     "mar": {
      "nombre": "Navío de línea de la Armada",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Barco"
      ],
      "avance": 3,
@@ -3618,7 +3618,7 @@
     "nombre": "Velas en el horizonte",
     "modificador": -1,
     "textoPrototipo": "",
-    "texto": "Encuentro de tipo #Militar# o #Guardia#: −2 en su lugar.",
+    "texto": "Encuentro de tipo #Armada#, #Militar# o #Guardia#: −2 en su lugar.",
     "mod": "−1",
     "ambientacion": "«Bandera del Rey a barlovento. Y viene a por nosotros.»",
     "textoSinOposicion": "El Barco queda **Perseguido**."
@@ -4099,7 +4099,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Si superas la Prueba: gana 1 Avance. Si la fallas: pierdes 1 Avance.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Pierdes 1 Avance."
    }
@@ -4188,7 +4188,7 @@
     "nombre": "Coral bajo la quilla",
     "modificador": -1,
     "textoPrototipo": "",
-    "texto": "Con un _Vigía_ asignado: −0 en su lugar.",
+    "texto": "Con un _Vigía_ asignado: 0 en su lugar.",
     "mod": "−1",
     "ambientacion": "",
     "textoSinOposicion": "En el Mar: el Barco sufre 1 daño. En Naturaleza o Ciudad: inflige 1 herida a un Tripulante."
@@ -4222,7 +4222,7 @@
      "nota": "",
      "textoEfecto": "**Elige. Anegar la santabárbara:** pierdes toda tu munición y el Barco queda con **Pólvora mojada**. **Atacar el fuego:** Prueba de [NAV] 4 (viráis para que el viento eche las llamas fuera); +1 de dificultad si tienes 2 o más munición.",
      "textoExito": "~Lo apagáis sin mojar un barril.~ +1 munición.",
-     "textoFallo": "~Las llamas suben por la jarcia.~ 1 daño al Barco y el Barco queda con **Incendio a bordo**.",
+     "textoFallo": "~Lo apagáis a cubos, pero se moja la pólvora.~ 1 daño al Barco y el Barco queda con **Pólvora mojada**.",
      "etiquetas": [
       "Elige"
      ]
@@ -4353,7 +4353,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "En esta Prueba, las Mejoras no suman ni se pueden usar.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "En el Mar: el Barco sufre 1 daño. En Naturaleza o Ciudad: descarta 1 carta."
    }
@@ -4738,7 +4738,7 @@
      "nota": "",
      "textoEfecto": "**Elige:** volvéis al último arroyo (pierdes 1 Avance), o buscáis agua por delante: Prueba de [EXP] 3.",
      "textoExito": "~Un manantial entre las rocas.~ Cura 1 herida a cada Tripulante asignado.",
-     "textoFallo": "~Ni una gota.~ Cada Tripulante asignado queda **Aturdido**.",
+     "textoFallo": "~Ni una gota.~ Cada Tripulante asignado sufre 1 herida.",
      "etiquetas": [
       "Elige"
      ]
@@ -4866,7 +4866,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "El Tripulante asignado con la habilidad más alta no se prepara en tu próxima Fase de Inicio.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Descarta 1 carta."
    }
@@ -5029,7 +5029,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Un charlatán vende remedios con una serpiente al cuello. Hay que saber si el suyo es bueno.~",
-     "textoExito": "~El remedio funciona.~ Quita a un Tripulante un Estado (**Envenenado**, **Sangrando**, **Aturdido** o **Asustado**), o cura 2 heridas.",
+     "textoExito": "~El remedio funciona.~ Quita a un Tripulante un Estado (**Envenenado**, **Sangrando** o **Asustado**), o cura 2 heridas.",
      "textoFallo": "~Aceite de culebra y agua de pozo.~ Descarta 2 cartas."
     }
    },
@@ -5038,7 +5038,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Si fallas la Prueba: el Tripulante asignado con la habilidad más alta queda **Envenenado**.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "El Tripulante preparado con menos Vida sufre 1 herida."
    }
@@ -5097,7 +5097,7 @@
      "nota": "",
      "textoEfecto": "~Hay que hacer humo con hojas verdes y no parar de andar.~",
      "textoExito": "~Encontráis corteza de quina.~ Cura 2 heridas.",
-     "textoFallo": "~La calentura.~ Cada Tripulante asignado queda **Aturdido**."
+     "textoFallo": "~La calentura.~ Cada Tripulante asignado queda **Envenenado**."
     },
     "ciu": {
      "nombre": "El lazareto",
@@ -5130,7 +5130,7 @@
     "texto": "Si fallas la Prueba: cada Tripulante asignado que ya tenga heridas sufre 1 herida más.",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán queda **Aturdido**."
+    "textoSinOposicion": "El Capitán queda **Envenenado**."
    }
   },
   {
@@ -5569,7 +5569,7 @@
     "mar": {
      "nombre": "Bote de desertores",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Civil"
      ],
      "avance": 3,
@@ -5623,7 +5623,7 @@
     "nombre": "Chivatazo del desertor",
     "modificador": 1,
     "textoPrototipo": "",
-    "texto": "Encuentro de tipo #Militar# o #Guardia#: +2 en su lugar. Si fallas la Prueba: el Barco queda **Perseguido**.",
+    "texto": "Encuentro de tipo #Armada#, #Militar# o #Guardia#: +2 en su lugar. Si fallas la Prueba: el Barco queda **Perseguido**.",
     "mod": "+1",
     "ambientacion": "",
     "textoSinOposicion": "−1 en su lugar."
@@ -5641,7 +5641,7 @@
     "mar": {
      "nombre": "El guardacostas os reconoce",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Barco"
      ],
      "avance": 2,
@@ -5726,7 +5726,7 @@
     "mar": {
      "nombre": "Registro del guardacostas",
      "palabrasClave": [
-      "Guardia",
+      "Armada",
       "Barco"
      ],
      "avance": 2,
@@ -5803,7 +5803,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Con un _Contrabandista_ asignado: +1 en su lugar. Si fallas la Prueba: descarta 1 carta.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Descarta 1 carta al azar."
    }
@@ -5910,7 +5910,7 @@
     "mar": {
      "nombre": "Galera de forzados",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Barco"
      ],
      "avance": 3,
@@ -5977,7 +5977,7 @@
     "texto": "En esta Prueba no se pueden usar capacidades de Tripulantes.",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "Un Tripulante preparado queda **Encadenado**."
+    "textoSinOposicion": "Agota a 1 Tripulante."
    }
   },
   {
@@ -6060,7 +6060,7 @@
     "nombre": "Agua bendita",
     "modificador": -1,
     "textoPrototipo": "",
-    "texto": "Si un Tripulante asignado lleva el _Amuleto_: −2 en su lugar. Si lleva el _Escapulario_: −0 en su lugar.",
+    "texto": "Si un Tripulante asignado lleva el _Amuleto_: −2 en su lugar. Si lleva el _Escapulario_: 0 en su lugar.",
     "mod": "−1",
     "ambientacion": "",
     "textoSinOposicion": "Descarta 2 cartas."
@@ -6078,7 +6078,7 @@
     "mar": {
      "nombre": "Lanchas de la guarnición",
      "palabrasClave": [
-      "Militar"
+      "Armada"
      ],
      "avance": 2,
      "avanceSinSuperar": 1,
@@ -6092,7 +6092,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Acuden de todo el puerto.~ +1 de dificultad por cada encuentro de tipo #Militar# o #Guardia# que ya hayas resuelto en esta misión (máx. +2).",
+     "textoEfecto": "~Acuden de todo el puerto.~ +1 de dificultad por cada encuentro de tipo #Armada#, #Militar# o #Guardia# que ya hayas resuelto en esta misión (máx. +2).",
      "textoExito": "~Hundís la lancha del capitán y las demás se retiran.~ Nada más.",
      "textoFallo": "~Os acribillan desde las lanchas.~ El Barco sufre 1 daño y el Tripulante asignado con más [COM] sufre 1 herida."
     },
@@ -6156,7 +6156,7 @@
     "mar": {
      "nombre": "Patache de los oficiales reales",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Barco"
      ],
      "avance": 2,
@@ -6227,7 +6227,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Si superas la Prueba: descarta 1 carta. Con la _Patente de corso_, no descartas.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Pierdes 1 munición."
    }
@@ -6302,7 +6302,7 @@
      "nota": "",
      "textoEfecto": "~Entráis en bote por la galería que da al mar.~",
      "textoExito": "Rescata a todos los rehenes de esta misión. Si no había ninguno, un preso agradecido os cuenta el camino: +1 Avance.",
-     "textoFallo": "~El carcelero os coge en la ronda.~ El Tripulante asignado con más [NAV] queda **Encadenado** y sufre 1 herida."
+     "textoFallo": "~El carcelero os coge en la ronda.~ El Tripulante asignado con más [NAV] queda rehén y sufre 1 herida."
     }
    },
    "destino": {
@@ -6410,7 +6410,7 @@
     "mar": {
      "nombre": "Fragata a popa",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Barco"
      ],
      "avance": 3,
@@ -6426,7 +6426,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "+2 de dificultad si el Barco tiene **Velas rotas**.",
-     "textoExito": "~Le ganáis el barlovento y se queda atrás.~ Si el Barco estaba **Perseguido**, quita esa ficha.",
+     "textoExito": "~Le ganáis el barlovento y se queda atrás.~ Nada más.",
      "textoFallo": "~Os da alcance y os aborda.~ **Abordaje:** sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante asignado queda rehén."
     },
     "nat": {
@@ -6689,7 +6689,7 @@
      "nota": "",
      "textoEfecto": "~Tus hombres y los de otro barco se lían a botellazos.~",
      "textoExito": "~Los vencidos pagan la ronda y sueltan su ruta.~ +1 Avance y robas 1.",
-     "textoFallo": "~Un taburete en la cabeza.~ El Tripulante asignado con más [COM] queda **Aturdido** y descartas 1 carta (los destrozos)."
+     "textoFallo": "~Un taburete en la cabeza.~ El Tripulante asignado con más [COM] sufre 1 herida y descartas 1 carta (los destrozos)."
     }
    },
    "destino": {
@@ -6784,7 +6784,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Descarta la carta de arriba de tu mazo del capitán. Si tiene icono de [COM]: −2 en su lugar. Si no lo tiene y tiene icono de [EXP]: +1 en su lugar.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Descarta además las 2 cartas siguientes de tu mazo del capitán."
    }
@@ -6833,7 +6833,7 @@
      "nota": "",
      "textoEfecto": "~Sin paga, alguien se cobra de los petates de sus compañeros.~",
      "textoExito": "~Pillas al ladrón y lo atas al sol. Los demás trabajan con ganas.~ +1 Avance.",
-     "textoFallo": "~Todos acusan al último en llegar.~ Tu Tripulante de menor coste queda **Encadenado**."
+     "textoFallo": "~Todos acusan al último en llegar.~ Tu Tripulante de menor coste deserta: vuelve al muelle."
     },
     "ciu": {
      "nombre": "El reparto",
@@ -6953,7 +6953,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Con dos o más Tripulantes asignados: el asignado de menor coste no suma.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Descarta 2 cartas."
    }
@@ -7305,7 +7305,7 @@
     "mar": {
      "nombre": "El falso mercante",
      "palabrasClave": [
-      "Militar",
+      "Armada",
       "Barco"
      ],
      "avance": 3,
@@ -7513,7 +7513,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Si superas la Prueba: repara 1 daño.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "En el Mar: el Barco sufre 1 daño. En Naturaleza o Ciudad: descarta 1 carta."
    }
@@ -7589,7 +7589,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Si superas la Prueba: roba 1 carta (2 con un _Contrabandista_ asignado).",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "",
     "textoSinOposicion": "Descarta 1 carta al azar."
    }
@@ -8143,7 +8143,7 @@
      "nota": "",
      "textoEfecto": "~Una hilera de velas camina sobre las olas hacia el barco. El Vigía la ve venir de lejos.~",
      "textoExito": "~Viráis a tiempo y su estela os empuja.~ +1 Avance.",
-     "textoFallo": "~Sus velas prenden las vuestras.~ El Barco queda con **Incendio a bordo**."
+     "textoFallo": "~Sus velas prenden las vuestras.~ El Barco queda con **Velas rotas**."
     },
     "nat": {
      "nombre": "El círculo en el suelo",
@@ -8361,7 +8361,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "El Tripulante asignado con la habilidad más baja sufre 1 herida.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Un clic bajo el pie. Demasiado tarde.»",
     "textoSinOposicion": "Inflige 1 herida a un Tripulante."
    }
@@ -8430,7 +8430,7 @@
     "texto": "",
     "mod": "+1",
     "ambientacion": "«Una corriente de aire entre las piedras.»",
-    "textoSinOposicion": "−0 en su lugar."
+    "textoSinOposicion": "0 en su lugar."
    }
   },
   {
@@ -8512,7 +8512,7 @@
     "nombre": "Galeón de la plata",
     "palabrasClave": [
      "Barco",
-     "Militar"
+     "Armada"
     ],
     "avance": 3,
     "avanceSinSuperar": 2,
@@ -8550,7 +8550,7 @@
     "nombre": "Navío de escolta",
     "palabrasClave": [
      "Barco",
-     "Militar"
+     "Armada"
     ],
     "avance": 2,
     "avanceSinSuperar": 1,
@@ -8605,7 +8605,7 @@
     "modificador": 0,
     "textoPrototipo": "",
     "texto": "Los Cañones no suman.",
-    "mod": "−0",
+    "mod": "0",
     "ambientacion": "«Disparan para que no levantes la cabeza.»",
     "textoSinOposicion": "El Barco sufre 1 daño."
    }
@@ -8643,7 +8643,7 @@
     "texto": "",
     "mod": "+1",
     "ambientacion": "«Agarrados a un mástil, nos hacen señas.»",
-    "textoSinOposicion": "−0 en su lugar."
+    "textoSinOposicion": "0 en su lugar."
    }
   },
   {
@@ -9007,7 +9007,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Salís sin luces, por la barra: las Pruebas de [NAV] reciben {−1 g} de dificultad y los encuentros de tipo #Militar#, {+2 r}.",
+      "Salís sin luces, por la barra: las Pruebas de [NAV] reciben {−1 g} de dificultad y los encuentros de tipo #Armada# y #Militar#, {+2 r}.",
       "**Gesta:** Si superas la misión sin superar ninguna Prueba de [COM], {+1 rep} ~(nadie supo que pasasteis)~."
      ],
      "ambientacion": "",
@@ -9028,7 +9028,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Los encuentros de tipo #Militar# reciben {+1 r} de dificultad.",
+      "Los encuentros de tipo #Armada# y #Militar# reciben {+1 r} de dificultad.",
       "Cada Prueba de [COM] que superes da {1 avance} más."
      ],
      "ambientacion": "«Tres guardacostas y una sola salida. Toca bailar.»",
@@ -9521,7 +9521,7 @@
    "id": "cuarentena",
    "num": 101,
    "nombre": "Cuarentena",
-   "texto": "El puerto cierra la Taberna este turno: no se puede elegir. El Tripulante con menos Vida queda **Aturdido** ~(la calentura)~.",
+   "texto": "El puerto cierra la Taberna este turno: no se puede elegir. El Tripulante con menos Vida queda **Envenenado** ~(la calentura)~.",
    "ambientacion": "«Bandera amarilla en el castillo. Nadie entra, nadie sale.»"
   },
   {

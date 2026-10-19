@@ -55,7 +55,7 @@ registrarPeligro('p2_desertores', {
   // −1; −2 en su lugar si el encuentro es #Militar# o #Guardia#. Si aun así fallas, el Barco queda Perseguido.
   // Sin oposición: +1 en su lugar.
   destino: {
-    modificador: (s, p) => (p.comprometidos.length === 0 ? 1 : encuentroEs(s, 'Militar', 'Guardia') ? -2 : -1),
+    modificador: (s, p) => (p.comprometidos.length === 0 ? 1 : encuentroEs(s, 'Armada', 'Militar', 'Guardia') ? -2 : -1),
     siFallas: [{ tipo: 'estadoBarco', estado: 'perseguido' }],
   },
 })
@@ -169,10 +169,10 @@ registrarPeligro('p2_grilletes', {
     nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true }, hacer: { tipo: 'noPrepara', hasta: 'inicio' } }] },
     ciu: { exito: [preparar(2)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'rehen' } }] },
   },
-  // +1. En esta Prueba no se pueden usar capacidades de Tripulantes. Sin oposición: un Tripulante preparado, Encadenado.
+  // +1. En esta Prueba no se pueden usar capacidades de Tripulantes. Sin oposición: agota a 1 Tripulante (fase 10b).
   destino: {
     prueba: { sinCapTripulantes: true },
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: 'eleccion' }, hacer: { tipo: 'estado', estado: 'encadenado' } }],
+    sinOposicion: [{ tipo: 'agotar', n: 1 }],
   },
 })
 
@@ -221,7 +221,7 @@ registrarPeligro('p2_rebato', {
     // +1 por cada encuentro #Militar# o #Guardia# que ya hayas resuelto en esta misión (máx. +2).
     mar: {
       capacidades: [
-        dificultad('lanchas', (ctx) => Math.min(2, (ctx.s.mision?.resueltas ?? []).filter((k) => k.includes('Militar') || k.includes('Guardia')).length)),
+        dificultad('lanchas', (ctx) => Math.min(2, (ctx.s.mision?.resueltas ?? []).filter((k) => k.includes('Armada') || k.includes('Militar') || k.includes('Guardia')).length)),
       ],
       fallo: [dano(1), comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 })],
     },
@@ -342,9 +342,10 @@ registrarPeligro('p2_morro', {
       fallo: [
         comprometidoCon(mas('NAV'), {
           tipo: 'varios',
+          // Fase 10b: fuera Encadenado: queda rehén y sufre 1 herida (la herida antes, mientras sigue en tu tripulación).
           acciones: [
-            { tipo: 'estado', estado: 'encadenado' },
             { tipo: 'heridas', n: 1 },
+            { tipo: 'rehen' },
           ],
         }),
       ],
@@ -410,11 +411,11 @@ registrarPeligro('p2_horca', {
 // 33. La Armada de Barlovento · Terrible
 registrarPeligro('p2_armada', {
   encuentros: {
-    // +2 si el Barco tiene Velas rotas. Éxito: si el Barco estaba Perseguido, quita esa ficha. Fallo: Abordaje.
+    // +2 si el Barco tiene Velas rotas. Éxito: nada más (fase 10b: superar un encuentro de tipo Armada ya quita
+    // Perseguido). Fallo: Abordaje.
     mar: {
       abordaje: true,
       capacidades: [dificultad('velas', (ctx) => (tieneEstadoBarco(ctx.s, 'velasRotas') ? 2 : 0))],
-      exito: [{ tipo: 'quitarEstadoBarco', estado: 'perseguido' }],
     },
     nat: { exito: [preparar('comprometidos')], fallo: [heridasAsignados(2), pierdesAvance(1)] },
     ciu: { fallo: [{ tipo: 'descartarAzar', n: 3 }] },

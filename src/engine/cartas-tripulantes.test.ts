@@ -202,7 +202,7 @@ describe('018 · Viejo lobo de mar', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['viejo_lobo'], mazoPeligros: ['niebla', 'leyenda', 'chubasco', 'calma'] })
     j.comprometer('NAV', ['viejo_lobo'])
     j.usar('viejo_lobo.destino')
-    expect(j.registro).toContain('Descartas el Destino de la carta «Bestias de leyenda». Nuevo Destino, de la carta «Chubasco»: −0.')
+    expect(j.registro).toContain('Descartas el Destino de la carta «Bestias de leyenda». Nuevo Destino, de la carta «Chubasco»: 0.')
     expect(j.ofreceCapacidad('viejo_lobo.destino')).toBe(false)
     j.seguir()
     expect(j.registro.some((t) => t.includes('superas la Prueba'))).toBe(true)

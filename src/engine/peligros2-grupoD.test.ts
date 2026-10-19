@@ -140,7 +140,7 @@ describe('36 · Sangre caliente', () => {
     expect(k.copia('bucanero').heridas).toBe(1)
   })
 
-  it('Ciudad: si superas, +1 Avance y robas 1; si fallas, descartas 1 (y el comprometido con más COM queda Aturdido)', () => {
+  it('Ciudad: si superas, +1 Avance y robas 1; si fallas, descartas 1 y el asignado con más COM sufre 1 herida (fase 10b)', () => {
     const j = en('ciu', ['p2_sangre', 'chubasco', 'calma'])
     const antes = avance(j, 'ciu')
     j.comprometer('COM', ['capitan']).seguir()
@@ -148,7 +148,7 @@ describe('36 · Sangre caliente', () => {
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
     const k = en('ciu', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'], mano: ['ojo'] })
     k.comprometer('COM', ['vigia']).seguir() // COM 0 + 1 de Diego contra 3
-    expect(k.estados('vigia')).toEqual(['aturdido'])
+    expect(k.registro).toContain('Vigía inexperta sufre 1 herida.') // Vida 1: queda derrotada
     expect(k.zona('descartesCapitan')).toContain('ojo')
   })
 
@@ -254,11 +254,11 @@ describe('38 · Paga atrasada', () => {
     expect(j.zona('peligrosEnJuego')).toEqual([])
   })
 
-  it('Naturaleza: si fallas, tu Tripulante de menor coste (sin el Capitán) queda Encadenado', () => {
+  it('Naturaleza: si fallas, tu Tripulante de menor coste (sin el Capitán) deserta: vuelve al muelle (fase 10b)', () => {
     const j = en('nat', ['p2_paga', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
     j.comprometer('EXP', []).seguir()
-    expect(j.estados('marinero_p')).toEqual(['encadenado'])
-    expect(j.estados('capitan')).toEqual([])
+    expect(j.zonaDe('marinero_p')).toBe('muelle')
+    expect(j.zona('tripulacion')).toContain('bucanero')
   })
 
   it('Ciudad, Elige: pagas 1 carta por cada Tripulante (el Capitán cuenta), o Prueba de COM 3 +1 por cada Bucanero', () => {
