@@ -244,10 +244,12 @@ const FICHA_NUM = /(\b\d+|\bN|−\d+)(\s)(heridas?|daños?)\b/g
 const FICHA_DE = /(\b\d+|\bN)( de )(Avance|munición|reputación)\b/g
 const ICONO_FICHA: Record<string, string> = { herida: 'herida', heridas: 'herida', daño: 'dano', daños: 'dano', Avance: 'avance', munición: 'municion', reputación: 'rep' }
 
+const habilidad = (h: string) => `<span class="hab hab-${h.toLowerCase()}"><i class="ic i-${h.toLowerCase()}"></i>${h}</span>`
+
 function iconos(trozos: Trozo[]): Trozo[] {
-  // «(NAV 2)»: el paréntesis no se queda solo al final de la línea, separado del icono (une con U+2060).
-  trozos = trozos.map((t) => ('t' in t ? { t: t.t.replace(/\((?=(NAV|COM|EXP)\b)/g, '(⁠') } : t))
-  let r = aplicar(trozos, HABILIDAD, (m) => [{ h: `<span class="hab hab-${m[1]?.toLowerCase()}"><i class="ic i-${m[1]?.toLowerCase()}"></i>${m[1]}</span>` }])
+  // «(NAV 2)»: el paréntesis va pegado a su icono, para que no se quede solo al final de la línea.
+  let r = aplicar(trozos, /\((NAV|COM|EXP)\b/g, (m) => [{ h: `<span class="junto">(${habilidad(m[1] ?? '')}</span>` }])
+  r = aplicar(r, HABILIDAD, (m) => [{ h: habilidad(m[1] ?? '') }])
   r = aplicar(r, FICHA_NUM, (m) => [{ t: `${m[1]} ` }, { h: `<i class="ic ic-ficha i-${ICONO_FICHA[m[3] ?? '']}"></i>` }, { t: `${m[3]}` }])
   r = aplicar(r, FICHA_DE, (m) => [{ t: `${m[1]} ` }, { h: `<i class="ic ic-ficha i-${ICONO_FICHA[m[3] ?? '']}"></i>` }, { t: `de ${m[3]}` }])
   return r

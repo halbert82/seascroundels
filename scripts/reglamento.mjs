@@ -44,7 +44,7 @@ async function paginaCon(pagina, selector, condicion = 'cualquiera') {
         }
         return -1
       }
-      if (cond === 'texto') return paginas.findIndex((p) => [...p.querySelectorAll('.nota-tema, p, li')].some((e) => e.textContent?.includes(sel)))
+      if (cond === 'texto') return paginas.findIndex((p) => [...p.querySelectorAll('.nota-tema, p, li')].some((e) => e.textContent?.replace(/\u00AD/g, '').includes(sel)))
       return paginas.findIndex((p) => p.querySelector(sel))
     },
     [selector, condicion],

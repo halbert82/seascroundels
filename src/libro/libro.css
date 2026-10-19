@@ -296,8 +296,9 @@ body {
   line-height: 1.4;
   color: var(--tinta);
   font-variant-numeric: lining-nums;
-  hyphens: auto;
-  -webkit-hyphens: auto;
+  /* Las palabras solo se parten donde silabas.ts ha puesto un guion blando: igual en cualquier navegador. */
+  hyphens: manual;
+  -webkit-hyphens: manual;
   text-rendering: optimizeLegibility;
 }
 
@@ -912,13 +913,15 @@ body {
   font-weight: 700;
 }
 
-/*
- * Las negritas (términos y definiciones) no se parten con guion: con el número de página volado detrás, el navegador
- * partía «Rasgos²²» como «Rasgo-» / «s²²».
- */
-.libro strong {
-  hyphens: manual;
+/* Lo que no se separa al final de una línea: «(» y el icono de habilidad que le sigue. */
+.junto {
+  white-space: nowrap;
 }
+
+/*
+ * Las negritas (términos y definiciones) no se parten con guion (silabas.ts no les pone guiones blandos): con el número
+ * de página volado detrás, el navegador partía «Rasgos²²» como «Rasgo-» / «s²²».
+ */
 
 /* Definiciones: «Agotado —». */
 .libro li > strong:first-child,

@@ -13,6 +13,7 @@ import { Barra } from './Barra.tsx'
 import { leerReglamento, type LibroId } from './fuente.ts'
 import { Libro, TITULO } from './Libro.tsx'
 import { cortarRecortes } from './piezas.tsx'
+import { silabear } from './silabas.ts'
 import './libro.css'
 import paginas from './paginas.css?raw'
 
@@ -211,6 +212,7 @@ async function principal(): Promise<void> {
   await cargarImagenes(origen)
   await new Promise((ok) => requestAnimationFrame(() => ok(null)))
   cortarRecortes(origen)
+  silabear(origen)
 
   // Paged.js reparte una copia estática del libro; React ya no la toca.
   const contenido = document.createDocumentFragment()
