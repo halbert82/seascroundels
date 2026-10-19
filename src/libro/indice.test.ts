@@ -131,6 +131,13 @@ describe('Índice de términos de la Referencia de reglas', () => {
     expect(new Set(lista)).toEqual(PALABRAS_CLAVE)
   })
 
+  it('fase 10b · «Destina» tiene su entrada y su línea aunque todavía no la use ninguna carta', () => {
+    expect(r.referencia.entradas.map((e) => e.titulo)).toContain('Destina')
+    expect(enElIndice('Destina')).toBe(true)
+    // Ninguna carta la usa aún: la prueba de los términos de las cartas no la exige, pero tampoco la rechaza.
+    expect(cartas.some((c) => textos(c.carta).some((t) => /Destina\b/.test(t)))).toBe(false)
+  })
+
   it('cada Rasgo de las cartas tiene su línea', () => {
     expect(RASGOS.size).toBeGreaterThan(8)
     for (const rasgo of RASGOS) expect(indice).toContainEqual(expect.objectContaining({ termino: rasgo, en: 'Rasgo' }))

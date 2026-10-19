@@ -1046,30 +1046,6 @@ body {
   break-inside: avoid;
 }
 
-.ejemplo-cabecera {
-  display: flex;
-  align-items: baseline;
-  gap: 2mm;
-  margin-bottom: 1.4mm;
-}
-
-.ejemplo-etiqueta {
-  font-family: 'Alegreya Sans SC', sans-serif;
-  font-weight: 800;
-  font-size: 8pt;
-  letter-spacing: 0.14em;
-  color: #fff;
-  background: var(--oro);
-  padding: 0.3mm 1.8mm 0.5mm;
-  border-radius: 0.8mm;
-}
-
-.ejemplo-titulo {
-  font-family: 'IM Fell English SC', serif;
-  font-size: 11.5pt;
-  color: var(--tinta);
-}
-
 .ejemplo-cuerpo {
   display: flow-root;
 }

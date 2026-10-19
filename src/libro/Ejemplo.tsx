@@ -253,7 +253,6 @@ export function Ejemplo({ b }: { b: Bloque & { tipo: 'ejemplo' } }) {
     if (mejor.alLado) {
       return (
         <div className={`ejemplo ancho con-recortes ${b.pasos ? 'con-pasos' : ''}`} ref={ref}>
-          <Cabecera b={b} />
           <div className="ejemplo-cuerpo al-lado">{mejor.dibujo}</div>
         </div>
       )
@@ -262,21 +261,11 @@ export function Ejemplo({ b }: { b: Bloque & { tipo: 'ejemplo' } }) {
   }
   return (
     <div className={`ejemplo ${b.pasos ? 'con-pasos' : ''} ${recortes.length > 0 ? 'ancho con-recortes' : ''}`} ref={ref}>
-      <Cabecera b={b} />
       <div className="ejemplo-cuerpo">
         {alLado && piezas}
         <div className="md ejemplo-texto" dangerouslySetInnerHTML={{ __html: b.html }} />
         {!alLado && piezas}
       </div>
-    </div>
-  )
-}
-
-function Cabecera({ b }: { b: Bloque & { tipo: 'ejemplo' } }) {
-  return (
-    <div className="ejemplo-cabecera">
-      <span className="ejemplo-etiqueta">Ejemplo</span>
-      {b.titulo && <span className="ejemplo-titulo">{b.titulo}</span>}
     </div>
   )
 }

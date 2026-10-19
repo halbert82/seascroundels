@@ -5,7 +5,7 @@ Marcas para la maqueta (npm run reglamento). Van como citas de Markdown:
 > Texto…                  sangrada como él): sale en la columna exterior, alineada con ese párrafo.
 > [!nota]                 Aclaración de reglas. Va como la nota temática, en la columna exterior, pero con otro estilo
 > Texto…                  (letra derecha y en tinta, como una aclaración).
-> [!ejemplo]              Ejemplo de juego (sin título: sale solo «Ejemplo» y su texto). Las cartas que nombra salen en
+> [!ejemplo]              Ejemplo de juego (sin etiqueta ni título: solo el recuadro con su fondo). Las cartas que nombra salen en
 > Texto…                  pequeño; si lleva una lista numerada, se dibuja como pasos.
 > [!importante]           Recuadro destacado para las reglas que más se olvidan.
 > [!consejo]              Consejo de estrategia para la primera partida.
@@ -31,6 +31,8 @@ Este reglamento se divide en dos partes.
 Recomendamos leer primero Aprende a jugar, preparar la primera partida con Diego y sus mazos de inicio (ver «Mazos de inicio», al final de este libro) y consultar la Referencia de reglas solo cuando surja una duda.
 
 Las palabras con mayúscula inicial que tienen un sentido de juego (Avance, Prueba, Destino…) tienen su propia entrada en la Referencia de reglas.
+
+Los recuadros sin título, solo con un fondo de color, son ejemplos: muestran cómo se aplica, en una partida, la regla que acompañan.
 
 ## Parte 1 · Aprende a jugar
 
