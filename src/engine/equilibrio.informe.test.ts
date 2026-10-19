@@ -16,8 +16,8 @@ it.runIf(process.env.INFORME)(`informe de equilibrio (${PARTIDAS} partidas, ${PA
   const conVariante = (variante: NonNullable<Estado['variante']>) =>
     Array.from({ length: PARTIDAS }, (_, i) => jugarPartida(i + 1, jugador, { variante }))
   const variantes = [
-    { nombre: 'Regla del juego: Y = mitad de X, redondeando arriba (1/1, 2/1, 3/2, 4/2)', partidas },
-    { nombre: 'Antes (hasta el 19 de octubre): Y = mitad de X, redondeando abajo (1/0, 2/1, 3/1, 4/2)', partidas: conVariante({ avanceSinSuperar: 'mitadAbajo' }) },
+    { nombre: 'Regla del juego (fase 10b): Prueba fácil 2 / 1; dura, 3 / 1 o 3 / 2', partidas },
+    { nombre: 'Y = mitad de X, redondeando abajo (los 3 / 2 pasan a 3 / 1)', partidas: conVariante({ avanceSinSuperar: 'mitadAbajo' }) },
     { nombre: 'Antes del Avance doble: Avance entero siempre', partidas: conVariante({ avanceSinSuperar: 'entero' }) },
   ]
   const fecha = new Date().toISOString().slice(0, 10)

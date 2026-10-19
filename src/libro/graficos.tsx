@@ -818,7 +818,7 @@ const PANEL_PUERTO: GrupoPanel[] = [
 
 const PANEL_MISION: GrupoPanel[] = [
   { rotulo: 'Misión', paso: 3, cartas: [{ id: 'prueba-I', insignia: 'Empieza con 1 · pide 3' }] },
-  { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', parte: 'mar', insignia: 'NAV 4 · Avance 3 / 2' }] },
+  { rotulo: 'Encuentro de Mar', paso: 3, cartas: [{ id: 'p2_turbonada', parte: 'mar', insignia: 'NAV 4 · Avance 3 / 1' }] },
   {
     rotulo: 'Asignados',
     paso: 3,

@@ -480,6 +480,10 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   lineas.push(`| Tripulantes muertos por partida | ${media(partidas.map((p) => p.muertes), 2)} |`)
   lineas.push(`| Rehenes capturados / perdidos por partida | ${media(partidas.map((p) => p.capturados), 2)} / ${media(partidas.map((p) => p.rehenesPerdidos), 2)} |`)
   lineas.push(`| Misiones retiradas por partida | ${media(partidas.map((p) => p.resultados.filter((r) => r.resultado === 'retirada').length), 2)} |`)
+  // Fase 10b: misiones que no se superan (retiradas, falladas o hundidas) y heridas que se sufren en cada misión.
+  lineas.push(`| Misiones falladas por partida (retiradas, falladas o hundidas) | ${media(partidas.map((p) => p.resultados.filter((r) => r.resultado !== 'superada').length), 2)} |`)
+  const zarpesTotales = partidas.reduce((n, p) => n + p.zarpes.length, 0)
+  lineas.push(`| Heridas por misión | ${zarpesTotales === 0 ? '—' : (partidas.reduce((n, p) => n + p.heridasEnMision, 0) / zarpesTotales).toFixed(2)} |`)
   if (variadas.length > 0) lineas.push(`| Victorias con mazos de muelle variados (${variadas.length} partidas) | ${pct(victorias(variadas))} |`)
   lineas.push('')
 

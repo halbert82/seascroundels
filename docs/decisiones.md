@@ -415,7 +415,7 @@ Sin cambiar ninguna regla.
 
 El informe (docs/informe-equilibrio.md) pasa de 35,9 % a 35,2 % de victorias; con mazos de muelle variados, de 37,1 % a 35,4 %. Todo dentro del ruido (±1,5 puntos). El jugador automático reparte ahora las heridas libres a quien más vida le quede, antes a un Tripulante agotado que a uno preparado, y al Capitán el último (con las heridas libres, repartirlas «a quien más vida le quede» sin mirar si está agotado bajaba al 33,6 %).
 
-### Lecturas tomadas (pendientes de que Albert las confirme)
+### Lecturas tomadas (confirmadas por Albert en la fase 10b: ver «Respuestas P1–P7» más abajo)
 
 - Si nadie está asignado, las heridas de un fallo se juntan en un solo reparto y pueden partirse entre varios Tripulantes.
 - Un Destino que no cambia el total se imprime «−0» (antes «+0»), en el círculo (12 cartas) y en los textos («Con un Vigía asignado: −0 en su lugar»), en un color neutro (pardo). Alternativa: «0», sin signo.
@@ -424,3 +424,55 @@ El informe (docs/informe-equilibrio.md) pasa de 35,9 % a 35,2 % de victorias; co
 - Pasajeros y «¡La guardia!» no van a ningún mazo: llevan el dorso de misión con su número.
 - Paso 1 de la preparación: se añade «Pon el marcador de reputación a 0.».
 - Penalización «agota una Mejora» (icono de Mejora tachada): solo la tenía «Escollos» (79), retirada. Se propone quitarla del reglamento y de la referencia rápida; mientras, sigue (reescrita con la regla nueva: se agota una Mejora preparada, que sigue aplicando su texto).
+
+## Fase 10b: respuestas a la fase 10, Estados y Ventajas, Destina, fuera la munición, misiones iniciales y Avance de los Peligros (19 de octubre de 2026)
+
+### Respuestas P1–P7 (de la fase 10)
+
+- **P1.** Si nadie está asignado, las heridas de un fallo van en un solo reparto libre y pueden partirse entre varios Tripulantes (el motor ya lo hacía así; no había `TODO`).
+- **P2.** El «−0» pasa a «0», sin signo y en pardo: en el círculo de las 18 cartas que lo llevan y en «0 en su lugar» (4 textos).
+- **P3.** Si lo que reduce la Distancia la deja en 0, no se agota a nadie, como en una misión sin franja azul. Dicho en la entrada «Distancia»; quitado el `TODO(regla)`.
+- **P4.** «Los despachos del Rey»: «**Al zarpar:** Otea 2 del mazo de Peligros.» Se aplica sola, sin preguntar.
+- **P5.** Pasajeros y «¡La guardia!»: dorso de misión, como está.
+- **P6.** «Pon el marcador de reputación a 0.»: se queda.
+- **P7.** Fuera la penalización «Agota una Mejora» (de «Otras penalizaciones», de la tabla de iconos y de la Mejora tachada). En «Mejora» queda la regla de la Mejora agotada.
+
+### Estados, Ventajas y curación
+
+- Curar solo quita heridas y reparar solo quita daño. Quitar un Estado es otro efecto, con su icono (`quitarestado`: una ficha redonda con un aspa, de la familia del de curar). Fuera las reglas «curar quita primero Envenenado o Sangrando» y «reparar quita primero la Vía de agua».
+- Herbolaria: «Quita {1 quitarestado} a un Tripulante: Envenenado, Sangrando o Asustado.» Cataplasma: «Quita {1 quitarestado} a un Tripulante (Envenenado o Sangrando) y cúrale 1.» Carpintero de a bordo: «Repara 1 daño o quita Vía de agua del Barco» (elige). El culebrero: sin Aturdido en su lista.
+- Fuera **Aturdido** (Nube de mosquitos, Vómito negro y Cuarentena dejan Envenenado; Sed en la trocha y Pelea de taberna, 1 herida), **Encadenado** (Grilletes: «Agota a 1 Tripulante»; Calabozos del Morro: 1 herida y rehén; Petates revueltos: el de menor coste vuelve al muelle) e **Incendio a bordo** (Luces sobre el agua: Velas rotas; Fuego en la santabárbara: 1 daño y Pólvora mojada).
+- Asustado: no puede ser asignado él solo; se quita al final del turno. Buscado: no puede ser asignado en Ciudad; se quita descartando 1 carta en la Fase de Reclutamiento (Acción del Estado), con la Taberna o con una carta. Maldito: −1 al total de cada Prueba a la que esté asignado; se quita al superar cualquiera de ellas; ya no atrae las heridas de los Destinos. Vía de agua: en el Mar, al final de cada carta de Peligro, el jugador elige agotar a un Tripulante (achicar) o 1 daño. Velas rotas: −1 al total de las Pruebas de NAV en el Mar y Distancias +1. Perseguido: los encuentros de tipo Armada reciben +1; se quita al superar uno (o con el Astillero); fuera el «Peligro de más». Pólvora mojada: los Cañones no se preparan en la Fase de Inicio.
+- Inspirado: +1 al total de cada Prueba a la que esté asignado; no se gasta; se quita al final del turno. Aguerrido: es asignado sin agotarse y la ficha se quita (no caduca). El motor lo aplica solo al asignarlo, como la capacidad de Rodrigo. Rodrigo: «Rodrigo «Carnicero» Ortega puede ser asignado a una Prueba de [COM] sin agotarse. (Límite de una vez por turno.)»
+- **Tipo de encuentro Armada** (lo naval; Militar queda para tierra). Pasan a Armada: Navío de línea de la Armada (95), Bote de desertores, El guardacostas os reconoce, Galera de forzados, Lanchas de la guarnición, Patache de los oficiales reales, Fragata a popa, El falso mercante, Galeón de la plata y Navío de escolta; y Registro del guardacostas (antes Guardia). Siguen Militar en el Mar: La cadena de la bocana y Punta de los Ahorcados (fortalezas en tierra). Las cartas que miraban los encuentros Militar y deben seguir viendo los navales dicen ahora «Armada, Militar o Guardia»: el Destino de la carta 95, el de «Desertores del rey», Lanchas de la guarnición y la Patente de corso; y «La barra de noche» (218) y «Romper el bloqueo» (140), «Armada y Militar». No cambian: «Bando» (en tierra) y «Al asalto de las murallas» (Ciudad).
+- Fragata a popa: su éxito pasa a «Nada más» (superar un encuentro de tipo Armada ya quita Perseguido).
+- Las partidas guardadas con Aturdido, Encadenado o Incendio los pierden al cargarse.
+- Equilibrio y prueba: «Fase 10b · Estados…» en `src/engine/estados.test.ts`.
+
+### Destina, Cortar por lo sano y los ejemplos
+
+- Entrada nueva «Destina» en la Referencia, en el índice y en «Capacidades de las cartas», con el ejemplo del Viejo lobo. Ninguna carta la usa todavía (prueba en `src/libro/indice.test.ts`).
+- «Cortar por lo sano» descarta cualquier carta de Peligro que se quede en juego, también las que eran de nivel Terrible.
+- Los recuadros de ejemplo van sin etiqueta ni título; «Cómo usar este reglamento» lo explica.
+
+### Fuera la munición
+
+- Cañones de bronce, Carronadas, Culebrina de proa y Pedrero de borda: «Agotar:» en vez de «Gasta 1 munición:». Llevaban ya el Rasgo Cañón (se ve en la carta); el reglamento lo explica en la entrada nueva «Cañón» y en «Rasgo». Cañonero: «Agotar: Prepara un Cañón.» Pólvora de contrabando: «Prepara todos tus Cañones.» Virar y dar la cara: «Agota un Cañón:». Escasez de pertrechos: «Este turno, tus Cañones no se preparan en la Fase de Inicio.»
+- Peligros: «pierdes N munición» → «agota N Cañones»; «gana N munición» → «prepara un Cañón» (como el Duelo en el bauprés); «si tienes 2 o más munición» → «si tienes algún Cañón preparado»; «con 3 o más munición» → «con 2 o más Cañones preparados»; «puedes gastar 1 munición» → «puedes agotar un Cañón»; «le das 2 munición» → «agota 2 Cañones»; «pierdes toda tu munición» → «agota todos tus Cañones»; «Los Cañones y la munición no suman» → «Los Cañones no suman». Balandra de la Hermandad: «Prepara un Cañón y repara 1 daño. Si tienes un Bucanero, prepara otro Cañón.»
+- Tesoro **Pólvora del Rey** (146) sustituye al de «+1 munición de máximo»: entra con 3 fichas (las genéricas); Respuesta tras agotar un Cañón en una Prueba de COM: quita 1 ficha y la Prueba recibe +2 más (es fuego de Cañón: «Los Cañones no suman» lo anula); sin fichas se descarta y vuelve al mazo de historia. Sus fichas no se descartan al terminar la misión.
+- Fuera el icono del barril, la pestaña de munición, la Recarga de la Fase de Inicio y la entrada «Munición».
+
+### Misiones iniciales y Otear
+
+- Agua y leña: 0 de reputación y «Recluta sin coste un Tripulante del muelle de coste 2 o menos» (si cabe). Rumbo a mar abierto: +1 y «Adquiere sin coste una Mejora del muelle de coste 1 o menos» (con su Gesta). Cobrar la deuda: +1 y «Otea 3 del mazo de Misiones», antes de reponer las disponibles.
+- Otear: «Otea N del mazo X» para cualquier mazo; la Vigía inexperta y «Rumores de taberna» dicen «del mazo de Peligros». Entrada «Otear» rehecha con su ejemplo.
+- El ejemplo de juego del reglamento: el muelle repuesto son la Vela mayor, el Casco reforzado, la Vigía y el Carpintero; la recompensa adquiere la Vela mayor (prueba en `src/engine/ejemplos.test.ts`).
+
+### Carta de Peligro
+
+- Dentro de cada encuentro: la Prueba a la izquierda, un filete vertical y, a la derecha, Éxito encima de Fallo. Sin Prueba, el efecto a todo el ancho. Letra mínima 10,5 px (163, 186, 206); ninguna se desborda (`node scripts/capturar-peligros.mjs`).
+
+### Avance de los Peligros
+
+- Sin niveles (cartas, reglamento y la tabla de Nivel). Avance según la guía de Albert: Prueba fácil (dificultad 3 o menos) 2 / 1; Prueba dura (4 o más, o X) 3 / 1, o 3 / 2 si su fallo es grave (Abordaje, rehén, 2 o más heridas o daños, retirarse, reputación, Ocupa el muelle, Incautado, pierdes 2 Avance, vuelve al muelle, no puedes retirarte); sin Prueba: 0 con un premio grande, 1 con uno pequeño o sin nada, 2 si se queda en juego y perjudica. La tabla de antes y después está en el informe de la fase 10b.
+

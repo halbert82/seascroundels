@@ -140,17 +140,21 @@ function tituloHuerfano(nodo: Node, y: number, repartido: Element, limites: DOMR
 }
 
 /**
- * Si el corte parte una palabra (con guion al final de la página: «cart-» / «as»), la palabra entera pasa a la
- * página siguiente. Devuelve el rango nuevo, o null si el corte ya cae entre palabras.
+ * Si el corte parte una palabra (con guion al final de la página: «cart-» / «as»), o deja solo lo que la abre
+ * («o «» / «Cataplasma»), la palabra entera pasa a la página siguiente. Devuelve el rango nuevo, o null si el corte ya cae entre palabras.
  */
 function sinPalabraPartida(desborde: Range, repartido: Element): Range | null {
   const { startContainer: c, startOffset: o } = desborde
   if (c.nodeType !== Node.TEXT_NODE) return null
   const texto = c.textContent ?? ''
   const letra = /[\p{L}\p{N}­]/u
-  if (o <= 0 || o >= texto.length || !letra.test(texto.charAt(o - 1)) || !letra.test(texto.charAt(o))) return null
+  // Lo que abre una palabra («, paréntesis, ¿, ¡) va con ella: no se queda solo al final de la página.
+  const abre = /[«(¿¡“]/u
+  if (o <= 0 || o >= texto.length || !letra.test(texto.charAt(o))) return null
+  if (!letra.test(texto.charAt(o - 1)) && !abre.test(texto.charAt(o - 1))) return null
   let inicio = o
   while (inicio > 0 && letra.test(texto.charAt(inicio - 1))) inicio--
+  while (inicio > 0 && abre.test(texto.charAt(inicio - 1))) inicio--
   // Una palabra sola en todo el texto: no hay sitio mejor donde cortar.
   if (inicio === 0 && !hayAntes(c, repartido)) return null
   const r = document.createRange()

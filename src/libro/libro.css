@@ -341,6 +341,19 @@ body {
   font-size: 0.62em;
 }
 
+/* Un punto que sigue en la página siguiente (Paged.js lo marca con data-split-from) no repite su viñeta ni su número. */
+.libro ul > li[data-split-from]::marker {
+  content: '';
+}
+
+.libro .md ol > li[data-split-from] {
+  counter-increment: none;
+}
+
+.libro .md ol > li[data-split-from]::before {
+  content: none;
+}
+
 .libro .md ol {
   list-style: none;
   counter-reset: paso;
