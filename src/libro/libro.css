@@ -805,7 +805,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2mm 18mm 4mm;
+  padding: 2mm 18mm 1.5mm;
   text-align: center;
 }
 
@@ -962,6 +962,16 @@ body {
   padding-right: 3mm;
   border-right: 0.5pt solid var(--sepia-2);
   text-align: right;
+}
+
+/*
+ * El último bloque de un capítulo contiene su nota (si la nota es más larga que el párrafo, el bloque crece con ella): si
+ * no, la nota colgaba por debajo del final de la página y Paged.js la perdía en vez de pasarla a la siguiente (le pasó a
+ * la de «Objetivo del juego»).
+ */
+.flujo > .md:last-child:has(> .nota-tema) {
+  display: flow-root;
+  break-inside: avoid;
 }
 
 /* Una nota suelta en el flujo ya está en el borde de la columna exterior. */

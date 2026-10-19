@@ -14,7 +14,9 @@
 //   - ninguna página de texto queda casi vacía (con menos de 15 % de su alto ocupado, como unas pocas líneas que no
 //     cupieron), salvo la última de los créditos;
 //   - el ejemplo de juego tiene sus dos paneles (el del puerto a la izquierda y el de la misión a la derecha);
-//   - ninguna palabra queda partida entre dos páginas («cart-» / «as»).
+//   - ninguna palabra queda partida entre dos páginas («cart-» / «as»);
+//   - no se pierde nada: cada nota, ejemplo, recuadro o gráfico está dentro de su página, y cada línea de texto del
+//     reglamento (de la parte de ese libro) sale en el libro.
 // Además dice qué páginas quedan en blanco (con la rosa de los vientos) porque lo que sigue empieza en página par.
 //
 //   npm run comprobar:reglamento      (compila y revisa)
@@ -33,8 +35,31 @@ const base = raiz.endsWith('/seascroundels/') ? raiz : new URL('seascroundels/',
 const arteJson = JSON.parse(await readFile(new URL('../data/arte.json', import.meta.url), 'utf8'))
 const ARTE_DE_CARTA = Object.fromEntries(Object.entries(arteJson).map(([id, a]) => [id, a.archivo.split('/').pop().replace(/\.[a-z]+$/, '')]))
 
+/**
+ * Muestras del texto de cada libro, sacadas del reglamento: de cada línea de texto (párrafo, punto de lista, nota,
+ * ejemplo, epígrafe), sus primeras 30 letras. Sin las marcas, las tablas, los títulos de parte ni la referencia rápida.
+ */
+const fuente = await readFile(new URL('../docs/reglamento-v1.0.md', import.meta.url), 'utf8')
+function muestrasDe(trozo) {
+  const muestras = []
+  for (const linea of trozo.split('\n')) {
+    const t = linea.replace(/^[\s>]*/, '')
+    // («Véase también» se dibuja aparte, con las páginas: lo revisan las pruebas del libro.)
+    if (!t || t.startsWith('[!') || t.startsWith('|') || t.startsWith('#') || t.startsWith('<!--') || t.startsWith('*Véase también')) continue
+    const letras = t.replace(/^(\d+\.|[-*])\s+/, '').normalize('NFC').replace(/[^\p{L}\p{N}]/gu, '').toLowerCase()
+    if (letras.length >= 12) muestras.push({ linea: t.slice(0, 50), letras: letras.slice(0, 30) })
+  }
+  return muestras
+}
+const parte = (desde, hasta) => fuente.slice(fuente.indexOf(desde), hasta ? fuente.indexOf(hasta) : undefined)
+const comoUsar = parte('## Cómo usar', '## Parte 1')
+const MUESTRAS = {
+  'aprende-a-jugar': muestrasDe(comoUsar + parte('## Parte 1', '## Parte 2')),
+  'referencia-de-reglas': muestrasDe(comoUsar + parte('## Parte 2', '## Referencia rápida')),
+}
+
 /** En el navegador: los problemas de cada página. */
-function revisar(arteDeCarta) {
+function revisar([arteDeCarta, muestras]) {
   const MM = 96 / 25.4
   const problemas = []
   const paginas = [...document.querySelectorAll('.pagedjs_page')]
@@ -200,6 +225,35 @@ function revisar(arteDeCarta) {
       problemas.push(`pág. ${n}: la palabra «${a.split(/\s/).pop()}…${b.split(/\s/)[0]}» queda partida entre esta página y la siguiente`)
     }
   }
+  // Nada perdido fuera de su página (Paged.js deja a la derecha, oculto, lo que no ha sabido colocar).
+  for (const e of document.querySelectorAll('.pagedjs_page :is(.nota-tema, .consejo, .ejemplo, .importante, .ancho, figure)')) {
+    const pagina = e.closest('.pagedjs_page')
+    const hoja = pagina.getBoundingClientRect()
+    const r = e.getBoundingClientRect()
+    if (r.width > 0 && (r.left >= hoja.right - 1 || r.right <= hoja.left + 1)) {
+      problemas.push(`pág. ${paginas.indexOf(pagina) + 1}: «${e.className.split(' ')[0]}» («${(e.textContent ?? '').replace(/\u00AD/g, '').trim().slice(0, 40)}») queda fuera de la página: se pierde`)
+    }
+  }
+  // Cada línea de texto del reglamento sale en el libro (en lo que se ve de sus páginas).
+  const visible = paginas
+    .map((p) => {
+      const hoja = p.getBoundingClientRect()
+      const textos = document.createTreeWalker(p.querySelector('.pagedjs_page_content') ?? p, NodeFilter.SHOW_TEXT)
+      let t = ''
+      for (let n = textos.nextNode(); n; n = textos.nextNode()) {
+        const el = n.parentElement
+        if (!el || el.closest('.pestanas-letras')) continue
+        const r = el.getBoundingClientRect()
+        if (r.width > 0 && r.left >= hoja.right - 1) continue
+        t += n.textContent
+      }
+      return t
+    })
+    .join('')
+    .normalize('NFC')
+    .replace(/[^\p{L}\p{N}]/gu, '')
+    .toLowerCase()
+  for (const m of muestras) if (!visible.includes(m.letras)) problemas.push(`no sale en el libro: «${m.linea}…»`)
   // El ejemplo de juego, a doble página: el panel del puerto en la par y el de la misión en la impar siguiente.
   const ejemplo = document.querySelector('.ejemplo-de-juego')
   if (ejemplo) {
@@ -221,7 +275,7 @@ try {
     pagina.on('pageerror', (e) => errores.push(e.message))
     await pagina.goto(`${base}reglamento/${fichero}.html?imprimir`, { waitUntil: 'networkidle' })
     await pagina.waitForFunction(() => window.__libroListo === true, null, { timeout: 180_000 })
-    const r = await pagina.evaluate(revisar, ARTE_DE_CARTA)
+    const r = await pagina.evaluate(revisar, [ARTE_DE_CARTA, MUESTRAS[fichero]])
     const lista = [...new Set([...r.problemas, ...errores])]
     console.log(`${fichero}: ${r.paginas} páginas, ${r.cabeceras} cabeceras ilustradas, ${r.vinetas} viñetas${lista.length ? '' : ', sin problemas'}`)
     if (r.enBlanco.length) console.log(`  en blanco (con la rosa, porque lo que sigue empieza en página par): pág. ${r.enBlanco.join(', ')}`)
