@@ -41,7 +41,7 @@ describe('Zarpar', () => {
     expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-II'], capitan: { agotada: true } }))).toEqual([])
   })
 
-  it('ejemplo del reglamento: «El prisionero de Portobelo» se cubre con el Viejo lobo, o con el Bucanero mientras Diego está preparado', () => {
+  it('ejemplo del reglamento: «El prisionero de Portobelo» se cubre con el Viejo lobo, con «Mano firme al timón» o con el Bucanero mientras Diego está preparado', () => {
     const conLobo = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'bucanero'], mazoPeligros: ['calma'] })
     conLobo.zarpar('panama-I')
     expect(conLobo.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 2 })
@@ -53,9 +53,18 @@ describe('Zarpar', () => {
     sinLobo.zarpar('panama-I').cubrir('bucanero') // NAV 1 + 1 por Diego = 2
     expect(sinLobo.copia('bucanero').agotada).toBe(true)
     expect(sinLobo.registro).toContain('Cubres la Distancia 2: agotas a Bucanero veterano.')
+
+    // Distancia con cartas (Albert, opción b): las cartas valen aunque los Tripulantes llegaran solos, y sin agotar a nadie.
+    const conCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'bucanero'], mano: ['timon'], mazoPeligros: ['calma'] })
+    conCarta.zarpar('panama-I').cubrir('timon') // dos iconos de NAV
+    expect(conCarta.copia('viejo_lobo').agotada).toBe(false)
+    expect(conCarta.copia('bucanero').agotada).toBe(false)
+    expect(conCarta.copia('capitan').agotada).toBe(false)
+    expect(conCarta.zona('descartesCapitan')).toEqual(['timon'])
+    expect(conCarta.registro).toContain('Cubres la Distancia 2: descartas Mano firme al timón.')
   })
 
-  it('no vale una combinación que no llega; las cartas con NAV completan la diferencia', () => {
+  it('no vale una combinación que no llega; Tripulantes y cartas con NAV se suman', () => {
     const j = enPuerto({ misiones: ['panama-I'], tripulacion: ['marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
     j.zarpar('panama-I')
     expect(() => j.cubrir('marinero_p')).toThrow(/sumas 1/) // 0 + 1 por Diego

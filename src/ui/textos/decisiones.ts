@@ -235,7 +235,8 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'distancia':
       return {
         titulo: `Cubre la Distancia ${n} de «${nombreCarta(m.carta)}»`,
-        ayuda: 'Agota Tripulantes cuya NAV sume al menos ese número y, si hace falta, descarta cartas con iconos de NAV.',
+        ayuda:
+          'Agota Tripulantes preparados, descarta cartas de tu mano con iconos de NAV, o las dos cosas, hasta sumar al menos ese número. Lo que reduce la Distancia, como el Barco, ya está descontado.',
       }
     case 'comprometer':
     case 'comprometerAccion': {

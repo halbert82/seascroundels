@@ -336,7 +336,7 @@ Existen dos clases de misión:
 
 Para zarpar, el jugador elige una misión disponible.
 
-Las misiones de Naturaleza y de Ciudad que están lejos de la isla del jugador llevan una franja azul con un número bajo el icono de Entorno. Ese número es su **Distancia**, y estas misiones se consideran **misiones lejanas**. Para zarpar a una misión lejana, el jugador debe **cubrir la Distancia**, es decir, agotar Tripulantes cuya NAV sume al menos ese número. La NAV que proporciona su Barco también cuenta. Si no alcanza esa cifra, puede completar la diferencia descartando cartas de su mano con icono de NAV. Si aun así no alcanza esa cifra, no puede zarpar a esa misión.
+Las misiones de Naturaleza y de Ciudad que están lejos de la isla del jugador llevan una franja azul con un número bajo el icono de Entorno. Ese número es su **Distancia**, y estas misiones se consideran **misiones lejanas**. Para zarpar a una misión lejana, el jugador debe **cubrir la Distancia**: agota Tripulantes preparados, descarta cartas de su mano con iconos de NAV, o combina ambas cosas, hasta que la NAV de los Tripulantes agotados más los iconos de NAV de las cartas descartadas sume al menos la Distancia. Las cartas que reducen la Distancia, como el Barco, se aplican antes. Si no puede alcanzarla, no puede zarpar a esa misión.
 
 > [!tema]
 > Llegar ya cansa: alguien ha llevado el timón muchas noches seguidas, y esos se quedan a bordo cuidando el barco.
@@ -344,7 +344,7 @@ Las misiones de Naturaleza y de Ciudad que están lejos de la isla del jugador l
 Una misión sin franja azul tiene Distancia 0, porque se encuentra en la propia isla del jugador. Las misiones de Mar no tienen Distancia, porque la navegación forma parte de la propia misión.
 
 > [!ejemplo] Cubrir una Distancia
-> «El prisionero de Portobelo» es una misión de Ciudad 5 con Distancia 3. Si el jugador agota al Viejo lobo de mar (NAV 3), la Distancia queda cubierta. Sin él, puede agotar al Bucanero veterano (NAV 1, más 1 por Diego mientras Diego esté preparado) y contar el −1 a la Distancia de su Barco: necesita 2 y tiene 2. De este modo, el jugador llega a Portobelo con un Tripulante menos y Diego sigue preparado.
+> «El prisionero de Portobelo» es una misión de Ciudad 5 con Distancia 3, que el −1 del Barco reduce a 2. Si el jugador agota al Viejo lobo de mar (NAV 3), la Distancia queda cubierta. También puede descartar «Mano firme al timón», con dos iconos de NAV, sin agotar a nadie: así el Viejo lobo de mar llega a Portobelo preparado y puede comprometerse a una Prueba. Sin ninguno de los dos, le basta con agotar al Bucanero veterano (NAV 1, más 1 por Diego mientras Diego esté preparado): llega con un Tripulante menos y Diego sigue preparado.
 
 #### Al empezar la misión
 
@@ -843,8 +843,7 @@ Perder un día consiste en descartar la carta de arriba del mazo de Escenario si
 
 La Distancia es la NAV que necesita el jugador para zarpar a una misión de tierra alejada de su isla. Se indica con una franja azul bajo el icono de Entorno.
 
-- Para **cubrir la Distancia**, el jugador agota Tripulantes cuya NAV sume al menos ese número. Las cartas que reducen la Distancia, como el Barco, se aplican antes.
-- Si no alcanza esa cifra, el jugador puede completar la diferencia descartando cartas de su mano con iconos de NAV. Si aun así no la alcanza, no puede zarpar a esa misión.
+- Para **cubrir la Distancia**, el jugador agota Tripulantes preparados, descarta cartas de su mano con iconos de NAV, o combina ambas cosas, hasta que la NAV de los Tripulantes agotados más los iconos de NAV de las cartas descartadas sume al menos la Distancia. Las cartas que reducen la Distancia, como el Barco, se aplican antes. Si no puede alcanzarla, no puede zarpar a esa misión.
 - Si no hay franja azul, la Distancia es 0. Las misiones de Mar no tienen Distancia.
 - Una misión con Distancia es una **misión lejana**.
 - Algunas cartas de Escenario suben o bajan en 1 las Distancias de todas las misiones durante un turno, independientemente de su Entorno. Una misión sin Distancia sigue en 0.
