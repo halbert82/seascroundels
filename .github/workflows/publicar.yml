@@ -17,7 +17,9 @@ concurrency:
 
 jobs:
   compilar:
-    runs-on: ubuntu-latest
+    # En un Mac, como el que se usa para revisar los libros: así las líneas y las páginas de los PDF publicados caen
+    # donde las revisadas (en Linux, Chromium mide las letras algo distinto y alguna línea cambiaba de página).
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -28,8 +30,10 @@ jobs:
       - run: npm test
       - run: npm run build
       # Los dos libros del reglamento en PDF (Paged.js y el Chromium de Playwright), junto a la web.
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install chromium
       - run: npm run reglamento:pdf
+      # Si algo de los libros sale montado, partido o pendiente, no se publica.
+      - run: node scripts/comprobar-reglamento.mjs
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:
