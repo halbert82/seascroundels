@@ -340,7 +340,10 @@ Aplicados todos los cambios de texto de Albert (el documento queda en docs/archi
 
 ### Mesa en tableta (19 de octubre de 2026)
 
-Pendiente de completar con el resultado del arreglo.
+- **La mano se ve entera:** en una pantalla más alta que ancha de lo normal, la altura que sobra va primero a la mano, hasta que sus cartas en reposo se ven enteras (coste, iconos y texto), también las de los extremos del abanico, con un margen al pie; lo que sobra después, a las zonas de arriba, y el panel de decisión va justo debajo de ellas. El sitio de la mano se calcula para manos de hasta 8 cartas (79 de alto). En 1024 × 768 (mesa de 1440 × 1080), de los 180 de más, 79 van a la mano y 101 a las zonas; en 1180 × 820, 79 y 21; en 1366 × 1024, 79 y 100. Con 9 o 10 cartas aún caben; desde 11, las esquinas de los extremos asomarían cortadas unos píxeles (el Mando es 5).
+- **El velo de «Misión superada»:** con la mesa encogida para caber en la pantalla, Chrome desenfocaba bien solo un trozo y rellenaba el resto con reflejos de la mesa (textos al revés, filas de cartas repetidas). Ahora, con la mesa encogida, el velo va en una capa aparte a tamaño de pantalla y se ve como en escritorio. Vale para las tres ventanas con velo: fin de misión, fin de partida y referencia rápida.
+- **Escritorio sin cambios:** 1440 × 900 y 1920 × 1080 salen idénticos píxel a píxel (puerto, Prueba y fin de misión). La barra sigue fija (`npm run comprobar:barra`). Escenas nuevas para capturas: `#/escena/mano5` y `#/escena/mano8`.
+- **Abierto:** la zona de Tripulación sigue siendo más alta que en escritorio (unas 100 de más en 1024 × 768), así que con pocos Tripulantes queda hueco debajo. Es lo pedido (lo que sobra va arriba); si se quiere más compacta, habría que decidir en qué se gasta esa altura (por ejemplo, cartas de tripulación más grandes).
 
 ### Pendiente de Albert
 
