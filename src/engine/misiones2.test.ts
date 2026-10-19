@@ -312,9 +312,9 @@ describe('135 · Un soplo en Port Royal', () => {
     j.opcion('si').elegir('ojo', 'coraje')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
     j.elegir('civiles', 'chubasco', 'calma')
-    // Comerciante estafador (Civil, EXP 3, Avance 1 / 0) fallado: 0 + 1 por ser #Civil#.
+    // Comerciante estafador (Civil, EXP 3, Avance 1 / 1) fallado: 1 + 1 por ser #Civil#.
     j.comprometer('EXP').seguir()
-    expect(j.registro).toContain('Ganas 1 de Avance (1/4).')
+    expect(j.registro).toContain('Ganas 2 de Avance (2/4).')
   })
 })
 

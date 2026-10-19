@@ -7,7 +7,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 - Las reglas van impresas en la carta de cada misión. No hay reglas generales nuevas salvo **Pasajero** (abajo) y la **salida doble** de los capítulos ramificados.
 - «Ficha» = ficha que se pone sobre la carta de misión; se descartan todas al terminar la misión (superada, retirada o hundida), salvo que se diga otra cosa.
 - «La misión falla» = como retirarte: no se supera, pierdes su Avance y eliges dejarla disponible o al fondo del mazo de Misiones.
-- Las cartas de Peligro de mazo propio tienen un solo encuentro (el del Entorno de su misión) y un Destino, con el mismo formato que los Peligros 2.0. Su Avance con Prueba lleva dos valores, «Avance X / Y»: X si superas la Prueba e Y si no la superas (por defecto, la mitad de X redondeando hacia abajo).
+- Las cartas de Peligro de mazo propio tienen un solo encuentro (el del Entorno de su misión) y un Destino, con el mismo formato que los Peligros 2.0. Su Avance con Prueba lleva dos valores, «Avance X / Y»: X si superas la Prueba e Y si no la superas (por defecto, la mitad de X redondeando hacia arriba: 1 / 1, 2 / 1, 3 / 2, 4 / 2).
 
 ## Reglas nuevas
 - **Pasajero.** Carta que viaja contigo. Ocupa 1 de Capacidad. No es Tripulante: no se compromete, no se agota, no puede recibir heridas, Estados ni quedar rehén, salvo que su carta lo diga. Se queda en juego entre misiones hasta que su carta diga que se va. Si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle.
@@ -223,13 +223,13 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 - **Destino — Huesos que se levantan** · +1 — Si fallas, pon esta carta encima del mazo del Templo (vuelven a levantarse). *Sin oposición:* 1 herida a un Tripulante.
 
 ### Trampa de dardos · Leve
-- **Naturaleza — Trampa de dardos** · #Terreno# · Prueba: EXP 3 (2 con un _Explorador_) · Avance 1 / 0
+- **Naturaleza — Trampa de dardos** · #Terreno# · Prueba: EXP 3 (2 con un _Explorador_) · Avance 1 / 1
     - Éxito: desmontáis la trampa y os quedáis los dardos. Gana 1 munición.
     - Fallo: el comprometido con menos EXP queda Envenenado.
 - **Destino — Dardos desde el techo** · +0 — El comprometido con la habilidad más baja sufre 1 herida. *Sin oposición:* 1 herida a un Tripulante preparado.
 
 ### Ídolo maldito · Duro
-- **Naturaleza — Ídolo maldito** · #Sobrenatural# · Elige · Avance 1 / 0
+- **Naturaleza — Ídolo maldito** · #Sobrenatural# · Elige · Avance 1 / 1
     - Texto: Elige: lo dejas en su sitio (pierdes 1 Avance) o lo coges: Prueba de EXP 4.
     - Éxito: robas 3 (las gemas de los ojos).
     - Fallo: el comprometido con más EXP queda Maldito.
@@ -246,7 +246,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 - **Destino — Suelo que cede** · +1 — Si fallas, pierdes 1 Avance. *Sin oposición:* agota 1 Tripulante.
 
 ### El guardián de jade · Terrible
-- **Naturaleza — El guardián de jade** · #Sobrenatural# · Prueba: COM 6 · Avance 3 / 1
+- **Naturaleza — El guardián de jade** · #Sobrenatural# · Prueba: COM 6 · Avance 3 / 2
     - Texto: las Mejoras no suman (no hay acero que lo hiera). Si un comprometido lleva un Escapulario o un Amuleto, −2.
     - Éxito: +1 Avance y robas 2.
     - Fallo: sufres 1 herida por cada punto que te falte (máximo 3).
@@ -255,7 +255,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 ## Mazo de la Escolta (6 cartas, solo Mar)
 
 ### Galeón de la plata · Duro
-- **Mar — Galeón de la plata** · #Barco# #Militar# · Prueba: COM 5 · Avance 3 / 1
+- **Mar — Galeón de la plata** · #Barco# #Militar# · Prueba: COM 5 · Avance 3 / 2
     - Texto: antes de comprometer, puedes gastar 1 munición: −2.
     - Éxito: robas 2 y ganas 1 munición.
     - Fallo (Abordaje): sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén.

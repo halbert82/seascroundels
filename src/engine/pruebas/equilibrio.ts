@@ -429,12 +429,12 @@ export interface VarianteSimulada {
   partidas: readonly Partida[]
 }
 
-/** Avance X / Y: la regla del juego frente a otras simuladas, con los datos que más cambian. */
+/** Avance X / Y: la regla del juego frente a las anteriores, simuladas, con los datos que más cambian. */
 function tablaDeVariantes(variantes: readonly VarianteSimulada[]): string[] {
   const lineas = [
-    '## Avance con dos valores: variantes',
+    '## Avance con dos valores: la regla del juego y las anteriores',
     '',
-    `Las mismas ${variantes[0]?.partidas.length ?? 0} partidas normales con cada regla para el Avance de un encuentro cuya Prueba no superas. Solo la regla del juego usa los valores de las cartas; las demás se simulan.`,
+    `Las mismas ${variantes[0]?.partidas.length ?? 0} partidas normales con cada regla para el Avance de un encuentro cuya Prueba no superas. Solo la regla del juego usa los valores de las cartas; las anteriores se simulan.`,
     '',
     '| Regla | Victorias | Derrotas por tiempo | Derrotas por Capitán | Retiradas por partida | Turnos por partida |',
     '| --- | --- | --- | --- | --- | --- |',
@@ -609,7 +609,7 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   lineas.push(
     '---',
     '',
-    'Se genera con `npm run equilibrio` (por defecto 1000 partidas predefinidas, 2000 con mazos variados y otras 2000 con las variantes de Avance; `INFORME_PARTIDAS=200 npm run equilibrio` para menos). Las semillas son siempre las mismas, así que si no cambian las cartas ni el jugador automático, el informe sale idéntico.',
+    'Se genera con `npm run equilibrio` (por defecto 1000 partidas predefinidas, 2000 con mazos variados y otras 2000 con las reglas de Avance anteriores; `INFORME_PARTIDAS=200 npm run equilibrio` para menos). Las semillas son siempre las mismas, así que si no cambian las cartas ni el jugador automático, el informe sale idéntico.',
   )
   return lineas.join('\n')
 }

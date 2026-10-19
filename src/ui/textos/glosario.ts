@@ -36,24 +36,24 @@ export interface Ayuda {
   partes: ParteAyuda[]
 }
 
-const TABERNA = 'En puerto, la Taberna quita todos los Estados de tus Tripulantes.'
-const ASTILLERO = 'En puerto, el Astillero quita todos los Estados del Barco.'
 const VENTAJA_SE_QUEDA = 'La Taberna no quita las Ventajas.'
 
-/** `quita` vacío: solo se quita en puerto (la Taberna o el Astillero). */
-function estado(e: FichaTripulante | EstadoBarco, hace: string, quita: string): Ayuda {
+/**
+ * Cómo se quita, con la misma redacción que el reglamento (entrada «Estado»): lo que lo quita solo (`propia`, si hay
+ * algo) y, además, «se quita con la Taberna (o el Astillero) o con cualquier carta que lo diga», con un ejemplo.
+ */
+function estado(e: FichaTripulante | EstadoBarco, hace: string, propia: string, ejemplo = ''): Ayuda {
   const barco = (ESTADOS_BARCO as readonly string[]).includes(e)
   const ventaja = INFO_ESTADO[e].ventaja === true
   const clase: ClaseAyuda = ventaja ? 'ventaja' : barco ? 'estadoBarco' : 'estado'
-  const enPuerto = ventaja ? VENTAJA_SE_QUEDA : barco ? ASTILLERO : TABERNA
-  const solo = barco ? 'Solo lo quita el Astillero, en puerto.' : 'Solo lo quita la Taberna, en puerto.'
+  const generica = `${propia ? 'También se quita' : 'Se quita'} con ${barco ? 'el Astillero' : 'la Taberna'} o con cualquier carta que lo diga${ejemplo ? ` (por ejemplo, ${ejemplo})` : ''}.`
   return {
     clave: `estado:${e}`,
     nombre: INFO_ESTADO[e].nombre,
     clase,
     partes: [
       { rotulo: 'Qué hace', texto: hace },
-      { rotulo: ventaja ? 'Cuándo se gasta' : 'Cómo se quita', texto: quita ? `${quita} ${enPuerto}` : solo },
+      { rotulo: ventaja ? 'Cuándo se gasta' : 'Cómo se quita', texto: ventaja ? `${propia} ${VENTAJA_SE_QUEDA}` : propia ? `${propia} ${generica}` : generica },
     ],
   }
 }
@@ -62,63 +62,52 @@ function estado(e: FichaTripulante | EstadoBarco, hace: string, quita: string): 
 // Estados y Ventajas (reglamento: «Estado», «Ventaja» y la tabla de la Referencia rápida)
 
 export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
-  envenenado: estado(
-    'envenenado',
-    'Al final de cada turno, sufre 1 herida.',
-    'Curarle quita primero esta ficha, en vez de una herida. También la quitan la Herbolaria, «Cataplasma» y algunos encuentros («Agua dulce»).',
-  ),
+  envenenado: estado('envenenado', 'Al final de cada turno, sufre 1 herida.', 'Curarle quita primero esta ficha, en vez de una herida.', 'la Herbolaria o «Cataplasma»'),
   borracho: estado('borracho', 'Recibe +1 COM, pero no puede comprometerse a Pruebas de NAV ni de EXP.', 'Se quita al final del turno.'),
-  aturdido: estado('aturdido', 'La próxima vez que se comprometa a una Prueba, no suma.', 'Se quita entonces, al comprometerse. También la quita la Herbolaria.'),
+  aturdido: estado('aturdido', 'La próxima vez que se comprometa a una Prueba, no suma.', 'Se quita entonces, al comprometerse.', 'la Herbolaria'),
   asustado: estado(
     'asustado',
     'No puede comprometerse solo a una Prueba (tampoco a una Prueba Sin ayuda).',
-    'Se quita al superar una Prueba en la que participe. También la quita la Herbolaria.',
+    'Se quita al superar una Prueba en la que participe.',
+    'la Herbolaria',
   ),
   sangrando: estado(
     'sangrando',
     'Cada vez que se agota, sufre 1 herida.',
-    'Curarle 1 quita esta ficha (después de Envenenado, si también lo está). También la quitan la Herbolaria y «Cataplasma».',
+    'Curarle 1 quita esta ficha (después de Envenenado, si también lo está).',
+    '«Cataplasma»',
   ),
-  buscado: estado(
-    'buscado',
-    'En Ciudad, los encuentros Guardia y Militar reciben +1 por cada Tripulante Buscado que participe en su Prueba.',
-    '',
-  ),
+  buscado: estado('buscado', 'En Ciudad, los encuentros Guardia y Militar reciben +1 por cada Tripulante Buscado que participe en su Prueba.', ''),
   maldito: estado(
     'maldito',
     'Cuando un Destino hiere a «uno de los comprometidos», tiene que ser un Tripulante Maldito, si hay alguno comprometido.',
-    'Se quita al superar la Prueba de un encuentro Sobrenatural en la que participe, y con algunas cartas («La mambo del mercado»).',
+    'Se quita al superar la Prueba de un encuentro Sobrenatural en la que participe.',
+    '«La mambo del mercado»',
   ),
   encadenado: estado(
     'encadenado',
     'No puede comprometerse ni usar las capacidades de su carta; sus capacidades constantes y sus Mejoras siguen funcionando.',
-    'Acción: haz una Prueba de COM 3 o de EXP 3 (no durante otra Prueba).',
+    'Para quitarlo, Acción: haz una Prueba de COM 3 o de EXP 3 (no durante otra Prueba).',
   ),
   inspirado: estado('inspirado', 'Recibe +1 en su próxima Prueba.', 'Al comprometerse: suma 1 más y la ficha se quita.'),
-  aguerrido: estado(
-    'aguerrido',
-    'Evita la próxima herida que vaya a sufrir. Solo evita 1, aunque reciba varias a la vez.',
-    'Se quita al evitar esa herida.',
-  ),
+  aguerrido: estado('aguerrido', 'Evita la próxima herida que vaya a sufrir. Solo evita 1, aunque reciba varias a la vez.', 'Se quita al evitar esa herida.'),
   viaDeAgua: estado(
     'viaDeAgua',
     'Al final de cada carta de Peligro en una misión de Mar, el Barco sufre 1 daño.',
-    'Reparar quita primero esta ficha, en vez de un daño. También la quita el Práctico del puerto.',
+    'Reparar quita primero esta ficha, en vez de un daño.',
+    'el Práctico del puerto',
   ),
   incendio: estado(
     'incendio',
     'En una misión de Mar, al revelar cada carta de Peligro, el Barco sufre 1 daño. Si una misión termina, en cualquier Entorno, sin haberlo apagado, pierdes una Mejora de barco y la ficha sigue.',
     'Se apaga con una Acción: agota a un Tripulante.',
   ),
-  velasRotas: estado(
-    'velasRotas',
-    'El Barco no da su +1 a las Pruebas de NAV en el Mar y las Distancias son 1 mayores.',
-    'También la quita el Práctico del puerto.',
-  ),
+  velasRotas: estado('velasRotas', 'El Barco no da su +1 a las Pruebas de NAV en el Mar y las Distancias son 1 mayores.', '', 'el Práctico del puerto'),
   perseguido: estado(
     'perseguido',
     'Tu próxima misión de Mar empieza revelando un Peligro de más, que se resuelve entero antes del primero, sin ventana para retirarte entre ambos; cuenta como carta resuelta y da su Avance.',
-    'Se quita al revelar ese Peligro de más. También la quita superar «Fragata a popa».',
+    'Se quita al revelar ese Peligro de más.',
+    'superar «Fragata a popa»',
   ),
   polvoraMojada: estado('polvoraMojada', 'Tus Cañones no recargan en el Inicio.', ''),
 }
@@ -251,7 +240,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     {
       rotulo: 'Detalles',
       texto:
-        'Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece. Si una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance («3 / 1»: 3) sin hacer la Prueba ni revelar Destino.',
+        'Una opción que es un pago (descartar cartas, agotar Tripulantes, perder munición…) y no puedes pagar entera no se ofrece. Si una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance («3 / 2»: 3) sin hacer la Prueba ni revelar Destino.',
     },
   ),
   sinAyuda: regla('sinAyuda', 'Sin ayuda', 'Solo un Tripulante puede comprometerse a esa Prueba.', {
@@ -291,7 +280,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Línea de algunos Destinos que solo se aplica cuando no comprometes a nadie a la Prueba. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
     {
       rotulo: 'Avance',
-      texto: 'Sin nadie comprometido, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 1»: 1), aunque la línea diga que no se aplica el efecto de fallo.',
+      texto: 'Sin nadie comprometido, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea diga que no se aplica el efecto de fallo.',
     },
   ),
   rehen: regla(

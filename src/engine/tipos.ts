@@ -311,9 +311,10 @@ export interface Estado {
   persigue?: InstId | null
   /**
    * Solo para simular en el informe de equilibrio: otra regla para el Avance de un encuentro cuya Prueba no superas
-   * («entero»: como antes, el Avance entero; «menosUno»: uno menos, mínimo 0). En una partida normal no está.
+   * («mitadAbajo»: la mitad redondeando hacia abajo, la regla hasta el 19 de octubre de 2026; «entero»: el Avance
+   * entero, como antes del Avance doble). En una partida normal no está.
    */
-  variante?: { avanceSinSuperar?: 'entero' | 'menosUno' | 'mitadArriba'; misionesMenosUno?: boolean }
+  variante?: { avanceSinSuperar?: 'entero' | 'mitadAbajo' }
   /** Cartas de Peligro que ocupan el muelle y lo que cuesta descartarlas. */
   peligrosEnMuelle?: Partial<Record<InstId, number>>
   /** De dónde salió cada carta incautada, para devolverla si superas la misión. */

@@ -179,7 +179,7 @@ describe('26 · Ojos del gobernador', () => {
     const k = en('nat', ['p2_ojos', 'chubasco', 'calma'], { tripulacion: ['vigia'], avance: { [MISION.nat]: 1 } })
     k.comprometer('NAV', ['capitan']).seguir()
     expect(k.copia('vigia').agotada).toBe(true)
-    expect(avance(k, 'nat')).toBe(0) // 1 − 1 + 0 del encuentro (Avance 1 / 0: no la supera)
+    expect(avance(k, 'nat')).toBe(1) // 1 − 1 + 1 del encuentro (Avance 1 / 1: no la supera)
   })
 
   it('Ciudad, Elige: le pagas 2 cartas y haces la Prueba (COM 2), o no le pagas y la Prueba recibe +2; si fallas, el Capitán queda Buscado', () => {

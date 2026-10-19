@@ -5,7 +5,7 @@ import { Fichas, TextoCarta, claseIcono } from './TextoCarta.tsx'
 import { esNombreEncuentroLargo } from './ajustes.ts'
 import { COLOR_ENTORNO, COLOR_HABILIDAD, type VistaDestino, type VistaEncuentro, type VistaMazoPropio, type VistaPeligro } from './vista.ts'
 
-/** «3 / 1»: lo que ganas si superas la Prueba y, más pequeño, si no la superas. */
+/** «3 / 2»: lo que ganas si superas la Prueba y, más pequeño, si no la superas. */
 function AvanceEncuentro({ e }: { e: VistaEncuentro }) {
   if (e.avanceSinSuperar === undefined) return <b>{e.avance}</b>
   return (

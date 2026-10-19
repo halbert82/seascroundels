@@ -131,7 +131,7 @@ export interface VistaEncuentro {
   nombre: string
   claves: string
   avance: number
-  /** Avance si no superas la Prueba («3 / 1»): solo en los encuentros con Prueba. */
+  /** Avance si no superas la Prueba («3 / 2»): solo en los encuentros con Prueba. */
   avanceSinSuperar?: number
   opciones: Opcion[]
   conPrueba: boolean

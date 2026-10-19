@@ -72,8 +72,9 @@ describe('Prueba masiva: mazos de muelle variados', () => {
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }
     // El Mascarón del galeón solo llega como Tesoro de «La huida con la plata» (Flota III): desde la fase 8 se usa en
-    // ~1 de cada 2400 partidas. Su capacidad tiene su propia prueba (cartas-mejoras).
-    const rarisimas = new Set(['mascaron.evitar'])
+    // ~1 de cada 2400 partidas. La Espada del sacerdote, Tesoro de «El templo» (Templo III), desde el Avance 1 / 1 y
+    // 3 / 2 (19 de octubre de 2026) se usa en ~1 de cada 900. Las dos tienen su propia prueba (cartas-mejoras).
+    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar'])
     expect(capacidadesDelJugador().filter((c) => !usadas.has(c) && !rarisimas.has(c))).toEqual([])
   })
 })

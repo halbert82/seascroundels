@@ -4,7 +4,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 
 ## Cómo leer estas cartas
 - Cada carta tiene tres encuentros (Mar, Naturaleza, Ciudad; solo se lee el del Entorno de la misión) y un Destino.
-- Encuentro: «Nombre · #Claves# · Prueba: HAB N · Avance X / Y». Con Prueba, X es el Avance si la superas y Y si no la superas (fallas o no comprometes a nadie); por defecto, Y es la mitad de X redondeando hacia abajo (regla del 19 de octubre de 2026). En un «Elige», pagar en vez de hacer la Prueba cuenta como superarla. «Éxito» = recuadro verde; «Fallo» = recuadro rojo; «Texto» = texto del encuentro (se aplica al revelarlo salvo que diga otra cosa). «Sin Prueba» = no hay Prueba; se aplica el texto y se gana el Avance (un solo valor, como en los que se quedan en juego). «Avance 0» es válido.
+- Encuentro: «Nombre · #Claves# · Prueba: HAB N · Avance X / Y». Con Prueba, X es el Avance si la superas y Y si no la superas (fallas o no comprometes a nadie); por defecto, Y es la mitad de X redondeando hacia arriba: 1 / 1, 2 / 1, 3 / 2, 4 / 2 (regla del 19 de octubre de 2026). En un «Elige», pagar en vez de hacer la Prueba cuenta como superarla. «Éxito» = recuadro verde; «Fallo» = recuadro rojo; «Texto» = texto del encuentro (se aplica al revelarlo salvo que diga otra cosa). «Sin Prueba» = no hay Prueba; se aplica el texto y se gana el Avance (un solo valor, como en los que se quedan en juego). «Avance 0» es válido.
 - «Elige» = el jugador elige una opción antes de comprometer. «Sin ayuda» = solo un Tripulante puede comprometerse; las Habilidades de la mano suman; no se juegan Eventos. «Se queda en juego» = la carta queda junto a la misión hasta que se cumpla lo que dice; al acabar la misión se descarta; el Avance impreso se gana al revelarla.
 - Destino: «modificador — efecto. *Sin oposición:* castigo si no se comprometió a nadie».
 - «El comprometido con más/menos HAB» = el Tripulante comprometido con el número impreso más alto/bajo en esa habilidad; empate, elige el jugador. En los Destinos, «la habilidad más alta/baja» se refiere a la habilidad de esa Prueba.
@@ -34,7 +34,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Naturaleza — Noche de luna clara** · Prueba: NAV 2 · Avance 2 / 1
     - Éxito: marcháis de noche, con fresco, guiándoos por las estrellas. +1 Avance.
     - Fallo: os perdéis en la oscuridad. Pierdes 1 Avance.
-- **Ciudad — El cosmógrafo** · #Civil# · Prueba: EXP 2 · Avance 1 / 0
+- **Ciudad — El cosmógrafo** · #Civil# · Prueba: EXP 2 · Avance 1 / 1
     - Éxito: el viejo piloto te enseña una derrota que no sale en las cartas. El comprometido con más EXP queda **Inspirado** y robas 1.
     - Fallo: te vende una carta de marear falsa. Descarta 1 carta.
 - **Destino — Estrella polar** · −1 — No puedes jugar cartas de tu mano para sumar a esta Prueba (os guiáis por el cielo, no por la suerte). *Sin oposición:* +1 en su lugar (nadie mira el cielo).
@@ -49,7 +49,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: ni una brisa bajo los árboles; abrir trocha a machete es un horno. Cada Tripulante comprometido que tenga alguna herida suma 1 menos.
     - Éxito: dais con un manantial a la sombra. Cura 2 heridas repartidas.
     - Fallo: golpe de calor. Agota a 1 Tripulante preparado.
-- **Ciudad — Riña en el aljibe** · #Civil# · Prueba: COM 3 · Avance 1 / 0
+- **Ciudad — Riña en el aljibe** · #Civil# · Prueba: COM 3 · Avance 1 / 1
     - Éxito: no llueve hace semanas, pero llenáis los toneles antes que nadie. Prepara a 1 Tripulante y cura 1 herida.
     - Fallo: os echan de la fuente y el agua os la venden los aguadores a precio de oro. Descarta 2 cartas.
 - **Destino — Ni un soplo** · +1 — Si la Prueba es de [NAV], el Barco no da su +1 (no hay viento). *Sin oposición:* agota 1 Tripulante (la sed).
@@ -76,14 +76,14 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Naturaleza — El estero sube** · #Terreno# · Prueba: NAV 3 · Avance 2 / 1
     - Éxito: cruzáis con el agua por la cintura y la marea borra vuestro rastro. El siguiente encuentro #Militar#, #Guardia# o #Bestia# de esta misión recibe −1.
     - Fallo: la marea os pilla a medio estero. El comprometido con menos NAV es arrastrado: sufre 1 herida y pierdes 1 Avance (volvéis atrás a por él).
-- **Ciudad — Carenar en la bajamar** · #Civil# · Prueba: EXP 2 · Avance 1 / 0
+- **Ciudad — Carenar en la bajamar** · #Civil# · Prueba: EXP 2 · Avance 1 / 1
     - Éxito: con el casco en seco, rascáis la broma y calafateáis. Repara 2 daños (3 si tienes un _Carpintero_).
     - Fallo: la marea sube antes de acabar y los calafates cobran igual. Descarta 1 carta por cada daño que tenga el Barco (mín. 1, máx. 3).
 - **Destino — Repunte de la marea** · +0 — Si superas, +1 Avance; si fallas, pierdes 1 Avance (la marea da y quita). *Sin oposición:* pierdes 1 Avance.
 - *Idea:* la marea manda. En el Mar es un contador que sube a tu favor: encallado, esperas a que el agua te saque mientras siguen llegando Peligros, o pagas a remo para acelerarlo. En tierra hay que cruzar antes de que suba; en el puerto la bajamar es la ocasión de carenar. *Inspirada en:* «Bajío de coral», «Bajío de arena» (la marea ayuda), «Marea en la cueva».
 
 ### 6. Arrecife · Duro
-- **Mar — Arrecife de los Colorados** · #Terreno# · Prueba: NAV 4 (2 si tienes un _Vigía_) · Avance 3 / 1
+- **Mar — Arrecife de los Colorados** · #Terreno# · Prueba: NAV 4 (2 si tienes un _Vigía_) · Avance 3 / 2
     - Éxito: pasáis por un canal que nadie conoce. Descarta la carta de arriba del mazo de Peligros sin resolverla (lo que os seguía se queda en el coral).
     - Fallo: el coral abre el casco. 2 daños al Barco y pierdes 1 munición (tiráis pólvora por la borda para aligerar y soltaros).
 - **Naturaleza — Raqueros de la costa** · #Pirata# · Prueba: COM 3 · Avance 2 / 1
@@ -117,14 +117,14 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Naturaleza — Puente del comején** · #Terreno# · Prueba: EXP 3, +1 por cada Tripulante comprometido después del primero · Avance 2 / 1
     - Éxito: el puente aguanta. Si comprometiste a uno solo, tiende un cabo para los demás: +1 Avance.
     - Fallo: el puente se hunde. Cada Tripulante comprometido sufre 1 herida.
-- **Ciudad — Muelle carcomido** · #Civil# · Prueba: EXP 3 · Avance 1 / 0
+- **Ciudad — Muelle carcomido** · #Civil# · Prueba: EXP 3 · Avance 1 / 1
     - Éxito: bajo un tablón suelto, el alijo de algún contrabandista. Robas 2.
     - Fallo: un tablón cede y vuestra carga cae al agua. Descarta la carta de mayor coste de tu mano.
 - **Destino — Carcoma** · +0 — Las Mejoras no suman ni se pueden usar en esta Prueba (la madera cede). *Sin oposición:* en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, descarta 1 carta (se pudre la carga).
 - *Idea:* la madera podrida no aguanta peso. El Peligro lee tu mesa: en el Mar, cuantas más Mejoras de barco, más difícil encontrar la vía; en la selva, cuanta más gente cruza, antes cae el puente; en el puerto se hunde lo que cargas. El Destino desarma tus Mejoras. *Inspirada en:* «Vía de agua», «Arenas movedizas» (más peso, peor), «Muelle podrido».
 
 ### 9. Turbonada · Duro
-- **Mar — Turbonada a popa** · #Tormenta# · Prueba: NAV 4 · Avance 3 / 1
+- **Mar — Turbonada a popa** · #Tormenta# · Prueba: NAV 4 · Avance 3 / 2
     - Texto: una nube negra corre detrás de vosotros más deprisa que el barco.
     - Éxito: corréis delante de la racha y os empuja. +1 Avance. Pon esta carta al fondo del mazo de Peligros (la dejáis atrás).
     - Fallo: os alcanza con todo el trapo arriba. 1 daño al Barco y el Barco queda con **Velas rotas**.
@@ -143,7 +143,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Mar — El ojo del huracán** · #Tormenta# · Prueba: NAV 6, −1 por cada _Marinero_ comprometido · Avance 4 / 2
     - Éxito: entráis en el ojo, una hora de calma en mitad del infierno. Cura 1 herida a cada Tripulante comprometido.
     - Fallo: 3 daños al Barco y te retiras de la misión (corréis el temporal adonde os lleve).
-- **Naturaleza — Aguacero de huracán** · #Tormenta# #Terreno# · Prueba: EXP 5 · Avance 3 / 1
+- **Naturaleza — Aguacero de huracán** · #Tormenta# #Terreno# · Prueba: EXP 5 · Avance 3 / 2
     - Texto: la selva se convierte en barro y los arroyos en ríos.
     - Éxito: encontráis una cueva en alto y esperáis a que escampe. Prepara a todos los Tripulantes comprometidos.
     - Fallo: por cada punto que te falte (máx. 3), elige: 1 herida a un Tripulante comprometido, o pierdes 1 Avance (el barro se traga el camino).
@@ -155,7 +155,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* el huracán es demasiado para un hombre: en el Mar lo capean los Marineros juntos y su ojo da una tregua que cura; en la selva eliges entre sangre o camino; en la ciudad el pecio literalmente ocupa el muelle hasta que pagas por sacarlo (único Ocupar el muelle del grupo, porque aquí el puerto cerrado es la historia). *Inspirada en:* «Huracán de San Bartolomé» (el ojo, árboles arrancados, tejados volando), «Vendaval» (Destino del Taller).
 
 ### 11. Maremoto · Terrible
-- **Mar — La ola** · #Tormenta# · Prueba: NAV 5 · Avance 3 / 1
+- **Mar — La ola** · #Tormenta# · Prueba: NAV 5 · Avance 3 / 2
     - Texto: primero el mar se retira de la bahía; luego vuelve de golpe, más alto que el palo mayor. Los Tripulantes que no comprometas están en cubierta sin agarrarse a nada.
     - Éxito: ponéis la proa a la ola y os levanta por encima del arrecife. +2 Avance.
     - Fallo: la ola barre la cubierta. 2 daños al Barco y uno de tus Tripulantes preparados que no comprometiste (tú eliges) cae al mar y vuelve al muelle. Si no había ninguno, 1 daño más al Barco.
@@ -179,7 +179,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Fallo: se hunden antes del arpón. Agota 1 Tripulante preparado (remó en balde).
 - **Naturaleza — Desove en la playa** · #Bestia# · Sin Prueba · Avance 2
     - Texto: huevos a cientos bajo la arena. Cura 2 heridas repartidas. Si tienes un _Animal_ o un _Explorador_, además prepara 1 Tripulante (saben dónde escarbar).
-- **Ciudad — Concha de carey** · #Civil# · Prueba: EXP 2 · Avance 1 / 0
+- **Ciudad — Concha de carey** · #Civil# · Prueba: EXP 2 · Avance 1 / 1
     - Texto: el platero del puerto compra carey para peines y cajitas.
     - Éxito: vale su peso en plata. Robas 2.
     - Fallo: te engaña con la balanza. Descarta 1 carta.
@@ -195,7 +195,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: **Elige:** volvéis al último arroyo (pierdes 1 Avance), o buscáis agua por delante: Prueba de EXP 3.
     - Éxito: un manantial entre las rocas. Cura 1 herida a cada Tripulante comprometido.
     - Fallo: ni una gota. Cada Tripulante comprometido queda Aturdido.
-- **Ciudad — La hora de la siesta** · #Guardia# · Prueba: EXP 2, +1 por cada Tripulante comprometido después del primero · Avance 1 / 0
+- **Ciudad — La hora de la siesta** · #Guardia# · Prueba: EXP 2, +1 por cada Tripulante comprometido después del primero · Avance 1 / 1
     - Texto: a mediodía la ciudad duerme, y los guardias también. Solo hay que no hacer ruido: cuanta más gente, más ruido.
     - Éxito: entráis y salís sin que nadie despierte. Robas 2.
     - Fallo: alguien tropieza con un cántaro. El comprometido con más EXP queda Buscado.
@@ -207,11 +207,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: semanas de galleta y cecina; sangran las encías y se abren las cicatrices.
     - Éxito: limas olvidadas en un barril. Cura 1 herida a cada Tripulante herido.
     - Fallo: las heridas viejas se abren. Cada Tripulante que ya tenga heridas sufre 1 herida más (máximo 3 heridas en total).
-- **Naturaleza — Manzanillas de la muerte** · #Enfermedad# #Terreno# · Prueba: EXP 3 (1 con un _Explorador_) · Avance 1 / 0
+- **Naturaleza — Manzanillas de la muerte** · #Enfermedad# #Terreno# · Prueba: EXP 3 (1 con un _Explorador_) · Avance 1 / 1
     - Texto: la tripulación tiene hambre y la selva está llena de fruta. Alguna mata.
     - Éxito: guayabas y mameyes de verdad. Prepara 2 Tripulantes.
     - Fallo: alguien muerde la manzanita del manzanillo. El Tripulante con menos Vida sufre 2 heridas.
-- **Ciudad — Carestía** · #Civil# · Elige · Avance 1 / 0
+- **Ciudad — Carestía** · #Civil# · Elige · Avance 1 / 1
     - Texto: **Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3.
     - Éxito: compras barato y sobra. Robas 1 y cura 1 herida.
     - Fallo: os vais con la tripa vacía. −1 Mando en tu próximo turno.
@@ -227,7 +227,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: bajo las copas no se ve el sol; solo queda la aguja de marear.
     - Éxito: marcáis los árboles al pasar. +1 Avance.
     - Fallo: alguien se queda atrás. El comprometido con más NAV se pierde: no se prepara hasta el final de la misión. **Acción:** agota un _Vigía_ o un _Explorador_ para encontrarlo y prepararlo.
-- **Ciudad — Callejas del arrabal** · #Terreno# #Civil# · Prueba: NAV 2 · Avance 1 / 0
+- **Ciudad — Callejas del arrabal** · #Terreno# #Civil# · Prueba: NAV 2 · Avance 1 / 1
     - Texto: os orientáis por el campanario, como por una estrella.
     - Éxito: un atajo hasta el muelle. La siguiente Prueba de esta misión recibe −1.
     - Fallo: acabáis en un mal barrio. Descarta 1 carta al azar.
@@ -239,11 +239,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: subió a bordo con la leña. Si tienes un _Animal_ (el gato del barco), superas sin Prueba.
     - Éxito: la echáis por la borda en un saco, y entre los fardos aparece el ron que alguien escondía. Robas 1.
     - Fallo: muerde al que dormía abajo. El Tripulante no comprometido con menos Vida sufre 2 heridas (si no queda ninguno, el comprometido con menos EXP).
-- **Naturaleza — Barba amarilla** · #Bestia# · Prueba: COM 3 · Avance 1 / 0
+- **Naturaleza — Barba amarilla** · #Bestia# · Prueba: COM 3 · Avance 1 / 1
     - Texto: hay que matarla a machetazos antes de que salte.
     - Éxito: la cortáis en dos y seguís sin miedo. +1 Avance.
     - Fallo: muerde al que iba el último. El comprometido con menos COM queda Envenenado.
-- **Ciudad — El culebrero** · #Civil# · Prueba: EXP 3 · Avance 1 / 0
+- **Ciudad — El culebrero** · #Civil# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: un charlatán vende remedios con una serpiente al cuello. Hay que saber si el suyo es bueno.
     - Éxito: el remedio funciona. Quita a un Tripulante un Estado (Envenenado, Sangrando, Aturdido o Asustado), o cura 2 heridas.
     - Fallo: aceite de culebra y agua de pozo. Descarta 2 cartas.
@@ -251,7 +251,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* la serpiente siempre muerde a quien no mira: al que dormía, al rezagado. En la ciudad la serpiente es el reclamo del curandero, que puede quitarte el veneno o la bolsa. *Inspirada en:* «Barba amarilla» del Taller, «Serpientes» actual.
 
 ### 17. Fiebre amarilla · Duro
-- **Mar — Bandera amarilla** · #Enfermedad# · Prueba: NAV 4 · Avance 3 / 1
+- **Mar — Bandera amarilla** · #Enfermedad# · Prueba: NAV 4 · Avance 3 / 2
     - Texto: hay enfermos a bordo y la bandera amarilla avisa a todo el que se acerque.
     - Éxito: una cala tranquila para desembarcar a los enfermos al sol. Cura 1 herida a cada Tripulante.
     - Fallo: con la bandera izada, nadie os deja tocar tierra. No puedes retirarte de esta misión.
@@ -271,11 +271,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: si ningún Tripulante está herido, ganas el Avance sin Prueba (no hay sangre en el agua).
     - Éxito: pescáis uno para la cena. Cura 2 heridas repartidas.
     - Fallo: van a por el que sangra. El Tripulante con más heridas sufre 2 heridas.
-- **Naturaleza — Tiburones de agua dulce** · #Bestia# #Terreno# · Prueba: NAV 4 · Avance 3 / 1
+- **Naturaleza — Tiburones de agua dulce** · #Bestia# #Terreno# · Prueba: NAV 4 · Avance 3 / 2
     - Texto: el río San Juan sube hasta el lago, y los tiburones con él. Hay que cruzar en balsa. Los Tripulantes heridos no pueden comprometerse (nadie mete una herida abierta en esa agua).
     - Éxito: el río queda entre vosotros y lo que os seguía. Descarta la de arriba del mazo de Peligros sin resolverla.
     - Fallo: la balsa vuelca. Cada Tripulante comprometido sufre 1 herida.
-- **Ciudad — El Tiburón del muelle** · #Civil# · Prueba: COM 4 · Avance 1 / 0
+- **Ciudad — El Tiburón del muelle** · #Civil# · Prueba: COM 4 · Avance 1 / 1
     - Texto: el usurero huele la necesidad. Al revelarse, pon bajo la misión 1 carta al azar de tu mano por cada Tripulante herido (mín. 1, máx. 3): son sus prendas (Incautado).
     - Éxito: plantas cara a sus cobradores y se achantan. Recupera ahora las prendas y robas 1.
     - Fallo: las prendas se quedan con él. Solo las recuperas si superas la misión.
@@ -287,11 +287,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: cada noche salen de la costa y vuelven al barco fondeado; hay que espantarlos a golpes de lona.
     - Éxito: los ahuyentáis con antorchas y zarpáis antes del alba. +1 Avance.
     - Fallo: nadie pega ojo. Los Tripulantes comprometidos no se preparan en tu próximo Inicio.
-- **Naturaleza — La colonia sale de caza** · #Bestia# · Prueba: EXP 3, +1 si algún Tripulante está Sangrando · Avance 1 / 0
+- **Naturaleza — La colonia sale de caza** · #Bestia# · Prueba: EXP 3, +1 si algún Tripulante está Sangrando · Avance 1 / 1
     - Texto: siguen el rastro de la sangre. Hay que dormir lejos de la cueva y con fuego.
     - Éxito: dais con la cueva y su guano: salitre para la pólvora. Ganas 1 munición.
     - Fallo: os sangran mientras dormís. El Tripulante comprometido con menos Vida queda Sangrando.
-- **Ciudad — Por la ventana de la posada** · #Bestia# #Civil# · Prueba: COM 3 · Avance 1 / 0
+- **Ciudad — Por la ventana de la posada** · #Bestia# #Civil# · Prueba: COM 3 · Avance 1 / 1
     - Texto: os han seguido hasta el pueblo. Hay que echarlos a escobazos, a oscuras.
     - Éxito: el posadero os da cama sin cobrar. Cura 1 herida a cada Tripulante comprometido.
     - Fallo: entran por la ventana del Capitán, que dormía en la mejor cama. El Capitán sufre 1 herida y descartas 1 carta (pagas al barbero).
@@ -313,7 +313,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* la arena atrapa y cuanto más tardas, más cuesta: al principio basta con un brazo, luego hacen falta tres. En el mar y en el puerto se traga el peso (Mejoras de barco, Mejoras de la gente), y el Destino castiga a quien manda a todos a la vez. *Inspirada en:* «Arenas movedizas» y «Bajío de coral» del Taller, Port Royal; Destino «Cubierta abarrotada».
 
 ### 21. El jaguar · Terrible
-- **Mar — La fiera en la bodega** · #Bestia# · Sin ayuda · Prueba: COM 5 · Avance 3 / 1
+- **Mar — La fiera en la bodega** · #Bestia# · Sin ayuda · Prueba: COM 5 · Avance 3 / 2
     - Texto: el jaguar que llevabais para la casa de fieras del gobernador ha roto la jaula. Sin ayuda: en la bodega a oscuras solo cabe uno con un farol.
     - Éxito: vuelve a la jaula y el gobernador pagará bien. Robas 3.
     - Fallo: el zarpazo llega antes que el farol. El Tripulante sufre 2 heridas y queda Asustado.
@@ -327,11 +327,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* el depredador que elige: en la selva acecha hasta que sales a cazarlo, en la bodega te obliga a mandar a uno solo y en el mercado busca a tu _Animal_. Cazarlo paga en piel, en oro del gobernador o en fama. *Inspirada en:* «Jaguar en la espesura» y «Jaguar al acecho» del Taller, Destino «Zarpazo» actual.
 
 ### 22. El caimán · Terrible
-- **Mar — Caimán en el estuario** · #Bestia# · Prueba: NAV 6 · Avance 3 / 1
+- **Mar — Caimán en el estuario** · #Bestia# · Prueba: NAV 6 · Avance 3 / 2
     - Texto: al revelarse, el caimán vuelca la chalupa: el Tripulante preparado con menos Vida cae al agua y no puede comprometerse. Hay que llegar hasta él antes que la bestia.
     - Éxito: lo subís a bordo de un tirón; el caimán se queda con el remo. Ese Tripulante se prepara y queda Aguerrido.
     - Fallo: lo arrastra al fondo. Ese Tripulante sufre 2 heridas, y la chalupa se pierde: el Barco sufre 1 daño.
-- **Naturaleza — El Viejo del manglar** · #Bestia# #Terreno# · Prueba: COM 5 · Avance 3 / 1
+- **Naturaleza — El Viejo del manglar** · #Bestia# #Terreno# · Prueba: COM 5 · Avance 3 / 2
     - Texto: con el barro a la cintura, las Mejoras no suman.
     - Éxito: abatís al Viejo. Su piel y sus dientes valen una fortuna: robas 2 y +1 Avance.
     - Fallo: el giro de la muerte. Si tienes un _Animal_, el caimán se lo lleva: vuelve al muelle. Si no, el comprometido con más COM sufre 3 heridas.
@@ -360,11 +360,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Si llevas la _Bandera negra_, +1 (esa bandera la conoce todo el Caribe).
     - Éxito: izáis la bandera de Su Majestad y os saluda al pasar. Nada más.
     - Fallo: os sigue de lejos y pasa vuestras señas. El Barco queda Perseguido.
-- **Naturaleza — Cazadores con perros** · #Guardia# #Bestia# · Prueba: EXP 3 · Avance 1 / 0
+- **Naturaleza — Cazadores con perros** · #Guardia# #Bestia# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Los perros siguen la sangre: +1 si algún Tripulante comprometido tiene heridas.
     - Éxito: los despistáis en el arroyo y os quedáis con su cecina. Cura 1 herida.
     - Fallo: los perros acorralan al más lento. El Tripulante comprometido con menos Vida sufre 1 herida y queda Buscado (los cazadores ya tienen su cara).
-- **Ciudad — Tu cara en el muelle** · #Guardia# · Prueba: EXP 2 (3 si tienes 9 o más de reputación: cuanto más famoso, más te miran) · Avance 1 / 0
+- **Ciudad — Tu cara en el muelle** · #Guardia# · Prueba: EXP 2 (3 si tienes 9 o más de reputación: cuanto más famoso, más te miran) · Avance 1 / 1
     - Éxito: os escurrís entre el gentío leyendo cuánto ofrecen por vosotros. Nada más.
     - Fallo: el cartel se queda clavado en el muelle y nadie se enrola con una cabeza a precio. Pon esta carta en el muelle: sustituye a la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En el paso de Jugar cartas puedes pagar 2 cartas para descartarla.
 - **Destino — Precio por tu cabeza** · +1 — +2 en su lugar si algún comprometido está Buscado o el Barco está Perseguido (ya saben quién eres). *Sin oposición:* un cazador te encuentra solo: el Capitán sufre 1 herida.
@@ -379,7 +379,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Vigilan el río por donde baja el tabaco. Bajáis en canoa y en la canoa solo caben dos: no puedes comprometer más de 2 Tripulantes.
     - Éxito: la corriente os deja lejos, con los fardos. Nada más.
     - Fallo: volcáis en los rápidos. Pierdes 1 munición (pólvora mojada) y el comprometido con más NAV sufre 1 herida.
-- **Ciudad — El aduanero tiene precio** · #Guardia# · Elige · Avance 1 / 0
+- **Ciudad — El aduanero tiene precio** · #Guardia# · Elige · Avance 1 / 1
     - Texto: Elige: le untas la mano (descarta 2 cartas y gana el Avance sin Prueba), o pasas el género por tu cuenta: Prueba EXP 3 (1 con un _Contrabandista_).
     - Éxito: lo vendes bajo sus narices. +1 Avance y roba 1.
     - Fallo: te lo requisan y te multan. Descarta 2 cartas al azar.
@@ -391,11 +391,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Un espía en el acantilado hace señales al fuerte con un espejo.
     - Éxito: subís al acantilado y os quedáis su espejo y su catalejo. El comprometido con más NAV queda Inspirado.
     - Fallo: el fuerte ya sabe vuestro rumbo. La siguiente Prueba de esta misión recibe +1.
-- **Naturaleza — Guía vendido** · #Civil# · Prueba: NAV 3 · Avance 1 / 0
+- **Naturaleza — Guía vendido** · #Civil# · Prueba: NAV 3 · Avance 1 / 1
     - Texto: El gobernador le paga por llevaros a la boca del lobo. Solo el sol os dice si miente.
     - Éxito: lo pilláis y lo obligáis a llevaros por el buen camino. +2 Avance.
     - Fallo: os lleva en círculos. Pierdes 1 Avance y agota 1 Tripulante.
-- **Ciudad — El soplón pide su parte** · #Civil# · Elige · Prueba: COM 2 · Avance 1 / 0
+- **Ciudad — El soplón pide su parte** · #Civil# · Elige · Prueba: COM 2 · Avance 1 / 1
     - Texto: Elige: le pagas por callar (descarta 2 cartas), o no le pagas y la Prueba sube +2 (vuelve con los alguaciles).
     - Éxito: lo arrinconáis y le vaciáis la bolsa del gobernador. Roba 2.
     - Fallo: te ha vendido. El Capitán queda Buscado.
@@ -403,7 +403,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* los espías no pelean: cambian lo que viene. Uno avisa al fuerte y la siguiente Prueba sube, otro te desvía, otro te vende; si los pillas, sus herramientas y su paga son tuyas. *Inspirada en:* «El chivato del gobernador» y «Soplón de la taberna» del Taller.
 
 ### 27. Los grilletes del rey · Duro
-- **Mar — Galera de forzados** · #Militar# #Barco# · Prueba: COM 4 · Avance 3 / 1
+- **Mar — Galera de forzados** · #Militar# #Barco# · Prueba: COM 4 · Avance 3 / 2
     - Éxito: abordáis y rompéis las cadenas de los remeros. Si tienes Capacidad, recluta gratis un _Marinero_ del muelle; si no, roba 1.
     - Fallo: os embiste con el espolón. El Barco sufre 2 daños.
 - **Naturaleza — Cuerda de presos** · #Militar# · Prueba: EXP 4 · Avance 2 / 1
@@ -425,7 +425,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Los familiares del Santo Oficio queman por bruja a la curandera de la aldea.
     - Éxito: la salváis y os cura con sus hierbas. Cura 2 heridas.
     - Fallo: os rechazan a punta de pica. 1 herida a cada Tripulante comprometido (máx. 3).
-- **Ciudad — Requisa del Santo Oficio** · #Guardia# · Incautado · Prueba: EXP 4 · Avance 1 / 0
+- **Ciudad — Requisa del Santo Oficio** · #Guardia# · Incautado · Prueba: EXP 4 · Avance 1 / 1
     - Texto: **Al revelarse:** Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el _Amuleto_, tiene que ser él (cosa de brujas). Si superas la misión, la recuperas.
     - Éxito: juráis por los Evangelios. Recupera ya la Mejora y el comprometido con más EXP queda Aguerrido (sale bendecido).
     - Fallo: te sacan en procesión con el sambenito. −1 reputación.
@@ -466,7 +466,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - **Mar — La cadena de la bocana** · #Militar# · Se queda en juego · Avance 3
     - Texto: Se queda en juego. Mientras esté, no puedes superar la misión.
     - **Acción:** haz una Prueba de COM 5 (4 con un _Carpintero_) para cortarla a hachazos bajo el fuego del castillo. Si superas, descarta esta carta y gana 1 Avance. Si fallas, el Barco sufre 2 daños.
-- **Naturaleza — El fortín del río** · #Militar# · Prueba: COM 6 (4 con un _Artillero_: un tiro con estopa encendida prende los techos de palma) · Avance 3 / 1
+- **Naturaleza — El fortín del río** · #Militar# · Prueba: COM 6 (4 con un _Artillero_: un tiro con estopa encendida prende los techos de palma) · Avance 3 / 2
     - Éxito: tomáis el fortín y su polvorín. Gana 2 munición.
     - Fallo: os barren desde las troneras. 3 heridas repartidas entre los comprometidos.
 - **Ciudad — Los calabozos del Morro** · #Guardia# #Militar# · Prueba: NAV 5 · Avance 2 / 1
@@ -477,11 +477,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* el fuerte es un muro. La cadena cierra el puerto y no hay victoria hasta romperla; el fortín solo cae con fuego; a las mazmorras se entra por el agua. *Inspirada en:* la cadena del puerto de La Habana y la toma del castillo de San Lorenzo del Chagres (1671).
 
 ### 32. La horca · Terrible
-- **Mar — Punta de los Ahorcados** · #Militar# · Prueba: NAV 5 · Avance 3 / 1
+- **Mar — Punta de los Ahorcados** · #Militar# · Prueba: NAV 5 · Avance 3 / 2
     - Texto: Pasáis de noche bajo la batería y las jaulas con los piratas colgados. Cada _Marinero_ comprometido suma 1 menos (son supersticiosos).
     - Éxito: en una jaula cuelga un viejo compañero, con su mapa. Roba 2.
     - Fallo: la batería de la punta os encuentra. El Barco sufre 2 daños y pierdes 1 munición.
-- **Naturaleza — El árbol de los ahorcados** · #Militar# · Prueba: EXP 5 · Avance 3 / 1
+- **Naturaleza — El árbol de los ahorcados** · #Militar# · Prueba: EXP 5 · Avance 3 / 2
     - Texto: +2 si algún Tripulante está Buscado (su nombre está en la lista de la patrulla).
     - Éxito: cortáis las sogas y un colgado aún respira; os guía por el monte. +1 Avance.
     - Fallo: la patrulla vuelve a por más. El Tripulante comprometido con menos Vida queda rehén.
@@ -493,7 +493,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* la horca es el final de todo pirata, contada tres veces: el aviso de la Punta, el árbol de la selva y el patíbulo, donde puedes salvar a uno de los tuyos si la ciudad te quiere. *Inspirada en:* Gallows Point de Port Royal; «¡Al calabozo!» del Taller.
 
 ### 33. La Armada de Barlovento · Terrible
-- **Mar — Fragata a popa** · #Militar# #Barco# · Prueba: NAV 6 · Avance 3 / 1
+- **Mar — Fragata a popa** · #Militar# #Barco# · Prueba: NAV 6 · Avance 3 / 2
     - Texto: +2 si el Barco tiene Velas rotas.
     - Éxito: le ganáis el barlovento y se queda atrás. Si el Barco estaba Perseguido, quita esa ficha.
     - Fallo: os da alcance y os aborda. Sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén.
@@ -515,7 +515,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Una balandra amiga se abarloa y os presta lo que le sobra. Gana 1 munición y repara 1 daño. Si tienes un Bucanero, gana 1 munición más (es de su cofradía).
 - **Naturaleza — Bucán en la playa** · #Pirata# · Sin Prueba · Avance 2
     - Texto: Los bucaneros asan reses en el bucán y os sientan a su fuego. Cura 2 heridas, repartidas como quieras. Si no tenías heridas, prepara 1 Tripulante.
-- **Ciudad — Pulso en el muelle** · #Pirata# #Civil# · Prueba: COM 2 · Avance 1 / 0
+- **Ciudad — Pulso en el muelle** · #Pirata# #Civil# · Prueba: COM 2 · Avance 1 / 1
     - Texto: Un bucanero sin barco reta a los tuyos a un pulso. Si pierde, se enrola.
     - Éxito: recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad).
     - Fallo: pagas la ronda. Descarta 1 carta.
@@ -539,11 +539,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Tus dos Tripulantes con más COM (sin contar al Capitán) se están pegando: no pueden comprometerse. Cada Oficial comprometido suma +1 (los separa a gritos).
     - Éxito: el contramaestre los castiga juntos a las bombas. Repara 1 daño.
     - Fallo: los dos se rompen la cara. Cada uno sufre 1 herida.
-- **Naturaleza — La última cantimplora** · #Tripulación# · Prueba: EXP 2 · Avance 1 / 0
+- **Naturaleza — La última cantimplora** · #Tripulación# · Prueba: EXP 2 · Avance 1 / 1
     - Texto: Queda agua para uno y todos la quieren.
     - Éxito: encontráis un arroyo y se acaba la pelea. Cura 1 herida a dos Tripulantes distintos.
     - Fallo: se la queda el más fuerte. Tu Tripulante con más COM cura 1 herida y tu Tripulante con menos Vida sufre 1 herida.
-- **Ciudad — Pelea de taberna** · #Pirata# #Civil# · Prueba: COM 3 · Avance 1 / 0
+- **Ciudad — Pelea de taberna** · #Pirata# #Civil# · Prueba: COM 3 · Avance 1 / 1
     - Texto: Tus hombres y los de otro barco se lían a botellazos.
     - Éxito: los vencidos pagan la ronda y sueltan su ruta. +1 Avance y robas 1.
     - Fallo: un taburete en la cabeza. El comprometido con más COM queda Aturdido y descartas 1 carta (los destrozos).
@@ -555,7 +555,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Un capitán rival se juega su bolsa a que llega antes al cayo. Antes de comprometer, puedes doblar la apuesta: la Prueba recibe +2.
     - Éxito: ganas la bolsa. Robas 2 (4 si doblaste).
     - Fallo: pagas la apuesta. Descarta 2 cartas; si doblaste, además 1 daño al Barco (forzaste el aparejo).
-- **Naturaleza — Tiro al blanco** · #Pirata# · Prueba: COM 2 · Avance 1 / 0
+- **Naturaleza — Tiro al blanco** · #Pirata# · Prueba: COM 2 · Avance 1 / 1
     - Texto: Los bucaneros del monte apuestan su pólvora contra vuestro ron.
     - Éxito: ganas su pólvora. Gana 2 munición.
     - Fallo: pagáis con trabajo. Agota 1 Tripulante preparado (le toca desollar sus reses).
@@ -571,11 +571,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Se queda en juego. Cada vez que reveles otra carta de Peligro en esta misión, pon 1 ficha de Descontento sobre esta carta. Con 3 fichas, sabotean el barco: el Barco sufre 2 daños y descartas esta carta.
     - **Respuesta:** después de superar una Prueba por 2 o más, quita 1 ficha (ganar calma los ánimos).
     - **Acción:** descarta 2 cartas: descarta esta carta (adelantas la paga).
-- **Naturaleza — Petates revueltos** · #Tripulación# · Prueba: EXP 3 · Avance 1 / 0
+- **Naturaleza — Petates revueltos** · #Tripulación# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Sin paga, alguien se cobra de los petates de sus compañeros.
     - Éxito: pillas al ladrón y lo atas al sol. Los demás trabajan con ganas: +1 Avance.
     - Fallo: todos acusan al último en llegar. Tu Tripulante de menor coste queda Encadenado.
-- **Ciudad — El reparto** · #Tripulación# · Elige · Avance 1 / 0
+- **Ciudad — El reparto** · #Tripulación# · Elige · Avance 1 / 1
     - Texto: Tus hombres no dan un paso más sin su parte. Elige: pagas (descarta 1 carta por cada Tripulante que tengas, máx. 3) o te plantas: Prueba de COM 3, +1 por cada Bucanero que tengas (máx. +2; son los más codiciosos).
     - Éxito: los convences a tu manera y te quedas la parte del capitán. Robas 2.
     - Fallo: te la cobran igual, y a golpes. Descarta 2 cartas y el Capitán sufre 1 herida.
@@ -591,7 +591,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Un práctico os sube por el río a cambio de una parte. Conoce dos canales: el bueno y el de sus amigos.
     - Éxito: lees el río mejor que él y ahora trabaja para ti. La siguiente Prueba de esta misión recibe −1.
     - Fallo: os mete en el canal de sus amigos. Pierdes 1 Avance y el comprometido con más NAV sufre 1 herida.
-- **Ciudad — Matones del armador** · #Pirata# #Civil# · Prueba: NAV 3 · Avance 1 / 0
+- **Ciudad — Matones del armador** · #Pirata# #Civil# · Prueba: NAV 3 · Avance 1 / 1
     - Texto: Un armador rival paga a unos matones para quedarse tu carga. Hay que sacarla en el bote antes de que lleguen.
     - Éxito: te llevas también la suya. Gana 1 munición.
     - Fallo: Incautado. Las 2 cartas de más coste de tu mano van debajo de la carta de misión. Si superas la misión, las recuperas y robas 1; si no, se descartan.
@@ -599,7 +599,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* todo tiene precio: el corsario cobra peaje o dispara, el práctico vende el camino, los matones se quedan tu carga hasta que acabes el trabajo, y el Destino compra a uno de los tuyos. *Inspirada en:* «Corsario rival» y «Aduana» del Taller; Marvel Champions — *Harpoon* (paga o pega más fuerte).
 
 ### 40. La sombra de Bastián · Duro
-- **Mar — Velas a popa** · #Pirata# #Barco# · Prueba: NAV 4 · Avance 3 / 1
+- **Mar — Velas a popa** · #Pirata# #Barco# · Prueba: NAV 4 · Avance 3 / 2
     - Texto: El bergantín de Bastián el Tuerto lleva días a tu estela, esperando a que aflojes. Si el Barco tiene 2 o más daños, +1 (te ve cojear).
     - Éxito: lo pierdes entre los cayos. +1 Avance. Si superas por 2 o más, encalla en un bajío: esta carta Se retira.
     - Fallo: te gana el barlovento y te cañonea. 1 daño al Barco y el Barco queda Perseguido.
@@ -607,7 +607,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Sus hombres pisan vuestras huellas para llegar antes al botín.
     - Éxito: les borras el rastro. +1 Avance y prepara 1 Tripulante.
     - Fallo: os adelantan por otra trocha. Pierdes 2 Avance.
-- **Ciudad — Pasos a tu espalda** · #Pirata# · Prueba: EXP 3 · Avance 1 / 0
+- **Ciudad — Pasos a tu espalda** · #Pirata# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Sus espías te siguen de calle en calle.
     - Éxito: acorralas a uno en un portal y canta. +1 Avance.
     - Fallo: te esperan en la próxima esquina. La siguiente Prueba de esta misión recibe +2.
@@ -615,7 +615,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* Bastián no ataca de frente: cuando su Destino sale, se pone el primero de la fila y te alcanza en el siguiente encuentro; en el mar lo puedes hacer encallar y librarte de él para siempre. *Inspirada en:* «A la caza» y «Bastián el Tuerto» del Taller; El Señor de los Anillos — *Wolf Rider*.
 
 ### 41. Los holandeses de Curazao · Duro
-- **Mar — Al abordaje del filibote** · #Pirata# #Barco# · Prueba: COM 5 · Avance 3 / 1
+- **Mar — Al abordaje del filibote** · #Pirata# #Barco# · Prueba: COM 5 · Avance 3 / 2
     - Texto: Antes de comprometer, puedes gastar 1 munición: −1, o −2 si comprometes a un Artillero (metralla a su cubierta).
     - Éxito: el filibote es tuyo. Gana 2 munición y robas 2.
     - Fallo: sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén.
@@ -631,15 +631,15 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* rivales de igual a igual: tú los abordas a ellos, os disputáis el agua (cuantos más mandas, más ganas o más pierdes) y ellos te roban el barco en el puerto. *Inspirada en:* «Ganchos de abordaje» y «Corsario rival» del Taller; Arkham Horror — *Retaliate*.
 
 ### 42. Viejas cuentas · Duro
-- **Mar — Duelo en el bauprés** · #Pirata# · Sin ayuda · Prueba: COM 4 · Avance 3 / 1
+- **Mar — Duelo en el bauprés** · #Pirata# · Sin ayuda · Prueba: COM 4 · Avance 3 / 2
     - Texto: Sin ayuda. El Vizcaíno, tu antiguo contramaestre y hoy capitán rival, reta a tu Capitán a sable. Puedes mandar a otro Tripulante en su lugar, pero entonces la Prueba recibe +1 (sus hombres se ríen y los tuyos dudan).
     - Éxito: su gente paga por recuperarlo vivo. Gana 2 munición y tu duelista queda Inspirado.
     - Fallo: tu duelista sufre 2 heridas y queda Sangrando.
-- **Naturaleza — El tesoro que enterrasteis** · #Pirata# #Terreno# · Prueba: EXP 4 · Avance 3 / 1
+- **Naturaleza — El tesoro que enterrasteis** · #Pirata# #Terreno# · Prueba: EXP 4 · Avance 3 / 2
     - Texto: Lo enterrasteis juntos hace años. Él llegó antes y lo dejó lleno de trampas. Si comprometes al Capitán, −2 (recuerda dónde pisabais).
     - Éxito: encuentras la mitad que a él se le pasó. Robas 2.
     - Fallo: salta su trampa. 2 heridas al comprometido con más EXP.
-- **Ciudad — La vieja deuda** · #Pirata# #Civil# · Prueba: EXP 3 · Avance 1 / 0
+- **Ciudad — La vieja deuda** · #Pirata# #Civil# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Aún guarda tu pagaré de una partida de dados en Tortuga, y viene a cobrarlo.
     - Éxito: le ganas la revancha y la deuda queda saldada. Recupera 1 carta de tu descarte a la mano.
     - Fallo: pon esta carta en el muelle: sustituye a la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En el paso de Jugar cartas puedes pagar 3 cartas para descartarla.
@@ -647,7 +647,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* todo gira en torno al Capitán: el rival le reta a él (mandar a otro es de cobardes), solo él recuerda dónde está el tesoro, y la deuda de juego es suya y embarga el muelle. *Inspirada en:* «Duelo de capitanes» y «Viejas cuentas» del Taller; Marvel Champions — *Old Grudge*.
 
 ### 43. Motín · Terrible
-- **Mar — Motín en cubierta** · #Tripulación# · Prueba: COM 5 · Avance 3 / 1
+- **Mar — Motín en cubierta** · #Tripulación# · Prueba: COM 5 · Avance 3 / 2
     - Texto: Solo pueden comprometerse el Capitán y los Oficiales. La Prueba recibe +1 por cada Tripulante preparado que no sea Oficial (se han unido a los amotinados; máx. +3).
     - Éxito: cuelgas al cabecilla del palo mayor y el resto vuelve al trabajo. Prepara a todos tus Tripulantes.
     - Fallo: los amotinados toman el timón y vuelven a puerto. Te retiras de la misión y el Capitán sufre 1 herida.
@@ -663,11 +663,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* tu tripulación contra ti: en el mar los hombres que no has usado se unen al motín (es peor al principio de la misión), en tierra huyen con la comida y en la ciudad solo los Oficiales pueden sacarlos de la taberna, y salen borrachos. *Inspirada en:* el ejemplo «Motín» del encargo; «Traidor a bordo» y «Ron gratis en la taberna» del Taller.
 
 ### 44. El cazador de piratas · Terrible
-- **Mar — El falso mercante** · #Militar# #Barco# · Prueba: EXP 5 (4 si comprometes a un _Vigía_) · Avance 3 / 1
+- **Mar — El falso mercante** · #Militar# #Barco# · Prueba: EXP 5 (4 si comprometes a un _Vigía_) · Avance 3 / 2
     - Texto: Parece una presa fácil, lenta y cargada hasta la borda, pero lleva las portas pintadas y cien soldados tumbados en cubierta. Quiere piratas vivos para la horca.
     - Éxito: veis la trampa a tiempo y le cruzáis la popa a cañonazos. Gana 2 munición.
     - Fallo: os abarloáis confiados y salen de debajo de las lonas. Sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén.
-- **Naturaleza — El cebo** · #Militar# #Pirata# · Prueba: COM 5 · Avance 3 / 1
+- **Naturaleza — El cebo** · #Militar# #Pirata# · Prueba: COM 5 · Avance 3 / 2
     - Texto: Un pirata atado a una palmera pide auxilio a gritos. Los mosquetes esperan en la espesura.
     - Éxito: lo desatáis bajo el fuego y se une a vosotros. Recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad); si no, robas 2.
     - Fallo: la red cae sobre el que fue a desatarlo. El comprometido con más COM queda rehén.
@@ -697,7 +697,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Fallo: el aire no llega para todos: cada Tripulante comprometido después del primero sufre 1 herida.
 - **Naturaleza — Barriles en la playa** · #Terreno# · Sin Prueba · Avance 1
     - Texto: La marea trae la carga del galeón. A tu elección: abrís el de ron (prepara a todos los Tripulantes agotados, pero quedan Borrachos) o el de pólvora (ganas 2 munición).
-- **Ciudad — Subasta del naufragio** · #Civil# · Prueba: NAV 2 · Avance 1 / 0
+- **Ciudad — Subasta del naufragio** · #Civil# · Prueba: NAV 2 · Avance 1 / 1
     - Texto: Solo un marino sabe qué jarcia vale algo y cuál está podrida.
     - Éxito: pon en juego una Mejora del muelle pagando 2 cartas menos de su coste.
     - Fallo: otro capitán puja más alto: descarta del muelle la Mejora más cara (se repone).
@@ -723,11 +723,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: La tormenta prende fuego azul en las vergas. El marinero viejo sabe leerlo.
     - Éxito: es el santo, que os guarda: el comprometido con más NAV queda Inspirado.
     - Fallo: mal agüero: en la siguiente Prueba de esta misión, revela 2 Destinos y aplica el peor.
-- **Naturaleza — Fuegos fatuos** · #Sobrenatural# · Prueba: NAV 3 · Avance 1 / 0
+- **Naturaleza — Fuegos fatuos** · #Sobrenatural# · Prueba: NAV 3 · Avance 1 / 1
     - Texto: Hay que guiarse por las estrellas, no por las luces. Un Vigía comprometido suma +2 (las ve por encima de la bruma).
     - Éxito: las luces se posan donde hay algo enterrado: busca una Mejora en tu mazo y añádela a tu mano.
     - Fallo: las seguís hasta la ciénaga: pierdes 2 Avance.
-- **Ciudad — La cofradía de San Telmo** · #Civil# · Prueba: NAV 2 · Avance 1 / 0
+- **Ciudad — La cofradía de San Telmo** · #Civil# · Prueba: NAV 2 · Avance 1 / 1
     - Texto: Los mareantes del santo solo ayudan a gente de mar. Si tienes un Marinero preparado, superas sin Prueba.
     - Éxito: os echan una mano: recluta gratis un Marinero del muelle de coste 3 o menos. Si no hay ninguno o no tienes Capacidad, robas 2.
     - Fallo: os toman por gente de tierra: descarta 1 carta (la limosna para el santo).
@@ -739,11 +739,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Al revelarse, el Tripulante preparado con menos EXP oye el canto y va hacia la borda. Elige: lo atáis al palo mayor (agótalo a él y a otro Tripulante preparado), o le dejas saltar y vas tras él en el bote (Prueba de NAV 3).
     - Éxito: lo sacáis del agua con las joyas que ella le regaló: robas 3.
     - Fallo: lo sacáis del agua sin joyas y medio ahogado: sufre 2 heridas y queda Asustado.
-- **Naturaleza — La Madre de agua** · #Sobrenatural# · Prueba: EXP 3 · Avance 1 / 0
+- **Naturaleza — La Madre de agua** · #Sobrenatural# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Sus huellas van al revés. En esta Prueba, invierte el modificador del Destino: −1 cuenta como +1 y +2 como −2. «Fallas la Prueba» no cambia.
     - Éxito: os lleva a un remanso: cura 1 herida a cada Tripulante comprometido.
     - Fallo: el comprometido con menos EXP se va tras ella. Aparece al alba, medio ahogado: sufre 2 heridas.
-- **Ciudad — La cantante del puerto** · #Civil# · Prueba: COM 3 · Avance 1 / 0
+- **Ciudad — La cantante del puerto** · #Civil# · Prueba: COM 3 · Avance 1 / 1
     - Texto: Hay que sacar a los tuyos a rastras de la taberna. Embobados con su voz, no pensáis: en esta Prueba, las cartas de la mano no suman.
     - Éxito: le caéis en gracia y canta solo para vosotros: un Tripulante comprometido queda Inspirado.
     - Fallo: mientras mirabais, os vaciaron la bolsa: descarta 2 cartas al azar.
@@ -757,7 +757,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Fallo: calma chicha y agua podrida: −1 Mando en tu próximo turno.
 - **Naturaleza — La lechuza canta tres veces** · #Sobrenatural# · Se queda en juego · Sin Prueba · Avance 1
     - Texto: Al revelarse, elige un Tripulante al azar: la lechuza canta su nombre. Se queda en juego con 1 ficha. Cada vez que reveles un nuevo encuentro, pon 1 ficha. Con 3, el presagio se cumple: ese Tripulante sufre 2 heridas y queda Maldito; descarta esta carta. **Acción:** agota a un Vigía, o supera una Prueba de [EXP] 3, para espantarla: descarta esta carta y el Tripulante señalado queda Aguerrido (la muerte pasó de largo).
-- **Ciudad — La echadora de cartas** · #Civil# #Sobrenatural# · Prueba: EXP 3 · Avance 1 / 0
+- **Ciudad — La echadora de cartas** · #Civil# #Sobrenatural# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Te lee el sino: revela el Destino antes de comprometer a nadie (no reveles otro después).
     - Éxito: te cuenta lo que viene: mira las 3 de arriba del mazo de Peligros y ordénalas.
     - Fallo: no te gusta lo que oyes: el comprometido con más EXP queda Asustado.
@@ -769,11 +769,11 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Los muertos del bokor huelen la sangre: cada Tripulante comprometido que tenga heridas suma 1 menos.
     - Éxito: les llenáis la boca de sal y caen para siempre: esta carta Se retira.
     - Fallo: el comprometido con más COM sufre 1 herida y queda Maldito (lo han mordido).
-- **Naturaleza — Tambores en la noche** · #Sobrenatural# · Prueba: EXP 3 · Avance 1 / 0
+- **Naturaleza — Tambores en la noche** · #Sobrenatural# · Prueba: EXP 3 · Avance 1 / 1
     - Texto: Nadie duerme mientras suenan. Hay que dar con el claro donde tocan.
     - Éxito: rompéis los tambores y por fin dormís: prepara a todos tus Tripulantes.
     - Fallo: noche en vela: agota a 2 Tripulantes preparados; no se preparan en tu próximo Inicio.
-- **Ciudad — La mambo del mercado** · #Civil# #Sobrenatural# · Elige · Prueba: EXP 4 (si buscas tú el muñeco) · Avance 1 / 0
+- **Ciudad — La mambo del mercado** · #Civil# #Sobrenatural# · Elige · Prueba: EXP 4 (si buscas tú el muñeco) · Avance 1 / 1
     - Texto: Ella sabe quién os ha echado el mal, y cobra por deshacerlo. Elige: le pagas (descarta 3 cartas; 2 si llevas un Amuleto): quita Maldito de todos tus Tripulantes y uno de ellos queda Aguerrido (te cuelga un gris-gris). O buscas tú el muñeco: Prueba de EXP 4.
     - Éxito: lo encuentras y lo quemas: quita Maldito de todos tus Tripulantes y robas 2.
     - Fallo: el bokor te ha visto rondar: el Capitán queda Maldito y descartas 1 carta.
@@ -797,7 +797,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* el oro maldito siempre da y siempre cobra: el cofre te ata a la misión, la cueva exige una ofrenda que solo recuperas si sales con bien, el dueño viene a por los marcados y el Destino te ayuda mucho a cambio de una marca. *Inspirada en:* «Oro maldito», «El tesoro del pirata muerto» y «Mono ladrón» (Incautado) (Taller).
 
 ### 53. La serpiente marina · Duro
-- **Mar — La serpiente marina** · #Bestia# #Sobrenatural# · Prueba: COM 5 · Avance 3 / 1
+- **Mar — La serpiente marina** · #Bestia# #Sobrenatural# · Prueba: COM 5 · Avance 3 / 2
     - Texto: Se enrosca al casco. Cada Artillero comprometido suma +1 (cañonazo a quemarropa).
     - Éxito: suelta el casco y se hunde herida: ganas 2 munición (grasa de serpiente para las mechas).
     - Fallo: aprieta: el Barco sufre 2 daños. Si ya tenía 2 o más daños, además queda con Velas rotas (le parte el palo).
@@ -805,7 +805,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Al revelarse, se traga entero al Tripulante preparado con menos Vida: no puede comprometerse. Si tienes un Animal (el Loro, por ejemplo), os avisa a tiempo y no se traga a nadie.
     - Éxito: le abrís la panza y sale vivo, con el anillo de otro que se tragó antes: robas 2.
     - Fallo: el tragado (o, si no hubo, el comprometido con más COM) sufre 2 heridas antes de que lo escupa.
-- **Ciudad — Se ha escapado la serpiente** · #Bestia# #Civil# · Prueba: COM 4 · Avance 1 / 0
+- **Ciudad — Se ha escapado la serpiente** · #Bestia# #Civil# · Prueba: COM 4 · Avance 1 / 1
     - Texto: El feriante juraba que era la serpiente marina. Ahora anda suelta por el mercado, y alguien dice que la soltasteis vosotros.
     - Éxito: la atrapáis y el feriante os paga la captura: robas 2.
     - Fallo: se come el perro del gobernador: −1 reputación.
@@ -813,7 +813,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
 - *Idea:* la bestia de leyenda vista tres veces: en el Mar estruja el barco (y peor cuanto más roto está), en el río se traga al más flaco salvo que el Loro chille a tiempo, y en la ciudad es un monstruo de feria escapado del que te echan la culpa. *Inspirada en:* «Tentáculos en la bruma» y «¡Arrastrado al fondo!» (Taller; Marvel Champions, *The Kraken*).
 
 ### 54. La Santa Compaña · Duro
-- **Mar — Luces sobre el agua** · #Sobrenatural# · Prueba: NAV 4 (3 con un Vigía comprometido) · Avance 3 / 1
+- **Mar — Luces sobre el agua** · #Sobrenatural# · Prueba: NAV 4 (3 con un Vigía comprometido) · Avance 3 / 2
     - Texto: Una hilera de velas camina sobre las olas hacia el barco. El Vigía la ve venir de lejos.
     - Éxito: viráis a tiempo y su estela os empuja: +1 Avance.
     - Fallo: sus velas prenden las vuestras: el Barco queda con Incendio a bordo.
@@ -833,7 +833,7 @@ Sustituyen a las 25 cartas de Peligro actuales del mazo (una copia de cada una).
     - Texto: Abordaje. Las balas lo atraviesan: los Cañones y la munición no suman. Si un Tripulante comprometido lleva un Escapulario, −2.
     - Éxito: lo mandáis al fondo otros siete años: +1 reputación y esta carta Se retira.
     - Fallo: sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén (pasa a su tripulación de muertos).
-- **Naturaleza — Sus ahogados en la playa** · #Sobrenatural# · Prueba: COM 5 · Avance 3 / 1
+- **Naturaleza — Sus ahogados en la playa** · #Sobrenatural# · Prueba: COM 5 · Avance 3 / 2
     - Texto: Salen del agua por todas partes. Antes de resolver, cada Tripulante preparado que no hayas comprometido sufre 1 herida (los que se quedaron atrás).
     - Éxito: los devolvéis al mar. Llevaban encima el oro del Holandés: robas 2.
     - Fallo: os arrastran hacia la orilla: 3 heridas repartidas entre los comprometidos.
@@ -851,7 +851,7 @@ No están en el mazo de Peligros al empezar la partida.
 ### La Armada te persigue · Duro
 Entra en el mazo con «+ La Armada» y se queda en él el resto de la partida. En la Flota III («La huida con la plata») se pone encima del mazo de Peligros al llegar a 3 de Persecución y, después de resolverla, vuelve a apartarse.
 
-- **Mar — Navío de línea de la Armada** · #Militar# #Barco# · Prueba: NAV 5 · Avance 3 / 1
+- **Mar — Navío de línea de la Armada** · #Militar# #Barco# · Prueba: NAV 5 · Avance 3 / 2
     - Texto: los Cañones no suman (contra un navío de línea solo se puede correr).
     - Éxito: le dais esquinazo entre los cayos: +1 Avance.
     - Fallo (Abordaje): sufres 1 herida por cada punto que te falte (máximo 3); si fallas por 3 o más, además un Tripulante comprometido queda rehén.

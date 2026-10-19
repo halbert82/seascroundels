@@ -44,13 +44,27 @@ describe('Glosario de la mesa', () => {
     }
   })
 
-  it('en puerto: la Taberna quita los Estados de los Tripulantes, el Astillero los del Barco y las Ventajas se quedan', () => {
-    expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toContain('la Taberna quita todos los Estados de tus Tripulantes')
-    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toContain('el Astillero quita todos los Estados del Barco')
+  it('cómo se quita, genérico como el reglamento: la Taberna (o el Astillero) o cualquier carta que lo diga, con un ejemplo', () => {
+    expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toBe(
+      'Curarle quita primero esta ficha, en vez de una herida. También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, la Herbolaria o «Cataplasma»).',
+    )
+    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toContain('También se quita con el Astillero o con cualquier carta que lo diga (por ejemplo, el Práctico del puerto).')
     expect(AYUDA_ESTADO.inspirado.partes[1]?.texto).toContain('La Taberna no quita las Ventajas')
-    // Buscado y Pólvora mojada solo se quitan en puerto (tabla de la Referencia rápida).
-    expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe('Solo lo quita la Taberna, en puerto.')
-    expect(AYUDA_ESTADO.polvoraMojada.partes[1]?.texto).toBe('Solo lo quita el Astillero, en puerto.')
+    // Buscado y Pólvora mojada no se quitan solos.
+    expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe('Se quita con la Taberna o con cualquier carta que lo diga.')
+    expect(AYUDA_ESTADO.polvoraMojada.partes[1]?.texto).toBe('Se quita con el Astillero o con cualquier carta que lo diga.')
+  })
+
+  it('el glosario de la mesa dice lo mismo que el reglamento para quitar cada Estado', async () => {
+    const { default: reglamento } = await import('../../../docs/reglamento-v1.0.md?raw')
+    for (const e of [...FICHAS_TRIPULANTE, ...ESTADOS_BARCO]) {
+      if (esVentaja(e)) continue
+      const quita = AYUDA_ESTADO[e].partes[1]?.texto ?? ''
+      const generica = quita.match(/(?:También se quita|Se quita) con (?:la Taberna|el Astillero) o con cualquier carta que lo diga[^.]*\./)?.[0]
+      expect(generica, e).toBeDefined()
+      const linea = reglamento.split('\n').find((l: string) => l.startsWith(`- **${INFO_ESTADO[e].nombre}:**`)) ?? ''
+      expect(linea, e).toContain(generica)
+    }
   })
 
   it('Perseguido: la próxima misión de Mar empieza con un Peligro de más; se quita al revelarlo o con el Astillero', () => {

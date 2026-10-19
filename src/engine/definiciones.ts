@@ -152,7 +152,7 @@ export interface ReglasPeligro {
 export interface DefinicionEncuentro extends DefinicionPrueba, Omit<ReglasEncuentro, 'efecto' | 'exito' | 'fallo'> {
   /** Si superas la Prueba (o el encuentro no tiene Prueba). */
   avance: number
-  /** Si no superas la Prueba («Avance 3 / 1»): ver `avanceSinSuperar()`. */
+  /** Si no superas la Prueba («Avance 3 / 2»): ver `avanceSinSuperar()`. */
   avanceSinSuperar?: number
   /** Recuadro único de un encuentro sin Prueba. */
   efecto: Efecto[]
@@ -239,18 +239,16 @@ export function impideRetirarse(s: Estado): boolean {
 
 /**
  * Avance que da un encuentro con Prueba si no la superas (fallas, no comprometes a nadie o el Destino dice «Fallas la
- * Prueba»): el segundo número de «Avance 3 / 1». Por defecto, la mitad del primero, redondeando hacia abajo.
- * `s.variante` cambia la regla solo para simular en el informe de equilibrio.
+ * Prueba»): el segundo número de «Avance 3 / 2». Por defecto, la mitad del primero, redondeando hacia arriba
+ * (1 / 1, 2 / 1, 3 / 2, 4 / 2). `s.variante` cambia la regla solo para simular en el informe de equilibrio.
  */
 export function avanceSinSuperar(s: Estado, def: Pick<DefinicionEncuentro, 'avance' | 'avanceSinSuperar'>): number {
   switch (s.variante?.avanceSinSuperar) {
     case 'entero':
       return def.avance
-    case 'menosUno':
-      return def.avance === 0 ? 0 : Math.max(1, def.avance - 1)
-    case 'mitadArriba':
-      return Math.ceil(def.avance / 2)
+    case 'mitadAbajo':
+      return Math.floor(def.avance / 2)
     default:
-      return def.avanceSinSuperar ?? Math.floor(def.avance / 2)
+      return def.avanceSinSuperar ?? Math.ceil(def.avance / 2)
   }
 }

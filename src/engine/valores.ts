@@ -138,11 +138,7 @@ function base(s: Estado, c: Consulta): number {
     case 'avanceNecesario': {
       const e = porId(copia(s, c.mision).id)
       if (e.tipo !== 'capitulo') throw new Error(`${e.id} no es una misión`)
-      if (c.tipo === 'avanceNecesario') {
-        // Solo para simular (informe de equilibrio): todas las misiones piden 1 menos, sin bajar de 2.
-        const impreso = e.carta.avanceNecesario
-        return s.variante?.misionesMenosUno && impreso > 2 ? impreso - 1 : impreso
-      }
+      if (c.tipo === 'avanceNecesario') return e.carta.avanceNecesario
       // «Si El guía del istmo viaja contigo, la Distancia de esta misión es 0.»
       const distancia = reglasMision(e.id)?.distancia
       return distancia ? distancia(s, e.carta.distancia) : e.carta.distancia
