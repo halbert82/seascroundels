@@ -98,9 +98,10 @@ describe('Textos de la última ronda (docs/archivo/reglamento-textos.md)', () =>
     expect(entrada?.bloques.find((b) => b.tipo === 'ejemplo')).toMatchObject({ cartas: [{ id: 'p2_aduana', partes: ['mar'] }, { id: 'patente', partes: [] }] })
   })
 
-  it('el ejemplo de juego va en segunda persona, como los demás ejemplos', () => {
+  // Registro formal (docs/archivo/reglamento-estilo.md): los ejemplos, en tercera persona y en presente.
+  it('el ejemplo de juego va en tercera persona, como los demás ejemplos, y no nombra a nadie de fuera del juego', () => {
     expect(fuente).not.toMatch(/Albert/)
-    expect(htmlDe(capitulo('Ejemplo de juego').bloques)).toContain('Revelas la primera carta del mazo de Escenario')
+    expect(htmlDe(capitulo('Ejemplo de juego').bloques)).toContain('El jugador revela la primera carta del mazo de Escenario')
   })
 
   it('«Mazos de inicio» es el último apartado de «Aprende a jugar» y se dibuja desde los datos', () => {

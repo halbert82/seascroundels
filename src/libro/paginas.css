@@ -126,6 +126,12 @@ a.pagref::after {
   content: target-counter(attr(href), page);
 }
 
+/* El número lo escribe main.tsx (con sitio reservado antes de repartir): sin el de Paged.js. */
+a.num-pag.pag-escrita::after,
+a.pagref.pag-escrita::after {
+  content: none;
+}
+
 /* Saltos de página (Paged.js solo los ve si están en esta hoja). */
 .preliminar,
 .pagina-indice,

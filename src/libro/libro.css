@@ -303,7 +303,7 @@ body {
 }
 
 .libro p {
-  margin: 0 0 2.2mm;
+  margin: 0 0 2mm;
   orphans: 2;
   widows: 2;
 }
@@ -313,7 +313,7 @@ body {
 }
 
 .libro .md {
-  margin-bottom: 2.6mm;
+  margin-bottom: 2.4mm;
 }
 
 .libro strong {
@@ -805,13 +805,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2mm 18mm 1.5mm;
+  padding: 0 18mm 1.5mm;
   text-align: center;
 }
 
 .apertura-ornamento {
   color: var(--oro);
-  margin-bottom: 4mm;
+  margin-bottom: 2mm;
 }
 
 .apertura-texto {
@@ -888,7 +888,7 @@ body {
 }
 
 .subtitulo {
-  margin: 4.6mm 0 1.6mm;
+  margin: 3.5mm 0 1.6mm;
   font-family: 'IM Fell English SC', serif;
   font-weight: 400;
   font-size: 14pt;
@@ -1038,8 +1038,8 @@ body {
 /* Recuadros: ejemplo e importante                                    */
 
 .ejemplo {
-  margin: 1mm 0 4mm;
-  padding: 2.6mm 3.6mm 3mm;
+  margin: 1mm 0 3.2mm;
+  padding: 2.4mm 3.6mm 2.8mm;
   background: var(--papel-2);
   border-left: 1.1mm solid var(--oro);
   border-radius: 0 1.6mm 1.6mm 0;
@@ -2017,7 +2017,7 @@ body {
 }
 
 .paso-ejemplo .md {
-  margin-bottom: 2mm;
+  margin-bottom: 1.6mm;
 }
 
 .ejemplo-de-juego .paso-ejemplo > .md > p:first-of-type > strong:first-child {

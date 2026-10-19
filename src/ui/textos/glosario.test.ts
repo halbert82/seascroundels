@@ -44,15 +44,15 @@ describe('Glosario de la mesa', () => {
     }
   })
 
-  it('cómo se quita, genérico como el reglamento: la Taberna (o el Astillero) o cualquier carta que lo diga, con un ejemplo', () => {
+  it('cómo se quita, genérico como el reglamento: la Taberna (o el Astillero) o cualquier carta que así lo indique, con un ejemplo', () => {
     expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toBe(
-      'Curarle quita primero esta ficha, en vez de una herida. También se quita con la Taberna o con cualquier carta que lo diga (por ejemplo, la Herbolaria o «Cataplasma»).',
+      'Curarle quita primero esta ficha, en vez de una herida. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).',
     )
-    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toContain('También se quita con el Astillero o con cualquier carta que lo diga (por ejemplo, el Práctico del puerto).')
+    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toContain('También se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Práctico del puerto).')
     expect(AYUDA_ESTADO.inspirado.partes[1]?.texto).toContain('La Taberna no quita las Ventajas')
     // Buscado y Pólvora mojada no se quitan solos.
-    expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe('Se quita con la Taberna o con cualquier carta que lo diga.')
-    expect(AYUDA_ESTADO.polvoraMojada.partes[1]?.texto).toBe('Se quita con el Astillero o con cualquier carta que lo diga.')
+    expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe('Se quita con la Taberna o con cualquier carta que así lo indique.')
+    expect(AYUDA_ESTADO.polvoraMojada.partes[1]?.texto).toBe('Se quita con el Astillero o con cualquier carta que así lo indique.')
   })
 
   it('el glosario de la mesa dice lo mismo que el reglamento para quitar cada Estado', async () => {
@@ -60,10 +60,11 @@ describe('Glosario de la mesa', () => {
     for (const e of [...FICHAS_TRIPULANTE, ...ESTADOS_BARCO]) {
       if (esVentaja(e)) continue
       const quita = AYUDA_ESTADO[e].partes[1]?.texto ?? ''
-      const generica = quita.match(/(?:También se quita|Se quita) con (?:la Taberna|el Astillero) o con cualquier carta que lo diga[^.]*\./)?.[0]
+      const generica = quita.match(/(?:También se quita|Se quita) con (?:la Taberna|el Astillero) o con cualquier carta que así lo indique[^.]*\./)?.[0]
       expect(generica, e).toBeDefined()
       const linea = reglamento.split('\n').find((l: string) => l.startsWith(`- **${INFO_ESTADO[e].nombre}:**`)) ?? ''
-      expect(linea, e).toContain(generica)
+      // (El reglamento dice «Este Estado se quita con…» donde la mesa, más corta, dice «Se quita con…».)
+      expect(linea.toLowerCase(), e).toContain((generica ?? '').toLowerCase())
     }
   })
 

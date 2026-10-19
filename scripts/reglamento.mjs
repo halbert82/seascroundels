@@ -98,6 +98,7 @@ async function capturar(pagina, libro) {
     await guardar('16-dano-en-ciudad-pagina.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-dano')))
     await guardar('19-entrada-al-revelarse.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-al-revelarse')))
     await guardar('20-indice-de-terminos.png', await capturaDePagina(pagina, await paginaCon(pagina, '#indice-de-terminos')))
+    await guardar('21-entrada-estado.png', await dobleDesde(pagina, await paginaCon(pagina, '#r-estado')))
   }
 }
 

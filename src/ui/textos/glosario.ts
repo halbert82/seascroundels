@@ -40,13 +40,13 @@ const VENTAJA_SE_QUEDA = 'La Taberna no quita las Ventajas.'
 
 /**
  * Cómo se quita, con la misma redacción que el reglamento (entrada «Estado»): lo que lo quita solo (`propia`, si hay
- * algo) y, además, «se quita con la Taberna (o el Astillero) o con cualquier carta que lo diga», con un ejemplo.
+ * algo) y, además, «se quita con la Taberna (o el Astillero) o con cualquier carta que así lo indique», con un ejemplo.
  */
 function estado(e: FichaTripulante | EstadoBarco, hace: string, propia: string, ejemplo = ''): Ayuda {
   const barco = (ESTADOS_BARCO as readonly string[]).includes(e)
   const ventaja = INFO_ESTADO[e].ventaja === true
   const clase: ClaseAyuda = ventaja ? 'ventaja' : barco ? 'estadoBarco' : 'estado'
-  const generica = `${propia ? 'También se quita' : 'Se quita'} con ${barco ? 'el Astillero' : 'la Taberna'} o con cualquier carta que lo diga${ejemplo ? ` (por ejemplo, ${ejemplo})` : ''}.`
+  const generica = `${propia ? 'También se quita' : 'Se quita'} con ${barco ? 'el Astillero' : 'la Taberna'} o con cualquier carta que así lo indique${ejemplo ? ` (por ejemplo, ${ejemplo})` : ''}.`
   return {
     clave: `estado:${e}`,
     nombre: INFO_ESTADO[e].nombre,

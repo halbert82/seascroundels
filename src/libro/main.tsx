@@ -118,6 +118,48 @@ function laminas(): void {
   })
 }
 
+/** Reparte una copia del libro en páginas (Paged.js) y devuelve cuántas salen. */
+async function repartir(contenido: DocumentFragment, destino: HTMLElement): Promise<number> {
+  const previsor = new Previewer()
+  const flujo = await previsor.preview(contenido, [{ [new URL('paginas.css', window.location.href).href]: paginas }], destino)
+  return flujo.total
+}
+
+/** Página de cada ancla a la que remite un número de página («pág. 12», «Tesoros²⁶», el índice). */
+function paginasDeLasAnclas(destino: HTMLElement): Map<string, number> {
+  const paginas = [...destino.querySelectorAll<HTMLElement>('.pagedjs_page')]
+  const mapa = new Map<string, number>()
+  for (const a of destino.querySelectorAll<HTMLAnchorElement>('a.num-pag, a.pagref')) {
+    const id = decodeURIComponent((a.getAttribute('href') ?? '').slice(1))
+    if (!id || mapa.has(id)) continue
+    const destinoAncla = destino.querySelector(`[id="${CSS.escape(id)}"]`)
+    const pagina = destinoAncla?.closest('.pagedjs_page')
+    if (pagina) mapa.set(id, paginas.indexOf(pagina as HTMLElement) + 1)
+  }
+  return mapa
+}
+
+/**
+ * Reparte el libro con sitio para los números de página de las remisiones («pág. 12», el número volado de «Tesoros²⁶»,
+ * el índice). Paged.js los pone después de cortar cada página: al aparecer, alguna línea se alargaba y el final de la
+ * página quedaba oculto, perdido (le pasó a «Escenario» en la Referencia). Así que antes de repartir se escribe en cada
+ * uno «88», lo más ancho que puede ser un número de página de estos libros, y después se cambia por el de verdad: una
+ * línea solo puede acortarse, nunca alargarse, así que nada se sale de su página. Una sola vuelta.
+ */
+async function repartirConNumeros(contenido: DocumentFragment, destino: HTMLElement): Promise<number> {
+  for (const a of contenido.querySelectorAll<HTMLAnchorElement>('a.num-pag, a.pagref')) {
+    a.textContent = '88'
+    a.classList.add('pag-escrita')
+  }
+  const total = await repartir(contenido, destino)
+  const numeros = paginasDeLasAnclas(destino)
+  for (const a of destino.querySelectorAll<HTMLAnchorElement>('a.num-pag, a.pagref')) {
+    const n = numeros.get(decodeURIComponent((a.getAttribute('href') ?? '').slice(1)))
+    a.textContent = n === undefined ? '' : String(n)
+  }
+  return total
+}
+
 /** Milímetros en píxeles CSS. */
 const MM = 96 / 25.4
 /** Alto de una viñeta y lo que se separa de lo que haya encima y debajo (mm). */
@@ -248,9 +290,7 @@ async function principal(): Promise<void> {
   origen.remove()
 
   registerHandlers(CortesDePagina)
-  const previsor = new Previewer()
-  const flujo = await previsor.preview(contenido, [{ [new URL('paginas.css', window.location.href).href]: paginas }], destino)
-  window.__libroPaginas = flujo.total
+  window.__libroPaginas = await repartirConNumeros(contenido, destino)
   cerrarCadenas()
   marcarAperturas()
   if (libro === 'referencia') indiceLateral()
