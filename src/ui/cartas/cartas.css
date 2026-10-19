@@ -238,6 +238,7 @@
 .i-dano{--m:url(../../../assets/iconos/dano.svg)}
 .i-agotar{--m:url(../../../assets/iconos/agotar.svg)}
 .i-curar{--m:url(../../../assets/iconos/curar.svg)}
+.i-quitarestado{--m:url(../../../assets/iconos/quitarestado.svg)}
 .i-robar{--m:url(../../../assets/iconos/robar.svg)}
 .i-descartar{--m:url(../../../assets/iconos/descartar.svg)}
 .i-acampar{--m:url(../../../assets/iconos/acampar.svg)}
@@ -428,14 +429,20 @@
 .encp.v2 .enck{font-size:calc(var(--fs2) * .9);min-height:0;line-height:1.1}
 .etq{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:calc(var(--fs2) * .82);letter-spacing:.06em;line-height:1.25;
   color:#6E2B1E;border:1px solid #B07A55;border-radius:3px;padding:0 4px;background:rgba(255,255,255,.35)}
-/* Fase 10: la Prueba va a la izquierda, en su propia línea justo encima de Éxito y Fallo, con el icono y la dificultad grandes. */
-.test2{display:flex;align-items:center;flex-wrap:wrap;gap:1px 5px;margin:1px 0 0}
+/* Fase 10 (segunda revisión): debajo del texto, la Prueba en su columna a la izquierda, un filete vertical y, a su derecha,
+   Éxito encima de Fallo. La columna se ensancha si la nota o la alternativa son largas. */
+.resol{display:flex;align-items:stretch;gap:0;margin-top:1px}
+.test2{flex:none;width:calc(var(--fs2) * 4.6);box-sizing:border-box;padding:1px 1px 1px 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-align:center}
+.resol.ancha .test2{width:calc(var(--fs2) * 7.4)}
 .o2{display:inline-flex;align-items:center;gap:2px}
-.o2 .ic{font-size:calc(var(--fs2) * 2)}
-.o2 b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:calc(var(--fs2) * 2);line-height:1}
-.test2 .sep{font-size:calc(var(--fs2) * 1.5);color:#7A6248}
-.test2 .alt{font-size:var(--fs2);line-height:1.2;color:#5A4734}
-.test2 .alt.nota{font-style:italic;font-weight:400;white-space:normal;flex:1 1 60%;min-width:0}
+.o2 .ic{font-size:calc(var(--fs2) * 2.2)}
+.o2 b{font-family:'Alegreya',Georgia,serif;font-weight:900;font-size:calc(var(--fs2) * 2.3);line-height:1}
+.test2 .sep{font-size:calc(var(--fs2) * 1.3);line-height:.8;color:#7A6248}
+.test2 .alt{display:block;margin:0;font-size:calc(var(--fs2) * .86);line-height:1.15;color:#5A4734;white-space:normal}
+.test2 .alt.nota{font-style:italic;font-weight:400}
+.test2 .alt .ic{font-size:1.2em;vertical-align:-.22em}
+.filete{flex:none;width:1.2px;margin:1px calc(var(--fs2) * .55);background:linear-gradient(180deg,transparent,#B08E50 18%,#B08E50 82%,transparent)}
+.outs2{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--fs2) * .3)}
 .sinp{margin-left:auto;font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:calc(var(--fs2) * .9);letter-spacing:.06em;color:#7A6248}
 .t2{margin:0;font-size:var(--fs2);line-height:1.22;color:#2A2118}
 .t2 .ic{font-size:1.25em;vertical-align:-.25em}

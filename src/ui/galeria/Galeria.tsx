@@ -73,7 +73,7 @@ function descripcion(e: EntradaCatalogo): string {
     case 'cartaMision':
       return 'Carta de misión · apartada'
     case 'peligro':
-      return `Peligro ${e.carta.nivel.toLowerCase()} · ${e.carta.entraDuranteLaPartida ? 'apartada' : copias}`
+      return `Peligro · ${e.carta.entraDuranteLaPartida ? 'apartada' : copias}`
     case 'mazoPropio':
       return `${e.mazo.charAt(0).toUpperCase()}${e.mazo.slice(1)} · ${copias}`
     case 'tripulante':
