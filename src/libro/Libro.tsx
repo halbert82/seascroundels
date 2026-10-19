@@ -5,9 +5,10 @@ import { createContext, Fragment } from 'react'
 import arteAprende from '../../assets/arte/cap_galeon.jpg'
 import arteReferencia from '../../assets/arte/abordaje.jpg'
 import { ARTE_CAPITULO } from './arte.ts'
-import type { Bloque, Capitulo, Entrada, LibroId, Reglamento } from './fuente.ts'
+import { claveIndice, type Bloque, type Capitulo, type Entrada, type LibroId, type LineaIndice, type Reglamento } from './fuente.ts'
 import { Anatomia, Componentes, Contraportada, EjemploDeJuego, Mesa, PruebaFlujo, Turno } from './graficos.tsx'
 import { Ejemplo } from './Ejemplo.tsx'
+import { MazosDeInicio } from './MazosDeInicio.tsx'
 import { Filete, Rosa } from './piezas.tsx'
 
 /** El reglamento entero, para los gráficos que toman textos de otra parte (la Prueba, de la Referencia rápida). */
@@ -19,7 +20,7 @@ export const TITULO: Record<LibroId, string> = { aprende: 'Aprende a jugar', ref
  * Capítulos de «Aprende a jugar» que empiezan en página nueva. «Ganar y perder» también, porque es el que va antes del
  * ejemplo de juego (que empieza en página par): si no, el libro dejaba una página derecha en blanco entre los dos.
  */
-// TODO(diseño): «Ganar y perder» en página nueva lo he decidido yo (docs/decisiones.md, fase 9, «Última ronda de maqueta»).
+// «Ganar y perder» en página nueva: decidido por Albert (docs/decisiones.md, fase 9).
 const PAGINA_NUEVA = new Set(['Componentes', 'Anatomía de las cartas', 'Preparación de la partida', 'El turno', 'Las misiones', 'Heridas, daño y penalizaciones', 'Ganar y perder', 'Construir tu mazo'])
 
 function Html({ html, className = '' }: { html: string; className?: string }) {
@@ -34,6 +35,7 @@ export function Libro({ r, libro }: { r: Reglamento; libro: LibroId }) {
         <ComoUsar r={r} libro={libro} />
         <Indice r={r} libro={libro} />
         {libro === 'aprende' ? <CuerpoAprende r={r} /> : <CuerpoReferencia r={r} />}
+        {libro === 'referencia' && <IndiceDeTerminos lineas={r.referencia.indice} />}
         <Creditos libro={libro} />
         <Contraportada rapida={r.rapida} />
       </div>
@@ -70,7 +72,7 @@ function ComoUsar({ r, libro }: { r: Reglamento; libro: LibroId }) {
       <h2 className="titulo-preliminar">Cómo usar este libro</h2>
       <Filete />
       <div className="como-usar-texto">
-        {r.comoUsar.map((b, i) => (b.tipo === 'html' ? <Html key={i} html={b.html} /> : null))}
+        {r.comoUsar[libro].map((b, i) => (b.tipo === 'html' ? <Html key={i} html={b.html} /> : null))}
       </div>
       <div className="como-usar-libros">
         <div className={`como-usar-libro ${libro === 'aprende' ? 'actual' : ''}`}>
@@ -137,6 +139,7 @@ function IndiceReferencia({ entradas }: { entradas: Entrada[] }) {
         {entradas.map((e) => (
           <LineaIndice key={e.id} id={e.id} texto={e.titulo} />
         ))}
+        <LineaIndice id="indice-de-terminos" texto="Índice de términos" />
         <LineaIndice id="referencia-rapida" texto="Referencia rápida" />
       </ol>
     </nav>
@@ -245,6 +248,7 @@ function CuerpoAprende({ r }: { r: Reglamento }) {
 
 function CapituloVista({ c, primero = false }: { c: Capitulo; primero?: boolean }) {
   if (c.especial === 'ejemplo-de-juego') return <EjemploDeJuego c={c} />
+  if (c.especial === 'mazos-de-inicio') return <MazosDeInicio c={c} />
   const nueva = PAGINA_NUEVA.has(c.titulo)
   return (
     <section className={`capitulo ${nueva ? 'pagina-nueva' : ''} ${primero ? 'primero' : ''}`} id={c.id}>
@@ -275,13 +279,12 @@ function CuerpoReferencia({ r }: { r: Reglamento }) {
         <header className="cabecera-capitulo cabecera-referencia">
           <h2 className="titulo-capitulo marca-seccion">De la A a la Z</h2>
           <Filete />
-          {r.referencia.epigrafe ? (
+          {/* La Referencia es un glosario: solo lleva epígrafe si el reglamento le pone uno. */}
+          {r.referencia.epigrafe && (
             <div className="epigrafe">
               <div className="epigrafe-texto" dangerouslySetInnerHTML={{ __html: r.referencia.epigrafe.html }} />
               <div className="epigrafe-autor">— {r.referencia.epigrafe.autor}</div>
             </div>
-          ) : (
-            <div className="epigrafe pendiente">[epígrafe pendiente]</div>
           )}
         </header>
         {r.referencia.intro.map((b, i) => (
@@ -342,6 +345,50 @@ function EntradaVista({ e }: { e: Entrada }) {
         </p>
       )}
     </article>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Índice de términos (al final de la Referencia)
+
+/**
+ * Cada término con su página, de la A a la Z: las entradas, lo que cada entrada explica en negrita (cada Estado, cada
+ * opción del puerto…) y las palabras de sus listas (palabras clave, Rasgos, fichas de misión). Lo que no tiene
+ * entrada propia dice en cuál se explica.
+ */
+function IndiceDeTerminos({ lineas }: { lineas: LineaIndice[] }) {
+  const letras: { letra: string; lineas: LineaIndice[] }[] = []
+  for (const l of lineas) {
+    const letra = claveIndice(l.termino).charAt(0).toUpperCase()
+    const ultima = letras.at(-1)
+    if (ultima && ultima.letra === letra) ultima.lineas.push(l)
+    else letras.push({ letra, lineas: [l] })
+  }
+  return (
+    <section className="indice-terminos" id="indice-de-terminos">
+      <h2 className="titulo-preliminar marca-seccion">Índice de términos</h2>
+      <Filete />
+      <p className="indice-terminos-nota">Cada término de juego con la página donde se explica. Si no tiene entrada propia, en cursiva va la entrada que lo explica.</p>
+      <div className="indice-terminos-columnas">
+        {letras.map((g) => (
+          <div key={g.letra} className="indice-terminos-letra">
+            <div className="indice-terminos-inicial">{g.letra}</div>
+            <ol>
+              {g.lineas.map((l) => (
+                <li key={`${l.termino}-${l.clase ?? ''}`} className={`indice-linea ${l.en ? 'con-entrada' : 'entrada-propia'}`}>
+                  <a href={`#${l.id}`} className="indice-texto">
+                    {l.termino}
+                    {l.en && <span className="indice-en">{l.en}</span>}
+                  </a>
+                  <span className="indice-puntos" />
+                  <a className="num-pag" href={`#${l.id}`} />
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 

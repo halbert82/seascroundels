@@ -222,6 +222,12 @@ body {
   margin-right: calc(-1 * var(--centrar)) !important;
 }
 
+/* Lo ancho empieza siempre por debajo de las notas de la columna exterior (si una nota es más larga que su párrafo). */
+.flujo > .ancho,
+.entrada > .ancho {
+  clear: both;
+}
+
 /* La cabecera ilustrada de un capítulo: la ilustración a lo ancho y, debajo, el título en la columna principal. */
 .inicio-capitulo {
   break-inside: avoid;
@@ -798,7 +804,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6mm 18mm 10mm;
+  padding: 2mm 18mm 4mm;
   text-align: center;
 }
 
@@ -904,6 +910,14 @@ body {
 /* Términos de juego la primera vez. */
 .libro strong.termino {
   font-weight: 700;
+}
+
+/*
+ * Las negritas (términos y definiciones) no se parten con guion: con el número de página volado detrás, el navegador
+ * partía «Rasgos²²» como «Rasgo-» / «s²²».
+ */
+.libro strong {
+  hyphens: manual;
 }
 
 /* Definiciones: «Agotado —». */
@@ -1993,7 +2007,7 @@ body {
   margin-bottom: 2mm;
 }
 
-.ejemplo-de-juego .paso-ejemplo > .md > p:first-child > strong:first-child {
+.ejemplo-de-juego .paso-ejemplo > .md > p:first-of-type > strong:first-child {
   font-family: 'IM Fell English SC', serif;
   font-weight: 400;
   font-size: 12pt;
@@ -2359,4 +2373,211 @@ body {
 
 .libro h4.componentes-grupo {
   margin-top: 2mm;
+}
+
+/* ------------------------------------------------------------------ */
+/* «Mazos de inicio» (apéndice al final de «Aprende a jugar»)           */
+
+.cabecera-apendice {
+  margin-bottom: 5mm;
+}
+
+.mazos-inicio-partida {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 7mm;
+  align-items: center;
+  padding: 4mm 5mm;
+  border: 0.4mm solid var(--papel-3);
+  border-radius: 1.5mm;
+  background: var(--papel-2);
+  font-size: 10.5pt;
+  break-inside: avoid;
+}
+
+.mazos-inicio-cartas {
+  grid-row: span 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5mm;
+}
+
+.mazos-inicio-partida p {
+  margin: 0 0 1.6mm;
+}
+
+.mazos-inicio-partida p + p {
+  font-size: 9.5pt;
+  color: var(--tinta-2);
+}
+
+.mazos-inicio-listas {
+  display: grid;
+  /* El mazo del capitán, en dos columnas; el de muelle, en una. */
+  grid-template-columns: 2fr 1fr;
+  gap: 8mm;
+  margin-top: 5mm;
+  break-inside: avoid;
+}
+
+.mazo-inicio-titulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 2mm;
+  padding-bottom: 1.2mm;
+  border-bottom: 0.5pt solid var(--oro);
+  font-family: 'IM Fell English SC', serif;
+  font-weight: 400;
+  font-size: 15pt;
+  color: var(--rojo);
+}
+
+.mazo-inicio-total {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 8.4pt;
+  letter-spacing: 0.08em;
+  color: var(--sepia);
+}
+
+.mazo-inicio-grupos {
+  columns: 2;
+  column-gap: 8mm;
+}
+
+.mazo-inicio-grupo {
+  break-inside: avoid-column;
+}
+
+.mazo-inicio-grupo + .mazo-inicio-grupo {
+  margin-top: 3.4mm;
+}
+
+/* Los Eventos sí se reparten entre las dos columnas. */
+.mazo-inicio-grupo.largo {
+  break-inside: auto;
+}
+
+.mazo-inicio-tipo {
+  margin: 0 0 1.2mm;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 8.6pt;
+  letter-spacing: 0.08em;
+  color: var(--sepia);
+}
+
+.mazo-inicio-tipo span {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.mazo-inicio-grupo ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mazo-inicio-grupo li {
+  display: flex;
+  align-items: baseline;
+  gap: 2mm;
+  padding: 0.4mm 0;
+  border-bottom: 0.3pt dotted var(--papel-3);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9pt;
+  line-height: 1.2;
+}
+
+.mazo-inicio-copias {
+  flex: none;
+  width: 6mm;
+  font-weight: 800;
+  color: var(--rojo);
+  text-align: right;
+}
+
+.mazo-inicio-nombre {
+  flex: 1;
+}
+
+.mazo-inicio-num {
+  flex: none;
+  font-size: 8pt;
+  font-variant-numeric: tabular-nums;
+  color: var(--sepia);
+}
+
+/* ------------------------------------------------------------------ */
+/* Índice de términos (al final de la Referencia de reglas)           */
+
+.indice-terminos-nota {
+  margin: 0 0 4mm;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9pt;
+  color: var(--tinta-2);
+}
+
+.indice-terminos-columnas {
+  columns: 3;
+  column-gap: 7mm;
+}
+
+.indice-terminos-letra {
+  break-inside: avoid-column;
+}
+
+.indice-terminos-letra {
+  display: grid;
+  grid-template-columns: 5mm 1fr;
+  align-items: start;
+}
+
+.indice-terminos-letra + .indice-terminos-letra {
+  margin-top: 1.4mm;
+  padding-top: 1.2mm;
+  border-top: 0.3pt solid var(--papel-3);
+}
+
+/* La letra de cada grupo, al margen de su primera línea. */
+.indice-terminos-inicial {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 12pt;
+  line-height: 0.9;
+  color: var(--rojo);
+}
+
+.indice-terminos ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.indice-terminos .indice-linea {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 8pt;
+  line-height: 1.15;
+  margin: 0 0 0.42mm;
+}
+
+.indice-terminos .indice-linea .num-pag {
+  font-size: 8pt;
+}
+
+.indice-terminos .indice-texto {
+  color: inherit;
+  text-decoration: none;
+}
+
+.indice-terminos .entrada-propia .indice-texto {
+  font-weight: 700;
+}
+
+.indice-en {
+  margin-left: 1.2mm;
+  font-style: italic;
+  font-size: 7.4pt;
+  color: var(--sepia);
 }

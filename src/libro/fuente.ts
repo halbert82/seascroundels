@@ -40,8 +40,11 @@ export interface Capitulo {
   bloques: Bloque[]
   /** Tiene al menos una nota temática. */
   conTema: boolean
-  /** Se dibuja a doble página (el ejemplo de juego completo). */
-  especial: 'ejemplo-de-juego' | null
+  /**
+   * Capítulos que se dibujan aparte: el ejemplo de juego completo (a doble página) y «Mazos de inicio» (las listas
+   * de cartas de la primera partida, sacadas de los datos; es un apéndice: sin ilustración, epígrafe ni nota).
+   */
+  especial: 'ejemplo-de-juego' | 'mazos-de-inicio' | null
 }
 
 export interface Remision {
@@ -59,10 +62,22 @@ export interface Entrada {
   vease: Remision[]
 }
 
+/** Una línea del índice de términos de la Referencia de reglas. */
+export interface LineaIndice {
+  termino: string
+  /** Ancla adonde remite: su entrada o, dentro de una entrada, el sitio donde se explica. */
+  id: string
+  /** Entrada donde se explica, si no es la suya propia. */
+  en: string | null
+  /** Qué es, si sale en una lista de la Referencia («palabra clave», «Rasgo», «ficha de misión»). */
+  clase?: string
+}
+
 export interface Reglamento {
-  comoUsar: Bloque[]
+  /** «Cómo usar este libro», con sus remisiones según el libro en que se lee. */
+  comoUsar: Record<LibroId, Bloque[]>
   aprende: { intro: string; capitulos: Capitulo[] }
-  referencia: { intro: Bloque[]; epigrafe: Epigrafe | null; entradas: Entrada[] }
+  referencia: { intro: Bloque[]; epigrafe: Epigrafe | null; entradas: Entrada[]; indice: LineaIndice[] }
   rapida: {
     turno: string[]
     prueba: string[]
@@ -195,14 +210,17 @@ const MAX_CARTAS_EJEMPLO = 4
 
 const NOMBRE_LIBRO: Record<LibroId, string> = { aprende: 'Aprende a jugar', referencia: 'Referencia de reglas' }
 
-/** «véase «Destino», pág. 14» (en el mismo libro) o «véase *Referencia de reglas*, «Destino»» (en el otro, sin página). */
-function remision(v: string, titulo: string, e: Entorno): Trozo[] | null {
+/**
+ * «véase «Destino», pág. 14» (en el mismo libro) o «véase *Referencia de reglas*, «Destino»» (en el otro, sin página).
+ * Un «…, al final de este libro» detrás solo se queda si la remisión es al mismo libro.
+ */
+function remision(v: string, titulo: string, e: Entorno, coletilla = ''): Trozo[] | null {
   const propio = e.anclas[e.libro].get(titulo)
   const otro: LibroId = e.libro === 'aprende' ? 'referencia' : 'aprende'
   const ajeno = e.anclas[otro].get(titulo)
   const palabra = `${v === 'V' ? 'V' : 'v'}éase`
   if (propio) {
-    return [{ h: `${palabra} <a class="ref" href="#${propio}">«${escapar(titulo)}»</a>, <span class="pag">pág.&nbsp;<a class="num-pag" href="#${propio}"></a></span>` }]
+    return [{ h: `${palabra} <a class="ref" href="#${propio}">«${escapar(titulo)}»</a>, <span class="pag">pág.&nbsp;<a class="num-pag" href="#${propio}"></a></span>${escapar(coletilla)}` }]
   }
   if (ajeno) return [{ h: `${palabra} <i>${NOMBRE_LIBRO[otro]}</i>, «${escapar(titulo)}»` }]
   return null
@@ -215,10 +233,10 @@ function remisiones(trozos: Trozo[], e: Entorno): Trozo[] {
   if (!re) {
     const titulos = [...new Set([...e.anclas.aprende.keys(), ...e.anclas.referencia.keys()])].sort((a, b) => b.length - a.length)
     const alternativas = titulos.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')
-    re = new RegExp(`\\b(V|v)er (?:«([^»]+)»|(${alternativas})(?![\\p{L}]))`, 'gu')
+    re = new RegExp(`\\b(V|v)er (?:«([^»]+)»|(${alternativas})(?![\\p{L}]))(, al final de este libro)?`, 'gu')
     EXPRESIONES_VER.set(e.anclas, re)
   }
-  return aplicar(trozos, re, (m) => remision(m[1] ?? 'v', m[2] ?? m[3] ?? '', e))
+  return aplicar(trozos, re, (m) => remision(m[1] ?? 'v', m[2] ?? m[3] ?? '', e, m[4] ?? ''))
 }
 
 const HABILIDAD = /\b(NAV|COM|EXP)\b/g
@@ -227,6 +245,8 @@ const FICHA_DE = /(\b\d+|\bN)( de )(Avance|munición|reputación)\b/g
 const ICONO_FICHA: Record<string, string> = { herida: 'herida', heridas: 'herida', daño: 'dano', daños: 'dano', Avance: 'avance', munición: 'municion', reputación: 'rep' }
 
 function iconos(trozos: Trozo[]): Trozo[] {
+  // «(NAV 2)»: el paréntesis no se queda solo al final de la línea, separado del icono (une con U+2060).
+  trozos = trozos.map((t) => ('t' in t ? { t: t.t.replace(/\((?=(NAV|COM|EXP)\b)/g, '(⁠') } : t))
   let r = aplicar(trozos, HABILIDAD, (m) => [{ h: `<span class="hab hab-${m[1]?.toLowerCase()}"><i class="ic i-${m[1]?.toLowerCase()}"></i>${m[1]}</span>` }])
   r = aplicar(r, FICHA_NUM, (m) => [{ t: `${m[1]} ` }, { h: `<i class="ic ic-ficha i-${ICONO_FICHA[m[3] ?? '']}"></i>` }, { t: `${m[3]}` }])
   r = aplicar(r, FICHA_DE, (m) => [{ t: `${m[1]} ` }, { h: `<i class="ic ic-ficha i-${ICONO_FICHA[m[3] ?? '']}"></i>` }, { t: `de ${m[3]}` }])
@@ -278,10 +298,11 @@ function crearMarkdown(): MarkdownIt {
     if (env.enNegrita > 0) env.textoNegrita += contenido
     return transformarTexto(contenido, env)
   }
-  r.strong_open = (_t, _i, _o, env: Entorno) => {
+  r.strong_open = (tokens, i, _o, env: Entorno) => {
     env.enNegrita++
     env.textoNegrita = ''
-    return '<strong>'
+    const id = tokens[i]?.attrGet('id')
+    return id ? `<strong id="${id}">` : '<strong>'
   }
   r.strong_close = (_t, _i, _o, env: Entorno) => {
     env.enNegrita--
@@ -489,6 +510,8 @@ function bloquesDe(md: MarkdownIt, tokens: Token[], e: Entorno, opciones: { comp
   const pushHtml = (html: string) => {
     bloques.push({ tipo: 'html', html: temaPendiente + html, ...(temaPendiente ? { tema: true } : {}) })
     temaPendiente = ''
+    // Una nota dentro de un punto de lista (sangrada como él) también cuenta.
+    if (html.includes('<aside class="nota-tema">')) conTema = true
   }
   const soltarTema = () => {
     if (temaPendiente) bloques.push({ tipo: 'html', html: temaPendiente, tema: true })
@@ -535,8 +558,8 @@ function bloquesDe(md: MarkdownIt, tokens: Token[], e: Entorno, opciones: { comp
       } else if (tipo === 'grafico') {
         const [nombre = '', ...args] = resto.split(/\s+/)
         const arg = args.join(' ')
-        if (nombre === 'ejemplo-de-juego') {
-          especial = 'ejemplo-de-juego'
+        if (nombre === 'ejemplo-de-juego' || nombre === 'mazos-de-inicio') {
+          especial = nombre
           continue
         }
         const g: Bloque & { tipo: 'grafico' } = { tipo: 'grafico', nombre, arg }
@@ -657,6 +680,91 @@ function creadorDeAnclas(prefijo: string): (titulo: string) => string {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Índice de términos de la Referencia de reglas
+
+/** Entradas cuya primera frase es una lista («…: Barco, Bestia, … y Tripulación.»): cada palabra va al índice. */
+const LISTAS_DEL_INDICE: Record<string, string> = { 'Palabras clave': 'palabra clave', Rasgo: 'Rasgo', 'Fichas de misión': 'ficha de misión' }
+
+const mayuscula = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
+
+/** Clave para ordenar el índice: sin tildes ni signos delante («−1 Mando» va con la M). */
+export function claveIndice(t: string): string {
+  return sinParentesis(t)
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/^[^\p{L}]+/u, '')
+    .toLowerCase()
+}
+
+/**
+ * Las líneas del índice de términos, sacadas de las entradas de la Referencia:
+ *   - cada entrada, y cada parte de las que juntan dos términos («Curar y reparar» → «Reparar»);
+ *   - lo que cada entrada pone en negrita para explicarlo («**Envenenado:**», «**misión lejana**»), con su página exacta:
+ *     a esa negrita se le pone un ancla (el atributo `id` de su token);
+ *   - cada palabra de las listas de «Palabras clave», «Rasgo» y «Fichas de misión».
+ * No cuentan las negritas de los ejemplos, los pasos numerados ni los rótulos que van solos en su párrafo.
+ */
+function indiceDeTerminos(secciones: Seccion[], ids: string[]): LineaIndice[] {
+  const titulos = new Set(secciones.flatMap((s) => [s.titulo, sinParentesis(s.titulo)].map((t) => t.toLowerCase())))
+  const lineas = new Map<string, LineaIndice & { prioridad: number }>()
+  const anclas = new Set<string>()
+  const poner = (l: LineaIndice, prioridad: number) => {
+    const clave = `${l.termino.toLowerCase()}|${l.clase ?? ''}`
+    const antes = lineas.get(clave)
+    if (!antes || antes.prioridad < prioridad) lineas.set(clave, { ...l, prioridad })
+  }
+  secciones.forEach((s, n) => {
+    const id = ids[n] ?? ''
+    poner({ termino: s.titulo, id, en: null }, 9)
+    const partes = sinParentesis(s.titulo).split(' y ')
+    for (const p of partes.slice(1)) poner({ termino: mayuscula(p), id, en: s.titulo }, 1)
+    const clase = LISTAS_DEL_INDICE[s.titulo]
+    let enCita = 0
+    let enPasos = 0
+    for (const t of s.tokens) {
+      if (t.type === 'blockquote_open') enCita++
+      if (t.type === 'blockquote_close') enCita--
+      if (t.type === 'ordered_list_open') enPasos++
+      if (t.type === 'ordered_list_close') enPasos--
+      if (t.type !== 'inline' || enCita > 0) continue
+      if (clase && t.content.includes(':')) {
+        const lista = /:\s*([^.]+)\./.exec(t.content)?.[1] ?? ''
+        for (const palabra of lista.split(/,\s*|\s+y\s+|\s+o\s+/).map((x) => x.trim()).filter(Boolean)) poner({ termino: palabra, id, en: s.titulo, clase }, 5)
+        continue
+      }
+      if (enPasos > 0) continue
+      const hijos = hijosReales(t)
+      // Un rótulo solo en su párrafo («**Estados del Barco**») no es un término.
+      if (hijos.length === 3 && hijos[0]?.type === 'strong_open') continue
+      hijos.forEach((h, k) => {
+        if (h.type !== 'strong_open') return
+        let texto = ''
+        for (let j = k + 1; j < hijos.length && hijos[j]?.type !== 'strong_close'; j++) texto += hijos[j]?.content ?? ''
+        let termino = texto.replace(/\s*[—:.]\s*$/, '').trim()
+        if (!termino || termino.startsWith('(') || termino.startsWith('¡')) return
+        termino = mayuscula(termino.replace(/^(La|El|Los|Las) /, '').replace(/ N$/, ''))
+        // Lo que ya es el principio del título de su entrada («Entra en el mazo de Peligros») sale con ella.
+        if (titulos.has(termino.toLowerCase()) || s.titulo.toLowerCase().startsWith(`${termino.toLowerCase()} `)) return
+        // Una sola palabra de la familia de su entrada («Curar N» en «Curar y reparar», «Agotada» en «Agotar y
+        // preparar») ya la encuentra el lector en esa entrada.
+        const raiz = (x: string) => claveIndice(x).slice(0, 5)
+        if (!termino.includes(' ') && s.titulo.split(/\s+/).some((w) => w.length >= 5 && raiz(w) === raiz(termino))) return
+        let ancla = `${id}--${slug(termino)}`
+        for (let m = 2; anclas.has(ancla); m++) ancla = `${id}--${slug(termino)}-${m}`
+        anclas.add(ancla)
+        h.attrSet('id', ancla)
+        // Lo que se define al principio de un párrafo o de un punto pesa más que lo que sale a media frase.
+        poner({ termino, id: ancla, en: s.titulo }, k === 0 ? 4 : 3)
+      })
+    }
+  })
+  const orden = new Intl.Collator('es', { sensitivity: 'base' })
+  return [...lineas.values()]
+    .map(({ prioridad: _p, ...l }) => l)
+    .sort((a, b) => orden.compare(claveIndice(a.termino), claveIndice(b.termino)) || (a.clase ? 1 : 0) - (b.clase ? 1 : 0))
+}
+
 export function leerReglamento(fuente: string): Reglamento {
   const md = crearMarkdown()
   const tokens = prepararMarcas(md.parse(fuente, {}))
@@ -701,9 +809,11 @@ export function leerReglamento(fuente: string): Reglamento {
   })
   const terminos = terminosDe(p2.secciones.map((s, i) => ({ id: idsEntrada[i] ?? '', titulo: s.titulo })))
 
-  // Cómo usar este libro (común a los dos).
-  const eComo = nuevoEntorno('aprende', anclas, [])
-  const como = bloquesDe(md, comoUsar.tokens, eComo).bloques
+  // Cómo usar este libro: el mismo texto en los dos, con las remisiones del libro en que se lee.
+  const como = (libro: LibroId) => bloquesDe(md, comoUsar.tokens, nuevoEntorno(libro, anclas, [])).bloques
+
+  // El índice de términos pone sus anclas en los tokens de la Referencia: antes de escribirla.
+  const indice = indiceDeTerminos(p2.secciones, idsEntrada)
 
   // Aprende a jugar.
   const eA = nuevoEntorno('aprende', anclas, terminos)
@@ -747,9 +857,9 @@ export function leerReglamento(fuente: string): Reglamento {
   const finIntro = estadosTokens.findIndex((t) => t.type === 'table_open')
 
   return {
-    comoUsar: como,
+    comoUsar: { aprende: como('aprende'), referencia: como('referencia') },
     aprende: { intro: introA, capitulos },
-    referencia: { intro: introR.bloques, epigrafe: introR.epigrafe, entradas },
+    referencia: { intro: introR.bloques, epigrafe: introR.epigrafe, entradas, indice },
     rapida: {
       turno: lista('Secuencia'),
       prueba: lista('Resolver'),

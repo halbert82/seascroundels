@@ -6,8 +6,8 @@
 //   deje el recuadro más bajo: todo en una fila bajo el texto, los recortes con las cartas a su lado, o los recortes al
 //   lado del texto (como una carta sola). Para elegir, se calcula el alto de cada forma: el de los recortes se mide en
 //   las cartas ya dibujadas y el del texto, con la anchura de sus letras.
-// TODO(diseño): el recuadro a página entera y la letra mínima de los recortes (8 px, o 7,2 si así cabe en una fila)
-// los he elegido yo (docs/decisiones.md, fase 9, «Última ronda de maqueta»).
+// El recuadro a página entera y la letra de los recortes (8 px, unos 6 pt; o 7,2 px si así cabe en una fila): decididos
+// por Albert (docs/decisiones.md, fase 9).
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { porId } from '../engine/catalogo.ts'

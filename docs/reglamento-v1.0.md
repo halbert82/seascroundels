@@ -9,14 +9,14 @@ Marcas para la maqueta (npm run reglamento). Van como citas de Markdown:
 > [!consejo]              Consejo de estrategia para la primera partida.
 > [!epigrafe] Autor       Cita al principio de un capítulo (justo después de su título «###»). La primera
 > «Texto…»                línea tras la marca es la atribución; el resto, la cita.
-> [!grafico] nombre       Lugar de un gráfico: anatomia <tipo>, mesa, turno, prueba, ejemplo-de-juego.
+> [!grafico] nombre       Lugar de un gráfico: anatomia <tipo>, mesa, turno, prueba, ejemplo-de-juego,
+>                         mazos-de-inicio (las listas de los mazos de la primera partida, sacadas de los datos).
 
-Sin [!epigrafe], el capítulo muestra «[epígrafe pendiente]»; sin ninguna [!tema], «[nota pendiente]».
+En «Aprende a jugar», un capítulo sin [!epigrafe] muestra «[epígrafe pendiente]» y uno sin ninguna [!tema],
+«[nota pendiente]» (salvo «Mazos de inicio», que es un apéndice). La Referencia solo lleva epígrafe si se le pone.
 -->
 
 # Reglamento — v1.0
-
-Oct 18, 2026 · @Albert
 
 ## Cómo usar este reglamento
 
@@ -26,7 +26,7 @@ Este reglamento tiene dos partes.
 
 **Referencia de reglas** es un glosario ordenado de la A a la Z. Contiene todas las reglas, también las que Aprende a jugar no cuenta. Cuando te surja una duda durante la partida, búscala allí.
 
-Te recomendamos leer primero Aprende a jugar, preparar la partida de iniciación con los mazos de inicio de Diego y consultar la Referencia de reglas solo cuando aparezca una duda.
+Te recomendamos leer primero Aprende a jugar, preparar tu primera partida con Diego y sus mazos de inicio (ver «Mazos de inicio», al final de este libro) y consultar la Referencia de reglas solo cuando aparezca una duda.
 
 Las palabras con mayúscula inicial que tienen un sentido de juego (Avance, Prueba, Destino…) tienen su propia entrada en la Referencia de reglas.
 
@@ -36,21 +36,39 @@ Las palabras con mayúscula inicial que tienen un sentido de juego (Avance, Prue
 
 ### Resumen del juego
 
+> [!epigrafe] Diego «Garra» Mendoza
+> «Un barco, una tripulación y un nombre. Lo primero se compra, lo segundo se paga y lo tercero se gana.»
+
 Este es un juego de cartas para un jugador. Eres el capitán de un barco pirata y juegas contra el propio juego: un mazo de Peligros que pone a prueba a tu tripulación y un mazo de Escenario que marca el paso del tiempo.
 
 Cada turno empiezas en puerto. Allí reclutas Tripulantes, adquieres Mejoras y decides qué hacer: quedarte para reparar el barco y curar a tu gente, o zarpar hacia una de las tres misiones disponibles. En una misión revelas cartas de Peligro una a una y comprometes a tus Tripulantes en sus Pruebas hasta reunir el Avance que pide la misión, o hasta que decides que es mejor volver a puerto.
 
-Cada misión superada te da reputación. Con la reputación suficiente, tu nombre correrá de puerto en puerto.
+> [!tema]
+> El Caribe de 1670 no tiene héroes, tiene supervivientes con suerte. Tu barco es pequeño, tu gente cobra por adelantado y el tiempo corre en tu contra.
+
+Cada misión superada te da reputación. Con la reputación suficiente, ganas la partida.
 
 ### Objetivo del juego
+
+> [!epigrafe] Un tabernero de Tortuga
+> «En Tortuga nadie pregunta de dónde vienes. Solo cuánto traes.»
 
 Ganas la partida en cuanto llegas a la reputación que pide tu modo de partida, o si un efecto de juego te dice que has ganado.
 
 Pierdes la partida si tu Capitán queda derrotado, si se acaba el tiempo o si no quedan misiones a las que zarpar.
 
+> [!tema]
+> Un capitán sin nombre es un capitán sin tripulación: nadie se enrola con quien no ha hecho nada. La reputación es lo que te abre los puertos.
+
 ### Componentes
 
+> [!epigrafe] Carpintero de a bordo
+> «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
+
 La Caja básica contiene 211 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+
+> [!tema]
+> Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
 
 **Cartas del jugador**
 
@@ -89,7 +107,13 @@ La Caja básica contiene 211 cartas, que se dividen en cartas del jugador y cart
 
 ### Anatomía de las cartas
 
+> [!epigrafe] Catalina «la Enganchadora» Rojas
+> «Antes de subir a un hombre a bordo, mírale las manos. Dicen más que la boca.»
+
 Esta sección explica qué información lleva cada tipo de carta y dónde está.
+
+> [!tema]
+> Una carta de Tripulante es una ficha de enrole: lo que sabe hacer, lo que aguanta y lo que cuesta convencerle.
 
 #### Capitán y Tripulantes
 
@@ -165,6 +189,9 @@ Nombre, texto y frase de ambientación. Su efecto se aplica al revelarla, al emp
 
 ### Las reglas de oro
 
+> [!epigrafe] Artículos de la Hermandad
+> «Se reparte el botín, no se deja a nadie atrás y el capitán tiene la última palabra. Lo demás se discute.»
+
 1. Si el texto de una carta contradice directamente este reglamento, prevalece el texto de la carta.
 2. Si la Referencia de reglas contradice directamente Aprende a jugar, prevalece la Referencia de reglas.
 3. «No puedes» es absoluto: ningún efecto puede anularlo.
@@ -173,9 +200,18 @@ Nombre, texto y frase de ambientación. Su efecto se aplica al revelarla, al emp
 
 **La regla nefasta.** Si no encuentras en este reglamento la respuesta a una duda de reglas o de momento, resuélvela de la forma que te parezca peor en ese momento de cara a ganar la partida, y sigue jugando. Esta regla no se aplica cuando el reglamento te deja elegir entre varias opciones válidas: entonces eliges tú.
 
+> [!tema]
+> En caso de duda, el Caribe siempre elige lo peor para ti. Así es más fácil acordarse.
+
 ### Capacidades de las cartas
 
+> [!epigrafe] Bucanero veterano
+> «A bordo todos sirven para algo. El que no sirve para nada, sirve de lastre.»
+
 El texto de juego de una carta se compone de capacidades. Cada una empieza de una de estas formas:
+
+> [!tema]
+> Un buen tripulante sabe cuándo actuar: antes del golpe, después del golpe o cuando el capitán lo ordena.
 
 - **Sin etiqueta:** es una capacidad constante y se aplica mientras la carta esté en juego (una Mejora agotada no aplica su texto) («Tus Pruebas de COM en el Mar reciben +1»). En un Evento, significa que puedes jugarlo en cualquier momento.
 - **Un coste y dos puntos:** lo que va antes de los dos puntos es el coste y lo que va después, el efecto. «Agotar: Repara 1 daño» significa que agotas la carta para reparar 1 daño. Si no puedes pagar el coste entero, no puedes usar la capacidad.
@@ -192,16 +228,21 @@ Una capacidad con **(Límite de una vez por turno.)** solo se puede usar una vez
 
 ### Preparación de la partida
 
-Para tu primera partida juega con Diego y sus mazos de inicio (ver el Catálogo de cartas), en el puerto de Tortuga y en una partida normal. Cuando conozcas el juego podrás construir tus propios mazos (ver «Construir tu mazo»).
+> [!epigrafe] Contrabandista del bajo Caribe
+> «Antes de zarpar: agua, pólvora y una buena mentira para el gobernador.»
+
+Para tu primera partida juega con Diego y sus mazos de inicio (ver «Mazos de inicio», al final de este libro), en el puerto de Tortuga y en una partida normal. Cuando conozcas el juego podrás construir tus propios mazos (ver «Construir tu mazo»).
 
 Prepara la partida siguiendo estos pasos:
 
 1. **Elige el modo de partida y prepara el mazo de Escenario.** El modo decide la reputación que necesitas para ganar y cuántas cartas tiene el mazo de Escenario, que es el reloj de la partida: revelarás una carta al empezar cada turno. Baraja las cartas de Escenario, quédate con las que indica la tabla y devuelve las demás a la caja sin mirarlas. Deja el mazo boca abajo y pon el marcador de reputación a 0.
 2. **Pon en juego a tu Capitán y tu Barco.** Tu Capitán empieza preparado y sin coste.
-3. **Elige un puerto** de El Caribe y ponlo en el centro de la mesa. Jugarás toda la partida en él.
-4. **Prepara el mazo de Peligros.** Deja aparte «La Armada te persigue»: solo entra si una carta lo indica. Baraja el resto. («Amigos en la costa» se queda en la caja por ahora.)
+3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa. Jugarás toda la partida en él.
+4. **Prepara el mazo de Peligros.** Deja aparte «La Armada te persigue»: solo entra si una carta lo indica. Baraja el resto.
 5. **Prepara las misiones.** Pon boca arriba las tres misiones iniciales: son las **misiones disponibles**, a las que puedes zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros y «¡La guardia!» en el **mazo de historia** y déjalo aparte, boca abajo: de él solo salen cartas cuando otra carta lo indica.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique tu puerto. Esas cartas, boca arriba junto al puerto, son el **muelle**: el único sitio desde el que puedes reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a tu mano.
+   > [!tema]
+   > El muelle es donde se busca gente: marineros sin barco, artilleros sin cañón y cirujanos sin título. Lo que no contratas hoy se lo lleva otro capitán.
 7. **Roba tu mano inicial.** Baraja tu **mazo del capitán** y roba tantas cartas como el **Mando** de tu Capitán. Puedes cambiar tu mano una vez: descarta las cartas que quieras y roba otras tantas.
 
 | Modo | Reputación para ganar | Cartas de Escenario |
@@ -215,6 +256,9 @@ Ya puedes empezar el primer turno. Tu tripulación empieza con el Capitán solo:
 > [!grafico] mesa
 
 ### El turno
+
+> [!epigrafe] Diego «Garra» Mendoza
+> «Por la mañana, el ron. Por la tarde, el mar. Por la noche, contar a los que han vuelto.»
 
 La partida se juega en turnos. Cada turno empieza y acaba en puerto, y tiene cuatro pasos que se resuelven en este orden:
 
@@ -258,7 +302,7 @@ Elige una de estas dos opciones:
 - **Quedarte en puerto:** elige dos opciones distintas de tu carta de puerto y aplícalas en el orden que quieras. Tu carta de puerto indica cuántas cartas tiene el muelle y qué opciones tienes.
 - **Zarpar:** elige una de las misiones disponibles y resuélvela (ver «Las misiones»). Al terminarla, vuelves a puerto.
 
-Los dos puertos de El Caribe, Tortuga y Nassau, tienen las mismas tres opciones comunes y una opción propia:
+Los dos puertos del escenario El Caribe, Tortuga y Nassau, tienen las mismas tres opciones comunes y una opción propia:
 
 - **Astillero:** repara 3 daños y quita todos los Estados del Barco.
 - **Taberna:** cura 3 heridas y quita todos los Estados de tus Tripulantes. Las Ventajas se quedan.
@@ -278,6 +322,9 @@ Como tú decides el orden de los efectos que se aplican a la vez, en la Taberna 
 
 ### Las misiones
 
+> [!epigrafe] Viejo lobo de mar
+> «Un mapa no vale nada. Lo que vale es el hombre que sabe leerlo y no se ahoga por el camino.»
+
 Siempre hay **tres misiones disponibles**. Cada vez que una deja de estarlo, se repone con la carta de arriba del mazo de Misiones.
 
 Hay dos clases de misión:
@@ -289,10 +336,10 @@ Hay dos clases de misión:
 
 Para zarpar, elige una misión disponible.
 
-Las misiones de Naturaleza y de Ciudad que están lejos de tu isla llevan una franja azul con un número bajo el icono de Entorno: es su **Distancia**, y son **misiones lejanas**. Para zarpar a ellas, tienes que **cubrir la Distancia**: agota Tripulantes cuya NAV sume al menos ese número. Son los que llevan el barco y se quedan a bordo. La NAV que da tu Barco también cuenta. Si no llegas, puedes completar la diferencia descartando cartas de tu mano con icono de NAV. Si ni así llegas, no puedes zarpar a esa misión.
+Las misiones de Naturaleza y de Ciudad que están lejos de tu isla llevan una franja azul con un número bajo el icono de Entorno: es su **Distancia**, y son **misiones lejanas**. Para zarpar a ellas, tienes que **cubrir la Distancia**: agota Tripulantes cuya NAV sume al menos ese número. La NAV que da tu Barco también cuenta. Si no llegas, puedes completar la diferencia descartando cartas de tu mano con icono de NAV. Si ni así llegas, no puedes zarpar a esa misión.
 
 > [!tema]
-> Llegar ya cansa: alguien ha llevado el timón muchas noches seguidas.
+> Llegar ya cansa: alguien ha llevado el timón muchas noches seguidas, y esos se quedan a bordo cuidando el barco.
 
 Una misión sin franja azul tiene Distancia 0: está en tu propia isla. Las misiones de Mar no tienen Distancia, porque navegar ya es la misión.
 
@@ -306,7 +353,7 @@ Una misión sin franja azul tiene Distancia 0: está en tu propia isla. Las misi
 
 #### Revelar cartas de Peligro
 
-Revela la carta de arriba del mazo de Peligros y lee **solo el encuentro de su Entorno**: en una misión de Mar, el encuentro de Mar. Resuélvelo, pon sobre la carta de misión tantas fichas de Avance como indique su mapa y descarta la carta de Peligro (salvo que diga que se queda en juego: ver «Cartas que se quedan en juego»). Después revela otra. Sigue así hasta reunir el Avance que pide la misión, o hasta que te retires.
+Revela la carta de arriba del mazo de Peligros y lee **solo el encuentro de su Entorno**: en una misión de Mar, el encuentro de Mar. Resuélvelo, gana su Avance (ver el párrafo siguiente) y ponlo en fichas sobre la carta de misión. Descarta la carta de Peligro (salvo que diga que se queda en juego: ver «Cartas que se quedan en juego»). Después revela otra. Sigue así hasta reunir el Avance que pide la misión, o hasta que te retires.
 
 Cada encuentro te da Avance. Un **encuentro sin Prueba** solo da su Avance y aplica su efecto, sin revelar Destino. Un **encuentro con Prueba** pone a prueba a tu tripulación y lleva dos valores de Avance, «Avance 3 / 2»: si superas la Prueba ganas el primero y, si no la superas (la fallas o no comprometes a nadie), el segundo.
 
@@ -335,6 +382,8 @@ Algunos encuentros piden menos si tienes un Rasgo concreto («NAV 4, NAV 2 con u
 #### Lo que dicen los encuentros
 
 Los encuentros de Peligro usan unas cuantas expresiones que conviene conocer antes de jugar. Todas tienen su entrada en la Referencia de reglas.
+
+**Al revelarse.** Se aplica en cuanto revelas el encuentro, antes de elegir y antes de comprometer a nadie.
 
 **Elige.** El encuentro te da dos opciones y escoges una antes de comprometer a nadie. Si una opción es un pago (descartar cartas, agotar Tripulantes…) y no puedes pagarla entera, no se ofrece. Cuando una opción es pagar y la otra hacer la Prueba, pagar cuenta como superarla: ganas el primer número de su Avance sin hacer la Prueba ni revelar Destino.
 
@@ -448,6 +497,9 @@ Superada o no, si la misión tenía un mazo propio, sepáralo y devuélvelo al m
 
 ### Heridas, daño y penalizaciones
 
+> [!epigrafe] Matasanos
+> «Tráemelo antes de que se enfríe. Lo que no se cose hoy se entierra mañana.»
+
 #### Heridas
 
 Cuando un efecto inflige heridas «a un Tripulante», eliges a cualquiera de tus Tripulantes, preparado o agotado, Capitán incluido. Si fallas una Prueba con Tripulantes comprometidos, reparte las heridas de ese fallo entre ellos.
@@ -512,6 +564,9 @@ Cada ficha dice lo que hace y cómo se quita: encontrarás la lista completa en 
 
 ### Ganar y perder
 
+> [!epigrafe] Catalina «la Enganchadora» Rojas
+> «A un pirata lo recuerdan por lo que robó o por cómo lo colgaron. Elige pronto.»
+
 **Ganas la partida** en el momento en que ocurre una de estas cosas:
 
 - Llegas a la reputación de tu modo de partida: 12 en una corta, 18 en una normal o 24 en una larga.
@@ -523,34 +578,49 @@ Cada ficha dice lo que hace y cómo se quita: encontrarás la lista completa en 
 - Se acaba el tiempo: cuando, al empezar un turno, no queda ninguna carta en el mazo de Escenario, juegas ese último turno entero. Al terminarlo, pierdes.
 - No queda ninguna misión disponible ni en el mazo de Misiones.
 
+> [!tema]
+> La temporada se acaba. Si no tienes nombre cuando llegue, tu tripulación buscará otro capitán.
+
 > [!ejemplo] El último turno
 > Llegas al último turno con 15 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que da 3. Reclutas todo lo que puedes pagar y zarpas. Si la superas, llegas a 18 y ganas. Si te retiras o te hundes, pierdes.
 
 ### Ejemplo de juego
 
+> [!epigrafe] Cuaderno de bitácora de Diego «Garra» Mendoza
+> «Primer día con la Sombra del Alba. Viento del este, mar picada y la tripulación justa. Bastará.»
+
 > [!grafico] ejemplo-de-juego
 
 Así transcurre el primer turno de una partida normal con Diego en Tortuga.
 
-**Inicio.** Albert revela la primera carta del mazo de Escenario: «Rumores del tesoro». Si zarpa este turno, empezará la misión con 1 de Avance (2 si fuera un capítulo II o III). Diego ya está preparado y todavía no hay cartas con munición.
+**Inicio.** Revelas la primera carta del mazo de Escenario: «Rumores del tesoro». Si zarpas este turno, empezarás la misión con 1 de Avance (2 si fuera un capítulo II o III). Diego ya está preparado y todavía no tienes cartas con munición.
 
-**Jugar cartas.** Tiene 5 cartas en la mano: «¡Al abordaje!», «Mano firme al timón», «Ojo avizor», «Reflejos de gato» y «Soborno». En el muelle de Tortuga hay cuatro cartas: el Rufián de cubierta (coste 1), el Bucanero veterano (coste 2), el Sable de abordaje (coste 1) y el Matasanos (coste 2).
+**Jugar cartas.** Tienes 5 cartas en la mano: «¡Al abordaje!», «Mano firme al timón», «Ojo avizor», «Reflejos de gato» y «Soborno». En el muelle de Tortuga hay cuatro cartas: el Rufián de cubierta (coste 1), el Bucanero veterano (coste 2), el Sable de abordaje (coste 1) y el Matasanos (coste 2).
 
-Albert recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor», y al Rufián descartando «Reflejos de gato». Se queda con dos cartas: «¡Al abordaje!» (dos iconos de COM) y «Mano firme al timón» (dos iconos de NAV). Termina el paso: descarta el Sable y el Matasanos y revela cuatro cartas nuevas para el muelle.
+Reclutas al Bucanero veterano descartando «Soborno» y «Ojo avizor», y al Rufián descartando «Reflejos de gato». Te quedas con dos cartas: «¡Al abordaje!» (dos iconos de COM) y «Mano firme al timón» (dos iconos de NAV). Terminas el paso: descartas el Sable y el Matasanos y revelas cuatro cartas nuevas para el muelle.
 
-**Zarpar.** Albert zarpa a «Rumbo a mar abierto», una misión de Mar 3. Es una misión inicial, así que «Rumores del tesoro» le da 1 ficha de Avance: empieza con 1. La misión dice que el Barco acaba de salir de carena: la primera vez que fuera a sufrir daño en ella, lo evitaría.
+**Zarpar.** Zarpas a «Rumbo a mar abierto», una misión de Mar 3. Es una misión inicial, así que «Rumores del tesoro» te da 1 ficha de Avance: empiezas con 1. La misión dice que el Barco acaba de salir de carena: la primera vez que fuera a sufrir daño en ella, lo evitaría.
 
-Revela la primera carta de Peligro y lee su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 con Avance 3 / 2: 3 si la supera y 2 si no. Compromete a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 4 ya llegaría, pero el Destino puede subir la dificultad y después no podrá añadir cartas de la mano. Así que añade ahora «Mano firme al timón», con dos iconos de NAV: 6.
+> [!tema]
+> Una misión inicial es lo que hace todo capitán nuevo: salir, volver con algo y que se sepa.
 
-Revela el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubiera comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta se habría quedado en 4; con ella tiene 6 y la supera. Gana 3 de Avance y, por superar la Turbonada, 1 más: la deja atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y la supera.
+Revelas la primera carta de Peligro y lees su encuentro de Mar: «Turbonada a popa», una Prueba de NAV 4 con Avance 3 / 2: 3 si la superas y 2 si no. Comprometes a Diego (NAV 2) y al Bucanero (NAV 1): suman 3. La Sombra del Alba da +1 a las Pruebas de NAV en el Mar: 4. Ambos quedan agotados. El Bucanero no recibe el +1 de Diego: Diego solo lo da mientras está preparado, y al comprometerse se agota. Con 4 contra 4 ya llegarías, pero el Destino puede subir la dificultad y después no podrás añadir cartas de la mano. Así que añades ahora «Mano firme al timón», con dos iconos de NAV: 6.
 
-**Recompensa.** Gana 1 de reputación y, como el Barco no ha sufrido daño en esta misión, cumple la Gesta: 1 más. Busca una Mejora de barco: elige los Cañones de bronce del mazo de muelle, los pone en el muelle y baraja ese mazo. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
+Revelas el Destino: «Coral bajo la quilla», +1 a la dificultad (sería +0 si hubieras comprometido a un Vigía). La Prueba pide ahora 5. Sin la carta te habrías quedado en 4; con ella tienes 6 y la superas. Ganas 3 de Avance y, por superar la Turbonada, 1 más: la dejas atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y la superas.
 
-**Final.** Albert se queda con «¡Al abordaje!» y roba cuatro para tener cinco. El turno siguiente podrá adquirir los Cañones de bronce, que siguen esperando en el muelle.
+**Recompensa.** Ganas 1 de reputación y, como el Barco no ha sufrido daño en esta misión, cumples la Gesta: 1 más. Buscas una Mejora de barco: eliges los Cañones de bronce del mazo de muelle, los pones en el muelle y barajas ese mazo. Apartas la misión y repones las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y vuelves a puerto.
+
+**Final.** Te quedas con «¡Al abordaje!» y robas cuatro para tener cinco. El turno siguiente podrás adquirir los Cañones de bronce, que siguen esperando en el muelle.
 
 ### Construir tu mazo
 
+> [!epigrafe] Catalina «la Enganchadora» Rojas
+> «Una buena tripulación no se encuentra. Se elige, se paga y se aguanta.»
+
 Cuando conozcas el juego, podrás construir tus propios mazos para cualquier Capitán. Un mazo de jugador tiene dos partes:
+
+> [!tema]
+> Cada capitán tiene su manera de hacer las cosas. Elige a tu gente para la tuya.
 
 | Mazo | Cartas | Qué lleva |
 | --- | --- | --- |
@@ -566,6 +636,10 @@ Al construir tus mazos, sigue estas reglas:
 
 > [!consejo]
 > El mazo del capitán es tu reloj personal: cuanto más corto sea, antes tendrás que rebarajarlo y perder un día. Un mazo de 40 cartas aguanta más, pero tarda más en traerte las cartas que necesitas.
+
+### Mazos de inicio
+
+> [!grafico] mazos-de-inicio
 
 ## Parte 2 · Referencia de reglas
 
@@ -607,13 +681,20 @@ Una carta está **preparada** (en vertical) o **agotada** (girada). Solo un Trip
 
 *Véase también:* Distancia, Mejora, Prueba.
 
+### Al revelarse
+
+Texto de algunos encuentros. Se aplica en cuanto revelas el encuentro, antes de nada más: antes de elegir, si el encuentro dice **Elige**, y antes de comprometer a nadie a su Prueba. Si dice que un Tripulante no puede comprometerse, ese Tripulante no puede comprometerse a la Prueba de ese encuentro.
+
+> [!ejemplo] Al revelarse
+> En el Mar revelas «Registro del guardacostas» (EXP 3): «**Al revelarse:** **Incautado:** pon 2 cartas de tu mano debajo de la carta de misión; con la Patente de corso, solo 1». Tienes 4 cartas en la mano y no llevas la Patente: antes de comprometer a nadie, pones 2 debajo de la misión. A la Prueba solo puedes añadir, por sus iconos, las 2 que te quedan, así que das las que menos te sirven para EXP.
+
 ### Al zarpar
 
 Etiqueta de las capacidades de una misión que se resuelven al empezarla, después de cubrir la Distancia. Si una es opcional, decides en ese momento si la usas. Las de tus cartas que dicen «Después de zarpar» se resuelven en el mismo momento.
 
 ### Avance
 
-Lo que reúnes durante una misión. Se marca con fichas de Avance sobre la carta de misión. Cada encuentro da el Avance indicado en su mapa. En cuanto tienes el Avance que pide la misión, la superas.
+Lo que reúnes durante una misión. Se marca con fichas de Avance sobre la carta de misión. Cada encuentro da el Avance indicado junto a su icono de mapa. En cuanto tienes el Avance que pide la misión, la superas.
 
 - **Avance X / Y.** Un encuentro con Prueba lleva dos valores: ganas X si superas la Prueba e Y si no la superas (la fallas, no comprometes a nadie o el Destino dice que la fallas). Los encuentros sin Prueba y los que se quedan en juego tienen un solo valor.
 - En un «Elige», si pagas en vez de hacer la Prueba, cuenta como superada: ganas X.
@@ -747,6 +828,7 @@ La franja inferior de cada carta de Peligro. Se revela en cada Prueba, después 
 - Si no comprometiste a nadie, aplica también su línea Sin oposición, si la tiene.
 - Un Destino se lee en cualquier Entorno. Si daña el Barco fuera del Mar, aplica la alternativa que indica.
 - Cada carta de Peligro sale una sola vez por vuelta del mazo: como encuentro o como Destino.
+- **Fallas la Prueba:** si el Destino lo dice, fallas la Prueba sea cual sea tu total: aplicas el efecto de fallo y ganas el segundo número del Avance (Y).
 - Algunos Destinos ponen su carta encima del mazo de Peligros: ver Persigue.
 
 *Véase también:* Persigue, Prueba, Sin oposición.
@@ -934,7 +1016,7 @@ Tus Eventos y Habilidades, de 30 a 40 cartas. Robas de él tu mano. Si tienes qu
 
 ### Mazo de Peligros
 
-El mazo de El Caribe del que revelas encuentros y Destinos. Si se acaba, baraja su pila de descartes.
+El mazo del escenario del que revelas encuentros y Destinos. Si se acaba, baraja su pila de descartes.
 
 ### Mazo propio
 
@@ -1067,6 +1149,8 @@ Tortuga y Nassau tienen las mismas tres opciones comunes, además de su opción 
 - **Astillero:** repara 3 daños y quita todos los Estados del Barco.
 - **Taberna:** cura 3 heridas y quita todos los Estados de tus Tripulantes. Las Ventajas se quedan.
 - **Tablón de encargos:** pon al fondo del mazo de Misiones las misiones disponibles que quieras y repón.
+- **Soplos de la Hermandad** (opción propia de Tortuga): pon 2 de Avance en una misión disponible.
+- **Entrenamiento** (opción propia de Nassau): una ficha de Entrenamiento a un Tripulante.
 
 Quitas los Estados antes de curar o reparar, así la curación no se gasta en Envenenado o Sangrando ni la reparación en Vía de agua. Si una carta cierra una opción durante un turno («Cuarentena» cierra la Taberna), ese turno no puedes elegirla.
 
@@ -1137,7 +1221,7 @@ Texto de algunos encuentros con Prueba. Solo un Tripulante puede comprometerse a
 
 ### Sin oposición
 
-Línea de algunos Destinos que solo se aplica cuando no comprometes a nadie a la Prueba. En los Destinos favorables suele decir «no se aplica el efecto de fallo».
+Línea de algunos Destinos que solo se aplica cuando no comprometes a nadie a la Prueba. En los Destinos favorables suele decir **Sin fallo**: no se aplica el efecto de fallo.
 
 - Sin nadie comprometido, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea Sin oposición diga que no se aplica el efecto de fallo.
 

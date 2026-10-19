@@ -17,7 +17,7 @@ const htmlDe = (bloques: Bloque[]) => bloques.map((b) => ('html' in b ? b.html :
 describe('Los dos libros salen de las dos partes del reglamento', () => {
   it('«Aprende a jugar» tiene los capítulos de la Parte 1, en orden', () => {
     expect(r.aprende.capitulos.map((c) => c.titulo).slice(0, 3)).toEqual(['Resumen del juego', 'Objetivo del juego', 'Componentes'])
-    expect(r.aprende.capitulos.at(-1)?.titulo).toBe('Construir tu mazo')
+    expect(r.aprende.capitulos.map((c) => c.titulo).slice(-2)).toEqual(['Construir tu mazo', 'Mazos de inicio'])
   })
 
   it('la «Referencia de reglas» tiene sus entradas de la A a la Z, con su letra', () => {
@@ -36,10 +36,10 @@ describe('Los dos libros salen de las dos partes del reglamento', () => {
 })
 
 describe('Marcas nuevas', () => {
-  it('las 8 notas temáticas pedidas salen como notas, delante del párrafo que comentan', () => {
+  it('las notas temáticas (las 8 primeras y las 10 de la última ronda) salen como notas, delante del párrafo que comentan', () => {
     const todo = [...r.aprende.capitulos.flatMap((c) => c.bloques), ...r.referencia.entradas.flatMap((e) => e.bloques)]
     const notas = htmlDe(todo).match(/<aside class="nota-tema">/g) ?? []
-    expect(notas.length).toBeGreaterThanOrEqual(8)
+    expect(notas.length).toBeGreaterThanOrEqual(18)
     const pagar = htmlDe(capitulo('El turno').bloques)
     expect(pagar.indexOf('Cada carta de tu mano es tiempo')).toBeLessThan(pagar.indexOf('<strong>pagar un coste</strong>'))
   })
@@ -68,14 +68,51 @@ describe('Marcas nuevas', () => {
     expect(capitulo('Ejemplo de juego').especial).toBe('ejemplo-de-juego')
   })
 
-  it('sin epígrafe ni nota, el capítulo los deja pendientes (lo dibuja la maqueta)', () => {
-    expect(capitulo('Resumen del juego')).toMatchObject({ epigrafe: null, conTema: false })
-    expect(capitulo('Las misiones').conTema).toBe(true)
+  it('cada capítulo de «Aprende a jugar» lleva su epígrafe y su nota temática (salvo «Mazos de inicio», un apéndice)', () => {
+    const capitulos = r.aprende.capitulos.filter((c) => c.especial !== 'mazos-de-inicio')
+    expect(capitulos).toHaveLength(13)
+    for (const c of capitulos) {
+      expect(c.epigrafe, c.titulo).not.toBeNull()
+      expect(c.conTema, c.titulo).toBe(true)
+    }
+    expect(capitulo('Resumen del juego').epigrafe).toMatchObject({ autor: 'Diego «Garra» Mendoza' })
+    expect(capitulo('Ejemplo de juego').epigrafe?.autor).toBe('Cuaderno de bitácora de Diego «Garra» Mendoza')
+    // Una nota dentro de un punto de lista también cuenta (Preparación, paso 6).
+    expect(htmlDe(capitulo('Preparación de la partida').bloques)).toMatch(/<li>[\s\S]*?<aside class="nota-tema">\s*<p>El muelle es donde se busca gente/)
   })
 
   it('las tablas de «Componentes» son fichas de componentes', () => {
     const grupos = capitulo('Componentes').bloques.filter((b) => b.tipo === 'componentes')
     expect(grupos.map((g) => (g.tipo === 'componentes' ? g.grupo : ''))).toEqual(['Cartas del jugador', 'Cartas del escenario El Caribe'])
+  })
+})
+
+describe('Textos de la última ronda (docs/archivo/reglamento-textos.md)', () => {
+  it('«Al revelarse» se explica en «Lo que dicen los encuentros», antes de «Elige», y tiene su entrada en la Referencia, en orden', () => {
+    const html = htmlDe(capitulo('Las misiones').bloques)
+    expect(html.indexOf('<strong>Al revelarse —</strong>')).toBeGreaterThan(0)
+    expect(html.indexOf('<strong>Al revelarse —</strong>')).toBeLessThan(html.indexOf('<strong>Elige —</strong>'))
+    const titulos = r.referencia.entradas.map((e) => e.titulo)
+    expect(titulos.slice(titulos.indexOf('Agotar y preparar'), titulos.indexOf('Al zarpar') + 1)).toEqual(['Agotar y preparar', 'Al revelarse', 'Al zarpar'])
+    const entrada = r.referencia.entradas.find((e) => e.titulo === 'Al revelarse')
+    expect(entrada?.bloques.find((b) => b.tipo === 'ejemplo')).toMatchObject({ cartas: [{ id: 'p2_aduana', partes: ['mar'] }, { id: 'patente', partes: [] }] })
+  })
+
+  it('el ejemplo de juego va en segunda persona, como los demás ejemplos', () => {
+    expect(fuente).not.toMatch(/Albert/)
+    expect(htmlDe(capitulo('Ejemplo de juego').bloques)).toContain('Revelas la primera carta del mazo de Escenario')
+  })
+
+  it('«Mazos de inicio» es el último apartado de «Aprende a jugar» y se dibuja desde los datos', () => {
+    expect(r.aprende.capitulos.at(-1)).toMatchObject({ titulo: 'Mazos de inicio', especial: 'mazos-de-inicio', bloques: [] })
+  })
+
+  it('«ver «Mazos de inicio», al final de este libro» remite a su página en «Aprende a jugar» y al otro libro en la Referencia', () => {
+    const aprende = htmlDe(r.comoUsar.aprende)
+    expect(aprende).toContain('véase <a class="ref" href="#a-mazos-de-inicio">«Mazos de inicio»</a>, <span class="pag">pág.&nbsp;<a class="num-pag" href="#a-mazos-de-inicio"></a></span>, al final de este libro)')
+    const referencia = htmlDe(r.comoUsar.referencia)
+    expect(referencia).toContain('(véase <i>Aprende a jugar</i>, «Mazos de inicio») y consultar')
+    expect(fuente).not.toMatch(/Catálogo de cartas/)
   })
 })
 

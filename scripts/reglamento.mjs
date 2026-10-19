@@ -44,6 +44,7 @@ async function paginaCon(pagina, selector, condicion = 'cualquiera') {
         }
         return -1
       }
+      if (cond === 'texto') return paginas.findIndex((p) => [...p.querySelectorAll('.nota-tema, p, li')].some((e) => e.textContent?.includes(sel)))
       return paginas.findIndex((p) => p.querySelector(sel))
     },
     [selector, condicion],
@@ -89,10 +90,14 @@ async function capturar(pagina, libro) {
     await guardar('12-el-turno-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '.turno')))
     for (const tipo of ['puerto', 'mision', 'peligro']) await guardar(`13-anatomia-${tipo}-de-cerca.png`, await pagina.locator(`.anatomia-${tipo} .anatomia-cartas`).screenshot())
     await guardar('14-ejemplo-de-juego-panel-de-la-mision.png', await pagina.locator('.panel-mision').screenshot())
+    await guardar('17-nota-tematica-nueva.png', await capturaDePagina(pagina, await paginaCon(pagina, 'El Caribe de 1670 no tiene héroes', 'texto')))
+    await guardar('18-mazos-de-inicio.png', await capturaDePagina(pagina, await paginaCon(pagina, '#a-mazos-de-inicio')))
   } else {
     await guardar('6-referencia-de-reglas-doble-pagina.png', await dobleDesde(pagina, await paginaCon(pagina, '#r-destino')))
     await guardar('15-ejemplo-dano-en-ciudad.png', await pagina.locator('.ejemplo', { hasText: 'Daño en Ciudad' }).screenshot())
     await guardar('16-dano-en-ciudad-pagina.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-dano')))
+    await guardar('19-entrada-al-revelarse.png', await capturaDePagina(pagina, await paginaCon(pagina, '#r-al-revelarse')))
+    await guardar('20-indice-de-terminos.png', await capturaDePagina(pagina, await paginaCon(pagina, '#indice-de-terminos')))
   }
 }
 

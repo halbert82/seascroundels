@@ -833,8 +833,8 @@ function PanelEjemplo({ grupos, ancho, className = '', children }: { grupos: Gru
   )
 }
 
-/** ¿Empieza este bloque por «**Zarpar —**»? Desde ahí, el texto va en la página derecha. */
-const empiezaZarpar = (b: Bloque) => b.tipo === 'html' && /^<p><strong>Zarpar\b/.test(b.html)
+/** ¿Empieza este bloque por «**Zarpar —**» (con su nota temática delante, si la lleva)? Desde ahí, el texto va en la página derecha. */
+const empiezaZarpar = (b: Bloque) => b.tipo === 'html' && /^(<aside class="nota-tema">[\s\S]*?<\/aside>\s*)?<p><strong>Zarpar\b/.test(b.html)
 
 export function EjemploDeJuego({ c }: { c: Capitulo }) {
   const corte = c.bloques.findIndex(empiezaZarpar)

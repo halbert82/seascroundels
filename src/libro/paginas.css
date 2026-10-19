@@ -132,6 +132,7 @@ a.pagref::after {
 .apertura,
 .capitulo.pagina-nueva,
 .referencia,
+.indice-terminos,
 .creditos {
   break-before: page;
 }

@@ -3,7 +3,8 @@
 // al título empieza fuera. Este ajuste se mete en su corte (onOverflow) y lo corrige:
 //   - un recuadro, un diagrama o un ejemplo que empieza en la página pero no cabe pasa entero a la siguiente;
 //   - un título que se queda al pie con una o dos líneas debajo (o con nada, porque lo que sigue no cabe) pasa a la
-//     página siguiente con lo que le sigue.
+//     página siguiente con lo que le sigue;
+//   - una palabra no se parte con guion entre dos páginas («cart-» / «as»): pasa entera a la siguiente.
 // En los dos casos, solo si en la página queda algo antes (si no, no hay arreglo: se corta donde se pueda).
 
 import { Handler } from 'pagedjs'
@@ -138,13 +139,34 @@ function tituloHuerfano(nodo: Node, y: number, repartido: Element, limites: DOMR
   }
 }
 
+/**
+ * Si el corte parte una palabra (con guion al final de la página: «cart-» / «as»), la palabra entera pasa a la
+ * página siguiente. Devuelve el rango nuevo, o null si el corte ya cae entre palabras.
+ */
+function sinPalabraPartida(desborde: Range, repartido: Element): Range | null {
+  const { startContainer: c, startOffset: o } = desborde
+  if (c.nodeType !== Node.TEXT_NODE) return null
+  const texto = c.textContent ?? ''
+  const letra = /[\p{L}\p{N}­]/u
+  if (o <= 0 || o >= texto.length || !letra.test(texto.charAt(o - 1)) || !letra.test(texto.charAt(o))) return null
+  let inicio = o
+  while (inicio > 0 && letra.test(texto.charAt(inicio - 1))) inicio--
+  // Una palabra sola en todo el texto: no hay sitio mejor donde cortar.
+  if (inicio === 0 && !hayAntes(c, repartido)) return null
+  const r = document.createRange()
+  r.setStart(c, inicio)
+  if (repartido.lastChild) r.setEndAfter(repartido.lastChild)
+  return r
+}
+
 export class CortesDePagina extends Handler {
   onOverflow(desborde: Range | undefined, repartido: HTMLElement, limites: DOMRect): Range | undefined {
     if (!desborde) return undefined
     const punto = puntoDeCorte(desborde, repartido, limites)
     if (!punto) return undefined
     let { nodo, y } = punto
-    let rango: Range | undefined
+    // 0. Una palabra no se parte entre dos páginas.
+    let rango: Range | undefined = sinPalabraPartida(desborde, repartido) ?? undefined
     // 1. Un bloque que no se parte, entero a la página siguiente.
     const entero = bloqueEntero(nodo, repartido, limites.height)
     if (entero) {
