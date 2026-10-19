@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO, type EntradaCatalogo } from '../../engine/catalogo.ts'
-import { COLOR_TIPO, vistaDeCarta, type VistaCapitulo, type VistaJugador, type VistaPeligro, type VistaPuerto } from './vista.ts'
+import { COLOR_MOD, COLOR_TIPO, vistaDeCarta, type VistaCapitulo, type VistaJugador, type VistaPeligro, type VistaPuerto } from './vista.ts'
 
 function carta(num: number): EntradaCatalogo {
   const entrada = CATALOGO.find((c) => c.num === num)
@@ -30,7 +30,7 @@ describe('vista de las cartas', () => {
     expect(v.arte?.encuadre).toBe('center top')
   })
 
-  it('Tripulante neutral con coste y Mejora de barco con Espacio, munición y Rasgo «Cañón»', () => {
+  it('Tripulante neutral con coste y Mejora de barco con Espacio y Rasgo «Cañón»', () => {
     const carpintero = vistaDeCarta(carta(14)) as VistaJugador
     expect(carpintero.tipoTexto).toBe('Tripulante · Neutral')
     expect(carpintero.color).toBe(COLOR_TIPO.tripulanteNeutral)
@@ -39,7 +39,7 @@ describe('vista de las cartas', () => {
     const canones = vistaDeCarta(carta(29)) as VistaJugador
     expect(canones.espacio).toBe(2)
     expect(canones.rasgos).toEqual(['Cañón'])
-    expect(canones.pestanasDer).toEqual([{ icono: 'municion', valor: 2, color: '#5A4532' }])
+    expect(canones.pestanasDer).toEqual([]) // la munición ya no existe: sin pestaña a la derecha
   })
 
   it('las Mejoras con una sola cifra se dibujan grandes y las Habilidades no tienen texto', () => {
@@ -58,7 +58,8 @@ describe('vista de las cartas', () => {
       { texto: '1', icono: 'dano' },
       { texto: '1', icono: 'mejora', rota: true },
     ])
-    expect(v.destino.mod).toBe('−0') // fase 10: el signo del Destino se invierte
+    expect(v.destino.mod).toBe('0') // el «−0» se dibuja «0», sin signo y en pardo
+    expect(v.destino.colorMod).toBe(COLOR_MOD['0'])
 
     const fiebres = vistaDeCarta(carta(87)) as VistaPeligro
     expect(fiebres.encuentros[0]?.opciones[0]?.alternativa).toEqual({ texto: '1 con', rasgo: 'Cirujano' })

@@ -29,9 +29,10 @@ export const COLOR_TIPO = {
 export const COLOR_HABILIDAD: Record<Habilidad, string> = { NAV: '#24609A', COM: '#8E2B23', EXP: '#8A5E0F' }
 export const COLOR_ENTORNO: Record<Entorno, string> = { mar: '#1D5872', nat: '#3D6631', ciu: '#8A4F2E' }
 
-/** Color del modificador del Destino (fase 10: se suma al total del jugador; «+N» es bueno, en verde, y «−N», malo). */
+/** Color del modificador del Destino (fase 10: se suma al total del jugador; «+N» es bueno, en verde, y «−N», malo). El
+ * «0» va sin signo y en pardo, neutro. */
 export const COLOR_MOD: Record<string, string> = {
-  '−0': '#6A5640',
+  '0': '#6A5640',
   '−1': '#8E2B23',
   '−2': '#8E2B23',
   '+1': '#3D6631',
@@ -313,12 +314,18 @@ function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): Vista
   return vista
 }
 
+/** «−0», «+0» o «0» se dibujan igual: un «0» sin signo (decisión de Albert, 19 de octubre de 2026). */
+export function modificadorDestino(mod: string): string {
+  return /^[−+-]?0$/.test(mod.trim()) ? '0' : mod
+}
+
 function vistaDestino(d: DestinoDatos, v2 = false): VistaDestino {
-  const colorMod = COLOR_MOD[d.mod]
+  const mod = modificadorDestino(d.mod)
+  const colorMod = COLOR_MOD[mod]
   if (!colorMod) throw new Error(`Modificador de Destino desconocido: ${d.mod}`)
   return {
     nombre: d.nombre,
-    mod: d.mod,
+    mod,
     colorMod,
     ambientacion: d.ambientacion,
     // Fase 10: en el Destino, «+N» suma al total del jugador (verde) y «−N» le resta (rojo), como en el resto del texto.
@@ -407,7 +414,6 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         tipoTexto: 'Mejora de barco',
         coste: c.coste,
         espacio: c.espacio,
-        pestanasDer: c.municion > 0 ? [{ icono: 'municion', valor: c.municion, color: '#5A4532' }] : [],
         rasgos: c.canon ? ['Cañón'] : [],
         texto: parsearTexto(c.texto),
         textoClase: esCifraSola(c.texto) ? 'big' : '',

@@ -110,12 +110,12 @@ export function Destino({ d, entraDuranteLaPartida }: { d: VistaDestino; entraDu
 // cada encuentro y la letra se ajusta sola hasta que todo cabe.
 
 /**
- * La Prueba (fase 10): a la izquierda, justo encima de Éxito y Fallo, con el icono y la dificultad grandes. Si es una X
- * («X = 2 + tus Mejoras de barco…»), su nota va al lado.
+ * La Prueba, en su columna a la izquierda de Éxito y Fallo: el icono y la dificultad grandes y, debajo, la alternativa
+ * por Rasgo y la nota (si es una X, «X = 2 + tus Mejoras de barco…»).
  */
 function Prueba2({ e, nota }: { e: VistaEncuentro; nota: TextosEncuentro['nota'] }) {
   return (
-    <p className="test2">
+    <div className="test2">
       {e.opciones.map((o, i) => (
         <Fragment key={i}>
           {i > 0 && <span className="sep">/</span>}
@@ -125,7 +125,7 @@ function Prueba2({ e, nota }: { e: VistaEncuentro; nota: TextosEncuentro['nota']
           </span>
           {o.alternativa && (
             <span className="alt">
-              ({o.alternativa.texto} <i>{o.alternativa.rasgo}</i>)
+              {o.alternativa.texto} <i>{o.alternativa.rasgo}</i>
             </span>
           )}
         </Fragment>
@@ -135,13 +135,33 @@ function Prueba2({ e, nota }: { e: VistaEncuentro; nota: TextosEncuentro['nota']
           <TextoCarta segmentos={nota} />
         </span>
       )}
-    </p>
+    </div>
   )
 }
 
-function Encuentro2({ e }: { e: VistaEncuentro }) {
+/** Cuánto texto lleva la nota de la Prueba. */
+function largoDe(segmentos: TextosEncuentro['nota']): number {
+  return segmentos.reduce((n, s) => n + ('texto' in s ? s.texto.length : 'valor' in s ? s.valor.length + 2 : 2), 0)
+}
+
+/**
+ * Si la nota o la alternativa de la Prueba son largas, su columna se ensancha para que no queden en una tira. Se decide
+ * por carta: los tres filetes quedan alineados.
+ */
+function pideColumnaAncha(e: VistaEncuentro): boolean {
+  const nota = e.textos ? largoDe(e.textos.nota) : 0
+  return nota > 34 || e.opciones.some((o) => o.alternativa && o.alternativa.texto.length + o.alternativa.rasgo.length > 12)
+}
+
+/**
+ * Un encuentro de los Peligros 2.0 (fase 10, segunda revisión de Albert). Arriba, el nombre, el Avance y las etiquetas;
+ * debajo, el texto del encuentro a todo el ancho; y al pie, la Prueba a la izquierda, un filete y, a su derecha, Éxito
+ * encima de Fallo. Sin Prueba, el efecto ocupa todo el ancho.
+ */
+function Encuentro2({ e, ancha }: { e: VistaEncuentro; ancha: boolean }) {
   const t = e.textos
   if (!t) return null
+  const conResultados = t.exito.length > 0 || t.fallo.length > 0
   return (
     <div className="encp v2" data-entorno={e.entorno}>
       {e.entorno && (
@@ -167,22 +187,48 @@ function Encuentro2({ e }: { e: VistaEncuentro }) {
           {!e.conPrueba && <span className="sinp">Sin Prueba</span>}
         </div>
         {t.texto.length > 0 && (
-          <p className="t2">
+          <p className={e.conPrueba ? 't2 fx' : 't2 fx solo'}>
             <TextoCarta segmentos={t.texto} />
           </p>
         )}
-        {e.conPrueba && <Prueba2 e={e} nota={t.nota} />}
-        {t.exito.length > 0 && (
-          <p className="t2 win">
-            <span className="lbl">Éxito</span>
-            <TextoCarta segmentos={t.exito} />
-          </p>
-        )}
-        {t.fallo.length > 0 && (
-          <p className="t2 fail">
-            <span className="lbl">Fallo</span>
-            <TextoCarta segmentos={t.fallo} />
-          </p>
+        {e.conPrueba ? (
+          <div className={ancha ? 'resol ancha' : 'resol'}>
+            <Prueba2 e={e} nota={t.nota} />
+            {conResultados && (
+              <>
+                <span className="filete" aria-hidden="true" />
+                <div className="outs2">
+                  {t.exito.length > 0 && (
+                    <p className="t2 win">
+                      <span className="lbl">Éxito</span>
+                      <TextoCarta segmentos={t.exito} />
+                    </p>
+                  )}
+                  {t.fallo.length > 0 && (
+                    <p className="t2 fail">
+                      <span className="lbl">Fallo</span>
+                      <TextoCarta segmentos={t.fallo} />
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <>
+            {t.exito.length > 0 && (
+              <p className="t2 win">
+                <span className="lbl">Éxito</span>
+                <TextoCarta segmentos={t.exito} />
+              </p>
+            )}
+            {t.fallo.length > 0 && (
+              <p className="t2 fail">
+                <span className="lbl">Fallo</span>
+                <TextoCarta segmentos={t.fallo} />
+              </p>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -216,24 +262,49 @@ function Destino2({ d }: { d: VistaDestino }) {
   )
 }
 
-/** Tamaños de letra que se prueban, de mayor a menor, hasta que el texto cabe (fase 10: puede crecer más). */
-const TAMANOS = [14, 13.5, 13, 12.5, 12, 11.5, 11, 10.5, 10, 9.6, 9.2, 8.8, 8.4, 8, 7.6, 7.2]
+/**
+ * Tamaños de letra que se prueban, de mayor a menor, hasta que el texto cabe. No baja de 9 px: por debajo ya no se lee
+ * bien en la mesa. Si un texto no cabe ni así, hay que acortarlo (scripts/capturar-peligros.mjs lo avisa).
+ */
+const TAMANOS = [14, 13.5, 13, 12.5, 12, 11.5, 11, 10.5, 10, 9.5, 9]
 
-function CartaPeligro2({ v }: { v: VistaPeligro }) {
+/**
+ * Prueba los tamaños de letra de mayor a menor hasta que nada se desborda. Se repite cuando terminan de cargar las
+ * fuentes: medido con la de reserva, el texto ocupa otra cosa.
+ */
+function useLetraQueCabe(tamanos: readonly number[]) {
   const ref = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
     const carta = ref.current
     if (!carta) return
-    const desborda = () => [...carta.querySelectorAll<HTMLElement>('.encb, .dest')].some((x) => x.scrollHeight > x.clientHeight + 0.5)
-    for (const t of TAMANOS) {
-      carta.style.setProperty('--fs2', `${t}px`)
-      if (!desborda()) break
+    const ajustar = () => {
+      const desborda = () =>
+        [...carta.querySelectorAll<HTMLElement>('.encb, .dest')].some((x) => x.scrollHeight > x.clientHeight + 0.5)
+      for (const t of tamanos) {
+        carta.style.setProperty('--fs2', `${t}px`)
+        if (!desborda()) break
+      }
+    }
+    ajustar()
+    let vivo = true
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.status !== 'loaded') {
+      void document.fonts.ready.then(() => {
+        if (vivo) ajustar()
+      })
+    }
+    return () => {
+      vivo = false
     }
   })
+  return ref
+}
+
+function CartaPeligro2({ v }: { v: VistaPeligro }) {
+  const ref = useLetraQueCabe(TAMANOS)
   return (
     <div className="card enc v2" ref={ref}>
       {v.encuentros.map((e, i) => (
-        <Encuentro2 key={i} e={e} />
+        <Encuentro2 key={i} e={e} ancha={v.encuentros.some(pideColumnaAncha)} />
       ))}
       <Destino2 d={v.destino} />
       <div className="hznum">{v.codigo}</div>
@@ -258,23 +329,14 @@ const FONDO_MAZO_PROPIO =
   'linear-gradient(160deg, color-mix(in srgb, #3B302A, #fff 12%) 0%, color-mix(in srgb, #3B302A, #000 55%) 100%)'
 
 function CartaMazoPropio2({ v }: { v: VistaMazoPropio }) {
-  const ref = useRef<HTMLDivElement>(null)
-  useLayoutEffect(() => {
-    const carta = ref.current
-    if (!carta) return
-    const desborda = () => [...carta.querySelectorAll<HTMLElement>('.encb, .dest')].some((x) => x.scrollHeight > x.clientHeight + 0.5)
-    for (const t of TAMANOS_PROPIO) {
-      carta.style.setProperty('--fs2', `${t}px`)
-      if (!desborda()) break
-    }
-  })
+  const ref = useLetraQueCabe(TAMANOS_PROPIO)
   return (
     <div className="card enc solo v2" ref={ref}>
       <div className="soloh">{v.mazo}</div>
       <div className="soloart" style={{ background: FONDO_MAZO_PROPIO }}>
         <span>Ilustración pendiente</span>
       </div>
-      <Encuentro2 e={v.encuentro} />
+      <Encuentro2 e={v.encuentro} ancha={pideColumnaAncha(v.encuentro)} />
       <Destino2 d={v.destino} />
       {/* Fase 10: es del mazo de historia; su pie deja sitio a la pestaña con el número (la cabecera ya dice su mazo). */}
       <div className="hznum">{v.codigo}</div>
@@ -282,8 +344,8 @@ function CartaMazoPropio2({ v }: { v: VistaMazoPropio }) {
   )
 }
 
-/** Las cartas de mazo propio tienen un solo encuentro: la letra puede ser algo mayor. */
-const TAMANOS_PROPIO = [17, 16, 15, 14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.6, 9.2, 8.8]
+/** Las cartas de mazo propio tienen un solo encuentro: la letra puede ser algo mayor (y tampoco baja de 9 px). */
+const TAMANOS_PROPIO = [17, 16, 15, 14, 13.4, 12.8, 12.2, 11.6, 11, 10.5, 10, 9.5, 9]
 
 export function CartaMazoPropio({ v }: { v: VistaMazoPropio }) {
   if (v.v2) return <CartaMazoPropio2 v={v} />

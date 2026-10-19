@@ -66,6 +66,18 @@ describe('marcado de los textos', () => {
     expect(agotar[1]).toEqual({ tipo: 'texto', texto: ' Repara ', negrita: false })
   })
 
+  it('entiende el icono de quitar un Estado, distinto del de curar', () => {
+    expect(parsearTexto('[quitarestado]: Quita un Estado.')[0]).toEqual({ tipo: 'icono', icono: 'quitarestado', negrita: false, pegado: ':' })
+    expect(parsearNumero('1 quitarestado')).toEqual({ tipo: 'numero', valor: '1', icono: 'quitarestado', color: 'tinta' })
+    expect(parsearNumero('1 quitarestado g').color).toBe('verde')
+    expect(parsearNumero('1 quitarestado r').color).toBe('rojo')
+    expect(parsearNumero('2 quitarestado k').color).toBe('tinta')
+    expect(parsearTexto('{1 curar g} y {1 quitarestado g}').filter((s) => s.tipo === 'numero').map((s) => s.tipo === 'numero' && s.icono)).toEqual([
+      'curar',
+      'quitarestado',
+    ])
+  })
+
   it('interpreta las fichas de los recuadros de efecto', () => {
     expect(parsearFichas('1 [dano] · 1 [mejora]')).toEqual([
       { texto: '1', icono: 'dano' },
