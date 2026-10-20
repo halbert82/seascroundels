@@ -336,15 +336,40 @@ export function BloqueBarco() {
 // ---------------------------------------------------------------------------
 // Puerto
 
+/**
+ * Fase 12: cuándo llegó a las misiones disponibles un capítulo II, III o IV (al superar el anterior va encima del mazo de
+ * Misiones y sale enseguida). 0: en este turno; 1: en el anterior; null: antes, o no es un capítulo de esos.
+ */
+export function capituloRecienLlegado(s: Estado, inst: InstId): 0 | 1 | null {
+  const e = porId(copia(s, inst).id)
+  if (e.tipo !== 'capitulo' || e.carta.capitulo === 'I') return null
+  const aviso = `Nueva misión disponible: «${e.carta.nombre}».`
+  let turnos = 0
+  for (let i = s.registro.length - 1; i >= 0 && turnos <= 1; i--) {
+    const r = s.registro[i]
+    if (r?.texto === aviso) return turnos as 0 | 1
+    if (r?.tipo === 'turno') turnos++
+  }
+  return null
+}
+
 function Mision({ inst, escala }: { inst: InstId; escala: number }) {
   const { s } = useMesa()
   const id = copia(s, inst).id
   const distancia = valor(s, { tipo: 'distancia', mision: inst })
   const necesario = valor(s, { tipo: 'avanceNecesario', mision: inst })
   const minima = reputacionMinima(id)
+  const llegada = capituloRecienLlegado(s, inst)
+  const entrada = porId(id)
   return (
-    <div className="mision">
-      <CartaDe inst={inst} escala={escala} />
+    <div className={llegada !== null ? 'mision capitulo-nuevo' : 'mision'}>
+      {/* Un capítulo que acaba de llegar se voltea al entrar y lleva su marca hasta el final del turno siguiente. */}
+      <CartaDe inst={inst} escala={escala} {...(llegada === 0 ? { revelar: 'misiones' as const } : {})} />
+      {llegada !== null && entrada.tipo === 'capitulo' && (
+        <span className="mision-nueva" title="Al superar el capítulo anterior, este se puso encima del mazo de Misiones y salió enseguida.">
+          Capítulo {entrada.carta.capitulo} · nuevo
+        </span>
+      )}
       <div className="mision-datos">
         <span title="Avance que pide la misión">
           <Icono id="avance" /> {copia(s, inst).avance > 0 ? `${copia(s, inst).avance}/` : ''}

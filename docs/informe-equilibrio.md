@@ -9,27 +9,27 @@ Partida normal (12 de reputación, 11 cartas de Escenario), Diego en Tortuga con
 | Dato | Valor |
 | --- | --- |
 | Partidas | 1000 |
-| Victorias | 269 (26.9 %) |
-| … por reputación / por Panamá | 265 / 4 |
-| Reputación media al final | 7.9 |
-| Turnos de media por partida | 9.3 |
-| Turno medio de victoria | 10.2 |
-| Misiones superadas por partida | 6.80 |
-| Reputación media por zarpe | 0.89 |
-| Hundimientos por partida | 0.12 |
-| Tripulantes muertos por partida | 3.60 |
-| Rehenes capturados / perdidos por partida | 0.86 / 0.20 |
-| Misiones retiradas por partida | 1.75 |
-| Misiones falladas por partida (retiradas, falladas o hundidas) | 1.85 |
-| Heridas por misión | 0.92 |
-| Victorias con mazos de muelle variados (2000 partidas) | 26.5 % |
+| Victorias | 379 (37.9 %) |
+| … por reputación / por Panamá | 368 / 11 |
+| Reputación media al final | 8.1 |
+| Turnos de media por partida | 8.6 |
+| Turno medio de victoria | 9.4 |
+| Misiones superadas por partida | 5.78 |
+| Reputación media por zarpe | 1.01 |
+| Hundimientos por partida | 0.09 |
+| Tripulantes muertos por partida | 3.89 |
+| Rehenes capturados / perdidos por partida | 0.79 / 0.26 |
+| Misiones retiradas por partida | 2.00 |
+| Misiones falladas por partida (retiradas, falladas o hundidas) | 2.06 |
+| Heridas por misión | 1.10 |
+| Victorias con mazos de muelle variados (2000 partidas) | 37.1 % |
 
 ## Causas de derrota
 
 | Causa | Partidas | % de las derrotas |
 | --- | --- | --- |
-| Se acaba el tiempo | 501 | 68.5 % |
-| Capitán derrotado | 230 | 31.5 % |
+| Se acaba el tiempo | 354 | 57.0 % |
+| Capitán derrotado | 267 | 43.0 % |
 
 ## Avance con dos valores: la regla del juego y las anteriores
 
@@ -37,9 +37,9 @@ Las mismas 1000 partidas normales con cada regla para el Avance de un encuentro 
 
 | Regla | Victorias | Derrotas por tiempo | Derrotas por Capitán | Retiradas por partida | Turnos por partida |
 | --- | --- | --- | --- | --- | --- |
-| Regla del juego (fase 11): dificultad 3 o menos, 1 / 1; dura, 3 / 1 o 3 / 2 | 26.9 % | 50.1 % | 23.0 % | 1.75 | 9.3 |
-| Y = mitad de X, redondeando abajo (los 3 / 2 pasan a 3 / 1) | 9.4 % | 54.4 % | 36.2 % | 2.69 | 8.7 |
-| Antes del Avance doble: Avance entero siempre | 43.3 % | 40.7 % | 16.0 % | 1.24 | 9.6 |
+| Regla del juego (fase 11): dificultad 3 o menos, 1 / 1; dura, 3 / 1 o 3 / 2 | 37.9 % | 35.4 % | 26.7 % | 2.00 | 8.6 |
+| Y = mitad de X, redondeando abajo (los 3 / 2 pasan a 3 / 1) | 12.8 % | 43.4 % | 43.8 % | 2.76 | 8.0 |
+| Antes del Avance doble: Avance entero siempre | 50.4 % | 29.1 % | 20.5 % | 1.59 | 8.6 |
 
 ## Cartas de Escenario
 
@@ -47,20 +47,20 @@ Partidas normales y con mazos variados juntas (3000). «Pronto»: la carta está
 
 | Carta | Partidas «pronto» | Victorias «pronto» | Victorias «después o nunca» | Diferencia | Lo que elige el jugador automático |
 | --- | --- | --- | --- | --- | --- |
-| Escasez de pertrechos | 1272 | 23.9 % | 28.6 % | -4.7 | — |
-| La Armada patrulla | 1358 | 24.9 % | 28.1 % | -3.2 | Descartar 1 carta: 59.0 % · Poner «La Armada te persigue» encima del mazo de Peligros: 41.0 % |
-| Deserción | 1270 | 25.0 % | 27.8 % | -2.8 | Tu Tripulante de menor coste deserta y vuelve al muelle (sus Mejoras se descartan): 78.8 % · Pagar la soldada: descartar 2 cartas: 17.2 % · Pagar la soldada: descartar 3 cartas: 4.0 % |
-| Impuestos del gobernador | 1300 | 25.2 % | 27.8 % | -2.6 | Perder tu Mejora de mayor coste: 66.3 % · Descartar 2 cartas: 33.7 % |
-| Bando del virrey | 1291 | 25.9 % | 27.2 % | -1.3 | — |
-| Cuarentena | 1276 | 26.6 % | 26.6 % | +0.0 | — |
-| Rumores del tesoro | 1237 | 26.8 % | 26.5 % | +0.2 | — |
-| Mercado próspero | 1297 | 26.8 % | 26.5 % | +0.2 | — |
-| Fiesta de San Juan | 1335 | 27.0 % | 26.3 % | +0.7 | — |
-| Temporada de huracanes | 1277 | 27.1 % | 26.3 % | +0.8 | — |
-| Carpinteros de ribera | 1263 | 27.8 % | 25.8 % | +2.0 | Buscar una Mejora de barco y ponerla en el muelle: 84.5 % · Reparar 2 daños del Barco: 15.5 % |
-| Marineros sin barco | 1265 | 28.5 % | 25.2 % | +3.3 | — |
-| Feria en la isla | 1285 | 28.7 % | 25.1 % | +3.6 | — |
-| Vientos alisios | 1274 | 28.8 % | 25.0 % | +3.8 | — |
+| Impuestos del gobernador | 1300 | 35.7 % | 38.7 % | -3.0 | Perder tu Mejora de mayor coste: 70.3 % · Descartar 2 cartas: 29.7 % |
+| La Armada patrulla | 1358 | 35.8 % | 38.7 % | -2.9 | Descartar 1 carta: 59.3 % · Poner «La Armada te persigue» encima del mazo de Peligros: 40.7 % |
+| Temporada de huracanes | 1277 | 35.8 % | 38.6 % | -2.8 | — |
+| Bando del virrey | 1291 | 36.8 % | 37.9 % | -1.1 | — |
+| Escasez de pertrechos | 1272 | 36.8 % | 37.8 % | -1.1 | — |
+| Rumores del tesoro | 1237 | 36.8 % | 37.8 % | -1.1 | — |
+| Cuarentena | 1276 | 37.2 % | 37.5 % | -0.3 | — |
+| Deserción | 1270 | 37.2 % | 37.5 % | -0.3 | Tu Tripulante de menor coste deserta y vuelve al muelle (sus Mejoras se descartan): 78.7 % · Pagar la soldada: descartar 2 cartas: 18.3 % · Pagar la soldada: descartar 3 cartas: 3.0 % |
+| Mercado próspero | 1297 | 37.5 % | 37.3 % | +0.3 | — |
+| Feria en la isla | 1285 | 38.1 % | 36.9 % | +1.1 | — |
+| Marineros sin barco | 1265 | 38.2 % | 36.8 % | +1.4 | — |
+| Fiesta de San Juan | 1335 | 38.3 % | 36.7 % | +1.6 | — |
+| Vientos alisios | 1274 | 39.4 % | 35.9 % | +3.5 | — |
+| Carpinteros de ribera | 1263 | 40.1 % | 35.4 % | +4.7 | Buscar una Mejora de barco y ponerla en el muelle: 85.3 % · Reparar 2 daños del Barco: 14.7 % |
 
 ## Los 10 encuentros que más se fallan
 
@@ -68,16 +68,16 @@ Solo encuentros con al menos 20 Pruebas.
 
 | Encuentro (carta) | Pruebas | Fallos | % de fallo |
 | --- | --- | --- | --- |
-| Motín en cubierta (Motín) | 136 | 123 | 90.4 % |
-| El fortín del río (Bajo los cañones del Morro) | 46 | 40 | 87.0 % |
-| Ahorcan a uno de los vuestros (La horca) | 151 | 126 | 83.4 % |
-| La fiera en la bodega (El jaguar) | 147 | 121 | 82.3 % |
-| El falso mercante (El cazador de piratas) | 130 | 107 | 82.3 % |
-| Caimán en el estuario (El caimán) | 133 | 109 | 82.0 % |
-| Fragata a popa (La Armada de Barlovento) | 270 | 216 | 80.0 % |
-| Sus ahogados en la playa (El Holandés errante) | 59 | 47 | 79.7 % |
-| El barco fantasma (El Holandés errante) | 152 | 121 | 79.6 % |
-| Peaje del corsario (A sueldo) | 128 | 101 | 78.9 % |
+| El guardián de jade (El guardián de jade) | 24 | 23 | 95.8 % |
+| Motín en cubierta (Motín) | 125 | 111 | 88.8 % |
+| El falso mercante (El cazador de piratas) | 142 | 116 | 81.7 % |
+| Fragata a popa (La Armada de Barlovento) | 233 | 189 | 81.1 % |
+| Caimán en el estuario (El caimán) | 118 | 95 | 80.5 % |
+| Ahorcan a uno de los vuestros (La horca) | 151 | 121 | 80.1 % |
+| La fiera en la bodega (El jaguar) | 119 | 95 | 79.8 % |
+| Pasquines del cazador (El cazador de piratas) | 128 | 102 | 79.7 % |
+| Aguacero de huracán (Huracán) | 67 | 52 | 77.6 % |
+| Peaje del corsario (A sueldo) | 116 | 90 | 77.6 % |
 
 ## Peligros: cuánto daño hace cada carta
 
@@ -85,61 +85,61 @@ Cada carta del mazo de Peligros, de la que más daño hace a la que menos, conta
 
 | Carta | Sale | Pruebas | % fallo | Heridas / vez | Daño / vez | Avance perdido / vez | Rehenes | Muertes | Retiradas / hundidas | Índice | Como Destino | % fallo con su Destino |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| El Holandés errante | 368 | 361 | 72.9 % | 1.48 | 0.03 | 0.05 | 26 | 179 | 36 / 0 | 4.01 | 317 | 67.2 % |
-| La Armada de Barlovento | 670 | 669 | 71.3 % | 1.25 | 0.04 | 0.12 | 83 | 289 | 96 / 3 | 3.95 | 337 | 64.1 % |
-| El cazador de piratas | 353 | 350 | 76.9 % | 0.93 | 0.01 | 0.03 | 159 | 109 | 24 / 0 | 3.77 | 335 | 81.8 % |
-| Maremoto | 334 | 325 | 64.6 % | 0.43 | 0.71 | 0.13 | 79 | 60 | 38 / 22 | 3.25 | 343 | 79.3 % |
-| El caimán | 352 | 347 | 72.0 % | 1.14 | 0.23 | 0.04 | 4 | 129 | 25 / 4 | 3.16 | 317 | 73.8 % |
-| Los holandeses de Curazao | 354 | 352 | 61.4 % | 0.76 | 0.62 | 0.03 | 26 | 88 | 34 / 2 | 2.93 | 315 | 69.2 % |
-| El jaguar | 354 | 324 | 73.5 % | 1.36 | 0.02 | 0.03 | 2 | 99 | 37 / 1 | 2.88 | 338 | 78.1 % |
-| Huracán | 336 | 332 | 67.8 % | 0.39 | 0.56 | 0.01 | 4 | 60 | 118 / 0 | 2.77 | 343 | 81.3 % |
-| Motín | 345 | 181 | 85.6 % | 0.64 | 0.01 | 0.17 | 3 | 44 | 127 / 0 | 2.47 | 340 | 87.9 % |
-| La horca | 359 | 355 | 77.5 % | 0.25 | 0.47 | 0.02 | 128 | 36 | 17 / 5 | 2.39 | 332 | 78.9 % |
-| Sangre caliente | 359 | 361 | 36.8 % | 0.52 | 0.02 | 0.02 | 3 | 96 | 29 / 0 | 1.90 | 333 | 63.4 % |
-| Bajo los cañones del Morro | 359 | 309 | 65.0 % | 0.52 | 0.20 | 0.05 | 17 | 64 | 21 / 3 | 1.83 | 334 | 80.2 % |
-| Los grilletes del rey | 340 | 335 | 57.9 % | 0.26 | 0.31 | 0.01 | 62 | 32 | 26 / 5 | 1.77 | 336 | 55.7 % |
-| Viejas cuentas | 372 | 370 | 58.9 % | 0.80 | 0.03 | 0.04 | 4 | 54 | 27 / 1 | 1.71 | 312 | 64.4 % |
-| La serpiente marina | 352 | 347 | 61.1 % | 0.38 | 0.43 | 0.02 | 5 | 47 | 26 / 6 | 1.68 | 352 | 64.5 % |
-| El oro de los muertos | 344 | 337 | 51.3 % | 0.40 | 0.40 | 0.01 | 1 | 44 | 17 / 7 | 1.55 | 334 | 28.4 % |
-| Arenas movedizas | 354 | 292 | 47.3 % | 0.22 | 0.40 | 0.01 | 2 | 38 | 37 / 9 | 1.47 | 330 | 60.3 % |
-| Turbonada | 672 | 662 | 56.2 % | 0.30 | 0.20 | 0.03 | 11 | 84 | 83 / 2 | 1.46 | 331 | 55.9 % |
-| Arrecife | 343 | 342 | 52.0 % | 0.32 | 0.35 | 0.03 | 0 | 36 | 35 / 3 | 1.45 | 320 | 56.9 % |
-| Serpientes | 348 | 349 | 48.4 % | 0.46 | 0.01 | 0.07 | 2 | 57 | 25 / 0 | 1.43 | 339 | 35.7 % |
-| A sueldo | 339 | 339 | 59.3 % | 0.28 | 0.25 | 0.09 | 2 | 35 | 36 / 3 | 1.40 | 335 | 43.9 % |
-| Niebla | 362 | 357 | 47.9 % | 0.47 | 0.01 | 0.01 | 7 | 59 | 23 / 0 | 1.39 | 329 | 46.8 % |
-| La maldición del bokor | 339 | 326 | 61.3 % | 0.33 | 0.02 | 0.01 | 2 | 42 | 47 / 0 | 1.29 | 328 | 60.4 % |
-| Toque a rebato | 340 | 208 | 58.2 % | 0.36 | 0.22 | 0.02 | 3 | 28 | 37 / 1 | 1.29 | 333 | 31.2 % |
-| La broma | 359 | 358 | 59.5 % | 0.25 | 0.19 | 0.05 | 1 | 41 | 36 / 3 | 1.28 | 362 | 32.0 % |
-| El tahúr | 351 | 348 | 44.8 % | 0.50 | 0.02 | 0.01 | 1 | 47 | 20 / 0 | 1.25 | 281 | 57.7 % |
-| La Santa Compaña | 364 | 364 | 53.3 % | 0.19 | 0.01 | 0.02 | 65 | 27 | 23 / 0 | 1.24 | 330 | 77.3 % |
-| El hambre | 339 | 304 | 52.6 % | 0.43 | 0.01 | 0.03 | 2 | 43 | 19 / 0 | 1.17 | 319 | 33.9 % |
-| El Santo Oficio | 337 | 332 | 67.2 % | 0.33 | 0.02 | 0.04 | 6 | 41 | 26 / 0 | 1.16 | 320 | 59.7 % |
-| La sirena | 352 | 316 | 47.5 % | 0.39 | 0.02 | 0.02 | 4 | 42 | 24 / 0 | 1.14 | 332 | 95.8 % |
-| La sombra de Bastián | 659 | 655 | 58.8 % | 0.20 | 0.20 | 0.13 | 9 | 48 | 53 / 7 | 1.14 | 357 | 59.1 % |
-| Tiburones | 362 | 268 | 63.4 % | 0.30 | 0.00 | 0.03 | 3 | 30 | 35 / 0 | 0.98 | 343 | 57.1 % |
-| Ojos del gobernador | 336 | 340 | 48.8 % | 0.19 | 0.01 | 0.09 | 5 | 30 | 27 / 0 | 0.94 | 360 | 56.7 % |
-| Fiebre amarilla | 362 | 358 | 56.4 % | 0.18 | 0.02 | 0.05 | 30 | 26 | 16 / 1 | 0.92 | 323 | 59.1 % |
-| Paga atrasada | 340 | 189 | 60.8 % | 0.38 | 0.01 | 0.01 | 2 | 17 | 33 / 0 | 0.91 | 316 | 57.3 % |
-| Tortugas | 381 | 324 | 45.1 % | 0.19 | 0.02 | 0.02 | 0 | 36 | 32 / 0 | 0.87 | 308 | 25.6 % |
-| El quinto del rey | 369 | 365 | 51.8 % | 0.19 | 0.02 | 0.09 | 2 | 27 | 30 / 0 | 0.86 | 325 | 35.7 % |
-| Calma chicha | 328 | 290 | 46.9 % | 0.24 | 0.02 | 0.03 | 2 | 19 | 32 / 0 | 0.84 | 352 | 62.5 % |
-| Murciélagos vampiro | 637 | 639 | 40.7 % | 0.31 | 0.03 | 0.01 | 5 | 41 | 41 / 0 | 0.83 | 301 | 55.1 % |
-| La corriente del Golfo | 336 | 183 | 43.7 % | 0.16 | 0.20 | 0.01 | 0 | 21 | 19 / 2 | 0.80 | 343 | 25.1 % |
-| La aduana del rey | 352 | 320 | 52.8 % | 0.22 | 0.03 | 0.04 | 1 | 28 | 19 / 0 | 0.77 | 323 | 35.6 % |
-| Se busca | 321 | 322 | 50.0 % | 0.16 | 0.04 | 0.02 | 5 | 24 | 21 / 1 | 0.77 | 349 | 58.7 % |
-| Sol de justicia | 324 | 302 | 45.4 % | 0.15 | 0.10 | 0.09 | 1 | 19 | 17 / 1 | 0.76 | 319 | 70.8 % |
-| Bajamar | 356 | 210 | 51.4 % | 0.14 | 0.01 | 0.07 | 1 | 26 | 26 / 0 | 0.74 | 321 | 27.1 % |
-| Mal presagio | 387 | 352 | 56.8 % | 0.21 | 0.02 | 0.04 | 2 | 27 | 19 / 0 | 0.70 | 298 | 60.7 % |
-| Fuego de San Telmo | 360 | 357 | 35.6 % | 0.14 | 0.03 | 0.09 | 1 | 21 | 23 / 0 | 0.70 | 322 | 27.6 % |
-| Presa fácil | 381 | 212 | 37.3 % | 0.09 | 0.15 | 0.07 | 0 | 19 | 18 / 3 | 0.68 | 313 | 34.2 % |
-| Sin rumbo | 357 | 359 | 44.0 % | 0.13 | 0.03 | 0.02 | 2 | 20 | 29 / 0 | 0.66 | 314 | 30.3 % |
-| Cielo estrellado | 339 | 189 | 47.1 % | 0.09 | 0.01 | 0.08 | 0 | 15 | 16 / 0 | 0.50 | 331 | 44.7 % |
-| Barril de ron | 334 | 52 | 38.5 % | 0.12 | 0.00 | 0.01 | 0 | 18 | 8 / 0 | 0.42 | 355 | 32.7 % |
-| Restos del naufragio | 351 | 300 | 39.3 % | 0.11 | 0.01 | 0.02 | 0 | 13 | 11 / 0 | 0.39 | 319 | 31.0 % |
-| Desertores del rey | 359 | 54 | 33.3 % | 0.09 | 0.01 | 0.01 | 0 | 15 | 8 / 0 | 0.35 | 316 | 29.7 % |
-| Fuego a bordo | 333 | 233 | 36.5 % | 0.07 | 0.07 | 0.01 | 0 | 6 | 10 / 0 | 0.31 | 333 | 64.0 % |
-| Hermanos de la Costa | 349 | 159 | 27.7 % | 0.07 | 0.02 | 0.00 | 0 | 8 | 6 / 0 | 0.23 | 338 | 31.4 % |
-| Buena estrella | 341 | 3 | 66.7 % | 0.03 | 0.01 | 0.00 | 0 | 3 | 11 / 0 | 0.17 | 330 | 26.7 % |
+| La Armada de Barlovento | 670 | 673 | 73.8 % | 1.30 | 0.04 | 0.19 | 73 | 321 | 119 / 1 | 4.30 | 338 | 63.9 % |
+| El Holandés errante | 352 | 350 | 73.1 % | 1.48 | 0.02 | 0.04 | 15 | 172 | 51 / 0 | 4.05 | 334 | 69.5 % |
+| El cazador de piratas | 354 | 348 | 78.7 % | 0.98 | 0.02 | 0.03 | 158 | 122 | 34 / 0 | 4.04 | 337 | 76.6 % |
+| Huracán | 328 | 326 | 73.9 % | 0.71 | 0.45 | 0.02 | 2 | 103 | 121 / 0 | 3.56 | 337 | 81.6 % |
+| Los holandeses de Curazao | 341 | 337 | 61.1 % | 0.74 | 0.54 | 0.03 | 13 | 95 | 48 / 1 | 2.97 | 331 | 67.1 % |
+| El caimán | 375 | 366 | 72.7 % | 1.09 | 0.16 | 0.06 | 4 | 122 | 26 / 1 | 2.86 | 308 | 72.1 % |
+| Maremoto | 346 | 341 | 62.5 % | 0.44 | 0.42 | 0.22 | 81 | 46 | 47 / 6 | 2.78 | 338 | 76.0 % |
+| El jaguar | 332 | 279 | 72.8 % | 1.25 | 0.01 | 0.02 | 3 | 97 | 32 / 0 | 2.76 | 340 | 77.4 % |
+| Motín | 337 | 195 | 79.0 % | 0.62 | 0.01 | 0.23 | 3 | 51 | 129 / 0 | 2.63 | 345 | 86.7 % |
+| La horca | 359 | 353 | 77.6 % | 0.32 | 0.35 | 0.04 | 131 | 43 | 26 / 6 | 2.55 | 346 | 72.3 % |
+| Bajo los cañones del Morro | 353 | 305 | 63.0 % | 0.64 | 0.13 | 0.07 | 12 | 78 | 17 / 2 | 1.99 | 343 | 78.1 % |
+| Sangre caliente | 355 | 351 | 40.5 % | 0.58 | 0.01 | 0.02 | 0 | 93 | 36 / 0 | 1.97 | 346 | 63.6 % |
+| Viejas cuentas | 365 | 362 | 62.7 % | 0.88 | 0.03 | 0.04 | 3 | 66 | 24 / 0 | 1.90 | 321 | 62.3 % |
+| La serpiente marina | 356 | 351 | 60.4 % | 0.56 | 0.29 | 0.03 | 1 | 67 | 22 / 5 | 1.86 | 342 | 64.0 % |
+| Turbonada | 657 | 645 | 58.0 % | 0.42 | 0.13 | 0.04 | 4 | 104 | 104 / 3 | 1.73 | 344 | 58.7 % |
+| A sueldo | 337 | 340 | 60.0 % | 0.36 | 0.19 | 0.16 | 0 | 50 | 39 / 1 | 1.67 | 341 | 44.0 % |
+| Arrecife | 341 | 340 | 50.0 % | 0.33 | 0.30 | 0.02 | 1 | 44 | 42 / 4 | 1.58 | 332 | 61.7 % |
+| Los grilletes del rey | 339 | 337 | 61.4 % | 0.19 | 0.24 | 0.02 | 61 | 20 | 40 / 0 | 1.58 | 336 | 59.5 % |
+| El tahúr | 348 | 347 | 48.7 % | 0.64 | 0.02 | 0.01 | 1 | 58 | 27 / 0 | 1.58 | 316 | 62.3 % |
+| La maldición del bokor | 360 | 349 | 65.9 % | 0.38 | 0.01 | 0.02 | 4 | 50 | 69 / 0 | 1.57 | 309 | 56.6 % |
+| La sirena | 346 | 317 | 55.8 % | 0.52 | 0.01 | 0.03 | 1 | 61 | 33 / 0 | 1.56 | 360 | 93.3 % |
+| El oro de los muertos | 361 | 359 | 49.9 % | 0.48 | 0.30 | 0.02 | 2 | 47 | 21 / 5 | 1.55 | 334 | 32.9 % |
+| Serpientes | 362 | 363 | 51.8 % | 0.44 | 0.01 | 0.04 | 3 | 63 | 27 / 0 | 1.44 | 339 | 39.2 % |
+| Arenas movedizas | 338 | 256 | 51.2 % | 0.29 | 0.32 | 0.02 | 0 | 37 | 35 / 6 | 1.43 | 337 | 60.2 % |
+| La Santa Compaña | 342 | 342 | 54.4 % | 0.19 | 0.01 | 0.01 | 58 | 33 | 27 / 0 | 1.35 | 329 | 79.3 % |
+| La sombra de Bastián | 658 | 650 | 59.4 % | 0.25 | 0.13 | 0.20 | 10 | 64 | 57 / 4 | 1.30 | 346 | 60.4 % |
+| El Santo Oficio | 359 | 354 | 68.4 % | 0.38 | 0.01 | 0.03 | 4 | 52 | 30 / 0 | 1.29 | 312 | 56.7 % |
+| Niebla | 373 | 370 | 54.1 % | 0.40 | 0.01 | 0.03 | 4 | 58 | 21 / 0 | 1.25 | 331 | 54.1 % |
+| Tiburones | 375 | 272 | 63.2 % | 0.38 | 0.01 | 0.03 | 5 | 51 | 31 / 0 | 1.25 | 333 | 60.4 % |
+| Toque a rebato | 330 | 203 | 61.6 % | 0.37 | 0.15 | 0.01 | 1 | 34 | 31 / 1 | 1.24 | 361 | 32.7 % |
+| El hambre | 323 | 296 | 51.0 % | 0.40 | 0.02 | 0.04 | 4 | 43 | 21 / 0 | 1.23 | 323 | 37.8 % |
+| La broma | 346 | 345 | 59.7 % | 0.23 | 0.13 | 0.07 | 1 | 31 | 33 / 2 | 1.10 | 359 | 38.2 % |
+| Sol de justicia | 324 | 297 | 49.2 % | 0.21 | 0.08 | 0.11 | 4 | 35 | 19 / 1 | 1.05 | 346 | 65.6 % |
+| Bajamar | 332 | 202 | 52.0 % | 0.23 | 0.00 | 0.08 | 0 | 36 | 28 / 0 | 1.01 | 316 | 34.8 % |
+| Ojos del gobernador | 346 | 348 | 44.8 % | 0.21 | 0.01 | 0.10 | 4 | 30 | 31 / 0 | 0.98 | 337 | 62.6 % |
+| Murciélagos vampiro | 658 | 656 | 46.2 % | 0.33 | 0.02 | 0.03 | 2 | 41 | 70 / 0 | 0.95 | 328 | 61.9 % |
+| Se busca | 351 | 352 | 54.8 % | 0.24 | 0.02 | 0.06 | 3 | 38 | 19 / 0 | 0.94 | 333 | 63.1 % |
+| La aduana del rey | 353 | 314 | 58.6 % | 0.26 | 0.03 | 0.04 | 1 | 29 | 31 / 0 | 0.93 | 342 | 37.1 % |
+| El quinto del rey | 345 | 343 | 52.5 % | 0.24 | 0.01 | 0.09 | 0 | 28 | 31 / 0 | 0.93 | 328 | 33.2 % |
+| Calma chicha | 341 | 313 | 45.7 % | 0.23 | 0.01 | 0.02 | 2 | 30 | 30 / 0 | 0.90 | 344 | 64.2 % |
+| Paga atrasada | 353 | 211 | 63.5 % | 0.33 | 0.03 | 0.00 | 1 | 12 | 46 / 0 | 0.90 | 332 | 57.2 % |
+| Fiebre amarilla | 356 | 356 | 65.4 % | 0.18 | 0.01 | 0.06 | 26 | 23 | 18 / 0 | 0.87 | 337 | 55.5 % |
+| Fuego de San Telmo | 336 | 338 | 36.7 % | 0.16 | 0.02 | 0.18 | 0 | 20 | 26 / 0 | 0.84 | 336 | 29.8 % |
+| La corriente del Golfo | 333 | 179 | 43.6 % | 0.19 | 0.13 | 0.01 | 0 | 27 | 18 / 2 | 0.83 | 346 | 27.5 % |
+| Tortugas | 362 | 287 | 48.8 % | 0.18 | 0.03 | 0.02 | 0 | 31 | 26 / 0 | 0.79 | 346 | 30.6 % |
+| Presa fácil | 375 | 227 | 37.4 % | 0.12 | 0.10 | 0.10 | 0 | 21 | 19 / 0 | 0.70 | 335 | 37.3 % |
+| Barril de ron | 349 | 75 | 52.0 % | 0.20 | 0.01 | 0.01 | 0 | 32 | 9 / 2 | 0.68 | 361 | 33.5 % |
+| Sin rumbo | 353 | 358 | 47.8 % | 0.13 | 0.03 | 0.04 | 1 | 20 | 29 / 0 | 0.67 | 324 | 32.7 % |
+| Mal presagio | 373 | 333 | 57.1 % | 0.19 | 0.01 | 0.05 | 2 | 26 | 15 / 0 | 0.67 | 323 | 58.2 % |
+| Cielo estrellado | 348 | 216 | 44.0 % | 0.10 | 0.02 | 0.13 | 0 | 18 | 16 / 0 | 0.59 | 329 | 42.2 % |
+| Restos del naufragio | 361 | 287 | 46.0 % | 0.12 | 0.02 | 0.06 | 0 | 14 | 21 / 1 | 0.53 | 323 | 36.5 % |
+| Fuego a bordo | 364 | 243 | 40.7 % | 0.09 | 0.07 | 0.01 | 0 | 12 | 15 / 1 | 0.43 | 314 | 60.8 % |
+| Hermanos de la Costa | 322 | 140 | 39.3 % | 0.11 | 0.01 | 0.01 | 0 | 15 | 10 / 0 | 0.41 | 363 | 32.2 % |
+| Desertores del rey | 361 | 78 | 37.2 % | 0.11 | 0.02 | 0.00 | 0 | 18 | 8 / 0 | 0.40 | 315 | 33.3 % |
+| Buena estrella | 339 | 2 | 50.0 % | 0.01 | 0.01 | 0.00 | 0 | 1 | 5 / 0 | 0.07 | 323 | 28.8 % |
 
 ## Misiones
 
@@ -147,52 +147,52 @@ Por orden de la caja: cada cadena con sus capítulos I, II y III (y los II-a y I
 
 | Misión | Cap. | Ofrecida | Zarpes | Superada | Retirada | Hundida | A medias | % evitada | % éxito al zarpar | Rep. por zarpe |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Cobrar la deuda | I | 7825 | 476 | 464 | 11 | 1 | 0 | 93.9 % | 97.5 % | 0.01 |
-| Rumbo a mar abierto | I | 1465 | 1061 | 949 | 82 | 4 | 26 | 27.6 % | 89.4 % | 0.82 |
-| Agua y leña | I | 9214 | 54 | 52 | 2 | 0 | 0 | 99.4 % | 96.3 % | 0.00 |
-| El ladrón del puerto | I | 656 | 628 | 469 | 156 | 0 | 3 | 4.3 % | 74.7 % | 0.67 |
-| La casa del gobernador | I | 772 | 510 | 448 | 61 | 0 | 1 | 33.9 % | 87.8 % | 0.82 |
-| Rumbo a la isla | I | 1197 | 1057 | 435 | 541 | 50 | 31 | 11.7 % | 41.2 % | 0.36 |
-| La selva | II | 169 | 167 | 156 | 0 | 0 | 11 | 1.2 % | 93.4 % | 1.87 |
-| El templo | III | 44 | 44 | 40 | 4 | 0 | 0 | 0.0 % | 90.9 % | 2.52 |
-| El Paso de los Vientos | I | 1171 | 447 | 307 | 113 | 11 | 16 | 61.8 % | 68.7 % | 0.68 |
-| El galeón rezagado | II | 199 | 196 | 165 | 23 | 5 | 3 | 1.5 % | 84.2 % | 2.52 |
-| La huida con la plata | III | 53 | 53 | 44 | 6 | 2 | 1 | 0.0 % | 83.0 % | 3.36 |
-| Un soplo en Port Royal | I | 572 | 515 | 465 | 48 | 0 | 2 | 10.0 % | 90.3 % | 0.89 |
-| Seguirle por los muelles | II | 167 | 165 | 160 | 5 | 0 | 0 | 1.2 % | 97.0 % | 0.96 |
-| La goleta del correo | III | 64 | 63 | 49 | 11 | 2 | 1 | 1.6 % | 77.8 % | 1.56 |
-| Los muelles de Maracaibo | I | 705 | 519 | 439 | 75 | 1 | 4 | 26.4 % | 84.6 % | 0.81 |
-| La barra de noche | II-a | 125 | 123 | 108 | 9 | 3 | 3 | 1.6 % | 87.8 % | 2.25 |
-| Romper el bloqueo | II-b | 93 | 89 | 76 | 12 | 1 | 0 | 4.3 % | 85.4 % | 1.71 |
-| La cala de los contrabandistas | III | 48 | 47 | 43 | 3 | 0 | 1 | 2.1 % | 91.5 % | 1.83 |
-| Desembarco nocturno | I | 709 | 639 | 456 | 151 | 0 | 32 | 9.9 % | 71.4 % | 0.70 |
-| Por el aljibe | II-a | 170 | 169 | 164 | 4 | 0 | 1 | 0.6 % | 97.0 % | 1.86 |
-| Al asalto de las murallas | II-b | 66 | 64 | 46 | 18 | 0 | 0 | 3.0 % | 71.9 % | 1.98 |
-| El polvorín | III | 91 | 91 | 68 | 22 | 0 | 1 | 0.0 % | 74.7 % | 2.85 |
-| Niebla en el estrecho | I | 753 | 682 | 516 | 135 | 14 | 17 | 9.4 % | 75.7 % | 0.76 |
-| A bordo del fantasma | II | 229 | 228 | 205 | 18 | 0 | 5 | 0.4 % | 89.9 % | 1.81 |
-| El camarote del capitán | III | 68 | 68 | 60 | 5 | 2 | 1 | 0.0 % | 88.2 % | 2.65 |
-| El prisionero de Portobelo | I | 1145 | 470 | 296 | 169 | 0 | 5 | 59.0 % | 63.0 % | 0.53 |
-| Cruzar el istmo | II | 142 | 141 | 118 | 0 | 0 | 23 | 0.7 % | 83.7 % | 1.67 |
-| Las puertas de Panamá | III | 72 | 72 | 4 | 68 | 0 | 0 | 0.0 % | 5.6 % | -0.42 |
+| Cobrar la deuda | I | 6826 | 435 | 411 | 23 | 0 | 1 | 93.6 % | 94.5 % | -0.01 |
+| Rumbo a mar abierto | I | 1432 | 1055 | 944 | 81 | 5 | 25 | 26.3 % | 89.5 % | 0.82 |
+| Agua y leña | I | 8098 | 168 | 168 | 0 | 0 | 0 | 97.9 % | 100.0 % | 0.00 |
+| El ladrón del puerto | I | 363 | 344 | 250 | 90 | 1 | 3 | 5.2 % | 72.7 % | 0.66 |
+| La casa del gobernador | I | 391 | 248 | 208 | 38 | 0 | 2 | 36.6 % | 83.9 % | 0.78 |
+| Rumbo a la isla | I | 740 | 629 | 296 | 296 | 19 | 18 | 15.0 % | 47.1 % | 0.43 |
+| La selva | II | 271 | 261 | 243 | 0 | 0 | 18 | 3.7 % | 93.1 % | 1.86 |
+| La escalinata de los sacerdotes | III | 282 | 250 | 178 | 67 | 0 | 5 | 11.3 % | 71.2 % | 1.41 |
+| El templo | IV | 152 | 149 | 119 | 24 | 0 | 6 | 2.0 % | 79.9 % | 1.99 |
+| El Paso de los Vientos | I | 780 | 209 | 140 | 58 | 4 | 7 | 73.2 % | 67.0 % | 0.66 |
+| El galeón rezagado | II | 187 | 181 | 126 | 49 | 4 | 2 | 3.2 % | 69.6 % | 1.39 |
+| Al abordaje del galeón | III | 187 | 177 | 105 | 65 | 5 | 2 | 5.3 % | 59.3 % | 1.18 |
+| La huida con la plata | IV | 137 | 133 | 92 | 34 | 4 | 3 | 2.9 % | 69.2 % | 2.78 |
+| Seguirle por Port Royal | I | 831 | 248 | 148 | 100 | 0 | 0 | 70.2 % | 59.7 % | 0.52 |
+| La goleta del correo | II | 194 | 191 | 143 | 45 | 2 | 1 | 1.5 % | 74.9 % | 2.27 |
+| Los muelles de Maracaibo | I | 434 | 318 | 272 | 44 | 0 | 2 | 26.7 % | 85.5 % | 0.84 |
+| La barra de noche | II-a | 179 | 169 | 144 | 19 | 4 | 2 | 5.6 % | 85.2 % | 2.23 |
+| Romper el bloqueo | II-b | 144 | 136 | 91 | 39 | 3 | 3 | 5.6 % | 66.9 % | 1.33 |
+| La cala de los contrabandistas | III | 267 | 235 | 180 | 47 | 0 | 8 | 12.0 % | 76.6 % | 1.51 |
+| Desembarco nocturno | I | 477 | 417 | 298 | 104 | 0 | 15 | 12.6 % | 71.5 % | 0.71 |
+| Por el aljibe | II-a | 257 | 230 | 210 | 19 | 0 | 1 | 10.5 % | 91.3 % | 1.81 |
+| Al asalto de las murallas | II-b | 72 | 69 | 53 | 16 | 0 | 0 | 4.2 % | 76.8 % | 2.22 |
+| El polvorín | III | 341 | 255 | 186 | 68 | 0 | 1 | 25.2 % | 72.9 % | 2.38 |
+| A bordo del fantasma | I | 511 | 342 | 205 | 99 | 0 | 38 | 33.1 % | 59.9 % | 0.62 |
+| El camarote del capitán | II | 241 | 229 | 186 | 29 | 6 | 8 | 5.0 % | 81.2 % | 3.09 |
+| El prisionero de Portobelo | I | 792 | 349 | 211 | 137 | 0 | 1 | 55.9 % | 60.5 % | 0.49 |
+| Cruzar el istmo | II | 217 | 210 | 166 | 0 | 0 | 44 | 3.2 % | 79.0 % | 1.58 |
+| Las puertas de Panamá | III | 432 | 430 | 11 | 410 | 0 | 9 | 0.5 % | 2.6 % | -0.36 |
 
-**Las que más evita** (de las que se le ofrecieron al menos 100 veces): «Agua y leña» (99.4 %), «Cobrar la deuda» (93.9 %), «El Paso de los Vientos» (61.8 %), «El prisionero de Portobelo» (59.0 %), «La casa del gobernador» (33.9 %).
+**Las que más evita** (de las que se le ofrecieron al menos 100 veces): «Agua y leña» (97.9 %), «Cobrar la deuda» (93.6 %), «El Paso de los Vientos» (73.2 %), «Seguirle por Port Royal» (70.2 %), «El prisionero de Portobelo» (55.9 %).
 
-**Las que más elige:** «A bordo del fantasma» (0.4 %), «Por el aljibe» (0.6 %), «Cruzar el istmo» (0.7 %), «La selva» (1.2 %), «Seguirle por los muelles» (1.2 %).
+**Las que más elige:** «Las puertas de Panamá» (0.5 %), «La goleta del correo» (1.5 %), «El templo» (2.0 %), «La huida con la plata» (2.9 %), «El galeón rezagado» (3.2 %).
 
 ## Travesías completadas
 
-En cuántas partidas supera el capítulo III de cada travesía y, de esas, en cuántas gana.
+En cuántas partidas supera el último capítulo de cada travesía y, de esas, en cuántas gana.
 
 | Travesía | Partidas en que la completa | % de las partidas | Gana de esas |
 | --- | --- | --- | --- |
-| La fortaleza de San Felipe | 68 | 6.8 % | 72.1 % |
-| El barco fantasma | 60 | 6.0 % | 56.7 % |
-| El espía de Cádiz | 49 | 4.9 % | 46.9 % |
-| La Flota de la Plata | 44 | 4.4 % | 86.4 % |
-| El cargamento de Maracaibo | 43 | 4.3 % | 62.8 % |
-| El templo perdido | 40 | 4.0 % | 72.5 % |
-| El saqueo de Panamá | 4 | 0.4 % | 100.0 % |
+| La fortaleza de San Felipe | 186 | 18.6 % | 66.7 % |
+| El barco fantasma | 186 | 18.6 % | 71.0 % |
+| El cargamento de Maracaibo | 180 | 18.0 % | 65.6 % |
+| El espía de Cádiz | 143 | 14.3 % | 58.7 % |
+| El templo perdido | 119 | 11.9 % | 55.5 % |
+| La Flota de la Plata | 92 | 9.2 % | 76.1 % |
+| El saqueo de Panamá | 11 | 1.1 % | 100.0 % |
 
 ## Cartas en la partida predefinida
 
@@ -200,60 +200,60 @@ En cuántas partidas supera el capítulo III de cada travesía y, de esas, en cu
 
 | Carta | Tipo | Recluta / adquiere / juega | Usa su capacidad | Por iconos | Partidas en que se usó | % victorias si se usó | si no | Diferencia |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Grumete leal | Tripulante | 1130 | 362 | 0 | 782 | 28.5 % | 21.1 % | +7.4 |
-| Bucanero veterano | Tripulante | 633 | 0 | 0 | 574 | 29.4 % | 23.5 % | +6.0 |
-| Uñas largas | Tripulante | 937 | 727 | 0 | 716 | 28.1 % | 23.9 % | +4.1 |
-| Contrabandista del bajo Caribe | Tripulante | 535 | 392 | 0 | 480 | 29.8 % | 24.2 % | +5.6 |
-| Cañonero | Tripulante | 492 | 4 | 0 | 430 | 26.7 % | 27.0 % | -0.3 |
-| Carpintero de a bordo | Tripulante | 176 | 178 | 0 | 173 | 27.7 % | 26.7 % | +1.0 |
-| Matasanos | Tripulante | 80 | 114 | 0 | 78 | 29.5 % | 26.7 % | +2.8 |
-| Vigía inexperta | Tripulante | 262 | 445 | 0 | 250 | 26.8 % | 26.9 % | -0.1 |
-| Viejo lobo de mar | Tripulante | 740 | 401 | 0 | 665 | 28.6 % | 23.6 % | +5.0 |
-| Rastreador de la selva | Tripulante | 903 | 913 | 0 | 721 | 28.7 % | 22.2 % | +6.5 |
-| Casco reforzado | Mejora de barco | 420 | 0 | 0 | 419 | 36.3 % | 20.1 % | +16.1 |
-| Vela mayor | Mejora de barco | 985 | 2128 | 0 | 861 | 30.0 % | 7.9 % | +22.1 |
-| Hamacas en el entrepuente | Mejora de barco | 782 | 0 | 0 | 739 | 31.8 % | 13.0 % | +18.8 |
-| Botica de a bordo | Mejora de barco | 711 | 1212 | 0 | 681 | 32.0 % | 16.0 % | +16.0 |
-| Cañones de bronce | Mejora de barco | 248 | 54 | 0 | 248 | 33.5 % | 24.7 % | +8.7 |
-| Catalejo de latón | Mejora de tripulante | 810 | 0 | 0 | 768 | 30.3 % | 15.5 % | +14.8 |
-| Botín escondido | Evento | 677 | — | 23 | 632 | 29.3 % | 22.8 % | +6.4 |
-| Rumores de taberna | Evento | 220 | — | 23 | 214 | 32.2 % | 25.4 % | +6.8 |
-| Remiendo de urgencia | Evento | 181 | — | 71 | 176 | 27.3 % | 26.8 % | +0.5 |
-| Vendas y aguardiente | Evento | 137 | — | 48 | 133 | 30.1 % | 26.4 % | +3.7 |
-| El capitán hace guardia | Evento | 36 | — | 91 | 36 | 19.4 % | 27.2 % | -7.7 |
-| Pólvora de contrabando | Evento | 6 | — | 81 | 6 | 0.0 % | 27.1 % | -27.1 |
-| ¡A toda vela! | Evento | 134 | — | 38 | 133 | 27.1 % | 26.9 % | +0.2 |
-| Mapa robado | Evento | 212 | — | 12 | 204 | 33.3 % | 25.3 % | +8.1 |
-| ¡Arriba, perros! | Evento | 217 | — | 36 | 203 | 36.0 % | 24.6 % | +11.4 |
-| Ánimo renovado | Evento | 91 | — | 81 | 90 | 33.3 % | 26.3 % | +7.1 |
-| Reflejos de gato | Evento | 109 | — | 44 | 106 | 26.4 % | 27.0 % | -0.5 |
-| Sangre fría | Evento | 21 | — | 60 | 21 | 19.0 % | 27.1 % | -8.0 |
-| Cambio de rumbo | Evento | 63 | — | 67 | 63 | 30.2 % | 26.7 % | +3.5 |
-| Soborno | Evento | 38 | — | 56 | 38 | 39.5 % | 26.4 % | +13.1 |
-| ¡Todos a una! | Evento | 31 | — | 79 | 31 | 22.6 % | 27.0 % | -4.5 |
-| Ni un hombre atrás | Evento | 1 | — | 88 | 1 | 0.0 % | 26.9 % | -26.9 |
-| Náufrago en la playa | Evento | 679 | — | 40 | 631 | 25.7 % | 29.0 % | -3.3 |
-| Prisionero liberado | Evento | 38 | — | 90 | 38 | 47.4 % | 26.1 % | +21.3 |
-| Senda escondida | Evento | 40 | — | 45 | 40 | 40.0 % | 26.4 % | +13.6 |
-| Perdidos en la espesura | Evento | 4 | — | 57 | 4 | 25.0 % | 26.9 % | -1.9 |
-| Trampa en la maleza | Evento | 36 | — | 73 | 36 | 50.0 % | 26.0 % | +24.0 |
-| Lección aprendida | Evento | 49 | — | 80 | 48 | 33.3 % | 26.6 % | +6.8 |
-| Retirada a tiempo | Evento | 38 | — | 80 | 38 | 34.2 % | 26.6 % | +7.6 |
-| ¡Al abordaje! | Habilidad | — | — | 907 | 637 | 29.5 % | 22.3 % | +7.2 |
-| Mano firme al timón | Habilidad | — | — | 994 | 684 | 31.6 % | 16.8 % | +14.8 |
-| Ojo avizor | Habilidad | — | — | 805 | 578 | 31.7 % | 20.4 % | +11.3 |
-| Coraje de ron | Habilidad | — | — | 1325 | 791 | 29.3 % | 17.7 % | +11.6 |
-| Emboscada | Habilidad | — | — | 1106 | 726 | 30.3 % | 17.9 % | +12.4 |
-| Rumbo por las estrellas | Habilidad | — | — | 1249 | 774 | 29.7 % | 17.3 % | +12.5 |
-| Herbolaria | Tripulante | 480 | 160 | 0 | 435 | 26.0 % | 27.6 % | -1.6 |
-| Práctico del puerto | Tripulante | 975 | 56 | 0 | 759 | 29.2 % | 19.5 % | +9.7 |
-| La Lengua | Tripulante | 271 | 0 | 0 | 253 | 24.5 % | 27.7 % | -3.2 |
-| Fiador de la Hermandad | Tripulante | 711 | 195 | 0 | 602 | 26.9 % | 26.9 % | +0.0 |
-| Cataplasma | Evento | 161 | — | 50 | 160 | 27.5 % | 26.8 % | +0.7 |
-| Cortar por lo sano | Evento | 13 | — | 66 | 13 | 23.1 % | 27.0 % | -3.9 |
-| ¡A por ellos! | Evento | 28 | — | 412 | 28 | 25.0 % | 27.0 % | -2.0 |
-| Ron para los valientes | Evento | 198 | — | 30 | 188 | 34.6 % | 25.1 % | +9.5 |
-| Virar y dar la cara | Evento | 12 | — | 598 | 12 | 8.3 % | 27.1 % | -18.8 |
+| Grumete leal | Tripulante | 1117 | 366 | 0 | 772 | 42.5 % | 22.4 % | +20.1 |
+| Bucanero veterano | Tripulante | 638 | 0 | 0 | 569 | 40.8 % | 34.1 % | +6.7 |
+| Uñas largas | Tripulante | 951 | 708 | 0 | 731 | 41.7 % | 27.5 % | +14.2 |
+| Contrabandista del bajo Caribe | Tripulante | 545 | 362 | 0 | 492 | 42.7 % | 33.3 % | +9.4 |
+| Cañonero | Tripulante | 527 | 5 | 0 | 459 | 41.0 % | 35.3 % | +5.7 |
+| Carpintero de a bordo | Tripulante | 167 | 152 | 0 | 160 | 42.5 % | 37.0 % | +5.5 |
+| Matasanos | Tripulante | 89 | 137 | 0 | 88 | 37.5 % | 37.9 % | -0.4 |
+| Vigía inexperta | Tripulante | 236 | 355 | 0 | 227 | 40.5 % | 37.1 % | +3.4 |
+| Viejo lobo de mar | Tripulante | 726 | 410 | 0 | 649 | 43.9 % | 26.8 % | +17.1 |
+| Rastreador de la selva | Tripulante | 899 | 915 | 0 | 737 | 41.4 % | 28.1 % | +13.2 |
+| Casco reforzado | Mejora de barco | 341 | 0 | 0 | 340 | 45.9 % | 33.8 % | +12.1 |
+| Vela mayor | Mejora de barco | 948 | 1631 | 0 | 831 | 42.6 % | 14.8 % | +27.8 |
+| Hamacas en el entrepuente | Mejora de barco | 735 | 0 | 0 | 695 | 44.0 % | 23.9 % | +20.1 |
+| Botica de a bordo | Mejora de barco | 624 | 1149 | 0 | 601 | 44.4 % | 28.1 % | +16.4 |
+| Cañones de bronce | Mejora de barco | 183 | 37 | 0 | 182 | 48.4 % | 35.6 % | +12.8 |
+| Catalejo de latón | Mejora de tripulante | 720 | 0 | 0 | 683 | 42.5 % | 28.1 % | +14.4 |
+| Botín escondido | Evento | 634 | — | 33 | 592 | 42.6 % | 31.1 % | +11.4 |
+| Rumores de taberna | Evento | 228 | — | 21 | 213 | 45.5 % | 35.8 % | +9.7 |
+| Remiendo de urgencia | Evento | 143 | — | 61 | 137 | 36.5 % | 38.1 % | -1.6 |
+| Vendas y aguardiente | Evento | 160 | — | 69 | 154 | 39.6 % | 37.6 % | +2.0 |
+| El capitán hace guardia | Evento | 33 | — | 76 | 33 | 33.3 % | 38.1 % | -4.7 |
+| Pólvora de contrabando | Evento | 3 | — | 81 | 3 | 33.3 % | 37.9 % | -4.6 |
+| ¡A toda vela! | Evento | 96 | — | 39 | 95 | 44.2 % | 37.2 % | +7.0 |
+| Mapa robado | Evento | 176 | — | 18 | 169 | 44.4 % | 36.6 % | +7.8 |
+| ¡Arriba, perros! | Evento | 194 | — | 34 | 183 | 43.7 % | 36.6 % | +7.1 |
+| Ánimo renovado | Evento | 86 | — | 56 | 86 | 38.4 % | 37.9 % | +0.5 |
+| Reflejos de gato | Evento | 89 | — | 61 | 87 | 41.4 % | 37.6 % | +3.8 |
+| Sangre fría | Evento | 20 | — | 71 | 19 | 36.8 % | 37.9 % | -1.1 |
+| Cambio de rumbo | Evento | 53 | — | 61 | 51 | 43.1 % | 37.6 % | +5.5 |
+| Soborno | Evento | 34 | — | 55 | 34 | 26.5 % | 38.3 % | -11.8 |
+| ¡Todos a una! | Evento | 30 | — | 89 | 29 | 31.0 % | 38.1 % | -7.1 |
+| Ni un hombre atrás | Evento | 1 | — | 80 | 1 | 0.0 % | 37.9 % | -37.9 |
+| Náufrago en la playa | Evento | 708 | — | 31 | 661 | 40.7 % | 32.4 % | +8.2 |
+| Prisionero liberado | Evento | 45 | — | 67 | 45 | 53.3 % | 37.2 % | +16.2 |
+| Senda escondida | Evento | 54 | — | 48 | 54 | 48.1 % | 37.3 % | +10.8 |
+| Perdidos en la espesura | Evento | 15 | — | 60 | 15 | 53.3 % | 37.7 % | +15.7 |
+| Trampa en la maleza | Evento | 41 | — | 60 | 41 | 48.8 % | 37.4 % | +11.3 |
+| Lección aprendida | Evento | 32 | — | 78 | 32 | 37.5 % | 37.9 % | -0.4 |
+| Retirada a tiempo | Evento | 44 | — | 66 | 44 | 38.6 % | 37.9 % | +0.8 |
+| ¡Al abordaje! | Habilidad | — | — | 933 | 638 | 42.9 % | 29.0 % | +13.9 |
+| Mano firme al timón | Habilidad | — | — | 910 | 633 | 45.3 % | 25.1 % | +20.3 |
+| Ojo avizor | Habilidad | — | — | 782 | 566 | 44.2 % | 29.7 % | +14.4 |
+| Coraje de ron | Habilidad | — | — | 1250 | 770 | 41.0 % | 27.4 % | +13.6 |
+| Emboscada | Habilidad | — | — | 1113 | 729 | 42.1 % | 26.6 % | +15.5 |
+| Rumbo por las estrellas | Habilidad | — | — | 1181 | 754 | 42.0 % | 25.2 % | +16.8 |
+| Herbolaria | Tripulante | 514 | 186 | 0 | 457 | 40.5 % | 35.7 % | +4.8 |
+| Práctico del puerto | Tripulante | 959 | 48 | 0 | 746 | 41.7 % | 26.8 % | +14.9 |
+| La Lengua | Tripulante | 270 | 0 | 0 | 257 | 37.7 % | 38.0 % | -0.2 |
+| Fiador de la Hermandad | Tripulante | 758 | 198 | 0 | 609 | 39.2 % | 35.8 % | +3.4 |
+| Cataplasma | Evento | 148 | — | 68 | 148 | 39.2 % | 37.7 % | +1.5 |
+| Cortar por lo sano | Evento | 8 | — | 74 | 8 | 12.5 % | 38.1 % | -25.6 |
+| ¡A por ellos! | Evento | 24 | — | 431 | 24 | 37.5 % | 37.9 % | -0.4 |
+| Ron para los valientes | Evento | 194 | — | 30 | 188 | 47.9 % | 35.6 % | +12.3 |
+| Virar y dar la cara | Evento | 5 | — | 569 | 5 | 20.0 % | 38.0 % | -18.0 |
 
 ## Cartas del muelle con mazos variados (2000 partidas)
 
@@ -261,49 +261,49 @@ Cada partida usa un mazo de muelle legal de 20 cartas sacado al azar de las 42 d
 
 | Carta | Tipo | En el mazo | % victorias con ella en el mazo | sin ella | Diferencia | Recluta / adquiere | Usa su capacidad | % victorias si se usó | si no |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Filibustero borracho | Tripulante | 881 | 28.6 % | 24.8 % | +3.8 | 738 | 156 | 31.3 % | 22.3 % |
-| Patente de corso | Mejora de tripulante | 897 | 27.9 % | 25.4 % | +2.5 | 109 | 0 | 36.7 % | 26.6 % |
-| Ron de la reserva | Mejora de tripulante | 876 | 27.9 % | 25.4 % | +2.4 | 1284 | 955 | 30.1 % | 7.1 % |
-| Viejo lobo de mar | Tripulante | 922 | 27.5 % | 25.6 % | +1.9 | 659 | 421 | 31.6 % | 20.4 % |
-| La Lengua | Tripulante | 832 | 27.4 % | 25.9 % | +1.5 | 309 | 0 | 29.2 % | 26.5 % |
-| Herbolaria | Tripulante | 860 | 27.3 % | 25.9 % | +1.4 | 492 | 175 | 25.4 % | 29.2 % |
-| Cañonero | Tripulante | 857 | 27.3 % | 25.9 % | +1.4 | 566 | 50 | 27.4 % | 27.2 % |
-| Vela mayor | Mejora de barco | 926 | 27.2 % | 25.9 % | +1.3 | 919 | 1943 | 30.1 % | 6.9 % |
-| Espadachín errante | Tripulante | 901 | 27.2 % | 25.9 % | +1.3 | 483 | 0 | 28.4 % | 26.0 % |
-| Pedrero de borda | Mejora de barco | 856 | 27.2 % | 26.0 % | +1.3 | 586 | 150 | 32.3 % | 17.8 % |
-| Grumete leal | Tripulante | 1362 | 26.9 % | 25.7 % | +1.2 | 1919 | 564 | 28.8 % | 17.5 % |
-| Práctico del puerto | Tripulante | 892 | 27.1 % | 26.0 % | +1.1 | 864 | 54 | 29.3 % | 20.9 % |
-| Bucanero veterano | Tripulante | 1398 | 26.8 % | 25.7 % | +1.1 | 1158 | 0 | 28.9 % | 23.0 % |
-| Chalupa | Mejora de barco | 879 | 27.1 % | 26.0 % | +1.0 | 779 | 2406 | 30.6 % | 12.4 % |
-| Pistola de chispa | Mejora de tripulante | 878 | 27.0 % | 26.1 % | +0.9 | 404 | 81 | 34.1 % | 21.0 % |
-| Escapulario del Carmen | Mejora de tripulante | 860 | 27.0 % | 26.1 % | +0.8 | 392 | 227 | 34.3 % | 20.9 % |
-| Rufián de cubierta | Tripulante | 1360 | 26.8 % | 25.9 % | +0.8 | 1417 | 0 | 27.4 % | 25.2 % |
-| Carpintero de a bordo | Tripulante | 877 | 26.8 % | 26.3 % | +0.5 | 311 | 268 | 27.6 % | 26.4 % |
-| Catalejo de latón | Mejora de tripulante | 890 | 26.7 % | 26.3 % | +0.4 | 700 | 0 | 31.0 % | 14.7 % |
-| Brújula de latón | Mejora de tripulante | 880 | 26.7 % | 26.3 % | +0.4 | 715 | 0 | 28.9 % | 19.3 % |
-| Hamacas en el entrepuente | Mejora de barco | 816 | 26.7 % | 26.4 % | +0.4 | 659 | 0 | 31.0 % | 13.2 % |
-| Culebrina de proa | Mejora de barco | 850 | 26.7 % | 26.3 % | +0.4 | 555 | 198 | 33.5 % | 15.4 % |
-| Fiador de la Hermandad | Tripulante | 835 | 26.6 % | 26.4 % | +0.1 | 707 | 197 | 25.4 % | 28.8 % |
-| Matasanos | Tripulante | 892 | 26.6 % | 26.4 % | +0.1 | 255 | 379 | 29.6 % | 25.4 % |
-| Contrabandista del bajo Caribe | Tripulante | 877 | 26.6 % | 26.4 % | +0.1 | 481 | 435 | 28.2 % | 24.9 % |
-| Loro parlanchín | Tripulante | 855 | 26.5 % | 26.5 % | +0.1 | 563 | 274 | 28.1 % | 24.8 % |
-| Sable de abordaje | Mejora de tripulante | 840 | 26.4 % | 26.6 % | -0.1 | 663 | 0 | 31.7 % | 11.4 % |
-| Rodrigo «Carnicero» Ortega | Tripulante | 872 | 26.4 % | 26.6 % | -0.2 | 207 | 185 | 29.9 % | 25.3 % |
-| Cañones de bronce | Mejora de barco | 911 | 26.2 % | 26.7 % | -0.5 | 208 | 50 | 31.7 % | 24.6 % |
-| Rastreador de la selva | Tripulante | 826 | 26.2 % | 26.7 % | -0.6 | 620 | 631 | 28.0 % | 22.8 % |
-| Isabela «Cuervo» Saldaña | Tripulante | 881 | 26.1 % | 26.8 % | -0.7 | 771 | 269 | 28.7 % | 18.4 % |
-| Uñas largas | Tripulante | 858 | 25.9 % | 27.0 % | -1.1 | 855 | 679 | 26.5 % | 24.1 % |
-| Vigía inexperta | Tripulante | 839 | 25.7 % | 27.0 % | -1.3 | 324 | 503 | 27.5 % | 24.8 % |
-| Carronadas | Mejora de barco | 864 | 25.6 % | 27.2 % | -1.6 | 342 | 208 | 31.7 % | 21.6 % |
-| Víveres de reserva | Mejora de barco | 822 | 25.4 % | 27.2 % | -1.8 | 698 | 599 | 28.9 % | 19.6 % |
-| Casco reforzado | Mejora de barco | 842 | 25.4 % | 27.3 % | -1.9 | 337 | 0 | 26.1 % | 25.0 % |
-| La Cruz de Santa Bárbara | Mejora de barco | 853 | 25.1 % | 27.6 % | -2.5 | 302 | 11 | 30.1 % | 22.3 % |
-| Botica de a bordo | Mejora de barco | 882 | 25.1 % | 27.6 % | -2.6 | 516 | 1084 | 29.1 % | 19.7 % |
-| Amuleto vudú | Mejora de tripulante | 893 | 25.0 % | 27.7 % | -2.8 | 569 | 85 | 30.7 % | 16.0 % |
-| Coleto de cuero | Mejora de tripulante | 877 | 24.9 % | 27.8 % | -2.9 | 594 | 0 | 28.1 % | 18.9 % |
-| Velas de tormenta | Mejora de barco | 885 | 24.5 % | 28.1 % | -3.6 | 402 | 398 | 32.3 % | 18.0 % |
-| Íñigo «Lince» Quintero | Tripulante | 861 | 24.3 % | 28.2 % | -3.9 | 674 | 1120 | 24.7 % | 23.4 % |
-| Bandera negra | Mejora de barco | 882 | 24.1 % | 28.4 % | -4.2 | 469 | 0 | 31.0 % | 16.5 % |
+| Matasanos | Tripulante | 892 | 39.9 % | 34.9 % | +5.0 | 258 | 431 | 42.8 % | 38.8 % |
+| Práctico del puerto | Tripulante | 892 | 39.6 % | 35.2 % | +4.4 | 868 | 45 | 43.8 % | 26.4 % |
+| Viejo lobo de mar | Tripulante | 922 | 39.3 % | 35.3 % | +3.9 | 670 | 433 | 44.6 % | 29.7 % |
+| Chalupa | Mejora de barco | 879 | 38.8 % | 35.9 % | +2.9 | 737 | 2386 | 45.1 % | 16.8 % |
+| Ron de la reserva | Mejora de tripulante | 876 | 38.7 % | 35.9 % | +2.8 | 1277 | 972 | 42.7 % | 6.2 % |
+| Coleto de cuero | Mejora de tripulante | 877 | 38.5 % | 36.1 % | +2.5 | 547 | 0 | 45.3 % | 28.4 % |
+| Carpintero de a bordo | Tripulante | 877 | 38.5 % | 36.1 % | +2.5 | 311 | 278 | 40.8 % | 37.4 % |
+| Vela mayor | Mejora de barco | 926 | 38.4 % | 36.0 % | +2.4 | 865 | 1534 | 42.1 % | 19.0 % |
+| Bucanero veterano | Tripulante | 1398 | 37.8 % | 35.5 % | +2.3 | 1205 | 0 | 41.7 % | 30.0 % |
+| Rodrigo «Carnicero» Ortega | Tripulante | 872 | 38.3 % | 36.3 % | +2.0 | 194 | 160 | 42.3 % | 37.2 % |
+| Cañones de bronce | Mejora de barco | 911 | 38.1 % | 36.4 % | +1.7 | 164 | 23 | 50.0 % | 35.5 % |
+| Uñas largas | Tripulante | 858 | 38.1 % | 36.4 % | +1.7 | 847 | 637 | 40.7 % | 30.6 % |
+| Espadachín errante | Tripulante | 901 | 38.1 % | 36.4 % | +1.7 | 505 | 0 | 40.3 % | 35.7 % |
+| Pedrero de borda | Mejora de barco | 856 | 38.1 % | 36.5 % | +1.6 | 529 | 111 | 42.3 % | 31.9 % |
+| Víveres de reserva | Mejora de barco | 822 | 38.0 % | 36.6 % | +1.4 | 592 | 488 | 45.2 % | 27.8 % |
+| Loro parlanchín | Tripulante | 855 | 37.9 % | 36.6 % | +1.3 | 597 | 318 | 39.4 % | 36.0 % |
+| Grumete leal | Tripulante | 1362 | 37.5 % | 36.4 % | +1.2 | 1925 | 569 | 41.3 % | 21.0 % |
+| Íñigo «Lince» Quintero | Tripulante | 861 | 37.7 % | 36.7 % | +1.0 | 687 | 1108 | 39.6 % | 33.9 % |
+| Filibustero borracho | Tripulante | 881 | 37.7 % | 36.7 % | +1.0 | 751 | 151 | 41.2 % | 28.9 % |
+| Catalejo de latón | Mejora de tripulante | 890 | 37.5 % | 36.8 % | +0.7 | 657 | 0 | 42.3 % | 26.7 % |
+| Herbolaria | Tripulante | 860 | 37.4 % | 36.9 % | +0.5 | 495 | 171 | 37.1 % | 37.8 % |
+| Pistola de chispa | Mejora de tripulante | 878 | 37.4 % | 37.0 % | +0.4 | 332 | 80 | 48.0 % | 30.9 % |
+| Casco reforzado | Mejora de barco | 842 | 37.2 % | 37.1 % | +0.0 | 277 | 0 | 42.2 % | 34.7 % |
+| Brújula de latón | Mejora de tripulante | 880 | 37.2 % | 37.1 % | +0.0 | 685 | 0 | 40.8 % | 27.0 % |
+| Contrabandista del bajo Caribe | Tripulante | 877 | 37.1 % | 37.2 % | -0.2 | 504 | 429 | 41.4 % | 32.4 % |
+| La Lengua | Tripulante | 832 | 37.0 % | 37.2 % | -0.2 | 357 | 0 | 43.2 % | 33.2 % |
+| Vigía inexperta | Tripulante | 839 | 36.9 % | 37.3 % | -0.3 | 358 | 532 | 39.4 % | 35.4 % |
+| Amuleto vudú | Mejora de tripulante | 893 | 36.6 % | 37.6 % | -1.0 | 519 | 86 | 41.9 % | 29.9 % |
+| Velas de tormenta | Mejora de barco | 885 | 36.5 % | 37.7 % | -1.2 | 355 | 319 | 44.6 % | 31.1 % |
+| Culebrina de proa | Mejora de barco | 850 | 36.5 % | 37.7 % | -1.2 | 512 | 144 | 44.6 % | 25.1 % |
+| Rastreador de la selva | Tripulante | 826 | 36.3 % | 37.7 % | -1.4 | 626 | 613 | 42.3 % | 25.8 % |
+| Hamacas en el entrepuente | Mejora de barco | 816 | 36.3 % | 37.8 % | -1.5 | 605 | 0 | 42.2 % | 21.2 % |
+| Sable de abordaje | Mejora de tripulante | 840 | 36.2 % | 37.8 % | -1.7 | 622 | 0 | 40.8 % | 25.8 % |
+| Isabela «Cuervo» Saldaña | Tripulante | 881 | 36.1 % | 38.0 % | -1.9 | 760 | 260 | 41.9 % | 19.2 % |
+| Fiador de la Hermandad | Tripulante | 835 | 36.0 % | 37.9 % | -1.9 | 718 | 163 | 39.3 % | 29.5 % |
+| La Cruz de Santa Bárbara | Mejora de barco | 853 | 35.9 % | 38.1 % | -2.2 | 228 | 7 | 46.5 % | 32.0 % |
+| Cañonero | Tripulante | 857 | 35.7 % | 38.2 % | -2.5 | 580 | 29 | 36.9 % | 34.3 % |
+| Rufián de cubierta | Tripulante | 1360 | 36.1 % | 39.4 % | -3.3 | 1483 | 0 | 38.2 % | 31.1 % |
+| Bandera negra | Mejora de barco | 882 | 34.8 % | 39.0 % | -4.2 | 375 | 0 | 42.5 % | 29.1 % |
+| Escapulario del Carmen | Mejora de tripulante | 860 | 34.5 % | 39.1 % | -4.6 | 323 | 205 | 40.4 % | 31.0 % |
+| Botica de a bordo | Mejora de barco | 882 | 34.4 % | 39.4 % | -5.0 | 458 | 1070 | 40.0 % | 28.5 % |
+| Carronadas | Mejora de barco | 864 | 33.9 % | 39.6 % | -5.7 | 302 | 148 | 37.1 % | 32.2 % |
+| Patente de corso | Mejora de tripulante | 897 | 33.9 % | 39.8 % | -5.9 | 93 | 0 | 40.9 % | 33.1 % |
 
 «Si no» en esta tabla: partidas en que la carta estaba en el mazo pero no se usó.
 

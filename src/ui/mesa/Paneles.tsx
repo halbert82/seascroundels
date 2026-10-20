@@ -315,7 +315,7 @@ export function FinDeMision({ s, desde, alCerrar, elegir }: { s: Estado; desde: 
   // Final con elección: se elige aquí mismo.
   const finales = d?.tipo === 'elegirOpcion' && pendiente === 'finalMision' ? d.opciones : []
   const despues = s.registro.slice(i)
-  const salida = despues.find((x) => x.texto.endsWith('se baraja en el mazo de Misiones.'))
+  const salida = despues.find((x) => x.texto.endsWith('se pone encima del mazo de Misiones.'))
   const nombreSalida = salida ? /«(.+)»/.exec(salida.texto)?.[1] : undefined
   const capituloSalida = nombreSalida ? (porId(fin.mision).tipo === 'capitulo' ? (porId(fin.mision) as Extract<ReturnType<typeof porId>, { tipo: 'capitulo' }>).mision.capitulos.find((c) => c.nombre === nombreSalida) : undefined) : undefined
   const como = {

@@ -172,7 +172,7 @@ La carta de puerto tiene el texto a la izquierda y la ilustración a la derecha.
 3. **Entorno:** es la primera pestaña (Mar, Naturaleza o Ciudad). Si lleva una franja azul con el icono de NAV y un número, ese número es su **Distancia**.
 4. **Avance:** es la pestaña del mapa. Indica el Avance necesario para superar la misión.
 5. **Texto de la misión:** contiene sus reglas especiales y sus capacidades **Al zarpar**. Algunas reglas ponen fichas de misión sobre la carta, y algunas misiones tienen una **Gesta** (reputación adicional si la misión se supera de cierta manera).
-6. **Recompensa:** indica la reputación (calavera) y lo demás que gana el jugador. Una etiqueta oscura indica, por su número de colección, qué carta se añade al mazo de Misiones o qué Tesoro se pone en juego. En un final con elección, la recompensa indica las dos opciones.
+6. **Recompensa:** indica la reputación (calavera) y lo demás que gana el jugador. Una etiqueta oscura indica, por su número de colección, qué carta se pone encima del mazo de Misiones o qué Tesoro se pone en juego. En un final con elección, la recompensa indica las dos opciones.
 7. **Mazo:** abajo a la izquierda, indica dónde va la carta al preparar la partida. Si va al mazo de historia, lleva al lado su número.
 
 #### Peligro
@@ -197,7 +197,7 @@ Las cartas de Escenario tienen nombre, texto y frase de ambientación. Su efecto
 
 #### Cartas del mazo de historia
 
-Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Añade la carta 137 al mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
+Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Pon la carta 137 encima del mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
 
 > [!grafico] anatomia historia
 
@@ -342,12 +342,12 @@ Curar heridas y quitar Estados son efectos distintos, cada uno con su icono: la 
 > [!epigrafe] Viejo lobo de mar
 > «Un mapa no vale nada. Lo que vale es el hombre que sabe leerlo y no se ahoga por el camino.»
 
-En todo momento hay tantas **misiones disponibles** como indica la carta de puerto. Cada vez que una misión deja de estar disponible, se repone con la carta de arriba del mazo de Misiones.
+En todo momento hay tantas **misiones disponibles** como indica la carta de puerto. Cada vez que una misión deja de estar disponible, se repone con la carta de arriba del mazo de Misiones. Por eso, el capítulo que se acaba de poner encima del mazo sale enseguida.
 
 Existen dos clases de misión:
 
 - **Aventuras:** son misiones sueltas de un solo capítulo.
-- **Capítulos:** cada travesía es una historia de dos, tres o cuatro capítulos (I, II, III y IV). Solo los capítulos I empiezan en el mazo de Misiones. Al superar un capítulo, su recompensa indica qué carta del mazo de historia se añade al mazo de Misiones.
+- **Capítulos:** cada travesía es una historia de dos, tres o cuatro capítulos (I, II, III y IV). Solo los capítulos I empiezan en el mazo de Misiones. Al superar un capítulo, su recompensa indica qué capítulo del mazo de historia se pone encima del mazo de Misiones, y sale enseguida entre las misiones disponibles.
 
 #### Zarpar
 
@@ -503,15 +503,15 @@ Después de resolver una carta de Peligro, el jugador puede retirarse y volver a
 En cuanto el jugador reúne el Avance que pide la misión, la supera. Debe resolver al menos una carta de Peligro: aunque empiece la misión con el Avance suficiente, no la supera hasta resolver la primera. Al superarla:
 
 1. Gana su recompensa. Si la misión tiene una **Gesta** y el jugador la ha cumplido («si superas la misión sin superar ninguna Prueba de COM»), gana además 1 de reputación. En un **final con elección**, elige una de las dos recompensas que indica.
-2. Si la recompensa indica una carta, búscala en el mazo de historia por su número de colección. Si es un capítulo, barájalo en el mazo de Misiones. Si es un Tesoro, ponlo en juego sin coste.
+2. Si la recompensa indica una carta, búscala en el mazo de historia por su número de colección. Si es un capítulo, ponlo encima del mazo de Misiones, sin barajar. Si es un Tesoro, ponlo en juego sin coste.
 3. Descarta las fichas de Avance y las fichas de misión, aparta la misión superada y repón las misiones disponibles hasta tener tantas como indica la carta de puerto.
 
-**Capítulos con salida doble.** Algunos capítulos I indican dos cartas posibles para el capítulo II («Si superas la misión sin haber superado ninguna Prueba de COM, añade la carta 219; si no, la carta 144»). Al superar el capítulo I, se añade la carta que corresponda; la otra se retira de la partida.
+**Capítulos con salida doble.** Algunos capítulos I indican dos cartas posibles para el capítulo II («Si superas la misión sin haber superado ninguna Prueba de COM, pon la carta 219; si no, la 144»). Al superar el capítulo I, se pone encima del mazo de Misiones la carta que corresponda; la otra se retira de la partida.
 
-Dado que el capítulo nuevo se baraja antes de reponer las misiones disponibles, puede aparecer de inmediato o mucho más tarde.
+Como el capítulo nuevo se pone encima del mazo de Misiones antes de reponer las misiones disponibles, aparece siempre de inmediato entre ellas. El jugador no está obligado a zarpar a él: puede dejarlo disponible para otro turno o mandarlo al fondo del mazo con el Tablón de encargos.
 
 > [!ejemplo]
-> El jugador supera «El Paso de los Vientos» y gana 1 de reputación. Su recompensa indica «Añade la carta 127 al mazo de Misiones»: el jugador busca la carta 127 en el mazo de historia, que es «El galeón rezagado», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «A bordo del fantasma».
+> El jugador supera «El Paso de los Vientos» y gana 1 de reputación. Su recompensa indica «Pon la carta 127 encima del mazo de Misiones»: el jugador busca la carta 127 en el mazo de historia, que es «El galeón rezagado», y la pone encima del mazo de Misiones. Después repone las misiones disponibles y sale «El galeón rezagado»: en el turno siguiente ya puede zarpar a ella.
 
 #### No superar una misión
 
@@ -797,7 +797,7 @@ Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carr
 
 ### Capítulo
 
-Un capítulo es cada una de las cartas de misión de una travesía. Su sello indica su número (de I a IV) y cuántos capítulos tiene la travesía. Los capítulos I empiezan en el mazo de Misiones; los demás, en el mazo de historia. Al superar un capítulo, su recompensa indica qué carta se añade al mazo de Misiones.
+Un capítulo es cada una de las cartas de misión de una travesía. Su sello indica su número (de I a IV) y cuántos capítulos tiene la travesía. Los capítulos I empiezan en el mazo de Misiones; los demás, en el mazo de historia. Al superar un capítulo, su recompensa indica qué capítulo se pone encima del mazo de Misiones. Nunca se baraja: al reponer las misiones disponibles, sale enseguida.
 
 - **Salida doble:** dos travesías tienen dos capítulos II, «II-a» y «II-b». Su capítulo I indica cuál de ellos se añade según cómo se supere; el otro sale de la partida.
 
@@ -1048,16 +1048,16 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 ### Mazo de historia
 
-El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
+El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Pon la carta 137 encima del mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
 
 - El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
 
 > [!ejemplo]
-> Una carta dice «Añade la carta 95 al mazo de Peligros». Como va al mazo de Peligros, el jugador la busca en el montón grande. «Añade la carta 137 al mazo de Misiones» se busca en el montón normal.
+> Una carta dice «Añade la carta 95 al mazo de Peligros». Como va al mazo de Peligros, el jugador la busca en el montón grande. «Pon la carta 137 encima del mazo de Misiones» se busca en el montón normal.
 
 ### Mazo de Misiones
 
-El mazo de Misiones es el mazo del que salen las misiones que se reponen. Inicialmente contiene los siete capítulos I y dos aventuras. Las misiones que el jugador no supera o que cambia en el puerto van al fondo del mazo.
+El mazo de Misiones es el mazo del que salen las misiones que se reponen. Inicialmente contiene los siete capítulos I y dos aventuras. Las misiones que el jugador no supera o que cambia en el puerto van al fondo del mazo. El capítulo que gana al superar el anterior va encima, sin barajar, y sale enseguida al reponer las misiones disponibles; si el mazo está vacío, ese capítulo pasa a ser el mazo.
 
 ### Mazo de muelle
 
@@ -1372,7 +1372,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 | −N y Mejora | Se pierden N Mejoras |
 | −1 día · −1 Mando | Se pierde un día · este turno se roba una carta menos |
 | Rehén · ↩ al muelle · Recluta | Ver sus entradas en la Referencia de reglas |
-| «Añade la carta N» · «Se retira» | Busca esa carta por su número en el mazo de historia · esta carta sale del juego |
+| «Añade la carta N» · «Pon la carta N encima» · «Se retira» | Busca esa carta por su número en el mazo de historia (encima: sin barajar) · esta carta sale del juego |
 | Sin fallo (en un Destino) | No se aplica el efecto de fallo |
 | Calavera | Reputación |
 

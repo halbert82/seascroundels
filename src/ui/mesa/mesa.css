@@ -740,6 +740,32 @@
   color: var(--oro-viejo);
 }
 
+/* Fase 12: un capítulo que acaba de llegar a las misiones disponibles (va encima del mazo de Misiones al superar el
+   anterior). Un destello corto al entrar y la marca «Capítulo II · nuevo». */
+.mision.capitulo-nuevo > .carta-mesa {
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px var(--oro-viejo), 0 0 18px rgba(214, 170, 92, 0.45);
+  animation: capitulo-nuevo 900ms ease-out 1;
+}
+.mision-nueva {
+  align-self: flex-start;
+  padding: 2px 9px;
+  border-radius: 99px;
+  background: var(--oro-viejo);
+  color: #24190f;
+  font: 800 11.5px/1.35 'Alegreya Sans', sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@keyframes capitulo-nuevo {
+  0% { box-shadow: 0 0 0 2px var(--oro-viejo), 0 0 0 rgba(214, 170, 92, 0); }
+  40% { box-shadow: 0 0 0 3px var(--oro-viejo), 0 0 34px rgba(214, 170, 92, 0.85); }
+  100% { box-shadow: 0 0 0 2px var(--oro-viejo), 0 0 18px rgba(214, 170, 92, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mision.capitulo-nuevo > .carta-mesa { animation: none; }
+}
+
 /* ------------------------------------------------------------------ Misión */
 
 .zona-mision {

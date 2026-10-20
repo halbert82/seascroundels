@@ -642,7 +642,7 @@ export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; si
   const siguiente = como.siguiente ?? e.carta.siguiente[0]
   if (siguiente !== undefined && !r.tesoro && !(r.elige && r.elige.length > 0)) {
     const capitulo = e.mision.capitulos.find((c) => c.num === siguiente)
-    partes.push(capitulo ? `«${capitulo.nombre}» entra en el mazo de Misiones` : `la carta ${siguiente} entra en el mazo de Misiones`)
+    partes.push(capitulo ? `«${capitulo.nombre}» va encima del mazo de Misiones` : `la carta ${siguiente} va encima del mazo de Misiones`)
   }
   return partes
 }

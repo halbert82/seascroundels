@@ -8,7 +8,7 @@ import { Jugador } from '../../engine/pruebas/situacion.ts'
 import type { Estado, InstId } from '../../engine/tipos.ts'
 import { empezar, type PartidaEnMesa } from './usePartida.ts'
 
-export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision', 'mano5', 'mano8', 'permanentes'] as const
+export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision', 'mano5', 'mano8', 'permanentes', 'capituloNuevo'] as const
 export type Escena = (typeof ESCENAS)[number]
 
 function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): PartidaEnMesa | null {
@@ -25,7 +25,7 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
   return null
 }
 
-const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes'>, (s: Estado, desde: number) => boolean> = {
+const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo'>, (s: Estado, desde: number) => boolean> = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
   puerto: (s) => s.turno >= 3 && s.pendiente?.motivo.clave === 'jugarCartas' && s.zonas.tripulacion.length >= 3,
   // Una Prueba con comprometidos y el Destino revelado, en la ventana de acción.
@@ -162,6 +162,34 @@ function finalMision(): PartidaEnMesa {
 }
 
 /**
+ * Fase 12: recién superado «El Paso de los Vientos» (Flota I), «El galeón rezagado» (Flota II) se ha puesto encima del
+ * mazo de Misiones y acaba de salir entre las disponibles, con su marca de capítulo nuevo.
+ */
+function capituloNuevo(): PartidaEnMesa {
+  const j = Jugador.en({
+    empezarEn: 'quedarseOZarpar',
+    escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma'],
+    misiones: ['flota-I', 'prueba-I', 'aguada-I'],
+    mazoMisiones: ['fantasma-I', 'templo-I', 'espia-I'],
+    avance: { 'flota-I': 4 },
+    mazoPeligros: ['calma', 'calma', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje'],
+    tripulacion: ['viejo_lobo', 'bucanero'],
+    reputacion: 3,
+  })
+  j.zarpar('flota-I')
+  // Sin agotar a nadie al zarpar; un «Mar en calma» y vuelve a puerto con la misión superada.
+  for (let n = 0; n < 20 && j.estado.mision; n++) {
+    const d = j.decision
+    if (d.motivo.clave === 'alZarparAgotar') j.ninguna()
+    else if (d.tipo === 'ofrecer') j.pasar()
+    else j.seguir()
+  }
+  return { ...empezar(j.estado), desde: j.estado.registro.length }
+}
+
+/**
  * En puerto, en Jugar cartas, con la mano llena: 5 cartas (el Mando del Capitán) o, robando 3 más del mazo del capitán,
  * 8 (una mano muy llena). Para ver que la mano se ve entera en una tableta.
  */
@@ -184,6 +212,7 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'muelleOcupado') return muelleOcupado()
   if (nombre === 'alarma') return alarma()
   if (nombre === 'finalMision') return finalMision()
+  if (nombre === 'capituloNuevo') return capituloNuevo()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

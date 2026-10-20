@@ -1,6 +1,6 @@
 // Mazo de historia (fase 10, como el de Arkham Horror 3.ª edición): las cartas que no empiezan en ningún mazo llevan su
 // número bien visible en el anverso y, en el dorso, el dorso del mazo al que van, con el mismo número. Se buscan por él
-// («Añade la carta 137 al mazo de Misiones»).
+// («Pon la carta 137 encima del mazo de Misiones»).
 
 import type { EntradaCatalogo } from '../../engine/catalogo.ts'
 

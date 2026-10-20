@@ -270,8 +270,9 @@ describe('Retirarse y hundirse', () => {
 })
 
 describe('Superar una misión', () => {
-  it('ejemplo del reglamento: «El Paso de los Vientos» da 1 de reputación y baraja la carta 127 en el mazo de Misiones', () => {
-    // Fase 12: antes era «Un soplo en Port Royal», que se ha unido a «Seguirle por los muelles».
+  it('ejemplo del reglamento: «El Paso de los Vientos» da 1 de reputación, pone la carta 127 encima del mazo de Misiones y sale enseguida', () => {
+    // Fase 12: antes era «Un soplo en Port Royal», que se ha unido a «Seguirle por los muelles». El capítulo siguiente
+    // ya no se baraja: va encima del mazo de Misiones y sale al reponer las disponibles.
     const j = enPuerto({
       misiones: ['flota-I', 'prueba-I', 'aguada-I'],
       mazoMisiones: ['fantasma-I'],
@@ -282,8 +283,8 @@ describe('Superar una misión', () => {
     expect(j.avance('flota-I')).toBe(0) // «Mar en calma»: 4 + 2 = 6, superada
     expect(j.estado.reputacion).toBe(1)
     expect(j.zona('misionesSuperadas')).toEqual(['flota-I'])
-    expect([...j.zona('misionesDisponibles'), ...j.zona('mazoMisiones')].sort()).toEqual(['aguada-I', 'fantasma-I', 'flota-II', 'prueba-I'])
-    expect(j.zona('misionesDisponibles')).toHaveLength(3)
+    expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'flota-II'])
+    expect(j.zona('mazoMisiones')).toEqual(['fantasma-I'])
   })
 
   it('el último capítulo da su Tesoro, que entra en juego sin coste', () => {
@@ -414,5 +415,68 @@ describe('D5b · Una carta descartada sin resolverla no cuenta como resuelta', (
     j.usar('prueba.descartarAlRevelar').resolverOteo() // descarta la Pelea de taberna sin resolverla
     expect(j.zona('misionesSuperadas')).toEqual(['deuda-I']) // se resolvió «Hora de la siesta»
     expect(j.registro.filter((t) => t.startsWith('Revelas'))).toHaveLength(2)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Fase 12 (Albert): al superar un capítulo, el siguiente va siempre encima del mazo de Misiones (sin barajar ni elegir)
+// y después se reponen las misiones disponibles, así que sale enseguida.
+
+/** Pasa al «¿te quedas o zarpas?» del turno siguiente sin hacer nada más. */
+function hastaElSiguienteZarpe(j: Jugador): void {
+  const turno = j.estado.turno
+  for (let n = 0; n < 40 && !(j.decision.motivo.clave === 'quedarseOZarpar' && j.estado.turno > turno); n++) {
+    const d = j.decision
+    if (d.motivo.clave === 'descartarFinal') j.ninguna()
+    else if (d.tipo === 'ofrecer') j.pasar()
+    else j.terminar()
+  }
+}
+
+describe('Fase 12 · el capítulo siguiente va encima del mazo de Misiones', () => {
+  const superarPasoDeLosVientos = (mazoMisiones: string[]) => {
+    const j = enPuerto({
+      misiones: ['flota-I', 'prueba-I', 'aguada-I'],
+      mazoMisiones,
+      avance: { 'flota-I': 4 },
+      mazoPeligros: ['calma', 'calma'],
+      escenario: ['pruebas-calma', 'pruebas-calma'],
+    })
+    j.zarpar('flota-I')
+    return j
+  }
+
+  it('primero va encima del mazo y después se reponen las disponibles: el mazo no cambia', () => {
+    const j = superarPasoDeLosVientos(['fantasma-I', 'templo-I'])
+    const encima = j.registro.indexOf('«El galeón rezagado» se pone encima del mazo de Misiones.')
+    const sale = j.registro.indexOf('Nueva misión disponible: «El galeón rezagado».')
+    expect(encima).toBeGreaterThanOrEqual(0)
+    expect(sale).toBeGreaterThan(encima)
+    expect(j.registro.some((t) => t.includes('se baraja en el mazo de Misiones'))).toBe(false)
+    expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'flota-II'])
+    expect(j.zona('mazoMisiones')).toEqual(['fantasma-I', 'templo-I'])
+  })
+
+  it('con el mazo de Misiones vacío, el capítulo pasa a ser el mazo y sale igual', () => {
+    const j = superarPasoDeLosVientos([])
+    expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'flota-II'])
+    expect(j.zona('mazoMisiones')).toEqual([])
+  })
+
+  it('salida doble: el capítulo que toca va encima y sale; el otro sale de la partida', () => {
+    const j = enPuerto({ misiones: ['maracaibo-I', 'prueba-I', 'aguada-I'], mazoMisiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 2 }, mazoPeligros: ['calma', 'calma'] })
+    j.zarpar('maracaibo-I').cubrir('viejo_lobo')
+    expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'maracaibo-II-a'])
+    expect(j.zona('mazoMisiones')).toEqual(['fantasma-I'])
+    expect(j.zona('fueraDeJuego')).toContain('maracaibo-II-b')
+  })
+
+  it('no obliga a zarpar a él: en el turno siguiente, el Tablón de encargos lo manda al fondo y sale la de arriba', () => {
+    const j = superarPasoDeLosVientos(['fantasma-I', 'templo-I'])
+    hastaElSiguienteZarpe(j)
+    expect(opcionesDeZarpar(j)).toContain('flota-II')
+    j.opcion('quedarse').opcion('tablon').elegir('flota-II')
+    expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'fantasma-I'])
+    expect(j.zona('mazoMisiones')).toEqual(['templo-I', 'flota-II'])
   })
 })

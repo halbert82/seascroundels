@@ -97,7 +97,7 @@ describe('vista de las cartas', () => {
     const selva = vistaDeCarta(carta(119)) as VistaCapitulo
     expect([selva.sello, selva.de, selva.travesia]).toEqual(['II', 'IV', 'El templo perdido'])
     expect(selva.distancia).toBe(2)
-    expect(selva.siguiente).toBe('Añade la carta 239 al mazo de Misiones')
+    expect(selva.siguiente).toBe('Pon la carta 239 encima del mazo de Misiones')
     expect(selva.pie).toBe('Mazo de historia')
 
     const deuda = vistaDeCarta(carta(113)) as VistaCapitulo

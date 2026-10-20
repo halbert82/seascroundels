@@ -642,7 +642,7 @@ Encargo de Albert: El espía y El barco fantasma pasan a dos capítulos; La Flot
 
 - Las cartas nuevas van al final: 238 y 239. Las fusionadas conservan el número del capítulo I (135 y 147).
 - Quedan libres el **136** («Seguirle por los muelles») y el **148** (el antiguo «A bordo del fantasma»). El reglamento lo dice en «Número de colección»: «Los números 136 y 148 no corresponden a ninguna carta de la Caja básica». Componentes no cambia: 23 capítulos y 223 cartas (salen dos y entran dos).
-- Las recompensas que nombran cartas: 135 → «Añade la carta 137»; 147 → «Añade la carta 149»; 127 → 238; 238 → 128; 119 → 239; 239 → 120.
+- Las recompensas que nombran cartas: 135 → 137; 147 → 149; 127 → 238; 238 → 128; 119 → 239; 239 → 120 (con el texto de la segunda ronda: «Pon la carta N encima del mazo de Misiones»).
 
 ### Reglamento
 
@@ -650,9 +650,9 @@ Encargo de Albert: El espía y El barco fantasma pasan a dos capítulos; La Flot
 - Ejemplos: el de la recompensa es ahora «El Paso de los Vientos», que añade la carta 127, y sale «A bordo del fantasma»; las campanas a rebato salen en «Seguirle por Port Royal» (Ciudad 6); la goleta del correo da 3 (de 9 a 12).
 - Fichas de misión: se añade **Derrumbe** (y su línea en el índice).
 
-### Lectura tomada (pendiente de Albert)
+### Rumores del tesoro (P68, confirmado por Albert)
 
-- **Rumores del tesoro** decía «2 si es un capítulo II o III». Ahora hay capítulos IV: por defecto dan también 2, y la carta dice «II, III o IV» (`TODO(regla)` en el motor). Ver P68.
+- Decía «2 si es un capítulo II o III». Un capítulo IV también da 2: la carta dice «2 si es un capítulo II, III o IV».
 
 ### Partidas guardadas
 
@@ -667,7 +667,7 @@ Encargo de Albert: El espía y El barco fantasma pasan a dos capítulos; La Flot
 | Normal | 12 | 24,5 % | 26,9 % | 1,18 | 0,3 % |
 | Larga | 16 | 27,7 % | 30,3 % | 1,30 | 0,6 % |
 
-- **No cumple lo pedido** (normal entre 26 y 30 %; corta y larga a menos de 4 puntos de la normal): la normal se queda en 24,5 % y la corta, a 5,8 puntos. **No se publica.**
+- **No cumplía lo pedido entonces** (normal entre 26 y 30 %; corta y larga a menos de 4 puntos de la normal): la normal se quedaba en 24,5 % y la corta, a 5,8 puntos. No se publicó (ver la segunda ronda, abajo).
 - De dónde sale: los dos capítulos I fusionados (Avance 6) se superan mucho menos que los que sustituyen (Port Royal: 465 → 262 veces en 1000 partidas normales; el fantasma: 516 → 340), y la Flota y el templo casi nunca llegan al capítulo IV.
 - **Travesías completadas** (% de las partidas, y de esas, % de victorias), corta / normal / larga: El barco fantasma 10,3 (68) / 16,9 (63) / 25,6 (62); El espía 8,7 (38) / 14,2 (51) / 20,1 (54); San Felipe 3,3 (85) / 7,2 (68) / 11,6 (72); Maracaibo 2,6 (58) / 4,9 (47) / 8,9 (48); El templo 0,1 / 0,6 / 1,7; La Flota 0 / 0,8 / 1,7; Panamá 0 / 0,3 / 0,6.
 - **Opciones medidas** (corta / normal / larga; con variantes de medida, sin tocar los datos):
@@ -681,4 +681,34 @@ Encargo de Albert: El espía y El barco fantasma pasan a dos capítulos; La Flot
 | O5 | Solo 135 con Avance 5 | 21,8 | 25,9 | 28,8 | No |
 | O6 | Solo 147 con Avance 5 | 21,9 | 26,0 | 29,5 | No: corta a 4,1 |
 
-- Pendiente de Albert: P67 (qué opción), P68 (Rumores del tesoro y el capítulo IV), P69 (la Flota y el templo casi nunca se acaban), P70 (textos nuevos).
+- Albert respondió P67–P70 en la segunda ronda (abajo).
+
+### Respuestas de Albert, segunda ronda (P67–P70, 20 de octubre de 2026)
+
+- **P67, equilibrio:** no se aplica ninguna opción. «Seguirle por Port Royal» y «A bordo del fantasma» se quedan con Avance 6. Albert prefiere que el juego sea un reto antes que fácil y ajustará la dificultad jugando. Para publicar ya no se exigen los rangos de victorias de antes; el único tope duro es Panamá por debajo del 10 % de las partidas.
+- **P68, Rumores del tesoro:** un capítulo IV también da 2 de Avance (ver arriba).
+- **P69, el capítulo siguiente va siempre encima del mazo de Misiones:** al superar un capítulo, el siguiente (II, III o IV, también II-a y II-b y los de El saqueo de Panamá) se pone encima del mazo de Misiones en vez de barajarse. Sin elección y sin precio. El mazo de Misiones no cambia de tamaño ni de composición.
+  - Orden: primero va encima y después se reponen las misiones disponibles (al volver a puerto), así que sale enseguida entre ellas. El jugador no está obligado a zarpar a él: puede dejarlo disponible o mandarlo al fondo con el Tablón de encargos.
+  - Si la misión superada también otea el mazo de Misiones (como «Cobrar la deuda»), se mantiene el orden de antes: el capítulo va encima y después se otea. (Hoy ninguna misión hace las dos cosas.) Si el mazo de Misiones está vacío, el capítulo pasa a ser el mazo.
+  - Textos: las recompensas dicen «Pon la carta N encima del mazo de Misiones» (o «Pon la carta 218 o la 140 encima…»); las salidas dobles de 139 y 143, «pon la carta 140 (II-b). Si no, la 218 (II-a).» y «pon la carta 219 (II-a). Si no, la 144 (II-b).».
+  - Reglamento: Capítulo, Mazo de Misiones, Mazo de historia, las misiones disponibles, «Superar una misión» (fuera «puede aparecer de inmediato o mucho más tarde»: ahora aparece siempre de inmediato), la anatomía de la misión, la referencia rápida y los ejemplos («El Paso de los Vientos»: sale «El galeón rezagado»).
+  - Mesa: el capítulo que llega a las misiones disponibles se voltea al entrar, con un destello dorado, y lleva la marca «Capítulo II · nuevo» hasta el final del turno siguiente. Escena `#/escena/capituloNuevo`.
+  - Partidas guardadas: las que ya tienen un capítulo barajado lo conservan como está; no se convierte nada.
+  - El equilibrio se ajusta después, jugando. Albert prefiere no hacer el juego más fácil.
+- **P70, textos nuevos:** valen los cuatro tal como están.
+- De paso: la cita de ambiente de las misiones y la etiqueta y el texto de las recompensas con texto no bajan de 12 px (antes, la cita salía al 90 % de las reglas: 10,8 px en la 116; y la etiqueta del Tesoro de 145 y 149, a 10,9 px). Todo sigue cabiendo, y las reglas no bajan de 12 px.
+
+### Equilibrio con el capítulo siempre encima (1000 partidas por modo, semillas 1–1000, el mismo jugador automático)
+
+| Modo | Para ganar | Referencia (Avance 6, capítulos barajados) | Ahora | Diferencia | Victorias de Panamá |
+| --- | --- | --- | --- | --- | --- |
+| Corta | 9 | 18,7 % | 43,8 % | +25,1 | 0,5 % |
+| Normal | 12 | 24,5 % | 37,9 % | +13,4 | 1,1 % |
+| Larga | 16 | 27,7 % | 34,0 % | +6,3 | 1,7 % |
+
+- Panamá por debajo del 10 %: se publica. La normal sube más de 3 puntos: se avisa a Albert.
+- Por qué sube: antes, en la partida normal, el 57 % de los capítulos superados no veía ofrecido el siguiente; ahora, el 11 %. Los capítulos II, III y IV (unos 2,5 de reputación cada uno) se superan 2233 veces en 1000 partidas (antes 1345); los capítulos I (1570, antes 2481) y las misiones sueltas (1981, antes 2714), menos. Se superan menos misiones (5,8 por partida, antes 6,5), pero valen más (1,47 de reputación por misión superada, antes 1,18), y se gana casi un turno antes. La corta es la que más sube: con 9, una travesía entera casi basta, y ahora gana más que la normal.
+- **Turnos de espera** entre superar un capítulo y poder zarpar al siguiente: corta 2,6 → 1,1; normal 3,1 → 1,1; larga 3,8 → 1,1 (lo mínimo es 1; Panamá, 2,0, porque su III pide 6 de reputación).
+- **Travesías terminadas** (% de partidas, normal; entre paréntesis, % de victorias de esas): el templo 0,6 → 11,9 (55); la Flota 0,8 → 9,2 (76); San Felipe 7,2 → 18,6 (67); Maracaibo 4,9 → 18,0 (66); el fantasma 16,9 → 18,6 (71); el espía 14,2 → 14,3 (59); Panamá 0,3 → 1,1 (100). En la larga, el templo 18,9 % y la Flota 16,5 %.
+- **Panamá sale** (% de partidas normales en que llega a estar disponible): I 52,2 → 35,0; II 15,4 → 21,0; III 5,0 → 16,1.
+- La medida nueva (turnos de espera y apariciones de Panamá) está en la medida rápida; `docs/informe-equilibrio.md`, regenerado.

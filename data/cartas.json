@@ -8680,7 +8680,7 @@
      "siguiente": [
       119
      ],
-     "textoSiguiente": "Añade la carta 119 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 119 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -8700,7 +8700,7 @@
      "siguiente": [
       239
      ],
-     "textoSiguiente": "Añade la carta 239 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 239 encima del mazo de Misiones"
     },
     {
      "capitulo": "III",
@@ -8720,7 +8720,7 @@
      "siguiente": [
       120
      ],
-     "textoSiguiente": "Añade la carta 120 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 120 encima del mazo de Misiones"
     },
     {
      "capitulo": "IV",
@@ -8794,7 +8794,7 @@
      "siguiente": [
       127
      ],
-     "textoSiguiente": "Añade la carta 127 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 127 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -8814,7 +8814,7 @@
      "siguiente": [
       238
      ],
-     "textoSiguiente": "Añade la carta 238 al mazo de Misiones",
+     "textoSiguiente": "Pon la carta 238 encima del mazo de Misiones",
      "mazoPropio": {
       "nombre": "mazo de la Escolta",
       "cartas": [
@@ -8845,7 +8845,7 @@
      "siguiente": [
       128
      ],
-     "textoSiguiente": "Añade la carta 128 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 128 encima del mazo de Misiones"
     },
     {
      "capitulo": "IV",
@@ -8896,7 +8896,7 @@
      "siguiente": [
       137
      ],
-     "textoSiguiente": "Añade la carta 137 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 137 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -8938,7 +8938,7 @@
      "distancia": 3,
      "reglas": [
       "**Al zarpar:** Pon en juego al Pasajero **Don Anselmo, el comerciante**.",
-      "**Salida doble:** si en esta misión algún Tripulante quedó **Buscado** o fallaste algún encuentro de tipo #Guardia#, los guardacostas te esperan: añade la carta 140 (II-b). Si no, la carta 218 (II-a)."
+      "**Salida doble:** si en esta misión algún Tripulante quedó **Buscado** o fallaste algún encuentro de tipo #Guardia#, los guardacostas te esperan: pon la carta 140 (II-b). Si no, la 218 (II-a)."
      ],
      "ambientacion": "«Cacao en los sacos y tabaco en el fondo. El fondo, que no lo mire nadie.»",
      "recompensa": {
@@ -8948,7 +8948,7 @@
       218,
       140
      ],
-     "textoSiguiente": "Añade la carta 218 o la 140 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 218 o la 140 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -8968,7 +8968,7 @@
      "siguiente": [
       141
      ],
-     "textoSiguiente": "Añade la carta 141 al mazo de Misiones",
+     "textoSiguiente": "Pon la carta 141 encima del mazo de Misiones",
      "rama": "a"
     },
     {
@@ -8989,7 +8989,7 @@
      "siguiente": [
       141
      ],
-     "textoSiguiente": "Añade la carta 141 al mazo de Misiones",
+     "textoSiguiente": "Pon la carta 141 encima del mazo de Misiones",
      "rama": "b"
     },
     {
@@ -9032,7 +9032,7 @@
      "distancia": 2,
      "reglas": [
       "Noche sin luna: las Pruebas de [COM] reciben {+1 r} de dificultad ~(un disparo despierta al fuerte)~ y las de [EXP], {−1 g}.",
-      "**Salida doble:** si superas la misión sin haber superado ninguna Prueba de [COM], entráis sin que os vean: añade la carta 219 (II-a). Si no, la carta 144 (II-b)."
+      "**Salida doble:** si superas la misión sin haber superado ninguna Prueba de [COM], entráis sin que os vean: pon la carta 219 (II-a). Si no, la 144 (II-b)."
      ],
      "ambientacion": "«Sin faroles, sin ruido y sin miedo. O con miedo, pero callados.»",
      "recompensa": {
@@ -9042,7 +9042,7 @@
       219,
       144
      ],
-     "textoSiguiente": "Añade la carta 219 o la 144 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 219 o la 144 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -9061,7 +9061,7 @@
      "siguiente": [
       145
      ],
-     "textoSiguiente": "Añade la carta 145 al mazo de Misiones",
+     "textoSiguiente": "Pon la carta 145 encima del mazo de Misiones",
      "rama": "a"
     },
     {
@@ -9082,7 +9082,7 @@
      "siguiente": [
       145
      ],
-     "textoSiguiente": "Añade la carta 145 al mazo de Misiones",
+     "textoSiguiente": "Pon la carta 145 encima del mazo de Misiones",
      "rama": "b"
     },
     {
@@ -9146,7 +9146,7 @@
      "siguiente": [
       149
      ],
-     "textoSiguiente": "Añade la carta 149 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 149 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -9310,7 +9310,7 @@
      "siguiente": [
       152
      ],
-     "textoSiguiente": "Añade la carta 152 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 152 encima del mazo de Misiones"
     },
     {
      "capitulo": "II",
@@ -9330,7 +9330,7 @@
      "siguiente": [
       153
      ],
-     "textoSiguiente": "Añade la carta 153 al mazo de Misiones"
+     "textoSiguiente": "Pon la carta 153 encima del mazo de Misiones"
     },
     {
      "capitulo": "III",

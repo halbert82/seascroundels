@@ -695,23 +695,30 @@ describe('220 · ¡La guardia!', () => {
 // Fase 12: cada travesía de 2 o 4 capítulos, de principio a fin
 
 /**
- * Juega en una sola partida los capítulos de una travesía, en orden: cada uno sale al mazo de Misiones al superar el
- * anterior y se juega en el turno siguiente. Para no depender del azar, cada capítulo empieza a 2 de terminarse y los
- * encuentros son «Remanso» (2 de Avance, sin Prueba). Devuelve la reputación al terminar cada capítulo.
+ * Juega en una sola partida los capítulos de una travesía, en orden: cada uno va encima del mazo de Misiones al superar
+ * el anterior, sale entre las disponibles y se juega en el turno siguiente. Para no depender del azar, cada capítulo
+ * empieza a 2 de terminarse y los encuentros son «Remanso» (2 de Avance, sin Prueba). Devuelve la reputación y el
+ * turno al terminar cada capítulo, y si el siguiente ya estaba entre las disponibles al volver a puerto.
  */
-function recorrer(capitulos: string[], historia: string[], op: { final?: string; tripulacion?: string[] } = {}): { j: Jugador; reputacion: number[] } {
+function recorrer(
+  capitulos: string[],
+  historia: string[],
+  op: { final?: string; tripulacion?: string[]; otras?: string[]; mazoMisiones?: string[] } = {},
+): { j: Jugador; reputacion: number[]; turnos: number[]; disponibleAlVolver: boolean[] } {
   const j = Jugador.en({
     empezarEn: 'quedarseOZarpar',
     escenario: Array.from({ length: 8 }, () => 'pruebas-calma'),
     mazoCapitan: [...MAZO_CAPITAN, ...MAZO_CAPITAN],
-    misiones: [capitulos[0] ?? ''],
-    mazoMisiones: [],
+    misiones: [capitulos[0] ?? '', ...(op.otras ?? [])],
+    mazoMisiones: op.mazoMisiones ?? [],
     mazoHistoria: historia,
     mazoPeligros: Array.from({ length: 30 }, () => 'calma'),
     tripulacion: op.tripulacion ?? ['viejo_lobo', 'vigia'],
   })
   const reputacion: number[] = []
-  for (const id of capitulos) {
+  const turnos: number[] = []
+  const disponibleAlVolver: boolean[] = []
+  for (const [k, id] of capitulos.entries()) {
     // Hasta poder zarpar a este capítulo.
     for (let n = 0; n < 40 && !(j.decision.motivo.clave === 'quedarseOZarpar' && j.zona('misionesDisponibles').includes(id)); n++) {
       const d = j.decision
@@ -738,8 +745,11 @@ function recorrer(capitulos: string[], historia: string[], op: { final?: string;
     }
     expect(j.zona('misionesSuperadas'), id).toContain(id)
     reputacion.push(j.estado.reputacion)
+    turnos.push(j.estado.turno)
+    const siguiente = capitulos[k + 1]
+    if (siguiente) disponibleAlVolver.push(j.zona('misionesDisponibles').includes(siguiente))
   }
-  return { j, reputacion }
+  return { j, reputacion, turnos, disponibleAlVolver }
 }
 
 describe('Fase 12: las travesías de 2 y 4 capítulos, de principio a fin', () => {
@@ -761,6 +771,22 @@ describe('Fase 12: las travesías de 2 y 4 capítulos, de principio a fin', () =
     const { j, reputacion } = recorrer(['flota-I', 'flota-II', 'flota-III', 'flota-IV'], ['flota-II', 'flota-III', 'flota-IV', 'mascaron'])
     expect(reputacion).toEqual([1, 3, 5, 9])
     expect(j.zona('mejoras')).toContain('mascaron')
+  })
+
+  it('fase 12 · la Flota entera con otras misiones en juego: cada capítulo sale al volver a puerto y se juegan en cuatro turnos seguidos', () => {
+    const mazo = ['fantasma-I', 'templo-I', 'espia-I']
+    const { j, reputacion, turnos, disponibleAlVolver } = recorrer(['flota-I', 'flota-II', 'flota-III', 'flota-IV'], ['flota-II', 'flota-III', 'flota-IV', 'mascaron'], {
+      otras: ['prueba-I', 'aguada-I'],
+      mazoMisiones: mazo,
+    })
+    expect(reputacion).toEqual([1, 3, 5, 9])
+    expect(disponibleAlVolver).toEqual([true, true, true])
+    const [primero = 0] = turnos
+    expect(turnos).toEqual([primero, primero + 1, primero + 2, primero + 3])
+    // El mazo de Misiones no cambia mientras dura la travesía: cada capítulo entra encima y sale enseguida. Al superar
+    // el IV ya no hay capítulo siguiente y sale la de arriba del mazo.
+    expect(j.zona('mazoMisiones')).toEqual(mazo.slice(1))
+    expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'fantasma-I'])
   })
 
   it('El templo perdido (4 capítulos): 1, 2, 2 y, con el ídolo, 3 de reputación', () => {

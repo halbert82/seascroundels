@@ -104,8 +104,7 @@ export function avanceInicialDelEscenario(s: Estado, mision: InstId): { n: numbe
   const hay = (clave: string) => s.temporales.some((x) => x.clave === clave)
   if (hay('rumores.turno')) {
     const [uno = 1, dos = 2] = [...textoDe('rumores').matchAll(/\{(\d+) avance\}/g)].map((x) => Number(x[1]))
-    // TODO(regla): fase 12. Con las travesías de cuatro capítulos, el capítulo IV también da 2 (la carta dice ahora
-    // «II, III o IV»). Pendiente de que Albert lo confirme (P68).
+    // Fase 12 (P68, Albert): el capítulo IV también da 2; la carta dice «II, III o IV».
     lista.push({ n: /-(II|III|IV)(-[ab])?$/.test(copia(s, mision).id) ? dos : uno, motivo: 'Rumores del tesoro' })
   }
   if (hay('sanjuan.turno')) lista.push({ n: numeroConIcono(textoDe('sanjuan'), 'avance'), motivo: 'Fiesta de San Juan' })
@@ -289,9 +288,10 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
         if (conTesoro) tareas.push({ tipo: 'ponerTesoro', carta })
         else anotar(s, 'aviso', `No ganas el Tesoro «${nombre(s, carta)}».`)
       } else {
-        mover(s, carta, 'mazoMisiones')
-        barajar(s, 'mazoMisiones')
-        anotar(s, 'efecto', `«${nombre(s, carta)}» se baraja en el mazo de Misiones.`)
+        // Fase 12 (Albert): el capítulo siguiente va siempre encima del mazo de Misiones, sin barajar. Las misiones
+        // disponibles se reponen al volver a puerto (después), así que sale enseguida entre ellas.
+        mover(s, carta, 'mazoMisiones', 'arriba')
+        anotar(s, 'efecto', `«${nombre(s, carta)}» se pone encima del mazo de Misiones.`)
       }
     }
   }
@@ -428,7 +428,7 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   const m = s.mision
   if (!m) return 'hecha'
   if (m.fin === 'superada' && s.zonas.misionesDisponibles.includes(m.carta)) mover(s, m.carta, 'misionesSuperadas', 'abajo')
-  // «La Armada te persigue» de la Flota III vuelve a apartarse aunque no haya llegado a salir.
+  // «La Armada te persigue» de la Flota IV vuelve a apartarse aunque no haya llegado a salir.
   const apartar = m.alApartar
   if (apartar && (s.zonas.mazoPeligros.includes(apartar) || s.zonas.mazoMision.includes(apartar))) {
     if (s.persigue === apartar) s.persigue = null
