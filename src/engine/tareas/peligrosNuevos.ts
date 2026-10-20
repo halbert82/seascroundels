@@ -1,20 +1,20 @@
-// Tareas de las reglas nuevas de Peligro (fase 6): «Elige», Pruebas de una Acción, cartas que se quedan en juego
-// y su contador, fichas de Estado, Incautado, ocupar el muelle, mirar o descartar cartas del mazo de Peligros,
+// Tareas de las reglas nuevas de Peligro (fase 6): «Elige», Pruebas de una Acción, las permanentes (fase 11) y su
+// contador, fichas de Estado, Incautado, ocupar el muelle, mirar o descartar cartas del mazo de Peligros,
 // agotar a un Tripulante para pagar y el Peligro de más de «Perseguido».
 
 import { entero } from '../azar.ts'
-import { costeImpreso, esIndestructible, rasgosDe, tipoDe } from '../catalogo.ts'
-import { definicionEncuentro, quedaDe } from '../definiciones.ts'
+import { costeImpreso, esIndestructible, nombreDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
+import { definicionEncuentro, quedaDe, reglasPermanente } from '../definiciones.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, tieneEstado } from '../estados.ts'
 import { INFO_ESTADO } from '../infoEstados.ts'
 import { cerrarPrueba, descartarPeligro, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
-import { valor } from '../valores.ts'
 import { mover, rebarajar } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { cumple, sePuedePagarEntero } from './efectos.ts'
-import { avanceExtraEncuentro, empezarPrueba } from './encuentro.ts'
+import { empezarPrueba } from './encuentro.ts'
+import { baseDelSelector, porCriterio } from './peligros2.ts'
 
 // ---------------------------------------------------------------------------
 // «Elige» y Pruebas de una Acción
@@ -80,55 +80,83 @@ export const pruebaSuelta: Manejador<'pruebaSuelta'> = (s, t) => {
 }
 
 // ---------------------------------------------------------------------------
-// Cartas de Peligro que se quedan en juego
+// Zona de permanentes (fase 11)
 
 /**
- * La carta revelada se queda en juego junto a la misión, con su texto activo, hasta que se cumpla lo que dice
- * para quitarla. Cuenta como resuelta y da su Avance al revelarla.
+ * «Pon en juego la carta N del mazo de historia (junto a él). Si no está en el mazo de historia, descarta esta carta sin
+ * ganar su Avance y revela otra.» La permanente va a la zona de permanentes, junto a la misión, con su texto activo. El
+ * Avance del encuentro y el resto funcionan como antes («Se queda en juego»): lo da el paso del Avance del encuentro, que
+ * también descarta la carta del encuentro como cualquier otra.
  */
-// El Avance impreso de un encuentro que se queda en juego se gana al revelarlo.
-// Una carta que se queda en juego cuenta como carta resuelta, para poder superar la misión (P1).
-export const quedarEnJuego: Manejador<'quedarEnJuego'> = (s, t) => {
+export const ponerPermanente: Manejador<'ponerPermanente'> = (s, t, e) => {
   const m = s.mision
   if (!m || m.fin || !s.zonas.encuentro.includes(t.carta)) return 'hecha'
-  const def = definicionEncuentro(s, t.carta)
-  mover(s, t.carta, 'peligrosEnJuego', 'abajo')
-  const q = quedaDe(s, t.carta)
-  if (q?.contador || q?.fichasIniciales) copia(s, t.carta).fichas = q.fichasIniciales ?? 0
-  m.cartasResueltas++
-  anotar(s, 'aviso', `«${nombre(s, t.carta)}» se queda en juego junto a la misión.`)
-  const n = def.avance + (def.avance > 0 ? avanceExtraEncuentro(s, def.palabrasClave, null) : 0)
-  if (n > 0) {
-    const mc = copia(s, m.carta)
-    mc.avance += n
-    anotar(s, 'efecto', `Ganas ${n} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`, {
-      tipo: 'avance',
-      n,
-      total: mc.avance,
-    })
+  const perm = s.zonas.mazoHistoria.find((c) => copia(s, c).id === t.permanente)
+  if (!perm) {
+    anotar(
+      s,
+      'aviso',
+      `La carta ${porId(t.permanente).num} («${nombreDe(t.permanente)}») no está en el mazo de historia: descartas «${nombre(s, t.carta)}» sin ganar su Avance y revelas otra.`,
+    )
+    descartarPeligro(s, t.carta)
+    return 'hecha'
   }
-  encolar(s, { tipo: 'evento', ev: { tipo: 'cartaResuelta', carta: t.carta }, fase: 'antes', cancelado: false, usadas: [] })
+  // Junto a qué Tripulante («el preparado con más EXP», «uno al azar»…).
+  let junto: InstId | undefined
+  if (t.junto) {
+    const elegibles = porCriterio(s, baseDelSelector(s, t.junto), t.junto.por)
+    if (t.junto.por === 'azar' && elegibles.length > 0) {
+      junto = elegibles[entero(s, elegibles.length)]
+      s.infoRevelada++
+    } else if (elegibles.length > 1) {
+      if (!e) {
+        return preguntar({
+          tipo: 'elegirCartas',
+          motivo: { clave: 'junto', carta: t.permanente },
+          candidatas: elegibles,
+          min: 1,
+          max: 1,
+        })
+      }
+      junto = eleccionDe(e, 'cartas').ids[0]
+    } else junto = elegibles[0]
+  }
+  mover(s, perm, 'permanentes', 'abajo')
+  const c = copia(s, perm)
+  c.origen = t.carta
+  if (junto) c.junto = junto
+  const q = reglasPermanente(t.permanente)
+  const fichas = t.fichas ?? q?.fichasIniciales
+  if (q?.contador || fichas) c.fichas = fichas ?? 0
+  m.permanenteNueva = perm
+  anotar(
+    s,
+    'aviso',
+    `Pones en juego «${nombre(s, perm)}» (carta ${porId(t.permanente).num} del mazo de historia)${junto ? `, junto a ${nombre(s, junto)}` : ''}.`,
+  )
+  if (q?.alEntrar && q.alEntrar.length > 0) encolar(s, { tipo: 'aplicarEfectos', efectos: q.alEntrar, contexto: 'efecto', fuente: perm })
   return 'hecha'
 }
 
-export const descartarPeligroEnJuego: Manejador<'descartarPeligroEnJuego'> = (s, t) => {
-  if (!s.zonas.peligrosEnJuego.includes(t.carta)) return 'hecha'
-  anotar(s, 'efecto', `Quitas «${nombre(s, t.carta)}».`)
-  descartarPeligro(s, t.carta)
+/** «Descarta esta carta» en una permanente: vuelve al mazo de historia (con sus fichas fuera). */
+export const devolverPermanente: Manejador<'devolverPermanente'> = (s, t) => {
+  if (!s.zonas.permanentes.includes(t.carta)) return 'hecha'
+  anotar(s, 'efecto', `«${nombre(s, t.carta)}» vuelve al mazo de historia.`)
+  mover(s, t.carta, 'mazoHistoria', 'abajo')
   return 'hecha'
 }
 
 /** Pon 1 ficha en la carta; al llegar a su número, ocurre lo que dice (y se descarta, vuelve a 0 o sigue). */
 export const contador: Manejador<'contador'> = (s, t) => {
   const q = quedaDe(s, t.carta)?.contador
-  if (!q || !s.zonas.peligrosEnJuego.includes(t.carta)) return 'hecha'
+  if (!q || !s.zonas.permanentes.includes(t.carta)) return 'hecha'
   const c = copia(s, t.carta)
   c.fichas = (c.fichas ?? 0) + 1
   anotar(s, 'efecto', `«${nombre(s, t.carta)}»: ${c.fichas} de ${q.umbral} fichas.`)
   if (c.fichas !== q.umbral) return 'hecha'
   anotar(s, 'aviso', `«${nombre(s, t.carta)}» llega a ${q.umbral} fichas.`)
   const tareas: NuevaTarea[] = [{ tipo: 'aplicarEfectos', efectos: q.efectos, contexto: 'disparo', fuente: t.carta }]
-  if (q.despues === 'descartar') tareas.push({ tipo: 'descartarPeligroEnJuego', carta: t.carta })
+  if (q.despues === 'descartar') tareas.push({ tipo: 'devolverPermanente', carta: t.carta })
   if (q.despues === 'reiniciar') c.fichas = 0
   encolar(s, ...tareas)
   return 'hecha'
@@ -279,7 +307,7 @@ export const ocuparMuelle: Manejador<'ocuparMuelle'> = (s, t) => {
     s.mision.alMuelle = { carta: t.carta, coste: t.coste }
     return 'hecha'
   }
-  if (s.zonas.peligrosEnJuego.includes(t.carta) || s.zonas.destino.includes(t.carta)) ponerEnMuelle(s, t.carta, t.coste)
+  if (s.zonas.destino.includes(t.carta)) ponerEnMuelle(s, t.carta, t.coste)
   return 'hecha'
 }
 

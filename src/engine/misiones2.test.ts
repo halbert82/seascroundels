@@ -59,25 +59,25 @@ describe('114 · Rumbo a mar abierto', () => {
     j.seguir().comprometer('NAV').seguir()
     expect(j.estado.danoBarco).toBe(1)
     expect(j.zona('misionesSuperadas')).toEqual(['prueba-I'])
-    expect(j.estado.reputacion).toBe(1)
+    expect(j.estado.reputacion).toBe(0) // fase 11: 0 de reputación (y sin Gesta)
   })
 
   it('Gesta: superada sin que el Barco haya sufrido daño en esta misión, +1 de reputación', () => {
     const j = enPuerto({ misiones: ['prueba-I'], muelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
     j.zarpar('prueba-I').elegir('vela')
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
-    expect(j.estado.reputacion).toBe(2)
+    expect(j.estado.reputacion).toBe(1) // fase 11: 0 y 1 de la Gesta
   })
 
   it('P50: el daño que el Barco traía de antes no cuenta para la Gesta; el que evita la carena, tampoco', () => {
     const antes = enPuerto({ misiones: ['prueba-I'], barco: { dano: 2 }, muelle: ['vela'], mazoPeligros: ['racha', 'calma'] })
     antes.zarpar('prueba-I').elegir('vela')
-    expect(antes.estado.reputacion).toBe(2)
+    expect(antes.estado.reputacion).toBe(1)
     // Bajíos fallados: su daño lo evita la carena; después, Viento de popa la supera.
     const evitado = enPuerto({ misiones: ['prueba-I'], muelle: ['vela'], mazoPeligros: ['escollos', 'chubasco', 'racha', 'calma'] })
     evitado.zarpar('prueba-I').comprometer('NAV').seguir().seguir().elegir('vela')
     expect(evitado.estado.danoBarco).toBe(0)
-    expect(evitado.estado.reputacion).toBe(2)
+    expect(evitado.estado.reputacion).toBe(1)
   })
 })
 
@@ -118,7 +118,7 @@ describe('116 · El ladrón del puerto', () => {
     j.seguir().comprometer('EXP', ['herbolaria']).seguir().pasarOfertas()
     expect(j.registro).toContain('Lo atrapas: superas la misión.')
     expect(j.zona('misionesSuperadas')).toEqual(['ladron-I'])
-    expect(j.estado.reputacion).toBe(2)
+    expect(j.estado.reputacion).toBe(1) // fase 11: 1 de reputación (antes 2)
     const falla = enPuerto({ misiones: ['ladron-I'], mazoPeligros: ['encrucijada', 'chubasco', 'calma'] })
     falla.zarpar('ladron-I').comprometer('EXP').seguir()
     expect(fichas(falla, 'ladron')).toBe(3)
@@ -219,12 +219,12 @@ describe('120 · El templo', () => {
     const peligros = ['calma', 'calma', 'calma', 'calma', 'calma', 'calma', 'chubasco']
     const j = enPuerto({ misiones: ['templo-III'], mazoPeligros: peligros })
     j.zarpar('templo-III')
-    const mision = [...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('peligrosEnJuego'), ...j.zona('destino')]
+    const mision = [...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('permanentes'), ...j.zona('destino')]
     expect(mision).toHaveLength(12)
     expect(j.zona('mazoPeligros')).toEqual(['chubasco'])
   })
 
-  it('final con elección: la Espada (Tesoro y 2 de reputación; tu Capitán queda Maldito) o el ídolo (4 de reputación)', () => {
+  it('final con elección: la Espada (Tesoro y 2 de reputación; tu Capitán queda Maldito) o el ídolo (3 de reputación)', () => {
     const op: OpcionesSituacion = { misiones: ['templo-III'], avance: { 'templo-III': 3 }, mazoHistoria: ['espada'], mazoPeligros: Array.from({ length: 7 }, () => 'calma') }
     const espada = enPuerto(op)
     espada.zarpar('templo-III')
@@ -235,7 +235,7 @@ describe('120 · El templo', () => {
     expect(espada.copia('capitan').estados).toContain('maldito')
     const idolo = enPuerto(op)
     idolo.zarpar('templo-III').opcion('idolo')
-    expect(idolo.estado.reputacion).toBe(4)
+    expect(idolo.estado.reputacion).toBe(3) // fase 11: 3 (antes 4)
     expect(idolo.zona('mazoHistoria')).toContain('espada')
   })
 })
@@ -260,7 +260,7 @@ describe('127 · El galeón rezagado', () => {
     const peligros = ['racha', 'racha', 'hallazgo', 'calma', 'encrucijada', 'oportunidad', 'chubasco']
     const j = enPuerto({ misiones: ['flota-II'], tripulacion: ['reinaldo'], mazoPeligros: peligros })
     j.zarpar('flota-II')
-    const mision = [...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('peligrosEnJuego'), ...j.zona('destino')]
+    const mision = [...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('permanentes'), ...j.zona('destino')]
     expect(mision).toHaveLength(12)
     expect(j.zona('mazoPeligros')).toEqual(['chubasco'])
     // Sin mazo de la Escolta, solo Piratas rivales (COM 4): Diego y Rodrigo suman 3 + 4.
@@ -291,12 +291,12 @@ describe('128 · La huida con la plata', () => {
     expect(j.registro).toContain('«La Armada te persigue» vuelve al mazo de historia.')
   })
 
-  it('cada Prueba de NAV superada por 2 o más quita 1; superada, 5 de reputación y el Mascarón', () => {
+  it('cada Prueba de NAV superada por 2 o más quita 1; superada, 4 de reputación y el Mascarón', () => {
     const j = enPuerto({ misiones: ['flota-III'], tripulacion: ['viejo_lobo'], avance: { 'flota-III': 3 }, mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
     j.zarpar('flota-III').comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir() // 3 + 1 (Diego) + 1 (Barco) contra 2
     expect(j.zona('misionesSuperadas')).toEqual(['flota-III'])
     expect(j.registro).toContain('Persecución: −1 (0 de 3).')
-    expect(j.estado.reputacion).toBe(5)
+    expect(j.estado.reputacion).toBe(4) // fase 11: 4 (antes 5)
     expect(j.zona('mejoras')).toContain('mascaron')
   })
 })
@@ -349,7 +349,7 @@ describe('137 · La goleta del correo', () => {
     com.zarpar('espia-III').comprometer('COM').seguir()
     com.seguir()
     expect(com.zona('misionesSuperadas')).toEqual(['espia-III'])
-    expect(com.estado.reputacion).toBe(3)
+    expect(com.estado.reputacion).toBe(2) // fase 11: 2 (antes 3)
     expect(com.registro).toContain('No ganas el Tesoro «Los despachos del Rey».')
     expect(com.zona('mejoras')).not.toContain('despachos')
   })
@@ -421,7 +421,7 @@ describe('141 · La cala de los contrabandistas', () => {
   it('con Don Anselmo: Tesoro, y se baja y paga (robas 2)', () => {
     const j = enPuerto({ misiones: ['maracaibo-III'], pasajeros: ['anselmo'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-III': 2 }, mazoPeligros: ['calma'] })
     j.zarpar('maracaibo-III').cubrir('viejo_lobo')
-    expect(j.estado.reputacion).toBe(3)
+    expect(j.estado.reputacion).toBe(2) // fase 11: 2 (antes 3)
     expect(j.zona('mejoras')).toContain('mapa_calas')
     expect(j.zona('mano')).toHaveLength(2)
     expect(j.zona('pasajeros')).toEqual([])
@@ -448,7 +448,7 @@ describe('143 · Desembarco nocturno', () => {
     j.zarpar('sanfelipe-I').cubrir('viejo_lobo')
     expect(enMisiones(j)).toContain('sanfelipe-II-a')
     expect(j.zona('fueraDeJuego')).toContain('sanfelipe-II-b')
-    expect(j.estado.reputacion).toBe(2)
+    expect(j.estado.reputacion).toBe(1) // fase 11: 1 (antes 2)
   })
 
   it('si superas una Prueba de COM, añade el II-b (Al asalto de las murallas)', () => {
@@ -503,10 +503,10 @@ describe('145 · El polvorín', () => {
     expect(j.decision.motivo.clave).toBe('finalMision')
   })
 
-  it('final con elección: rescatas a tu amigo (5) o vuelas el polvorín (3, Tesoro y el Barco Perseguido)', () => {
+  it('final con elección: rescatas a tu amigo (4) o vuelas el polvorín (3, Tesoro y el Barco Perseguido)', () => {
     const amigo = enPuerto({ misiones: ['sanfelipe-III'], avance: { 'sanfelipe-III': 3 }, mazoPeligros: ['calma'] })
     amigo.zarpar('sanfelipe-III').opcion('amigo')
-    expect(amigo.estado.reputacion).toBe(5)
+    expect(amigo.estado.reputacion).toBe(4) // fase 11: 4 (antes 5)
     const vuela = enPuerto({ misiones: ['sanfelipe-III'], avance: { 'sanfelipe-III': 3 }, mazoPeligros: ['calma'] })
     vuela.zarpar('sanfelipe-III').opcion('polvorin')
     expect(vuela.estado.reputacion).toBe(3)
@@ -550,10 +550,10 @@ describe('149 · El camarote del capitán', () => {
     expect((j.decision as { sinAyuda?: boolean }).sinAyuda).toBeUndefined()
   })
 
-  it('Gesta sin superar Pruebas de COM; final: el Farol (Tesoro y 2) o la bitácora (4 y quita Maldito de todos)', () => {
+  it('Gesta sin superar Pruebas de COM; final: el Farol (Tesoro y 2) o la bitácora (3 y quita Maldito de todos)', () => {
     const bitacora = enPuerto({ misiones: ['fantasma-III'], tripulacion: [{ id: 'bucanero', estados: ['maldito'] }], avance: { 'fantasma-III': 2 }, mazoPeligros: ['calma'] })
     bitacora.zarpar('fantasma-III').opcion('bitacora')
-    expect(bitacora.estado.reputacion).toBe(5)
+    expect(bitacora.estado.reputacion).toBe(4) // fase 11: 3 y 1 de la Gesta (antes 4 y 1)
     expect(bitacora.copia('bucanero').estados ?? []).not.toContain('maldito')
     const farol = enPuerto({ misiones: ['fantasma-III'], avance: { 'fantasma-III': 2 }, mazoPeligros: ['calma'] })
     farol.zarpar('fantasma-III').opcion('farol')
@@ -566,10 +566,10 @@ describe('149 · El camarote del capitán', () => {
 // El saqueo de Panamá
 
 describe('151 · El prisionero de Portobelo', () => {
-  it('#Guardia# +1; al superarla, 2 de reputación y sube El guía del istmo', () => {
+  it('#Guardia# +1; al superarla, 1 de reputación y sube El guía del istmo', () => {
     const j = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo'], avance: { 'panama-I': 3 }, mazoPeligros: ['calma'] })
     j.zarpar('panama-I').cubrir('viejo_lobo')
-    expect(j.estado.reputacion).toBe(2)
+    expect(j.estado.reputacion).toBe(1) // fase 11: 1 (antes 2)
     expect(j.zona('pasajeros')).toEqual(['guia'])
     expect(enMisiones(j)).toContain('panama-II')
   })

@@ -5,6 +5,7 @@ import arteJson from '../../../data/arte.json'
 import { codigoColeccion, type EntradaCatalogo } from '../../engine/catalogo.ts'
 import { dorsoDeHistoria, type DorsoHistoria } from './historia.ts'
 import type { DestinoDatos, EncuentroDatos, Entorno, Habilidad } from '../../engine/datos.ts'
+import type { Efecto } from '../../engine/efectos.ts'
 import { esTextoGrande } from './ajustes.ts'
 import { parsearFichas, parsearTexto, type Ficha, type IconoId, type Segmento } from './marcado.ts'
 
@@ -24,14 +25,16 @@ export const COLOR_TIPO = {
   tesoro: '#7A5A14',
   pasajero: '#4A4F6B',
   cartaMision: '#6E2B26',
+  /** Fase 11: las permanentes (cartas del mazo de historia que pone en juego un encuentro). */
+  permanente: '#3F4B45',
 } as const
 
 /** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
 export const COLOR_CLASE: Record<string, string> = { Piratería: '#7A2E22', Neutral: '#4E5A3A' }
 
-/** Las cartas de jugador sin Clase en los datos son Neutrales (reglamento, «Clase»). */
-function claseDe(c: object): string {
-  return 'senda' in c && typeof c.senda === 'string' ? c.senda : 'Neutral'
+/** La Clase de una carta de jugador (fase 11: todas la llevan en los datos, Neutral incluida). */
+function claseDe(c: { senda: string }): string {
+  return c.senda
 }
 
 export const COLOR_HABILIDAD: Record<Habilidad, string> = { NAV: '#24609A', COM: '#8E2B23', EXP: '#8A5E0F' }
@@ -113,6 +116,8 @@ export interface VistaJugador {
   tipoTexto: string
   /** Habilidades: ilustración más alta y caja de texto más baja. */
   alta: boolean
+  /** Fase 11: permanente (mucho texto): ilustración más baja, caja de texto más alta y letra que se ajusta. */
+  permanente?: boolean
   coste?: number
   /** Cuadros de Espacio de una Mejora de barco (0 = sin placa). */
   espacio: number
@@ -369,7 +374,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         nombre: c.nombre,
         unica: true,
         color: COLOR_TIPO.capitan,
-        tipoTexto: 'Capitán · Piratería',
+        tipoTexto: `Capitán · ${claseDe(c)}`,
         pestanasIzq: pestanasHabilidad(c),
         pestanasIzqTop: 74,
         pestanasDer: [{ icono: 'robar', valor: c.mando, color: '#2E5E63' }],
@@ -576,6 +581,23 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...conArte(entrada.id),
       }
     }
+    case 'permanente': {
+      // Fase 11: maqueta de las cartas normales del mazo de historia (como los Pasajeros y «¡La guardia!»), con
+      // «Permanente» en la cinta y los Rasgos del encuentro que la pone en juego.
+      const c = entrada.carta
+      return {
+        ...base(entrada),
+        nombre: c.nombre,
+        color: COLOR_TIPO.permanente,
+        tipoTexto: 'Permanente',
+        permanente: true,
+        pestanasIzqTop: 74,
+        rasgos: c.rasgos,
+        texto: parsearTexto(c.texto),
+        ambientacion: c.ambientacion,
+        ...conArte(entrada.id),
+      }
+    }
     case 'capitulo': {
       const c = entrada.carta
       const m = entrada.mision
@@ -589,8 +611,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       else if (r.search === 'ship') recompensaTexto = 'y busca una Mejora de barco'
       else if (r.search === 'up') recompensaTexto = 'y busca una Mejora'
       else if (r.draw) recompensaTexto = `y roba ${r.draw}`
-      else if (r.reclutaGratis !== undefined) recompensaTexto = `Recluta sin coste un Tripulante del muelle de coste ${r.reclutaGratis} o menos`
-      else if (r.adquiereGratis !== undefined) recompensaTexto = `Adquiere sin coste una Mejora del muelle de coste ${r.adquiereGratis} o menos`
+      else if (r.reclutaGratis !== undefined) recompensaTexto = `Recluta sin coste un Tripulante del muelle de coste ${r.reclutaGratis} o menos.${textoPrecio(r.precio)}`
+      else if (r.adquiereGratis !== undefined) recompensaTexto = `Adquiere sin coste una Mejora del muelle de coste ${r.adquiereGratis} o menos.${textoPrecio(r.precio)}`
       else if (r.oteaMisiones) recompensaTexto = `Otea ${r.oteaMisiones} del mazo de Misiones`
       const vista: VistaCapitulo = {
         forma: 'capitulo',
@@ -634,6 +656,17 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
   }
 }
 
+/** El precio de una recompensa, tal como se imprime detrás de ella (fase 11: misiones iniciales). */
+function textoPrecio(precio: readonly Efecto[] | undefined): string {
+  return (precio ?? [])
+    .map((e) => {
+      if (e.tipo === 'dano') return ` El Barco sufre ${e.n} ${e.n === 1 ? 'daño' : 'daños'}.`
+      if (e.tipo === 'heridas') return ` Un Tripulante sufre ${e.n} ${e.n === 1 ? 'herida' : 'heridas'}.`
+      throw new Error(`Precio de recompensa sin texto: ${e.tipo}`)
+    })
+    .join('')
+}
+
 function conArte(id: string): { arte?: Arte } {
   const arte = arteDe(id)
   return arte ? { arte } : {}
@@ -652,6 +685,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'tesoro':
     case 'pasajero':
     case 'cartaMision':
+    case 'permanente':
       return [entrada.carta.texto]
     case 'habilidad':
       return []

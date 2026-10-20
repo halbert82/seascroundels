@@ -16,6 +16,7 @@ import {
   type MisionDatos,
   type PasajeroDatos,
   type PeligroDatos,
+  type PermanenteDatos,
   type PuertoDatos,
   type TesoroDatos,
   type TripulanteDatos,
@@ -44,6 +45,8 @@ export type EntradaCatalogo =
     }
   | { tipo: 'pasajero'; num: number; id: string; copias: number; carta: PasajeroDatos; mision: MisionDatos }
   | { tipo: 'cartaMision'; num: number; id: string; copias: number; carta: CartaMisionDatos }
+  /** Fase 11: carta del mazo de historia que un encuentro pone en la zona de permanentes. */
+  | { tipo: 'permanente'; num: number; id: string; copias: number; carta: PermanenteDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
@@ -71,6 +74,7 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   mazoPropio: 'Mazo propio',
   pasajero: 'Pasajero',
   cartaMision: 'Carta de misión',
+  permanente: 'Permanente',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -131,6 +135,7 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     lista.push({ tipo: 'pasajero', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
   for (const carta of datos.cartasDeMision ?? []) lista.push({ tipo: 'cartaMision', num: carta.num, id: carta.id, copias: 1, carta })
+  for (const carta of datos.permanentes ?? []) lista.push({ tipo: 'permanente', num: carta.num, id: carta.id, copias: 1, carta })
 
   return lista.sort((a, b) => a.num - b.num)
 }

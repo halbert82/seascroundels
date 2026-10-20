@@ -103,7 +103,7 @@ export function textoUso(s: Estado, uso: Uso): { carta: string; texto: string } 
   if (cap?.desde === 'marca' && uso.fuente) {
     return { carta: `«${nombreDe(cap.carta)}»: ${nombre(s, uso.fuente)}`, texto: cap.texto ?? '' }
   }
-  if ((cap?.desde === 'peligroEnJuego' || cap?.desde === 'encuentro' || cap?.desde === 'destino') && uso.fuente) {
+  if ((cap?.desde === 'permanente' || cap?.desde === 'encuentro' || cap?.desde === 'destino') && uso.fuente) {
     const q = quedaDe(s, uso.fuente)
     const quitar = /\.quitar(\d+)$/.exec(uso.clave)?.[1]
     if (quitar !== undefined) {
@@ -298,6 +298,10 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: '¿A quién le quitas el Estado?', ayuda: m.texto ? `Puedes quitar: ${m.texto}.` : undefined }
     case 'cualEstado':
       return { titulo: `¿Qué Estado le quitas a ${nombreCarta(m.carta)}?` }
+    case 'junto':
+      return { titulo: `¿Junto a quién va «${nombreCarta(m.carta)}»?`, ayuda: 'Hay empate: eliges tú. La permanente va junto a ese Tripulante.' }
+    case 'quitarPermanente':
+      return { titulo: '¿Qué permanente devuelves al mazo de historia?', ayuda: 'Elige una carta de la zona de permanentes.' }
     case 'cazador':
       return { titulo: '¿Quién sale a cazar al jaguar?', ayuda: 'Se agota y hace la Prueba solo: COM 5, o EXP 3 si es un Explorador.' }
     case 'giroDeLaMuerte':
@@ -445,7 +449,9 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
     case 'retirarse':
       return 'te retiras de la misión'
     case 'descartarEsta':
-      return 'descartas esta carta'
+      return 'devuelves esta carta al mazo de historia'
+    case 'alJunto':
+      return describirAQuien({ de: 'capitan' }, e.hacer).replace(/^el Capitán /, 'el Tripulante junto al que está ')
     case 'si': {
       const entonces = describirEfectos(e.entonces)
       const sino = e.sino ? describirEfectos(e.sino) : ''
@@ -596,7 +602,7 @@ function describirMedida(m: Medida): string {
     heridas: 'herida de tu tripulación',
     canonesPreparados: 'Cañón preparado',
     tripulantes: 'Tripulante',
-    peligrosEnJuego: 'carta de Peligro en juego',
+    permanentes: 'carta de la zona de permanentes',
     margen: 'punto que superes',
     faltan: 'punto que te falte',
     dano: 'daño del Barco',

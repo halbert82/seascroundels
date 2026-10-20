@@ -9,7 +9,7 @@ import { CATALOGO, esUnica, registrarCartasExtra } from '../catalogo.ts'
 import { DATOS, type CapituloDatos, type Entorno, type Habilidad, type MisionDatos } from '../datos.ts'
 import { copia as copiaDe, encolar, estadoVacio } from '../estado.ts'
 import { ejecutar, responder } from '../motor.ts'
-import { nuevaPartida, type OpcionesPartida } from '../preparacion.ts'
+import { MODOS, nuevaPartida, type OpcionesPartida } from '../preparacion.ts'
 import {
   ZONAS,
   type Accion,
@@ -20,6 +20,7 @@ import {
   type Eleccion,
   type Estado,
   type InstId,
+  type Modo,
   type Temporal,
   type Zona,
 } from '../tipos.ts'
@@ -72,6 +73,8 @@ export interface OpcionesSituacion {
   /** Mazo de Misiones (por defecto, los capítulos I y las aventuras, sin barajar). */
   mazoMisiones?: CartaId[]
   reputacion?: number
+  /** Modo de partida (por defecto, normal): fija la reputación para ganar. */
+  modo?: Modo
   temporales?: Temporal[]
   /** Mazo de Peligros (arriba primero). Por defecto, vacío. */
   mazoPeligros?: CartaId[]
@@ -140,13 +143,36 @@ registrarCartasExtra({
 })
 registrarCapacidades({ clave: ESCENARIO_DE_PRUEBA, carta: ESCENARIO_DE_PRUEBA, ventana: 'alRevelar', desde: 'escenario', efecto: () => [] })
 
+/**
+ * Permanente de prueba sin reglas propias (fase 11): cada fichero de pruebas le registra las que necesite con
+ * `registrarPermanente`. Está en el mazo de historia de todas las situaciones de prueba.
+ */
+export const PERMANENTE_DE_PRUEBA = 'pruebas-permanente'
+registrarCartasExtra({
+  tipo: 'permanente',
+  num: 9201,
+  id: PERMANENTE_DE_PRUEBA,
+  copias: 1,
+  carta: {
+    id: PERMANENTE_DE_PRUEBA,
+    num: 9201,
+    nombre: 'Percances (prueba)',
+    rasgos: [],
+    texto: 'Reglas de prueba.',
+    ambientacion: '',
+    origen: 'percances',
+    entorno: 'mar',
+    junto: false,
+  },
+})
+
 function historiaCompleta(): CartaId[] {
-  const ids: CartaId[] = []
+  const ids: CartaId[] = [PERMANENTE_DE_PRUEBA]
   for (const e of CATALOGO) {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
     if (e.tipo === 'tesoro') ids.push(e.id)
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
-    if (e.tipo === 'pasajero' || e.tipo === 'cartaMision') ids.push(e.id)
+    if (e.tipo === 'pasajero' || e.tipo === 'cartaMision' || e.tipo === 'permanente') ids.push(e.id)
   }
   return ids
 }
@@ -221,6 +247,10 @@ export function montar(op: OpcionesSituacion = {}): Estado {
     if (m) copiaDe(s, m).avance = n
   }
   s.reputacion = op.reputacion ?? 0
+  if (op.modo) {
+    s.modo = op.modo
+    s.reputacionObjetivo = MODOS[op.modo].reputacion
+  }
   s.temporales = [...(op.temporales ?? [])]
 
   const turno = op.turno ?? 1

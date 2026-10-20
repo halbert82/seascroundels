@@ -102,13 +102,13 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     efecto: () => [{ tipo: 'quitarUnEstado', estados: ['envenenado', 'sangrando'], curar: 1 }],
   }),
 
-  // Cortar por lo sano: «Acción: Descarta 2 cartas de tu mano: Descarta una carta de Peligro que se quede en juego.»
-  // Fase 10b: sin la excepción por nivel; la carta que no deba poder quitarse lo dirá en su texto.
-  // Coste 0: solo cuesta las 2 cartas de su capacidad.
+  // Cortar por lo sano: «Acción: Descarta 2 cartas de tu mano: Devuelve al mazo de historia una carta de la zona de
+  // permanentes.» (Fase 11; antes, «Descarta una carta de Peligro que se quede en juego».) Coste 0: solo cuesta las 2
+  // cartas de su capacidad. La carta que no deba poder quitarse así lo dirá en su texto (fase 10b).
   evento('cortar', 'accion', {
     coste: [{ tipo: 'pagar', n: 2 }],
     requisito: (s) => cortables(s).length > 0,
-    efecto: (s) => [{ tipo: 'quitarPeligroEnJuego', candidatas: cortables(s) }],
+    efecto: (s) => [{ tipo: 'quitarPermanente', candidatas: cortables(s) }],
   }),
 
   // ¡A por ellos!: «Acción: Haz una Prueba de COM 3. Si la superas, rescata a todos los rehenes de esta misión:
@@ -163,7 +163,8 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
   }),
 ]
 
-/** Cartas de Peligro en juego que «Cortar por lo sano» puede descartar (todas, fase 10b). */
+/** Permanentes que «Cortar por lo sano» puede devolver al mazo de historia (todas las de la zona de permanentes). */
+// TODO(regla): «¡La guardia!» no está en la zona de permanentes (es una carta de misión): Cortar no la quita, como antes.
 function cortables(s: Estado) {
-  return [...s.zonas.peligrosEnJuego]
+  return [...s.zonas.permanentes]
 }

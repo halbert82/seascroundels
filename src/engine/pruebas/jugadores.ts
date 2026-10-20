@@ -192,7 +192,7 @@ function avanceEnJuego(s: Estado, carta: InstId): number {
   const tipo = porId(copia(s, carta).id).tipo
   if (tipo !== 'peligro' && tipo !== 'mazoPropio') return 0
   const def = definicionEncuentro(s, carta)
-  if (def.opciones.length === 0 || def.queda) return 0
+  if (def.opciones.length === 0 || def.pone) return 0
   return Math.max(0, def.avance - avanceSinSuperar(s, def))
 }
 
@@ -627,7 +627,7 @@ function peligroDe(efectos: readonly Efecto[]): number {
 function riesgoDelEncuentro(s: Estado, carta: InstId): number {
   if (!s.mision) return 0
   const enc = definicionEncuentro(s, carta)
-  if (enc.queda) return 2
+  if (enc.pone) return 2
   if (enc.opciones.length === 0) return peligroDe(enc.efecto)
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
   let margen = -99
@@ -679,7 +679,7 @@ function faltaAvance(s: Estado): number {
 
 /** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
 /** Capacidades que empiezan una Prueba (la de una Acción). */
-const PRUEBAS_DE_ACCION = new Set(['guardia.palos', 'p2_jaguar.nat.accion0', 'a_por_ellos.jugar'])
+const PRUEBAS_DE_ACCION = new Set(['guardia.palos', 'pm_ojos.accion0', 'a_por_ellos.jugar'])
 
 function empiezaUnaPrueba(s: Estado, uso: Uso): boolean {
   if (PRUEBAS_DE_ACCION.has(uso.clave)) return true
@@ -851,7 +851,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return trasEncuentro && s.zonas.rehenes.length > 0 && s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? 3 : 0
     case 'ron_valientes.jugar':
       return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
-    case 'p2_jaguar.nat.accion0':
+    case 'pm_ojos.accion0':
       // Cazar al jaguar: uno solo, COM 5 (EXP 3 si es un Explorador).
       return trasEncuentro && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && cazaElJaguar(s, c)) ? 2 : 0
     case 'peligroEnMuelle.descartar':
@@ -867,7 +867,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     default: {
       // Quitar una carta de Peligro en juego (o sus Acciones): si estorba y se puede pagar sin quedarse sin nadie.
       const cap = capacidadDe(uso)
-      if (cap.desde === 'peligroEnJuego' && cap.ventana === 'accion') {
+      if (cap.desde === 'permanente' && cap.ventana === 'accion') {
         if (!trasEncuentro || !fuente) return 0
         // La Prueba de una Acción: solo si se llega con margen (cada intento revela un Destino y, sin nadie, Sin oposición).
         const i = /\.quitar(\d+)$/.exec(uso.clave)?.[1]

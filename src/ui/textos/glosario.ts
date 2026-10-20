@@ -146,7 +146,7 @@ export const AYUDA_FICHA_MISION: Record<FichaMision, Ayuda> = {
 
 export const CLAVES_REGLA = [
   'abordaje',
-  'seQuedaEnJuego',
+  'permanente',
   'elige',
   'sinAyuda',
   'incautado',
@@ -193,13 +193,13 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
         'Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas las repartes como quieras entre tus Tripulantes, preparados o agotados, como cualquier otra herida. Si no asignaste a nadie, el rehén se elige al azar (nunca el Capitán).',
     },
   ),
-  seQuedaEnJuego: regla(
-    'seQuedaEnJuego',
-    'Se queda en juego',
-    'La carta no se descarta al resolverla: se queda junto a la misión, con su texto activo. Ganas su Avance impreso al revelarla y cuenta como carta resuelta. Puede impedirte superar la misión o retirarte mientras siga en juego.',
+  permanente: regla(
+    'permanente',
+    'Zona de permanentes',
+    'Algunos encuentros dicen «Pon en juego la carta N del mazo de historia»: esa carta, una permanente, se pone junto a la misión (o junto a un Tripulante, si lo dice) con su texto activo. El encuentro da su Avance y su carta se descarta como cualquier otra. Si la permanente no está en el mazo de historia, la carta del encuentro se descarta sin dar su Avance y se revela otra.',
     {
       rotulo: 'Cómo se quita',
-      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano», salvo que su propio texto lo impida. Al terminar la misión se descarta con sus fichas.',
+      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia con sus fichas fuera.',
     },
   ),
   elige: regla(
@@ -373,9 +373,25 @@ function finLimitacion(hasta: Temporal['hasta'], carta: string | null): string {
     case 'finPrueba':
       return 'Al terminar esta Prueba.'
     case 'carta':
-      return carta ? `Cuando «${carta}» deje de estar en juego.` : 'Cuando la carta que lo causa deje de estar en juego.'
+      return carta ? `Cuando «${carta}» deje de estar en juego (vuelva al mazo de historia).` : 'Cuando la carta que lo causa deje de estar en juego.'
     case 'finTurno':
       return 'Al final del turno.'
+  }
+}
+
+/** Ayuda de la marca de un Tripulante junto al que está una permanente (fase 11). */
+export function ayudaJunto(permanente: string): Ayuda {
+  return {
+    clave: `junto:${permanente}`,
+    nombre: `Junto a «${permanente}»`,
+    clase: 'limitacion',
+    partes: [
+      {
+        rotulo: 'Qué es',
+        texto: `La permanente «${permanente}» está junto a este Tripulante: lo que dice de «el atrapado», «el señalado» o «ese Tripulante» le pasa a él.`,
+      },
+      { rotulo: 'Cuándo termina', texto: 'Cuando la permanente vuelve al mazo de historia: al descartarla o al terminar la misión.' },
+    ],
   }
 }
 
@@ -492,7 +508,7 @@ const PATRON_ESTADO: Record<FichaTripulante | EstadoBarco, RegExp> = {
 
 const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   abordaje: /\bAbordaje\b/,
-  seQuedaEnJuego: /\b[Ss]e queda en juego\b/,
+  permanente: /\bPon en juego la carta \d+ del mazo de historia\b|\bzona de permanentes\b/,
   elige: /\bElige\b/,
   sinAyuda: /\bSin ayuda\b/,
   incautado: /\b[Ii]ncautad[oa]s?\b/,

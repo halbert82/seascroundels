@@ -57,7 +57,7 @@ const ZONAS_A_LA_VISTA: ReadonlySet<Zona> = new Set<Zona>([
   'encuentro',
   'destino',
   'escenarioEnCurso',
-  'peligrosEnJuego',
+  'permanentes',
   'incautadas',
 ])
 

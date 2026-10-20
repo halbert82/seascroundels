@@ -14,6 +14,8 @@ interface Nombre {
   id: string
   /** Qué parte de la carta lleva ese nombre (sin parte: el nombre de la carta). */
   parte?: ParteCarta
+  /** Fase 11: el nombre de una permanente trae también el encuentro que la pone en juego (recortado). */
+  con?: { id: string; parte: ParteCarta }
 }
 
 function nombresDe(e: EntradaCatalogo): { texto: string; parte?: ParteCarta }[] {
@@ -40,12 +42,16 @@ function nombres(): Nombre[] {
   if (indice) return indice
   const lista: Nombre[] = []
   const vistos = new Set<string>()
-  for (const e of CATALOGO) {
+  // Fase 11: una permanente se llama como el encuentro que la pone en juego («Campanas a rebato»). Su nombre es el de la
+  // carta permanente, que es la que tiene el texto: va primero.
+  const orden = [...CATALOGO.filter((e) => e.tipo === 'permanente'), ...CATALOGO.filter((e) => e.tipo !== 'permanente')]
+  for (const e of orden) {
     for (const { texto, parte } of nombresDe(e)) {
       // Nombres demasiado cortos o genéricos darían falsos positivos.
       if (texto.length < 4 || vistos.has(texto)) continue
       vistos.add(texto)
-      lista.push({ texto, id: e.id, ...(parte ? { parte } : {}) })
+      const con = e.tipo === 'permanente' ? { id: e.carta.origen, parte: (e.carta.entorno === 'unico' ? 'encuentro' : e.carta.entorno) as ParteCarta } : undefined
+      lista.push({ texto, id: e.id, ...(parte ? { parte } : {}), ...(con ? { con } : {}) })
     }
   }
   // Los más largos primero: «Bucanero veterano» antes que un nombre que esté dentro de él.
@@ -90,6 +96,8 @@ export function cartasYPartes(texto: string, maximo = 5): CartaNombrada[] {
       if (LETRA.test(antes) || LETRA.test(despues)) continue
       if (ocupado.slice(pos, pos + n.texto.length).some(Boolean)) continue
       for (let i = pos; i < pos + n.texto.length; i++) ocupado[i] = true
+      // El encuentro que pone en juego la permanente, delante de ella.
+      if (n.con) encontradas.push({ pos: pos - 0.5, id: n.con.id, parte: n.con.parte })
       encontradas.push({ pos, id: n.id, ...(n.parte ? { parte: n.parte } : {}) })
     }
   }

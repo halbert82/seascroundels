@@ -144,7 +144,7 @@ describe('36 · Sangre caliente', () => {
     const j = en('ciu', ['p2_sangre', 'chubasco', 'calma'])
     const antes = avance(j, 'ciu')
     j.comprometer('COM', ['capitan']).seguir()
-    expect(avance(j, 'ciu')).toBe(antes + 3) // fase 10b: 2 / 1, y +1 por superarla
+    expect(avance(j, 'ciu')).toBe(antes + 2) // fase 11: COM 3, Avance 1 / 1, y +1 por superarla
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
     const k = en('ciu', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'], mano: ['ojo'] })
     k.comprometer('COM', ['vigia']).seguir() // COM 0 + 1 de Diego contra 3
@@ -224,21 +224,21 @@ describe('37 · El tahúr', () => {
 })
 
 describe('38 · Paga atrasada', () => {
-  it('Mar: se queda en juego; cada otro Peligro revelado, 1 ficha; con 3, 2 daños al Barco y se descarta', () => {
+  it('Mar: pone en juego la permanente 232; cada otro Peligro revelado, 1 ficha; con 3, 2 daños al Barco y se descarta', () => {
     const j = en('mar', ['p2_paga', 'calma', 'calma', 'chubasco', 'calma'], { avance: { 'pruebas-mar5': 0 } })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_paga'])
+    expect(j.zona('permanentes')).toEqual(['pm_murmullos'])
     j.seguir() // calma: 1 ficha (Avance 4)
-    expect(j.copia('p2_paga').fichas).toBe(1)
+    expect(j.copia('pm_murmullos').fichas).toBe(1)
     j.seguir() // calma: 2 fichas; Avance 6: se supera la misión y la carta se descarta
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Mar: con 3 fichas sabotean el barco', () => {
     const j = en('mar', ['p2_paga', 'calma', 'calma'])
-    j.copia('p2_paga').fichas = 2 // dos Peligros revelados antes
+    j.copia('pm_murmullos').fichas = 2 // dos Peligros revelados antes
     j.seguir() // la tercera
     expect(j.estado.danoBarco).toBe(2)
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('descartesPeligros')).toContain('p2_paga')
   })
 
@@ -246,12 +246,12 @@ describe('38 · Paga atrasada', () => {
     const j = en('mar', ['p2_paga', 'chubasco', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'], mano: ['ojo', 'timon'] })
     j.seguir().comprometer('NAV', ['viejo_lobo']) // NAV 3 + 1 de Diego + 1 del Barco = 5 contra 2
     j.pasarOfertas().seguir()
-    expect(j.ofreceCapacidad('p2_paga.mar.cap.calma')).toBe(true)
-    j.usar('p2_paga.mar.cap.calma')
-    expect(j.copia('p2_paga').fichas).toBe(0)
+    expect(j.ofreceCapacidad('pm_murmullos.cap.calma')).toBe(true)
+    j.usar('pm_murmullos.cap.calma')
+    expect(j.copia('pm_murmullos').fichas).toBe(0)
     j.pasarOfertas()
-    j.usar('p2_paga.mar.quitar0').elegir('ojo', 'timon')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    j.usar('pm_murmullos.quitar0').elegir('ojo', 'timon')
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Naturaleza: si fallas, tu Tripulante de menor coste (sin el Capitán) deserta: vuelve al muelle (fase 10b)', () => {
@@ -495,11 +495,11 @@ describe('43 · Motín', () => {
 
   it('Ciudad: los que no son Oficiales se agotan y no se preparan; agotar a un Oficial saca a uno, que queda Borracho', () => {
     const j = en('ciu', ['p2_motin', 'calma'], { tripulacion: ['bucanero', 'isabela', 'marinero_p'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_motin'])
+    expect(j.zona('permanentes')).toEqual(['pm_taberna'])
     expect(j.copia('bucanero').agotada).toBe(true)
     expect(j.copia('marinero_p').agotada).toBe(true)
     expect(j.copia('isabela').agotada).toBe(false)
-    j.usar('p2_motin.ciu.accion0').elegir('isabela').elegir('bucanero')
+    j.usar('pm_taberna.accion0').elegir('isabela').elegir('bucanero')
     expect(j.copia('bucanero').agotada).toBe(false)
     expect(j.estados('bucanero')).toEqual(['borracho'])
     expect(j.copia('isabela').agotada).toBe(true)
@@ -507,8 +507,8 @@ describe('43 · Motín', () => {
 
   it('Ciudad: pagas 3 cartas para descartarla', () => {
     const j = en('ciu', ['p2_motin', 'calma'], { tripulacion: ['bucanero'], mano: ['ojo', 'timon', 'coraje'] })
-    j.usar('p2_motin.ciu.quitar0').elegir('ojo', 'timon', 'coraje')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    j.usar('pm_taberna.quitar0').elegir('ojo', 'timon', 'coraje')
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.estado.temporales.filter((t) => t.clave === 'noPrepara')).toEqual([])
   })
 

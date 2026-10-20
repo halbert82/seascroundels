@@ -759,6 +759,7 @@
 
 .mision-estado {
   flex: 1;
+  min-width: 190px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2431,7 +2432,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-width: 46%;
 }
 .en-juego-rotulo,
 .incautadas-rotulo {
@@ -2444,6 +2444,31 @@
 .en-juego-cartas {
   display: flex;
   gap: 6px;
+  align-items: flex-start;
+}
+/* Fase 11: cada carta de la zona de permanentes, con «junto a …» debajo si va junto a un Tripulante. */
+.permanente {
+  position: relative;
+  flex: none;
+}
+/* «junto a …», sobre la carta, bajo el nombre: no ocupa alto (la cabecera no crece ni tapa la Prueba) ni tapa las fichas. */
+.permanente-junto {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 30px;
+  z-index: 2;
+  pointer-events: none;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--oro-claro);
+  background: rgba(20, 14, 9, 0.88);
+  border: 1px solid rgba(201, 162, 75, 0.6);
+  border-radius: 4px;
+  padding: 2px 3px;
 }
 .incautadas {
   display: flex;

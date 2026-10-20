@@ -74,8 +74,8 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   if (destino) {
     for (const cap of capacidadesDe(copia(s, destino).id)) if (cap.ventana === 'constante' && cap.desde === 'destino') yield [cap, destino]
   }
-  for (const inst of s.zonas.peligrosEnJuego) {
-    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'peligroEnJuego') yield [cap, inst]
+  for (const inst of s.zonas.permanentes) {
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'permanente') yield [cap, inst]
   }
   for (const inst of s.zonas.tripulacion) {
     for (const e of copia(s, inst).estados ?? []) {

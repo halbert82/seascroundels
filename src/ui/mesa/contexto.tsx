@@ -36,7 +36,7 @@ export function fichasDe(s: Estado, inst: InstId): FichasCarta {
     return f
   }
   if (tipo === 'capitulo') return { avance: c.avance }
-  if ((s.zonas.peligrosEnJuego.includes(inst) || tipo === 'tesoro') && c.fichas !== undefined) return { contador: c.fichas }
+  if ((s.zonas.permanentes.includes(inst) || tipo === 'tesoro') && c.fichas !== undefined) return { contador: c.fichas }
   return {}
 }
 
@@ -48,7 +48,7 @@ export function CartaDe({ inst, escala: escalaPedida, revelar, girar = true, enc
   const escala = igualAlto && esTarot(porId(c.id)) && porId(c.id).tipo !== 'puerto' ? (escalaPedida * MEDIDAS.normal.alto) / MEDIDAS.tarot.alto : escalaPedida
   const opciones = inter.opciones.get(inst) ?? []
   const numero = inter.numeros.get(inst)
-  const esPeligro = porId(c.id).tipo === 'peligro' && (s.zonas.encuentro.includes(inst) || s.zonas.peligrosEnJuego.includes(inst))
+  const esPeligro = porId(c.id).tipo === 'peligro' && s.zonas.encuentro.includes(inst)
   const participa = Boolean(s.prueba && (s.prueba.comprometidos.includes(inst) || s.prueba.agotadas.includes(inst)) && s.zonas.tripulacion.includes(inst))
   return (
     <CartaMesa

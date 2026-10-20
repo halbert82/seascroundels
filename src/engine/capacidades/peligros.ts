@@ -1,10 +1,17 @@
-// Capacidades de las cartas de Peligro que se quedan en juego, generadas desde sus reglas: las formas de
-// quitarlas (Prueba, agotar a un Tripulante con un Rasgo, pagar cartas), sus modificadores, lo que hacen cada
-// vez que ocurre algo y su contador de fichas.
+// Capacidades de las cartas de Peligro con reglas especiales (su Destino y el texto de sus encuentros) y de las
+// permanentes (fase 11), generadas desde sus reglas: las formas de quitarlas (Prueba, agotar a un Tripulante con un
+// Rasgo, pagar cartas), sus modificadores, lo que hacen cada vez que ocurre algo y su contador de fichas.
 
 import { nombreDe, porId } from '../catalogo.ts'
-import { registrarReglasPeligro, type CapacidadDeCarta, type Disparo, type ReglasPeligro } from '../definiciones.ts'
-import { encuentroDe, entornoActual } from '../peligros.ts'
+import {
+  registrarReglasPeligro,
+  registrarReglasPermanente,
+  type CapacidadDeCarta,
+  type Disparo,
+  type ReglasPeligro,
+  type ReglasPermanente,
+} from '../definiciones.ts'
+import { entornoActual } from '../peligros.ts'
 import type { Capacidad, CartaId, Estado, Evento, InstId, NuevaTarea } from '../tipos.ts'
 import { destinoVigente } from '../valores.ts'
 
@@ -30,7 +37,8 @@ function coincide(cuando: Disparo, ev: Evento, yo: InstId): boolean {
     case 'revelarPeligro':
       return ev.tipo === 'revelarPeligro' && ev.carta !== yo
     case 'cartaResuelta':
-      return ev.tipo === 'cartaResuelta' && ev.carta !== yo
+      // El final del encuentro que la puso en juego no le cuenta («al terminar cada encuentro siguiente»).
+      return ev.tipo === 'cartaResuelta' && ev.carta !== yo && ev.permanente !== yo
     case 'finTurno':
       return ev.tipo === 'finTurno'
     case 'superarPrueba':
@@ -40,7 +48,7 @@ function coincide(cuando: Disparo, ev: Evento, yo: InstId): boolean {
   }
 }
 
-/** Capacidades de una carta de Peligro con reglas de «se queda en juego». */
+/** Capacidades de una carta de Peligro con reglas especiales: las de su Destino y las del texto de sus encuentros. */
 export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capacidad[] {
   const caps: Capacidad[] = []
   // El Destino: mientras se aplica en la Prueba en curso.
@@ -54,122 +62,142 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
     for (const c of r.capacidades ?? []) {
       caps.push(envolver(id, 'encuentro', `${id}.${entorno}.enc`, c, (s, yo) => yo !== null && s.zonas.encuentro.includes(yo) && esteEntorno(s)))
     }
-    const q = r.queda
-    if (!q) continue
-    // Solo vale la del encuentro que se ha leído (el del Entorno de la misión, o el único de un mazo propio).
-    const activa = (s: Estado, yo: InstId | null): yo is InstId => yo !== null && s.zonas.peligrosEnJuego.includes(yo) && esteEntorno(s)
-    const base = `${id}.${entorno}`
-    for (const c of q.capacidades ?? []) caps.push(envolver(id, 'peligroEnJuego', `${base}.cap`, c, activa))
-    q.acciones?.forEach((a, i) => {
-      const accion: Capacidad = {
-        clave: `${base}.accion${i}`,
-        carta: id,
-        ventana: 'accion',
-        desde: 'peligroEnJuego',
-        requisito: (s, yo) => activa(s, yo) && (!a.requisito || a.requisito(s, yo)),
-        efecto: (_s, yo) => (yo ? [{ tipo: 'aplicarEfectos', efectos: a.efectos, contexto: 'efecto', fuente: yo }] : []),
-      }
-      if (a.coste) accion.coste = a.coste
-      caps.push(accion)
-    })
-
-    // Lo que pasa además al quitarla con una de sus formas (antes de que salga del juego).
-    const alQuitar = q.alQuitar ?? []
-    const quitarla = (yo: InstId): NuevaTarea[] => [
-      ...(alQuitar.length > 0 ? [{ tipo: 'aplicarEfectos' as const, efectos: alQuitar, contexto: 'efecto' as const, fuente: yo }] : []),
-      { tipo: 'descartarPeligroEnJuego', carta: yo },
-    ]
-    q.quitar.forEach((forma, i) => {
-      const clave = `${base}.quitar${i}`
-      switch (forma.tipo) {
-        case 'prueba':
-          // La Prueba de una Acción es una Prueba normal: se compromete, sale Destino y Sin oposición si no hay nadie.
-          // No se puede hacer durante otra Prueba (P2).
-          caps.push({
-            clave,
-            carta: id,
-            ventana: 'accion',
-            desde: 'peligroEnJuego',
-            requisito: (s, yo) => activa(s, yo) && s.prueba === null,
-            efecto: (s, yo) =>
-              yo
-                ? [
-                    {
-                      tipo: 'pruebaSuelta',
-                      fuente: yo,
-                      paso: 'empezar',
-                      definicion: {
-                        nombre: `Quitar «${nombreDe(id)}»`,
-                        palabrasClave: encuentroDe(s, yo).palabrasClave,
-                        opciones: forma.opciones,
-                        exito: [...alQuitar, ...(forma.exito ?? []), { tipo: 'descartarEsta' }],
-                        fallo: forma.fallo ?? [],
-                      },
-                    },
-                  ]
-                : [],
-          })
-          return
-        case 'agotarRasgo':
-          caps.push({
-            clave,
-            carta: id,
-            ventana: 'accion',
-            desde: 'peligroEnJuego',
-            coste: [{ tipo: 'agotarTripulante', rasgo: forma.rasgo }],
-            requisito: activa,
-            efecto: (_s, yo) => (yo ? quitarla(yo) : []),
-          })
-          return
-        case 'pagar':
-          caps.push({
-            clave,
-            carta: id,
-            ventana: 'accion',
-            desde: 'peligroEnJuego',
-            coste: [{ tipo: 'pagar', n: forma.n }],
-            requisito: activa,
-            efecto: (_s, yo) => (yo ? quitarla(yo) : []),
-          })
-          return
-      }
-    })
-
-    q.modificadores?.forEach((m, i) => {
-      caps.push({
-        clave: `${base}.mod${i}`,
-        carta: id,
-        ventana: 'constante',
-        desde: 'peligroEnJuego',
-        modifica: (ctx, yo, c) =>
-          activa(ctx.s, yo) && (c.tipo === 'dificultad' || c.tipo === 'totalPrueba') && c.tipo === m.a && (!m.hab || c.hab === m.hab) ? m.n : 0,
-      })
-    })
-
-    q.disparos?.forEach((d, i) => {
-      caps.push({
-        clave: `${base}.disparo${i}`,
-        carta: id,
-        ventana: 'obligada',
-        desde: 'peligroEnJuego',
-        disparo: (s, yo, ev, fase) => fase === 'despues' && activa(s, yo) && coincide(d.cuando, ev, yo),
-        efecto: (_s, yo) => (yo ? [{ tipo: 'aplicarEfectos', efectos: d.efectos, contexto: 'disparo', fuente: yo }] : []),
-      })
-    })
-
-    const contador = q.contador
-    if (contador) {
-      caps.push({
-        clave: `${base}.contador`,
-        carta: id,
-        ventana: 'obligada',
-        desde: 'peligroEnJuego',
-        disparo: (s, yo, ev, fase) => fase === 'despues' && activa(s, yo) && coincide(contador.cuando, ev, yo),
-        efecto: (_s, yo) => (yo ? [{ tipo: 'contador', carta: yo, clave: `${base}.contador` }] : []),
-      })
-    }
   }
   return caps
+}
+
+/** Rasgos impresos de una permanente (los del encuentro que la pone en juego: Terreno, Bestia…). */
+function rasgosDePermanente(id: CartaId): string[] {
+  const e = porId(id)
+  return e.tipo === 'permanente' ? [...e.carta.rasgos] : []
+}
+
+/**
+ * Capacidades de una permanente (fase 11), generadas desde sus reglas: las formas de quitarla (Prueba, agotar a un
+ * Tripulante con un Rasgo, pagar cartas), sus Acciones, modificadores, lo que hace cada vez que ocurre algo y su
+ * contador de fichas. Solo funcionan mientras está en la zona de permanentes.
+ */
+export function capacidadesDePermanente(id: CartaId, q: ReglasPermanente): Capacidad[] {
+  const caps: Capacidad[] = []
+  const activa = (s: Estado, yo: InstId | null): yo is InstId => yo !== null && s.zonas.permanentes.includes(yo)
+  const base = id
+  for (const c of q.capacidades ?? []) caps.push(envolver(id, 'permanente', `${base}.cap`, c, activa))
+  q.acciones?.forEach((a, i) => {
+    const accion: Capacidad = {
+      clave: `${base}.accion${i}`,
+      carta: id,
+      ventana: 'accion',
+      desde: 'permanente',
+      requisito: (s, yo) => activa(s, yo) && (!a.requisito || a.requisito(s, yo)),
+      efecto: (_s, yo) => (yo ? [{ tipo: 'aplicarEfectos', efectos: a.efectos, contexto: 'efecto', fuente: yo }] : []),
+    }
+    if (a.coste) accion.coste = a.coste
+    caps.push(accion)
+  })
+
+  // Lo que pasa además al quitarla con una de sus formas (antes de que vuelva al mazo de historia).
+  const alQuitar = q.alQuitar ?? []
+  const quitarla = (yo: InstId): NuevaTarea[] => [
+    ...(alQuitar.length > 0 ? [{ tipo: 'aplicarEfectos' as const, efectos: alQuitar, contexto: 'efecto' as const, fuente: yo }] : []),
+    { tipo: 'devolverPermanente', carta: yo },
+  ]
+  q.quitar.forEach((forma, i) => {
+    const clave = `${base}.quitar${i}`
+    switch (forma.tipo) {
+      case 'prueba':
+        // La Prueba de una Acción es una Prueba normal: se compromete, sale Destino y Sin oposición si no hay nadie.
+        // No se puede hacer durante otra Prueba (P2). Lleva los Rasgos de la permanente (Guardia, Militar…).
+        caps.push({
+          clave,
+          carta: id,
+          ventana: 'accion',
+          desde: 'permanente',
+          requisito: (s, yo) => activa(s, yo) && s.prueba === null,
+          efecto: (_s, yo) =>
+            yo
+              ? [
+                  {
+                    tipo: 'pruebaSuelta',
+                    fuente: yo,
+                    paso: 'empezar',
+                    definicion: {
+                      nombre: `Quitar «${nombreDe(id)}»`,
+                      palabrasClave: rasgosDePermanente(id),
+                      opciones: forma.opciones,
+                      exito: [...alQuitar, ...(forma.exito ?? []), { tipo: 'descartarEsta' }],
+                      fallo: forma.fallo ?? [],
+                    },
+                  },
+                ]
+              : [],
+        })
+        return
+      case 'agotarRasgo':
+        caps.push({
+          clave,
+          carta: id,
+          ventana: 'accion',
+          desde: 'permanente',
+          coste: [{ tipo: 'agotarTripulante', rasgo: forma.rasgo }],
+          requisito: activa,
+          efecto: (_s, yo) => (yo ? quitarla(yo) : []),
+        })
+        return
+      case 'pagar':
+        caps.push({
+          clave,
+          carta: id,
+          ventana: 'accion',
+          desde: 'permanente',
+          coste: [{ tipo: 'pagar', n: forma.n }],
+          requisito: activa,
+          efecto: (_s, yo) => (yo ? quitarla(yo) : []),
+        })
+        return
+    }
+  })
+
+  q.modificadores?.forEach((m, i) => {
+    caps.push({
+      clave: `${base}.mod${i}`,
+      carta: id,
+      ventana: 'constante',
+      desde: 'permanente',
+      modifica: (ctx, yo, c) =>
+        activa(ctx.s, yo) && (c.tipo === 'dificultad' || c.tipo === 'totalPrueba') && c.tipo === m.a && (!m.hab || c.hab === m.hab) ? m.n : 0,
+    })
+  })
+
+  q.disparos?.forEach((d, i) => {
+    caps.push({
+      clave: `${base}.disparo${i}`,
+      carta: id,
+      ventana: 'obligada',
+      desde: 'permanente',
+      disparo: (s, yo, ev, fase) => fase === 'despues' && activa(s, yo) && coincide(d.cuando, ev, yo),
+      efecto: (_s, yo) => (yo ? [{ tipo: 'aplicarEfectos', efectos: d.efectos, contexto: 'disparo', fuente: yo }] : []),
+    })
+  })
+
+  const contador = q.contador
+  if (contador) {
+    caps.push({
+      clave: `${base}.contador`,
+      carta: id,
+      ventana: 'obligada',
+      desde: 'permanente',
+      disparo: (s, yo, ev, fase) => fase === 'despues' && activa(s, yo) && coincide(contador.cuando, ev, yo),
+      efecto: (_s, yo) => (yo ? [{ tipo: 'contador', carta: yo, clave: `${base}.contador` }] : []),
+    })
+  }
+  return caps
+}
+
+/** Registra una permanente: sus reglas y las capacidades que salen de ellas. Se puede volver a llamar (sustituye). */
+export function registrarPermanente(id: CartaId, reglas: ReglasPermanente): void {
+  registrarReglasPermanente(id, reglas)
+  quitarCapacidadesDe(id)
+  registrarCapacidades(...capacidadesDePermanente(id, reglas))
 }
 
 /**

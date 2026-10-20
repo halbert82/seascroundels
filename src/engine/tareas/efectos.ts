@@ -134,8 +134,8 @@ export function medir(s: Estado, m: Medida): number {
       return canonesPreparados(s).length
     case 'tripulantes':
       return s.zonas.tripulacion.length
-    case 'peligrosEnJuego':
-      return s.zonas.peligrosEnJuego.length
+    case 'permanentes':
+      return s.zonas.permanentes.length
   }
 }
 
@@ -352,8 +352,17 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         }
         break
       case 'descartarEsta':
-        if (fuente) tareas.push({ tipo: 'descartarPeligroEnJuego', carta: fuente })
+        // En una permanente, «descarta esta carta» la devuelve al mazo de historia (fase 11).
+        if (fuente) tareas.push({ tipo: 'devolverPermanente', carta: fuente })
         break
+      case 'alJunto': {
+        // A quien va junto la permanente («el atrapado», «el señalado», «ese Tripulante»), si sigue en tu tripulación.
+        const junto = fuente ? copia(s, fuente).junto : undefined
+        if (junto && s.zonas.tripulacion.includes(junto)) {
+          tareas.push({ tipo: 'aplicarEfectos', efectos: [{ tipo: 'sobre', carta: junto, hacer: e.hacer }], contexto: 'efecto', ...(fuente ? { fuente } : {}) })
+        }
+        break
+      }
       case 'si':
         tareas.push(...tareasDe(s, cumple(s, e.condicion) ? e.entonces : (e.sino ?? []), fuente))
         break

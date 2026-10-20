@@ -3,7 +3,7 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CATALOGO as TODAS, type EntradaCatalogo, type TipoCarta } from '../../engine/catalogo.ts'
+import { CATALOGO as TODAS, porId, type EntradaCatalogo, type TipoCarta } from '../../engine/catalogo.ts'
 
 /** Las cartas de la caja: sin los Peligros antiguos, que solo se conservan para las pruebas del motor. */
 const CATALOGO = TODAS.filter((e) => !(e.tipo === 'peligro' && e.carta.retirada))
@@ -36,6 +36,7 @@ const GRUPOS: Grupo[] = [
   { id: 'mano', nombre: 'Eventos y Habilidades', tipos: ['evento', 'habilidad'] },
   { id: 'peligros', nombre: 'Peligros', tipos: ['peligro', 'mazoPropio'] },
   { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'cartaMision'] },
+  { id: 'permanentes', nombre: 'Permanentes', tipos: ['permanente'] },
   { id: 'tesoros', nombre: 'Tesoros', tipos: ['tesoro'] },
   { id: 'escenario', nombre: 'Escenario y Puertos', tipos: ['escenario', 'puerto'] },
 ]
@@ -72,6 +73,8 @@ function descripcion(e: EntradaCatalogo): string {
       return `Pasajero · ${e.mision.nombre}`
     case 'cartaMision':
       return 'Carta de misión · apartada'
+    case 'permanente':
+      return `Permanente · la pone en juego la carta ${porId(e.carta.origen).num}`
     case 'peligro':
       return `Peligro · ${e.carta.entraDuranteLaPartida ? 'apartada' : copias}`
     case 'mazoPropio':

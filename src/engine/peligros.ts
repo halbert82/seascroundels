@@ -121,8 +121,8 @@ export function peligrosDelMuelle(s: Estado): InstId[] {
 }
 
 /**
- * Al terminar una misión: el mazo propio vuelve al mazo de historia y el resto de Peligros (también los que se
- * quedaron en juego) a su pila de descartes. La carta que persigue se queda encima del mazo de Peligros normal.
+ * Al terminar una misión: el mazo propio vuelve al mazo de historia y el resto de Peligros a su pila de descartes. Las
+ * permanentes vuelven al mazo de historia (fase 11). La carta que persigue se queda encima del mazo de Peligros normal.
  */
 export function devolverPeligros(s: Estado): void {
   const p = s.prueba
@@ -133,7 +133,8 @@ export function devolverPeligros(s: Estado): void {
   }
   const persigue = persigueVigente(s)
   if (persigue && s.zonas.mazoMision.includes(persigue)) mover(s, persigue, 'mazoPeligros', 'arriba')
-  const zonas: Zona[] = ['encuentro', 'destino', 'peligrosEnJuego', 'mazoMision', 'descartesMision']
+  for (const carta of [...s.zonas.permanentes]) mover(s, carta, 'mazoHistoria', 'abajo')
+  const zonas: Zona[] = ['encuentro', 'destino', 'mazoMision', 'descartesMision']
   for (const zona of zonas) {
     for (const carta of [...s.zonas[zona]]) {
       if (s.mision?.retirar.includes(carta)) mover(s, carta, 'fueraDeJuego')

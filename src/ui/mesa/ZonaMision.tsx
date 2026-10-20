@@ -4,7 +4,7 @@ import { motion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { iconosDe, porId } from '../../engine/catalogo.ts'
 import { destinoDe } from '../../engine/destinos.ts'
-import { copia } from '../../engine/estado.ts'
+import { copia, nombre } from '../../engine/estado.ts'
 import { desgloseDificultad, desgloseTotal, dificultadPrueba, nombreDelEncuentro, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
 import type { Decision, Estado, InstId } from '../../engine/tipos.ts'
 import { valor } from '../../engine/valores.ts'
@@ -64,6 +64,9 @@ function ultimaRevelada(s: Estado, desde: number): InstId | null {
   return null
 }
 
+/** Ancho que se guarda para el Avance y las notas de la misión, junto a la zona de permanentes. */
+const ANCHO_MIN_ESTADO = 190
+
 export function ZonaMision({ desde, decision, sel }: { desde: number; decision: Decision | null; sel: Seleccion | null }) {
   const { s } = useMesa()
   const { ancho } = useLienzo()
@@ -78,6 +81,14 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
   const escalaPeligro = (escalaNormal * MEDIDAS.normal.alto) / MEDIDAS.tarot.alto
   const anchoPanel = centro - MEDIDAS.tarot.ancho * escalaPeligro - 16
   const resuelta = !enc ? ultimaRevelada(s, desde) : null
+  // La zona de permanentes, a la derecha de la cabecera (fase 11): las cartas, a la altura de la carta de misión, para que
+  // la cabecera no crezca ni tape la Prueba; si no caben en fila, se solapan (al pasar el ratón se amplían). El Avance
+  // conserva su ancho.
+  const enZona = s.zonas.permanentes.length + s.zonas.cartasMision.length
+  const escalaPermanente = 0.2
+  const anchoPermanente = MEDIDAS.normal.ancho * escalaPermanente
+  const libre = centro - MEDIDAS.normal.alto * 0.34 - 2 * 16 - ANCHO_MIN_ESTADO
+  const separacion = enZona > 1 ? Math.min(6, (libre - enZona * anchoPermanente) / (enZona - 1)) : 0
   return (
     <section className="zona zona-mision">
       <div className="mision-cabecera">
@@ -124,16 +135,26 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
             </div>
           )}
         </div>
-        {s.zonas.peligrosEnJuego.length + s.zonas.cartasMision.length > 0 && (
+        {s.zonas.permanentes.length + s.zonas.cartasMision.length > 0 && (
           <div className="en-juego">
-            <Explicable ayuda={AYUDA_REGLA.seQuedaEnJuego} className="en-juego-rotulo">
-              En juego
+            <Explicable ayuda={AYUDA_REGLA.permanente} className="en-juego-rotulo">
+              Zona de permanentes
             </Explicable>
             <div className="en-juego-cartas">
-              {/* Las de Peligro son tarot: a la misma altura que las demás, para que la fila no crezca. */}
-              {[...s.zonas.cartasMision, ...s.zonas.peligrosEnJuego].map((c) => (
-                <CartaDe key={c} inst={c} escala={0.26} igualAlto />
-              ))}
+              {/* «¡La guardia!» (carta de misión) y las permanentes (fase 11), todas de tamaño normal. */}
+              {[...s.zonas.cartasMision, ...s.zonas.permanentes].map((c, i) => {
+                const junto = copia(s, c).junto
+                return (
+                  <div key={c} className="permanente" style={i > 0 ? { marginLeft: separacion } : undefined}>
+                    <CartaDe inst={c} escala={escalaPermanente} />
+                    {junto && s.cartas[junto] && (
+                      <span className="permanente-junto" title={`Va junto a ${nombre(s, junto)}`}>
+                        junto a {nombre(s, junto)}
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
         )}

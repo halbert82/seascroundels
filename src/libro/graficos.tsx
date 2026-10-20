@@ -60,6 +60,8 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
       return deTipo('pasajero')
     case 'Cartas de misión':
       return deTipo('cartaMision')
+    case 'Permanentes':
+      return deTipo('permanente')
     default:
       return []
   }
@@ -589,14 +591,14 @@ export function Mesa() {
         <div className="mesa-franja" style={{ top: `${f3 - 5}mm`, height: `${H + 13}mm` }}>
           <span>Tu zona</span>
         </div>
-        {/* Arriba: el reloj y la reputación. */}
+        {/* Arriba: el reloj y la reputación (fase 11: una partida normal se gana con 12). */}
         <En x={4} y={f0}>
           <Dorso tipo="escenario" ancho={W} grosor={4} />
         </En>
         <En x={24} y={f0}>
           <div className="mesa-reputacion">
             <Icono id="rep" />
-            {[0, 3, 6, 9, 12, 15, 18].map((n) => (
+            {[0, 2, 4, 6, 8, 10, 12].map((n) => (
               <span key={n} className={n === 0 ? 'marca-rep actual' : 'marca-rep'}>
                 {n}
               </span>

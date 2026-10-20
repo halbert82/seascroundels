@@ -57,7 +57,7 @@ Cada misión superada otorga reputación. Cuando el jugador reúne la reputació
 > [!epigrafe] Un tabernero de Tortuga
 > «En Tortuga nadie pregunta de dónde vienes. Solo cuánto traes.»
 
-El jugador gana la partida en cuanto alcanza la reputación que exige la dificultad elegida, o si un efecto de juego indica que ha ganado.
+El jugador gana la partida en cuanto alcanza la reputación que exige la dificultad elegida (12 en una partida normal), o si un efecto de juego indica que ha ganado.
 
 El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo de Escenario o si no quedan misiones a las que zarpar.
 
@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 211 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica de Sea Scoundrels contiene 223 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -99,8 +99,9 @@ La Caja básica de Sea Scoundrels contiene 211 cartas, que se dividen en cartas 
 | Mazos propios | 12 |
 | Pasajeros | 2 |
 | Cartas de misión | 1 |
+| Permanentes | 12 |
 
-Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, la carta de misión y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
+Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, la carta de misión, las permanentes y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
 Las cartas de Peligro, las de los mazos propios y las de puerto tienen tamaño tarot (70 × 120 mm), más grande que el del resto de cartas (63 × 88 mm), para que su texto se lea bien. Por eso el mazo de historia se guarda en dos montones, uno por tamaño: las cartas que van al mazo de Peligros (los mazos propios y «La Armada te persigue») están en el montón grande.
 
@@ -197,7 +198,7 @@ Las cartas de Escenario tienen nombre, texto y frase de ambientación. Su efecto
 
 #### Cartas del mazo de historia
 
-Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y «¡La guardia!» no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Añade la carta 137 al mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
+Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros, «¡La guardia!» y las permanentes no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Añade la carta 137 al mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
 
 > [!grafico] anatomia historia
 
@@ -254,16 +255,16 @@ La partida se prepara siguiendo estos pasos:
 
    | Dificultad | Reputación para ganar | Cartas de Escenario |
    | --- | --- | --- |
-   | Corta | 12 | 8 |
-   | Normal | 18 | 11 |
-   | Larga | 24 | 14 (todas) |
+   | Corta | 9 | 8 |
+   | Normal | 12 | 11 |
+   | Larga | 16 | 14 (todas) |
 
    Para las primeras partidas, el jugador puede jugar sin mazo de Escenario: en una **partida de aprendizaje**, un contador de días hace de reloj (ver «Partida de aprendizaje»).
 
 2. **Pon en juego a tu Capitán y tu Barco.** El Capitán empieza en juego preparado.
 3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa.
 4. **Prepara el mazo de Peligros.** Baraja todas las cartas de Peligro y deja el mazo boca abajo junto a la carta de puerto.
-5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!» y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
+5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!», las permanentes y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique el puerto. Esas cartas, boca arriba junto al puerto, forman el **muelle**, que es el único lugar desde el que se pueden reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a la mano del jugador.
    > [!tema]
    > El muelle es donde se busca gente: marineros sin barco, artilleros sin cañón y cirujanos sin título. Lo que no contratas hoy se lo lleva otro capitán.
@@ -378,7 +379,7 @@ Al empezar la misión, se resuelven sus capacidades **Al zarpar** y las de las c
 
 #### Revelar cartas de Peligro
 
-Se revela la carta de arriba del mazo de Peligros y se lee **solo el encuentro de su Entorno**; por ejemplo, en una misión de Mar se lee el encuentro de Mar. El jugador resuelve el encuentro y gana su Avance (ver el párrafo siguiente). A continuación, se descarta la carta de Peligro, salvo que indique que se queda en juego (ver «Cartas que se quedan en juego»). Después se revela otra carta. El proceso se repite hasta que el jugador reúne el Avance que pide la misión o hasta que se retira.
+Se revela la carta de arriba del mazo de Peligros y se lee **solo el encuentro de su Entorno**; por ejemplo, en una misión de Mar se lee el encuentro de Mar. El jugador resuelve el encuentro y gana su Avance (ver el párrafo siguiente). A continuación, se descarta la carta de Peligro, también si su encuentro ha puesto en juego una permanente (ver «Zona de permanentes»). Después se revela otra carta. El proceso se repite hasta que el jugador reúne el Avance que pide la misión o hasta que se retira.
 
 Cada encuentro proporciona Avance. Un **encuentro sin Prueba** solo proporciona su Avance y aplica su efecto, sin revelar Destino. Un **encuentro con Prueba** pone a prueba a la tripulación del jugador y lleva dos valores de Avance, «Avance 3 / 2». Si el jugador supera la Prueba, gana el primer valor; si no la supera (porque la falla o porque no asigna a nadie), gana el segundo.
 
@@ -413,7 +414,7 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 **Elige.** El encuentro ofrece dos opciones, y el jugador escoge una antes de asignar a nadie. Si una opción es un pago (descartar cartas, agotar Tripulantes…) y el jugador no puede pagarla entera, esa opción no se ofrece. Cuando una opción consiste en pagar y la otra en hacer la Prueba, pagar se considera superar la Prueba: el jugador gana el primer número de su Avance sin hacer la Prueba ni revelar Destino.
 
 > [!ejemplo]
-> En Ciudad, el jugador revela «Carestía» (Avance 2 / 1): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano, puede pagar 2 y ganar 2 de Avance sin Prueba. Con 1 sola carta no puede pagar, por lo que debe regatear. Si no supera la Prueba, gana igualmente 1 de Avance, pero se aplica el fallo.
+> En Ciudad, el jugador revela «Carestía» (Avance 1 / 1): «**Elige:** pagas lo que piden (descarta 2 cartas), o regateas: Prueba de EXP 3». Con 3 cartas en la mano, puede pagar 2 y ganar 1 de Avance sin Prueba. Con 1 sola carta no puede pagar, por lo que debe regatear. Si no supera la Prueba, gana igualmente 1 de Avance, pero se aplica el fallo.
 
 **Sin ayuda.** Solo un Tripulante puede ser asignado a esa Prueba. El jugador puede añadir cartas de Habilidad de su mano por sus iconos, pero no Eventos (ni siquiera por sus iconos). Además, durante esa Prueba no puede jugar Eventos. Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
 
@@ -445,20 +446,21 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 > [!ejemplo]
 > En Ciudad, el jugador falla «Tu cara en el muelle». En el muelle de Tortuga están el Contrabandista del bajo Caribe (coste 3), el Matasanos (2), la Vela mayor (1) y el Grumete leal (1): el cartel ocupa el sitio del Contrabandista, que se descarta. Al reponer el muelle, solo se revelan 3 cartas nuevas hasta que, en una Fase de Reclutamiento, el jugador pague 2 cartas para descartar el cartel.
 
-#### Cartas que se quedan en juego
+#### Zona de permanentes
 
-Algunos encuentros dicen **Se queda en juego**. Una carta con esta indicación no se descarta al resolverla: permanece junto a la misión, con su texto activo, hasta que se cumple la condición que indica para quitarla.
+Algunos encuentros dicen «**Pon en juego la carta N del mazo de historia**». Esa carta es una **permanente**: el jugador la busca por su número y la coloca junto a la misión, en la **zona de permanentes**, donde su texto queda activo hasta que se descarta.
 
-- El jugador gana su Avance impreso al revelarla.
-- Se considera una carta resuelta: después de ella, el jugador ya puede retirarse o superar la misión, salvo que su texto lo impida.
-- Algunas llevan la cuenta de algo con fichas de misión que solo aumentan («cada vez que reveles otro Peligro, pon 1 ficha») y, al llegar a cierto número, se aplica el efecto que indica la carta.
+- El encuentro da su Avance y su carta se descarta como cualquier otra. Cuenta como carta resuelta: después de ella, el jugador ya puede retirarse o superar la misión, salvo que el texto de la permanente lo impida.
+- Si la permanente no está en el mazo de historia (porque ya está en juego), la carta del encuentro se descarta sin dar su Avance y se revela otra.
+- Algunas se ponen **junto a un Tripulante** («Pon en juego la carta 228 del mazo de historia junto a él»): se colocan a su lado, porque su texto habla de él («el atrapado», «el señalado»), pero siguen formando parte de la zona de permanentes.
+- Algunas llevan la cuenta de algo con fichas de misión, que se colocan sobre la carta y solo aumentan («cada vez que reveles otro Peligro, pon 1 ficha aquí»). Al llegar al número que indica, se aplica lo que dice.
 - Algunas impiden superar la misión, o retirarse, mientras sigan en juego.
 - Puede haber varias en juego a la vez.
-- Muchas pueden quitarse con una Acción que indica su texto. «Cortar por lo sano» descarta cualquiera; las que no deben poder quitarse así lo dicen en su propio texto.
-- Al terminar la misión (superada, retirada o con el Barco hundido), se descartan con sus fichas.
+- Muchas pueden quitarse con una Acción que indica su texto, y «Cortar por lo sano» quita cualquiera. Cuando una permanente dice «descarta esta carta», vuelve al mazo de historia y sus fichas se descartan.
+- Al terminar la misión (superada, retirada o con el Barco hundido), todas vuelven al mazo de historia.
 
 > [!ejemplo]
-> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela «Campanas a rebato», que se queda en juego: gana su Avance (2) y la carta queda junto a la misión. Cada vez que termina un encuentro de esta misión, se pone 1 ficha de misión sobre la carta; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitar la carta antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas se descartan con ella.
+> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela una carta de Peligro cuyo encuentro de Ciudad pone en juego la carta 230, «Campanas a rebato»: el jugador gana 2 de Avance, coloca las campanas junto a la misión y descarta la carta de Peligro. Cada vez que termina un encuentro posterior, pone 1 ficha sobre las campanas; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitarlas antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas vuelven al mazo de historia.
 
 #### Pruebas que nacen de una Acción
 
@@ -468,11 +470,11 @@ Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de 
 - No puede empezarse durante otra Prueba. Se hace en una ventana de acción fuera de una Prueba, es decir, en la Fase de Reclutamiento o después de resolver una carta de Peligro.
 
 > [!ejemplo]
-> En el Mar, el jugador revela «La cadena de la bocana», que se queda en juego: mientras esté en juego, no puede superar la misión. Tras resolverla, usa su Acción: «Prueba de COM 5 (4 con un Carpintero)». El jugador tiene preparado al Carpintero de a bordo, así que la Prueba pide 4. Asigna al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añade «¡Al abordaje!»: suma 5. Sale el Destino de la carta «Arrecife» (−1): el total baja a 4 y el jugador supera la Prueba. Descarta la cadena y gana 1 de Avance, como indica su texto. Si hubiera fallado la Prueba, el Barco habría sufrido 2 daños.
+> En el Mar, el jugador revela una carta de Peligro cuyo encuentro pone en juego la carta 231, «La cadena de la bocana»: mientras siga en juego, no puede superar la misión. Tras resolver el encuentro, usa la Acción de la cadena: «Prueba de COM 5 (4 con un Carpintero)». El jugador tiene preparado al Carpintero de a bordo, así que la Prueba pide 4. Asigna al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añade «¡Al abordaje!»: suma 5. Sale el Destino de la carta «Arrecife» (−1): el total baja a 4 y el jugador supera la Prueba. La cadena vuelve al mazo de historia y el jugador gana 1 de Avance, como indica su texto. Si hubiera fallado la Prueba, el Barco habría sufrido 2 daños.
 
 #### Fichas de misión
 
-Algunas misiones, y algunas cartas que se quedan en juego, llevan la cuenta de algo con **fichas de misión** sobre su carta. Todas las fichas de misión son iguales: la carta indica qué representan («Cada Prueba de COM superada: 1 ficha de Alarma»), cuándo se ponen y se quitan, y qué sucede al llegar a cierto número. Las fichas de misión se descartan al terminar la misión, independientemente de si se supera o no.
+Algunas misiones, y algunas permanentes, llevan la cuenta de algo con **fichas de misión** sobre su carta. Todas las fichas de misión son iguales: la carta indica qué representan («Cada Prueba de COM superada: 1 ficha de Alarma»), cuándo se ponen y se quitan, y qué sucede al llegar a cierto número. Las fichas de misión se descartan al terminar la misión, independientemente de si se supera o no.
 
 > [!ejemplo]
 > En «La casa del gobernador», cada Prueba de COM que supera el jugador pone 1 ficha de Alarma. Con 2 fichas, la misión necesita 1 de Avance más. Con 3, se pone en juego «¡La guardia!» junto a la misión: mientras esté en juego, todas las Pruebas reciben +1 de dificultad.
@@ -510,7 +512,7 @@ En cuanto el jugador reúne el Avance que pide la misión, la supera. Debe resol
 Dado que el capítulo nuevo se baraja antes de reponer las misiones disponibles, puede aparecer de inmediato o mucho más tarde.
 
 > [!ejemplo]
-> El jugador supera «Un soplo en Port Royal» y gana 1 de reputación. Su recompensa indica «Añade la carta 136 al mazo de Misiones»: el jugador busca la carta 136 en el mazo de historia, que es «Seguirle por los muelles», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «Niebla en el estrecho».
+> El jugador supera «Un soplo en Port Royal». Su recompensa no da reputación, pero indica «Añade la carta 136 al mazo de Misiones»: el jugador busca la carta 136 en el mazo de historia, que es «Seguirle por los muelles», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «Niebla en el estrecho».
 
 #### No superar una misión
 
@@ -518,7 +520,7 @@ Si el jugador se retira, la misión falla o se hunde su Barco, el jugador no sup
 
 #### Al terminar la misión
 
-Tanto si se ha superado como si no, si la misión tenía un mazo propio, este se separa y se devuelve al mazo de historia. Las cartas de misión que estuvieran junto a ella («¡La guardia!») vuelven al mazo de historia. Las demás cartas de Peligro vuelven a su pila de descartes. Los Pasajeros permanecen con el jugador. Después, el jugador vuelve a puerto y pasa a la Fase de Final de turno.
+Tanto si se ha superado como si no, si la misión tenía un mazo propio, este se separa y se devuelve al mazo de historia. Las cartas de misión que estuvieran junto a ella («¡La guardia!») y las permanentes vuelven al mazo de historia. Las demás cartas de Peligro vuelven a su pila de descartes. Los Pasajeros permanecen con el jugador. Después, el jugador vuelve a puerto y pasa a la Fase de Final de turno.
 
 ### Heridas, daño y penalizaciones
 
@@ -590,7 +592,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 
 **El jugador gana la partida** en el momento en que se produce una de las siguientes situaciones:
 
-- El jugador alcanza la reputación de la dificultad elegida: 12 en una partida corta, 18 en una normal o 24 en una larga.
+- El jugador alcanza la reputación de la dificultad elegida: 9 en una partida corta, 12 en una normal o 16 en una larga.
 - Un efecto de juego indica que el jugador ha ganado.
 
 **El jugador pierde la partida** en el momento en que se produce una de las siguientes situaciones:
@@ -603,7 +605,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 > La temporada se acaba. Si no tienes nombre cuando llegue, tu tripulación buscará otro capitán.
 
 > [!ejemplo]
-> El jugador llega al último turno con 15 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que otorga 3. Recluta todo lo que puede pagar y zarpa. Si supera la misión, llega a 18 y gana la partida. Si se retira o su Barco se hunde, pierde.
+> El jugador llega al último turno con 10 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que otorga 2. Recluta todo lo que puede pagar y zarpa. Si supera la misión, llega a 12 y gana la partida. Si se retira o su Barco se hunde, pierde.
 
 ### Ejemplo de juego
 
@@ -629,7 +631,7 @@ El jugador revela la primera carta de Peligro y lee su encuentro de Mar: «Turbo
 
 El jugador revela el Destino de la carta «Arrecife»: −1 (sería 0 con un Vigía asignado). El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por superar la Turbonada, 1 más; además, la Turbonada queda atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
 
-**Recompensa.** El jugador gana 1 de reputación y, como el Barco no ha sufrido daño en esta misión, cumple la Gesta y gana 1 más. A continuación adquiere sin coste una Mejora del muelle de coste 1 o menos: la única es la Vela mayor, que pone en el Barco. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y el jugador vuelve a puerto.
+**Recompensa.** La misión no da reputación, pero el Barco no ha sufrido daño: el jugador cumple la Gesta y gana 1. Adquiere sin coste la Vela mayor (la única Mejora del muelle de coste 1 o menos) y la pone en el Barco. Como precio, un Tripulante sufre 1 herida, que el jugador da a Diego. Aparta la misión y repone las misiones disponibles. La carta del Destino va a la pila de descartes de Peligros (la Turbonada sigue al fondo del mazo) y el jugador vuelve a puerto.
 
 **Fase de Final de turno.** El jugador conserva «¡Al abordaje!» y roba cuatro cartas para tener cinco. La Vela mayor le dará 1 de Avance al zarpar a su próxima misión de Mar.
 
@@ -739,7 +741,7 @@ Las cartas de la mano no se asignan: se añaden a la Prueba por sus iconos (ver 
 
 El Avance representa el progreso del jugador en una misión. Se marca con fichas de Avance sobre la carta de misión. Al ganar Avance, el jugador coloca esa cantidad de fichas de Avance sobre la carta de misión. Cada encuentro da el Avance indicado junto a su icono de mapa. En cuanto el jugador tiene el Avance que pide la misión, la supera.
 
-- **Avance X / Y.** Un encuentro con Prueba lleva dos valores: el jugador gana X si supera la Prueba e Y si no la supera (si la falla, si no asigna a ningún Tripulante o si el Destino dice que la falla). Los encuentros sin Prueba y los que se quedan en juego tienen un solo valor.
+- **Avance X / Y.** Un encuentro con Prueba lleva dos valores: el jugador gana X si supera la Prueba e Y si no la supera (si la falla, si no asigna a ningún Tripulante o si el Destino dice que la falla). Los encuentros sin Prueba, como los que ponen en juego una permanente, tienen un solo valor.
 - En un «Elige», si el jugador paga en vez de hacer la Prueba, la Prueba se considera superada y el jugador gana X.
 - El Avance adicional que da una misión al superar una Prueba («cada Prueba de NAV que superes da 1 de Avance más») se suma a X.
 
@@ -810,7 +812,7 @@ El Capitán es el Tripulante principal del jugador. Empieza en juego preparado y
 
 ### Clase
 
-Cada Capitán y cada carta de jugador pertenece a una Clase o es Neutral. Al construir sus mazos, el jugador solo puede usar cartas de la Clase de su Capitán y cartas Neutrales. Los dos Capitanes de la Caja básica son de Piratería.
+Toda carta de jugador, sea del tipo que sea (Capitán, Tripulante, Mejora, Evento o Habilidad), es de una Clase o es Neutral. La Clase figura al pie de la carta y da color a su marco. Al construir sus mazos, el jugador solo puede usar cartas de la Clase de su Capitán y cartas Neutrales. Los dos Capitanes de la Caja básica son de Piratería. Los Tesoros no tienen Clase: no forman parte de los mazos del jugador.
 
 ### Coste
 
@@ -983,11 +985,11 @@ Un Evento es una carta del mazo del capitán con un efecto propio. Para jugarlo,
 
 ### Fichas de misión
 
-Las fichas de misión son fichas genéricas con las que una misión, o una carta que se queda en juego, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha y Defensa. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
+Las fichas de misión son fichas genéricas con las que una misión, o una permanente, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha y Defensa. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
 
 ### Final con elección
 
-Final con elección es una recompensa de algunos capítulos III: al superar el capítulo, el jugador elige una de las dos opciones que indica (por ejemplo, un Tesoro y 2 de reputación, o 4 de reputación).
+Final con elección es una recompensa de algunos capítulos III: al superar el capítulo, el jugador elige una de las dos opciones que indica (por ejemplo, un Tesoro y 2 de reputación, o 3 de reputación).
 
 ### Gesta
 
@@ -1047,7 +1049,7 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 ### Mazo de historia
 
-El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!» y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y «¡La guardia!» llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
+El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!», las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros, «¡La guardia!» y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
 
 - El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
 
@@ -1125,7 +1127,7 @@ Ocupar el muelle es una palabra clave que aparece en el texto de algunos fallos:
 
 ### Palabras clave
 
-Las palabras clave son términos con una regla propia que aparecen en el texto de las cartas. Las de los encuentros de Peligro son Abordaje, Al revelarse, Elige, Incautado, Ocupar el muelle, Persigue, Se queda en juego y Sin ayuda; las de las cartas del jugador, como Indestructible, figuran en la primera línea de su texto. Cada una tiene su propia entrada en esta Referencia.
+Las palabras clave son términos con una regla propia que aparecen en el texto de las cartas. Las de los encuentros de Peligro son Abordaje, Al revelarse, Elige, Incautado, Ocupar el muelle, Persigue y Sin ayuda; las de las cartas del jugador, como Indestructible, figuran en la primera línea de su texto. Cada una tiene su propia entrada en esta Referencia.
 
 *Véase también:* Tipos de encuentro.
 
@@ -1145,6 +1147,12 @@ La partida de aprendizaje es una forma de jugar sin mazo de Escenario, pensada p
 ### Pasajero
 
 Un Pasajero es una carta que viaja con el jugador. Ocupa 1 de Capacidad; si no queda Capacidad cuando entra, el jugador debe devolver un Tripulante al muelle. Un Pasajero no es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, ni quedar rehén, salvo que su carta lo indique. Permanece en juego entre misiones hasta que su carta indique que se va.
+
+### Permanente
+
+Una permanente es una carta del mazo de historia que un encuentro pone en juego («Pon en juego la carta 226 del mazo de historia»). Se coloca junto a la misión, en la zona de permanentes, y su texto queda activo hasta que se descarta, es decir, hasta que vuelve al mazo de historia. La Caja básica tiene 12, con los números del 226 al 237.
+
+*Véase también:* Zona de permanentes.
 
 ### Persigue
 
@@ -1243,23 +1251,6 @@ Retirarse consiste en volver a puerto durante una misión. El jugador puede hace
 
 Revelar consiste en dar la vuelta a la carta de arriba de un mazo.
 
-### Se queda en juego
-
-Se queda en juego es una palabra clave que aparece en algunos encuentros. Una carta con este texto no se descarta al resolverla: se queda junto a la misión, con su texto activo, hasta que se cumple lo que indica para quitarla.
-
-- El jugador gana su Avance impreso al revelarla.
-- Cuenta como carta resuelta: después de ella, el jugador ya puede retirarse o superar la misión, salvo que su texto lo impida.
-- Puede llevar la cuenta de algo con fichas de misión que solo aumentan («cada vez que reveles otro Peligro, pon 1 ficha»); al alcanzar el número que indica, se aplica lo que dice.
-- Puede impedir al jugador superar la misión o retirarse mientras siga en juego.
-- No existe límite: puede haber varias de estas cartas en juego a la vez.
-- Se quita como indica su texto (a menudo con una Acción) o con «Cortar por lo sano», salvo que su propio texto lo impida.
-- Al terminar la misión, independientemente de que el jugador la supere, se retire o se hunda el Barco, la carta se descarta con sus fichas.
-
-> [!ejemplo]
-> En el Mar, el jugador revela «Varados en el banco»: gana su Avance (2) y la carta se queda en juego. Mientras siga en juego, el jugador no puede superar la misión ni retirarse. Cada vez que revela un Peligro, pone 1 ficha de Marea; con 2, el Barco flota y la carta se descarta. Si el jugador quiere salir antes, la Acción de la carta le permite agotar a 2 Tripulantes (o a 1 Marinero) para poner 1 ficha de Marea.
-
-*Véase también:* Prueba de una Acción.
-
 ### Sin ayuda
 
 Sin ayuda es una palabra clave que aparece en algunos encuentros con Prueba. Solo un Tripulante puede ser asignado a esa Prueba.
@@ -1325,7 +1316,32 @@ La Vida indica las heridas que puede soportar un Tripulante. Si tiene tantas her
 
 Volver al muelle es un efecto por el que el jugador elige a uno de sus Tripulantes, distinto del Capitán, y lo devuelve al muelle junto con sus Mejoras. En el turno siguiente, el jugador puede volver a reclutarlo pagando su coste.
 
+### Zona de permanentes
+
+La zona de permanentes está junto a la misión. En ella se colocan las **permanentes**: cartas del mazo de historia que un encuentro pone en juego («Pon en juego la carta 230 del mazo de historia»). Una permanente tiene su texto activo mientras está en la zona y lleva los mismos tipos que el encuentro que la pone en juego (Terreno, Bestia…).
+
+- El encuentro da su Avance y cuenta como carta resuelta; su carta se descarta como cualquier otra.
+- Si la permanente no está en el mazo de historia (porque ya está en juego), la carta del encuentro se descarta sin dar su Avance y se revela otra.
+- Una permanente que se pone **junto a un Tripulante** («junto a él») se coloca a su lado y sigue formando parte de la zona de permanentes. Lo que su texto dice de «el atrapado», «el señalado» o «ese Tripulante» se refiere a él.
+- Sus fichas de misión se colocan sobre la carta y solo aumentan, salvo que su texto diga que se quitan.
+- **Descartar una permanente** («descarta esta carta») es devolverla al mazo de historia; sus fichas se descartan.
+- Al terminar la misión, independientemente de que el jugador la supere, se retire o se hunda el Barco, todas las permanentes vuelven al mazo de historia.
+- «Cortar por lo sano» devuelve al mazo de historia cualquier permanente.
+
+> [!ejemplo]
+> En el Mar, el jugador revela una carta de Peligro cuyo encuentro de Mar pone en juego la carta 226, «Varados en el banco»: el jugador gana su Avance (2), coloca la permanente junto a la misión y descarta la carta de Peligro. Mientras los Varados sigan en juego, no puede superar la misión ni retirarse. Cada vez que revela un Peligro, pone 1 ficha de Marea sobre la carta; con 2, el Barco flota y la carta vuelve al mazo de historia. Si el jugador quiere salir antes, la Acción de la carta le permite agotar a 2 Tripulantes (o a 1 Marinero) para poner 1 ficha de Marea. Si esa carta de Peligro vuelve a salir en esta misión mientras los Varados siguen en juego, se descarta sin dar Avance y se revela otra.
+
+*Véase también:* Fichas de misión, Mazo de historia, Prueba de una Acción.
+
 ## Referencia rápida
+
+### Dificultad
+
+| Dificultad | Reputación para ganar | Cartas de Escenario |
+| --- | --- | --- |
+| Corta | 9 | 8 |
+| Normal | 12 | 11 |
+| Larga | 16 | 14 (todas) |
 
 ### Secuencia del turno
 

@@ -8,7 +8,7 @@ import { Jugador } from '../../engine/pruebas/situacion.ts'
 import type { Estado, InstId } from '../../engine/tipos.ts'
 import { empezar, type PartidaEnMesa } from './usePartida.ts'
 
-export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision', 'mano5', 'mano8'] as const
+export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision', 'mano5', 'mano8', 'permanentes'] as const
 export type Escena = (typeof ESCENAS)[number]
 
 function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): PartidaEnMesa | null {
@@ -25,7 +25,7 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
   return null
 }
 
-const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8'>, (s: Estado, desde: number) => boolean> = {
+const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes'>, (s: Estado, desde: number) => boolean> = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
   puerto: (s) => s.turno >= 3 && s.pendiente?.motivo.clave === 'jugarCartas' && s.zonas.tripulacion.length >= 3,
   // Una Prueba con comprometidos y el Destino revelado, en la ventana de acción.
@@ -61,6 +61,28 @@ function enJuego(): PartidaEnMesa {
   j.seguir()
   j.comprometer('COM', ['bucanero', 'capitan']).pasarOfertas()
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
+}
+
+/**
+ * Fase 11, en Naturaleza: tres permanentes en la zona de permanentes («Ojos amarillos en la espesura», «La manigua
+ * arde» con 2 fichas de Fuego y «Arenas movedizas» junto a la Vigía, que está atrapada) y la Prueba de «Desertores del
+ * rey» con el Destino revelado.
+ */
+function permanentes(): PartidaEnMesa {
+  const j = Jugador.enMision({
+    misiones: ['pruebas-nat9'],
+    mazoPeligros: ['p2_jaguar', 'p2_fuego', 'p2_arenas', 'p2_desertores', 'chubasco', 'calma', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje', 'abordaje'],
+    tripulacion: ['vigia', 'bucanero', 'baqueano', 'viejo_lobo'],
+    barco: { mejoras: ['vela'] },
+    reputacion: 4,
+  })
+  j.seguir().seguir().seguir()
+  // Las dos fichas que ponen la manigua y las arenas al revelar «Desertores del rey»: el orden da igual.
+  while (j.decision.motivo.clave === 'ordenObligadas' && j.decision.tipo === 'elegirOpcion') j.opcion(j.decision.opciones[0]?.clave ?? '')
+  j.comprometer('EXP', ['viejo_lobo', 'vigia']).pasarOfertas()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 8) }
 }
 
 /** Fase 6, en puerto: el pecio del «Huracán» ocupa el muelle (Encadenado ya no existe desde la fase 10b). */
@@ -140,6 +162,7 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'mano5') return manoDe(5)
   if (nombre === 'mano8') return manoDe(8)
   if (nombre === 'enJuego') return enJuego()
+  if (nombre === 'permanentes') return permanentes()
   if (nombre === 'muelleOcupado') return muelleOcupado()
   if (nombre === 'alarma') return alarma()
   if (nombre === 'finalMision') return finalMision()

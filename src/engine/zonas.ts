@@ -38,8 +38,12 @@ export function mover(s: Estado, inst: InstId, destino: Zona, donde: 'arriba' | 
     c.entrenamiento = []
     delete c.estados
   }
-  // Una carta de Peligro que deja de estar en juego pierde sus fichas.
-  if (origen === 'peligrosEnJuego') delete c.fichas
+  // Una permanente que deja la zona de permanentes pierde sus fichas y ya no va junto a nadie.
+  if (origen === 'permanentes' && destino !== 'permanentes') {
+    delete c.fichas
+    delete c.junto
+    delete c.origen
+  }
   if (origen === 'misionesDisponibles' && destino !== 'misionesDisponibles') c.avance = 0
   if (donde === 'arriba') s.zonas[destino].unshift(inst)
   else s.zonas[destino].push(inst)

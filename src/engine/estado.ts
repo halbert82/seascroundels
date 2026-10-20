@@ -16,7 +16,7 @@ export function estadoVacio(azar: [number, number, number, number]): Estado {
     capitan: 'i0',
     puerto: 'tortuga',
     modo: 'normal',
-    reputacionObjetivo: 18,
+    reputacionObjetivo: 12,
     reputacion: 0,
     danoBarco: 0,
     turno: 0,

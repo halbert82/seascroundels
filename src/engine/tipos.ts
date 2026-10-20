@@ -41,8 +41,11 @@ export const ZONAS = [
   'destino',
   /** «La Armada te persigue» y «Amigos en la costa», fuera del mazo hasta que una carta las meta. */
   'apartados',
-  /** Cartas de Peligro que se quedan en juego junto a la misión hasta que se cumple lo que dicen para quitarlas. */
-  'peligrosEnJuego',
+  /**
+   * Zona de permanentes (fase 11): cartas del mazo de historia que un encuentro pone en juego junto a la misión (o junto
+   * a un Tripulante), con su texto activo, hasta que se descartan (vuelven al mazo de historia) o termina la misión.
+   */
+  'permanentes',
   /** Cartas de misión que una misión pone en juego a su lado («¡La guardia!»). */
   'cartasMision',
   /** Cartas y Tripulantes incautados: debajo de la misión hasta superarla (se recuperan) o no (se pierden). */
@@ -69,8 +72,12 @@ export interface Copia {
   entrenamiento: Habilidad[]
   /** Fichas de Estado de un Tripulante (Envenenado, Borracho…). Nunca dos iguales. */
   estados?: FichaTripulante[]
-  /** Fichas sobre la carta: el contador de una carta de Peligro en juego (siempre sube) o las de la Pólvora del Rey. */
+  /** Fichas sobre la carta: el contador de una permanente (siempre sube) o las de la Pólvora del Rey. */
   fichas?: number
+  /** Permanente puesta junto a un Tripulante («Pon en juego la carta N … junto a él»): ese Tripulante. */
+  junto?: InstId
+  /** Permanente: la carta del encuentro que la puso en juego (su «Al revelarse» señala a quién afecta). */
+  origen?: InstId
 }
 
 export type Paso = 'preparacion' | 'inicio' | 'jugarCartas' | 'quedarseOZarpar' | 'mision' | 'final' | 'terminada'
@@ -87,7 +94,7 @@ export interface Temporal {
   hasta: 'finTurno' | 'finMision' | 'finPrueba' | 'inicio' | 'carta' | 'superarPrueba'
   /** La copia concreta a la que afecta (el Filibustero que se ha herido, el Tripulante del Náufrago…). */
   inst?: InstId
-  /** Para `hasta: 'carta'`: la carta de Peligro en juego de la que depende. */
+  /** Para `hasta: 'carta'`: la permanente (o la carta del encuentro en curso) de la que depende. */
   carta?: InstId
   /** Solo cuenta a partir de ese turno («−1 Mando en tu próximo turno»). */
   desdeTurno?: number
@@ -204,6 +211,8 @@ export interface MisionEnCurso {
   danoSufrido?: number
   /** Algo que la misión recuerda («avistáis la isla»), por clave. */
   hecho?: string[]
+  /** La permanente que acaba de poner en juego el encuentro en curso (su propio final de encuentro no le cuenta). */
+  permanenteNueva?: InstId
 }
 
 export interface Bono {
@@ -354,7 +363,8 @@ export type Evento =
   /** Una carta en juego acaba de descartarse (para los efectos «después de que descartes esta carta»). */
   | { tipo: 'descartada'; carta: InstId }
   /** Acaba de resolverse (o quitarse) una carta de Peligro de la misión. */
-  | { tipo: 'cartaResuelta'; carta: InstId }
+  /** `permanente`: la que ha puesto en juego este encuentro (no cuenta su propio final). */
+  | { tipo: 'cartaResuelta'; carta: InstId; permanente?: InstId }
   /** Un Tripulante va a quedar rehén (el Fiador puede ir en su lugar). */
   | { tipo: 'rehen'; carta: InstId }
   /** Un rehén vuelve a tu tripulación. */
@@ -420,7 +430,15 @@ export type Tarea = { id: number } & (
   | { tipo: 'alZarparOpcional'; coste: { tipo: 'agotarRasgo'; rasgos: string[] } | { tipo: 'descartar'; n: number }; efectos: Efecto[]; texto: string }
   | { tipo: 'mezclarMazoPropio'; n: number }
   /** `sinVentana`: sin la ventana de retirarse al terminar (el Peligro de más de «Perseguido»). */
-  | { tipo: 'encuentro'; carta: InstId | null; paso: 'revelar' | 'leer' | 'avance' | 'despues'; sinVentana?: boolean; sinAvance?: boolean }
+  | {
+      tipo: 'encuentro'
+      carta: InstId | null
+      paso: 'revelar' | 'leer' | 'avance' | 'despues'
+      sinVentana?: boolean
+      sinAvance?: boolean
+      /** El encuentro pone en juego una permanente: da su Avance como hoy (sin el de más si es 0). */
+      pone?: boolean
+    }
   | { tipo: 'prueba'; paso: 'comprometer' | 'destino' | 'aplicarDestino' | 'ventana' | 'resolver' }
   /** `fuente`: la carta que los aplica (para «descarta esta carta» y «ocupa el muelle»). */
   | { tipo: 'aplicarEfectos'; efectos: Efecto[]; contexto: 'efecto' | 'exito' | 'fallo' | 'sinOposicion' | 'pago' | 'disparo'; fuente?: InstId }
@@ -483,8 +501,10 @@ export type Tarea = { id: number } & (
   /** Una Prueba que no sale de un encuentro (Acción de una carta, liberar a un Encadenado…). */
   | { tipo: 'pruebaSuelta'; definicion: DefinicionPrueba; fuente: InstId; paso: 'empezar' | 'cerrar' }
   /** La carta de Peligro revelada se queda en juego junto a la misión. */
-  | { tipo: 'quedarEnJuego'; carta: InstId }
-  | { tipo: 'descartarPeligroEnJuego'; carta: InstId }
+  /** Pone en juego la permanente `permanente` desde el mazo de historia (si no está, descarta el encuentro sin Avance). */
+  | { tipo: 'ponerPermanente'; carta: InstId; permanente: CartaId; junto?: Selector; fichas?: number }
+  /** «Descarta esta carta» en una permanente: vuelve al mazo de historia. */
+  | { tipo: 'devolverPermanente'; carta: InstId }
   /** Suma una ficha al contador de una carta en juego y, si llega al umbral, aplica lo que dice. */
   | { tipo: 'contador'; carta: InstId; clave: string }
   | { tipo: 'ponerEstado'; estado: FichaTripulante; entre: InstId[] }
@@ -518,7 +538,7 @@ export type Tarea = { id: number } & (
   /** Quita uno de estos Estados a un Tripulante (eliges a quién y, si tiene varios, cuál); luego, si lo dice, cúrale N. */
   | { tipo: 'quitarUnEstado'; estados: FichaTripulante[]; carta?: InstId; curar?: number }
   /** Descarta una de estas cartas de Peligro en juego (eliges cuál). */
-  | { tipo: 'quitarPeligroEnJuego'; candidatas: InstId[] }
+  | { tipo: 'quitarPermanente'; candidatas: InstId[] }
   /** Descarta una carta del muelle (la de más a la izquierda, o la Mejora más cara) y, si lo dice, repón el hueco. */
   | { tipo: 'descartarMuelle'; cual: 'izquierda' | 'mejoraMasCara'; reponer?: boolean }
   | {
@@ -694,7 +714,8 @@ export interface Capacidad {
     | 'escenario'
     | 'mision'
     | 'descartada'
-    | 'peligroEnJuego'
+    /** Una permanente en la zona de permanentes (fase 11). */
+    | 'permanente'
     | 'peligroEnMuelle'
     | 'estado'
     | 'estadoBarco'

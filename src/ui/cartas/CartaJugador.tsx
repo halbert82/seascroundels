@@ -1,6 +1,6 @@
 // Carta vertical: Capitán, Barco, Tripulante, Mejoras, Evento, Habilidad, Escenario y Tesoro.
 
-import type { CSSProperties } from 'react'
+import { useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { NombreCarta } from './NombreCarta.tsx'
 import { esTextoApretado } from './ajustes.ts'
 import { TextoCarta, claseIcono } from './TextoCarta.tsx'
@@ -11,11 +11,27 @@ function fondoArte(v: VistaJugador): string {
   return `linear-gradient(160deg, color-mix(in srgb, ${v.color}, #fff 12%) 0%, color-mix(in srgb, ${v.color}, #000 55%) 100%)`
 }
 
+/** Fase 11: letra de las permanentes (mucho texto), de mayor a menor, hasta que cabe en su caja. */
+const TAMANOS_PERMANENTE = [16.5, 16, 15.5, 15, 14.5, 14, 13.5, 13, 12.5, 12]
+
 export function CartaJugador({ v }: { v: VistaJugador }) {
   const estiloCarta = { '--cc': v.color } as CSSProperties
   const conCoste = v.coste !== undefined
+  const caja = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => {
+    const el = caja.current
+    if (!v.permanente || !el) return
+    for (const t of TAMANOS_PERMANENTE) {
+      el.style.setProperty('--fsp', `${t}px`)
+      if (el.scrollHeight <= el.clientHeight + 0.5) break
+    }
+    el.dataset.letra = el.style.getPropertyValue('--fsp')
+  })
   return (
-    <div className={['card', v.alta && 'tall', esTextoApretado(v.num) && 'tight', v.diseno && `jug t-${v.diseno}`].filter(Boolean).join(' ')} style={estiloCarta}>
+    <div
+      className={['card', v.alta && 'tall', v.permanente && 'perm', esTextoApretado(v.num) && 'tight', v.diseno && `jug t-${v.diseno}`].filter(Boolean).join(' ')}
+      style={estiloCarta}
+    >
       {v.diseno === 'mejoraBarco' && <div className="marco" />}
       <div className="art" style={{ background: fondoArte(v) }}>
         {v.arte ? '' : 'Ilustración pendiente'}
@@ -70,7 +86,7 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
         </div>
       )}
       {v.diseno !== 'evento' && <div className="ribbon">{v.tipoTexto}</div>}
-      <div className="tbox">
+      <div className="tbox" ref={caja}>
         {v.rasgos.length > 0 && (
           <>
             <div className="traits">

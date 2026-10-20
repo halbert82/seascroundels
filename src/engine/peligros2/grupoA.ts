@@ -1,6 +1,6 @@
 // Peligros 2.0 · Grupo A: Mar y clima (cartas 1–11).
 
-import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { participantes as comprometidosDe } from '../capacidades/comun.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
@@ -126,25 +126,25 @@ registrarPeligro('p2_niebla', {
 })
 
 // 5. Bajamar · Leve
+// Permanente 226 «Varados en el banco»: no puedes superar la misión ni retirarte. Cada Peligro revelado, 1 ficha de
+// Marea; con 2, el Barco flota: se descarta. Acción: agota 2 Tripulantes (o 1 Marinero) para poner 1 ficha.
+registrarPermanente('pm_varados', {
+  quitar: [],
+  acciones: [
+    {
+      texto: 'Agota 2 Tripulantes (o 1 Marinero) para poner 1 ficha de Marea',
+      coste: [{ tipo: 'agotarVarios', n: 2, oRasgo: 'Marinero' }],
+      efectos: [{ tipo: 'ficha', n: 1 }],
+    },
+  ],
+  contador: { cuando: 'revelarPeligro', umbral: 2, efectos: [], despues: 'descartar' },
+  bloqueaSuperar: true,
+  bloqueaRetirada: true,
+})
 registrarPeligro('p2_bajamar', {
   encuentros: {
-    // Se queda en juego: no puedes superar la misión ni retirarte. Cada Peligro revelado, 1 ficha; con 2, se descarta.
-    // Acción: agota 2 Tripulantes (o 1 Marinero) para poner 1 ficha.
-    mar: {
-      queda: {
-        quitar: [],
-        acciones: [
-          {
-            texto: 'Agota 2 Tripulantes (o 1 Marinero) para poner 1 ficha de Marea',
-            coste: [{ tipo: 'agotarVarios', n: 2, oRasgo: 'Marinero' }],
-            efectos: [{ tipo: 'ficha', n: 1 }],
-          },
-        ],
-        contador: { cuando: 'revelarPeligro', umbral: 2, efectos: [], despues: 'descartar' },
-        bloqueaSuperar: true,
-        bloqueaRetirada: true,
-      },
-    },
+    // Pon en juego la carta 226 del mazo de historia.
+    mar: { pone: { carta: 'pm_varados' } },
     nat: {
       exito: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Militar', 'Guardia', 'Bestia'], n: -1 } }],
       fallo: [comprometidoCon(menos('NAV'), { tipo: 'heridas', n: 1 }), pierdesAvance(1)],
@@ -192,22 +192,8 @@ registrarPeligro('p2_fuego', {
       // Fase 10b: fuera Incendio a bordo: 1 daño y Pólvora mojada.
       fallo: [dano(1), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
     },
-    // Se queda en juego: cada otro Peligro revelado, 1 ficha; con 3, cada agotado sufre 1 herida (máx. 3) y se descarta.
-    // Acción: agota a un Explorador, o a 2 Tripulantes, para descartarla.
-    nat: {
-      queda: {
-        quitar: [],
-        acciones: [
-          { texto: 'Agota a un Explorador, o a 2 Tripulantes, para descartarla', coste: [{ tipo: 'agotarVarios', n: 2, oRasgo: 'Explorador' }], efectos: [{ tipo: 'descartarEsta' }] },
-        ],
-        contador: {
-          cuando: 'revelarPeligro',
-          umbral: 3,
-          efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', cada: true, maximo: 3 }, hacer: { tipo: 'heridas', n: 1 } }],
-          despues: 'descartar',
-        },
-      },
-    },
+    // Pon en juego la carta 227 del mazo de historia («La manigua arde»).
+    nat: { pone: { carta: 'pm_manigua' } },
     ciu: {
       exito: [
         {
@@ -223,6 +209,21 @@ registrarPeligro('p2_fuego', {
   },
   // +1; +2 en su lugar si tienes 3 o más munición. Sin oposición: pierdes 1 munición.
   destino: { modificador: (s) => (canonesListos(s) >= 2 ? 2 : 1), sinOposicion: [agotaCanones(1)] },
+})
+
+// Permanente 227 «La manigua arde» (de «Fuego a bordo»): cada otro Peligro revelado, 1 ficha de Fuego; con 3, cada
+// agotado sufre 1 herida (máx. 3) y se descarta. Acción: agota a un Explorador, o a 2 Tripulantes, para descartarla.
+registrarPermanente('pm_manigua', {
+  quitar: [],
+  acciones: [
+    { texto: 'Agota a un Explorador, o a 2 Tripulantes, para descartarla', coste: [{ tipo: 'agotarVarios', n: 2, oRasgo: 'Explorador' }], efectos: [{ tipo: 'descartarEsta' }] },
+  ],
+  contador: {
+    cuando: 'revelarPeligro',
+    umbral: 3,
+    efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', cada: true, maximo: 3 }, hacer: { tipo: 'heridas', n: 1 } }],
+    despues: 'descartar',
+  },
 })
 
 // 8. La broma · Duro

@@ -32,7 +32,7 @@ describe('23 · Desertores del rey', () => {
     // EXP 2 (1 con un Oficial: Diego lo es). Diego EXP 1: llega.
     const j = en('nat', ['p2_desertores', 'chubasco', 'calma'])
     j.comprometer('EXP', ['capitan']).seguir()
-    expect(avance(j, 'nat')).toBe(3)
+    expect(avance(j, 'nat')).toBe(2) // fase 11: EXP 2, Avance 1 / 1, y +1 por superarla
     const k = en('nat', ['p2_desertores', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('EXP', []).seguir()
     expect(k.copia('capitan').heridas).toBe(1) // sin comprometidos, al que más EXP tiene (Diego 1, Bucanero 0)
@@ -142,7 +142,7 @@ describe('25 · La aduana del rey', () => {
     const j = en('ciu', ['p2_aduana', 'chubasco', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige' } })
     j.opcion('0').elegir('timon', 'coraje')
-    expect(avance(j, 'ciu')).toBe(2)
+    expect(avance(j, 'ciu')).toBe(1) // fase 11: EXP 3, Avance 1 / 1
     expect(j.decision.motivo.clave).toBe('trasEncuentro')
     const k = en('ciu', ['p2_aduana', 'chubasco', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     k.opcion('1').comprometer('EXP', []).seguir()
@@ -174,7 +174,7 @@ describe('26 · Ojos del gobernador', () => {
   it('Naturaleza: si superas, +2 Avance; si fallas, pierdes 1 Avance y agotas a 1 Tripulante', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-nat9'], mazoPeligros: ['p2_ojos', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir() // 3 + 1 de Diego
-    expect(j.avance('pruebas-nat9')).toBe(4) // 2 del encuentro + 2
+    expect(j.avance('pruebas-nat9')).toBe(3) // 1 del encuentro (fase 11: 1 / 1) + 2
     const k = en('nat', ['p2_ojos', 'chubasco', 'calma'], { tripulacion: ['vigia'], avance: { [MISION.nat]: 1 } })
     k.comprometer('NAV', ['capitan']).seguir()
     expect(k.copia('vigia').agotada).toBe(true)
@@ -332,29 +332,29 @@ describe('29 · Toque a rebato', () => {
     expect(k.estadosBarco).toEqual(['perseguido'])
   })
 
-  it('Ciudad: se queda en juego; con 3 fichas, el agotado con menos Vida queda rehén', () => {
+  it('Ciudad: pone en juego la permanente 230; con 3 fichas, el agotado con menos Vida queda rehén', () => {
     // En una misión larga (Ciudad 9), con «Tarde de lluvia» (sin Prueba, 1 de Avance) no se acaba antes.
     const j = Jugador.enMision({
       misiones: ['pruebas-ciu9'],
       mazoPeligros: ['p2_rebato', 'chubasco', 'chubasco', 'chubasco', 'calma'],
       tripulacion: [{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }],
     })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_rebato'])
+    expect(j.zona('permanentes')).toEqual(['pm_campanas'])
     j.seguir().seguir()
-    expect(j.copia('p2_rebato').fichas).toBe(2)
+    expect(j.copia('pm_campanas').fichas).toBe(2)
     j.seguir()
     expect(j.zona('rehenes')).toEqual(['vigia'])
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Ciudad: se quita agotando a un Oficial, o con una Prueba de COM 3', () => {
     const j = en('ciu', ['p2_rebato', 'calma', 'calma'])
-    j.usar('p2_rebato.ciu.quitar0')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    j.usar('pm_campanas.quitar0')
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.copia('capitan').agotada).toBe(true)
     const k = en('ciu', ['p2_rebato', 'chubasco', 'calma'])
-    k.usar('p2_rebato.ciu.quitar1').comprometer('COM', ['capitan']).seguir()
-    expect(k.zona('peligrosEnJuego')).toEqual([])
+    k.usar('pm_campanas.quitar1').comprometer('COM', ['capitan']).seguir()
+    expect(k.zona('permanentes')).toEqual([])
   })
 
   it('Destino «Falsa alarma»: −1 y agotas a un Tripulante no comprometido; sin oposición, a 2', () => {
@@ -424,24 +424,24 @@ describe('30 · El quinto del rey', () => {
 })
 
 describe('31 · Bajo los cañones del Morro', () => {
-  it('Mar: se queda en juego y no puedes superar la misión; se quita con una Prueba de COM 5 que, si la superas, da 1 Avance', () => {
+  it('Mar: pone en juego la permanente 231 y no puedes superar la misión; se quita con una Prueba de COM 5 que, si la superas, da 1 Avance', () => {
     const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
+    expect(j.zona('permanentes')).toEqual(['pm_cadena'])
     expect(avance(j, 'mar')).toBe(2)
-    j.usar('p2_morro.mar.quitar0').comprometer('COM', ['capitan', 'bucanero'])
+    j.usar('pm_cadena.quitar0').comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
     expect(avance(j, 'mar')).toBe(3) // 2 de la carta + 1 por cortar la cadena
   })
 
   it('Mar: con un Carpintero la Prueba es de COM 4; si la fallas, 2 daños al Barco', () => {
     const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['carpintero'] })
-    j.usar('p2_morro.mar.quitar0').comprometer('COM', [])
+    j.usar('pm_cadena.quitar0').comprometer('COM', [])
     expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
     expect(j.estado.danoBarco).toBe(2)
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
+    expect(j.zona('permanentes')).toEqual(['pm_cadena'])
   })
 
   it('Naturaleza: COM 6 (4 con un Artillero); si superas, preparas un Cañón; si fallas, 3 heridas repartidas entre los comprometidos', () => {
@@ -542,7 +542,8 @@ describe('32 · La horca', () => {
   })
 
   it('Ciudad: −2 con 12 o más de reputación; si superas, +1 reputación', () => {
-    const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 12 })
+    // Fase 11: en una partida normal se gana con 12; con 12 o más solo se juega en una larga (16).
+    const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 12, modo: 'larga' })
     j.comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()

@@ -91,13 +91,13 @@ describe('125 · Pasadizo secreto', () => {
 })
 
 describe('223 · La losa giratoria', () => {
-  it('se queda en juego; el preparado con más EXP no puede comprometerse; se quita agotando a 2 Tripulantes', () => {
+  it('pone en juego la permanente 236 junto al preparado con más EXP, que no puede ser asignado; se quita agotando a 2 Tripulantes', () => {
     const j = en('nat', ['losa', 'calma', 'calma'], { tripulacion: ['baqueano', 'viejo_lobo'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['losa'])
+    expect(j.zona('permanentes')).toEqual(['pm_losa'])
     expect(j.estado.temporales.some((t) => t.clave === 'noCompromete' && t.inst === j.inst('baqueano'))).toBe(true)
     expect(j.avance('pruebas-nat3')).toBe(2)
-    j.usar('losa.unico.accion0').elegir('capitan', 'viejo_lobo')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    j.usar('pm_losa.accion0').elegir('capitan', 'viejo_lobo')
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.estado.temporales.some((t) => t.clave === 'noCompromete')).toBe(false)
   })
 })
@@ -163,12 +163,12 @@ describe('131 · Navío de escolta', () => {
 })
 
 describe('132 · Fuego de cobertura', () => {
-  it('se queda en juego: los Cañones no suman; Acción: Prueba de NAV 3 para descartarla', () => {
+  it('pone en juego la permanente 237: los Cañones no suman; Acción: Prueba de NAV 3 para descartarla', () => {
     const j = en('mar', ['cobertura', 'calma', 'calma'])
-    expect(j.zona('peligrosEnJuego')).toEqual(['cobertura'])
+    expect(j.zona('permanentes')).toEqual(['pm_cobertura'])
     expect(j.valor({ tipo: 'sinCanones' })).toBeGreaterThan(0)
-    j.usar('cobertura.unico.quitar0').comprometer('NAV', ['capitan']).seguir()
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    j.usar('pm_cobertura.quitar0').comprometer('NAV', ['capitan']).seguir()
+    expect(j.zona('permanentes')).toEqual([])
   })
 })
 
@@ -187,7 +187,7 @@ describe('134 · Mar gruesa', () => {
   it('NAV 3: si superas, +1 Avance; si fallas, 1 daño y 1 herida', () => {
     const j = en('mar', ['margruesa', 'calma', 'calma'])
     j.comprometer('NAV', ['capitan']).seguir()
-    expect(j.registro).toContain('Ganas 2 de Avance (3/5).')
+    expect(j.registro).toContain('Ganas 1 de Avance (2/5).') // fase 11: NAV 3, Avance 1 / 1 (más el +1 del éxito)
     const k = en('mar', ['margruesa', 'calma', 'calma'])
     k.comprometer('NAV').seguir()
     expect([k.estado.danoBarco, k.copia('capitan').heridas]).toEqual([1, 1])

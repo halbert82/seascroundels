@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO, type EntradaCatalogo } from '../../engine/catalogo.ts'
-import { COLOR_MOD, COLOR_TIPO, vistaDeCarta, type VistaCapitulo, type VistaJugador, type VistaPeligro, type VistaPuerto } from './vista.ts'
+import { COLOR_CLASE, COLOR_MOD, COLOR_TIPO, vistaDeCarta, type VistaCapitulo, type VistaJugador, type VistaPeligro, type VistaPuerto } from './vista.ts'
 
 function carta(num: number): EntradaCatalogo {
   const entrada = CATALOGO.find((c) => c.num === num)
@@ -43,10 +43,13 @@ describe('vista de las cartas', () => {
     expect(canones.espacio).toBe(2)
     expect(canones.rasgos).toEqual(['Cañón'])
     expect(canones.pestanasDer).toEqual([]) // la munición ya no existe: sin pestaña a la derecha
-    // Sin Clase en los datos, una Mejora es Neutral: su marco es del color Neutral, no del de su tipo.
-    expect(canones.clase).toBe('Neutral')
+    // Fase 11: los Cañones de bronce son de Piratería: su marco es del color de su Clase, no del de su tipo.
+    expect(canones.clase).toBe('Piratería')
     expect(canones.diseno).toBe('mejoraBarco')
-    expect(canones.color).toBe(COLOR_TIPO.tripulanteNeutral)
+    expect(canones.color).toBe(COLOR_CLASE['Piratería'])
+    // El Casco reforzado es Neutral (explícito en los datos).
+    const casco = vistaDeCarta(carta(21)) as VistaJugador
+    expect([casco.clase, casco.color]).toEqual(['Neutral', COLOR_TIPO.tripulanteNeutral])
   })
 
   it('las Mejoras con una sola cifra se dibujan grandes y las Habilidades no tienen texto', () => {
@@ -79,6 +82,17 @@ describe('vista de las cartas', () => {
     expect(armada.encuentros[0]?.opciones.map((o) => `${o.hab} ${o.dificultad}`)).toEqual(['NAV 5'])
   })
 
+  it('fase 11 · permanente: cinta «Permanente», los tipos de su encuentro, hueco de ilustración y su número del mazo de historia', () => {
+    const v = vistaDeCarta(carta(228)) as VistaJugador & { historia?: { num: number; dorso: string } }
+    expect(v.nombre).toBe('Arenas movedizas')
+    expect(v.tipoTexto).toBe('Permanente')
+    expect(v.rasgos).toEqual(['Terreno'])
+    expect(v.permanente).toBe(true)
+    expect(v.arte).toBeUndefined() // «Ilustración pendiente»
+    expect(v.historia).toEqual({ num: 228, dorso: 'misiones' })
+    expect((vistaDeCarta(carta(234)) as VistaJugador).rasgos).toEqual([]) // «Viento a favor» no tiene tipo
+  })
+
   it('capítulos: sello, travesía, Distancia, recompensa y pie', () => {
     const selva = vistaDeCarta(carta(119)) as VistaCapitulo
     expect([selva.sello, selva.de, selva.travesia]).toEqual(['II', 'III', 'El templo perdido'])
@@ -91,7 +105,8 @@ describe('vista de las cartas', () => {
     expect(deuda.recompensaTexto).toBe('Otea 3 del mazo de Misiones') // fase 10b
     const aguada = vistaDeCarta(carta(115)) as VistaCapitulo
     expect(aguada.recompensa).toEqual([{ texto: '0', icono: 'rep' }])
-    expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos')
+    expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño.')
+    expect((vistaDeCarta(carta(114)) as VistaCapitulo).recompensaTexto).toBe('Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida.')
     expect(deuda.pie).toBe('Misión inicial · a la vista al empezar')
 
     expect((vistaDeCarta(carta(153)) as VistaCapitulo).recompensaTexto).toBe('¡Victoria!')

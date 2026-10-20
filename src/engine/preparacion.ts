@@ -13,9 +13,9 @@ import { barajar, crearCopia, mover } from './zonas.ts'
 
 /** Reputación para ganar y cartas de Escenario según el modo de partida. */
 export const MODOS: Record<Modo, { reputacion: number; escenario: number }> = {
-  corta: { reputacion: 12, escenario: 8 },
-  normal: { reputacion: 18, escenario: 11 },
-  larga: { reputacion: 24, escenario: 14 },
+  corta: { reputacion: 9, escenario: 8 },
+  normal: { reputacion: 12, escenario: 11 },
+  larga: { reputacion: 16, escenario: 14 },
 }
 
 export interface OpcionesPartida {
@@ -66,7 +66,7 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
   for (const id of m.apartadosDePeligros) crearCopia(s, id, 'mazoHistoria')
 
   // 5. Misiones: las tres iniciales disponibles; capítulos I y aventuras en el mazo de Misiones;
-  //    capítulos II y III, Tesoros, mazos propios, Pasajeros y cartas de misión en el mazo de historia.
+  //    capítulos II y III, Tesoros, mazos propios, Pasajeros, cartas de misión y permanentes en el mazo de historia.
   for (const id of DATOS.ordenMisiones.iniciales) crearCopia(s, `${id}-I`, 'misionesDisponibles')
   for (const id of [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras]) crearCopia(s, `${id}-I`, 'mazoMisiones')
   barajar(s, 'mazoMisiones')
@@ -82,6 +82,8 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) crearCopia(s, e.id, 'mazoHistoria')
     // Misiones 2.0: los Pasajeros y las cartas de misión («¡La guardia!») esperan apartadas en el mazo de historia.
     if (e.tipo === 'pasajero' || e.tipo === 'cartaMision') crearCopia(s, e.id, 'mazoHistoria')
+    // Fase 11: las permanentes esperan apartadas en el mazo de historia hasta que un encuentro las pone en juego.
+    if (e.tipo === 'permanente') crearCopia(s, e.id, 'mazoHistoria')
   }
 
   // 6. Muelle.

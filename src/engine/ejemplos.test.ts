@@ -101,7 +101,7 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, adquiere gratis la Vela mayor y roba cuatro (fase 10b)', () => {
+  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, adquiere gratis la Vela mayor, paga 1 herida y roba cuatro (fase 11)', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'pruebas-calma'],
@@ -137,15 +137,18 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.zona('mazoPeligros').at(-1)).toBe('p2_turbonada')
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
-    // Recompensa: 1 de reputación y, como el Barco no tiene ningún daño, la Gesta da 1 más. Adquiere sin coste una
-    // Mejora del muelle de coste 1 o menos: la Vela mayor (el muelle repuesto tiene la Vela, el Casco, la Vigía y el
-    // Carpintero).
+    // Recompensa (fase 11): la misión no da reputación, pero como el Barco no tiene ningún daño, la Gesta da 1.
+    // Adquiere sin coste una Mejora del muelle de coste 1 o menos: la Vela mayor (el muelle repuesto tiene la Vela, el
+    // Casco, la Vigía y el Carpintero). Su precio: un Tripulante sufre 1 herida, y el jugador se la da a Diego.
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
-    expect(j.estado.reputacion).toBe(2)
+    expect(j.estado.reputacion).toBe(1)
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })
     expect((j.decision as { candidatas: string[] }).candidatas).toEqual([j.inst('vela')])
     j.elegir('vela')
     expect(j.zona('mejoras')).toEqual(['vela'])
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir', n: 1 } })
+    j.elegir('capitan')
+    expect(j.copia('capitan').heridas).toBe(1)
 
     // Final: se queda «¡Al abordaje!» y roba cuatro para tener cinco.
     j.ninguna()

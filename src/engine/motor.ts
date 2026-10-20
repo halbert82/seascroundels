@@ -40,12 +40,12 @@ function procesar(s: Estado, t: Tarea, e: Eleccion | null): void {
 }
 
 /**
- * Los efectos «mientras esta carta siga en juego» se acaban en cuanto la carta sale. (Mientras se lee su encuentro,
- * antes de quedarse en juego, aún cuenta.)
+ * Los efectos «mientras esta carta siga en juego» se acaban en cuanto la carta sale: la permanente vuelve al mazo de
+ * historia. (Mientras se resuelve el encuentro de una carta, aún cuenta.)
  */
 function limpiarTemporales(s: Estado): void {
   const fuera = (t: Estado['temporales'][number]) =>
-    t.hasta === 'carta' && (!t.carta || !(s.zonas.peligrosEnJuego.includes(t.carta) || s.zonas.encuentro.includes(t.carta)))
+    t.hasta === 'carta' && (!t.carta || !(s.zonas.permanentes.includes(t.carta) || s.zonas.encuentro.includes(t.carta)))
   if (s.temporales.some(fuera)) s.temporales = s.temporales.filter((t) => !fuera(t))
 }
 

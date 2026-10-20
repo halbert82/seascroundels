@@ -16,11 +16,11 @@ it.runIf(process.env.INFORME)(`informe de equilibrio (${PARTIDAS} partidas, ${PA
   const conVariante = (variante: NonNullable<Estado['variante']>) =>
     Array.from({ length: PARTIDAS }, (_, i) => jugarPartida(i + 1, jugador, { variante }))
   const variantes = [
-    { nombre: 'Regla del juego (fase 10b): Prueba fácil 2 / 1; dura, 3 / 1 o 3 / 2', partidas },
+    { nombre: 'Regla del juego (fase 11): dificultad 3 o menos, 1 / 1; dura, 3 / 1 o 3 / 2', partidas },
     { nombre: 'Y = mitad de X, redondeando abajo (los 3 / 2 pasan a 3 / 1)', partidas: conVariante({ avanceSinSuperar: 'mitadAbajo' }) },
     { nombre: 'Antes del Avance doble: Avance entero siempre', partidas: conVariante({ avanceSinSuperar: 'entero' }) },
   ]
   const fecha = new Date().toISOString().slice(0, 10)
-  const titulo = `Partida normal (18 de reputación, 11 cartas de Escenario), Diego en Tortuga con los mazos de inicio. ${PARTIDAS} partidas con semillas 1–${PARTIDAS}. Generado el ${fecha}.`
+  const titulo = `Partida normal (12 de reputación, 11 cartas de Escenario), Diego en Tortuga con los mazos de inicio. ${PARTIDAS} partidas con semillas 1–${PARTIDAS}. Generado el ${fecha}.`
   writeFileSync(new URL('../../docs/informe-equilibrio.md', import.meta.url), `${informe(partidas, titulo, variadas, variantes)}\n`)
 })

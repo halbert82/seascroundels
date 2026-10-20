@@ -34,11 +34,12 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   if (s.mision) for (const cap of capacidadesDe(copia(s, s.mision.carta).id)) if (cap.desde === 'mision' && cap.ventana !== 'constante') yield [cap, s.mision.carta]
   for (const inst of s.zonas.pasajeros) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'pasajero') yield [cap, inst]
   for (const inst of s.zonas.cartasMision) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'cartaMision') yield [cap, inst]
-  // Fase 6: el encuentro que se resuelve, el Destino de la Prueba, cartas de Peligro en juego o en el muelle, y Estados.
+  // Fase 6: el encuentro que se resuelve, el Destino de la Prueba, las permanentes (fase 11), cartas de Peligro en el
+  // muelle y Estados.
   for (const inst of s.zonas.encuentro) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'encuentro') yield [cap, inst]
   const destino = destinoVigente(s)
   if (destino) for (const cap of capacidadesDe(copia(s, destino).id)) if (cap.desde === 'destino') yield [cap, destino]
-  for (const inst of s.zonas.peligrosEnJuego) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'peligroEnJuego') yield [cap, inst]
+  for (const inst of s.zonas.permanentes) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'permanente') yield [cap, inst]
   for (const inst of s.zonas.muelle) {
     if (s.peligrosEnMuelle?.[inst] === undefined) continue
     for (const cap of capacidadesDe('peligroEnMuelle')) if (cap.desde === 'peligroEnMuelle') yield [cap, inst]

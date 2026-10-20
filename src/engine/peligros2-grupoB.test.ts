@@ -67,7 +67,7 @@ describe('13 · Sol de justicia', () => {
     const j = en('nat', ['p2_sol', 'calma', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige' } })
     j.opcion('0')
-    expect(avance(j, 'nat')).toBe(2)
+    expect(avance(j, 'nat')).toBe(1) // 1 − 1 + 1 (fase 11: EXP 3, Avance 1 / 1)
     const k = en('nat', ['p2_sol', 'chubasco', 'calma'], { avance: { 'pruebas-nat3': 1 } })
     k.opcion('1').comprometer('EXP', ['capitan']).seguir()
     expect(k.copia('capitan').heridas).toBe(1)
@@ -126,7 +126,7 @@ describe('14 · El hambre', () => {
     const j = en('ciu', ['p2_hambre', 'calma', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     j.opcion('0').elegir('ojo', 'timon')
     expect(j.zona('mano')).toEqual(['coraje'])
-    expect(avance(j, 'ciu')).toBe(2) // pagar cuenta como superar: X (fase 10b: 2 / 1)
+    expect(avance(j, 'ciu')).toBe(1) // pagar cuenta como superar: X (fase 11: 1 / 1)
     const k = en('ciu', ['p2_hambre', 'chubasco', 'calma'], { mano: ['ojo', 'timon'] })
     const mando = k.valor({ tipo: 'objetivoRobo' })
     k.opcion('1').comprometer('EXP', []).seguir()
@@ -278,7 +278,7 @@ describe('17 · Fiebre amarilla', () => {
     expect(totalSinDestinoPrueba(k.estado)).toBeGreaterThanOrEqual(5)
     const antes = avance(k, 'ciu')
     k.pasarOfertas().seguir().pasarOfertas()
-    expect(avance(k, 'ciu')).toBe(antes + 2 + 1)
+    expect(avance(k, 'ciu')).toBe(antes + 1 + 1) // fase 11: EXP 3, Avance 1 / 1, y +1 por superarla
   })
 
   it('Ciudad: si fallas, el comprometido con más EXP queda rehén en el lazareto; si lo rescatas, vuelve sin heridas', () => {
@@ -388,23 +388,23 @@ describe('20 · Arenas movedizas', () => {
     expect(j.estado.danoBarco).toBe(2)
   })
 
-  it('Naturaleza: se queda en juego y atrapa al preparado con más EXP; con 3 fichas sufre 2 heridas', () => {
+  it('Naturaleza: pone en juego la permanente 228 junto al preparado con más EXP, que queda atrapado; con 3 fichas sufre 2 heridas', () => {
     // Sin Explorador preparado (la misión daría 1 de Avance y se superaría en seguida). El Vigía (EXP 2) iba delante.
     const j = en('nat', ['p2_arenas', 'chubasco', 'calma', 'calma'], { tripulacion: ['viejo_lobo', 'vigia'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_arenas'])
+    expect(j.zona('permanentes')).toEqual(['pm_arenas'])
     expect(j.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'noCompromete', inst: j.inst('vigia') }))
-    expect(j.copia('p2_arenas').fichas).toBe(0)
+    expect(j.copia('pm_arenas').fichas).toBe(0)
     // Con la tercera ficha, el Vigía (Vida 1) sale medio ahogado: 2 heridas.
-    j.copia('p2_arenas').fichas = 2
+    j.copia('pm_arenas').fichas = 2
     j.seguir()
     expect(j.zona('tripulacion')).not.toContain('vigia')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Naturaleza, Acción: agota tantos preparados como fichas más 1 para sacarlo; queda libre', () => {
     const j = en('nat', ['p2_arenas', 'calma', 'calma'], { tripulacion: ['viejo_lobo', 'vigia'] })
-    j.usar('p2_arenas.nat.accion0').elegir('viejo_lobo')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    j.usar('pm_arenas.accion0').elegir('viejo_lobo')
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.estado.temporales.some((t) => t.inst === j.inst('vigia') && t.clave === 'noCompromete')).toBe(false)
   })
 
@@ -433,21 +433,21 @@ describe('21 · El jaguar', () => {
     expect(j.estados('capitan')).toEqual(['asustado'])
   })
 
-  it('Naturaleza: se queda en juego; al final de cada encuentro, el agotado con menos Vida sufre 1 herida', () => {
+  it('Naturaleza: pone en juego la permanente 229; al final de cada encuentro siguiente, el agotado con menos Vida sufre 1 herida', () => {
     const j = en('nat', ['p2_jaguar', 'calma', 'calma'], { tripulacion: [{ id: 'viejo_lobo', agotada: true }] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_jaguar'])
+    expect(j.zona('permanentes')).toEqual(['pm_ojos'])
     j.seguir()
     expect(j.copia('viejo_lobo').heridas).toBe(1)
   })
 
   it('Naturaleza, Acción: agota a un preparado para cazarlo, solo con él (COM 5); si superas, robas 2 y se descarta', () => {
     const j = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: ['isabela'], capitan: { mejoras: ['sable'] } })
-    j.usar('p2_jaguar.nat.accion0').elegir('capitan')
+    j.usar('pm_ojos.accion0').elegir('capitan')
     expect(j.decision).toMatchObject({ tipo: 'comprometer', opciones: [{ hab: 'COM', dificultad: 5 }] })
     expect(() => j.comprometer('COM', ['isabela'])).toThrow(/no se puede comprometer/)
     // Diego COM 3 + Sable 1 contra 5 − 1 de «Viento a favor».
     j.comprometer('COM', ['capitan']).pasarOfertas().seguir()
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Ciudad: +1 si tienes un Animal; si fallas, el de más COM sufre 2 y se descarta la carta de más a la izquierda del muelle', () => {

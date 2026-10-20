@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO } from './catalogo.ts'
 import { DATOS } from './datos.ts'
-import { erroresDeMazos } from './mazos.ts'
+import { claseDe, erroresDeMazos } from './mazos.ts'
 
 const predefinidos = () => ({
   capitan: DATOS.mazosPredefinidos.capitanInicial,
@@ -49,6 +49,41 @@ describe('Construir tu mazo', () => {
     for (const entrada of CATALOGO) {
       const usadas = [...m.mazoDeMuelle, ...m.mazoDelCapitan].filter((id) => id === entrada.id).length
       expect(usadas, entrada.id).toBeLessThanOrEqual(entrada.copias)
+    }
+  })
+  it('fase 11 · toda carta de jugador tiene Clase en los datos (Piratería o Neutral, explícita); los Tesoros no', () => {
+    const DE_JUGADOR = new Set(['capitan', 'barco', 'tripulante', 'mejoraBarco', 'mejoraTripulante', 'evento', 'habilidad'])
+    for (const e of CATALOGO) {
+      if (!DE_JUGADOR.has(e.tipo)) continue
+      expect('senda' in e.carta && ['Piratería', 'Neutral'].includes(String(e.carta.senda)), `${e.num} ${e.id}`).toBe(true)
+    }
+    for (const t of DATOS.tesoros) expect('senda' in t, t.id).toBe(false)
+    // Las de Piratería que Albert enumeró (todas las demás Mejoras, Eventos y Habilidades son Neutrales).
+    const pirateria = CATALOGO.filter((e) => ['mejoraBarco', 'mejoraTripulante', 'evento', 'habilidad'].includes(e.tipo) && claseDe(e.id) === 'Piratería').map((e) => e.num)
+    expect(pirateria).toEqual([24, 29, 30, 32, 37, 40, 41, 43, 48, 51, 57, 58, 60, 66, 69, 171, 172, 173])
+    // Los dos Capitanes son de Piratería: sus mazos de inicio siguen siendo legales.
+    expect(DATOS.capitanes.map((c) => c.senda)).toEqual(['Piratería', 'Piratería'])
+  })
+
+  it('fase 11 · un Capitán solo puede usar cartas de su Clase y Neutrales (también Mejoras, Eventos y Habilidades)', () => {
+    // Con un Capitán Neutral (supuesto), la Bandera negra, «¡A por ellos!» y «¡Al abordaje!» no valdrían.
+    const m = predefinidos()
+    expect(erroresDeMazos(m)).toEqual([])
+    const neutral = DATOS.capitanes[0]
+    if (!neutral) throw new Error('sin Capitán')
+    const antes = neutral.senda
+    neutral.senda = 'Neutral'
+    try {
+      m.mazoDeMuelle[0] = 'bandera'
+      expect(erroresDeMazos(m)).toEqual(
+        expect.arrayContaining([
+          '«Bandera negra» es de la Clase Piratería y tu Capitán es de Neutral.',
+          '«¡A por ellos!» es de la Clase Piratería y tu Capitán es de Neutral.',
+          '«¡Al abordaje!» es de la Clase Piratería y tu Capitán es de Neutral.',
+        ]),
+      )
+    } finally {
+      neutral.senda = antes
     }
   })
 })

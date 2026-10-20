@@ -15,16 +15,21 @@ function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesS
 
 const robas = (j: Jugador, n: number) => j.registro.some((r) => r.startsWith(`Robas ${n}`))
 const tripulantes = (j: Jugador) => (j.decision as { tripulantes: InstId[] }).tripulantes.map((c) => j.estado.cartas[c]?.id)
+/** El Tripulante junto al que está una permanente (fase 11). */
+const junto = (j: Jugador, permanente: CartaId): CartaId | undefined => {
+  const c = j.copia(permanente).junto
+  return c ? j.estado.cartas[c]?.id : undefined
+}
 const marcado = (j: Jugador, clave: string) => {
   const t = j.estado.temporales.find((x) => x.clave === clave)
   return t?.inst ? j.estado.cartas[t.inst]?.id : undefined
 }
 
 describe('45 · Buena estrella', () => {
-  it('Mar: se queda en juego y cada Prueba de NAV superada da 1 Avance más', () => {
+  it('Mar: pone en juego la permanente 234 y cada Prueba de NAV superada da 1 Avance más', () => {
     // Navío a la deriva (NAV 3): Diego 2 + Barco 1.
     const j = en('mar', ['p2_estrella', 'oportunidad', 'chubasco', 'calma'])
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_estrella'])
+    expect(j.zona('permanentes')).toEqual(['pm_viento'])
     j.seguir().comprometer('NAV', ['capitan']).pasarOfertas().seguir()
     expect(j.registro.some((r) => r.startsWith('Ganas 3 de Avance'))).toBe(true)
   })
@@ -32,16 +37,16 @@ describe('45 · Buena estrella', () => {
   it('Mar: Respuesta tras revelar el Destino de una Prueba de NAV: la descartas y la Prueba recibe −2', () => {
     const j = en('mar', ['p2_estrella', 'oportunidad', 'chubasco', 'calma'])
     j.seguir().comprometer('NAV', ['capitan'])
-    expect(j.ofreceCapacidad('p2_estrella.mar.cap.racha')).toBe(true)
-    j.usar('p2_estrella.mar.cap.racha')
+    expect(j.ofreceCapacidad('pm_viento.cap.racha')).toBe(true)
+    j.usar('pm_viento.cap.racha')
     expect(dificultadConDestino(j.estado)).toBe(1)
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Mar: se descarta si fallas una Prueba', () => {
     const j = en('mar', ['p2_estrella', 'oportunidad', 'chubasco', 'calma'])
     j.seguir().comprometer('NAV', []).pasarOfertas().seguir()
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('descartesPeligros')).toContain('p2_estrella')
   })
 
@@ -49,7 +54,7 @@ describe('45 · Buena estrella', () => {
     const j = en('mar', ['p2_estrella', 'p2_calma', 'calma'])
     j.seguir()
     expect(j.zona('encuentro')).toEqual(['p2_calma'])
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Naturaleza: quita Envenenado de todos y después cura 1 a cada uno (P45: el Bucanero acaba sin ficha y sin herida)', () => {
@@ -238,7 +243,7 @@ describe('49 · La sirena', () => {
     j.opcion('0')
     expect(j.copia('capitan').agotada).toBe(true)
     expect(j.copia('vigia').agotada).toBe(true)
-    expect(j.avance(MISION.mar)).toBe(2)
+    expect(j.avance(MISION.mar)).toBe(1) // fase 11: NAV 3, Avance 1 / 1
   })
 
   it('Mar: atarlo no se ofrece sin otro Tripulante preparado; si vas tras él y fallas, sufre 2 heridas y queda Asustado', () => {
@@ -286,21 +291,21 @@ describe('50 · Mal presagio', () => {
 
   it('Naturaleza: la lechuza señala a un Tripulante; con 3 fichas sufre 2 heridas y queda Maldito', () => {
     const j = Jugador.enMision({ misiones: ['panama-II'], mazoPeligros: ['p2_presagio', 'calma', 'racha', 'calma'], cubrir: ['capitan'] })
-    expect(marcado(j, 'p2_presagio.lechuza')).toBe('capitan')
-    expect(j.copia('p2_presagio').fichas).toBe(1)
+    expect(junto(j, 'pm_lechuza')).toBe('capitan') // la carta 235 va junto al señalado
+    expect(j.copia('pm_lechuza').fichas).toBe(1)
     j.seguir()
-    expect(j.copia('p2_presagio').fichas).toBe(2)
+    expect(j.copia('pm_lechuza').fichas).toBe(2)
     j.seguir()
     expect(j.copia('capitan').heridas).toBe(2)
     expect(j.estados('capitan')).toEqual(['maldito'])
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Naturaleza: agotando a un Vigía la espantas y el señalado queda Aguerrido', () => {
     const j = en('nat', ['p2_presagio', 'calma'], { tripulacion: ['vigia'] })
-    const senalado = marcado(j, 'p2_presagio.lechuza') as CartaId
-    j.usar('p2_presagio.nat.quitar0')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    const senalado = junto(j, 'pm_lechuza') as CartaId
+    j.usar('pm_lechuza.quitar0')
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.copia('vigia').agotada).toBe(true)
     expect(j.estados(senalado)).toEqual(['aguerrido'])
   })
@@ -392,10 +397,11 @@ describe('52 · El oro de los muertos', () => {
   })
 
   it('Naturaleza: incauta una Mejora de un Tripulante (o 2 cartas); si superas la misión, la recuperas y robas 2', () => {
-    const j = en('nat', ['p2_oro', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', mejoras: ['sable'] }, 'baqueano'], mano: ['ojo', 'timon'] })
+    const j = en('nat', ['p2_oro', 'chubasco', 'calma'], { tripulacion: [{ id: 'bucanero', mejoras: ['sable'] }, 'baqueano'], mano: ['ojo', 'timon'], avance: { [MISION.nat]: 1 } })
     j.opcion('0')
     expect(j.zona('incautadas')).toEqual(['sable'])
-    // Baqueano (EXP 3 + 1 de Diego) supera: 1 (al zarpar, Explorador) + 2 + 1 = 4 de Avance: supera la misión.
+    // El Rastreador (EXP 3 + 1 de Diego) supera: 1 (ya en la misión) + 1 + 1 = 3 de Avance (fase 11: EXP 3, Avance 1 / 1):
+    // supera la misión.
     j.comprometer('EXP', ['baqueano']).pasarOfertas().seguir().pasarOfertas()
     expect(j.copia('sable').vinculadaA).toBe(j.inst('bucanero'))
     expect(robas(j, 2)).toBe(true)

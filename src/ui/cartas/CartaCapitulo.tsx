@@ -13,9 +13,11 @@ export function CartaCapitulo({ v }: { v: VistaCapitulo & { historia?: HistoriaD
   useLayoutEffect(() => {
     const caja = ref.current
     if (!caja) return
-    // Cabe si no se sale ni por abajo ni por los lados (la recompensa también cuenta).
+    // Cabe si no se sale ni por abajo ni por los lados, y la recompensa cabe entera, también de alto (fase 11: la pastilla
+    // «Añade la carta N…» quedaba aplastada).
     const cabe = () =>
-      caja.scrollHeight <= caja.clientHeight + 0.5 && [...caja.querySelectorAll<HTMLElement>('.reward, .rcab')].every((el) => el.scrollWidth <= el.clientWidth + 0.5)
+      caja.scrollHeight <= caja.clientHeight + 0.5 &&
+      [...caja.querySelectorAll<HTMLElement>('.reward, .rcab')].every((el) => el.scrollWidth <= el.clientWidth + 0.5 && el.scrollHeight <= el.clientHeight + 0.5)
     for (const t of TAMANOS) {
       caja.style.setProperty('--fsr', `${t}px`)
       if (cabe()) break

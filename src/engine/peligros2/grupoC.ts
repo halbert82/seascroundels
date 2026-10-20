@@ -1,6 +1,6 @@
 // Peligros 2.0 · Grupo C: La ley (cartas 23–33).
 
-import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { registrarCapacidades } from '../capacidades/index.ts'
 import { participantes as comprometidosDe } from '../capacidades/comun.ts'
 import type { Condicion } from '../efectos.ts'
@@ -88,6 +88,7 @@ registrarPeligro('p2_sebusca', {
     },
     // EXP 2 (3 si tienes 9 o más de reputación). Fallo: ocupa el muelle (pagas 2 para descartarla).
     ciu: {
+      // TODO(regla): fase 11, se gana con 9, 12 o 16: «9 o más de reputación» se pensó para ganar con 18. Pregunta a Albert.
       capacidades: [dificultad('fama', (ctx) => (ctx.s.reputacion >= 9 ? 1 : 0))],
       fallo: [{ tipo: 'ocuparMuelle', coste: 2 }],
     },
@@ -216,6 +217,20 @@ registrarCapacidades({
 })
 
 // 29. Toque a rebato · Duro
+// Permanente 230 «Campanas a rebato»: al terminar cada encuentro, 1 ficha; con 3, el agotado con menos Vida queda rehén
+// y se descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
+registrarPermanente('pm_campanas', {
+  quitar: [
+    { tipo: 'agotarRasgo', rasgo: 'Oficial' },
+    { tipo: 'prueba', opciones: [{ hab: 'COM', dificultad: 3 }] },
+  ],
+  contador: {
+    cuando: 'cartaResuelta',
+    umbral: 3,
+    efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'rehen' } }],
+    despues: 'descartar',
+  },
+})
 registrarPeligro('p2_rebato', {
   encuentros: {
     // +1 por cada encuentro #Militar# o #Guardia# que ya hayas resuelto en esta misión (máx. +2).
@@ -226,22 +241,8 @@ registrarPeligro('p2_rebato', {
       fallo: [dano(1), comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 })],
     },
     nat: { exito: [preparaCanon()], fallo: [{ tipo: 'estadoBarco', estado: 'perseguido' }] },
-    // Se queda en juego. Al terminar cada encuentro, 1 ficha; con 3, el agotado con menos Vida queda rehén y se
-    // descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
-    ciu: {
-      queda: {
-        quitar: [
-          { tipo: 'agotarRasgo', rasgo: 'Oficial' },
-          { tipo: 'prueba', opciones: [{ hab: 'COM', dificultad: 3 }] },
-        ],
-        contador: {
-          cuando: 'cartaResuelta',
-          umbral: 3,
-          efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'rehen' } }],
-          despues: 'descartar',
-        },
-      },
-    },
+    // Pon en juego la carta 230 del mazo de historia («Campanas a rebato»).
+    ciu: { pone: { carta: 'pm_campanas' } },
   },
   // −1. Agota 1 Tripulante no comprometido. Sin oposición: agota 2 en lugar de 1.
   destino: {
@@ -318,23 +319,23 @@ registrarEspecial('p2_morro.baterias', (s, t, e) => {
   return 'hecha'
 })
 registrarCodigo('p2_morro.baterias', () => [{ tipo: 'especial', clave: 'p2_morro.baterias', datos: {}, paso: 0 }])
+// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Prueba de COM 5 (4 con un Carpintero):
+// si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.
+registrarPermanente('pm_cadena', {
+  quitar: [
+    {
+      tipo: 'prueba',
+      opciones: [{ hab: 'COM', dificultad: 5, alternativa: { rasgo: 'Carpintero', dificultad: 4 } }],
+      exito: [avance(1)],
+      fallo: [dano(2)],
+    },
+  ],
+  bloqueaSuperar: true,
+})
 registrarPeligro('p2_morro', {
   encuentros: {
-    // Se queda en juego. Mientras esté, no puedes superar la misión. Acción: Prueba de COM 5 (4 con un Carpintero):
-    // si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.
-    mar: {
-      queda: {
-        quitar: [
-          {
-            tipo: 'prueba',
-            opciones: [{ hab: 'COM', dificultad: 5, alternativa: { rasgo: 'Carpintero', dificultad: 4 } }],
-            exito: [avance(1)],
-            fallo: [dano(2)],
-          },
-        ],
-        bloqueaSuperar: true,
-      },
-    },
+    // Pon en juego la carta 231 del mazo de historia («La cadena de la bocana»).
+    mar: { pone: { carta: 'pm_cadena' } },
     // COM 6 (4 con un Artillero). Fallo: 3 heridas repartidas entre los comprometidos.
     nat: { exito: [preparaCanon()], fallo: [heridasAsignados(3)] },
     ciu: {
@@ -396,6 +397,7 @@ registrarPeligro('p2_horca', {
           },
         },
       ],
+      // TODO(regla): fase 11, en una partida corta o normal ya se ha ganado con 12: solo cuenta en una larga. Pregunta a Albert.
       capacidades: [dificultad('gentio', (ctx) => (ctx.s.reputacion >= 12 ? -2 : 0))],
       exito: [reputacion(1)],
       fallo: [codigo('p2_horca.verdugo')],

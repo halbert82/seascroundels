@@ -1,13 +1,15 @@
 // Cartas de jugador 2.0 (fase 6): una prueba (al menos) por carta, con el ejemplo del documento cuando lo hay.
 
 import { describe, expect, it } from 'vitest'
-import { registrarPeligro } from './capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from './capacidades/peligros.ts'
 import { DATOS } from './datos.ts'
 
-import { Jugador, dificultadConDestino } from './pruebas/situacion.ts'
+import { Jugador, PERMANENTE_DE_PRUEBA, dificultadConDestino } from './pruebas/situacion.ts'
 
-// Una carta de Peligro que se queda en juego para «Cortar por lo sano», solo en este fichero.
-registrarPeligro('percances', { encuentros: { mar: { queda: { quitar: [] } } } })
+// Una carta de Peligro que pone en juego una permanente (sin forma de quitarla) para «Cortar por lo sano», solo en este
+// fichero.
+registrarPermanente(PERMANENTE_DE_PRUEBA, { quitar: [] })
+registrarPeligro('percances', { encuentros: { mar: { pone: { carta: PERMANENTE_DE_PRUEBA } } } })
 
 describe('Herbolaria', () => {
   it('Agotar: quita Envenenado, Sangrando, Aturdido o Asustado a un Tripulante (si tiene varios, eliges cuál)', () => {
@@ -77,19 +79,31 @@ describe('Cataplasma', () => {
 })
 
 describe('Cortar por lo sano', () => {
-  it('Acción: descarta 2 cartas (su coste es 0) para descartar una carta de Peligro que se quede en juego', () => {
+  it('fase 11 · Acción: descarta 2 cartas (su coste es 0) para devolver al mazo de historia una carta de la zona de permanentes', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
+    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
     j.usar('cortar.jugar').elegir('timon', 'coraje')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain(PERMANENTE_DE_PRUEBA)
     expect(j.zona('mano')).toEqual(['ojo'])
   })
 
   it('fase 10b: también las que antes eran de nivel Terrible («La cadena de la bocana»)', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['p2_morro', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_morro'])
+    expect(j.zona('permanentes')).toEqual(['pm_cadena'])
     j.usar('cortar.jugar').elegir('timon', 'coraje')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain('pm_cadena')
+  })
+
+  it('con dos permanentes en juego, el jugador elige cuál devuelve', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['p2_morro', 'percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
+    j.seguir()
+    expect(j.zona('permanentes')).toEqual(['pm_cadena', PERMANENTE_DE_PRUEBA])
+    j.usar('cortar.jugar').elegir('timon', 'coraje')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'quitarPermanente' } })
+    j.elegir('pm_cadena')
+    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
   })
 
   it('no se puede jugar sin 2 cartas más en la mano', () => {

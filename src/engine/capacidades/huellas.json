@@ -73,7 +73,7 @@
  "lengua": "Los encuentros de tipo #Civil# en los que participe La Lengua reciben {N g} de dificultad.",
  "fiador": "**Interrupción:** Cuando otro Tripulante vaya a quedar rehén, Fiador de la Hermandad queda rehén en su lugar. Si lo rescatas, roba {N robar}.",
  "cataplasma": "Quita {N quitarestado} a un Tripulante (**Envenenado** o **Sangrando**) y cúrale {N herida g}.",
- "cortar": "**Acción:** Descarta N cartas de tu mano: Descarta una carta de Peligro que se quede en juego.",
+ "cortar": "**Acción:** Descarta N cartas de tu mano: Devuelve al mazo de historia una carta de la zona de permanentes.",
  "a_por_ellos": "**Acción:** Haz una Prueba de [COM] N. Si la superas, rescata a todos los rehenes de esta misión: vuelven preparados.",
  "ron_valientes": "**Acción:** Un Tripulante queda **Borracho** y **Aguerrido**.",
  "virar": "**Interrupción:** Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar."

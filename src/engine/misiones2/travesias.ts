@@ -289,6 +289,7 @@ registrarMision('panama-II', {
 })
 
 registrarMision('panama-III', {
+  // TODO(regla): fase 11, en una partida corta se gana con 9: «Las puertas de Panamá» no llega a jugarse. Pregunta a Albert.
   reputacionMinima: 9,
   fichas: [{ ficha: 'defensa', nombre: 'Defensa', umbral: 0, inicial: 3, nota: 'Cada Prueba de COM que superes quita 1. No puedes superar la misión mientras quede alguna.' }],
   alZarpar: () => [ponerFichas('defensa', 3)],

@@ -117,7 +117,7 @@ function ventana(s: Estado, t: TareaDe<'evento'>, e: Parameters<Manejador<'event
     return preguntar({
       tipo: 'elegirOpcion',
       motivo: { clave: 'ordenObligadas' },
-      opciones: obligadas.map((u) => ({ clave: claveDe(u), texto: capacidadDe(u).carta })),
+      opciones: obligadas.map((u) => ({ clave: claveDe(u), texto: nombreDe(capacidadDe(u).carta) })),
     })
   }
   if (e?.tipo === 'usar') {
@@ -201,8 +201,8 @@ export const usar: Manejador<'usar'> = (s, t) => {
         else mover(s, fuente, 'descartesMuelle')
       }
     }
-    // Lo que hacen solas las cartas de Peligro (contadores, «cada vez que…») no se anota como «Usas»: lo cuentan sus efectos.
-    const sola = cap.ventana === 'obligada' && ['peligroEnJuego', 'encuentro', 'destino', 'estadoBarco', 'estado', 'mision', 'pasajero', 'cartaMision'].includes(cap.desde)
+    // Lo que hacen solas las permanentes y los Peligros (contadores, «cada vez que…») no se anota como «Usas»: lo cuentan sus efectos.
+    const sola = cap.ventana === 'obligada' && ['permanente', 'encuentro', 'destino', 'estadoBarco', 'estado', 'mision', 'pasajero', 'cartaMision'].includes(cap.desde)
     if (sola) {
       // nada
     } else if (fuente !== null && (cap.desde === 'estado' || cap.desde === 'estadoBarco')) {

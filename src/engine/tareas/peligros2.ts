@@ -486,12 +486,13 @@ export const quitarUnEstado: Manejador<'quitarUnEstado'> = (s, t, e) => {
 }
 
 /** Descarta una de estas cartas de Peligro en juego («Cortar por lo sano»). */
-export const quitarPeligroEnJuego: Manejador<'quitarPeligroEnJuego'> = (s, t, e) => {
-  const candidatas = t.candidatas.filter((c) => s.zonas.peligrosEnJuego.includes(c))
+/** «Cortar por lo sano»: devuelve al mazo de historia una carta de la zona de permanentes (eliges cuál). */
+export const quitarPermanente: Manejador<'quitarPermanente'> = (s, t, e) => {
+  const candidatas = t.candidatas.filter((c) => s.zonas.permanentes.includes(c))
   if (candidatas.length === 0) return 'hecha'
-  if (candidatas.length > 1 && !e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'quitarPeligroEnJuego' }, candidatas, min: 1, max: 1 })
+  if (candidatas.length > 1 && !e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'quitarPermanente' }, candidatas, min: 1, max: 1 })
   const c = candidatas.length === 1 ? candidatas[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
-  if (c) encolar(s, { tipo: 'descartarPeligroEnJuego', carta: c })
+  if (c) encolar(s, { tipo: 'devolverPermanente', carta: c })
   return 'hecha'
 }
 

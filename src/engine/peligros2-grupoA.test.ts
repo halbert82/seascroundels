@@ -19,11 +19,11 @@ describe('1 · La corriente del Golfo', () => {
     // Diego NAV 2 + Barco 1 = 3 contra NAV 2: supera por 1.
     const j = en('mar', ['p2_corriente', 'chubasco', 'calma'])
     j.comprometer('NAV', ['capitan']).seguir()
-    expect(avance(j, 'mar')).toBe(3)
+    expect(avance(j, 'mar')).toBe(2) // fase 11: NAV 2, Avance 1 / 1: 1 + 1
     // Con el Viejo lobo (NAV 3): 2 + 3 + 1 = 6, supera por 4, pero solo +2.
     const k = en('mar', ['p2_corriente', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
-    expect(avance(k, 'mar')).toBe(4)
+    expect(avance(k, 'mar')).toBe(3)
   })
 
   it('Mar: si fallas, 1 daño al Barco', () => {
@@ -101,13 +101,13 @@ describe('3 · Calma chicha', () => {
     j.opcion('0').opcion('rasgo')
     expect(j.copia('marinero_p').agotada).toBe(true)
     expect(j.copia('capitan').agotada).toBe(false)
-    expect(avance(j, 'mar')).toBe(2)
+    expect(avance(j, 'mar')).toBe(1) // fase 11: NAV 3, Avance 1 / 1
   })
 
   it('Mar, elige «Esperar el viento»: Prueba de NAV 3; si superas, +1 Avance', () => {
     const j = en('mar', ['p2_calma', 'chubasco', 'calma'], { tripulacion: ['marinero_p'] })
     j.opcion('1').comprometer('NAV', ['capitan']).seguir()
-    expect(avance(j, 'mar')).toBe(3)
+    expect(avance(j, 'mar')).toBe(2) // 1 del encuentro y 1 por superarla
   })
 
   it('Mar: si no puedes pagar «A remar», solo queda la Prueba', () => {
@@ -181,16 +181,16 @@ describe('4 · Niebla', () => {
 })
 
 describe('5 · Bajamar', () => {
-  it('Mar: se queda en juego; no puedes retirarte; una Acción pone fichas y con 2 se descarta', () => {
+  it('Mar: pone en juego la permanente 226; no puedes retirarte; una Acción pone fichas y con 2 se descarta', () => {
     const j = en('mar', ['p2_bajamar', 'calma', 'calma', 'calma'], { tripulacion: ['marinero_p'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_bajamar'])
+    expect(j.zona('permanentes')).toEqual(['pm_varados'])
     expect(avance(j, 'mar')).toBe(2) // su Avance se gana al revelarla
     expect(j.ofrece('retirarse')).toBe(false)
-    j.usar('p2_bajamar.mar.accion0').opcion('rasgo')
+    j.usar('pm_varados.accion0').opcion('rasgo')
     expect(j.copia('marinero_p').agotada).toBe(true)
-    expect(j.copia('p2_bajamar').fichas).toBe(1)
+    expect(j.copia('pm_varados').fichas).toBe(1)
     j.seguir() // revelas otra carta: la marea sube a 2 y el Barco flota
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('descartesPeligros')).toContain('p2_bajamar')
     expect(j.ofrece('retirarse')).toBe(true)
   })
@@ -292,11 +292,11 @@ describe('7 · Fuego a bordo', () => {
     expect(j.estadosBarco).toEqual(['polvoraMojada'])
   })
 
-  it('Naturaleza: se queda en juego; con 3 fichas, cada agotado sufre 1 herida y se descarta', () => {
+  it('Naturaleza: pone en juego la permanente 227; con 3 fichas, cada agotado sufre 1 herida y se descarta', () => {
     const j = en('nat', ['p2_fuego', 'calma', 'calma', 'calma', 'calma'], {
       tripulacion: [{ id: 'bucanero', agotada: true }, { id: 'carpintero', agotada: true }],
     })
-    expect(j.zona('peligrosEnJuego')).toEqual(['p2_fuego'])
+    expect(j.zona('permanentes')).toEqual(['pm_manigua'])
     // Las misiones cortas se superan enseguida, así que lo comprobamos en una misión larga (Naturaleza 9).
     const k = Jugador.enMision({
       misiones: ['pruebas-nat9'],
@@ -308,15 +308,15 @@ describe('7 · Fuego a bordo', () => {
     expect(k.copia('bucanero').heridas).toBe(1)
     expect(k.copia('carpintero').heridas).toBe(1)
     expect(k.copia('capitan').heridas).toBe(1)
-    expect(k.zona('peligrosEnJuego')).toEqual([])
+    expect(k.zona('permanentes')).toEqual([])
     void j
   })
 
   it('Naturaleza: Acción: agota a 2 Tripulantes para descartarla', () => {
     const j = Jugador.enMision({ misiones: ['panama-II'], cubrir: ['bucanero'], mazoPeligros: ['p2_fuego', 'calma', 'calma'], tripulacion: ['bucanero', 'carpintero'] })
-    j.usar('p2_fuego.nat.accion0') // solo quedan 2 preparados (Diego y el Carpintero): se agotan los dos
+    j.usar('pm_manigua.accion0') // solo quedan 2 preparados (Diego y el Carpintero): se agotan los dos
     expect(j.copia('carpintero').agotada).toBe(true)
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
   })
 
   it('Ciudad: si superas, eliges entre robar 2 o preparar a los comprometidos; si fallas, −1 reputación', () => {

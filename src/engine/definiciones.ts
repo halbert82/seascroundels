@@ -1,9 +1,10 @@
 // Lo que el motor necesita para resolver un encuentro o una Prueba: lo impreso en la carta (cartas.json, con sus
 // recuadros de iconos) más las reglas especiales de los Peligros nuevos, que se registran por carta:
-// se queda en juego, contador, «Elige», Sin ayuda, Abordaje, Persigue, Estados, Incautado, ocupar el muelle…
+// la permanente que pone en juego, «Elige», Sin ayuda, Abordaje, Persigue, Estados, Incautado, ocupar el muelle…
+// Fase 11: lo que hace cada permanente (zona de permanentes) se registra aparte, por la carta permanente.
 
 import type { Entorno, Habilidad, OpcionPrueba } from './datos.ts'
-import { interpretarEfectos, type Condicion, type Efecto } from './efectos.ts'
+import { interpretarEfectos, type Condicion, type Efecto, type Selector } from './efectos.ts'
 import { copia } from './estado.ts'
 import { porId } from './catalogo.ts'
 import { encuentroDe, entornoActual } from './peligros.ts'
@@ -49,16 +50,16 @@ export interface OpcionElige {
   sinPrueba?: boolean
 }
 
-/** Momentos en que una carta en juego hace algo (o suma una ficha a su contador). */
+/** Momentos en que una permanente hace algo (o suma una ficha a su contador). */
 export type Disparo = 'revelarPeligro' | 'cartaResuelta' | 'finTurno' | 'superarPrueba' | 'fallarPrueba'
 
-/** Cómo se quita una carta que se queda en juego (lo dice la propia carta). */
+/** Cómo se quita una permanente (lo dice la propia carta): vuelve al mazo de historia. */
 export type FormaDeQuitar =
   | { tipo: 'prueba'; opciones: OpcionPrueba[]; fallo?: Efecto[]; exito?: Efecto[] }
   | { tipo: 'agotarRasgo'; rasgo: string | null }
   | { tipo: 'pagar'; n: number }
 
-/** Una Acción de una carta en juego: su coste (si lo tiene) y lo que hace. */
+/** Una Acción de una permanente: su coste (si lo tiene) y lo que hace. */
 export interface AccionDeCarta {
   texto: string
   coste?: Coste[]
@@ -66,8 +67,11 @@ export interface AccionDeCarta {
   efectos: Efecto[]
 }
 
-export interface QuedaEnJuego {
+/** Lo que hace una permanente mientras está en la zona de permanentes (fase 11). */
+export interface ReglasPermanente {
   quitar: FormaDeQuitar[]
+  /** Al ponerla en juego (con ella como fuente): «el atrapado no puede ser asignado ni prepararse». */
+  alEntrar?: Efecto[]
   /** Otras Acciones de la carta («agota 2 Tripulantes para poner 1 ficha»). */
   acciones?: AccionDeCarta[]
   /** Respuestas, Obligadas y modificadores escritos a mano. */
@@ -86,6 +90,16 @@ export interface QuedaEnJuego {
   bloqueaSuperar?: boolean
   /** Lo que pasa además cuando la quitas con una de sus formas de quitarla (no al llegar a su contador). */
   alQuitar?: Efecto[]
+}
+
+/**
+ * «Pon en juego la carta N del mazo de historia (junto a él).» `junto`: a qué Tripulante va junto (se resuelve al leer
+ * el encuentro; con una función, según la situación). `fichas`: con cuántas fichas entra (si no, las de sus reglas).
+ */
+export interface PonePermanente {
+  carta: CartaId
+  junto?: Selector | ((s: Estado) => Selector)
+  fichas?: number
 }
 
 /** Lo que el texto de un encuentro cambia en su Prueba («las Mejoras no suman», «las cartas de la mano no suman»…). */
@@ -114,7 +128,8 @@ export interface ReglasEncuentro {
   sinAyuda?: boolean
   abordaje?: boolean
   elige?: OpcionElige[]
-  queda?: QuedaEnJuego
+  /** Fase 11: el encuentro pone en juego una permanente (antes, «Se queda en juego»). */
+  pone?: PonePermanente
   /** Se aplica en cuanto se revela la carta. */
   alRevelarse?: Efecto[]
   restriccion?: Restriccion
@@ -222,19 +237,30 @@ export function definicionEncuentro(s: Estado, carta: InstId): DefinicionEncuent
   }
 }
 
-/** Las reglas de «se queda en juego» de una carta de Peligro en juego. */
-export function quedaDe(s: Estado, carta: InstId): QuedaEnJuego | undefined {
-  return reglasEncuentro(s, carta)?.queda
+const PERMANENTES = new Map<CartaId, ReglasPermanente>()
+
+/** Registra lo que hace una permanente (sin sus capacidades: ver `registrarPermanente` en capacidades/peligros.ts). */
+export function registrarReglasPermanente(id: CartaId, reglas: ReglasPermanente): void {
+  PERMANENTES.set(id, reglas)
 }
 
-/** Alguna carta en juego impide superar la misión mientras esté. */
+export function reglasPermanente(id: CartaId): ReglasPermanente | undefined {
+  return PERMANENTES.get(id)
+}
+
+/** Las reglas de una permanente en juego (por su copia). */
+export function quedaDe(s: Estado, carta: InstId): ReglasPermanente | undefined {
+  return PERMANENTES.get(copia(s, carta).id)
+}
+
+/** Alguna permanente impide superar la misión mientras esté. */
 export function impideSuperar(s: Estado): boolean {
-  return s.zonas.peligrosEnJuego.some((c) => quedaDe(s, c)?.bloqueaSuperar)
+  return s.zonas.permanentes.some((c) => quedaDe(s, c)?.bloqueaSuperar)
 }
 
-/** Alguna carta en juego impide retirarse mientras esté. */
+/** Alguna permanente impide retirarse mientras esté. */
 export function impideRetirarse(s: Estado): boolean {
-  return s.zonas.peligrosEnJuego.some((c) => quedaDe(s, c)?.bloqueaRetirada)
+  return s.zonas.permanentes.some((c) => quedaDe(s, c)?.bloqueaRetirada)
 }
 
 /**

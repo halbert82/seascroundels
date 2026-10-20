@@ -65,7 +65,7 @@ import {
   descartarArriba,
   descartarDelMuelle,
   descartarMuelle,
-  descartarPeligroEnJuego,
+  devolverPermanente,
   elegirEncuentro,
   estadosFinTurno,
   incautar,
@@ -73,8 +73,8 @@ import {
   ocuparMuelle,
   ponerEstadoBarco_,
   ponerEstado_,
+  ponerPermanente,
   pruebaSuelta,
-  quedarEnJuego,
   quitarEstadoBarco_,
   quitarEstado_,
 } from './peligrosNuevos.ts'
@@ -87,7 +87,7 @@ import {
   especial,
   gratisDelMuelle,
   prepararN,
-  quitarPeligroEnJuego,
+  quitarPermanente,
   quitarUnEstado,
   recuperarDescarte,
 } from './peligros2.ts'
@@ -172,8 +172,8 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   volverAlMuelle,
   elegirEncuentro,
   pruebaSuelta,
-  quedarEnJuego,
-  descartarPeligroEnJuego,
+  ponerPermanente,
+  devolverPermanente,
   contador,
   ponerEstado: ponerEstado_,
   ponerEstadoBarco: ponerEstadoBarco_,
@@ -197,7 +197,7 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   gratisDelMuelle,
   recuperarDescarte,
   quitarUnEstado,
-  quitarPeligroEnJuego,
+  quitarPermanente,
 }
 
 /**

@@ -94,17 +94,17 @@ describe('Glosario de la mesa', () => {
   })
 
   it('cada palabra de regla tiene su explicación', () => {
-    const pedidas = ['Abordaje', 'Se queda en juego', 'Elige', 'Sin ayuda', 'Incautado', 'Persigue', 'Ocupa el muelle', 'Sin oposición', 'Rehén', 'Recluta']
+    const pedidas = ['Abordaje', 'Zona de permanentes', 'Elige', 'Sin ayuda', 'Incautado', 'Persigue', 'Ocupa el muelle', 'Sin oposición', 'Rehén', 'Recluta']
     const todas = CLAVES_REGLA.map((c) => AYUDA_REGLA[c])
     for (const a of todas) completa(a)
     for (const n of pedidas) expect(todas.map((a) => a.nombre)).toContain(n)
   })
 
-  it('cada etiqueta de encuentro de las cartas (Elige, Se queda en juego, Sin ayuda, Incautado…) tiene su explicación', () => {
+  it('cada etiqueta de encuentro de las cartas (Elige, Sin ayuda, Incautado…) tiene su explicación', () => {
     const etiquetas = new Set<string>()
     for (const p of DATOS.peligros) for (const e of Object.values(p.encuentros)) for (const t of e.etiquetas ?? []) etiquetas.add(t)
     for (const c of DATOS.cartasDeMazoPropio) for (const t of c.encuentro.etiquetas ?? []) etiquetas.add(t)
-    expect(etiquetas.size).toBeGreaterThan(3)
+    expect(etiquetas.size).toBeGreaterThanOrEqual(3) // Elige, Sin ayuda e Incautado (fase 11: ya no hay «Se queda en juego»)
     const conAyuda = CLAVES_REGLA.map((c) => AYUDA_REGLA[c].nombre)
     for (const t of etiquetas) expect(conAyuda, t).toContain(t)
   })
@@ -117,7 +117,7 @@ describe('Glosario de la mesa', () => {
     }
     const a = ayudaLimitacion('noPrepara', 'carta', 'La paga', 'La paga')
     expect(a.partes[0]?.texto).toContain('«La paga»')
-    expect(a.partes[1]?.texto).toBe('Cuando «La paga» deje de estar en juego.')
+    expect(a.partes[1]?.texto).toBe('Cuando «La paga» deje de estar en juego (vuelva al mazo de historia).')
     expect(ayudaLimitacion('noPrepara', 'inicio', null, null).partes[1]?.texto).toBe('Después de tu próxima Fase de Inicio (en esa fase no se prepara).')
   })
 
@@ -142,8 +142,9 @@ describe('Lo que se explica junto a una carta ampliada', () => {
     expect(n.slice(-2)).toEqual(['El Tripulante asignado con más (o menos)', 'Sin oposición'])
   })
 
-  it('las palabras de los Peligros 2.0: Se queda en juego, Elige, Sin ayuda, Incautado, Persigue, Ocupa el muelle', () => {
-    expect(nombres('p2_bajamar')).toContain('Se queda en juego')
+  it('las palabras de los Peligros 2.0: Zona de permanentes, Elige, Sin ayuda, Incautado, Persigue, Ocupa el muelle', () => {
+    expect(nombres('p2_bajamar')).toContain('Zona de permanentes')
+    expect(nombres('cortar')).toContain('Zona de permanentes')
     expect(nombres('p2_calma')).toContain('Elige')
     expect(nombres('p2_jaguar')).toContain('Sin ayuda')
     expect(nombres('p2_aduana')).toContain('Incautado')

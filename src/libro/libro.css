@@ -1239,6 +1239,11 @@ body {
   box-shadow: 0 0.5mm 1.4mm rgba(43, 33, 25, 0.38);
   line-height: 0;
 }
+/* Fase 11: la carta dentro de la miniatura, con el interlineado de la app (con 0, la pastilla «Añade la carta 119 al
+   mazo de Misiones» de las misiones se montaba en dos líneas y se recortaba). */
+.miniatura .card {
+  line-height: normal;
+}
 
 /* ------------------------------------------------------------------ */
 /* Componentes                                                        */

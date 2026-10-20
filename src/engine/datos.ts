@@ -6,6 +6,7 @@ import type { Efecto } from './efectos.ts'
 
 export type Habilidad = 'NAV' | 'COM' | 'EXP'
 export type Entorno = 'mar' | 'nat' | 'ciu'
+/** Clase de una carta de jugador (en los datos, campo `senda`). Fase 11: todas la llevan, salvo los Tesoros. */
 export type Senda = 'Piratería' | 'Neutral'
 
 /** Operación de ayuda heredada del prototipo: ["wound", 1], ["exhaustAll"]… */
@@ -15,6 +16,7 @@ export interface CapitanDatos {
   id: string
   num: number
   nombre: string
+  senda: Senda
   rasgos: string[]
   NAV: number
   COM: number
@@ -28,6 +30,7 @@ export interface CapitanDatos {
 
 export interface BarcoDatos {
   nombre: string
+  senda: Senda
   capacidad: number
   danoMaximo: number
   espacio: number
@@ -59,6 +62,7 @@ export interface MejoraBarcoDatos {
   num: number
   nombre: string
   copias: number
+  senda: Senda
   coste: number
   unico: boolean
   texto: string
@@ -75,6 +79,7 @@ export interface MejoraTripulanteDatos {
   num: number
   nombre: string
   copias: number
+  senda: Senda
   coste: number
   unico: boolean
   texto: string
@@ -91,6 +96,7 @@ export interface EventoDatos {
   num: number
   nombre: string
   copias: number
+  senda: Senda
   coste: number
   iconos: Habilidad[]
   texto: string
@@ -102,6 +108,7 @@ export interface HabilidadCartaDatos {
   num: number
   nombre: string
   copias: number
+  senda: Senda
   iconos: Habilidad[]
   ambientacion: string
 }
@@ -144,8 +151,10 @@ export interface EncuentroDatos {
   textoExito?: string
   /** Peligros 2.0: aclaración de la dificultad («X = 2 + tus Mejoras de barco…», «+1 por cada…»). */
   notaPrueba?: string
-  /** Peligros 2.0: «Elige», «Sin ayuda», «Se queda en juego», «Incautado». */
+  /** Peligros 2.0: «Elige», «Sin ayuda», «Incautado». */
   etiquetas?: string[]
+  /** Fase 11: número de la permanente que pone en juego (desde el mazo de historia). */
+  pone?: number
 }
 
 export interface DestinoDatos {
@@ -209,6 +218,26 @@ export interface PasajeroDatos {
   ambientacion: string
 }
 
+/**
+ * Permanente (fase 11): carta del mazo de historia que un encuentro pone en juego en la zona de permanentes, junto a la
+ * misión (o junto a un Tripulante). Su texto es para leerlo: lo que hace está escrito a mano en las reglas de su Peligro.
+ */
+export interface PermanenteDatos {
+  id: string
+  num: number
+  nombre: string
+  /** Los del encuentro que la pone en juego (Terreno, Bestia…). */
+  rasgos: string[]
+  texto: string
+  ambientacion: string
+  /** La carta de Peligro (o de mazo propio) que la pone en juego. */
+  origen: string
+  /** El Entorno de ese encuentro («unico» si es de un mazo propio). */
+  entorno: Entorno | 'unico'
+  /** Va junto a un Tripulante («Pon en juego la carta N … junto a él»). */
+  junto: boolean
+}
+
 /** Carta de misión apartada que una misión pone en juego («¡La guardia!»). */
 export interface CartaMisionDatos {
   id: string
@@ -242,7 +271,7 @@ export interface RecompensaDatos {
   adquiereGratis?: number
   /** Fase 10b: otea N del mazo de Misiones (antes de reponer las misiones disponibles). */
   oteaMisiones?: number
-  /** Fase 10c (solo para medir): lo que cuesta la recompensa («y el Barco sufre 1 daño»). */
+  /** Fase 11: lo que cuesta la recompensa («El Barco sufre 1 daño»). Se paga después de cobrarla. */
   precio?: Efecto[]
   /** id del Tesoro que se gana. */
   tesoro?: string
@@ -328,6 +357,7 @@ export interface DatosCartas {
   cartasDeMazoPropio: CartaMazoPropioDatos[]
   pasajeros: PasajeroDatos[]
   cartasDeMision: CartaMisionDatos[]
+  permanentes: PermanenteDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

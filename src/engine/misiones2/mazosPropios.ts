@@ -1,7 +1,7 @@
 // Misiones 2.0 · las cartas de Peligro de los mazos propios (Templo y Escolta), con el formato de los Peligros 2.0:
 // un solo encuentro (el del Entorno de su misión) y un Destino. También «La Armada te persigue», rehecha (P51).
 
-import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { anotar, copia } from '../estado.ts'
 import { mazoActivo } from '../peligros.ts'
 import {
@@ -78,18 +78,17 @@ registrarPeligro('pasadizo', {
   destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 0 : -1) },
 })
 
-// La losa giratoria · Leve · Se queda en juego.
+// La losa giratoria · Leve. Fase 11: el Tripulante preparado con más EXP queda al otro lado: pon en juego la carta 236
+// junto a él (antes era «Al revelarse»; el texto nuevo lo hace al resolver el encuentro).
+// Permanente 236 «La losa giratoria»: ese Tripulante no puede ser asignado. Acción: agota a 2 Tripulantes: descártala.
+registrarPermanente('pm_losa', {
+  quitar: [],
+  alEntrar: [{ tipo: 'alJunto', hacer: { tipo: 'noCompromete', hasta: 'carta' } }],
+  acciones: [{ texto: 'Agota a 2 Tripulantes (empujáis la losa): descarta esta carta', coste: [{ tipo: 'agotarVarios', n: 2 }], efectos: [{ tipo: 'descartarEsta' }] }],
+})
 registrarPeligro('losa', {
   encuentros: {
-    unico: {
-      // Al revelarse: el Tripulante preparado con más EXP queda al otro lado de la losa (no puede comprometerse
-      // mientras esta carta esté en juego).
-      alRevelarse: [{ tipo: 'aQuien', quien: { de: 'preparados', por: mas('EXP') }, hacer: { tipo: 'noCompromete', hasta: 'carta' } }],
-      queda: {
-        quitar: [],
-        acciones: [{ texto: 'Agota a 2 Tripulantes (empujáis la losa): descarta esta carta', coste: [{ tipo: 'agotarVarios', n: 2 }], efectos: [{ tipo: 'descartarEsta' }] }],
-      },
-    },
+    unico: { pone: { carta: 'pm_losa', junto: { de: 'preparados', por: mas('EXP') } } },
   },
   destino: { siFallas: [pierdesAvance(1)], sinOposicion: [agotar(1)] },
 })
@@ -141,15 +140,15 @@ registrarPeligro('escolta', {
   },
 })
 
-// Fuego de cobertura · Leve · Se queda en juego: mientras esté, los Cañones no suman. Acción: Prueba de NAV 3.
+// Fuego de cobertura · Leve. Fase 11: pon en juego la carta 237 del mazo de historia.
+// Permanente 237 «Fuego de cobertura»: los Cañones no suman. Acción: Prueba de NAV 3: si la superas, descártala.
+registrarPermanente('pm_cobertura', {
+  quitar: [{ tipo: 'prueba', opciones: [{ hab: 'NAV', dificultad: 3 }] }],
+  capacidades: [{ clave: 'sinCanones', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'sinCanones' ? 1 : 0) }],
+})
 registrarPeligro('cobertura', {
   encuentros: {
-    unico: {
-      queda: {
-        quitar: [{ tipo: 'prueba', opciones: [{ hab: 'NAV', dificultad: 3 }] }],
-        capacidades: [{ clave: 'sinCanones', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'sinCanones' ? 1 : 0) }],
-      },
-    },
+    unico: { pone: { carta: 'pm_cobertura' } },
   },
   destino: { prueba: { sinCanones: true }, sinOposicion: [dano(1)] },
 })

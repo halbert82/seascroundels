@@ -1,6 +1,6 @@
 // Peligros 2.0 · Grupo D: Rivales y tu propia tripulación (cartas 34–44).
 
-import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { iconosDe } from '../catalogo.ts'
 import type { Efecto } from '../efectos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
@@ -271,30 +271,31 @@ registrarPeligro('p2_tahur', {
 })
 
 // 38. Paga atrasada · Leve
-registrarPeligro('p2_paga', {
-  encuentros: {
-    // Se queda en juego: cada otro Peligro revelado, 1 ficha; con 3, 2 daños al Barco y se descarta.
-    // Respuesta: después de superar una Prueba por 2 o más, quita 1 ficha. Acción: descarta 2 cartas para descartarla.
-    mar: {
-      queda: {
-        quitar: [{ tipo: 'pagar', n: 2 }],
-        contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [dano(2)], despues: 'descartar' },
-        capacidades: [
-          {
-            clave: 'calma',
-            ventana: 'respuesta',
-            disparo: (s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'superarPrueba' && yo !== null && (copia(s, yo).fichas ?? 0) > 0 && margen(s) >= 2,
-            efecto: (s, yo) => {
-              if (yo && (copia(s, yo).fichas ?? 0) > 0) {
-                copia(s, yo).fichas = (copia(s, yo).fichas ?? 0) - 1
-                anotar(s, 'efecto', `Ganar calma los ánimos: «${nombre(s, yo)}» pierde 1 ficha (${copia(s, yo).fichas}).`)
-              }
-              return []
-            },
-          },
-        ],
+// Permanente 232 «Murmullos en el sollado»: cada otro Peligro revelado, 1 ficha de Descontento; con 3, 2 daños al Barco
+// y se descarta. Respuesta: después de superar una Prueba por 2 o más, quita 1 ficha. Acción: descarta 2 cartas para
+// descartarla.
+registrarPermanente('pm_murmullos', {
+  quitar: [{ tipo: 'pagar', n: 2 }],
+  contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [dano(2)], despues: 'descartar' },
+  capacidades: [
+    {
+      clave: 'calma',
+      ventana: 'respuesta',
+      disparo: (s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'superarPrueba' && yo !== null && (copia(s, yo).fichas ?? 0) > 0 && margen(s) >= 2,
+      efecto: (s, yo) => {
+        if (yo && (copia(s, yo).fichas ?? 0) > 0) {
+          copia(s, yo).fichas = (copia(s, yo).fichas ?? 0) - 1
+          anotar(s, 'efecto', `Ganar calma los ánimos: «${nombre(s, yo)}» pierde 1 ficha (${copia(s, yo).fichas}).`)
+        }
+        return []
       },
     },
+  ],
+})
+registrarPeligro('p2_paga', {
+  encuentros: {
+    // Pon en juego la carta 232 del mazo de historia («Murmullos en el sollado»).
+    mar: { pone: { carta: 'pm_murmullos' } },
     // Fallo: tu Tripulante de menor coste deserta: vuelve al muelle (fase 10b, antes Encadenado).
     // P41 (confirmada): el Capitán no tiene coste impreso: no cuenta como «el de menor coste» (si no, siempre sería él).
     nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menorCoste', sinCapitan: true }, hacer: { tipo: 'alMuelle' } }] },
@@ -442,12 +443,23 @@ registrarPeligro('p2_cuentas', {
 })
 
 // 43. Motín · Terrible
-// «No vuelven de la taberna»: Acción: agota a un Oficial: prepara a uno de los que están en la taberna, que queda Borracho.
+// Permanente 233 «No vuelven de la taberna»: los Tripulantes de la taberna (los que agotó el «Al revelarse» del Motín)
+// no se preparan. Acción: agota a un Oficial: prepara a uno, que queda Borracho. Acción: descarta 3 cartas: descártala.
+const TABERNA = 'p2_motin.taberna'
 function enLaTaberna(s: Estado, carta: InstId): InstId[] {
   return s.temporales
-    .filter((x) => x.clave === 'noPrepara' && x.fuente === 'p2_motin' && x.carta === carta && x.inst && s.zonas.tripulacion.includes(x.inst))
+    .filter((x) => x.clave === 'noPrepara' && x.fuente === 'pm_taberna' && x.carta === carta && x.inst && s.zonas.tripulacion.includes(x.inst))
     .map((x) => x.inst as InstId)
 }
+// Al entrar en juego: los que agotó el Motín al revelarse no se preparan mientras la permanente siga en juego.
+registrarCodigo('pm_taberna.entrar', (s, fuente) => {
+  if (!fuente) return []
+  const origen = copia(s, fuente).origen
+  for (const t of s.temporales.filter((x) => x.clave === TABERNA && x.carta === origen && x.inst && s.zonas.tripulacion.includes(x.inst))) {
+    s.temporales.push({ clave: 'noPrepara', fuente: 'pm_taberna', hasta: 'carta', inst: t.inst, carta: fuente })
+  }
+  return []
+})
 registrarEspecial('p2_motin.rastras', (s, t, e) => {
   const carta = t.fuente
   if (!carta) return 'hecha'
@@ -458,18 +470,31 @@ registrarEspecial('p2_motin.rastras', (s, t, e) => {
   }
   const elegido = candidatos.length === 1 ? candidatos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
   if (!elegido) return 'hecha'
-  s.temporales = s.temporales.filter((x) => !(x.clave === 'noPrepara' && x.fuente === 'p2_motin' && x.carta === carta && x.inst === elegido))
+  s.temporales = s.temporales.filter((x) => !(x.clave === 'noPrepara' && x.fuente === 'pm_taberna' && x.carta === carta && x.inst === elegido))
   prepararCopia(s, elegido)
   ponerEstado(s, elegido, 'borracho')
   anotar(s, 'efecto', `Sacas a rastras a ${nombre(s, elegido)} de la taberna: se prepara y queda Borracho.`)
   return 'hecha'
 })
 registrarCodigo('p2_motin.rastras', (_s, fuente) => [{ tipo: 'especial', clave: 'p2_motin.rastras', ...(fuente ? { fuente } : {}), datos: {}, paso: 0 }])
+// «Al revelarse: agota a todos tus Tripulantes que no sean Oficiales» (quedan señalados: son los de la taberna).
 const NO_OFICIALES: Efecto = {
   tipo: 'aQuien',
   quien: { de: 'tripulacion', cada: true, sinRasgo: 'Oficial' },
-  hacer: { tipo: 'varios', acciones: [{ tipo: 'agotar' }, { tipo: 'noPrepara', hasta: 'carta' }] },
+  hacer: { tipo: 'varios', acciones: [{ tipo: 'agotar' }, { tipo: 'marcar', clave: TABERNA }] },
 }
+registrarPermanente('pm_taberna', {
+  quitar: [{ tipo: 'pagar', n: 3 }],
+  alEntrar: [codigo('pm_taberna.entrar')],
+  acciones: [
+    {
+      texto: 'Agota a un Oficial: prepara a uno de los que están en la taberna, que queda Borracho',
+      coste: [{ tipo: 'agotarTripulante', rasgo: 'Oficial' }],
+      requisito: (s, yo) => enLaTaberna(s, yo).length > 0,
+      efectos: [codigo('p2_motin.rastras')],
+    },
+  ],
+})
 registrarPeligro('p2_motin', {
   encuentros: {
     // Solo pueden comprometerse el Capitán y los Oficiales. +1 por cada Tripulante preparado que no sea Oficial (máx. +3).
@@ -484,21 +509,8 @@ registrarPeligro('p2_motin', {
       fallo: [{ tipo: 'retirarse' }, { tipo: 'heridas', n: 1, capitan: true }],
     },
     nat: { exito: [{ tipo: 'curar', n: 2 }, avance(1)], fallo: [pierdesAvance(2), heridas(2)] },
-    // Se queda en juego. Al revelarse, agota a todos los que no sean Oficiales: no se preparan mientras siga en juego.
-    ciu: {
-      alRevelarse: [NO_OFICIALES],
-      queda: {
-        quitar: [{ tipo: 'pagar', n: 3 }],
-        acciones: [
-          {
-            texto: 'Agota a un Oficial: prepara a uno de los que están en la taberna, que queda Borracho',
-            coste: [{ tipo: 'agotarTripulante', rasgo: 'Oficial' }],
-            requisito: (s, yo) => enLaTaberna(s, yo).length > 0,
-            efectos: [codigo('p2_motin.rastras')],
-          },
-        ],
-      },
-    },
+    // Al revelarse, agota a todos los que no sean Oficiales. Pon en juego la carta 233 («No vuelven de la taberna»).
+    ciu: { alRevelarse: [NO_OFICIALES], pone: { carta: 'pm_taberna' } },
   },
   // +2; +4 en su lugar si no has comprometido a ningún Oficial. Sin oposición: 2 heridas repartidas.
   destino: {

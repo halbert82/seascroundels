@@ -14,7 +14,7 @@ import { claseIcono } from '../cartas/TextoCarta.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
 import { INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
-import { AYUDA_ESTADO, AYUDA_REGLA, ayudaLimitacion, type Ayuda } from '../textos/glosario.ts'
+import { AYUDA_ESTADO, AYUDA_REGLA, ayudaJunto, ayudaLimitacion, type Ayuda } from '../textos/glosario.ts'
 import { Explicable } from './Explicacion.tsx'
 import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
@@ -221,6 +221,12 @@ export function FichasEstado({ estados, extra = [] }: { estados: readonly (Ficha
 /** «No se prepara» y «no puede ser asignado» de un Tripulante, por las cartas de Peligro. */
 function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: Ayuda }[] {
   const lista: { texto: string; ayuda: Ayuda }[] = []
+  // Fase 11: la permanente que está junto a él («el atrapado», «el señalado», «ese Tripulante»).
+  for (const p of s.zonas.permanentes) {
+    if (copia(s, p).junto !== inst) continue
+    const id = copia(s, p).id
+    lista.push({ texto: `Permanente ${porId(id).num}`, ayuda: ayudaJunto(nombreDe(id)) })
+  }
   for (const t of s.temporales) {
     if (t.inst !== inst || (t.clave !== 'noPrepara' && t.clave !== 'noCompromete')) continue
     const carta = t.carta && s.cartas[t.carta] ? nombreDe(copia(s, t.carta).id) : null

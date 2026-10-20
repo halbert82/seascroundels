@@ -1,6 +1,6 @@
 // Peligros 2.0 · Grupo B: Bestias, naturaleza y enfermedades (cartas 12–22).
 
-import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
 import { marcado, porCriterio, registrarEspecial } from '../tareas/peligros2.ts'
 import { registrarCapacidades } from '../capacidades/index.ts'
@@ -8,6 +8,7 @@ import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { agotar as agotarCarta } from '../estados.ts'
 import type { FichaTripulante } from '../infoEstados.ts'
+import type { Selector } from '../efectos.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { vinculadas } from '../zonas.ts'
 import {
@@ -295,23 +296,17 @@ registrarPeligro('p2_murcielagos', {
 })
 
 // 20. Arenas movedizas · Duro
-registrarCodigo('p2_arenas.atrapa', (s, fuente): NuevaTarea[] => {
-  // P28 (confirmada): «el Tripulante preparado (o el Capitán) con más EXP»: el Capitán cuenta como uno más entre los
-  // preparados; si no hay nadie preparado, queda atrapado el Capitán.
-  const hacer = {
-    tipo: 'varios' as const,
-    acciones: [
-      { tipo: 'noCompromete' as const, hasta: 'carta' as const },
-      { tipo: 'noPrepara' as const, hasta: 'carta' as const },
-      { tipo: 'marcar' as const, clave: 'p2_arenas.atrapado' },
-    ],
-  }
-  const hayPreparados = s.zonas.tripulacion.some((c) => !copia(s, c).agotada)
-  const quien = hayPreparados ? { de: 'preparados' as const, por: { mas: 'EXP' as const } } : { de: 'capitan' as const }
-  return [{ tipo: 'aQuien', quien, hacer, ...(fuente ? { fuente } : {}) }]
-})
+// P28 (confirmada): «el Tripulante preparado (o el Capitán) con más EXP»: el Capitán cuenta como uno más entre los
+// preparados; si no hay nadie preparado, queda atrapado el Capitán. Fase 11: la permanente 228 va junto a él.
+const atrapado = (s: Estado): Selector =>
+  s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? { de: 'preparados', por: { mas: 'EXP' } } : { de: 'capitan' }
+/** El Tripulante junto al que está la permanente (si sigue en tu tripulación). */
+function junto(s: Estado, perm: InstId | undefined): InstId | undefined {
+  const c = perm ? copia(s, perm).junto : undefined
+  return c && s.zonas.tripulacion.includes(c) ? c : undefined
+}
 registrarCodigo('p2_arenas.ahogado', (s, fuente): NuevaTarea[] => {
-  const c = marcado(s, 'p2_arenas.atrapado', fuente)
+  const c = junto(s, fuente)
   if (!c) return []
   anotar(s, 'aviso', `Sacáis a ${nombre(s, c)} medio ahogado.`)
   return [{ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 2 }, fase: 'antes', cancelado: false, usadas: [] }]
@@ -321,8 +316,23 @@ registrarCodigo('p2_arenas.sacar', (s, fuente): NuevaTarea[] => {
   const n = (copia(s, fuente).fichas ?? 0) + 1
   return [
     { tipo: 'agotarPago', n },
-    { tipo: 'descartarPeligroEnJuego', carta: fuente },
+    { tipo: 'devolverPermanente', carta: fuente },
   ]
+})
+// Permanente 228 «Arenas movedizas»: el atrapado no puede ser asignado ni prepararse. Obligado: cada otro Peligro
+// revelado, 1 ficha de Barro; con 3, sufre 2 heridas y se descarta. Acción: agota tantos preparados como fichas haya,
+// más 1, para descartarla.
+registrarPermanente('pm_arenas', {
+  quitar: [],
+  alEntrar: [{ tipo: 'alJunto', hacer: { tipo: 'varios', acciones: [{ tipo: 'noCompromete', hasta: 'carta' }, { tipo: 'noPrepara', hasta: 'carta' }] } }],
+  acciones: [
+    {
+      texto: 'Agota tantos Tripulantes preparados como fichas tenga, más 1: lo sacáis a pulso',
+      requisito: (s, yo) => s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length >= (copia(s, yo).fichas ?? 0) + 1,
+      efectos: [codigo('p2_arenas.sacar')],
+    },
+  ],
+  contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [codigo('p2_arenas.ahogado')], despues: 'descartar' },
 })
 registrarPeligro('p2_arenas', {
   encuentros: {
@@ -332,23 +342,8 @@ registrarPeligro('p2_arenas', {
       exito: [avance(1)],
       fallo: [{ tipo: 'porCada', medida: 'faltan', efectos: [dano(1)], maximo: 3 }],
     },
-    // Se queda en juego: el preparado con más EXP queda atrapado (ni se compromete ni se prepara mientras siga en juego).
-    // Obligado: cada otro Peligro revelado, 1 ficha; con 3, sufre 2 heridas y se descarta. Acción: agota tantos
-    // preparados como fichas tenga, más 1, para descartarla.
-    nat: {
-      efecto: [codigo('p2_arenas.atrapa')],
-      queda: {
-        quitar: [],
-        acciones: [
-          {
-            texto: 'Agota tantos Tripulantes preparados como fichas tenga, más 1: lo sacáis a pulso',
-            requisito: (s, yo) => s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length >= (copia(s, yo).fichas ?? 0) + 1,
-            efectos: [codigo('p2_arenas.sacar')],
-          },
-        ],
-        contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [codigo('p2_arenas.ahogado')], despues: 'descartar' },
-      },
-    },
+    // El preparado (o el Capitán) con más EXP queda atrapado: pon en juego la carta 228 junto a él.
+    nat: { pone: { carta: 'pm_arenas', junto: atrapado } },
     // NAV 3 (1 con un Marinero). Éxito: añade gratis una Mejora del muelle. Fallo: pierdes 1 Mejora de un comprometido.
     ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 99, que: 'mejora' }], fallo: [{ tipo: 'perderMejora', n: 1, deComprometidos: true }] },
   },
@@ -359,7 +354,7 @@ registrarPeligro('p2_arenas', {
 // 21. El jaguar · Terrible
 registrarEspecial('p2_jaguar.cazar', (s, t, e) => {
   const carta = t.fuente
-  if (!carta || !s.zonas.peligrosEnJuego.includes(carta) || s.prueba) return 'hecha'
+  if (!carta || !s.zonas.permanentes.includes(carta) || s.prueba) return 'hecha'
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
   if (preparados.length === 0) return 'hecha'
   const cazador = preparados.length === 1 ? preparados[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
@@ -383,25 +378,25 @@ registrarEspecial('p2_jaguar.cazar', (s, t, e) => {
   return 'hecha'
 })
 registrarCodigo('p2_jaguar.cazar', (_s, fuente): NuevaTarea[] => [{ tipo: 'especial', clave: 'p2_jaguar.cazar', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
+// Permanente 229 «Ojos amarillos en la espesura»: Obligado: al final de cada encuentro siguiente, el agotado con menos
+// Vida sufre 1 herida. Acción: agota a un preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es Explorador).
+registrarPermanente('pm_ojos', {
+  quitar: [],
+  acciones: [
+    {
+      texto: 'Agota a un Tripulante preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador)',
+      requisito: (s) => s.prueba === null && s.zonas.tripulacion.some((c) => !copia(s, c).agotada),
+      efectos: [codigo('p2_jaguar.cazar')],
+    },
+  ],
+  disparos: [{ cuando: 'cartaResuelta', efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] }],
+})
 registrarPeligro('p2_jaguar', {
   encuentros: {
     // Sin ayuda. Fallo: el Tripulante sufre 2 heridas y queda Asustado.
     mar: { sinAyuda: true, exito: [robar(3)], fallo: [heridasAsignados(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'asustado' })] },
-    // Se queda en juego. Obligado: al final de cada encuentro siguiente, el agotado con menos Vida sufre 1 herida.
-    // Acción: agota a un preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador).
-    nat: {
-      queda: {
-        quitar: [],
-        acciones: [
-          {
-            texto: 'Agota a un Tripulante preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador)',
-            requisito: (s) => s.prueba === null && s.zonas.tripulacion.some((c) => !copia(s, c).agotada),
-            efectos: [codigo('p2_jaguar.cazar')],
-          },
-        ],
-        disparos: [{ cuando: 'cartaResuelta', efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] }],
-      },
-    },
+    // Pon en juego la carta 229 del mazo de historia («Ojos amarillos en la espesura»).
+    nat: { pone: { carta: 'pm_ojos' } },
     // COM 5, +1 si tienes un Animal. Fallo: el comprometido con más COM sufre 2 heridas y se descarta la carta de más a
     // la izquierda del muelle.
     ciu: {

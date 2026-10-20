@@ -16,12 +16,21 @@ export const LIMITES = {
   copiasUnica: 1,
 } as const
 
-/** Clase de una carta del jugador: la de su Capitán o «Neutral». Las cartas sin Clase impresa cuentan como Neutrales. */
-function claseDe(id: CartaId): string {
+/** Clase de una carta del jugador (fase 11: todas la llevan en los datos; los Tesoros no van en los mazos). */
+export function claseDe(id: CartaId): string {
   const e = porId(id)
-  if (e.tipo === 'tripulante') return e.carta.senda
-  if (e.tipo === 'capitan') return 'Piratería' // Los dos Capitanes de la Caja básica son de Piratería.
-  return 'Neutral'
+  switch (e.tipo) {
+    case 'capitan':
+    case 'barco':
+    case 'tripulante':
+    case 'mejoraBarco':
+    case 'mejoraTripulante':
+    case 'evento':
+    case 'habilidad':
+      return e.carta.senda
+    default:
+      throw new Error(`«${nombreDe(id)}» no es una carta de jugador con Clase`)
+  }
 }
 
 /** Lista de incumplimientos de las reglas de construcción (vacía si los mazos son legales). */

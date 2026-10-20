@@ -55,8 +55,10 @@ export type Efecto =
   | { tipo: 'descartarArriba'; n: number }
   | { tipo: 'noRetirarse' }
   | { tipo: 'retirarse' }
-  /** La carta de Peligro en juego que lo dice se descarta. */
+  /** La permanente que lo dice vuelve al mazo de historia (fase 11: «descarta esta carta»). */
   | { tipo: 'descartarEsta' }
+  /** Le pasa algo al Tripulante junto al que está la permanente que lo dice (fase 11). */
+  | { tipo: 'alJunto'; hacer: AccionSobre }
   /** Lee la mesa: Rasgos, Mejoras, heridas, Cañones, Estados… */
   | { tipo: 'si'; condicion: Condicion; entonces: Efecto[]; sino?: Efecto[] }
   /** «1 herida por cada Mejora» (con un mínimo y un máximo, si lo dice). */
@@ -227,7 +229,7 @@ export type Medida =
   | 'heridas'
   | 'canonesPreparados'
   | 'tripulantes'
-  | 'peligrosEnJuego'
+  | 'permanentes'
   | 'margen'
   | 'faltan'
   | 'dano'

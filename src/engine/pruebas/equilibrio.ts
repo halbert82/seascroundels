@@ -580,6 +580,27 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
     '',
   )
 
+  // Fase 11: las travesías que completa el jugador automático (supera su capítulo III) y cuánto gana cuando lo hace.
+  lineas.push(
+    '## Travesías completadas',
+    '',
+    'En cuántas partidas supera el capítulo III de cada travesía y, de esas, en cuántas gana.',
+    '',
+    '| Travesía | Partidas en que la completa | % de las partidas | Gana de esas |',
+    '| --- | --- | --- | --- |',
+  )
+  const travesias = DATOS.ordenMisiones.travesias
+    .map((t) => {
+      const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === `${t}-III` && r.resultado === 'superada'))
+      return { t, n: completan.length, gana: completan.filter((p) => p.gana).length }
+    })
+    .sort((a, b) => b.n - a.n)
+  for (const { t, n, gana } of travesias) {
+    const nombre = DATOS.misiones.find((m) => m.id === t)?.nombre ?? t
+    lineas.push(`| ${nombre} | ${n} | ${porcentaje(n, partidas.length)} | ${n > 0 ? porcentaje(gana, n) : '—'} |`)
+  }
+  lineas.push('')
+
   // Datos por carta en la partida predefinida.
   const predefinidas = [...new Set([...DATOS.mazosPredefinidos.mazoDeMuelle, ...DATOS.mazosPredefinidos.mazoDelCapitan])]
   lineas.push(

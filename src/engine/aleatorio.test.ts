@@ -29,18 +29,18 @@ describe('Prueba masiva: jugador al azar', () => {
 describe('Prueba masiva: jugador con criterio', () => {
   const partidas = Array.from({ length: 120 }, (_, i) => i + 1)
 
-  it('gana partidas de principio a fin en modo normal (18 de reputación)', { timeout: 180_000 }, () => {
+  it('gana partidas de principio a fin en modo normal (12 de reputación)', { timeout: 180_000 }, () => {
     const jugador = jugadorConCriterio()
     const ganadas = partidas.map((semilla) => jugarPartida(semilla, jugador, { invariantes: true })).filter((p) => p.gana)
     expect(ganadas.length).toBeGreaterThanOrEqual(5)
     for (const p of ganadas) {
       expect(p.final.resultado?.gana).toBe(true)
       expect(p.turnoFinal).toBeLessThanOrEqual(12)
-      // Gana por reputación (18) o por «Las puertas de Panamá».
-      expect(p.reputacion >= 18 || p.motivo.includes('Panamá')).toBe(true)
+      // Gana por reputación (12) o por «Las puertas de Panamá».
+      expect(p.reputacion >= 12 || p.motivo.includes('Panamá')).toBe(true)
     }
-    expect(ganadas.some((p) => p.reputacion >= 18)).toBe(true)
-    // Con las misiones 2.0 el jugador automático llega antes a 18 de reputación que a «Las puertas de Panamá»
+    expect(ganadas.some((p) => p.reputacion >= 12)).toBe(true)
+    // Con las misiones 2.0 el jugador automático llega antes a 12 de reputación que a «Las puertas de Panamá»
     // (la victoria por Panamá tiene su propia prueba en mision.test.ts).
   })
 

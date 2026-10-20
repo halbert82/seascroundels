@@ -192,10 +192,19 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
         anotar(s, 'efecto', 'Ganas el Avance sin Prueba.')
         return 'sigue'
       }
-      if (def.queda) {
-        // Se queda en juego junto a la misión: no se resuelve ahora (ni hay Prueba al revelarla).
-        encolar(s, ...(def.efecto.length > 0 ? [aplicar(def.efecto, 'efecto', carta)] : []), { tipo: 'quedarEnJuego', carta })
-        t.paso = 'despues'
+      if (def.pone) {
+        // Fase 11: pone en juego una permanente (desde el mazo de historia). Si no está allí, la carta del encuentro se
+        // descarta sin Avance y se revela otra; si está, el Avance llega en el paso siguiente, como en cualquier encuentro.
+        const { carta: permanente, junto, fichas } = def.pone
+        const selector = typeof junto === 'function' ? junto(s) : junto
+        t.pone = true
+        encolar(s, ...(def.efecto.length > 0 ? [aplicar(def.efecto, 'efecto', carta)] : []), {
+          tipo: 'ponerPermanente',
+          carta,
+          permanente,
+          ...(selector ? { junto: selector } : {}),
+          ...(fichas !== undefined ? { fichas } : {}),
+        })
       } else if (def.elige && def.elige.length > 0) {
         encolar(s, extra !== 0 ? { tipo: 'elegirEncuentro', carta, extra } : { tipo: 'elegirEncuentro', carta })
       } else if (def.opciones.length === 0) {
@@ -224,7 +233,10 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       // Lo que la misión da de más al superar una Prueba se suma a X.
       const sinSuperar = p?.encuentro === carta && p.origen !== 'accion' && p.hab !== null && p.resultado === 'fallada'
       const base = sinSuperar ? avanceSinSuperar(s, def) : def.avance
-      let n = t.sinAvance ? 0 : base + avanceExtraEncuentro(s, claves, p)
+      // El encuentro que pone una permanente da su Avance impreso; lo de más de la misión solo si ese Avance no es 0 (como
+      // cuando se quedaba en juego).
+      const extra = t.pone && def.avance === 0 ? 0 : avanceExtraEncuentro(s, claves, t.pone ? null : p)
+      let n = t.sinAvance ? 0 : base + extra
       if (p?.resultado === 'superada' && p.hab) n += p.avanceSiSuperas + valor(s, { tipo: 'avanceExtraPrueba', hab: p.hab })
       const mc = copia(s, m.carta)
       mc.avance += n
@@ -233,7 +245,10 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       anotar(s, 'efecto', `Ganas ${n} de Avance (${mc.avance}/${valor(s, { tipo: 'avanceNecesario', mision: m.carta })}).`, { tipo: 'avance', n, total: mc.avance })
       salidaDelEncuentro(s, carta)
       cerrarPrueba(s)
-      encolar(s, evento({ tipo: 'cartaResuelta', carta }))
+      // La permanente que acaba de entrar no cuenta el final de su propio encuentro.
+      const permanente = m.permanenteNueva
+      delete m.permanenteNueva
+      encolar(s, evento(permanente ? { tipo: 'cartaResuelta', carta, permanente } : { tipo: 'cartaResuelta', carta }))
       t.paso = 'despues'
       return 'sigue'
     }

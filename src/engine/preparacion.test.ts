@@ -19,7 +19,7 @@ describe('Preparación de la partida', () => {
     const j = Jugador.partida({ semilla: 1 })
     const s = j.estado
     expect(s.modo).toBe('normal')
-    expect(s.reputacionObjetivo).toBe(18)
+    expect(s.reputacionObjetivo).toBe(12)
     expect(s.reputacion).toBe(0)
     expect(s.puerto).toBe('tortuga')
     expect(s.danoBarco).toBe(0)
@@ -64,10 +64,10 @@ describe('Preparación de la partida', () => {
 
   it('los modos corto y largo cambian la reputación y el mazo de Escenario', () => {
     const corta = Jugador.partida({ semilla: 1, modo: 'corta' })
-    expect(corta.estado.reputacionObjetivo).toBe(12)
+    expect(corta.estado.reputacionObjetivo).toBe(9)
     expect(corta.zona('mazoEscenario')).toHaveLength(8)
     const larga = Jugador.partida({ semilla: 1, modo: 'larga' })
-    expect(larga.estado.reputacionObjetivo).toBe(24)
+    expect(larga.estado.reputacionObjetivo).toBe(16)
     expect(larga.zona('mazoEscenario')).toHaveLength(14)
   })
 

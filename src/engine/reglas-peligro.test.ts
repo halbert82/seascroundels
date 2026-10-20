@@ -2,25 +2,25 @@
 // para este fichero sobre cartas antiguas (cada fichero de pruebas tiene su propio registro).
 
 import { describe, expect, it } from 'vitest'
-import { registrarPeligro } from './capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from './capacidades/peligros.ts'
 
-import { Jugador, dificultadConDestino } from './pruebas/situacion.ts'
+import { Jugador, PERMANENTE_DE_PRUEBA, dificultadConDestino } from './pruebas/situacion.ts'
 
-// «Percances» (Mar, sin Prueba): se queda en juego; se quita superando NAV 3, agotando a un Oficial o pagando 2.
-// Mientras esté, las Pruebas de COM reciben +1 y, cada vez que falles una Prueba, un comprometido queda Asustado.
+// «Percances» (Mar, sin Prueba): pone en juego la permanente de prueba, que se quita superando NAV 3, agotando a un
+// Oficial o pagando 2. Mientras esté, las Pruebas de COM reciben +1 y, cada vez que falles una Prueba, un comprometido
+// queda Asustado.
+registrarPermanente(PERMANENTE_DE_PRUEBA, {
+  quitar: [
+    { tipo: 'prueba', opciones: [{ hab: 'NAV', dificultad: 3 }], fallo: [{ tipo: 'heridas', n: 1, capitan: true }] },
+    { tipo: 'agotarRasgo', rasgo: 'Oficial' },
+    { tipo: 'pagar', n: 2 },
+  ],
+  modificadores: [{ a: 'dificultad', hab: 'COM', n: 1 }],
+  disparos: [{ cuando: 'fallarPrueba', efectos: [{ tipo: 'estado', estado: 'asustado', a: 'comprometido' }] }],
+})
 registrarPeligro('percances', {
   encuentros: {
-    mar: {
-      queda: {
-        quitar: [
-          { tipo: 'prueba', opciones: [{ hab: 'NAV', dificultad: 3 }], fallo: [{ tipo: 'heridas', n: 1, capitan: true }] },
-          { tipo: 'agotarRasgo', rasgo: 'Oficial' },
-          { tipo: 'pagar', n: 2 },
-        ],
-        modificadores: [{ a: 'dificultad', hab: 'COM', n: 1 }],
-        disparos: [{ cuando: 'fallarPrueba', efectos: [{ tipo: 'estado', estado: 'asustado', a: 'comprometido' }] }],
-      },
-    },
+    mar: { pone: { carta: PERMANENTE_DE_PRUEBA } },
     // Ciudad: Sin ayuda.
     ciu: { sinAyuda: true, exito: [{ tipo: 'robar', n: 1 }] },
   },
@@ -45,35 +45,43 @@ registrarPeligro('oportunidad', {
   },
 })
 
-describe('Se queda en juego', () => {
-  it('se quita con una Prueba normal: comprometes, sale Destino y, si superas, se descarta', () => {
+describe('Zona de permanentes (fase 11)', () => {
+  it('el encuentro pone en juego la permanente; la carta del Peligro se descarta como cualquier otra', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'] })
+    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
+    expect(j.zona('descartesPeligros')).toEqual(['percances'])
+    expect(j.zona('mazoHistoria')).not.toContain(PERMANENTE_DE_PRUEBA)
+    expect(j.registro).toContain('Pones en juego «Percances (prueba)» (carta 9201 del mazo de historia).')
+  })
+
+  it('se quita con una Prueba normal: comprometes, sale Destino y, si superas, vuelve al mazo de historia', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
-    expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
-    j.usar('percances.mar.quitar0')
+    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
+    j.usar(`${PERMANENTE_DE_PRUEBA}.quitar0`)
     expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
     j.comprometer('NAV', ['viejo_lobo']).pasarOfertas()
     expect(j.zona('destino')).toEqual(['chubasco'])
     j.seguir()
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
     expect(j.decision.motivo.clave).toBe('trasEncuentro')
   })
 
   it('una Prueba de una Acción sin nadie comprometido aplica Sin oposición y falla (con su efecto de fallo)', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'niebla', 'calma'] })
-    j.usar('percances.mar.quitar0').comprometer('NAV', []).seguir()
-    expect(j.zona('peligrosEnJuego')).toEqual(['percances'])
+    j.usar(`${PERMANENTE_DE_PRUEBA}.quitar0`).comprometer('NAV', []).seguir()
+    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
     expect(j.copia('capitan').heridas).toBe(1)
   })
 
   it('se quita agotando a un Tripulante con el Rasgo pedido, o pagando cartas', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], tripulacion: ['viejo_lobo'] })
-    j.usar('percances.mar.quitar1')
+    j.usar(`${PERMANENTE_DE_PRUEBA}.quitar1`)
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'agotarParaPagar' } })
     j.elegir('viejo_lobo')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
     const k = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['ojo', 'timon'] })
-    k.usar('percances.mar.quitar2').elegir('ojo', 'timon')
-    expect(k.zona('peligrosEnJuego')).toEqual([])
+    k.usar(`${PERMANENTE_DE_PRUEBA}.quitar2`).elegir('ojo', 'timon')
+    expect(k.zona('permanentes')).toEqual([])
   })
 
   it('mientras está, cambia las Pruebas y reacciona cuando fallas', () => {
@@ -88,14 +96,34 @@ describe('Se queda en juego', () => {
   it('no se puede hacer la Prueba de una Acción durante otra Prueba', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'chubasco', 'calma'] })
     j.seguir().comprometer('NAV', ['capitan'])
-    expect(j.ofreceCapacidad('percances.mar.quitar0')).toBe(false)
+    expect(j.ofreceCapacidad(`${PERMANENTE_DE_PRUEBA}.quitar0`)).toBe(false)
   })
 
-  it('al terminar la misión, se descarta', () => {
+  it('al terminar la misión, la permanente vuelve al mazo de historia (y la carta del Peligro ya estaba descartada)', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'] })
     j.retirarse().opcion('dejar')
-    expect(j.zona('peligrosEnJuego')).toEqual([])
+    expect(j.zona('permanentes')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain(PERMANENTE_DE_PRUEBA)
     expect(j.zona('descartesPeligros')).toContain('percances')
+  })
+
+  it('el Peligro vuelve a salir con su permanente en juego: se descarta sin dar Avance y se revela otra', () => {
+    // El mazo se acaba y se baraja: «Percances» vuelve a salir mientras su permanente sigue en juego.
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'] })
+    const avance = j.avance('pruebas-mar5')
+    // Se pone «Percances» otra vez encima del mazo (como si se hubiera barajado y saliera de nuevo).
+    const peligro = j.inst('percances')
+    j.estado.zonas.descartesPeligros = j.estado.zonas.descartesPeligros.filter((c) => c !== peligro)
+    j.estado.zonas.mazoPeligros.unshift(peligro)
+    j.seguir()
+    expect(j.registro).toContain(
+      'La carta 9201 («Percances (prueba)») no está en el mazo de historia: descartas «Percances» sin ganar su Avance y revelas otra.',
+    )
+    // Se revela la siguiente («Calma chicha» en el Mar), que da su Avance; «Percances» no da nada.
+    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
+    expect(j.zona('descartesPeligros')).toContain('percances')
+    expect(j.registro.filter((r) => r.startsWith('Revelas «Percances»'))).toHaveLength(2)
+    expect(j.avance('pruebas-mar5')).toBeGreaterThanOrEqual(avance)
   })
 })
 

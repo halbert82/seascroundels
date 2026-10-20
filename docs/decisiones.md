@@ -539,3 +539,51 @@ Hecha desde la sesión de diseño (Claude en la nube), sin la sesión de Claude 
 | R3 + I0 | 12 | 42,2 % | 1,22 | 0,77 | 16,4 % |
 
 R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y III salen del mazo de Misiones), y sin reputación en el capítulo I la media no pasa de 4. Partida corta y larga con R3 + A1 + I2: corta con 9 de reputación, 26,3 % (con 8, 37,6 %); larga con 16, 28,7 % (con 17, 22,4 %). Partida de aprendizaje (sin Escenario): con lo publicado, 54,1 % (frente a 45,6 %); con R3 + A1 + I2 y 12, 30,6 % (frente a 27,1 %).
+
+## Fase 11: reputación nueva, Clase de todas las cartas de jugador, textos de 116 y 118 y zona de permanentes (20 de octubre de 2026)
+
+### Reputación (decidido por Albert)
+
+- **Reputación de cada capítulo** (en los datos y en el texto impreso de las recompensas con texto): iniciales 0 (113, 114, 115); aventuras 1 (116, 117); El templo perdido 1 / 2 / 3 o 2 (120: la opción del ídolo pasa de 4 a 3); La Flota de la Plata 2 / 3 / 4; El espía de Cádiz 0 / 1 / 2; El cargamento de Maracaibo 1 / 2 (II-a y II-b) / 2; La fortaleza de San Felipe 1 / 2 (Por el aljibe) o 3 (Al asalto) / 4 o 3; El barco fantasma 1 / 2 / 3 o 2; El saqueo de Panamá 1 / 2 / victoria.
+- **Pruebas de dificultad 3 o menos** (Peligros 2.0 y mazos propios): Avance 1 / 1 (83 encuentros). Lectura: «Casco comido por la broma» (EXP X, de 3 a 5) se queda en 3 / 2, porque su dificultad no es 3 o menos; en la medida A1 de la fase 10c sí entraba.
+- **Misiones iniciales con precio** (campo `precio`, como la medida I2): Agua y leña, «Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño.»; Rumbo a mar abierto, «Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida.» TODO(regla): Agua y leña es de Naturaleza y el Barco sufre el daño igualmente (como en la medida), aunque el texto no diga «en tierra».
+- **Reputación para ganar:** corta 9, normal 12, larga 16 (las cartas de Escenario no cambian). Reglamento: tabla de la preparación, Objetivo («12 en una partida normal»), «Ganar y perder», referencia rápida (tabla «Dificultad») y los ejemplos (Port Royal ya no da reputación; la goleta del correo, de 10 a 12; el primer turno: 0 de la misión, 1 de la Gesta y la herida del precio, a Diego).
+- Variantes de medida: quedan REP, ESC, MODO y SINESC.
+
+### Clase de todas las cartas de jugador
+
+- Campo `senda` en todas: Piratería las 18 de la lista de Albert (24, 29, 30, 32, 37, 40, 41, 43, 48, 51, 57, 58, 60, 66, 69, 171, 172, 173); las demás Mejoras, Eventos y Habilidades, Neutral explícito. Los dos Capitanes, Piratería; el Barco, Neutral (no entra en los mazos y conserva su marco). Los Tesoros, sin Clase.
+- Prueba: toda carta de jugador tiene Clase; un Capitán Neutral no podría llevar las de Piratería. Los mazos de inicio siguen siendo legales.
+
+### Textos de 116 y 118
+
+- Cabe todo el ambiente. 116: «(el ladrón huye)» y «(le cortáis el paso)»; 118: «La isla no sale en ningún mapa», «(avistáis la isla)» y «(el informante de Tortuga solo habla con oficiales)».
+- El ambiente «~(…)~» de las misiones y de las permanentes sale ahora en cursiva (antes solo en los Peligros).
+- Letra: 116 a 12 px en la galería, la mesa y el libro; 118 a 12,8 px en la galería y la mesa y 12 px en el libro.
+- Arreglos de paso: el ajuste de letra de las misiones comprueba también que la recompensa quepa de alto (la pastilla «Añade la carta 119…» quedaba aplastada 3 px), y en el libro las cartas en miniatura recuperan el interlineado de la app (con 0, esa pastilla se montaba en dos líneas).
+
+### Zona de permanentes (aprobada por Albert)
+
+- 12 cartas nuevas, 226–237, en la pila normal del mazo de historia (dorso de misión), con los tipos de su encuentro. El encuentro dice «Pon en juego la carta N del mazo de historia (junto a él). Si no está en el mazo de historia, descarta esta carta sin ganar su Avance y revela otra.»; su Avance y su carta funcionan como cualquier otro encuentro (el Avance, como antes: el impreso, y lo de más de la misión solo si no es 0).
+- Motor: zona `permanentes`, tareas `ponerPermanente` y `devolverPermanente`, reglas por carta permanente (`registrarPermanente`), efecto `alJunto` («el atrapado», «el señalado», «ese Tripulante»). El final del encuentro que pone una permanente no le cuenta a ella (como antes). Al terminar la misión, todas vuelven al mazo de historia. Las partidas guardadas antes se convierten.
+- Lecturas tomadas (para que conste):
+  - Una permanente «junto a él» sigue en la zona de permanentes: «Cortar por lo sano» puede devolverla (como antes podía descartar la carta).
+  - La losa giratoria: el texto nuevo ya no dice «Al revelarse»; el Tripulante se elige al resolver el encuentro.
+  - Si un Motín vuelve a salir con «No vuelven de la taberna» en juego, sus nuevos agotados no pasan a ser «de la taberna».
+- Mesa: la zona de permanentes va en la cabecera de la misión, a la altura de su carta (si no caben, se solapan); «junto a…» sobre la carta y, en el Tripulante, «Permanente 228». Escena `#/escena/permanentes`.
+- Reglamento: «Zona de permanentes» en Aprende a jugar y en la Referencia (con el ejemplo de los Varados), entrada «Permanente», fuera «Se queda en juego» (palabra clave, índice y ejemplos), Cortar por lo sano, Componentes (223 cartas) y mazo de historia.
+- TODO(regla): «¡La guardia!» sigue siendo una carta de misión (no está en la zona de permanentes: Cortar por lo sano no la quita) y su texto aún dice «Se queda en juego junto a la misión». Pregunta a Albert.
+
+### Equilibrio de la fase 11 (1000 partidas por fila, semillas 1–1000, mazos de inicio, el mismo jugador automático)
+
+| Modo | Reputación para ganar | Victorias | Referencia de la fase 10c | Diferencia | Reputación por misión superada |
+| --- | --- | --- | --- | --- | --- |
+| Corta | 9 | 31,1 % | 26,3 % | +4,8 | 1,15 |
+| Normal | 12 | 31,0 % | 27,1 % | +3,9 | 1,26 |
+| Larga | 16 | 33,6 % | 28,7 % | +4,9 | 1,36 |
+
+- **De dónde sale la diferencia** (normal, 12): el código de la fase 10c con R3 + A1 + I2 da el 27,1 % de referencia; con la tabla de reputación de Albert (y A1 e I2), 30,7 %; con todo lo de la fase 11, 31,0 %. La tabla de Albert da más que R3 en las travesías Difíciles (Flota 2 / 3 / 4 frente a 1 / 2 / 3; San Felipe hasta 3 en el capítulo II y 4 en el III) y menos en El espía (0 / 1 / 2) y en Maracaibo III (2). Las permanentes y el resto de la fase no mueven el equilibrio (+0,3, dentro del ruido).
+- **Opciones medidas** (corta / normal / larga): un punto más para ganar (10 / 13 / 17): 21,5 / 24,4 / 27,9 %. Flota y San Felipe como en R3, con el resto de la tabla igual: 18,4 / 17,6 / 18,3 %.
+- **Travesías completadas** (normal): El barco fantasma 6,3 % de las partidas (gana el 66,7 % de esas), La Flota de la Plata 6,1 % (91,8 %), La fortaleza de San Felipe 5,7 % (64,9 %), El templo perdido 4,4 % (65,9 %), El cargamento de Maracaibo 4,2 % (69,0 %), El espía de Cádiz 0,2 % y El saqueo de Panamá 0,1 % (el jugador automático casi no empieza El espía: su capítulo I da 0).
+- **Pendiente de Albert:** se aleja más de 3 puntos de la referencia, así que no se ha publicado.
+- **TODO(regla), umbrales de reputación de las cartas** (pensados para ganar con 18): «Tu cara en el muelle» (186, Ciudad) pide 1 más con 9 o más de reputación; «Ahorcan a uno de los vuestros» (194, Ciudad) da −2 con 12 o más, que ya solo puede darse en una partida larga; «Las puertas de Panamá» (153) pide 9 o más para zarpar, que en una partida corta es ya la victoria. Sin cambiar hasta que Albert decida.

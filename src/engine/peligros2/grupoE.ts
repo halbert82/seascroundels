@@ -1,7 +1,7 @@
 // Peligros 2.0 · Grupo E: Leyendas, sobrenatural y fortuna (cartas 45–55).
 
 import { esUnica, porId, tipoDe } from '../catalogo.ts'
-import { registrarPeligro } from '../capacidades/peligros.ts'
+import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import type { CapacidadDeCarta } from '../definiciones.ts'
 import { destinoDe } from '../destinos.ts'
 import type { AccionSobre, Condicion, Efecto, Selector } from '../efectos.ts'
@@ -82,7 +82,7 @@ const ultimaRacha: CapacidadDeCarta = {
     if (!s.prueba || !yo) return []
     s.prueba.modExtra = (s.prueba.modExtra ?? 0) - 2
     anotar(s, 'jugada', 'Aprovecháis la última racha: esta Prueba recibe −2.')
-    return [{ tipo: 'descartarPeligroEnJuego', carta: yo }]
+    return [{ tipo: 'devolverPermanente', carta: yo }]
   },
 }
 
@@ -92,24 +92,24 @@ const vientoRola: CapacidadDeCarta = {
   ventana: 'obligada',
   disparo: (s, yo, ev, fase) =>
     fase === 'despues' && ev.tipo === 'revelarPeligro' && ev.carta !== yo && s.zonas.encuentro.includes(ev.carta) && encuentroDe(s, ev.carta).palabrasClave.includes('Tormenta'),
-  efecto: (_s, yo) => (yo ? [{ tipo: 'descartarPeligroEnJuego', carta: yo }] : []),
+  efecto: (_s, yo) => (yo ? [{ tipo: 'devolverPermanente', carta: yo }] : []),
 }
 
+// Permanente 234 «Viento a favor»: cada Prueba de NAV que superes da 1 Avance más. Se descarta si fallas una Prueba o
+// si se revela un encuentro #Tormenta#; o la descartas tú tras revelar el Destino de una Prueba de NAV (−2).
+registrarPermanente('pm_viento', {
+  quitar: [],
+  capacidades: [
+    { clave: 'avance', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'avanceExtraPrueba' && c.hab === 'NAV' ? 1 : 0) },
+    ultimaRacha,
+    vientoRola,
+  ],
+  disparos: [{ cuando: 'fallarPrueba', efectos: [{ tipo: 'descartarEsta' }] }],
+})
 registrarPeligro('p2_estrella', {
   encuentros: {
-    // Se queda en juego: cada Prueba de NAV que superes da 1 Avance más. Se descarta si fallas una Prueba o si se
-    // revela un encuentro #Tormenta#; o la descartas tú tras revelar el Destino de una Prueba de NAV (−2).
-    mar: {
-      queda: {
-        quitar: [],
-        capacidades: [
-          { clave: 'avance', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'avanceExtraPrueba' && c.hab === 'NAV' ? 1 : 0) },
-          ultimaRacha,
-          vientoRola,
-        ],
-        disparos: [{ cuando: 'fallarPrueba', efectos: [{ tipo: 'descartarEsta' }] }],
-      },
-    },
+    // Pon en juego la carta 234 del mazo de historia («Viento a favor»).
+    mar: { pone: { carta: 'pm_viento' } },
     // Quita Envenenado de todos tus Tripulantes y después cura 1 herida a cada uno (P45): un Envenenado con 1 herida
     // acaba sin ficha y sin herida.
     nat: { efecto: [{ tipo: 'quitarEstado', estado: 'envenenado', a: 'todos' }, { tipo: 'curar', n: 1, modo: 'cadaUno' }] },
@@ -327,16 +327,32 @@ registrarPeligro('p2_sirena', {
 
 // 50. Mal presagio · Leve ----------------------------------------------------------
 
-const LECHUZA = 'p2_presagio.lechuza'
+// Fase 11: el señalado es el Tripulante junto al que está la permanente 235.
+function senalado(s: Estado, perm: InstId | undefined): InstId | undefined {
+  const c = perm ? copia(s, perm).junto : undefined
+  return c && s.zonas.tripulacion.includes(c) ? c : undefined
+}
 registrarCodigo('p2_presagio.cumple', (s, fuente) => {
-  const m = marcado(s, LECHUZA, fuente)
+  const m = senalado(s, fuente)
   return m ? [{ tipo: 'aQuien', quien: { de: 'tripulacion', inst: m }, hacer: varios({ tipo: 'heridas', n: 2 }, estado('maldito')) }] : []
 })
 registrarCodigo('p2_presagio.pasa', (s, fuente) => {
-  const m = marcado(s, LECHUZA, fuente)
+  const m = senalado(s, fuente)
   return m ? [{ tipo: 'aQuien', quien: { de: 'tripulacion', inst: m }, hacer: estado('aguerrido') }] : []
 })
 
+// Permanente 235 «La lechuza canta tres veces» (junto al señalado, con 1 ficha): cada nuevo encuentro, 1 ficha; con 3,
+// el señalado sufre 2 heridas y queda Maldito. Acción: agota a un Vigía o supera EXP 3 para descartarla: el señalado
+// queda Aguerrido.
+registrarPermanente('pm_lechuza', {
+  quitar: [
+    { tipo: 'agotarRasgo', rasgo: 'Vigía' },
+    { tipo: 'prueba', opciones: [{ hab: 'EXP', dificultad: 3 }] },
+  ],
+  fichasIniciales: 1,
+  contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [codigo('p2_presagio.cumple')], despues: 'descartar' },
+  alQuitar: [codigo('p2_presagio.pasa')],
+})
 registrarPeligro('p2_presagio', {
   encuentros: {
     // Al revelarse, el preparado con más COM no puede comprometerse en esta Prueba. Éxito: +1 Avance. Fallo: −1 Mando
@@ -346,21 +362,9 @@ registrarPeligro('p2_presagio', {
       exito: [avance(1)],
       fallo: [{ tipo: 'menosMando', proximo: true }],
     },
-    // Al revelarse, un Tripulante al azar queda señalado. Se queda en juego con 1 ficha; 1 ficha por cada encuentro
-    // nuevo; con 3, el señalado sufre 2 heridas y queda Maldito. Acción: agota a un Vigía o supera EXP 3 para
-    // descartarla: el señalado queda Aguerrido.
-    nat: {
-      efecto: [alguno('tripulacion', 'azar', { tipo: 'marcar', clave: LECHUZA })],
-      queda: {
-        quitar: [
-          { tipo: 'agotarRasgo', rasgo: 'Vigía' },
-          { tipo: 'prueba', opciones: [{ hab: 'EXP', dificultad: 3 }] },
-        ],
-        fichasIniciales: 1,
-        contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [codigo('p2_presagio.cumple')], despues: 'descartar' },
-        alQuitar: [codigo('p2_presagio.pasa')],
-      },
-    },
+    // Al revelarse, elige un Tripulante al azar: pon en juego la carta 235 junto a él, con 1 ficha. (Como antes, se
+    // elige al resolver el encuentro.)
+    nat: { pone: { carta: 'pm_lechuza', junto: { de: 'tripulacion', por: 'azar' }, fichas: 1 } },
     // Revela el Destino antes de comprometer. Éxito: mira las 3 de arriba y ordénalas. Fallo: el comprometido con más
     // EXP queda Asustado.
     ciu: {

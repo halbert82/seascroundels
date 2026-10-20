@@ -270,7 +270,7 @@ describe('Retirarse y hundirse', () => {
 })
 
 describe('Superar una misión', () => {
-  it('ejemplo del reglamento: «Un soplo en Port Royal» da 1 de reputación y baraja la carta 136 en el mazo de Misiones', () => {
+  it('ejemplo del reglamento: «Un soplo en Port Royal» no da reputación (fase 11) y baraja la carta 136 en el mazo de Misiones', () => {
     const j = enPuerto({
       misiones: ['espia-I', 'prueba-I', 'aguada-I'],
       mazoMisiones: ['fantasma-I'],
@@ -280,7 +280,7 @@ describe('Superar una misión', () => {
     })
     j.zarpar('espia-I').cubrir('viejo_lobo') // sin cartas en la mano no hay soplón al que pagar
     expect(j.avance('espia-I')).toBe(0) // «Hora de la siesta»: 2 + 2 = 4, superada
-    expect(j.estado.reputacion).toBe(1)
+    expect(j.estado.reputacion).toBe(0)
     expect(j.zona('misionesSuperadas')).toEqual(['espia-I'])
     expect([...j.zona('misionesDisponibles'), ...j.zona('mazoMisiones')].sort()).toEqual(['aguada-I', 'espia-II', 'fantasma-I', 'prueba-I'])
     expect(j.zona('misionesDisponibles')).toHaveLength(3)
@@ -289,7 +289,7 @@ describe('Superar una misión', () => {
   it('el capítulo III da su Tesoro, que entra en juego sin coste', () => {
     const j = enPuerto({ misiones: ['flota-III'], tripulacion: ['bucanero'], avance: { 'flota-III': 3 }, mazoPeligros: ['calma'] })
     j.zarpar('flota-III')
-    expect(j.estado.reputacion).toBe(5)
+    expect(j.estado.reputacion).toBe(4) // fase 11: 4 de reputación (antes 5)
     expect(j.copia('mascaron').vinculadaA).toBe('barco')
     expect(j.zona('mejoras')).toContain('mascaron')
   })
@@ -306,24 +306,29 @@ describe('Superar una misión', () => {
   })
 
   it('fase 10b · las recompensas de las misiones iniciales: otear 3 del mazo de Misiones, adquirir o reclutar gratis', () => {
-    // «Cobrar la deuda» (+1): otea 3 del mazo de Misiones antes de reponer las disponibles.
+    // «Cobrar la deuda» (0 de reputación desde la fase 11): otea 3 del mazo de Misiones antes de reponer las disponibles.
     const deuda = enPuerto({ avance: { 'deuda-I': 3 }, mazoMisiones: ['templo-I', 'flota-I', 'ladron-I', 'gobernador-I'], mazoPeligros: ['calma'] })
     deuda.zarpar('deuda-I')
     expect(deuda.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'templo-I' } })
     deuda.opcion('fondo').opcion('arriba').opcion('arriba').elegir('ladron-I', 'flota-I')
-    expect(deuda.estado.reputacion).toBe(1)
+    expect(deuda.estado.reputacion).toBe(0)
     // Se repone con la de arriba: el Ladrón, que ha quedado encima.
     expect(deuda.zona('misionesDisponibles')).toContain('ladron-I')
     expect(deuda.zona('mazoMisiones')).toEqual(['flota-I', 'gobernador-I', 'templo-I'])
-    // «Rumbo a mar abierto» (+1): adquiere sin coste una Mejora del muelle de coste 1 o menos.
+    // «Rumbo a mar abierto» (0 y la Gesta): adquiere sin coste una Mejora del muelle de coste 1 o menos. Fase 11: con
+    // precio, un Tripulante sufre 1 herida (aquí solo está Diego).
     const prueba = enPuerto({ misiones: ['prueba-I'], avance: { 'prueba-I': 3 }, muelle: ['vela', 'casco'], mazoPeligros: ['calma'] })
     prueba.zarpar('prueba-I').elegir('vela')
     expect(prueba.zona('mejoras')).toEqual(['vela'])
-    // «Agua y leña» (0): recluta sin coste un Tripulante del muelle de coste 2 o menos, si cabe.
+    expect(prueba.estado.reputacion).toBe(1) // 0 de la recompensa y 1 de la Gesta
+    expect(prueba.copia('capitan').heridas).toBe(1)
+    // «Agua y leña» (0): recluta sin coste un Tripulante del muelle de coste 2 o menos, si cabe. Fase 11: con precio, el
+    // Barco sufre 1 daño, también en esta misión de Naturaleza (como en la medida I2 de la fase 10c).
     const aguada = enPuerto({ avance: { 'aguada-I': 3 }, muelle: ['bucanero', 'contrabandista'], mazoPeligros: ['calma'], tripulacion: ['vigia'] })
     aguada.zarpar('aguada-I').elegir('bucanero') // Distancia 1 − 1 del Barco: 0, no se agota a nadie (P3)
     expect(aguada.zona('tripulacion')).toContain('bucanero')
     expect(aguada.estado.reputacion).toBe(0)
+    expect(aguada.estado.danoBarco).toBe(1)
   })
 
   it('«Las puertas de Panamá»: ¡victoria! (sin fichas de Defensa)', () => {
@@ -339,18 +344,18 @@ describe('Superar una misión', () => {
     expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has superado «Las puertas de Panamá».' })
   })
 
-  it('ejemplo del reglamento: en el último turno, con 15 de reputación, «La goleta del correo» da 3 y ganas', () => {
+  it('ejemplo del reglamento: en el último turno, con 10 de reputación, «La goleta del correo» da 2 y ganas', () => {
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
       escenario: [],
-      reputacion: 15,
+      reputacion: 10,
       misiones: ['espia-III'],
       tripulacion: ['viejo_lobo'],
       avance: { 'espia-III': 2 },
       mazoPeligros: ['racha', 'calma'],
     })
     j.zarpar('espia-III') // Viento de popa: 2 + 3 = 5
-    expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has llegado a 18 de reputación.' })
+    expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has llegado a 12 de reputación.' })
   })
 })
 
