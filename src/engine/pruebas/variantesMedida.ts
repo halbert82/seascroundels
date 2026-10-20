@@ -5,10 +5,14 @@
 //   ESC=N     cartas de Escenario del modo de la partida
 //   MODO=x    modo de partida (corta, normal o larga)
 //   SINESC    partida de aprendizaje (sin mazo de Escenario)
+//   R:id=±N   suma N a la reputación de la recompensa de un capítulo (en un final con elección, a cada opción)
+//   AV:id=N   Avance necesario de un capítulo
 //
 // Fase 11: la reputación nueva de las misiones (antes R1–R3), las Pruebas fáciles a 1 / 1 (A1) y las misiones iniciales
 // con precio (I2) ya están en los datos; I1 se descartó.
 
+import { porId } from '../catalogo.ts'
+import type { CapituloDatos } from '../datos.ts'
 import { MODOS } from '../preparacion.ts'
 import type { Modo } from '../tipos.ts'
 
@@ -17,16 +21,21 @@ export interface VarianteMedida {
   rep?: number
   escenario?: number
   modo: Modo
+  /** Fase 12: cambios de reputación (suma) y de Avance (valor) por capítulo. */
+  reputacionCapitulo: Record<string, number>
+  avanceCapitulo: Record<string, number>
 }
 
 export function leerVariante(texto: string | undefined): VarianteMedida {
-  const v: VarianteMedida = { claves: new Set(), modo: 'normal' }
+  const v: VarianteMedida = { claves: new Set(), modo: 'normal', reputacionCapitulo: {}, avanceCapitulo: {} }
   for (const parte of (texto ?? '').split(',').map((p) => p.trim()).filter(Boolean)) {
     const [clave, valor] = parte.split('=')
     if (clave === 'REP') v.rep = Number(valor)
     else if (clave === 'ESC') v.escenario = Number(valor)
     else if (clave === 'MODO') v.modo = valor as Modo
     else if (clave === 'SINESC') v.claves.add(clave)
+    else if (clave?.startsWith('R:')) v.reputacionCapitulo[clave.slice(2)] = Number(valor)
+    else if (clave?.startsWith('AV:')) v.avanceCapitulo[clave.slice(3)] = Number(valor)
     else if (clave) throw new Error(`Variante de medida desconocida: ${clave}`)
   }
   return v
@@ -36,4 +45,15 @@ export function leerVariante(texto: string | undefined): VarianteMedida {
 export function aplicarVariante(v: VarianteMedida): void {
   if (v.rep !== undefined) MODOS[v.modo].reputacion = v.rep
   if (v.escenario !== undefined) MODOS[v.modo].escenario = v.escenario
+  const capitulo = (id: string): CapituloDatos => {
+    const e = porId(id)
+    if (e.tipo !== 'capitulo') throw new Error(`${id} no es un capítulo`)
+    return e.carta
+  }
+  for (const [id, n] of Object.entries(v.reputacionCapitulo)) {
+    const r = capitulo(id).recompensa
+    if (r.elige) for (const o of r.elige) o.rep = (o.rep ?? 0) + n
+    else r.rep = (r.rep ?? 0) + n
+  }
+  for (const [id, n] of Object.entries(v.avanceCapitulo)) capitulo(id).avanceNecesario = n
 }

@@ -148,8 +148,8 @@ function alarma(): PartidaEnMesa {
 /** Fase 7, «El templo» superado: final con elección (la Espada del sacerdote o devolver el ídolo). */
 function finalMision(): PartidaEnMesa {
   const j = Jugador.enMision({
-    misiones: ['templo-III'],
-    avance: { 'templo-III': 3 },
+    misiones: ['templo-IV'],
+    avance: { 'templo-IV': 3 },
     mazoHistoria: ['espada'],
     mazoPeligros: Array.from({ length: 7 }, () => 'calma'),
     mazoCapitan: [...MAZO],

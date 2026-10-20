@@ -13,7 +13,7 @@ function enPuerto(op: OpcionesSituacion): Jugador {
   return Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], mazoCapitan: [...MAZO_CAPITAN], ...op })
 }
 
-const fichas = (j: Jugador, f: 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa') => j.estado.mision?.fichas?.[f] ?? 0
+const fichas = (j: Jugador, f: 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa' | 'derrumbe') => j.estado.mision?.fichas?.[f] ?? 0
 /** Misiones en el mazo de Misiones o ya disponibles (al reponer, el capítulo nuevo puede salir enseguida). */
 const enMisiones = (j: Jugador) => [...j.zona('misionesDisponibles'), ...j.zona('mazoMisiones')]
 const acciones = (j: Jugador) => (j.decision.tipo === 'ventanaAccion' ? j.decision.acciones.map((a) => a.tipo) : [])
@@ -216,28 +216,59 @@ describe('119 · La selva', () => {
   })
 })
 
-describe('120 · El templo', () => {
+describe('239 · La escalinata de los sacerdotes (fase 12, capítulo III nuevo)', () => {
+  it('cada Prueba de EXP fallada pone 1 ficha de Derrumbe; con 3, la escalera cede y la misión falla', () => {
+    // Ruinas olvidadas (EXP 3) sin nadie asignado: se fallan.
+    const ruinas = ['oportunidad', 'calma', 'oportunidad', 'calma', 'oportunidad', 'calma', 'calma']
+    const j = enPuerto({ misiones: ['templo-III'], mazoPeligros: ruinas })
+    j.zarpar('templo-III').comprometer('EXP').seguir()
+    expect(fichas(j, 'derrumbe')).toBe(1)
+    j.seguir().comprometer('EXP').seguir()
+    expect(fichas(j, 'derrumbe')).toBe(2)
+    j.seguir().comprometer('EXP').seguir()
+    expect(j.registro).toContain('La misión falla: la escalera cede.')
+    expect(j.zona('misionesSuperadas')).toEqual([])
+  })
+
+  it('cada Prueba de EXP superada por 2 o más quita 1 ficha; superada, 2 de reputación y añade la carta 120', () => {
+    // Ruinas fallada (1 ficha); Serpientes (EXP 2) con «Viento a favor»: el Rastreador suma 4 y la supera por 3.
+    const j = enPuerto({ misiones: ['templo-III'], tripulacion: ['baqueano'], mazoPeligros: ['oportunidad', 'calma', 'fauna', 'racha', 'calma', 'calma', 'calma'] })
+    j.zarpar('templo-III').comprometer('EXP').seguir()
+    expect(fichas(j, 'derrumbe')).toBe(1)
+    j.seguir().comprometer('EXP', ['baqueano']).pasarOfertas().seguir()
+    expect(j.registro).toContain('Derrumbe: −1 (0 de 3).')
+    while (j.estado.mision) {
+      if (j.decision.tipo === 'ofrecer') j.pasar()
+      else j.seguir()
+    }
+    expect(j.zona('misionesSuperadas')).toEqual(['templo-III'])
+    expect(j.estado.reputacion).toBe(2)
+    expect(enMisiones(j)).toContain('templo-IV')
+  })
+})
+
+describe('120 · El templo (capítulo IV desde la fase 12)', () => {
   it('al zarpar se baraja el mazo del Templo con 6 cartas del mazo de Peligros', () => {
     const peligros = ['calma', 'calma', 'calma', 'calma', 'calma', 'calma', 'chubasco']
-    const j = enPuerto({ misiones: ['templo-III'], mazoPeligros: peligros })
-    j.zarpar('templo-III')
+    const j = enPuerto({ misiones: ['templo-IV'], mazoPeligros: peligros })
+    j.zarpar('templo-IV')
     const mision = [...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('permanentes'), ...j.zona('destino')]
     expect(mision).toHaveLength(12)
     expect(j.zona('mazoPeligros')).toEqual(['chubasco'])
   })
 
   it('final con elección: la Espada (Tesoro y 2 de reputación; tu Capitán queda Maldito) o el ídolo (3 de reputación)', () => {
-    const op: OpcionesSituacion = { misiones: ['templo-III'], avance: { 'templo-III': 3 }, mazoHistoria: ['espada'], mazoPeligros: Array.from({ length: 7 }, () => 'calma') }
+    const op: OpcionesSituacion = { misiones: ['templo-IV'], avance: { 'templo-IV': 3 }, mazoHistoria: ['espada'], mazoPeligros: Array.from({ length: 7 }, () => 'calma') }
     const espada = enPuerto(op)
-    espada.zarpar('templo-III')
-    expect(espada.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'finalMision', carta: 'templo-III' } })
+    espada.zarpar('templo-IV')
+    expect(espada.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'finalMision', carta: 'templo-IV' } })
     espada.opcion('espada')
     expect(espada.estado.reputacion).toBe(2)
     expect(espada.copia('espada').vinculadaA).toBe(espada.estado.capitan)
     expect(espada.copia('capitan').estados).toContain('maldito')
     const idolo = enPuerto(op)
-    idolo.zarpar('templo-III').opcion('idolo')
-    expect(idolo.estado.reputacion).toBe(3) // fase 11: 3 (antes 4)
+    idolo.zarpar('templo-IV').opcion('idolo')
+    expect(idolo.estado.reputacion).toBe(3)
     expect(idolo.zona('mazoHistoria')).toContain('espada')
   })
 })
@@ -275,11 +306,26 @@ describe('127 · El galeón rezagado', () => {
   })
 })
 
-describe('128 · La huida con la plata', () => {
+describe('238 · Al abordaje del galeón (fase 12, capítulo III nuevo)', () => {
+  it('los Cañones no suman; cada Prueba de COM superada por 2 o más da 1 de Avance más', () => {
+    // Tiburones (COM 2): Rodrigo (COM 4, +1 de Diego) la supera por 2 o más: 1 del encuentro y 1 más.
+    const j = enPuerto({ misiones: ['flota-III'], tripulacion: ['reinaldo'], mazoPeligros: ['fauna', 'calma', 'calma', 'calma'] })
+    j.zarpar('flota-III')
+    expect(j.valor({ tipo: 'sinCanones' })).toBeGreaterThan(0)
+    j.comprometer('COM', ['reinaldo']).pasarOfertas().seguir()
+    expect(j.registro).toContain('Ganas 2 de Avance (2/6).')
+    // Por lo justo (Diego, COM 3 contra 2 y el Destino de «Remanso»), solo el del encuentro.
+    const k = enPuerto({ misiones: ['flota-III'], mazoPeligros: ['fauna', 'calma', 'calma', 'calma'] })
+    k.zarpar('flota-III').comprometer('COM', ['capitan']).pasarOfertas().seguir()
+    expect(k.registro).toContain('Ganas 1 de Avance (1/6).')
+  })
+})
+
+describe('128 · La huida con la plata (capítulo IV desde la fase 12)', () => {
   it('Persecución: con 3, La Armada te persigue es el siguiente encuentro (Navío de línea, NAV 5, Abordaje) y después vuelve a apartarse', () => {
     // Cofre a la deriva (sin Prueba): 2. Chubasco repentino fallado sin nadie (NAV): 3.
-    const j = enPuerto({ misiones: ['flota-III'], mazoPeligros: ['hallazgo', 'chubasco', 'calma', 'calma', 'calma'] })
-    j.zarpar('flota-III')
+    const j = enPuerto({ misiones: ['flota-IV'], mazoPeligros: ['hallazgo', 'chubasco', 'calma', 'calma', 'calma'] })
+    j.zarpar('flota-IV')
     expect(fichas(j, 'persecucion')).toBe(2)
     j.seguir().comprometer('NAV').seguir()
     expect(j.registro).toContain('Os dan alcance: «La Armada te persigue» será tu siguiente encuentro. La Persecución vuelve a 1.')
@@ -294,9 +340,9 @@ describe('128 · La huida con la plata', () => {
   })
 
   it('cada Prueba de NAV superada por 2 o más quita 1; superada, 4 de reputación y el Mascarón', () => {
-    const j = enPuerto({ misiones: ['flota-III'], tripulacion: ['viejo_lobo'], avance: { 'flota-III': 3 }, mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
-    j.zarpar('flota-III').comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir() // 3 + 1 (Diego) + 1 (Barco) contra 2
-    expect(j.zona('misionesSuperadas')).toEqual(['flota-III'])
+    const j = enPuerto({ misiones: ['flota-IV'], tripulacion: ['viejo_lobo'], avance: { 'flota-IV': 3 }, mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
+    j.zarpar('flota-IV').comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir() // 3 + 1 (Diego) + 1 (Barco) contra 2
+    expect(j.zona('misionesSuperadas')).toEqual(['flota-IV'])
     expect(j.registro).toContain('Persecución: −1 (0 de 3).')
     expect(j.estado.reputacion).toBe(4) // fase 11: 4 (antes 5)
     expect(j.zona('mejoras')).toContain('mascaron')
@@ -306,52 +352,52 @@ describe('128 · La huida con la plata', () => {
 // ---------------------------------------------------------------------------
 // El espía de Cádiz
 
-describe('135 · Un soplo en Port Royal', () => {
-  it('al zarpar puedes descartar 2 cartas para mirar las 3 de arriba y ordenarlas; los encuentros #Civil# dan 1 de Avance más', () => {
+describe('135 · Seguirle por Port Royal (fase 12: une «Un soplo en Port Royal» y «Seguirle por los muelles»)', () => {
+  it('Ciudad 6 con Distancia 2; al zarpar puedes descartar 2 cartas para mirar las 3 de arriba y ordenarlas; los #Civil# ya no dan Avance de más', () => {
     const j = enPuerto({ misiones: ['espia-I'], tripulacion: ['viejo_lobo'], mano: ['ojo', 'timon', 'coraje'], mazoPeligros: ['chubasco', 'civiles', 'calma', 'calma'] })
+    expect(j.valor({ tipo: 'avanceNecesario', mision: j.inst('espia-I') })).toBe(6)
+    expect(j.valor({ tipo: 'distancia', mision: j.inst('espia-I') })).toBe(1) // 2, y −1 del Barco
     j.zarpar('espia-I').cubrir('viejo_lobo')
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'alZarparDescartar' } })
     j.opcion('si').elegir('ojo', 'coraje')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
     j.elegir('civiles', 'chubasco', 'calma')
-    // Comerciante estafador (Civil, EXP 3, Avance 1 / 1) fallado: 1 + 1 por ser #Civil#.
+    // Comerciante estafador (Civil, EXP 3, Avance 1 / 1) fallado: solo 1.
     j.comprometer('EXP').seguir()
-    expect(j.registro).toContain('Ganas 2 de Avance (2/4).')
+    expect(j.registro).toContain('Ganas 1 de Avance (1/6).')
   })
-})
 
-describe('136 · Seguirle por los muelles', () => {
   it('Sospecha: cada Prueba de COM superada, 1; con 3, el espía te descubre y la misión falla', () => {
     const timbas = Array.from({ length: 7 }, () => 'oportunidad')
-    const j = enPuerto({ misiones: ['espia-II'], tripulacion: ['reinaldo', 'filibustero'], mazoPeligros: timbas })
-    j.zarpar('espia-II').comprometer('COM', ['capitan']).seguir().seguir().comprometer('COM', ['filibustero']).seguir()
+    const j = enPuerto({ misiones: ['espia-I'], tripulacion: ['reinaldo', 'filibustero', 'viejo_lobo'], mazoPeligros: timbas })
+    j.zarpar('espia-I').cubrir('viejo_lobo').comprometer('COM', ['capitan']).seguir().seguir().comprometer('COM', ['filibustero']).seguir()
     expect(fichas(j, 'sospecha')).toBe(2)
     j.seguir().comprometer('COM', ['reinaldo']).seguir()
     expect(j.registro).toContain('La misión falla: el espía te descubre.')
   })
 
-  it('fallar por 2 o más con alguien comprometido pone Sospecha; sin nadie, no (P55)', () => {
+  it('fallar por 2 o más con alguien asignado pone Sospecha; sin nadie, no (P55)', () => {
     // Vidente callejera (EXP 3) con «Mal fario» (+1): Diego suma 1 y le faltan 3.
-    const j = enPuerto({ misiones: ['espia-II'], mazoPeligros: ['sirenas', 'sirenas', 'calma'] })
-    j.zarpar('espia-II').comprometer('EXP', ['capitan']).seguir()
+    const j = enPuerto({ misiones: ['espia-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['sirenas', 'sirenas', 'calma'] })
+    j.zarpar('espia-I').cubrir('viejo_lobo').comprometer('EXP', ['capitan']).seguir()
     expect(fichas(j, 'sospecha')).toBe(1)
-    const nadie = enPuerto({ misiones: ['espia-II'], mazoPeligros: ['sirenas', 'sirenas', 'calma'] })
-    nadie.zarpar('espia-II').comprometer('EXP').seguir()
+    const nadie = enPuerto({ misiones: ['espia-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['sirenas', 'sirenas', 'calma'] })
+    nadie.zarpar('espia-I').cubrir('viejo_lobo').comprometer('EXP').seguir()
     expect(fichas(nadie, 'sospecha')).toBe(0)
   })
 })
 
-describe('137 · La goleta del correo', () => {
+describe('137 · La goleta del correo (capítulo II desde la fase 12)', () => {
   it('cada Prueba de NAV superada da 1 de Avance más; si fallas una de COM, no ganas el Tesoro', () => {
-    const nav = enPuerto({ misiones: ['espia-III'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
-    nav.zarpar('espia-III').comprometer('NAV', ['capitan']).seguir()
+    const nav = enPuerto({ misiones: ['espia-II'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
+    nav.zarpar('espia-II').comprometer('NAV', ['capitan']).seguir()
     expect(nav.registro).toContain('Ganas 3 de Avance (3/5).')
     // Tiburones (COM 2) fallados sin nadie; luego Mar en calma: 3 + 1 + 2.
-    const com = enPuerto({ misiones: ['espia-III'], avance: { 'espia-III': 3 }, mazoPeligros: ['fauna', 'chubasco', 'calma', 'calma'] })
-    com.zarpar('espia-III').comprometer('COM').seguir()
+    const com = enPuerto({ misiones: ['espia-II'], avance: { 'espia-II': 3 }, mazoPeligros: ['fauna', 'chubasco', 'calma', 'calma'] })
+    com.zarpar('espia-II').comprometer('COM').seguir()
     com.seguir()
-    expect(com.zona('misionesSuperadas')).toEqual(['espia-III'])
-    expect(com.estado.reputacion).toBe(2) // fase 11: 2 (antes 3)
+    expect(com.zona('misionesSuperadas')).toEqual(['espia-II'])
+    expect(com.estado.reputacion).toBe(3) // fase 12: 3
     expect(com.registro).toContain('No ganas el Tesoro «Los despachos del Rey».')
     expect(com.zona('mejoras')).not.toContain('despachos')
   })
@@ -521,45 +567,38 @@ describe('145 · El polvorín', () => {
 // ---------------------------------------------------------------------------
 // El barco fantasma
 
-describe('147 · Niebla en el estrecho', () => {
-  it('los Cañones no suman; los encuentros #Sobrenatural# dan 1 de Avance más', () => {
-    const j = enPuerto({ misiones: ['fantasma-I'], mazoPeligros: ['sirenas', 'calma', 'calma'] })
+describe('147 · A bordo del fantasma (fase 12: une «Niebla en el estrecho» y «A bordo del fantasma»)', () => {
+  it('Mar 6; los Cañones no suman; el Barco no sufre daño: cada daño es 1 herida a quien elijas; sin modificadores de #Sobrenatural#', () => {
+    const j = enPuerto({ misiones: ['fantasma-I'], mazoPeligros: ['escollos', 'chubasco', 'calma'] })
+    expect(j.valor({ tipo: 'avanceNecesario', mision: j.inst('fantasma-I') })).toBe(6)
     j.zarpar('fantasma-I')
     expect(j.valor({ tipo: 'sinCanones' })).toBeGreaterThan(0)
-    j.comprometer('NAV', ['capitan']).seguir() // Canto de sirenas (NAV 3): Diego 2 + Barco 1
-    expect(j.registro).toContain('Ganas 3 de Avance (3/5).')
-  })
-})
-
-describe('148 · A bordo del fantasma', () => {
-  it('el Barco no sufre daño: cada daño es 1 herida a quien elijas; #Sobrenatural# +1', () => {
-    const j = enPuerto({ misiones: ['fantasma-II'], mazoPeligros: ['escollos', 'chubasco', 'calma'] })
-    j.zarpar('fantasma-II')
-    expect(j.valor({ tipo: 'dificultad', base: 3, hab: 'NAV', claves: ['Sobrenatural'] })).toBe(4)
+    expect(j.valor({ tipo: 'dificultad', base: 3, hab: 'NAV', claves: ['Sobrenatural'] })).toBe(3)
+    expect(j.valor({ tipo: 'avanceExtraEncuentro', claves: ['Sobrenatural'], hab: null, margen: 0 })).toBe(0)
     j.comprometer('NAV').seguir() // Bajíos fallados: 1 daño
     expect(j.estado.danoBarco).toBe(0)
     expect(j.copia('capitan').heridas).toBe(1)
   })
 })
 
-describe('149 · El camarote del capitán', () => {
+describe('149 · El camarote del capitán (capítulo II desde la fase 12)', () => {
   it('la primera Prueba de la misión es Sin ayuda (solo un Tripulante); la siguiente, no', () => {
-    const j = enPuerto({ misiones: ['fantasma-III'], tripulacion: ['viejo_lobo'], mazoPeligros: ['chubasco', 'calma', 'chubasco', 'calma'] })
-    j.zarpar('fantasma-III')
+    const j = enPuerto({ misiones: ['fantasma-II'], tripulacion: ['viejo_lobo'], mazoPeligros: ['chubasco', 'calma', 'chubasco', 'calma'] })
+    j.zarpar('fantasma-II')
     expect(j.decision).toMatchObject({ tipo: 'comprometer', sinAyuda: true })
     expect(() => j.comprometer('NAV', ['capitan', 'viejo_lobo'])).toThrow(/Sin ayuda/)
     j.comprometer('NAV', ['capitan']).seguir().seguir()
     expect((j.decision as { sinAyuda?: boolean }).sinAyuda).toBeUndefined()
   })
 
-  it('Gesta sin superar Pruebas de COM; final: el Farol (Tesoro y 2) o la bitácora (3 y quita Maldito de todos)', () => {
-    const bitacora = enPuerto({ misiones: ['fantasma-III'], tripulacion: [{ id: 'bucanero', estados: ['maldito'] }], avance: { 'fantasma-III': 2 }, mazoPeligros: ['calma'] })
-    bitacora.zarpar('fantasma-III').opcion('bitacora')
-    expect(bitacora.estado.reputacion).toBe(4) // fase 11: 3 y 1 de la Gesta (antes 4 y 1)
+  it('Gesta sin superar Pruebas de COM; final: el Farol (Tesoro y 3) o la bitácora (4 y quita Maldito de todos)', () => {
+    const bitacora = enPuerto({ misiones: ['fantasma-II'], tripulacion: [{ id: 'bucanero', estados: ['maldito'] }], avance: { 'fantasma-II': 2 }, mazoPeligros: ['calma'] })
+    bitacora.zarpar('fantasma-II').opcion('bitacora')
+    expect(bitacora.estado.reputacion).toBe(5) // fase 12: 4 y 1 de la Gesta
     expect(bitacora.copia('bucanero').estados ?? []).not.toContain('maldito')
-    const farol = enPuerto({ misiones: ['fantasma-III'], avance: { 'fantasma-III': 2 }, mazoPeligros: ['calma'] })
-    farol.zarpar('fantasma-III').opcion('farol')
-    expect(farol.estado.reputacion).toBe(3)
+    const farol = enPuerto({ misiones: ['fantasma-II'], avance: { 'fantasma-II': 2 }, mazoPeligros: ['calma'] })
+    farol.zarpar('fantasma-II').opcion('farol')
+    expect(farol.estado.reputacion).toBe(4) // fase 12: 3 y 1 de la Gesta
     expect(farol.zona('mejoras')).toContain('farol')
   })
 })
@@ -649,5 +688,86 @@ describe('220 · ¡La guardia!', () => {
     j.usar('cortar.jugar').elegir('timon', 'coraje')
     expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('mazoHistoria')).toContain('guardia')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Fase 12: cada travesía de 2 o 4 capítulos, de principio a fin
+
+/**
+ * Juega en una sola partida los capítulos de una travesía, en orden: cada uno sale al mazo de Misiones al superar el
+ * anterior y se juega en el turno siguiente. Para no depender del azar, cada capítulo empieza a 2 de terminarse y los
+ * encuentros son «Remanso» (2 de Avance, sin Prueba). Devuelve la reputación al terminar cada capítulo.
+ */
+function recorrer(capitulos: string[], historia: string[], op: { final?: string; tripulacion?: string[] } = {}): { j: Jugador; reputacion: number[] } {
+  const j = Jugador.en({
+    empezarEn: 'quedarseOZarpar',
+    escenario: Array.from({ length: 8 }, () => 'pruebas-calma'),
+    mazoCapitan: [...MAZO_CAPITAN, ...MAZO_CAPITAN],
+    misiones: [capitulos[0] ?? ''],
+    mazoMisiones: [],
+    mazoHistoria: historia,
+    mazoPeligros: Array.from({ length: 30 }, () => 'calma'),
+    tripulacion: op.tripulacion ?? ['viejo_lobo', 'vigia'],
+  })
+  const reputacion: number[] = []
+  for (const id of capitulos) {
+    // Hasta poder zarpar a este capítulo.
+    for (let n = 0; n < 40 && !(j.decision.motivo.clave === 'quedarseOZarpar' && j.zona('misionesDisponibles').includes(id)); n++) {
+      const d = j.decision
+      if (d.motivo.clave === 'descartarFinal') j.ninguna()
+      else if (d.tipo === 'ofrecer') j.pasar()
+      else j.terminar()
+    }
+    const inst = j.inst(id, ['misionesDisponibles'])
+    const c = j.estado.cartas[inst]
+    if (c) c.avance = j.valor({ tipo: 'avanceNecesario', mision: inst }) - 2
+    j.zarpar(id)
+    // Hasta volver a puerto (antes de empezar la misión hay que cubrir la Distancia y decidir lo de «Al zarpar»).
+    // (Tras el último capítulo no quedan misiones y la partida termina: ya no hay decisión.)
+    for (let n = 0; n < 40 && j.estado.pendiente && (j.estado.mision || j.decision.tipo === 'cubrirDistancia'); n++) {
+      const d = j.decision
+      if (d.tipo === 'cubrirDistancia') j.cubrir('viejo_lobo')
+      else if (d.motivo.clave === 'finalMision' && d.tipo === 'elegirOpcion') j.opcion(op.final ?? d.opciones[0]?.clave ?? '')
+      else if (d.motivo.clave === 'alZarparDescartar') j.opcion('no')
+      else if (d.motivo.clave === 'alZarparAgotar') j.ninguna()
+      else if (d.motivo.clave === 'portadorTesoro') j.elegir('capitan')
+      else if (d.tipo === 'ventanaAccion' && j.ofreceCapacidad('templo-I.isla')) j.usar('templo-I.isla').elegir('vigia')
+      else if (d.tipo === 'ofrecer') j.pasar()
+      else j.seguir()
+    }
+    expect(j.zona('misionesSuperadas'), id).toContain(id)
+    reputacion.push(j.estado.reputacion)
+  }
+  return { j, reputacion }
+}
+
+describe('Fase 12: las travesías de 2 y 4 capítulos, de principio a fin', () => {
+  it('El espía de Cádiz (2 capítulos): 1 y 3 de reputación, y los despachos del Rey', () => {
+    const { j, reputacion } = recorrer(['espia-I', 'espia-II'], ['espia-II', 'despachos'])
+    expect(reputacion).toEqual([1, 4])
+    expect(j.zona('mejoras')).toContain('despachos')
+  })
+
+  it('El barco fantasma (2 capítulos): 1 y, con la bitácora, 4 más la Gesta', () => {
+    const { reputacion } = recorrer(['fantasma-I', 'fantasma-II'], ['fantasma-II', 'farol'], { final: 'bitacora' })
+    expect(reputacion).toEqual([1, 6])
+    const farol = recorrer(['fantasma-I', 'fantasma-II'], ['fantasma-II', 'farol'], { final: 'farol' })
+    expect(farol.reputacion).toEqual([1, 5])
+    expect(farol.j.zona('mejoras')).toContain('farol')
+  })
+
+  it('La Flota de la Plata (4 capítulos): 1, 2, 2 y 4 de reputación, y el Mascarón del galeón', () => {
+    const { j, reputacion } = recorrer(['flota-I', 'flota-II', 'flota-III', 'flota-IV'], ['flota-II', 'flota-III', 'flota-IV', 'mascaron'])
+    expect(reputacion).toEqual([1, 3, 5, 9])
+    expect(j.zona('mejoras')).toContain('mascaron')
+  })
+
+  it('El templo perdido (4 capítulos): 1, 2, 2 y, con el ídolo, 3 de reputación', () => {
+    const { reputacion } = recorrer(['templo-I', 'templo-II', 'templo-III', 'templo-IV'], ['templo-II', 'templo-III', 'templo-IV', 'espada'], { final: 'idolo' })
+    expect(reputacion).toEqual([1, 3, 5, 8])
+    const espada = recorrer(['templo-I', 'templo-II', 'templo-III', 'templo-IV'], ['templo-II', 'templo-III', 'templo-IV', 'espada'], { final: 'espada' })
+    expect(espada.reputacion).toEqual([1, 3, 5, 7])
+    expect(espada.j.copia('espada').vinculadaA).toBe(espada.j.estado.capitan)
   })
 })

@@ -276,7 +276,8 @@ export interface RecompensaDatos {
 }
 
 export interface CapituloDatos {
-  capitulo: 'I' | 'II' | 'III'
+  /** Fase 12: las travesías tienen de 2 a 4 capítulos. */
+  capitulo: 'I' | 'II' | 'III' | 'IV'
   /** Capítulo con salida doble: «a» o «b» (II-a, II-b). */
   rama?: 'a' | 'b'
   num: number

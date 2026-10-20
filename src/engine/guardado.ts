@@ -105,6 +105,42 @@ export function deserializar(texto: string): Estado {
   }
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
+  if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()
   return s
+}
+
+/** Quita una copia de la partida (de su zona y de las cartas). */
+function quitarCopia(s: Estado, inst: InstId): void {
+  const zonas = s.zonas as Record<string, InstId[]>
+  for (const z of Object.keys(zonas)) zonas[z] = (zonas[z] ?? []).filter((x) => x !== inst)
+  delete s.cartas[inst]
+}
+
+/**
+ * Fase 12: travesías de 2 y 4 capítulos. Una partida de antes se reconoce porque tiene «espia-III». El espía y el barco
+ * fantasma pierden un capítulo II (se une al I): su III pasa a ser el II. La Flota y el templo ganan un capítulo III
+ * nuevo: su III pasa a ser el IV y el nuevo espera en el mazo de historia. Devuelve false si no se puede convertir: la
+ * misión en curso es uno de los dos capítulos que desaparecen.
+ */
+function migrarCapitulos(s: Estado): boolean {
+  const ids = (id: string) => Object.entries(s.cartas).filter(([, c]) => c.id === id).map(([i]) => i as InstId)
+  if (ids('espia-III').length === 0) return true
+  const enCurso = s.mision ? s.cartas[s.mision.carta]?.id : undefined
+  if (enCurso === 'espia-II' || enCurso === 'fantasma-II') return false
+  for (const t of ['espia', 'fantasma']) {
+    const iiViejo = ids(`${t}-II`)
+    const iiiViejo = ids(`${t}-III`)
+    // El II de antes, aún por jugar (en el mazo de Misiones o disponible): pasa a ser el capítulo II nuevo (el III de
+    // antes), y el III de antes, que esperaba en el mazo de historia, sobra. Si ya se jugó o no había salido, sobra él.
+    const pendiente = iiViejo.filter((i) => s.zonas.mazoMisiones.includes(i) || s.zonas.misionesDisponibles.includes(i))
+    for (const i of iiViejo) if (!pendiente.includes(i)) quitarCopia(s, i)
+    if (pendiente.length > 0) for (const i of iiiViejo) quitarCopia(s, i)
+    else for (const i of iiiViejo) if (s.cartas[i]) s.cartas[i].id = `${t}-II`
+  }
+  for (const t of ['flota', 'templo']) {
+    for (const i of ids(`${t}-III`)) if (s.cartas[i]) s.cartas[i].id = `${t}-IV`
+    crearCopia(s, `${t}-III`, 'mazoHistoria')
+  }
+  return true
 }

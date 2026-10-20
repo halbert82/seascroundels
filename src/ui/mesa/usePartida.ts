@@ -22,6 +22,21 @@ export function partidaGuardada(): Estado | null {
   }
 }
 
+/**
+ * Si hay una partida guardada que no se puede continuar, por qué (fase 12: estaba a mitad de un capítulo que ya no
+ * existe, o es de una versión anterior del juego). Si no hay ninguna o se puede continuar, null.
+ */
+export function avisoPartidaGuardada(): string | null {
+  try {
+    const texto = localStorage.getItem(CLAVE_GUARDADO)
+    if (!texto) return null
+    deserializar(texto)
+    return null
+  } catch (e) {
+    return e instanceof Error ? e.message : 'La partida guardada no se puede continuar'
+  }
+}
+
 export function borrarPartidaGuardada(): void {
   try {
     localStorage.removeItem(CLAVE_GUARDADO)

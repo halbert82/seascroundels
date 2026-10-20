@@ -53,9 +53,9 @@ describe('Avance X / Y', () => {
   })
 
   it('lo que la misión da de más al superar una Prueba se suma a X («La goleta del correo»: +1 por cada Prueba de NAV superada)', () => {
-    const supera = arrecife({ misiones: ['espia-III'] }).comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
+    const supera = arrecife({ misiones: ['espia-II'] }).comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
     expect(supera.registro.some((r) => r.startsWith('Ganas 4 de Avance'))).toBe(true)
-    const nadie = arrecife({ misiones: ['espia-III'] }).comprometer('NAV').seguir()
+    const nadie = arrecife({ misiones: ['espia-II'] }).comprometer('NAV').seguir()
     expect(nadie.registro.some((r) => r.startsWith('Ganas 2 de Avance'))).toBe(true)
   })
 
@@ -63,7 +63,7 @@ describe('Avance X / Y', () => {
     const { avancePrevisto } = await import('./tareas/encuentro.ts')
     const j = arrecife()
     expect(avancePrevisto(j.estado, 'NAV')).toEqual({ siSuperas: 3, siNo: 2 })
-    const goleta = arrecife({ misiones: ['espia-III'] })
+    const goleta = arrecife({ misiones: ['espia-II'] })
     expect(avancePrevisto(goleta.estado, 'NAV')).toEqual({ siSuperas: 4, siNo: 2 })
   })
 })

@@ -4,7 +4,8 @@
 
 import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'
-import { jugarPartida } from './pruebas/equilibrio.ts'
+import { jugarPartida, ultimoCapitulo } from './pruebas/equilibrio.ts'
+import { CATALOGO } from './catalogo.ts'
 import { jugadorConCriterio } from './pruebas/jugadores.ts'
 import { aplicarVariante, leerVariante } from './pruebas/variantesMedida.ts'
 import { DATOS } from './datos.ts'
@@ -43,10 +44,10 @@ it.runIf(process.env.MEDIR)(`medida de equilibrio (${PARTIDAS} partidas)`, { tim
     muertesPorPartida: suma((p) => p.muertes) / PARTIDAS,
     reputacionMedia: suma((p) => p.reputacion) / PARTIDAS,
     turnoFinalMedio: suma((p) => p.turnoFinal) / PARTIDAS,
-    // Fase 11: cada travesía, en cuántas partidas la completa (supera su capítulo III) y cuántas de esas gana.
+    // Fase 11: cada travesía, en cuántas partidas la completa (supera su último capítulo) y cuántas de esas gana.
     travesias: Object.fromEntries(
       DATOS.ordenMisiones.travesias.map((t) => {
-        const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === `${t}-III` && r.resultado === 'superada'))
+        const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo(t) && r.resultado === 'superada'))
         return [t, { completada: (100 * completan.length) / PARTIDAS, ganaSiLaCompleta: completan.length > 0 ? (100 * completan.filter((p) => p.gana).length) / completan.length : 0 }]
       }),
     ),
@@ -57,6 +58,38 @@ it.runIf(process.env.MEDIR)(`medida de equilibrio (${PARTIDAS} partidas)`, { tim
         return [m, { superadas: reps.length, rep: reps.length > 0 ? reps.reduce((n, x) => n + x, 0) / reps.length : 0 }]
       }),
     ),
+    // Fase 12: turnos de espera entre superar un capítulo y poder zarpar al siguiente (el que salga, con salida doble).
+    // «Sin oferta»: el siguiente no llega a ofrecerse antes de que acabe la partida (en % de los capítulos superados).
+    espera: (() => {
+      const esperas: number[] = []
+      let sinOferta = 0
+      const porTravesia: Record<string, number[]> = {}
+      for (const p of partidas) {
+        for (const [id, turno] of Object.entries(p.turnoSuperada)) {
+          const e = CATALOGO.find((c) => c.id === id)
+          if (!e || e.tipo !== 'capitulo') continue
+          const siguientes = CATALOGO.filter((c) => c.tipo === 'capitulo' && e.carta.siguiente.includes(c.num)).map((c) => c.id)
+          if (siguientes.length === 0) continue
+          const ofrecida = siguientes.map((s) => p.primerTurnoOfrecida[s]).filter((t): t is number => t !== undefined && t >= turno)
+          if (ofrecida.length === 0) {
+            sinOferta++
+            continue
+          }
+          const espera = Math.min(...ofrecida) - turno
+          esperas.push(espera)
+          ;(porTravesia[e.mision.id] ??= []).push(espera)
+        }
+      }
+      const mediaDe = (v: number[]) => (v.length > 0 ? v.reduce((a, b) => a + b, 0) / v.length : 0)
+      return {
+        media: mediaDe(esperas),
+        capitulos: esperas.length + sinOferta,
+        sinOferta: (100 * sinOferta) / Math.max(1, esperas.length + sinOferta),
+        porTravesia: Object.fromEntries(Object.entries(porTravesia).map(([t, v]) => [t, { media: mediaDe(v), n: v.length }])),
+      }
+    })(),
+    // Fase 12: en cuántas partidas (%) llega a estar disponible cada capítulo de Panamá.
+    panamaSale: Object.fromEntries(['panama-I', 'panama-II', 'panama-III'].map((id) => [id, (100 * partidas.filter((p) => p.primerTurnoDisponible[id] !== undefined).length) / PARTIDAS])),
     motivos: Object.fromEntries(
       [...new Set(partidas.map((p) => p.motivo.split(':')[0].split('.')[0]))].map((m) => [m, partidas.filter((p) => p.motivo.startsWith(m)).length]),
     ),

@@ -58,6 +58,11 @@ export interface Partida {
   pruebas: { encuentro: string; superada: boolean }[]
   /** Misiones (por carta): ofrecidas para zarpar, elegidas y su resultado. */
   ofrecidas: CartaId[]
+  /** Fase 12: primer turno en que cada misión está disponible y primer turno en que se puede zarpar a ella. */
+  primerTurnoDisponible: Record<CartaId, number>
+  primerTurnoOfrecida: Record<CartaId, number>
+  /** Fase 12: turno en que se supera cada misión (la primera vez). */
+  turnoSuperada: Record<CartaId, number>
   zarpes: CartaId[]
   resultados: { mision: CartaId; resultado: 'superada' | 'retirada' | 'hundida' }[]
   /** Reputación ganada (o perdida) en cada zarpe: durante la misión y con su recompensa. */
@@ -133,6 +138,9 @@ export function jugarPartida(
     heridasEnMision: 0,
     pruebas: [],
     ofrecidas: [],
+    primerTurnoDisponible: {},
+    primerTurnoOfrecida: {},
+    turnoSuperada: {},
     zarpes: [],
     resultados: [],
     repPorZarpe: [],
@@ -157,7 +165,13 @@ export function jugarPartida(
     const d = s.pendiente
     if (!d) throw new Error(`Partida ${semilla} parada sin decisión`)
     if (d.tipo === 'elegirOpcion' && d.motivo.clave === 'quedarseOZarpar') {
-      for (const o of d.opciones) if (o.clave.startsWith('zarpar:')) p.ofrecidas.push(copia(s, o.clave.slice(7) as InstId).id)
+      for (const o of d.opciones) {
+        if (!o.clave.startsWith('zarpar:')) continue
+        const id = copia(s, o.clave.slice(7) as InstId).id
+        p.ofrecidas.push(id)
+        p.primerTurnoOfrecida[id] ??= s.turno
+      }
+      for (const m of s.zonas.misionesDisponibles) p.primerTurnoDisponible[copia(s, m).id] ??= s.turno
     }
     const eleccion = jugador(s, d)
     // Los «Elige» de las cartas de Escenario: qué opción toma el jugador.
@@ -215,6 +229,7 @@ export function jugarPartida(
           break
         case 'finMision':
           p.resultados.push({ mision: dato.mision, resultado: dato.resultado })
+          if (dato.resultado === 'superada') p.turnoSuperada[dato.mision] ??= s.turno
           if (enCurso && dato.resultado === 'retirada') danoDe(p, enCurso).retiradas++
           if (enCurso && dato.resultado === 'hundida') danoDe(p, enCurso).hundidas++
           enCurso = null
@@ -466,6 +481,13 @@ function tablaDeVariantes(variantes: readonly VarianteSimulada[]): string[] {
   return lineas
 }
 
+/** Fase 12: identificador del último capítulo de una travesía («flota-IV», «espia-II»…): las hay de 2 a 4 capítulos. */
+export function ultimoCapitulo(travesia: string): CartaId {
+  const m = DATOS.misiones.find((x) => x.id === travesia)
+  const ultimo = m?.capitulos.at(-1)
+  return m && ultimo ? `${m.id}-${ultimo.capitulo}${ultimo.rama ? `-${ultimo.rama}` : ''}` : `${travesia}-III`
+}
+
 export function informe(partidas: readonly Partida[], titulo: string, variadas: readonly Partida[] = [], variantes: readonly VarianteSimulada[] = []): string {
   const total = partidas.length
   const ganadas = partidas.filter((p) => p.gana)
@@ -552,7 +574,7 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
     const e = porId(m)
     if (e.tipo !== 'capitulo') return [999, 0]
     const travesia = Math.min(...e.mision.capitulos.map((c) => c.num))
-    return [travesia, ['I', 'II', 'III'].indexOf(e.carta.capitulo) * 10 + (e.carta.rama === 'b' ? 1 : 0)]
+    return [travesia, ['I', 'II', 'III', 'IV'].indexOf(e.carta.capitulo) * 10 + (e.carta.rama === 'b' ? 1 : 0)]
   }
   const ordenadas = [...misiones].sort((a, b) => {
     const [ta, ca] = ordenCapitulo(a[0])
@@ -580,18 +602,18 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
     '',
   )
 
-  // Fase 11: las travesías que completa el jugador automático (supera su capítulo III) y cuánto gana cuando lo hace.
+  // Fase 11: las travesías que completa el jugador automático (supera su último capítulo) y cuánto gana cuando lo hace.
   lineas.push(
     '## Travesías completadas',
     '',
-    'En cuántas partidas supera el capítulo III de cada travesía y, de esas, en cuántas gana.',
+    'En cuántas partidas supera el último capítulo de cada travesía y, de esas, en cuántas gana.',
     '',
     '| Travesía | Partidas en que la completa | % de las partidas | Gana de esas |',
     '| --- | --- | --- | --- |',
   )
   const travesias = DATOS.ordenMisiones.travesias
     .map((t) => {
-      const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === `${t}-III` && r.resultado === 'superada'))
+      const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo(t) && r.resultado === 'superada'))
       return { t, n: completan.length, gana: completan.filter((p) => p.gana).length }
     })
     .sort((a, b) => b.n - a.n)

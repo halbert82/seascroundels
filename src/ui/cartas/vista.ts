@@ -355,7 +355,7 @@ function vistaDestino(d: DestinoDatos, v2 = false): VistaDestino {
   }
 }
 
-const ROMANOS = ['', 'I', 'II', 'III']
+const ROMANOS = ['', 'I', 'II', 'III', 'IV']
 
 /** Construye la vista de cualquier carta del catálogo. */
 export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {

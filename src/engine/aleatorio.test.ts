@@ -71,12 +71,14 @@ describe('Prueba masiva: mazos de muelle variados', () => {
       const p = jugarPartida(semilla, jugador, { invariantes: i < 40, mazoDeMuelle })
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }
-    // El Mascarón del galeón solo llega como Tesoro de «La huida con la plata» (Flota III): desde la fase 8 se usa en
-    // ~1 de cada 2400 partidas. La Espada del sacerdote, Tesoro de «El templo» (Templo III), desde el Avance 1 / 1 y
+    // El Mascarón del galeón solo llega como Tesoro de «La huida con la plata» (Flota IV): desde la fase 8 se usa en
+    // ~1 de cada 2400 partidas. La Espada del sacerdote, Tesoro de «El templo» (Templo IV), desde el Avance 1 / 1 y
     // 3 / 2 (19 de octubre de 2026) se usa en ~1 de cada 900. Las dos tienen su propia prueba (cartas-mejoras).
     // La Pólvora del Rey (fase 10b) es el Tesoro del final de San Felipe y solo dispara con un Cañón en una Prueba de COM
     // en el Mar: también tiene su propia prueba.
-    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo'])
+    // «Ni un hombre atrás» (fase 12): con las travesías nuevas no sale en estas 900; en las 1800 siguientes, en 3. Tiene
+    // sus pruebas propias (cartas-eventos y decisiones).
+    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo', 'ni_hombre.jugar'])
     expect(capacidadesDelJugador().filter((c) => !usadas.has(c) && !rarisimas.has(c))).toEqual([])
   })
 })

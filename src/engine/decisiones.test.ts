@@ -197,7 +197,7 @@ describe('N4 · La pausa del Inicio va al final del paso, después de preparar',
 
 describe('D1b · La rebaja por Rasgo se mantiene aunque ese Tripulante se comprometa', () => {
   it('Arrecife de los Ahorcados (NAV 4, NAV 2 con un Vigía): comprometer a Íñigo deja la dificultad en 2', () => {
-    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bartolome'], mazoPeligros: ['arrecifes', 'chubasco', 'calma'] })
+    const j = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bartolome'], mazoPeligros: ['arrecifes', 'chubasco', 'calma'] })
     j.pasar() // No descarta el Arrecife con Íñigo.
     j.comprometer('NAV', ['bartolome']).seguir()
     // Íñigo: NAV 0 + 1 (Diego) + 1 (Barco en el Mar) = 2 contra 2.
@@ -209,12 +209,12 @@ describe('D2 · Heridas de un fallo', () => {
   // Fase 10 (heridas libres; sustituye a D2a y N6): las heridas de un fallo se reparten como quiera el jugador entre
   // todos sus Tripulantes, preparados o agotados, Capitán incluido, haya asignado a alguien o no.
   it('heridas libres: sin asignados, «1 · 1» y «2» se reparten como quieras entre todos tus Tripulantes', () => {
-    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
+    const j = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
     j.comprometer('EXP').seguir() // Escorbuto fallado: 1 herida · 1 herida
     expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2, motivo: { clave: 'heridas', n: 2 } })
     j.repartir({ capitan: 1, bucanero: 1 })
     expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([1, 1])
-    const tigre = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
+    const tigre = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     tigre.comprometer('COM').seguir() // Tiburón tigre: 2 heridas, también a dos Tripulantes
     expect(tigre.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
     tigre.repartir({ capitan: 1, bucanero: 1 })
@@ -222,7 +222,7 @@ describe('D2 · Heridas de un fallo', () => {
   })
 
   it('heridas libres: con asignados, las heridas del fallo pueden ir a un Tripulante que no se asignó', () => {
-    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
+    const j = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bucanero'], mazoPeligros: ['fiebre', 'chubasco', 'calma'] })
     j.comprometer('EXP', ['bucanero']).seguir() // Escorbuto fallado con el Bucanero asignado: 1 herida · 1 herida
     expect(Object.keys(j.decision.tipo === 'repartir' ? j.decision.maximos : {}).length).toBe(2)
     j.repartir({ capitan: 2 })
@@ -247,7 +247,7 @@ describe('D2 · Heridas de un fallo', () => {
 
   it('N6 · con comprometidos, las heridas se reparten libremente entre ellos, también un «2 heridas»', () => {
     // Tiburón tigre (2 heridas). Diego y el Bucanero llegarían, pero el Destino de la Leyenda es «Fallas la Prueba».
-    const f = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'leyenda', 'calma'] })
+    const f = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bucanero'], mazoPeligros: ['bestias', 'leyenda', 'calma'] })
     f.comprometer('COM', ['capitan', 'bucanero']).seguir()
     expect(f.decision).toMatchObject({ tipo: 'repartir', cantidad: 2, motivo: { clave: 'heridas' } })
     f.repartir({ capitan: 1, bucanero: 1 })
@@ -266,7 +266,7 @@ describe('N5 · Agotar sin preparados suficientes', () => {
   })
 
   it('«Todos agotar» sin nadie preparado no hace nada', () => {
-    const j = enMision({ misiones: ['fantasma-I'], mazoPeligros: ['leyenda', 'chubasco', 'calma'] })
+    const j = enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['leyenda', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).seguir() // Kraken fallado: 3 daños · todos agotar
     expect(j.registro.some((t) => t.startsWith('Agotas'))).toBe(false)
     expect(j.registro.some((t) => t.includes('sufre'))).toBe(false)
@@ -285,7 +285,7 @@ describe('N7 · Si ya no queda ningún comprometido, heridas y rehén como sin c
 
 describe('N8 · Si el Barco se hunde con el recuadro rojo a medias, el resto se aplica igual', () => {
   it('Kraken fallado con 3 daños: se hunde y después agotas a todos', () => {
-    const j = enMision({ misiones: ['fantasma-I'], tripulacion: ['bucanero'], barco: { dano: 3 }, mazoPeligros: ['leyenda', 'chubasco', 'calma'] })
+    const j = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bucanero'], barco: { dano: 3 }, mazoPeligros: ['leyenda', 'chubasco', 'calma'] })
     j.comprometer('COM').seguir()
     expect(j.registro).toContain('¡El Barco se hunde!')
     expect(j.copia('capitan').agotada).toBe(true)
@@ -347,7 +347,7 @@ describe('D9 · «Las cartas de tu mano no suman» anula también las añadidas 
 describe('D10 · Si se acaba el mazo mezclado de una misión, se barajan los descartes de esa misión', () => {
   it('en «El templo», el mazo mezclado se rebaraja con sus propios descartes', () => {
     const j = enMision({
-      misiones: ['templo-III'],
+      misiones: ['templo-IV'],
       tripulacion: ['viejo_lobo', 'baqueano', 'bucanero', 'contrabandista'],
       mazoHistoria: ['pasadizo'],
       mazoPeligros: ['calma'],

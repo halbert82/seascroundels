@@ -2,12 +2,13 @@
 
 import { motion } from 'motion/react'
 import arteGaleon from '../../../assets/arte/cap_galeon.jpg'
-import { partidaGuardada } from '../mesa/usePartida.ts'
+import { avisoPartidaGuardada, partidaGuardada } from '../mesa/usePartida.ts'
 import { LIBROS } from '../reglamento.ts'
 import './portada.css'
 
 export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: (sinEscenario?: boolean) => void }) {
   const guardada = partidaGuardada()
+  const aviso = guardada ? null : avisoPartidaGuardada()
   const empezarNueva = (sinEscenario = false) => {
     if (guardada && !window.confirm('¿Empezar una partida nueva? Se perderá la partida guardada.')) return
     nueva(sinEscenario)
@@ -19,6 +20,11 @@ export function Portada({ irA, nueva }: { irA: (ruta: string) => void; nueva: (s
         <span className="portada-antetitulo">El Caribe, 1670</span>
         <h1>Sea Scoundrels</h1>
         <p className="portada-lema">Un juego de cartas pirata en solitario</p>
+        {aviso && (
+          <p className="portada-aviso" role="status">
+            {aviso}.
+          </p>
+        )}
         <div className="portada-botones">
           {guardada && (
             <button type="button" className="boton principal grande" onClick={() => irA('/partida')}>

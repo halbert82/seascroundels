@@ -456,7 +456,7 @@ function CartaAnotada({ def }: { def: CartaAnotadaDef }) {
 function AnatomiaHistoria() {
   const MMPX = 96 / 25.4
   const pares: { id: string; num: number; dorso: 'misiones' | 'muelle'; apaisado: boolean; ancho: number; texto: string }[] = [
-    { id: 'espia-II', num: 136, dorso: 'misiones', apaisado: true, ancho: 13, texto: 'Un capítulo II: va al mazo de Misiones' },
+    { id: 'flota-II', num: 127, dorso: 'misiones', apaisado: true, ancho: 13, texto: 'Un capítulo II: va al mazo de Misiones' },
     { id: 'espada', num: 121, dorso: 'muelle', apaisado: false, ancho: 12, texto: 'Un Tesoro: va al mazo de muelle' },
   ]
   return (

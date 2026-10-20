@@ -154,7 +154,7 @@ describe('Índice de términos de la Referencia de reglas', () => {
 
   it('cada ficha de misión que usan las misiones tiene su línea', () => {
     const fichas = new Set(CATALOGO.filter((e) => e.tipo === 'capitulo').flatMap((e) => (reglasMision(e.id)?.fichas ?? []).map((f) => f.nombre)))
-    expect(fichas.size).toBe(6)
+    expect(fichas.size).toBe(7) // fase 12: Derrumbe
     for (const f of fichas) expect(indice).toContainEqual(expect.objectContaining({ termino: f, en: 'Fichas de misión' }))
   })
 

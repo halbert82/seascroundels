@@ -8698,12 +8698,32 @@
       "rep": 2
      },
      "siguiente": [
+      239
+     ],
+     "textoSiguiente": "Añade la carta 239 al mazo de Misiones"
+    },
+    {
+     "capitulo": "III",
+     "num": 239,
+     "nombre": "La escalinata de los sacerdotes",
+     "entorno": "nat",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "Cada Prueba de [EXP] que falles pone 1 ficha de Derrumbe; cada Prueba de [EXP] que superes por 2 o más quita 1 ~(pisáis donde la piedra aguanta)~.",
+      "Con 3 fichas, la escalera cede: la misión falla."
+     ],
+     "ambientacion": "«Trescientos peldaños tallados en la roca, y ninguno es de fiar.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "siguiente": [
       120
      ],
      "textoSiguiente": "Añade la carta 120 al mazo de Misiones"
     },
     {
-     "capitulo": "III",
+     "capitulo": "IV",
      "num": 120,
      "nombre": "El templo",
      "entorno": "nat",
@@ -8789,12 +8809,12 @@
      ],
      "ambientacion": "«Se quedó atrás con una vía de agua… y con media plata de Potosí.»",
      "recompensa": {
-      "rep": 3
+      "rep": 2
      },
      "siguiente": [
-      128
+      238
      ],
-     "textoSiguiente": "Añade la carta 128 al mazo de Misiones",
+     "textoSiguiente": "Añade la carta 238 al mazo de Misiones",
      "mazoPropio": {
       "nombre": "mazo de la Escolta",
       "cartas": [
@@ -8809,6 +8829,26 @@
     },
     {
      "capitulo": "III",
+     "num": 238,
+     "nombre": "Al abordaje del galeón",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "Los Cañones no suman ~(estáis pegados a su casco)~.",
+      "Cada Prueba de [COM] que superes por 2 o más da {1 avance} más ~(barréis su cubierta de proa a popa)~."
+     ],
+     "ambientacion": "«Garfios al aire. La plata del Rey está al otro lado de la borda.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "siguiente": [
+      128
+     ],
+     "textoSiguiente": "Añade la carta 128 al mazo de Misiones"
+    },
+    {
+     "capitulo": "IV",
      "num": 128,
      "nombre": "La huida con la plata",
      "entorno": "mar",
@@ -8841,34 +8881,15 @@
     {
      "capitulo": "I",
      "num": 135,
-     "nombre": "Un soplo en Port Royal",
+     "nombre": "Seguirle por Port Royal",
      "entorno": "ciu",
-     "avanceNecesario": 4,
+     "avanceNecesario": 6,
      "distancia": 2,
      "reglas": [
       "**Al zarpar:** Puedes descartar 2 cartas ~(pagas al soplón)~ para mirar las 3 de arriba del mazo de Peligros y ordenarlas.",
-      "Los encuentros de tipo #Civil# dan {1 avance} más ~(en Port Royal todo el mundo habla)~."
-     ],
-     "ambientacion": "«Un hombre con acento de Cádiz pregunta demasiado.»",
-     "recompensa": {
-      "rep": 1
-     },
-     "siguiente": [
-      136
-     ],
-     "textoSiguiente": "Añade la carta 136 al mazo de Misiones"
-    },
-    {
-     "capitulo": "II",
-     "num": 136,
-     "nombre": "Seguirle por los muelles",
-     "entorno": "ciu",
-     "avanceNecesario": 4,
-     "distancia": 0,
-     "reglas": [
       "No te tiene que ver: cada Prueba de [COM] que superes y cada Prueba que falles por 2 o más pone 1 ficha de Sospecha. Con 3, el espía te descubre: la misión falla."
      ],
-     "ambientacion": "«Capa gris, paso rápido. No lo pierdas.»",
+     "ambientacion": "«Acento de Cádiz, capa gris y paso rápido. Pregunta demasiado; no lo pierdas.»",
      "recompensa": {
       "rep": 1
      },
@@ -8878,7 +8899,7 @@
      "textoSiguiente": "Añade la carta 137 al mazo de Misiones"
     },
     {
-     "capitulo": "III",
+     "capitulo": "II",
      "num": 137,
      "nombre": "La goleta del correo",
      "entorno": "mar",
@@ -8890,7 +8911,7 @@
      ],
      "ambientacion": "«Lleva el Caribe entero en una valija sellada.»",
      "recompensa": {
-      "rep": 2,
+      "rep": 3,
       "tesoro": "despachos"
      },
      "siguiente": [
@@ -9110,37 +9131,17 @@
     {
      "capitulo": "I",
      "num": 147,
-     "nombre": "Niebla en el estrecho",
-     "entorno": "mar",
-     "avanceNecesario": 5,
-     "distancia": 0,
-     "reglas": [
-      "Los Cañones no suman ~(las balas atraviesan la niebla y no tocan nada)~.",
-      "Los encuentros de tipo #Sobrenatural# dan {1 avance} más ~(vais tras su rastro)~."
-     ],
-     "ambientacion": "«La niebla huele a sal y a tumba.»",
-     "recompensa": {
-      "rep": 1
-     },
-     "siguiente": [
-      148
-     ],
-     "textoSiguiente": "Añade la carta 148 al mazo de Misiones"
-    },
-    {
-     "capitulo": "II",
-     "num": 148,
      "nombre": "A bordo del fantasma",
      "entorno": "mar",
-     "avanceNecesario": 4,
+     "avanceNecesario": 6,
      "distancia": 0,
      "reglas": [
-      "Estáis a bordo del fantasma, no en vuestro barco: el Barco no sufre daño en esta misión. Cada daño que fuera a sufrir es, en su lugar, {1 herida} a un Tripulante que elijas.",
-      "Los encuentros de tipo #Sobrenatural# reciben {+1 r} de dificultad."
+      "Los Cañones no suman ~(las balas lo atraviesan como si fuera niebla)~.",
+      "Estáis a bordo del fantasma, no en vuestro barco: el Barco no sufre daño en esta misión. Cada daño que fuera a sufrir es, en su lugar, {1 herida} a un Tripulante que elijas."
      ],
      "ambientacion": "«La mesa está puesta y la sopa, caliente. No hay nadie.»",
      "recompensa": {
-      "rep": 2
+      "rep": 1
      },
      "siguiente": [
       149
@@ -9148,7 +9149,7 @@
      "textoSiguiente": "Añade la carta 149 al mazo de Misiones"
     },
     {
-     "capitulo": "III",
+     "capitulo": "II",
      "num": 149,
      "nombre": "El camarote del capitán",
      "entorno": "mar",
@@ -9164,17 +9165,17 @@
        {
         "clave": "farol",
         "texto": "Te llevas el Farol de los ahogados",
-        "rep": 2,
+        "rep": 3,
         "tesoro": "farol"
        },
        {
         "clave": "bitacora",
         "texto": "Le devuelves su bitácora y el barco se hunde en paz",
-        "rep": 3,
+        "rep": 4,
         "efecto": "quitas Maldito de todos tus Tripulantes"
        }
       ],
-      "texto": "**Elige:** el Farol de los ahogados y {+2 rep}; o le devuelves su bitácora: {+3 rep} y quita **Maldito** de todos tus Tripulantes."
+      "texto": "**Elige:** el Farol de los ahogados y {+3 rep}; o le devuelves su bitácora: {+4 rep} y quita **Maldito** de todos tus Tripulantes."
      },
      "siguiente": [
       150
@@ -9485,7 +9486,7 @@
    "id": "rumores",
    "num": 104,
    "nombre": "Rumores del tesoro",
-   "texto": "**Al zarpar este turno:** Gana {1 avance} ({2 avance} si es un capítulo II o III).",
+   "texto": "**Al zarpar este turno:** Gana {1 avance} ({2 avance} si es un capítulo II, III o IV).",
    "ambientacion": "«Todo el mundo sabe dónde está. Nadie ha vuelto para contarlo.»"
   },
   {

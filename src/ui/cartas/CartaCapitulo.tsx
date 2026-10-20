@@ -18,9 +18,23 @@ export function CartaCapitulo({ v }: { v: VistaCapitulo & { historia?: HistoriaD
     const cabe = () =>
       caja.scrollHeight <= caja.clientHeight + 0.5 &&
       [...caja.querySelectorAll<HTMLElement>('.reward, .rcab')].every((el) => el.scrollWidth <= el.clientWidth + 0.5 && el.scrollHeight <= el.clientHeight + 0.5)
-    for (const t of TAMANOS) {
-      caja.style.setProperty('--fsr', `${t}px`)
-      if (cabe()) break
+    const ajustar = () => {
+      for (const t of TAMANOS) {
+        caja.style.setProperty('--fsr', `${t}px`)
+        if (cabe()) break
+      }
+    }
+    ajustar()
+    // Fase 12: se repite cuando terminan de cargar las fuentes. Medida con la de reserva, la pastilla «Añade la carta
+    // 128…» de la carta 238 cabía y, con la buena, se salía 3 px del recuadro de la recompensa.
+    let vivo = true
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.status !== 'loaded') {
+      void document.fonts.ready.then(() => {
+        if (vivo) ajustar()
+      })
+    }
+    return () => {
+      vivo = false
     }
   })
   return (

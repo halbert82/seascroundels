@@ -609,3 +609,76 @@ R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y
 Dentro de lo que pidió Albert (normal entre 26 y 30 %; corta y larga a menos de 4 puntos): se publica. Con un punto más para ganar (10 / 13 / 17): 15,7 / 20,6 / 24,0 %.
 
 Travesías completadas (% de las partidas, y de esas, % de victorias), corta / normal / larga: San Felipe 3,1 (94) / 6,8 (72) / 11,3 (75); El barco fantasma 3,3 (73) / 6,0 (57) / 9,6 (68); El espía 3,7 (51) / 4,9 (47) / 7,5 (43); La Flota 1,6 (100) / 4,4 (86) / 9,0 (78); Maracaibo 2,6 (65) / 4,3 (63) / 9,2 (55); El templo 2,3 (83) / 4,0 (73) / 7,7 (55); Panamá 0 / 0,4 / 0,5.
+
+## Fase 12: travesías de 2 y 4 capítulos (20 de octubre de 2026)
+
+Encargo de Albert: El espía y El barco fantasma pasan a dos capítulos; La Flota de la Plata y El templo perdido, a cuatro. Panamá, Maracaibo y San Felipe no se tocan. Unos 2 de reputación por capítulo y el Tesoro siempre en el último.
+
+### Las cuatro travesías
+
+| Travesía | Capítulos (número de colección, entorno, Avance, Distancia, reputación) | Total |
+| --- | --- | --- |
+| El espía de Cádiz (Fácil) | I «Seguirle por Port Royal» (135, Ciudad, 6, 2, 1) · II «La goleta del correo» (137, Mar, 5, —, 3 y los despachos) | 4 |
+| El barco fantasma (Media) | I «A bordo del fantasma» (147, Mar, 6, —, 1) · II «El camarote del capitán» (149: Farol y 3, o bitácora y 4) | 4 o 5 |
+| La Flota de la Plata | I (126, 1) · II (127, 2) · III «Al abordaje del galeón» (238, Mar, 6, —, 2) · IV «La huida con la plata» (128, 4 y el Mascarón) | 9 |
+| El templo perdido | I (118, 1) · II (119, 2) · III «La escalinata de los sacerdotes» (239, Naturaleza, 5, —, 2) · IV «El templo» (120, sin cambios) | 7 u 8 |
+
+- **135, «Seguirle por Port Royal»** (une «Un soplo en Port Royal» y «Seguirle por los muelles»): el soplo al zarpar (descartar 2 para mirar las 3 de arriba del mazo de Peligros y ordenarlas) y la Sospecha (P55: cada Prueba de COM superada y cada Prueba fallada por 2 o más; con 3, la misión falla). Sin los +1 de Avance de los encuentros Civiles.
+- **147, «A bordo del fantasma»** (une «Niebla en el estrecho» y el antiguo «A bordo del fantasma»): los Cañones no suman y el Barco no sufre daño (cada daño es 1 herida a un Tripulante que elijas). Sin el +1 de Avance ni el +1 de dificultad de los encuentros Sobrenaturales.
+- **149, «El camarote del capitán»:** el Farol y 3, o la bitácora y 4 (antes 2 y 3). La Gesta sigue (+1).
+- **238, «Al abordaje del galeón»** (nueva, sin mazo propio): los Cañones no suman; cada Prueba de COM superada por 2 o más da 1 de Avance más.
+- **239, «La escalinata de los sacerdotes»** (nueva, sin mazo propio): ficha de **Derrumbe**. Cada Prueba de EXP fallada pone 1; cada Prueba de EXP superada por 2 o más quita 1; con 3, la misión falla.
+- **128 y 120** pasan a ser capítulos IV (el templo sigue barajando su mazo propio). La goleta del correo (137) es ahora el capítulo II del espía y da 3.
+
+### Textos nuevos (para que Albert los revise)
+
+- 135, ambientación: «Acento de Cádiz, capa gris y paso rápido. Pregunta demasiado; no lo pierdas.»
+- 147, regla: «Los Cañones no suman ~(las balas lo atraviesan como si fuera niebla)~.» La ambientación es la del antiguo 148: «La mesa está puesta y la sopa, caliente. No hay nadie.»
+- 238, ambientación: «Garfios al aire. La plata del Rey está al otro lado de la borda.»; reglas: «Los Cañones no suman ~(estáis pegados a su casco)~.» y «… ~(barréis su cubierta de proa a popa)~.»
+- 239, ambientación: «Trescientos peldaños tallados en la roca, y ninguno es de fiar.»; reglas: «… ~(pisáis donde la piedra aguanta)~.» y «Con 3 fichas, la escalera cede: la misión falla.»
+- Las cuatro (135, 147, 238 y 239) llevan «Ilustración pendiente»: 135 y 147 tampoco tenían ilustración antes.
+
+### Numeración
+
+- Las cartas nuevas van al final: 238 y 239. Las fusionadas conservan el número del capítulo I (135 y 147).
+- Quedan libres el **136** («Seguirle por los muelles») y el **148** (el antiguo «A bordo del fantasma»). El reglamento lo dice en «Número de colección»: «Los números 136 y 148 no corresponden a ninguna carta de la Caja básica». Componentes no cambia: 23 capítulos y 223 cartas (salen dos y entran dos).
+- Las recompensas que nombran cartas: 135 → «Añade la carta 137»; 147 → «Añade la carta 149»; 127 → 238; 238 → 128; 119 → 239; 239 → 120.
+
+### Reglamento
+
+- Fuera «tres capítulos» y «I, II o III»: Capítulo («de I a IV»), Travesía («de dos, tres o cuatro capítulos»), las misiones en Aprende a jugar, el sello («II de IV»), mazo de historia y preparación («los capítulos II, III y IV»), Final con elección («del último capítulo de algunas travesías»). Los capítulos I siguen siendo siete.
+- Ejemplos: el de la recompensa es ahora «El Paso de los Vientos», que añade la carta 127, y sale «A bordo del fantasma»; las campanas a rebato salen en «Seguirle por Port Royal» (Ciudad 6); la goleta del correo da 3 (de 9 a 12).
+- Fichas de misión: se añade **Derrumbe** (y su línea en el índice).
+
+### Lectura tomada (pendiente de Albert)
+
+- **Rumores del tesoro** decía «2 si es un capítulo II o III». Ahora hay capítulos IV: por defecto dan también 2, y la carta dice «II, III o IV» (`TODO(regla)` en el motor). Ver P68.
+
+### Partidas guardadas
+
+- Una partida guardada antes de la fase 12 se convierte: el capítulo II pendiente del espía o del fantasma pasa a ser el nuevo II (el antiguo III); si ya se había jugado, el antiguo III pasa a ser el II. Los III de la Flota y del templo pasan a ser IV y el III nuevo espera en el mazo de historia.
+- No se puede continuar si la partida estaba **a mitad** de «Seguirle por los muelles» o del antiguo «A bordo del fantasma»: la app lo avisa al cargarla.
+
+### Equilibrio de la fase 12 (1000 partidas por modo, semillas 1–1000, el mismo jugador automático)
+
+| Modo | Para ganar | Victorias | Fase 11 publicada | Reputación por misión superada | Victorias de Panamá |
+| --- | --- | --- | --- | --- | --- |
+| Corta | 9 | 18,7 % | 25,2 % | 1,00 | 0 % |
+| Normal | 12 | 24,5 % | 26,9 % | 1,18 | 0,3 % |
+| Larga | 16 | 27,7 % | 30,3 % | 1,30 | 0,6 % |
+
+- **No cumple lo pedido** (normal entre 26 y 30 %; corta y larga a menos de 4 puntos de la normal): la normal se queda en 24,5 % y la corta, a 5,8 puntos. **No se publica.**
+- De dónde sale: los dos capítulos I fusionados (Avance 6) se superan mucho menos que los que sustituyen (Port Royal: 465 → 262 veces en 1000 partidas normales; el fantasma: 516 → 340), y la Flota y el templo casi nunca llegan al capítulo IV.
+- **Travesías completadas** (% de las partidas, y de esas, % de victorias), corta / normal / larga: El barco fantasma 10,3 (68) / 16,9 (63) / 25,6 (62); El espía 8,7 (38) / 14,2 (51) / 20,1 (54); San Felipe 3,3 (85) / 7,2 (68) / 11,6 (72); Maracaibo 2,6 (58) / 4,9 (47) / 8,9 (48); El templo 0,1 / 0,6 / 1,7; La Flota 0 / 0,8 / 1,7; Panamá 0 / 0,3 / 0,6.
+- **Opciones medidas** (corta / normal / larga; con variantes de medida, sin tocar los datos):
+
+| Opción | Cambio | Corta | Normal | Larga | ¿Cumple? |
+| --- | --- | --- | --- | --- | --- |
+| O1 | +1 de reputación al final del espía (goleta 4) y del fantasma (camarote 4 o 5) | 23,3 | 28,6 | 32,7 | No: corta a 5,3 y larga a 4,1 |
+| O2 | O1 y +1 al final de la Flota y del templo | 23,3 | 28,7 | 32,6 | No (igual que O1: la Flota y el templo casi no se acaban) |
+| O3 | 135 y 147 con Avance 5 (en vez de 6) | 25,5 | 26,9 | 30,7 | **Sí** (Panamá 0,4 %) |
+| O4 | O3 y O1 | 30,6 | 32,5 | 34,3 | No: la normal se pasa |
+| O5 | Solo 135 con Avance 5 | 21,8 | 25,9 | 28,8 | No |
+| O6 | Solo 147 con Avance 5 | 21,9 | 26,0 | 29,5 | No: corta a 4,1 |
+
+- Pendiente de Albert: P67 (qué opción), P68 (Rumores del tesoro y el capítulo IV), P69 (la Flota y el templo casi nunca se acaban), P70 (textos nuevos).

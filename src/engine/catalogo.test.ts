@@ -6,8 +6,12 @@ import './motor.ts'
 
 describe('catálogo de la Caja básica', () => {
   it('tiene una carta por cada número de colección, sin huecos ni repetidos (los Peligros 2.0 siguen desde el 154)', () => {
+    // Fase 12: el 136 («Seguirle por los muelles») y el 148 (el antiguo «A bordo del fantasma») se unieron al capítulo
+    // anterior de su travesía. Sus números quedan libres: son los dos únicos huecos.
+    const HUECOS = [136, 148]
     const nums = CATALOGO.map((c) => c.num)
-    expect(nums).toEqual(Array.from({ length: nums.length }, (_, i) => i + 1))
+    const maximo = Math.max(...nums)
+    expect(nums).toEqual(Array.from({ length: maximo }, (_, i) => i + 1).filter((n) => !HUECOS.includes(n)))
   })
 
   it('asigna cada carta de mazo propio a su mazo', () => {

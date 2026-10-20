@@ -10,7 +10,7 @@ import type { CartaId } from './tipos.ts'
  * usan), Naturaleza de prueba de 4 de Avance en la isla (antes «Maracaibo III», cuya Distancia se cubría con «Mano
  * firme al timón»; desde la fase 10 hay que agotar a un Tripulante) y Ciudad «El ladrón del puerto» (4).
  */
-const MISION = { mar: 'fantasma-I', nat: 'pruebas-nat4', ciu: 'ladron-I' } as const
+const MISION = { mar: 'pruebas-mar5', nat: 'pruebas-nat4', ciu: 'ladron-I' } as const
 
 function en(entorno: keyof typeof MISION, mazoPeligros: CartaId[], op: OpcionesSituacion = {}): Jugador {
   return Jugador.enMision({ misiones: [MISION[entorno]], mazoPeligros, ...op })

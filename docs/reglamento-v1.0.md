@@ -100,7 +100,7 @@ La Caja básica de Sea Scoundrels contiene 223 cartas, que se dividen en cartas 
 | Pasajeros | 2 |
 | Permanentes | 13 |
 
-Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, las permanentes y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
+Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los Pasajeros, las permanentes y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
 Las cartas de Peligro, las de los mazos propios y las de puerto tienen tamaño tarot (70 × 120 mm), más grande que el del resto de cartas (63 × 88 mm), para que su texto se lea bien. Por eso el mazo de historia se guarda en dos montones, uno por tamaño: las cartas que van al mazo de Peligros (los mazos propios y «La Armada te persigue») están en el montón grande.
 
@@ -167,7 +167,7 @@ La carta de puerto tiene el texto a la izquierda y la ilustración a la derecha.
 
 > [!grafico] anatomia mision
 
-1. **Sello:** indica el número de capítulo y cuántos capítulos tiene la travesía («II de III»).
+1. **Sello:** indica el número de capítulo y cuántos capítulos tiene la travesía («II de IV»).
 2. **Travesía y nombre.** Encima del nombre figura la travesía a la que pertenece la carta, «Aventura» o «Misión inicial».
 3. **Entorno:** es la primera pestaña (Mar, Naturaleza o Ciudad). Si lleva una franja azul con el icono de NAV y un número, ese número es su **Distancia**.
 4. **Avance:** es la pestaña del mapa. Indica el Avance necesario para superar la misión.
@@ -263,7 +263,7 @@ La partida se prepara siguiendo estos pasos:
 2. **Pon en juego a tu Capitán y tu Barco.** El Capitán empieza en juego preparado.
 3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa.
 4. **Prepara el mazo de Peligros.** Baraja todas las cartas de Peligro y deja el mazo boca abajo junto a la carta de puerto.
-5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
+5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II, III y IV, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique el puerto. Esas cartas, boca arriba junto al puerto, forman el **muelle**, que es el único lugar desde el que se pueden reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a la mano del jugador.
    > [!tema]
    > El muelle es donde se busca gente: marineros sin barco, artilleros sin cañón y cirujanos sin título. Lo que no contratas hoy se lo lleva otro capitán.
@@ -347,7 +347,7 @@ En todo momento hay tantas **misiones disponibles** como indica la carta de puer
 Existen dos clases de misión:
 
 - **Aventuras:** son misiones sueltas de un solo capítulo.
-- **Capítulos:** cada travesía es una historia de tres capítulos (I, II y III). Solo los capítulos I empiezan en el mazo de Misiones. Al superar un capítulo, su recompensa indica qué carta del mazo de historia se añade al mazo de Misiones.
+- **Capítulos:** cada travesía es una historia de dos, tres o cuatro capítulos (I, II, III y IV). Solo los capítulos I empiezan en el mazo de Misiones. Al superar un capítulo, su recompensa indica qué carta del mazo de historia se añade al mazo de Misiones.
 
 #### Zarpar
 
@@ -459,7 +459,7 @@ Algunos encuentros y algunas misiones dicen «**Pon en juego la carta N del mazo
 - Al terminar la misión (superada, retirada o con el Barco hundido), todas vuelven al mazo de historia.
 
 > [!ejemplo]
-> En «Un soplo en Port Royal» (Ciudad 4), el jugador revela una carta de Peligro cuyo encuentro de Ciudad pone en juego la carta 230, «Campanas a rebato»: el jugador gana 2 de Avance, coloca las campanas junto a la misión y descarta la carta de Peligro. Cada vez que termina un encuentro posterior, pone 1 ficha sobre las campanas; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitarlas antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas vuelven al mazo de historia.
+> En «Seguirle por Port Royal» (Ciudad 6), el jugador revela una carta de Peligro cuyo encuentro de Ciudad pone en juego la carta 230, «Campanas a rebato»: el jugador gana 2 de Avance, coloca las campanas junto a la misión y descarta la carta de Peligro. Cada vez que termina un encuentro posterior, pone 1 ficha sobre las campanas; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitarlas antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas vuelven al mazo de historia.
 
 #### Pruebas que nacen de una Acción
 
@@ -511,7 +511,7 @@ En cuanto el jugador reúne el Avance que pide la misión, la supera. Debe resol
 Dado que el capítulo nuevo se baraja antes de reponer las misiones disponibles, puede aparecer de inmediato o mucho más tarde.
 
 > [!ejemplo]
-> El jugador supera «Un soplo en Port Royal» y gana 1 de reputación. Su recompensa indica «Añade la carta 136 al mazo de Misiones»: el jugador busca la carta 136 en el mazo de historia, que es «Seguirle por los muelles», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «Niebla en el estrecho».
+> El jugador supera «El Paso de los Vientos» y gana 1 de reputación. Su recompensa indica «Añade la carta 127 al mazo de Misiones»: el jugador busca la carta 127 en el mazo de historia, que es «El galeón rezagado», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «A bordo del fantasma».
 
 #### No superar una misión
 
@@ -604,7 +604,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 > La temporada se acaba. Si no tienes nombre cuando llegue, tu tripulación buscará otro capitán.
 
 > [!ejemplo]
-> El jugador llega al último turno con 10 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que otorga 2. Recluta todo lo que puede pagar y zarpa. Si supera la misión, llega a 12 y gana la partida. Si se retira o su Barco se hunde, pierde.
+> El jugador llega al último turno con 9 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que otorga 3. Recluta todo lo que puede pagar y zarpa. Si supera la misión, llega a 12 y gana la partida. Si se retira o su Barco se hunde, pierde.
 
 ### Ejemplo de juego
 
@@ -615,7 +615,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 
 A continuación se describe el primer turno de una partida normal con Diego en Tortuga.
 
-**Fase de Inicio.** El jugador revela la primera carta del mazo de Escenario: «Rumores del tesoro», que dice «Al zarpar este turno: gana 1 de Avance (2 si es un capítulo II o III)». Diego ya está preparado, así que no hay nada que preparar.
+**Fase de Inicio.** El jugador revela la primera carta del mazo de Escenario: «Rumores del tesoro», que dice «Al zarpar este turno: gana 1 de Avance (2 si es un capítulo II, III o IV)». Diego ya está preparado, así que no hay nada que preparar.
 
 **Fase de Reclutamiento.** El jugador tiene 5 cartas en la mano: «¡Al abordaje!», «Mano firme al timón», «Ojo avizor», «Reflejos de gato» y «Soborno». En el muelle de Tortuga hay cuatro cartas: el Rufián de cubierta (coste 1), el Bucanero veterano (coste 2), el Sable de abordaje (coste 1) y el Matasanos (coste 2).
 
@@ -797,7 +797,7 @@ Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carr
 
 ### Capítulo
 
-Un capítulo es cada una de las cartas de misión de una travesía. Su sello indica su número (I, II o III). Los capítulos I empiezan en el mazo de Misiones; los capítulos II y III, en el mazo de historia. Al superar un capítulo, su recompensa indica qué carta se añade al mazo de Misiones.
+Un capítulo es cada una de las cartas de misión de una travesía. Su sello indica su número (de I a IV) y cuántos capítulos tiene la travesía. Los capítulos I empiezan en el mazo de Misiones; los demás, en el mazo de historia. Al superar un capítulo, su recompensa indica qué carta se añade al mazo de Misiones.
 
 - **Salida doble:** dos travesías tienen dos capítulos II, «II-a» y «II-b». Su capítulo I indica cuál de ellos se añade según cómo se supere; el otro sale de la partida.
 
@@ -949,7 +949,7 @@ El **mazo de Escenario** actúa como el reloj de la partida. El Caribe incluye 1
 - Los efectos que indican «este turno» duran hasta el final del turno en que se revela la carta.
 
 > [!ejemplo]
-> Al empezar el turno, el jugador revela «Rumores del tesoro»: «Al zarpar este turno: gana 1 de Avance (2 si es un capítulo II o III)». Si zarpa este turno, empieza la misión con ese Avance. Si se queda en puerto, el efecto se pierde al terminar el turno.
+> Al empezar el turno, el jugador revela «Rumores del tesoro»: «Al zarpar este turno: gana 1 de Avance (2 si es un capítulo II, III o IV)». Si zarpa este turno, empieza la misión con ese Avance. Si se queda en puerto, el efecto se pierde al terminar el turno.
 
 ### Estado
 
@@ -984,11 +984,11 @@ Un Evento es una carta del mazo del capitán con un efecto propio. Para jugarlo,
 
 ### Fichas de misión
 
-Las fichas de misión son fichas genéricas con las que una misión, o una permanente, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha y Defensa. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
+Las fichas de misión son fichas genéricas con las que una misión, o una permanente, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha, Defensa y Derrumbe. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
 
 ### Final con elección
 
-Final con elección es una recompensa de algunos capítulos III: al superar el capítulo, el jugador elige una de las dos opciones que indica (por ejemplo, un Tesoro y 2 de reputación, o 3 de reputación).
+Final con elección es una recompensa del último capítulo de algunas travesías: al superar el capítulo, el jugador elige una de las dos opciones que indica (por ejemplo, un Tesoro y 2 de reputación, o 3 de reputación).
 
 ### Gesta
 
@@ -1048,7 +1048,7 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 ### Mazo de historia
 
-El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
+El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
 
 - El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
 
@@ -1097,7 +1097,7 @@ El muelle está formado por las cartas del mazo de muelle que están boca arriba
 
 ### Número de colección
 
-El número de colección es el número situado abajo a la derecha de cada carta. Cada carta distinta tiene uno propio, y sus copias lo comparten. Las recompensas de las misiones indican mediante este número qué carta debe buscarse. Las cartas del mazo de historia lo llevan además bien visible en el anverso y en el dorso.
+El número de colección es el número situado abajo a la derecha de cada carta. Cada carta distinta tiene uno propio, y sus copias lo comparten. Las recompensas de las misiones indican mediante este número qué carta debe buscarse. Las cartas del mazo de historia lo llevan además bien visible en el anverso y en el dorso. Los números 136 y 148 no corresponden a ninguna carta de la Caja básica.
 
 ### Obligado
 
@@ -1283,7 +1283,7 @@ Los tipos de encuentro son las palabras en versalitas que aparecen bajo el nombr
 
 ### Travesía
 
-Una Travesía es el nombre de una historia de tres capítulos, como «El espía de Cádiz». No es una carta: aparece escrita sobre el nombre de cada uno de sus capítulos.
+Una Travesía es el nombre de una historia de dos, tres o cuatro capítulos, como «El espía de Cádiz» (dos) o «El templo perdido» (cuatro). No es una carta: aparece escrita sobre el nombre de cada uno de sus capítulos.
 
 ### Tripulante
 

@@ -39,9 +39,9 @@ describe('Preparación de la partida', () => {
     const esperadas = [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras].map((m) => `${m}-I`)
     expect(j.zona('mazoMisiones').sort()).toEqual(esperadas.sort())
     const historia = j.zona('mazoHistoria')
-    // Capítulos II y III (con los dos de salida doble de Maracaibo y San Felipe), Tesoros, mazos propios,
+    // Capítulos II, III y IV (con los dos de salida doble de Maracaibo y San Felipe), Tesoros, mazos propios,
     // los dos Pasajeros y «¡La guardia!».
-    expect(historia.filter((id) => /-(II|III)(-[ab])?$/.test(id))).toHaveLength(16)
+    expect(historia.filter((id) => /-(II|III|IV)(-[ab])?$/.test(id))).toHaveLength(16)
     expect(historia.filter((id) => DATOS.tesoros.some((t) => t.id === id))).toHaveLength(6)
     expect(historia.filter((id) => DATOS.cartasDeMazoPropio.some((c) => c.id === id))).toHaveLength(12)
     expect(historia.filter((id) => ['anselmo', 'guia', 'guardia'].includes(id)).sort()).toEqual(['anselmo', 'guardia', 'guia'])

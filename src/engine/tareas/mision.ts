@@ -104,7 +104,9 @@ export function avanceInicialDelEscenario(s: Estado, mision: InstId): { n: numbe
   const hay = (clave: string) => s.temporales.some((x) => x.clave === clave)
   if (hay('rumores.turno')) {
     const [uno = 1, dos = 2] = [...textoDe('rumores').matchAll(/\{(\d+) avance\}/g)].map((x) => Number(x[1]))
-    lista.push({ n: /-(II|III)(-[ab])?$/.test(copia(s, mision).id) ? dos : uno, motivo: 'Rumores del tesoro' })
+    // TODO(regla): fase 12. Con las travesías de cuatro capítulos, el capítulo IV también da 2 (la carta dice ahora
+    // «II, III o IV»). Pendiente de que Albert lo confirme (P68).
+    lista.push({ n: /-(II|III|IV)(-[ab])?$/.test(copia(s, mision).id) ? dos : uno, motivo: 'Rumores del tesoro' })
   }
   if (hay('sanjuan.turno')) lista.push({ n: numeroConIcono(textoDe('sanjuan'), 'avance'), motivo: 'Fiesta de San Juan' })
   return lista

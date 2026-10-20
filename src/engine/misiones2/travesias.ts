@@ -1,4 +1,4 @@
-// Misiones 2.0 · las travesías de tres capítulos (y sus capítulos con salida doble).
+// Misiones 2.0 · las travesías (fase 12: de 2 a 4 capítulos) y sus capítulos con salida doble.
 
 import { anotar, copia } from '../estado.ts'
 import { ponerEstado } from '../estados.ts'
@@ -12,7 +12,6 @@ import {
   alResolverSinPrueba,
   alRevelarPeligro,
   alSuperarPrueba,
-  avanceClaves,
   avancePrueba,
   bajarPasajero,
   dificultadClaves,
@@ -34,7 +33,7 @@ const robar = (n: number): NuevaTarea => ({ tipo: 'robar', n })
 const mezclar = (n: number): NuevaTarea => ({ tipo: 'mezclarMazoPropio', n })
 
 // ---------------------------------------------------------------------------
-// El templo perdido · Media (1 / 2 / 4)
+// El templo perdido · Media, 4 capítulos (fase 12: 1 / 2 / 2 / 2 o 3)
 
 /** «Rumbo a la isla»: habéis avistado la isla (agotando a un Vigía o a un Piloto). */
 const ISLA = 'templo-I.isla'
@@ -66,7 +65,23 @@ registrarMision('templo-II', {
   capacidades: [avancePrueba('calzada', 'EXP', 1, 2)],
 })
 
+// Fase 12: «La escalinata de los sacerdotes» (carta 239). Cada Prueba de EXP fallada, 1 ficha de Derrumbe; cada una
+// superada por 2 o más, quita 1. Con 3, la escalera cede: la misión falla. (Una Prueba sin nadie asignado se falla:
+// también pone ficha, como «cada Prueba que falles» en las demás misiones.)
 registrarMision('templo-III', {
+  fichas: [{ ficha: 'derrumbe', nombre: 'Derrumbe', umbral: 3, inicial: 0, nota: 'Con 3, la escalera cede y la misión falla.' }],
+  capacidades: [
+    alFallarPrueba('derrumbe', (_s, p) => (p.hab === 'EXP' ? [ponerFichas('derrumbe', 1)] : [])),
+    alSuperarPrueba('apoyo', (_s, p) => (p.hab === 'EXP' && p.margen >= 2 ? [ponerFichas('derrumbe', -1)] : [])),
+  ],
+  alCambiarFichas: (s, _f, antes, ahora) => {
+    if (antes < 3 && ahora >= 3) fallaLaMision(s, 'la escalera cede')
+    return []
+  },
+})
+
+// «El templo» (carta 120): el capítulo IV desde la fase 12 (antes, el III).
+registrarMision('templo-IV', {
   alZarpar: () => [mezclar(6)],
   // La Espada del sacerdote: el Tesoro y 2 de reputación, pero tu Capitán queda Maldito.
   alElegir: (s, clave) => {
@@ -78,7 +93,7 @@ registrarMision('templo-III', {
 })
 
 // ---------------------------------------------------------------------------
-// La Flota de la Plata · Difícil (2 / 3 / 5)
+// La Flota de la Plata · Difícil, 4 capítulos (fase 12: 1 / 2 / 2 / 4)
 
 registrarMision('flota-I', {
   capacidades: [dificultadClaves('tormenta', ['Tormenta'], 1)],
@@ -92,7 +107,14 @@ registrarMision('flota-II', {
   capacidades: [alSuperarPrueba('bodega', (_s, p) => (p.hab === 'COM' ? [robar(1)] : []))],
 })
 
+// Fase 12: «Al abordaje del galeón» (carta 238). Los Cañones no suman (estáis pegados a su casco); cada Prueba de COM
+// que superes por 2 o más da 1 de Avance más.
 registrarMision('flota-III', {
+  capacidades: [{ clave: 'casco', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'sinCanones' ? 1 : 0) }, avancePrueba('cubierta', 'COM', 1, 2)],
+})
+
+// «La huida con la plata» (carta 128): el capítulo IV desde la fase 12 (antes, el III).
+registrarMision('flota-IV', {
   fichas: [{ ficha: 'persecucion', nombre: 'Persecución', umbral: 3, inicial: 1, nota: 'Con 3 os dan alcance: La Armada te persigue será tu siguiente encuentro.' }],
   alZarpar: () => [ponerFichas('persecucion', 1)],
   capacidades: [
@@ -126,8 +148,10 @@ registrarCodigo('mision.alcance', (s) => {
 })
 
 // ---------------------------------------------------------------------------
-// El espía de Cádiz · Fácil (1 / 2 / 3)
+// El espía de Cádiz · Fácil, 2 capítulos (fase 12: 1 / 3)
 
+// Fase 12: «Seguirle por Port Royal» (carta 135) une «Un soplo en Port Royal» y «Seguirle por los muelles»: el soplo
+// de pago al zarpar y la Sospecha. Ya no da 1 de Avance más por los encuentros #Civil#.
 registrarMision('espia-I', {
   alZarpar: () => [
     {
@@ -137,10 +161,6 @@ registrarMision('espia-I', {
       texto: 'Descartar 2 cartas para mirar las 3 de arriba del mazo de Peligros y ordenarlas',
     },
   ],
-  capacidades: [avanceClaves('civil', ['Civil'], 1)],
-})
-
-registrarMision('espia-II', {
   fichas: [{ ficha: 'sospecha', nombre: 'Sospecha', umbral: 3, inicial: 0, nota: 'Con 3, el espía te descubre y la misión falla.' }],
   capacidades: [
     alSuperarPrueba('com', (_s, p) => (p.hab === 'COM' ? [ponerFichas('sospecha', 1)] : [])),
@@ -154,7 +174,8 @@ registrarMision('espia-II', {
   },
 })
 
-registrarMision('espia-III', {
+// «La goleta del correo» (carta 137): el capítulo II desde la fase 12 (antes, el III).
+registrarMision('espia-II', {
   conTesoro: (s) => !hasFallado(s, 'COM'),
   capacidades: [avancePrueba('nav', 'NAV', 1)],
 })
@@ -240,17 +261,13 @@ registrarMision('sanfelipe-III', {
 })
 
 // ---------------------------------------------------------------------------
-// El barco fantasma · Media (1 / 2 / 4)
+// El barco fantasma · Media, 2 capítulos (fase 12: 1 / 3 o 4)
 
+// Fase 12: «A bordo del fantasma» (carta 147) une «Niebla en el estrecho» y «A bordo del fantasma»: los Cañones no
+// suman y el Barco no sufre daño. Sin los dos modificadores de los encuentros #Sobrenatural# (se anulaban).
 registrarMision('fantasma-I', {
   capacidades: [
     { clave: 'niebla', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'sinCanones' ? 1 : 0) },
-    avanceClaves('rastro', ['Sobrenatural'], 1),
-  ],
-})
-
-registrarMision('fantasma-II', {
-  capacidades: [
     {
       // El Barco no sufre daño: cada daño que fuera a sufrir es, en su lugar, 1 herida a un Tripulante que elijas.
       clave: 'aBordo',
@@ -264,11 +281,11 @@ registrarMision('fantasma-II', {
         return Array.from({ length: n }, (): NuevaTarea => ({ tipo: 'herirUno', n: 1, entre: [...s.zonas.tripulacion] }))
       },
     },
-    dificultadClaves('sobrenatural', ['Sobrenatural'], 1),
   ],
 })
 
-registrarMision('fantasma-III', {
+// «El camarote del capitán» (carta 149): el capítulo II desde la fase 12 (antes, el III).
+registrarMision('fantasma-II', {
   primeraSinAyuda: true,
   gesta: (s) => !hasSuperado(s, 'COM'),
   // Le devuelves su bitácora: quita Maldito de todos tus Tripulantes.

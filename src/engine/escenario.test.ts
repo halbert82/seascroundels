@@ -117,10 +117,12 @@ describe('Escenario 2.0: buenas', () => {
     expect(j.registro).toContain('Rumores del tesoro: +1 de Avance (1/5).')
   })
 
-  it('Rumores del tesoro: en un capítulo II o III empiezas con 2', () => {
-    const j = revelar('rumores', { misiones: ['espia-II'] })
-    j.zarpar('espia-II')
-    expect(j.registro.some((t) => t.startsWith('Rumores del tesoro: +2 de Avance'))).toBe(true)
+  it('Rumores del tesoro: en un capítulo II, III o IV empiezas con 2', () => {
+    for (const id of ['espia-II', 'flota-III', 'templo-IV']) {
+      const j = revelar('rumores', { misiones: [id] })
+      j.zarpar(id)
+      expect(j.registro.some((t) => t.startsWith('Rumores del tesoro: +2 de Avance')), id).toBe(true)
+    }
   })
 
   it('Rumores del tesoro: si te quedas en puerto, no pasa nada', () => {

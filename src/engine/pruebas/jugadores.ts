@@ -46,9 +46,17 @@ export function jugadorAlAzar(semilla: number | string): JugadorAutomatico {
         return aleatorio(azar) < 0.5 || d.usos.length === 0 ? { tipo: 'pasar' } : { tipo: 'usar', uso: d.usos[entero(azar, d.usos.length)]! }
       case 'repartir':
         return { tipo: 'reparto', n: repartoAlAzar(azar, d.cantidad, d.maximos) }
-      case 'cubrirDistancia':
-        // Todos los preparados y todas las cartas: siempre llega (el motor solo ofrece misiones alcanzables).
+      case 'cubrirDistancia': {
+        // Todos los preparados y todas las cartas. Casi siempre llega (el motor solo ofrece misiones alcanzables), pero no
+        // siempre: agotar a uno puede bajar la NAV de los demás (semilla 7378, Diego). Entonces, el primer grupo que llegue.
+        const cartas = d.cartas.reduce((n, c) => n + iconosDe(copia(_s, c).id, 'NAV'), 0)
+        if (navParaDistancia(_s, d.tripulantes) + cartas >= d.distancia) return { tipo: 'cartas', ids: [...d.tripulantes, ...d.cartas] }
+        for (let m = (1 << d.tripulantes.length) - 1; m > 0; m--) {
+          const grupo = d.tripulantes.filter((_, i) => m & (1 << i))
+          if (navParaDistancia(_s, grupo) + cartas >= d.distancia) return { tipo: 'cartas', ids: [...grupo, ...d.cartas] }
+        }
         return { tipo: 'cartas', ids: [...d.tripulantes, ...d.cartas] }
+      }
       case 'comprometer': {
         const opcion = entero(azar, d.opciones.length)
         const hab = d.opciones[opcion]!.hab
@@ -172,7 +180,7 @@ function puntuacionMision(s: Estado, m: InstId): number {
   const victoria = e.carta.recompensa.victoria ? 30 : 0
   // Lo que vale el resto de la cadena, si quedan turnos para terminarla (cada capítulo hay que sacarlo del mazo de Misiones y jugarlo).
   // Con salida doble, de los dos capítulos II solo se juega uno: cuenta el mejor.
-  const orden = ['I', 'II', 'III']
+  const orden = ['I', 'II', 'III', 'IV']
   const posteriores = orden
     .slice(orden.indexOf(e.carta.capitulo) + 1)
     .map((n) => e.mision.capitulos.filter((c) => c.capitulo === n))
@@ -216,9 +224,10 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
   const encuentro = p?.encuentro
   if (!encuentro) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   const tripulantes = d.tripulantes
-  // «Seguirle por los muelles»: superar una Prueba de COM pone Sospecha; con 2, mejor no comprometer a nadie.
+  // «Seguirle por Port Royal» (fase 12; antes «Seguirle por los muelles»): superar una Prueba de COM pone Sospecha; con
+  // 2, mejor no comprometer a nadie.
   const m = s.mision
-  if (m && copia(s, m.carta).id === 'espia-II' && (m.fichas?.sospecha ?? 0) >= 2 && d.opciones.every((o) => o.hab === 'COM')) {
+  if (m && copia(s, m.carta).id === 'espia-I' && (m.fichas?.sospecha ?? 0) >= 2 && d.opciones.every((o) => o.hab === 'COM')) {
     return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   }
   const margen = margenDestino(s, encuentro)

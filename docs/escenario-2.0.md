@@ -30,7 +30,7 @@ Criterios:
 - *«Ron, gallos de pelea y nadie con prisa.»*
 
 ### Rumores del tesoro
-- Si zarpas este turno, empiezas la misión con 1 de Avance (2 si es un capítulo II o III).
+- Si zarpas este turno, empiezas la misión con 1 de Avance (2 si es un capítulo II, III o IV; fase 12).
 - *«Todo el mundo sabe dónde está. Nadie ha vuelto para contarlo.»*
 
 ### Mercado próspero

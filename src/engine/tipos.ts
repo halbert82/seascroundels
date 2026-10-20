@@ -148,7 +148,7 @@ export type Suceso =
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
 /** Fichas que se ponen sobre la carta de misión. Se descartan al terminarla. */
-export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa'
+export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa' | 'derrumbe'
 
 /** Una Prueba ya resuelta en la misión en curso. */
 export interface PruebaHecha {

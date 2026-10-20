@@ -103,6 +103,8 @@ Recursos visuales:
 
 9. **Reglamento maquetado:** dos libros («Aprende a jugar» y «Referencia de reglas») generados desde `docs/reglamento-v1.0.md` con `npm run reglamento` (React + Paged.js en `src/libro/`, PDF con el Chromium de Playwright; la publicación los genera). Las marcas `[!tema]`, `[!ejemplo]`, `[!importante]`, `[!consejo]`, `[!epigrafe]` y `[!grafico]` están explicadas al principio del reglamento. No se toca nada a mano: si algo sale mal maquetado, se arregla en la maqueta o en el reglamento. Lo ancho va centrado en la página; cada capítulo de «Aprende a jugar» lleva su ilustración (`src/libro/arte.ts`) y las columnas exteriores casi vacías, una viñeta. `npm run comprobar:reglamento` revisa que nada se monte, se descentre o se salga, que no queden marcas pendientes ni páginas casi vacías y que ninguna palabra se parta entre dos páginas. El índice de términos de la Referencia sale solo de las entradas y sus negritas (una prueba exige que tenga cada término en negrita, palabra clave y Rasgo de las cartas) y «Mazos de inicio», de los mazos predefinidos.
 
+12. **Travesías de 2 y 4 capítulos:** El espía de Cádiz y El barco fantasma pasan a dos capítulos (135 y 147 unen los dos primeros; quedan libres los números 136 y 148); La Flota de la Plata y El templo perdido, a cuatro, con dos capítulos III nuevos (238 «Al abordaje del galeón» y 239 «La escalinata de los sacerdotes», con la ficha de Derrumbe). Detalle en la sección «Fase 12» de `docs/decisiones.md`.
+
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
 ## Decisiones de reglas

@@ -67,7 +67,7 @@ function descripcion(e: EntradaCatalogo): string {
       if (e.mision.inicial) return 'Misión inicial'
       if (e.mision.aventura) return 'Aventura'
       const capitulos = new Set(e.mision.capitulos.map((c) => c.capitulo)).size
-      return `Capítulo ${e.carta.capitulo}${e.carta.rama ? `-${e.carta.rama}` : ''} de ${['', 'I', 'II', 'III'][capitulos] ?? total}`
+      return `Capítulo ${e.carta.capitulo}${e.carta.rama ? `-${e.carta.rama}` : ''} de ${['', 'I', 'II', 'III', 'IV'][capitulos] ?? total}`
     }
     case 'pasajero':
       return `Pasajero · ${e.mision.nombre}`

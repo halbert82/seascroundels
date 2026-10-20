@@ -160,9 +160,9 @@ describe('Lo que se explica junto a una carta ampliada', () => {
   })
 
   it('en la recompensa de un capítulo, «Elige» es un final con elección', () => {
-    expect(nombres('templo-III')).toContain('Final con elección')
-    expect(nombres('templo-III')).not.toContain('Elige')
-    expect(nombres('templo-III')).toContain('Maldito')
+    expect(nombres('templo-IV')).toContain('Final con elección')
+    expect(nombres('templo-IV')).not.toContain('Elige')
+    expect(nombres('templo-IV')).toContain('Maldito')
   })
 
   it('las fichas de misión de las reglas del capítulo', () => {

@@ -127,6 +127,13 @@ export const AYUDA_FICHA_MISION: Record<FichaMision, Ayuda> = {
     'Con 3, el espía te descubre: la misión falla.',
     MISION_FALLA,
   ),
+  derrumbe: fichaMision(
+    'derrumbe',
+    'Derrumbe',
+    'Cada Prueba de EXP que falles: 1 ficha de Derrumbe. Cada Prueba de EXP que superes por 2 o más quita 1.',
+    'Con 3, la escalera cede: la misión falla.',
+    MISION_FALLA,
+  ),
   mecha: fichaMision(
     'mecha',
     'Mecha',

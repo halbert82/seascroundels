@@ -168,3 +168,17 @@
   background: rgba(232, 200, 119, 0.14);
   color: #fff;
 }
+
+/* Fase 12: la partida guardada no se puede continuar (p. ej., estaba a mitad de un capítulo que ya no existe). */
+.portada-aviso {
+  max-width: 460px;
+  margin: -18px auto 22px;
+  padding: 8px 14px;
+  border: 1px solid rgba(214, 170, 92, 0.55);
+  border-radius: 6px;
+  background: rgba(20, 14, 9, 0.72);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.35;
+  color: var(--pergamino);
+}
