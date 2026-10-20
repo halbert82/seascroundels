@@ -679,7 +679,7 @@ function faltaAvance(s: Estado): number {
 
 /** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
 /** Capacidades que empiezan una Prueba (la de una Acción). */
-const PRUEBAS_DE_ACCION = new Set(['guardia.palos', 'pm_ojos.accion0', 'a_por_ellos.jugar'])
+const PRUEBAS_DE_ACCION = new Set(['guardia.quitar0', 'pm_ojos.accion0', 'a_por_ellos.jugar'])
 
 function empiezaUnaPrueba(s: Estado, uso: Uso): boolean {
   if (PRUEBAS_DE_ACCION.has(uso.clave)) return true
@@ -860,9 +860,9 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'templo-I.isla':
       return trasEncuentro && faltaAvance(s) <= 0 ? 3 : 0
     // «¡La guardia!» (todas las Pruebas +1): echarlos si se llega, o escabullirse si sobra gente.
-    case 'guardia.palos':
+    case 'guardia.quitar0':
       return trasEncuentro && faltaAvance(s) > 0 && alcanza(s, [{ hab: 'COM', dificultad: 6 }]) ? 2 : 0
-    case 'guardia.tejados':
+    case 'guardia.accion0':
       return trasEncuentro && faltaAvance(s) > 0 && s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length >= 3 ? 1 : 0
     default: {
       // Quitar una carta de Peligro en juego (o sus Acciones): si estorba y se puede pagar sin quedarse sin nadie.

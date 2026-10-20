@@ -164,7 +164,7 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
 ]
 
 /** Permanentes que «Cortar por lo sano» puede devolver al mazo de historia (todas las de la zona de permanentes). */
-// TODO(regla): «¡La guardia!» no está en la zona de permanentes (es una carta de misión): Cortar no la quita, como antes.
+// Fase 11 (P63): «¡La guardia!» también es una permanente: Cortar puede devolverla.
 function cortables(s: Estado) {
   return [...s.zonas.permanentes]
 }

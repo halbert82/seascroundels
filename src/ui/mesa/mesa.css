@@ -759,7 +759,7 @@
 
 .mision-estado {
   flex: 1;
-  min-width: 190px;
+  min-width: 160px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2433,6 +2433,9 @@
   flex-direction: column;
   gap: 4px;
 }
+.en-juego-rotulo {
+  white-space: nowrap;
+}
 .en-juego-rotulo,
 .incautadas-rotulo {
   font-family: 'Alegreya Sans SC', sans-serif;
@@ -2443,32 +2446,54 @@
 }
 .en-juego-cartas {
   display: flex;
-  gap: 6px;
   align-items: flex-start;
 }
-/* Fase 11: cada carta de la zona de permanentes, con «junto a …» debajo si va junto a un Tripulante. */
+/* Fase 11: cada carta de la zona de permanentes; si se solapan, la que va junto a un Tripulante queda encima (su pestaña
+   se lee entera) y la que señala el ratón, encima de todas. */
 .permanente {
   position: relative;
+  z-index: 1;
   flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
-/* «junto a …», sobre la carta, bajo el nombre: no ocupa alto (la cabecera no crece ni tapa la Prueba) ni tapa las fichas. */
-.permanente-junto {
-  position: absolute;
-  left: 2px;
-  right: 2px;
-  top: 30px;
+.permanente.con-junto {
   z-index: 2;
-  pointer-events: none;
+}
+.permanente:hover {
+  z-index: 3;
+}
+/* Una permanente tapada en parte por la siguiente: su contador, compacto y en el borde izquierdo, siempre a la vista. */
+.permanente.tapada .fichas {
+  left: 2px;
+  right: auto;
+}
+.permanente.tapada .ficha-contador small,
+.permanente.tapada .ficha-contador::before {
+  display: none;
+}
+.permanente.tapada .ficha-contador {
+  padding-inline: 5px;
+}
+/* «junto a …»: una pestaña bajo la carta, fuera de ella (no tapa su texto). */
+.permanente-junto {
+  display: block;
+  margin-top: -1px;
+  padding: 1px 4px 2px;
   font-family: 'Alegreya Sans', sans-serif;
   font-weight: 700;
-  font-size: 10px;
-  line-height: 1.1;
+  font-size: 9.5px;
+  line-height: 1.15;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--oro-claro);
-  background: rgba(20, 14, 9, 0.88);
-  border: 1px solid rgba(201, 162, 75, 0.6);
-  border-radius: 4px;
-  padding: 2px 3px;
+  background: rgba(20, 14, 9, 0.92);
+  border: 1px solid rgba(201, 162, 75, 0.7);
+  border-top: 0;
+  border-radius: 0 0 5px 5px;
 }
 .incautadas {
   display: flex;

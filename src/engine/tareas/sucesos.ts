@@ -202,7 +202,7 @@ export const usar: Manejador<'usar'> = (s, t) => {
       }
     }
     // Lo que hacen solas las permanentes y los Peligros (contadores, «cada vez que…») no se anota como «Usas»: lo cuentan sus efectos.
-    const sola = cap.ventana === 'obligada' && ['permanente', 'encuentro', 'destino', 'estadoBarco', 'estado', 'mision', 'pasajero', 'cartaMision'].includes(cap.desde)
+    const sola = cap.ventana === 'obligada' && ['permanente', 'encuentro', 'destino', 'estadoBarco', 'estado', 'mision', 'pasajero'].includes(cap.desde)
     if (sola) {
       // nada
     } else if (fuente !== null && (cap.desde === 'estado' || cap.desde === 'estadoBarco')) {

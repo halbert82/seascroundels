@@ -86,10 +86,10 @@ registrarPeligro('p2_sebusca', {
         },
       ],
     },
-    // EXP 2 (3 si tienes 9 o más de reputación). Fallo: ocupa el muelle (pagas 2 para descartarla).
+    // EXP 2 (3 si tienes 6 o más de reputación). Fallo: ocupa el muelle (pagas 2 para descartarla).
     ciu: {
-      // TODO(regla): fase 11, se gana con 9, 12 o 16: «9 o más de reputación» se pensó para ganar con 18. Pregunta a Albert.
-      capacidades: [dificultad('fama', (ctx) => (ctx.s.reputacion >= 9 ? 1 : 0))],
+      // Fase 11 (P66): 6 o más de reputación (antes 9, cuando se ganaba con 18).
+      capacidades: [dificultad('fama', (ctx) => (ctx.s.reputacion >= 6 ? 1 : 0))],
       fallo: [{ tipo: 'ocuparMuelle', coste: 2 }],
     },
   },
@@ -380,7 +380,7 @@ registrarPeligro('p2_horca', {
       fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'rehen' } }],
     },
     // Al revelarse: el Tripulante preparado de menor coste está en el patíbulo y no puede comprometerse.
-    // −2 si tienes 12 o más de reputación. Fallo: ese Tripulante queda rehén.
+    // −2 si tienes 8 o más de reputación. Fallo: ese Tripulante queda rehén.
     // P36: «el Tripulante preparado de menor coste» no incluye al Capitán (no tiene coste); si empatan, eliges tú; si no
     // hay ninguno preparado, nadie sube al patíbulo y el fallo no se lleva a nadie.
     ciu: {
@@ -397,8 +397,8 @@ registrarPeligro('p2_horca', {
           },
         },
       ],
-      // TODO(regla): fase 11, en una partida corta o normal ya se ha ganado con 12: solo cuenta en una larga. Pregunta a Albert.
-      capacidades: [dificultad('gentio', (ctx) => (ctx.s.reputacion >= 12 ? -2 : 0))],
+      // Fase 11 (P66): 8 o más de reputación (antes 12, cuando se ganaba con 18).
+      capacidades: [dificultad('gentio', (ctx) => (ctx.s.reputacion >= 8 ? -2 : 0))],
       exito: [reputacion(1)],
       fallo: [codigo('p2_horca.verdugo')],
     },

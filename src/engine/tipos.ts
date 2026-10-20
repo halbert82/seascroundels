@@ -46,8 +46,6 @@ export const ZONAS = [
    * a un Tripulante), con su texto activo, hasta que se descartan (vuelven al mazo de historia) o termina la misión.
    */
   'permanentes',
-  /** Cartas de misión que una misión pone en juego a su lado («¡La guardia!»). */
-  'cartasMision',
   /** Cartas y Tripulantes incautados: debajo de la misión hasta superarla (se recuperan) o no (se pierden). */
   'incautadas',
   'misionesDisponibles',
@@ -725,8 +723,6 @@ export interface Capacidad {
     | 'marca'
     /** Un Pasajero en juego. */
     | 'pasajero'
-    /** Una carta de misión junto a la misión («¡La guardia!»). */
-    | 'cartaMision'
   /** Condición extra para poder usarla ahora (p. ej., «solo en Pruebas de COM en el Mar»). */
   requisito?: (s: Estado, yo: InstId | null) => boolean
   /** Lo que dice, para la mesa, cuando no sale del texto de una carta del jugador (capacidades de los Peligros). */

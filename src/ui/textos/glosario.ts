@@ -105,7 +105,7 @@ export const AYUDA_FICHA_MISION: Record<FichaMision, Ayuda> = {
     'alarma',
     'Alarma',
     'Cada Prueba de COM que superes y cada vez que un Tripulante quede Buscado: 1 ficha de Alarma.',
-    'Con 2, la misión necesita 1 de Avance más. Con 3, pon en juego «¡La guardia!» junto a la misión: mientras esté, todas las Pruebas reciben +1.',
+    'Con 2, la misión necesita 1 de Avance más. Con 3, pon en juego la carta 220 del mazo de historia, la permanente «¡La guardia!»: mientras esté, todas las Pruebas reciben +1.',
   ),
   ladron: fichaMision(
     'ladron',
@@ -196,7 +196,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   permanente: regla(
     'permanente',
     'Zona de permanentes',
-    'Algunos encuentros dicen «Pon en juego la carta N del mazo de historia»: esa carta, una permanente, se pone junto a la misión (o junto a un Tripulante, si lo dice) con su texto activo. El encuentro da su Avance y su carta se descarta como cualquier otra. Si la permanente no está en el mazo de historia, la carta del encuentro se descarta sin dar su Avance y se revela otra.',
+    'Algunos encuentros y misiones dicen «Pon en juego la carta N del mazo de historia»: esa carta, una permanente, se pone junto a la misión (o junto a un Tripulante, si lo dice) con su texto activo. El encuentro da su Avance y su carta se descarta como cualquier otra. Si la permanente no está en el mazo de historia, la carta del encuentro se descarta sin dar su Avance y se revela otra.',
     {
       rotulo: 'Cómo se quita',
       texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia con sus fichas fuera.',

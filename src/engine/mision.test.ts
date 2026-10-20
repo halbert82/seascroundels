@@ -29,10 +29,10 @@ describe('Zarpar', () => {
     expect(opcionesDeZarpar(j)).toEqual(['deuda-I', 'prueba-I', 'aguada-I'])
   })
 
-  it('«Las puertas de Panamá» solo con 9 de reputación o más', () => {
+  it('«Las puertas de Panamá» solo con 6 de reputación o más (fase 11, P66; antes 9)', () => {
     const tripulacion = ['viejo_lobo', 'contrabandista']
-    expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-III'], tripulacion, reputacion: 8 }))).toEqual([])
-    expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-III'], tripulacion, reputacion: 9 }))).toEqual(['panama-III'])
+    expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-III'], tripulacion, reputacion: 5 }))).toEqual([])
+    expect(opcionesDeZarpar(enPuerto({ misiones: ['panama-III'], tripulacion, reputacion: 6 }))).toEqual(['panama-III'])
   })
 
   it('no se ofrece una misión lejana si no se puede cubrir su Distancia', () => {
@@ -270,7 +270,7 @@ describe('Retirarse y hundirse', () => {
 })
 
 describe('Superar una misión', () => {
-  it('ejemplo del reglamento: «Un soplo en Port Royal» no da reputación (fase 11) y baraja la carta 136 en el mazo de Misiones', () => {
+  it('ejemplo del reglamento: «Un soplo en Port Royal» da 1 de reputación y baraja la carta 136 en el mazo de Misiones', () => {
     const j = enPuerto({
       misiones: ['espia-I', 'prueba-I', 'aguada-I'],
       mazoMisiones: ['fantasma-I'],
@@ -280,7 +280,7 @@ describe('Superar una misión', () => {
     })
     j.zarpar('espia-I').cubrir('viejo_lobo') // sin cartas en la mano no hay soplón al que pagar
     expect(j.avance('espia-I')).toBe(0) // «Hora de la siesta»: 2 + 2 = 4, superada
-    expect(j.estado.reputacion).toBe(0)
+    expect(j.estado.reputacion).toBe(1) // fase 11 (P62): 1 de reputación
     expect(j.zona('misionesSuperadas')).toEqual(['espia-I'])
     expect([...j.zona('misionesDisponibles'), ...j.zona('mazoMisiones')].sort()).toEqual(['aguada-I', 'espia-II', 'fantasma-I', 'prueba-I'])
     expect(j.zona('misionesDisponibles')).toHaveLength(3)
@@ -334,7 +334,7 @@ describe('Superar una misión', () => {
   it('«Las puertas de Panamá»: ¡victoria! (sin fichas de Defensa)', () => {
     // Pelea de taberna (COM 3): Diego la supera justo y «Ánimo» lo prepara para la siguiente. Cada una quita 1 Defensa.
     const peleas = ['rivales', 'calma', 'rivales', 'calma', 'rivales', 'calma', 'calma']
-    const j = enPuerto({ misiones: ['panama-III'], reputacion: 9, avance: { 'panama-III': 5 }, mazoPeligros: peleas })
+    const j = enPuerto({ misiones: ['panama-III'], reputacion: 6, avance: { 'panama-III': 5 }, mazoPeligros: peleas })
     j.zarpar('panama-III')
     expect(j.estado.mision?.fichas?.defensa).toBe(3)
     j.comprometer('COM', ['capitan']).seguir()

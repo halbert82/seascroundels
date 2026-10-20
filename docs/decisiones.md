@@ -546,7 +546,7 @@ R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y
 
 - **Reputación de cada capítulo** (en los datos y en el texto impreso de las recompensas con texto): iniciales 0 (113, 114, 115); aventuras 1 (116, 117); El templo perdido 1 / 2 / 3 o 2 (120: la opción del ídolo pasa de 4 a 3); La Flota de la Plata 2 / 3 / 4; El espía de Cádiz 0 / 1 / 2; El cargamento de Maracaibo 1 / 2 (II-a y II-b) / 2; La fortaleza de San Felipe 1 / 2 (Por el aljibe) o 3 (Al asalto) / 4 o 3; El barco fantasma 1 / 2 / 3 o 2; El saqueo de Panamá 1 / 2 / victoria.
 - **Pruebas de dificultad 3 o menos** (Peligros 2.0 y mazos propios): Avance 1 / 1 (83 encuentros). Lectura: «Casco comido por la broma» (EXP X, de 3 a 5) se queda en 3 / 2, porque su dificultad no es 3 o menos; en la medida A1 de la fase 10c sí entraba.
-- **Misiones iniciales con precio** (campo `precio`, como la medida I2): Agua y leña, «Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño.»; Rumbo a mar abierto, «Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida.» TODO(regla): Agua y leña es de Naturaleza y el Barco sufre el daño igualmente (como en la medida), aunque el texto no diga «en tierra».
+- **Misiones iniciales con precio** (campo `precio`, como la medida I2): Agua y leña, «Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño, aunque estés en tierra.» (P64); Rumbo a mar abierto, «Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida.»
 - **Reputación para ganar:** corta 9, normal 12, larga 16 (las cartas de Escenario no cambian). Reglamento: tabla de la preparación, Objetivo («12 en una partida normal»), «Ganar y perder», referencia rápida (tabla «Dificultad») y los ejemplos (Port Royal ya no da reputación; la goleta del correo, de 10 a 12; el primer turno: 0 de la misión, 1 de la Gesta y la herida del precio, a Diego).
 - Variantes de medida: quedan REP, ESC, MODO y SINESC.
 
@@ -572,7 +572,7 @@ R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y
   - Si un Motín vuelve a salir con «No vuelven de la taberna» en juego, sus nuevos agotados no pasan a ser «de la taberna».
 - Mesa: la zona de permanentes va en la cabecera de la misión, a la altura de su carta (si no caben, se solapan); «junto a…» sobre la carta y, en el Tripulante, «Permanente 228». Escena `#/escena/permanentes`.
 - Reglamento: «Zona de permanentes» en Aprende a jugar y en la Referencia (con el ejemplo de los Varados), entrada «Permanente», fuera «Se queda en juego» (palabra clave, índice y ejemplos), Cortar por lo sano, Componentes (223 cartas) y mazo de historia.
-- TODO(regla): «¡La guardia!» sigue siendo una carta de misión (no está en la zona de permanentes: Cortar por lo sano no la quita) y su texto aún dice «Se queda en juego junto a la misión». Pregunta a Albert.
+- «¡La guardia!» (220) es también una permanente (P63, ver abajo).
 
 ### Equilibrio de la fase 11 (1000 partidas por fila, semillas 1–1000, mazos de inicio, el mismo jugador automático)
 
@@ -585,5 +585,27 @@ R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y
 - **De dónde sale la diferencia** (normal, 12): el código de la fase 10c con R3 + A1 + I2 da el 27,1 % de referencia; con la tabla de reputación de Albert (y A1 e I2), 30,7 %; con todo lo de la fase 11, 31,0 %. La tabla de Albert da más que R3 en las travesías Difíciles (Flota 2 / 3 / 4 frente a 1 / 2 / 3; San Felipe hasta 3 en el capítulo II y 4 en el III) y menos en El espía (0 / 1 / 2) y en Maracaibo III (2). Las permanentes y el resto de la fase no mueven el equilibrio (+0,3, dentro del ruido).
 - **Opciones medidas** (corta / normal / larga): un punto más para ganar (10 / 13 / 17): 21,5 / 24,4 / 27,9 %. Flota y San Felipe como en R3, con el resto de la tabla igual: 18,4 / 17,6 / 18,3 %.
 - **Travesías completadas** (normal): El barco fantasma 6,3 % de las partidas (gana el 66,7 % de esas), La Flota de la Plata 6,1 % (91,8 %), La fortaleza de San Felipe 5,7 % (64,9 %), El templo perdido 4,4 % (65,9 %), El cargamento de Maracaibo 4,2 % (69,0 %), El espía de Cádiz 0,2 % y El saqueo de Panamá 0,1 % (el jugador automático casi no empieza El espía: su capítulo I da 0).
-- **Pendiente de Albert:** se aleja más de 3 puntos de la referencia, así que no se ha publicado.
-- **TODO(regla), umbrales de reputación de las cartas** (pensados para ganar con 18): «Tu cara en el muelle» (186, Ciudad) pide 1 más con 9 o más de reputación; «Ahorcan a uno de los vuestros» (194, Ciudad) da −2 con 12 o más, que ya solo puede darse en una partida larga; «Las puertas de Panamá» (153) pide 9 o más para zarpar, que en una partida corta es ya la victoria. Sin cambiar hasta que Albert decida.
+- Se alejaba más de 3 puntos de la referencia: no se publicó y Albert ajustó la tabla (P62, abajo).
+- **Umbrales de reputación de las cartas**: resueltos en P66 (ver abajo).
+
+### Respuestas de Albert P62–P66 (20 de octubre de 2026)
+
+- **P62, reputación:** El Paso de los Vientos (126, Flota I) pasa de 2 a 1 y Un soplo en Port Royal (135, Espía I) de 0 a 1; el resto de la tabla no cambia y se sigue ganando con 9 / 12 / 16. El ejemplo de Port Royal vuelve a dar 1 de reputación.
+- **P63, «¡La guardia!» es una permanente:** la carta 220 lleva «Permanente» en la cinta, va a la zona de permanentes y Cortar por lo sano puede devolverla. Texto nuevo, sin «Se queda en juego» ni «vuelve a apartarse» (lo dice la regla de las permanentes). La casa del gobernador y Por el aljibe dicen «pon en juego la carta 220 del mazo de historia». Ya no hay «cartas de misión»: Componentes cuenta 13 permanentes. Las partidas guardadas con la guardia en juego se convierten.
+- **P64, Agua y leña:** «El Barco sufre 1 daño, aunque estés en tierra.» (el comportamiento no cambia).
+- **P65, «Casco comido por la broma» (Mar, EXP X de 3 a 5):** se queda en 3 / 2.
+- **P66, cifras de reputación de las cartas** (proporción de 18 a 12): «Tu cara en el muelle», 1 más con 6 o más de reputación (antes 9); «Ahorcan a uno de los vuestros», −2 con 8 o más (antes 12); «Las puertas de Panamá», 6 para zarpar (antes 9).
+- **118:** fuera «La isla no sale en ningún mapa:» (lo dice ya su cita); la regla empieza en «No puedes superar esta misión…». Letra: 13,6 px en la galería, 12,8–13,6 en la mesa y 12,8 en el libro.
+- **Mesa:** la zona de permanentes mide su sitio en la cabecera de la misión (deja 16 px al Avance y margen al borde) y, si no caben en fila, las cartas se solapan; el contador de fichas de las tapadas va al borde que queda a la vista; «junto a…» es una pestaña bajo la carta. Escena `#/escena/permanentes` con cinco permanentes (una, la guardia; otra, junto a un Tripulante).
+
+### Equilibrio con P62 y P66 (1000 partidas por modo, semillas 1–1000)
+
+| Modo | Para ganar | Victorias | Reputación por misión superada | Victorias de Panamá |
+| --- | --- | --- | --- | --- |
+| Corta | 9 | 25,2 % | 1,06 | 0 % |
+| Normal | 12 | 26,9 % | 1,19 | 0,4 % |
+| Larga | 16 | 30,3 % | 1,30 | 0,5 % |
+
+Dentro de lo que pidió Albert (normal entre 26 y 30 %; corta y larga a menos de 4 puntos): se publica. Con un punto más para ganar (10 / 13 / 17): 15,7 / 20,6 / 24,0 %.
+
+Travesías completadas (% de las partidas, y de esas, % de victorias), corta / normal / larga: San Felipe 3,1 (94) / 6,8 (72) / 11,3 (75); El barco fantasma 3,3 (73) / 6,0 (57) / 9,6 (68); El espía 3,7 (51) / 4,9 (47) / 7,5 (43); La Flota 1,6 (100) / 4,4 (86) / 9,0 (78); Maracaibo 2,6 (65) / 4,3 (63) / 9,2 (55); El templo 2,3 (83) / 4,0 (73) / 7,7 (55); Panamá 0 / 0,4 / 0,5.

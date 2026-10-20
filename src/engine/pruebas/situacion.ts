@@ -172,7 +172,7 @@ function historiaCompleta(): CartaId[] {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
     if (e.tipo === 'tesoro') ids.push(e.id)
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
-    if (e.tipo === 'pasajero' || e.tipo === 'cartaMision' || e.tipo === 'permanente') ids.push(e.id)
+    if (e.tipo === 'pasajero' || e.tipo === 'permanente') ids.push(e.id)
   }
   return ids
 }

@@ -289,8 +289,8 @@ registrarMision('panama-II', {
 })
 
 registrarMision('panama-III', {
-  // TODO(regla): fase 11, en una partida corta se gana con 9: «Las puertas de Panamá» no llega a jugarse. Pregunta a Albert.
-  reputacionMinima: 9,
+  // Fase 11 (P66): 6 de reputación para zarpar (antes 9, cuando se ganaba con 18).
+  reputacionMinima: 6,
   fichas: [{ ficha: 'defensa', nombre: 'Defensa', umbral: 0, inicial: 3, nota: 'Cada Prueba de COM que superes quita 1. No puedes superar la misión mientras quede alguna.' }],
   alZarpar: () => [ponerFichas('defensa', 3)],
   capacidades: [alSuperarPrueba('asalto', (_s, p) => (p.hab === 'COM' ? [ponerFichas('defensa', -1)] : []))],

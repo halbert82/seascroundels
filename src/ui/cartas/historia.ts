@@ -9,8 +9,8 @@ export type DorsoHistoria = 'misiones' | 'muelle' | 'peligros'
 
 /**
  * Si la carta empieza en el mazo de historia, el dorso del mazo al que va: los capítulos II y III, al de Misiones; los
- * Tesoros, al de muelle (son Mejoras); los mazos propios y «La Armada te persigue», al de Peligros. Los Pasajeros,
- * «¡La guardia!» y las permanentes no van a ningún mazo: llevan el dorso de misión, porque salen durante las misiones.
+ * Tesoros, al de muelle (son Mejoras); los mazos propios y «La Armada te persigue», al de Peligros. Los Pasajeros y
+ * las permanentes no van a ningún mazo: llevan el dorso de misión, porque salen durante las misiones.
  */
 export function dorsoDeHistoria(e: EntradaCatalogo): DorsoHistoria | null {
   switch (e.tipo) {
@@ -23,8 +23,8 @@ export function dorsoDeHistoria(e: EntradaCatalogo): DorsoHistoria | null {
     case 'peligro':
       return e.carta.entraDuranteLaPartida && !e.carta.retirada ? 'peligros' : null
     case 'pasajero':
-    case 'cartaMision':
-    // Fase 11: las permanentes tampoco van a ningún mazo (van a la zona de permanentes): dorso de misión, pila normal.
+    // Fase 11: las permanentes (también «¡La guardia!») no van a ningún mazo (van a la zona de permanentes): dorso de
+    // misión, pila normal.
     case 'permanente':
       return 'misiones'
     default:

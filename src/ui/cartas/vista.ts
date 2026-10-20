@@ -24,7 +24,6 @@ export const COLOR_TIPO = {
   escenario: '#7A5418',
   tesoro: '#7A5A14',
   pasajero: '#4A4F6B',
-  cartaMision: '#6E2B26',
   /** Fase 11: las permanentes (cartas del mazo de historia que pone en juego un encuentro). */
   permanente: '#3F4B45',
 } as const
@@ -568,21 +567,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...conArte(entrada.id),
       }
     }
-    case 'cartaMision': {
-      const c = entrada.carta
-      return {
-        ...base(entrada),
-        nombre: c.nombre,
-        color: COLOR_TIPO.cartaMision,
-        tipoTexto: 'Carta de misión · Ciudad',
-        pestanasIzqTop: 74,
-        texto: parsearTexto(c.texto),
-        ambientacion: c.ambientacion,
-        ...conArte(entrada.id),
-      }
-    }
     case 'permanente': {
-      // Fase 11: maqueta de las cartas normales del mazo de historia (como los Pasajeros y «¡La guardia!»), con
+      // Fase 11: maqueta de las cartas normales del mazo de historia (como los Pasajeros), con
       // «Permanente» en la cinta y los Rasgos del encuentro que la pone en juego.
       const c = entrada.carta
       return {
@@ -660,7 +646,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
 function textoPrecio(precio: readonly Efecto[] | undefined): string {
   return (precio ?? [])
     .map((e) => {
-      if (e.tipo === 'dano') return ` El Barco sufre ${e.n} ${e.n === 1 ? 'daño' : 'daños'}.`
+      if (e.tipo === 'dano') return ` El Barco sufre ${e.n} ${e.n === 1 ? 'daño' : 'daños'}${e.enTierra ? ', aunque estés en tierra' : ''}.`
       if (e.tipo === 'heridas') return ` Un Tripulante sufre ${e.n} ${e.n === 1 ? 'herida' : 'heridas'}.`
       throw new Error(`Precio de recompensa sin texto: ${e.tipo}`)
     })
@@ -684,7 +670,6 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'escenario':
     case 'tesoro':
     case 'pasajero':
-    case 'cartaMision':
     case 'permanente':
       return [entrada.carta.texto]
     case 'habilidad':

@@ -54,9 +54,6 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   for (const inst of s.zonas.pasajeros) {
     for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'pasajero') yield [cap, inst]
   }
-  for (const inst of s.zonas.cartasMision) {
-    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'cartaMision') yield [cap, inst]
-  }
   for (const t of s.temporales) {
     // «En tu próximo turno»: aún no cuenta.
     if (t.desdeTurno !== undefined && t.desdeTurno > s.turno) continue

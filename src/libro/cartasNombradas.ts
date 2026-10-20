@@ -50,7 +50,8 @@ function nombres(): Nombre[] {
       // Nombres demasiado cortos o genéricos darían falsos positivos.
       if (texto.length < 4 || vistos.has(texto)) continue
       vistos.add(texto)
-      const con = e.tipo === 'permanente' ? { id: e.carta.origen, parte: (e.carta.entorno === 'unico' ? 'encuentro' : e.carta.entorno) as ParteCarta } : undefined
+      const origen = e.tipo === 'permanente' ? e.carta.origen : undefined
+      const con = e.tipo === 'permanente' && origen ? { id: origen, parte: (e.carta.entorno === 'unico' ? 'encuentro' : e.carta.entorno) as ParteCarta } : undefined
       lista.push({ texto, id: e.id, ...(parte ? { parte } : {}), ...(con ? { con } : {}) })
     }
   }

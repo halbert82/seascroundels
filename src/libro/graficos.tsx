@@ -58,8 +58,6 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
       return deTipo('mazoPropio')
     case 'Pasajeros':
       return deTipo('pasajero')
-    case 'Cartas de misión':
-      return deTipo('cartaMision')
     case 'Permanentes':
       return deTipo('permanente')
     default:

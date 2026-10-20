@@ -83,10 +83,13 @@ describe('24 · Se busca', () => {
     expect(k.estados('bucanero')).toEqual(['buscado'])
   })
 
-  it('Ciudad: EXP 3 con 9 o más de reputación; si fallas, ocupa el muelle (pagas 2 para quitarla)', () => {
-    const j = en('ciu', ['p2_sebusca', 'chubasco', 'calma'], { reputacion: 9 })
+  it('Ciudad: EXP 3 con 6 o más de reputación (fase 11, P66); si fallas, ocupa el muelle (pagas 2 para quitarla)', () => {
+    const j = en('ciu', ['p2_sebusca', 'chubasco', 'calma'], { reputacion: 6 })
     j.comprometer('EXP', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
+    const cinco = en('ciu', ['p2_sebusca', 'chubasco', 'calma'], { reputacion: 5 })
+    cinco.comprometer('EXP', ['capitan'])
+    expect(dificultadConDestino(cinco.estado)).toBe(2)
     const k = en('ciu', ['p2_sebusca', 'chubasco', 'calma'], { muelle: ['bucanero', 'sable', 'vigia', 'matasanos'] })
     k.comprometer('EXP', []).seguir()
     expect(k.zona('muelle')).toContain('p2_sebusca')
@@ -541,13 +544,15 @@ describe('32 · La horca', () => {
     expect(j.zona('tripulacion')).toContain('marinero_p')
   })
 
-  it('Ciudad: −2 con 12 o más de reputación; si superas, +1 reputación', () => {
-    // Fase 11: en una partida normal se gana con 12; con 12 o más solo se juega en una larga (16).
-    const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 12, modo: 'larga' })
+  it('Ciudad: −2 con 8 o más de reputación (fase 11, P66); si superas, +1 reputación', () => {
+    const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 8 })
     j.comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
-    expect(j.estado.reputacion).toBe(13)
+    expect(j.estado.reputacion).toBe(9)
+    const siete = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 7 })
+    siete.comprometer('COM', ['capitan', 'bucanero'])
+    expect(dificultadConDestino(siete.estado)).toBe(6)
   })
 
   it('Destino «La soga»: +2; si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén; sin oposición, el Capitán queda Buscado', () => {

@@ -219,8 +219,8 @@ export interface PasajeroDatos {
 }
 
 /**
- * Permanente (fase 11): carta del mazo de historia que un encuentro pone en juego en la zona de permanentes, junto a la
- * misión (o junto a un Tripulante). Su texto es para leerlo: lo que hace está escrito a mano en las reglas de su Peligro.
+ * Permanente (fase 11): carta del mazo de historia que un encuentro (o una misión: «¡La guardia!») pone en juego en la
+ * zona de permanentes, junto a la misión (o junto a un Tripulante). Su texto es para leerlo: lo que hace está escrito a mano en las reglas de su Peligro.
  */
 export interface PermanenteDatos {
   id: string
@@ -230,25 +230,16 @@ export interface PermanenteDatos {
   rasgos: string[]
   texto: string
   ambientacion: string
-  /** La carta de Peligro (o de mazo propio) que la pone en juego. */
-  origen: string
+  /** La carta de Peligro (o de mazo propio) que la pone en juego (si la pone un encuentro). */
+  origen?: string
   /** El Entorno de ese encuentro («unico» si es de un mazo propio). */
-  entorno: Entorno | 'unico'
+  entorno?: Entorno | 'unico'
+  /** Las misiones que la ponen en juego («¡La guardia!»). */
+  misiones?: string[]
   /** Va junto a un Tripulante («Pon en juego la carta N … junto a él»). */
   junto: boolean
 }
 
-/** Carta de misión apartada que una misión pone en juego («¡La guardia!»). */
-export interface CartaMisionDatos {
-  id: string
-  num: number
-  nombre: string
-  entorno: Entorno
-  texto: string
-  ambientacion: string
-  /** Capítulos que la usan. */
-  misiones: string[]
-}
 
 /** Una de las opciones de un final con elección. */
 export interface OpcionFinal {
@@ -356,7 +347,6 @@ export interface DatosCartas {
   peligros: PeligroDatos[]
   cartasDeMazoPropio: CartaMazoPropioDatos[]
   pasajeros: PasajeroDatos[]
-  cartasDeMision: CartaMisionDatos[]
   permanentes: PermanenteDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }

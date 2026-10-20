@@ -1,12 +1,14 @@
-// Misiones 2.0 · las cartas de misión apartadas: los Pasajeros (Don Anselmo y El guía del istmo) y «¡La guardia!».
+// Misiones 2.0 · las cartas apartadas de las misiones: los Pasajeros (Don Anselmo y El guía del istmo) y la permanente
+// «¡La guardia!».
 
 import { registrarCapacidades } from '../capacidades/index.ts'
+import { registrarPermanente } from '../capacidades/peligros.ts'
 import { entornoActual } from '../peligros.ts'
 import type { Capacidad, Consulta, Estado, InstId } from '../tipos.ts'
 import { bajarPasajero, ultimaPrueba } from './comun.ts'
 
-/** Capacidades de una carta que funcionan mientras está en su zona (Pasajeros, cartas junto a la misión). */
-function enSuZona(desde: 'pasajero' | 'cartaMision', zona: 'pasajeros' | 'cartasMision', carta: string, caps: Omit<Capacidad, 'carta' | 'desde'>[]): Capacidad[] {
+/** Capacidades de una carta que funcionan mientras está en su zona (los Pasajeros). */
+function enSuZona(desde: 'pasajero', zona: 'pasajeros', carta: string, caps: Omit<Capacidad, 'carta' | 'desde'>[]): Capacidad[] {
   const activa = (s: Estado, yo: InstId | null) => yo !== null && s.zonas[zona].includes(yo)
   return caps.map((c) => {
     const cap: Capacidad = { ...c, clave: `${carta}.${c.clave}`, carta, desde }
@@ -52,42 +54,13 @@ registrarCapacidades(
 )
 
 // ---------------------------------------------------------------------------
-// ¡La guardia!: mientras esté, todas las Pruebas reciben +1. Acción: Prueba de COM 5, o agota a 2 Tripulantes:
-// descarta esta carta (vuelve a apartarse). Al terminar la misión, también vuelve a apartarse.
+// ¡La guardia! (fase 11, P63: es una permanente, carta 220): mientras esté, todas las Pruebas reciben +1. Acción: Prueba
+// de COM 5, o agota a 2 Tripulantes: descarta esta carta (vuelve al mazo de historia, como cualquier permanente; también
+// al terminar la misión). «Cortar por lo sano» puede devolverla.
 
-registrarCapacidades(
-  ...enSuZona('cartaMision', 'cartasMision', 'guardia', [
-    // P54 (confirmada): el +1 de «¡La guardia!» también se aplica a su propia Prueba de COM 5 (queda en 6).
-    { clave: 'todas', ventana: 'constante', modifica: (_ctx, _yo, c: Consulta) => (c.tipo === 'dificultad' ? 1 : 0) },
-    {
-      clave: 'palos',
-      ventana: 'accion',
-      texto: 'Haz una Prueba de COM 5 (los echáis a palos): si la superas, descarta ¡La guardia!',
-      requisito: (s) => s.prueba === null,
-      efecto: (_s, yo) =>
-        yo
-          ? [
-              {
-                tipo: 'pruebaSuelta',
-                fuente: yo,
-                paso: 'empezar',
-                definicion: {
-                  nombre: 'Echar a la guardia a palos',
-                  palabrasClave: [],
-                  opciones: [{ hab: 'COM', dificultad: 5 }],
-                  exito: [{ tipo: 'codigo', clave: 'guardia.descartar' }],
-                  fallo: [],
-                },
-              },
-            ]
-          : [],
-    },
-    {
-      clave: 'tejados',
-      ventana: 'accion',
-      texto: 'Agota a 2 Tripulantes (os escabullís por los tejados): descarta ¡La guardia!',
-      coste: [{ tipo: 'agotarVarios', n: 2 }],
-      efecto: (_s, yo) => (yo ? [{ tipo: 'aplicarEfectos', efectos: [{ tipo: 'codigo', clave: 'guardia.descartar' }], contexto: 'efecto', fuente: yo }] : []),
-    },
-  ]),
-)
+registrarPermanente('guardia', {
+  // P54 (confirmada): el +1 de «¡La guardia!» también se aplica a su propia Prueba de COM 5 (queda en 6).
+  capacidades: [{ clave: 'todas', ventana: 'constante', modifica: (_ctx, _yo, c: Consulta) => (c.tipo === 'dificultad' ? 1 : 0) }],
+  quitar: [{ tipo: 'prueba', opciones: [{ hab: 'COM', dificultad: 5 }] }],
+  acciones: [{ texto: 'Agota a 2 Tripulantes (os escabullís por los tejados): descarta esta carta', coste: [{ tipo: 'agotarVarios', n: 2 }], efectos: [{ tipo: 'descartarEsta' }] }],
+})

@@ -1,7 +1,7 @@
 // La misión en curso: su carta y su Avance, la carta de Peligro revelada y el panel de la Prueba.
 
 import { motion } from 'motion/react'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { iconosDe, porId } from '../../engine/catalogo.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia, nombre } from '../../engine/estado.ts'
@@ -65,11 +65,43 @@ function ultimaRevelada(s: Estado, desde: number): InstId | null {
 }
 
 /** Ancho que se guarda para el Avance y las notas de la misión, junto a la zona de permanentes. */
-const ANCHO_MIN_ESTADO = 190
+const ANCHO_MIN_ESTADO = 160
+/** Escala de la carta de misión de la cabecera y de las permanentes (tienen su misma altura, con el rótulo y la pestaña). */
+const ESCALA_MISION = 0.34
+const ESCALA_PERMANENTE = 0.18
+/** Lo que se deja libre hasta el borde del panel, y entre carta y carta cuando caben en fila. */
+const MARGEN_ZONA = 14
+const ENTRE_PERMANENTES = 6
+/** Ancho del rótulo «Zona de permanentes»: la zona nunca es más estrecha. */
+const ANCHO_ROTULO = 150
+
+/**
+ * Fase 11: cómo se colocan las permanentes en la cabecera de la misión. Si caben en fila, con su separación; si no, se
+ * solapan (cada una asoma `paso` px) para no tocar el borde ni robar sitio al Avance. Al pasar el ratón, se amplían.
+ */
+export function colocarPermanentes(anchoCabecera: number, n: number): { paso: number; ancho: number } {
+  const carta = MEDIDAS.normal.ancho * ESCALA_PERMANENTE
+  const libre = anchoCabecera - MEDIDAS.normal.alto * ESCALA_MISION - 2 * 16 - ANCHO_MIN_ESTADO - MARGEN_ZONA
+  if (n <= 1) return { paso: 0, ancho: Math.max(ANCHO_ROTULO, carta) }
+  const paso = Math.max(14, Math.min(carta + ENTRE_PERMANENTES, (Math.max(libre, ANCHO_ROTULO) - carta) / (n - 1)))
+  return { paso, ancho: Math.max(ANCHO_ROTULO, carta + paso * (n - 1)) }
+}
 
 export function ZonaMision({ desde, decision, sel }: { desde: number; decision: Decision | null; sel: Seleccion | null }) {
   const { s } = useMesa()
   const { ancho } = useLienzo()
+  // El ancho real de la cabecera (sin escalar): de él sale cuánto sitio tiene la zona de permanentes.
+  const cabecera = useRef<HTMLDivElement>(null)
+  const [anchoCabecera, setAnchoCabecera] = useState(0)
+  useEffect(() => {
+    const el = cabecera.current
+    if (!el) return
+    const medir = () => setAnchoCabecera(el.clientWidth)
+    medir()
+    const ro = new ResizeObserver(medir)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [s.mision?.carta])
   const m = s.mision
   if (!m) return null
   const necesario = valor(s, { tipo: 'avanceNecesario', mision: m.carta })
@@ -84,15 +116,12 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
   // La zona de permanentes, a la derecha de la cabecera (fase 11): las cartas, a la altura de la carta de misión, para que
   // la cabecera no crezca ni tape la Prueba; si no caben en fila, se solapan (al pasar el ratón se amplían). El Avance
   // conserva su ancho.
-  const enZona = s.zonas.permanentes.length + s.zonas.cartasMision.length
-  const escalaPermanente = 0.2
-  const anchoPermanente = MEDIDAS.normal.ancho * escalaPermanente
-  const libre = centro - MEDIDAS.normal.alto * 0.34 - 2 * 16 - ANCHO_MIN_ESTADO
-  const separacion = enZona > 1 ? Math.min(6, (libre - enZona * anchoPermanente) / (enZona - 1)) : 0
+  const { paso, ancho: anchoZona } = colocarPermanentes(anchoCabecera || centro, s.zonas.permanentes.length)
+  const anchoPermanente = MEDIDAS.normal.ancho * ESCALA_PERMANENTE
   return (
     <section className="zona zona-mision">
-      <div className="mision-cabecera">
-        <CartaDe inst={m.carta} escala={0.34} />
+      <div className="mision-cabecera" ref={cabecera}>
+        <CartaDe inst={m.carta} escala={ESCALA_MISION} />
         <div className="mision-estado">
           <BarraAvance actual={copia(s, m.carta).avance} necesario={necesario} />
           {fichasVisibles(s).length > 0 && (
@@ -135,19 +164,26 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
             </div>
           )}
         </div>
-        {s.zonas.permanentes.length + s.zonas.cartasMision.length > 0 && (
-          <div className="en-juego">
+        {s.zonas.permanentes.length > 0 && (
+          <div className="en-juego" style={{ width: anchoZona, marginRight: MARGEN_ZONA }}>
             <Explicable ayuda={AYUDA_REGLA.permanente} className="en-juego-rotulo">
               Zona de permanentes
             </Explicable>
             <div className="en-juego-cartas">
-              {/* «¡La guardia!» (carta de misión) y las permanentes (fase 11), todas de tamaño normal. */}
-              {[...s.zonas.cartasMision, ...s.zonas.permanentes].map((c, i) => {
+              {s.zonas.permanentes.map((c, i) => {
                 const junto = copia(s, c).junto
+                const conJunto = junto !== undefined && s.cartas[junto] !== undefined
+                // Si la siguiente la tapa en parte, su contador de fichas va al borde que queda a la vista.
+                const tapada = i < s.zonas.permanentes.length - 1 && paso < anchoPermanente
                 return (
-                  <div key={c} className="permanente" style={i > 0 ? { marginLeft: separacion } : undefined}>
-                    <CartaDe inst={c} escala={escalaPermanente} />
-                    {junto && s.cartas[junto] && (
+                  <div
+                    key={c}
+                    className={['permanente', conJunto && 'con-junto', tapada && 'tapada'].filter(Boolean).join(' ')}
+                    style={{ width: anchoPermanente, ...(i > 0 ? { marginLeft: paso - anchoPermanente } : {}) }}
+                  >
+                    <CartaDe inst={c} escala={ESCALA_PERMANENTE} />
+                    {/* Pestaña bajo la carta (sin tapar su texto): junto a quién está. */}
+                    {conJunto && junto && (
                       <span className="permanente-junto" title={`Va junto a ${nombre(s, junto)}`}>
                         junto a {nombre(s, junto)}
                       </span>

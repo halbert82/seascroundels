@@ -66,7 +66,7 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
   for (const id of m.apartadosDePeligros) crearCopia(s, id, 'mazoHistoria')
 
   // 5. Misiones: las tres iniciales disponibles; capítulos I y aventuras en el mazo de Misiones;
-  //    capítulos II y III, Tesoros, mazos propios, Pasajeros, cartas de misión y permanentes en el mazo de historia.
+  //    capítulos II y III, Tesoros, mazos propios, Pasajeros y permanentes en el mazo de historia.
   for (const id of DATOS.ordenMisiones.iniciales) crearCopia(s, `${id}-I`, 'misionesDisponibles')
   for (const id of [...DATOS.ordenMisiones.travesias, ...DATOS.ordenMisiones.aventuras]) crearCopia(s, `${id}-I`, 'mazoMisiones')
   barajar(s, 'mazoMisiones')
@@ -80,9 +80,10 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') crearCopia(s, e.id, 'mazoHistoria')
     if (e.tipo === 'tesoro') crearCopia(s, e.id, 'mazoHistoria')
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) crearCopia(s, e.id, 'mazoHistoria')
-    // Misiones 2.0: los Pasajeros y las cartas de misión («¡La guardia!») esperan apartadas en el mazo de historia.
-    if (e.tipo === 'pasajero' || e.tipo === 'cartaMision') crearCopia(s, e.id, 'mazoHistoria')
-    // Fase 11: las permanentes esperan apartadas en el mazo de historia hasta que un encuentro las pone en juego.
+    // Misiones 2.0: los Pasajeros esperan apartados en el mazo de historia.
+    if (e.tipo === 'pasajero') crearCopia(s, e.id, 'mazoHistoria')
+    // Fase 11: las permanentes (también «¡La guardia!») esperan apartadas en el mazo de historia hasta que un encuentro o
+    // una misión las pone en juego.
     if (e.tipo === 'permanente') crearCopia(s, e.id, 'mazoHistoria')
   }
 

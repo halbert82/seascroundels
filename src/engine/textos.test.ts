@@ -147,7 +147,7 @@ describe('Textos de las cartas que lee el motor', () => {
     const misiones = CATALOGO.filter((e) => e.tipo === 'capitulo').map((e) => e.id)
     expect(misiones).toHaveLength(28)
     expect([...misionesConReglas()].sort()).toEqual([...misiones].sort())
-    expect(reputacionMinima('panama-III')).toBe(9)
+    expect(reputacionMinima('panama-III')).toBe(6) // fase 11 (P66)
     expect(reputacionMinima('deuda-I')).toBe(0)
   })
 })

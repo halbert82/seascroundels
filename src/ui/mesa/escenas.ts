@@ -64,24 +64,42 @@ function enJuego(): PartidaEnMesa {
 }
 
 /**
- * Fase 11, en Naturaleza: tres permanentes en la zona de permanentes («Ojos amarillos en la espesura», «La manigua
- * arde» con 2 fichas de Fuego y «Arenas movedizas» junto a la Vigía, que está atrapada) y la Prueba de «Desertores del
- * rey» con el Destino revelado.
+ * Fase 11, en Ciudad: cinco permanentes en la zona de permanentes. «Campanas a rebato» y «No vuelven de la taberna» salen
+ * de sus Peligros; «¡La guardia!», «Murmullos en el sollado» y «Arenas movedizas» (junto a la Vigía, atrapada) se ponen a
+ * mano, para ver la zona llena. Después, la Prueba de «Sangre caliente» con el Destino revelado.
  */
 function permanentes(): PartidaEnMesa {
   const j = Jugador.enMision({
-    misiones: ['pruebas-nat9'],
-    mazoPeligros: ['p2_jaguar', 'p2_fuego', 'p2_arenas', 'p2_desertores', 'chubasco', 'calma', 'calma'],
+    misiones: ['pruebas-ciu9'],
+    mazoPeligros: ['p2_rebato', 'p2_motin', 'p2_sangre', 'chubasco', 'calma', 'calma'],
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje'],
-    tripulacion: ['vigia', 'bucanero', 'baqueano', 'viejo_lobo'],
+    tripulacion: ['vigia', 'bucanero', 'baqueano', 'reinaldo'],
     barco: { mejoras: ['vela'] },
     reputacion: 4,
   })
-  j.seguir().seguir().seguir()
-  // Las dos fichas que ponen la manigua y las arenas al revelar «Desertores del rey»: el orden da igual.
+  j.seguir()
+  const s = j.estado
+  const poner = (id: string, fichas?: number, junto?: string): InstId => {
+    const c = s.zonas.mazoHistoria.find((x) => s.cartas[x]?.id === id) as InstId
+    s.zonas.mazoHistoria = s.zonas.mazoHistoria.filter((x) => x !== c)
+    s.zonas.permanentes.push(c)
+    const copia = s.cartas[c]
+    if (copia && fichas !== undefined) copia.fichas = fichas
+    if (copia && junto) copia.junto = j.inst(junto)
+    return c
+  }
+  poner('guardia')
+  poner('pm_murmullos', 1)
+  const arenas = poner('pm_arenas', 1, 'vigia')
+  s.temporales.push(
+    { clave: 'noCompromete', fuente: 'pm_arenas', hasta: 'carta', inst: j.inst('vigia'), carta: arenas },
+    { clave: 'noPrepara', fuente: 'pm_arenas', hasta: 'carta', inst: j.inst('vigia'), carta: arenas },
+  )
+  j.seguir()
+  // Las fichas que ponen a la vez las campanas y los murmullos: el orden da igual.
   while (j.decision.motivo.clave === 'ordenObligadas' && j.decision.tipo === 'elegirOpcion') j.opcion(j.decision.opciones[0]?.clave ?? '')
-  j.comprometer('EXP', ['viejo_lobo', 'vigia']).pasarOfertas()
+  j.comprometer('COM', ['capitan', 'reinaldo']).pasarOfertas()
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 8) }
 }
 
@@ -137,7 +155,7 @@ function finalMision(): PartidaEnMesa {
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon'],
     tripulacion: ['viejo_lobo', 'baqueano'],
-    reputacion: 9,
+    reputacion: 5,
   })
   const desde = j.estado.registro.findIndex((r) => r.dato?.tipo === 'zarpar')
   return { ...empezar(j.estado), desde: Math.max(0, desde) }

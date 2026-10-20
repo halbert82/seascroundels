@@ -97,6 +97,12 @@ export function deserializar(texto: string): Estado {
   if (!s.zonas || typeof s.zonas !== 'object') throw anterior()
   // Fase 11: la zona de permanentes es nueva (antes, la de las cartas que se quedaban en juego).
   if (!Array.isArray(s.zonas.permanentes) && Array.isArray((s.zonas as Record<string, unknown>).peligrosEnJuego)) migrarPermanentes(s)
+  // Fase 11 (P63): «¡La guardia!» ya no está en la zona de las cartas de misión: es una permanente.
+  const zonas = s.zonas as Record<string, InstId[] | undefined>
+  if (Array.isArray(zonas.cartasMision)) {
+    s.zonas.permanentes = [...(s.zonas.permanentes ?? []), ...zonas.cartasMision]
+    delete zonas.cartasMision
+  }
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()

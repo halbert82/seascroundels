@@ -1,9 +1,9 @@
 // Misiones 2.0 · las misiones de un solo capítulo: las tres iniciales y las dos aventuras.
 // También la Alarma y «¡La guardia!», que usan La casa del gobernador y San Felipe II-a.
 
-import { anotar, copia, nombre } from '../estado.ts'
+import { anotar, copia } from '../estado.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
-import type { Estado, NuevaTarea } from '../tipos.ts'
+import type { NuevaTarea } from '../tipos.ts'
 import { mover } from '../zonas.ts'
 import {
   alFallarPrueba,
@@ -45,24 +45,13 @@ export function alarma(): Pick<ReglasMision, 'fichas' | 'capacidades' | 'alCambi
   }
 }
 
-// «¡La guardia!» entra en juego junto a la misión (está apartada en el mazo de historia).
+// «Con 3, pon en juego la carta 220 del mazo de historia»: la permanente «¡La guardia!» (fase 11, P63) va a la zona de
+// permanentes. Si ya está en juego, no pasa nada más. Lo que hace y cómo se quita, en misiones2/cartas.ts.
 registrarCodigo('mision.guardia', (s) => {
   const carta = s.zonas.mazoHistoria.find((c) => copia(s, c).id === 'guardia')
   if (!carta || !s.mision) return []
-  mover(s, carta, 'cartasMision', 'abajo')
-  anotar(s, 'aviso', 'La Alarma llega a 3: ¡La guardia! entra en juego junto a la misión. Todas las Pruebas reciben +1.')
-  return []
-})
-
-/** «¡La guardia!» se descarta: vuelve a apartarse (al mazo de historia). */
-export function apartarCartaDeMision(s: Estado, carta: Parameters<typeof nombre>[1], motivo: string): void {
-  if (!s.zonas.cartasMision.includes(carta)) return
-  mover(s, carta, 'mazoHistoria', 'abajo')
-  anotar(s, 'efecto', `${motivo}: «${nombre(s, carta)}» vuelve a apartarse.`)
-}
-
-registrarCodigo('guardia.descartar', (s, fuente) => {
-  if (fuente) apartarCartaDeMision(s, fuente, 'Os quitáis de encima a la guardia')
+  mover(s, carta, 'permanentes', 'abajo')
+  anotar(s, 'aviso', 'La Alarma llega a 3: pones en juego la carta 220 del mazo de historia, «¡La guardia!». Todas las Pruebas reciben +1.')
   return []
 })
 

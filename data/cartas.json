@@ -5690,7 +5690,7 @@
      "nota": "",
      "textoExito": "~Os escurrís entre el gentío leyendo cuánto ofrecen por vosotros.~ Nada más.",
      "textoFallo": "~El cartel se queda clavado en el muelle y nadie se enrola con una cabeza a precio.~ **Ocupa el muelle:** pon esta carta en el muelle en lugar de la carta de coste más alto (empate: la de más a la izquierda), que se descarta. En la Fase de Reclutamiento puedes pagar 2 cartas para descartarla.",
-     "notaPrueba": "3 si tienes 9 o más de reputación (cuanto más famoso, más te miran)."
+     "notaPrueba": "3 si tienes 6 o más de reputación (cuanto más famoso, más te miran)."
     }
    },
    "destino": {
@@ -6360,7 +6360,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**Al revelarse:** el Tripulante preparado de menor coste está en el patíbulo y no puede ser asignado. −2 de dificultad si tienes 12 o más de reputación (el gentío está de tu parte).",
+     "textoEfecto": "**Al revelarse:** el Tripulante preparado de menor coste está en el patíbulo y no puede ser asignado. −2 de dificultad si tienes 8 o más de reputación (el gentío está de tu parte).",
      "textoExito": "~Cortáis la soga a tiempo y el gentío os vitorea.~ +1 reputación.",
      "textoFallo": "~Lo suben al patíbulo.~ Ese Tripulante queda rehén. Si no superas la misión, lo ahorcan."
     }
@@ -8670,7 +8670,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "La isla no sale en ningún mapa: no puedes superar esta misión hasta superar en ella una Prueba de [NAV] o [EXP], o agotar a un _Vigía_ o _Piloto_ (**Acción**) ~(avistáis la isla)~.",
+      "No puedes superar esta misión hasta superar en ella una Prueba de [NAV] o [EXP], o agotar a un _Vigía_ o _Piloto_ (**Acción**) ~(avistáis la isla)~.",
       "**Al zarpar:** Puedes agotar a un _Oficial_: gana {2 avance} ~(el informante de Tortuga solo habla con oficiales)~."
      ],
      "ambientacion": "«Dicen que la isla no sale en ningún mapa. Por eso vamos.»",
@@ -8769,7 +8769,7 @@
      ],
      "ambientacion": "«Entre Cuba y La Española, el viento manda.»",
      "recompensa": {
-      "rep": 2
+      "rep": 1
      },
      "siguiente": [
       127
@@ -8851,7 +8851,7 @@
      ],
      "ambientacion": "«Un hombre con acento de Cádiz pregunta demasiado.»",
      "recompensa": {
-      "rep": 0
+      "rep": 1
      },
      "siguiente": [
       136
@@ -9031,7 +9031,7 @@
      "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego **¡La guardia!**."
+      "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego la carta 220 del mazo de historia."
      ],
      "ambientacion": "",
      "recompensa": {
@@ -9339,7 +9339,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Solo puedes zarpar a esta misión si tienes {9 rep} o más.",
+      "Solo puedes zarpar a esta misión si tienes {6 rep} o más.",
       "**Al zarpar:** Pon 3 fichas de Defensa ~(la ciudad se defiende)~. Cada Prueba de [COM] que superes quita 1. No puedes superar la misión mientras quede alguna."
      ],
      "ambientacion": "«La ciudad más rica del Nuevo Mundo. Y esta noche, la tuya.»",
@@ -9397,7 +9397,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego **¡La guardia!**.",
+      "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego la carta 220 del mazo de historia.",
       "Saqueo: puedes retirarte entre dos Peligros y cobrar según tu Avance: con 2 o 3, roba {2 robar}; con 4 o más, {+1 rep} y busca una Mejora."
      ],
      "ambientacion": "«Música, pelucas y candelabros de plata. Los candelabros, para nosotros.»",
@@ -9714,21 +9714,20 @@
    "ambientacion": "«Un cimarrón que conoce el camino.»"
   }
  ],
- "cartasDeMision": [
+ "permanentes": [
   {
    "id": "guardia",
    "num": 220,
    "nombre": "¡La guardia!",
-   "entorno": "ciu",
-   "texto": "Se queda en juego junto a la misión. Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Haz una Prueba de [COM] 5 ~(los echáis a palos)~, o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.\nAl terminar la misión, vuelve a apartarse.",
+   "rasgos": [],
+   "texto": "Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Haz una Prueba de [COM] 5 ~(los echáis a palos)~, o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.",
    "ambientacion": "",
+   "junto": false,
    "misiones": [
     "gobernador-I",
     "sanfelipe-II-a"
    ]
-  }
- ],
- "permanentes": [
+  },
   {
    "id": "pm_varados",
    "num": 226,

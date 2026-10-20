@@ -98,10 +98,9 @@ La Caja básica de Sea Scoundrels contiene 223 cartas, que se dividen en cartas 
 | Tesoros | 6 |
 | Mazos propios | 12 |
 | Pasajeros | 2 |
-| Cartas de misión | 1 |
-| Permanentes | 12 |
+| Permanentes | 13 |
 
-Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, la carta de misión, las permanentes y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
+Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, las permanentes y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
 Las cartas de Peligro, las de los mazos propios y las de puerto tienen tamaño tarot (70 × 120 mm), más grande que el del resto de cartas (63 × 88 mm), para que su texto se lea bien. Por eso el mazo de historia se guarda en dos montones, uno por tamaño: las cartas que van al mazo de Peligros (los mazos propios y «La Armada te persigue») están en el montón grande.
 
@@ -198,7 +197,7 @@ Las cartas de Escenario tienen nombre, texto y frase de ambientación. Su efecto
 
 #### Cartas del mazo de historia
 
-Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros, «¡La guardia!» y las permanentes no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Añade la carta 137 al mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
+Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Añade la carta 137 al mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
 
 > [!grafico] anatomia historia
 
@@ -264,7 +263,7 @@ La partida se prepara siguiendo estos pasos:
 2. **Pon en juego a tu Capitán y tu Barco.** El Capitán empieza en juego preparado.
 3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa.
 4. **Prepara el mazo de Peligros.** Baraja todas las cartas de Peligro y deja el mazo boca abajo junto a la carta de puerto.
-5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!», las permanentes y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
+5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los siete capítulos I y las dos aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique el puerto. Esas cartas, boca arriba junto al puerto, forman el **muelle**, que es el único lugar desde el que se pueden reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a la mano del jugador.
    > [!tema]
    > El muelle es donde se busca gente: marineros sin barco, artilleros sin cañón y cirujanos sin título. Lo que no contratas hoy se lo lleva otro capitán.
@@ -448,7 +447,7 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 
 #### Zona de permanentes
 
-Algunos encuentros dicen «**Pon en juego la carta N del mazo de historia**». Esa carta es una **permanente**: el jugador la busca por su número y la coloca junto a la misión, en la **zona de permanentes**, donde su texto queda activo hasta que se descarta.
+Algunos encuentros y algunas misiones dicen «**Pon en juego la carta N del mazo de historia**». Esa carta es una **permanente**: el jugador la busca por su número y la coloca junto a la misión, en la **zona de permanentes**, donde su texto queda activo hasta que se descarta.
 
 - El encuentro da su Avance y su carta se descarta como cualquier otra. Cuenta como carta resuelta: después de ella, el jugador ya puede retirarse o superar la misión, salvo que el texto de la permanente lo impida.
 - Si la permanente no está en el mazo de historia (porque ya está en juego), la carta del encuentro se descarta sin dar su Avance y se revela otra.
@@ -477,7 +476,7 @@ Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de 
 Algunas misiones, y algunas permanentes, llevan la cuenta de algo con **fichas de misión** sobre su carta. Todas las fichas de misión son iguales: la carta indica qué representan («Cada Prueba de COM superada: 1 ficha de Alarma»), cuándo se ponen y se quitan, y qué sucede al llegar a cierto número. Las fichas de misión se descartan al terminar la misión, independientemente de si se supera o no.
 
 > [!ejemplo]
-> En «La casa del gobernador», cada Prueba de COM que supera el jugador pone 1 ficha de Alarma. Con 2 fichas, la misión necesita 1 de Avance más. Con 3, se pone en juego «¡La guardia!» junto a la misión: mientras esté en juego, todas las Pruebas reciben +1 de dificultad.
+> En «La casa del gobernador», cada Prueba de COM que supera el jugador pone 1 ficha de Alarma. Con 2 fichas, la misión necesita 1 de Avance más. Con 3, se pone en juego la carta 220 del mazo de historia, la permanente «¡La guardia!»: mientras esté en juego, todas las Pruebas reciben +1 de dificultad.
 
 Algunas misiones indican que **la misión falla** («Con 3, el espía te descubre: la misión falla»). Este resultado equivale a retirarse: el jugador no supera la misión, pierde su Avance y elige si la deja disponible o la pone al fondo del mazo de Misiones.
 
@@ -512,7 +511,7 @@ En cuanto el jugador reúne el Avance que pide la misión, la supera. Debe resol
 Dado que el capítulo nuevo se baraja antes de reponer las misiones disponibles, puede aparecer de inmediato o mucho más tarde.
 
 > [!ejemplo]
-> El jugador supera «Un soplo en Port Royal». Su recompensa no da reputación, pero indica «Añade la carta 136 al mazo de Misiones»: el jugador busca la carta 136 en el mazo de historia, que es «Seguirle por los muelles», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «Niebla en el estrecho».
+> El jugador supera «Un soplo en Port Royal» y gana 1 de reputación. Su recompensa indica «Añade la carta 136 al mazo de Misiones»: el jugador busca la carta 136 en el mazo de historia, que es «Seguirle por los muelles», y la baraja en el mazo de Misiones. Después repone las misiones disponibles y sale «Niebla en el estrecho».
 
 #### No superar una misión
 
@@ -520,7 +519,7 @@ Si el jugador se retira, la misión falla o se hunde su Barco, el jugador no sup
 
 #### Al terminar la misión
 
-Tanto si se ha superado como si no, si la misión tenía un mazo propio, este se separa y se devuelve al mazo de historia. Las cartas de misión que estuvieran junto a ella («¡La guardia!») y las permanentes vuelven al mazo de historia. Las demás cartas de Peligro vuelven a su pila de descartes. Los Pasajeros permanecen con el jugador. Después, el jugador vuelve a puerto y pasa a la Fase de Final de turno.
+Tanto si se ha superado como si no, si la misión tenía un mazo propio, este se separa y se devuelve al mazo de historia. Las permanentes vuelven al mazo de historia. Las demás cartas de Peligro vuelven a su pila de descartes. Los Pasajeros permanecen con el jugador. Después, el jugador vuelve a puerto y pasa a la Fase de Final de turno.
 
 ### Heridas, daño y penalizaciones
 
@@ -1049,7 +1048,7 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 ### Mazo de historia
 
-El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, «¡La guardia!», las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros, «¡La guardia!» y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
+El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II y III, los Tesoros, los mazos propios, los Pasajeros, las permanentes y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Añade la carta 137 al mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
 
 - El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
 
@@ -1150,7 +1149,7 @@ Un Pasajero es una carta que viaja con el jugador. Ocupa 1 de Capacidad; si no q
 
 ### Permanente
 
-Una permanente es una carta del mazo de historia que un encuentro pone en juego («Pon en juego la carta 226 del mazo de historia»). Se coloca junto a la misión, en la zona de permanentes, y su texto queda activo hasta que se descarta, es decir, hasta que vuelve al mazo de historia. La Caja básica tiene 12, con los números del 226 al 237.
+Una permanente es una carta del mazo de historia que un encuentro o una misión pone en juego («Pon en juego la carta 226 del mazo de historia»). Se coloca junto a la misión, en la zona de permanentes, y su texto queda activo hasta que se descarta, es decir, hasta que vuelve al mazo de historia. La Caja básica tiene 13: «¡La guardia!» (220) y las cartas 226 a 237.
 
 *Véase también:* Zona de permanentes.
 
@@ -1198,7 +1197,7 @@ Una Prueba de una Acción es la Prueba que exigen algunas capacidades de Acción
 - No puede hacerse durante otra Prueba; se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro.
 
 > [!ejemplo]
-> En «La casa del gobernador», la Alarma llega a 3 y «¡La guardia!» entra en juego junto a la misión. Tras resolver una carta de Peligro, el jugador usa su Acción: Prueba de COM 5, que con el +1 de dificultad de la propia guardia pide 6. Asigna a Diego (COM 3) y al Bucanero veterano (COM 2; no recibe el +1 de Diego, que se agota a la vez) y añade «¡Al abordaje!» (dos iconos de COM): 7. Sale el Destino de la carta «Arrecife» (−1): el total baja a 6 y el jugador supera la Prueba, de modo que ¡La guardia! vuelve al mazo de historia. El jugador no gana Avance por esta Prueba.
+> En «La casa del gobernador», la Alarma llega a 3 y la permanente «¡La guardia!» entra en juego junto a la misión. Tras resolver una carta de Peligro, el jugador usa su Acción: Prueba de COM 5, que con el +1 de dificultad de la propia guardia pide 6. Asigna a Diego (COM 3) y al Bucanero veterano (COM 2; no recibe el +1 de Diego, que se agota a la vez) y añade «¡Al abordaje!» (dos iconos de COM): 7. Sale el Destino de la carta «Arrecife» (−1): el total baja a 6 y el jugador supera la Prueba, de modo que ¡La guardia! vuelve al mazo de historia. El jugador no gana Avance por esta Prueba.
 
 ### Puerto
 
@@ -1318,7 +1317,7 @@ Volver al muelle es un efecto por el que el jugador elige a uno de sus Tripulant
 
 ### Zona de permanentes
 
-La zona de permanentes está junto a la misión. En ella se colocan las **permanentes**: cartas del mazo de historia que un encuentro pone en juego («Pon en juego la carta 230 del mazo de historia»). Una permanente tiene su texto activo mientras está en la zona y lleva los mismos tipos que el encuentro que la pone en juego (Terreno, Bestia…).
+La zona de permanentes está junto a la misión. En ella se colocan las **permanentes**: cartas del mazo de historia que un encuentro o una misión pone en juego («Pon en juego la carta 230 del mazo de historia»). Una permanente tiene su texto activo mientras está en la zona y lleva los mismos tipos que el encuentro que la pone en juego (Terreno, Bestia…), si lo pone un encuentro.
 
 - El encuentro da su Avance y cuenta como carta resuelta; su carta se descarta como cualquier otra.
 - Si la permanente no está en el mazo de historia (porque ya está en juego), la carta del encuentro se descarta sin dar su Avance y se revela otra.

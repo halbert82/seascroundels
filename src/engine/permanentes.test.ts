@@ -16,9 +16,12 @@ const SEGUNDA = 'Si no está en el mazo de historia, descarta esta carta sin gan
 
 /** El encuentro (o la carta de mazo propio) que pone en juego cada permanente. */
 function encuentroDe(p: (typeof DATOS.permanentes)[number]) {
+  if (!p.entorno) return undefined
   if (p.entorno === 'unico') return DATOS.cartasDeMazoPropio.find((c) => c.id === p.origen)?.encuentro
   return DATOS.peligros.find((c) => c.id === p.origen)?.encuentros[p.entorno]
 }
+/** Las que pone en juego un encuentro (todas menos «¡La guardia!», que la ponen misiones). */
+const DE_ENCUENTRO = DATOS.permanentes.filter((p) => p.origen)
 
 const junto = (j: Jugador, permanente: CartaId): CartaId | undefined => {
   const c = j.copia(permanente).junto
@@ -26,9 +29,10 @@ const junto = (j: Jugador, permanente: CartaId): CartaId | undefined => {
 }
 
 describe('Las 12 permanentes en los datos', () => {
-  it('son las cartas 226–237, de tamaño normal, del mazo de historia, con los Rasgos de su encuentro', () => {
-    expect(DATOS.permanentes.map((p) => p.num)).toEqual([226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237])
-    for (const p of DATOS.permanentes) {
+  it('son las cartas 220 («¡La guardia!») y 226–237, de tamaño normal, del mazo de historia, con los Rasgos de su encuentro', () => {
+    expect(DATOS.permanentes.map((p) => p.num)).toEqual([220, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237])
+    for (const p of DATOS.permanentes) expect(reglasPermanente(p.id), p.id).toBeDefined()
+    for (const p of DE_ENCUENTRO) {
       const enc = encuentroDe(p)
       expect(enc, p.id).toBeDefined()
       expect(p.rasgos, p.id).toEqual(enc?.palabrasClave)
@@ -39,7 +43,7 @@ describe('Las 12 permanentes en los datos', () => {
   })
 
   it('cada encuentro dice «Pon en juego la carta N del mazo de historia (junto a él)» y la segunda frase', () => {
-    for (const p of DATOS.permanentes) {
+    for (const p of DE_ENCUENTRO) {
       const texto = encuentroDe(p)?.textoEfecto ?? ''
       const frase = `Pon en juego la carta ${p.num} del mazo de historia${p.junto ? ' junto a él' : ''}`
       expect(texto, p.id).toContain(frase)
@@ -48,16 +52,29 @@ describe('Las 12 permanentes en los datos', () => {
     }
   })
 
-  it('«Se queda en juego» ya no está en ninguna carta de Peligro, de mazo propio ni de jugador', () => {
+  it('«Se queda en juego» ya no está en ninguna carta (tampoco en «¡La guardia!», fase 11, P63)', () => {
     const textos = CATALOGO.flatMap((e) => {
       if (e.tipo === 'peligro') return Object.values(e.carta.encuentros).map((x) => x?.textoEfecto ?? '')
       if (e.tipo === 'mazoPropio') return [e.carta.encuentro.textoEfecto ?? '']
-      return 'texto' in e.carta && typeof e.carta.texto === 'string' && e.tipo !== 'cartaMision' ? [e.carta.texto] : []
+      return 'texto' in e.carta && typeof e.carta.texto === 'string' ? [e.carta.texto] : []
     })
     expect(textos.filter((t) => /[Ss]e queda en juego/.test(t))).toEqual([])
   })
 
-  it('al preparar la partida, las 12 esperan en el mazo de historia; la zona de permanentes está vacía', () => {
+  it('«¡La guardia!» (220) la ponen en juego La casa del gobernador y Por el aljibe: «pon en juego la carta 220 del mazo de historia»', () => {
+    const guardia = DATOS.permanentes.find((p) => p.id === 'guardia')
+    expect(guardia?.texto).toBe(
+      'Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Haz una Prueba de [COM] 5 ~(los echáis a palos)~, o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.',
+    )
+    for (const id of ['gobernador-I', 'sanfelipe-II-a']) {
+      const e = porId(id)
+      const reglas = e.tipo === 'capitulo' ? e.carta.reglas.join(' ') : ''
+      expect(reglas, id).toContain('pon en juego la carta 220 del mazo de historia')
+      expect(reglas, id).not.toContain('¡La guardia!')
+    }
+  })
+
+  it('al preparar la partida, las 13 esperan en el mazo de historia; la zona de permanentes está vacía', () => {
     const s = nuevaPartida({ semilla: 3 })
     const enHistoria = s.zonas.mazoHistoria.map((c) => s.cartas[c]?.id)
     for (const p of DATOS.permanentes) expect(enHistoria, p.id).toContain(p.id)
