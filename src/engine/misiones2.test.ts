@@ -353,15 +353,18 @@ describe('128 · La huida con la plata (capítulo IV desde la fase 12)', () => {
 // El espía de Cádiz
 
 describe('135 · Seguirle por Port Royal (fase 12: une «Un soplo en Port Royal» y «Seguirle por los muelles»)', () => {
-  it('Ciudad 6 con Distancia 2; al zarpar puedes descartar 2 cartas para mirar las 3 de arriba y ordenarlas; los #Civil# ya no dan Avance de más', () => {
+  it('Ciudad 6 con Distancia 2; al zarpar puedes descartar 2 cartas para otear 3 (fase 13, I7: también al fondo); los #Civil# ya no dan Avance de más', () => {
     const j = enPuerto({ misiones: ['espia-I'], tripulacion: ['viejo_lobo'], mano: ['ojo', 'timon', 'coraje'], mazoPeligros: ['chubasco', 'civiles', 'calma', 'calma'] })
     expect(j.valor({ tipo: 'avanceNecesario', mision: j.inst('espia-I') })).toBe(6)
     expect(j.valor({ tipo: 'distancia', mision: j.inst('espia-I') })).toBe(1) // 2, y −1 del Barco
     j.zarpar('espia-I').cubrir('viejo_lobo')
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'alZarparDescartar' } })
     j.opcion('si').elegir('ojo', 'coraje')
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'chubasco' } })
+    j.opcion('fondo').opcion('arriba').opcion('arriba')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
-    j.elegir('civiles', 'chubasco', 'calma')
+    j.elegir('civiles', 'calma')
+    expect(j.zona('mazoPeligros')).toEqual(['calma', 'calma', 'chubasco']) // «Civiles» ya se ha revelado; «Chubasco», al fondo
     // Comerciante estafador (Civil, EXP 3, Avance 1 / 1) fallado: solo 1.
     j.comprometer('EXP').seguir()
     expect(j.registro).toContain('Ganas 1 de Avance (1/6).')

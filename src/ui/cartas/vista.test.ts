@@ -108,7 +108,7 @@ describe('vista de las cartas', () => {
     )
     const aguada = vistaDeCarta(carta(115)) as VistaCapitulo
     expect(aguada.recompensa).toEqual([{ texto: '0', icono: 'rep' }])
-    expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño, aunque estés en tierra.')
+    expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño.')
     expect((vistaDeCarta(carta(114)) as VistaCapitulo).recompensaTexto).toBe('Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida.')
     expect(deuda.pie).toBe('Misión inicial · a la vista al empezar')
 

@@ -94,12 +94,12 @@ describe('Mejoras de barco', () => {
     expect(j.registro).toContain('Total 4 contra 3: superas la Prueba.')
   })
 
-  it('032 · Pedrero de borda: se agota y descartas una carta de Peligro con Prueba de COM; solo en el Mar (N18)', () => {
+  it('032 · Pedrero de borda: se agota y descartas una carta de Peligro con Prueba de COM; solo en el Mar, porque la carta lo dice', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['pedrero'] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     j.usar('pedrero.disparar')
     expect(j.zona('descartesPeligros')).toContain('rivales')
     expect(j.copia('pedrero').agotada).toBe(true)
-    // En «Cobrar la deuda» (Ciudad), la Pelea de taberna (COM 3) no se puede descartar con el Pedrero.
+    // En «Cobrar la deuda» (Ciudad), la Pelea de taberna (COM 3) no se puede descartar con el Pedrero: dice «[mar], [agotar]».
     const tierra = Jugador.enMision({ barco: { mejoras: ['pedrero'] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     expect(tierra.ofreceCapacidad('pedrero.disparar')).toBe(false)
   })

@@ -361,7 +361,7 @@ export class Jugador {
   static enMision(op: OpcionesSituacion & { cubrir?: CartaId[] }): Jugador {
     const { cubrir, ...resto } = op
     const misiones = resto.misiones ?? [MISIONES_DE_PRUEBA.ciu3]
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['calma_ev'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto, misiones })
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], mazoCapitan: ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje'], ...resto, misiones })
     j.zarpar(misiones[0] ?? MISIONES_DE_PRUEBA.ciu3)
     if (cubrir) j.cubrir(...cubrir)
     return j

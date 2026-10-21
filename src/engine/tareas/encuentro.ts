@@ -306,9 +306,9 @@ function revelarDestino(s: Estado, p: PruebaEnCurso): void {
   p.destino = carta
   const d = destinoDe(copia(s, carta).id)
   // Fase 13, «Bruma en la selva»: «Resuelve 2 cartas de Destino en esta Prueba». Se revelan las dos cartas superiores
-  // del mazo de Peligros y valen las dos. TODO(regla): Albert tiene que confirmar la lectura (se suman los dos
-  // modificadores, se aplican los efectos de los dos y, sin nadie asignado, los dos Sin oposición; «Reflejos de gato»
-  // cancela solo uno, el que elija el jugador). Con «Mal agüero» a la vez, el primero sale de los 2 de Mal agüero.
+  // del mazo de Peligros y valen las dos (P71, confirmado por Albert): se suman los dos modificadores, se aplican los
+  // efectos de los dos y, sin nadie asignado, los dos Sin oposición; «Reflejos de gato» cancela solo uno, el que elija el
+  // jugador. Con «Mal agüero» a la vez, el primero sale de los 2 de Mal agüero.
   const otra = p.dosDestinosSuman ? cartaDeArriba(s, 'destino') : null
   if (otra) {
     mover(s, otra, 'destino')

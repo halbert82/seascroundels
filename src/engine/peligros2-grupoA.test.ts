@@ -80,17 +80,19 @@ describe('1 · La corriente del Golfo', () => {
 })
 
 describe('2 · Cielo estrellado', () => {
-  it('Mar: miras las 3 cartas superiores y las ordenas; con un Piloto, +1 [avance]', () => {
+  it('Mar: Otea 3 (fase 13, I7: también puedes mandarlas al fondo); con un Piloto, +1 [avance]', () => {
     const j = en('mar', ['p2_cielo', 'calma', 'chubasco', 'racha', 'hallazgo'], { tripulacion: ['viejo_lobo'] })
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'calma' } })
+    j.opcion('fondo').opcion('arriba').opcion('arriba')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
-    j.elegir('racha', 'calma', 'chubasco')
-    expect(j.zona('mazoPeligros').slice(0, 4)).toEqual(['racha', 'calma', 'chubasco', 'hallazgo'])
+    j.elegir('racha', 'chubasco')
+    expect(j.zona('mazoPeligros')).toEqual(['racha', 'chubasco', 'hallazgo', 'calma'])
     expect(avance(j, 'mar')).toBe(1) // 0 de la carta (fase 10b) + 1 por el Piloto
   })
 
   it('Mar: sin Piloto, solo el Avance de la carta (0, fase 10b)', () => {
     const j = en('mar', ['p2_cielo', 'calma', 'chubasco', 'racha'])
-    j.elegir('calma', 'chubasco', 'racha')
+    j.resolverOteo()
     expect(avance(j, 'mar')).toBe(0)
   })
 
@@ -239,6 +241,26 @@ describe('4 · Niebla', () => {
     const j = en('ciu', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('EXP', ['bucanero']).seguir()
     expect(j.estados('bucanero')).toEqual(['buscado'])
+  })
+
+  it('P72, regla general: sin nadie asignado, «el asignado con menos EXP» es el de menos EXP de toda la tripulación (ejemplo del reglamento)', () => {
+    // Diego (EXP 1) y el Rufián de cubierta (EXP 0): se descarta el Rufián.
+    const j = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['marinero_p'] })
+    j.comprometer('EXP', []).seguir()
+    expect(j.zona('tripulacion')).not.toContain('marinero_p')
+    expect(j.zona('descartesMuelle')).toContain('marinero_p')
+    // Con el Rastreador de la selva (EXP 3), el de menos EXP es Diego: sufre 1 herida en su lugar.
+    const k = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['baqueano'] })
+    k.comprometer('EXP', []).seguir()
+    expect(k.copia('capitan').heridas).toBe(1)
+    expect(k.zona('tripulacion')).toEqual(expect.arrayContaining(['capitan', 'baqueano']))
+  })
+
+  it('P72, regla general: sin nadie asignado, «el asignado con más EXP queda Buscado» va al de más EXP de toda la tripulación', () => {
+    const j = en('ciu', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'baqueano'] })
+    j.comprometer('EXP', []).seguir()
+    expect(j.estados('baqueano')).toEqual(['buscado'])
+    expect(j.estados('capitan')).toEqual([])
   })
 
   it('Destino «Bruma»: −1 en cualquier encuentro (fase 13); Sin oposición: −1 [avance] (mín. 0)', () => {
@@ -442,10 +464,10 @@ describe('7 · Fuego a bordo', () => {
     expect(k.estado.reputacion).toBe(2)
   })
 
-  it('Destino «Pavesas»: −1, o −2 con 2 o más Cañones preparados (fase 10b)', () => {
+  it('Destino «Pavesas»: −1, con o sin Cañones preparados (fase 13, I1: fuera «−2 con 2 o más Cañones»)', () => {
     const j = en('mar', ['chubasco', 'p2_fuego', 'calma'], { barco: { mejoras: ['bronce', 'culebrina'] } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('mar', ['chubasco', 'p2_fuego', 'calma'], { barco: { mejoras: ['bronce'] } })
     k.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(k.estado)).toBe(3)
@@ -492,10 +514,11 @@ describe('8 · La broma', () => {
     expect(j.zona('mano')).toEqual(['ojo', 'timon'])
   })
 
-  it('Destino «Carcoma»: las Mejoras no suman', () => {
+  it('Destino «Carcoma»: 0, y las Mejoras suman (fase 13, I1: fuera «las Mejoras no suman»)', () => {
     const j = en('mar', ['chubasco', 'p2_broma', 'calma'], { capitan: { mejoras: ['brujula'] } })
     j.comprometer('NAV', ['capitan'])
-    expect(totalSinDestinoPrueba(j.estado)).toBe(3) // Diego 2 + Barco 1; la Brújula no suma
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego 2 + Barco 1 + Brújula 1
+    expect(dificultadConDestino(j.estado)).toBe(2)
   })
 
   it('Destino «Carcoma», sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad, descarta 1 carta', () => {
@@ -630,12 +653,15 @@ describe('11 · Maremoto', () => {
     expect(j.zona('rehenes')).toEqual(['bucanero'])
   })
 
-  it('Destino «Réplica»: +2; si fallas, la siguiente Prueba recibe +1; Sin oposición: el Capitán sufre 1 herida', () => {
+  it('Destino «Réplica»: −2 y nada más (fase 13, I1: fuera «la siguiente Prueba +1»); Sin oposición: el Capitán sufre 1 herida', () => {
     const j = en('mar', ['chubasco', 'p2_maremoto', 'chubasco', 'chubasco'])
     j.comprometer('NAV', []).seguir()
     expect(j.copia('capitan').heridas).toBe(1)
     j.seguir().comprometer('NAV', ['capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(3) // 2 + 1
+    expect(dificultadConDestino(j.estado)).toBe(2) // la siguiente Prueba, sin nada de más
+    const k = en('mar', ['chubasco', 'p2_maremoto', 'calma'])
+    k.comprometer('NAV', ['capitan'])
+    expect(dificultadConDestino(k.estado)).toBe(4) // NAV 2 + 2
   })
 })
 

@@ -206,7 +206,7 @@ Las cartas del mazo de historia llevan su número de colección bien visible en 
 > [!epigrafe] Artículos de la Hermandad
 > «Se reparte el botín, no se deja a nadie atrás y el capitán tiene la última palabra. Lo demás se discute.»
 
-1. Si el texto de una carta contradice directamente este reglamento, prevalece el texto de la carta.
+1. Si el texto de una carta contradice directamente este reglamento, prevalece el texto de la carta. Las cartas se leen al pie de la letra: hacen lo que dicen, en cualquier Entorno, salvo que su texto lo limite.
 2. Si la Referencia de reglas contradice directamente Aprende a jugar, prevalece la Referencia de reglas.
 3. «No puedes» es absoluto: ningún efecto puede anularlo.
 4. Una carta solo hace lo que dice. Si no indica cuándo se usa, puede usarse en cualquier momento.
@@ -234,7 +234,7 @@ El texto de juego de una carta se compone de capacidades. Cada capacidad empieza
 - **Respuesta:** esta capacidad puede usarse justo después de que ocurra lo que indica («Después de que reveles un encuentro…»).
 - **Interrupción:** esta capacidad puede usarse cuando algo va a ocurrir, antes de que ocurra. Normalmente lo evita o lo modifica («Cuando el portador vaya a quedar derrotado…»).
 - **Obligado:** esta capacidad se aplica siempre que ocurre lo que indica. No es opcional.
-- **Al zarpar:** esta capacidad se resuelve al empezar una misión. La tienen las misiones y algunas cartas, como la Vela mayor.
+- **Al zarpar:** esta capacidad se aplica sola al empezar una misión. La tienen las misiones y algunas cartas en juego, como la Vela mayor. Un Evento, que se juega desde la mano, dice en cambio «Respuesta: Después de zarpar».
 
 Una capacidad con **(Límite de una vez por turno.)** solo puede usarse una vez en cada turno. Las palabras clave, como Indestructible, figuran en la primera línea del texto, cada una seguida de un punto.
 
@@ -371,7 +371,7 @@ Una misión sin franja azul tiene Distancia 0.
 
 #### Al empezar la misión
 
-Al empezar la misión, se resuelven sus capacidades **Al zarpar** y las de las cartas del jugador que dicen «Al zarpar» o «Después de zarpar»; si alguna es opcional, el jugador decide en ese momento si la usa.
+Al empezar la misión, una vez cubierta la Distancia, se aplican las capacidades **Al zarpar** de la misión y de las cartas del jugador que están en juego; si alguna es opcional, el jugador decide en ese momento si la usa. Después, el jugador puede jugar sus Respuestas «Después de zarpar», como «Mapa robado».
 
 > [!nota]
 > Algunas son opcionales, como «Puedes agotar a un Oficial para ganar 2 de Avance». Otras preparan la misión, como «Baraja el mazo del Templo con 6 cartas del mazo de Peligros»: durante esa misión, las cartas se revelan de ese mazo mezclado.
@@ -402,7 +402,7 @@ Una Prueba indica una habilidad y una dificultad («COM 3»). Se resuelve con es
 Algunos encuentros llevan debajo de la Prueba un Rasgo y una cifra, como «Vigía −2»: si el jugador tiene preparado un Tripulante con ese Rasgo, la dificultad baja esa cifra, tanto si ese Tripulante es asignado a la Prueba como si no; la rebaja se mantiene aunque se agote al ser asignado. Si dice «asignado» («Marinero asignado −2»), ese Tripulante tiene que ser asignado a la Prueba. La dificultad suma todos sus modificadores (los de las cartas, la misión, el Escenario y los Rasgos), y si el resultado queda por debajo de 0, se considera 0. Del mismo modo, si el total del jugador con el Destino queda por debajo de 0, se considera 0.
 
 > [!ejemplo]
-> En Ciudad, el jugador revela «Leva forzosa» (COM 4). Asigna a Diego (COM 3) y, para protegerse de un Destino desfavorable, añade «¡Al abordaje!», que tiene dos iconos de COM: suma 5. Sale el Destino de la carta «Los holandeses de Curazao»: −1, y «Prueba de COM: el Tripulante asignado con la COM más alta sufre 1 herida». Diego sufre la herida y el total baja a 4. Con 4 contra 4, el jugador supera la Prueba.
+> En Ciudad, el jugador revela «Leva forzosa» (COM 4). Asigna a Diego (COM 3) y, para protegerse de un Destino desfavorable, añade «¡Al abordaje!», que tiene dos iconos de COM: suma 5. Sale el Destino de la carta «Los holandeses de Curazao»: −1, y «Inflige 1 herida a un Tripulante asignado». Diego, el único asignado, sufre la herida y el total baja a 4. Con 4 contra 4, el jugador supera la Prueba.
 
 #### Palabras clave de los encuentros
 
@@ -420,7 +420,7 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 > [!ejemplo]
 > En el Mar, el jugador revela «La fiera en la bodega» (COM 5, Sin ayuda). Asigna solo a Diego (COM 3) y añade «¡Al abordaje!», una Habilidad con dos iconos de COM: suma 5. No podría añadir «¡A por ellos!» por sus iconos, porque es un Evento, ni jugar «Reflejos de gato» para cancelar el Destino.
 
-**El Tripulante asignado con más (o menos) habilidad.** Esta expresión se refiere al número impreso en la carta, sin bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. En caso de empate, elige el jugador. En un Destino, «la habilidad más alta» o «más baja» se refiere a la habilidad de esa Prueba. Del mismo modo, «el Tripulante con menos Vida» se refiere a la Vida impresa, y «el de menor coste» no tiene en cuenta al Capitán.
+**El Tripulante asignado con más (o menos) habilidad.** Esta expresión se refiere al número impreso en la carta, sin bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. En caso de empate, elige el jugador. Si no hay nadie asignado, se aplica al Tripulante con más (o menos) de esa habilidad de toda la tripulación. En un Destino, «la habilidad más alta» o «más baja» se refiere a la habilidad de esa Prueba. Del mismo modo, «el Tripulante con menos Vida» se refiere a la Vida impresa, y «el de menor coste» no tiene en cuenta al Capitán.
 
 > [!ejemplo]
 > En «Registro casa por casa» (EXP 4), el jugador asigna a la Vigía inexperta, que lleva el Catalejo de latón (EXP 2 + 1), y al Rastreador de la selva (EXP 3). El jugador falla la Prueba: «el Tripulante asignado con más EXP queda rehén». Con el Catalejo, la Vigía suma tanto como el Rastreador, pero su EXP impresa es 2 y la de él, 3. Por tanto, el rehén es el Rastreador.
@@ -541,7 +541,7 @@ Si un efecto obliga al jugador a agotar a un Tripulante y no tiene ninguno prepa
 
 Las cartas dicen «Daña 1» o «Repara 2», con el icono del casco del Barco (el que lleva la carta del Barco junto a su Daño máximo): «Daña 1» le resta 1 al casco del Barco y «Repara 1» se lo devuelve.
 
-El Barco solo recibe daño en las misiones de Mar. En una misión de Naturaleza o de Ciudad, un efecto que daña el Barco no se aplica, salvo que la carta indique expresamente que lo daña en tierra. En ese caso, prevalece la carta.
+Si una carta daña el Barco, lo daña en cualquier Entorno, también en una misión de Naturaleza o de Ciudad: las cartas se leen al pie de la letra.
 
 > [!tema]
 > En tierra, la Sombra del Alba espera fondeada en una cala. Lo que sangra allí es tu tripulación.
@@ -549,7 +549,7 @@ El Barco solo recibe daño en las misiones de Mar. En una misión de Naturaleza 
 Los Destinos se leen en cualquier Entorno, por lo que los que dañan el Barco indican qué efecto tienen en tierra, cada parte detrás del icono de su Entorno: «Mar: Daña 1. Naturaleza / Ciudad: Inflige 1 herida». Se aplica la parte correspondiente al Entorno de la misión.
 
 > [!ejemplo]
-> En una misión de Ciudad, el jugador no asigna a nadie y sale el Destino de la carta «Arrecife». Su efecto Sin oposición dice «Mar: Daña 1. Naturaleza / Ciudad: Inflige 1 herida»: uno de los Tripulantes del jugador sufre 1 herida y el Barco no sufre nada. En cambio, si en Ciudad el jugador falla «Te roban el barco» («Daña 2»), el Barco sufre 2 daños, porque es un encuentro de Ciudad que daña el Barco: la carta indica expresamente que el Barco sufre daño aunque el jugador esté en tierra.
+> En una misión de Ciudad, el jugador no asigna a nadie y sale el Destino de la carta «Arrecife». Su efecto Sin oposición dice «Mar: Daña 1. Naturaleza / Ciudad: Inflige 1 herida»: uno de los Tripulantes del jugador sufre 1 herida y el Barco no sufre nada. En cambio, si en Ciudad el jugador falla «Te roban el barco» («Daña 2»), el Barco sufre 2 daños: la carta lo dice, y se aplica tal cual aunque el jugador esté en tierra.
 
 #### El Barco se hunde
 
@@ -717,7 +717,13 @@ Al revelarse es una palabra clave que aparece en algunos encuentros. Su efecto s
 
 ### Al zarpar
 
-Al zarpar es una etiqueta de capacidad. Una capacidad **Al zarpar:** se resuelve al empezar una misión, después de cubrir la Distancia. La tienen las misiones y las cartas que dan algo al empezar una misión, como el Avance de la Vela mayor, de «Mapa robado» o de «Rumores del tesoro». Si una de estas capacidades es opcional, el jugador decide en ese momento si la usa. Las capacidades de sus cartas que dicen «Después de zarpar» se resuelven en ese mismo momento.
+Al zarpar es una etiqueta de capacidad. Una capacidad **Al zarpar:** se aplica sola al empezar una misión, después de cubrir la Distancia. La tienen las misiones y las cartas que ya están en juego: Mejoras como la Vela mayor, Tesoros como «Los despachos del Rey» y la carta de Escenario del turno, como «Rumores del tesoro». Si una de estas capacidades es opcional, el jugador decide en ese momento si la usa.
+
+- Los Eventos se juegan desde la mano cuando el jugador quiere, así que no dicen «Al zarpar», sino «**Respuesta:** Después de zarpar, …» (o «Después de zarpar hacia una misión de Naturaleza, …»).
+- Orden: el jugador zarpa, cubre la Distancia, se aplican las capacidades Al zarpar de la misión y de sus cartas en juego, y después puede jugar sus Respuestas «Después de zarpar».
+
+> [!ejemplo]
+> El jugador zarpa a «El templo». Primero se aplica la capacidad Al zarpar de la misión: se baraja el mazo del Templo con las cartas del mazo de Peligros que indica. Después, con Diego todavía preparado, el jugador juega «Arenga del capitán» («Respuesta: Después de zarpar, agota a tu Capitán: todos tus Tripulantes quedan Inspirados»). Si hubiera agotado a Diego para cubrir la Distancia, no podría jugarla.
 
 ### Asignar
 
@@ -735,7 +741,11 @@ Las cartas de la mano no se asignan: se añaden a la Prueba por sus iconos (ver 
 «El Tripulante asignado con más EXP» y «el Tripulante asignado con menos COM» designan al Tripulante asignado que tiene el número impreso más alto (o más bajo) en esa habilidad. No cuentan las bonificaciones de Mejoras, las fichas de Entrenamiento ni las de otras cartas.
 
 - Si hay un empate, el jugador elige entre los Tripulantes empatados.
+- Si no hay nadie asignado, el efecto se aplica al Tripulante con más (o menos) de esa habilidad de toda la tripulación del jugador.
 - En un Destino, «el Tripulante asignado con la habilidad más alta (o más baja)» se refiere a la habilidad de esa Prueba.
+
+> [!ejemplo]
+> El jugador no asigna a nadie a «Bruma en la selva» y falla: «Descarta al Tripulante asignado con menos EXP. Si es el Capitán, sufre 1 herida en su lugar». Lleva a Diego (EXP 1) y al Rufián de cubierta (EXP 0). Como nadie está asignado, se mira toda la tripulación: el Rufián es el de menos EXP y se descarta. Si el de menos EXP fuera Diego, sufriría 1 herida.
 - Las expresiones similares funcionan del mismo modo: «el Tripulante con menos Vida» se refiere a la Vida impresa (el Coleto de cuero no cuenta), y en «el Tripulante de menor coste» el Capitán no cuenta.
 
 > [!ejemplo]
@@ -774,7 +784,7 @@ El Barco del jugador tiene tres valores:
 - **Capacidad:** indica cuántos Tripulantes puede llevar el Barco. El Capitán no cuenta para este límite; los rehenes y los Pasajeros, sí.
 - **Espacio:** indica cuánto pueden ocupar en total las Mejoras de barco del jugador.
 
-El Barco solo recibe daño en las misiones de Mar, salvo que la carta diga expresamente lo contrario. Ver Daño.
+El Barco recibe daño cuando una carta lo indica, en cualquier Entorno. Ver Daño.
 
 El Barco puede tener los siguientes Estados: Vía de agua, Velas rotas, Perseguido y Pólvora mojada. El Astillero del puerto los quita todos.
 
@@ -792,7 +802,7 @@ Un efecto cancelado no se aplica. Un Destino cancelado no tiene ningún efecto: 
 
 Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carronadas, la Culebrina de proa y el Pedrero de borda. Un Cañón dispara agotándose («Agotar:») y se prepara en la Fase de Inicio, como cualquier otra carta.
 
-- Los Cañones solo pueden usarse en misiones de Mar, y en las Pruebas que indique su texto.
+- Una Mejora de barco, también un Cañón, se usa en cualquier Entorno, salvo que su carta lo limite. «Mar, agotar: …», con el icono del Mar delante del de agotar, quiere decir que solo se usa en las misiones de Mar. Así lo dicen los cuatro Cañones de la caja.
 - **Agota N Cañones:** el jugador elige N de sus Cañones preparados y los agota. Si tiene menos, agota los que tenga. Como pago de un «Elige», solo se ofrece si tiene N Cañones preparados.
 - **Prepara un Cañón:** el jugador elige uno de sus Cañones agotados y lo prepara.
 - **Los Cañones no suman:** lo que un Cañón añade a esa Prueba no cuenta.
@@ -847,12 +857,11 @@ En el texto de una carta, lo que va antes de los dos puntos es el coste, y lo qu
 
 El daño del Barco se marca con fichas de daño y permanece de un turno a otro hasta que se repara. Las cartas lo indican con el icono del casco del Barco, el que lleva la carta del Barco junto a su Daño máximo: «Daña 1» le resta 1 al casco del Barco (el Barco sufre 1 daño) y «Repara 1» se lo devuelve.
 
-- El Barco solo recibe daño en las misiones de Mar. En una misión de Naturaleza o de Ciudad, un efecto que daña el Barco no se aplica, salvo que la carta diga expresamente lo contrario; en ese caso, prevalece la carta.
-- Un encuentro de Naturaleza o de Ciudad que dice «Daña N» lo dice expresamente para tierra: el Barco sufre el daño.
+- Las cartas se leen al pie de la letra: si una carta dice «Daña N», el Barco sufre el daño en cualquier Entorno, también en una misión de Naturaleza o de Ciudad.
 - Los Destinos que dañan el Barco indican qué ocurre en tierra, detrás del icono de cada Entorno («Mar: Daña 1. Naturaleza / Ciudad: Inflige 1 herida»). Se aplica la parte que corresponde al Entorno de la misión.
 
 > [!ejemplo]
-> En una misión de Ciudad, el jugador falla «Te roban el barco» («Daña 2»): el Barco sufre 2 daños, porque la carta lo indica para la Ciudad. Si en esa misma misión sale el Destino de la carta «Bajo los cañones del Morro» sin ningún Tripulante asignado, su efecto Sin oposición no daña el Barco: en Ciudad, es el Capitán quien sufre 1 herida.
+> En una misión de Ciudad, el jugador falla «Te roban el barco» («Daña 2»): el Barco sufre 2 daños, porque la carta lo dice. Si en esa misma misión sale el Destino de la carta «Bajo los cañones del Morro» sin ningún Tripulante asignado, su efecto Sin oposición no daña el Barco: en Ciudad, es el Capitán quien sufre 1 herida.
 
 *Véase también:* Barco, Hundirse.
 
@@ -885,9 +894,9 @@ Destina es una palabra clave de coste: «**Destina X** [habilidad]: efecto». Pa
 El Destino es la franja inferior de cada carta de Peligro. Se revela en cada Prueba, después de asignar a la tripulación, y siempre se aplica. Un Destino no lleva nombre: se cita como «el Destino de la carta» en la que está.
 
 - El modificador del Destino, en el círculo, se suma al total del jugador, no a la dificultad. Un «+N» (en verde) le favorece y un «−N» (en rojo) le perjudica. Si con el Destino el total queda por debajo de 0, se considera 0.
-- Al modificador lo acompaña a veces un efecto, que se aplica tal como está escrito. Muchos empiezan por una condición seguida de dos puntos («Prueba de COM:», «Con un Contrabandista asignado:», «Si fallas la Prueba:»): el efecto solo se aplica si se cumple. «−2 en su lugar» sustituye al modificador del círculo.
+- Al modificador lo acompaña a veces un efecto, que se aplica tal como está escrito. Algunos empiezan por una condición seguida de dos puntos («Si fallas la Prueba:», o el icono de un Entorno): el efecto solo se aplica si se cumple. «−2 en su lugar» sustituye al modificador del círculo.
 - Si no se ha asignado a ningún Tripulante, se aplica también su efecto Sin oposición, el de la línea del escudo.
-- Un Destino se lee en cualquier Entorno. Si daña el Barco fuera del Mar, se aplica la alternativa que indica.
+- Un Destino se lee en cualquier Entorno, tal como está escrito: si daña el Barco, lo daña también en tierra. Si una parte empieza por el icono de un Entorno, esa parte solo se aplica en él.
 - Cada carta de Peligro sale una sola vez por vuelta del mazo, ya sea como encuentro o como Destino.
 - **Fallas la Prueba:** si el Destino lo indica, el jugador falla la Prueba sea cual sea su total. En ese caso, aplica el efecto de fallo y gana el segundo número del Avance (Y).
 - Algunos Destinos ponen su carta encima del mazo de Peligros: ver Persigue.
@@ -939,6 +948,8 @@ Cada carta de Peligro tiene tres encuentros, uno por Entorno. Durante una misió
 ### Entorno
 
 El Entorno de una misión puede ser Mar, Naturaleza o Ciudad. Cada misión tiene un Entorno. «En el Mar», «en Ciudad» o «en tierra» (Naturaleza o Ciudad) significan durante una misión de ese Entorno.
+
+- Un efecto que solo vale en un Entorno lleva delante el icono de ese Entorno, seguido de su coste, si lo tiene, y de los dos puntos: «Mar, agotar: Una Prueba de COM recibe +2» solo se usa en las misiones de Mar. En un Destino, cada parte va detrás del icono de su Entorno («Mar: Daña 1. Naturaleza / Ciudad: Inflige 1 herida»).
 
 ### Entra en el mazo de Peligros y Se retira
 
@@ -1019,7 +1030,7 @@ Las **cartas de Habilidad** no tienen coste ni texto. Solo pueden usarse descart
 
 ### Herida
 
-Una herida es una ficha que se coloca sobre un Tripulante cada vez que un efecto le inflige heridas. Cuando un efecto inflige heridas («Inflige 2 heridas»), el jugador elige qué Tripulantes las sufren, preparados o agotados, incluido el Capitán, hayan sido asignados o no; si son varias, puede repartirlas entre varios Tripulantes. Así ocurre con todas las heridas de un encuentro, las de su Prueba fallada y las de su efecto: el jugador puede llevar a un Tripulante con mucha Vida que encaje las heridas aunque no lo asigne. Solo van a un Tripulante concreto si la carta lo señala («el Tripulante asignado con más COM», «el Capitán sufre 1 herida»). Herir a un Tripulante asignado queda para algunos Destinos («Inflige 1 herida a un Tripulante asignado»), porque el Destino no se ve venir.
+Una herida es una ficha que se coloca sobre un Tripulante cada vez que un efecto le inflige heridas. Cuando un efecto inflige heridas («Inflige 2 heridas»), el jugador elige qué Tripulantes las sufren, preparados o agotados, incluido el Capitán, hayan sido asignados o no; si son varias, puede repartirlas entre varios Tripulantes. Así ocurre con todas las heridas de un encuentro, las de su Prueba fallada y las de su efecto, también con «Inflige 1 herida por cada Tripulante asignado»: el jugador puede llevar a un Tripulante con mucha Vida que encaje las heridas aunque no lo asigne. Solo van a un Tripulante concreto si la carta lo señala («el Tripulante asignado con más COM», «el Capitán sufre 1 herida»). Herir a un Tripulante asignado queda para algunos Destinos («Inflige 1 herida a un Tripulante asignado»), porque el Destino no se ve venir.
 
 - Las heridas permanecen de un turno a otro hasta que se curan.
 
@@ -1177,7 +1188,7 @@ Persigue es una palabra clave que aparece en el texto de algunos Destinos: «des
 - No debe confundirse con el Estado Perseguido del Barco.
 
 > [!ejemplo]
-> En una Prueba sale el Destino de la carta «Murciélagos vampiro» (−1), que dice «Persigue». Después de aplicarlo, la carta va encima del mazo: el siguiente encuentro del jugador es el de los Murciélagos vampiro de su Entorno.
+> En una Prueba sale el Destino de la carta «La sombra de Bastián» (−1), que dice «Persigue». Después de aplicarlo, la carta va encima del mazo: el siguiente encuentro del jugador es el de la Sombra de Bastián de su Entorno.
 
 *Véase también:* Destino.
 
@@ -1203,7 +1214,7 @@ Una Prueba es el desafío de un encuentro. Consta de una habilidad y una dificul
 - **La dificultad** es el número de la Prueba más todos sus modificadores (los de las cartas del jugador, la misión, el Escenario y los Rasgos), sumados a la vez. El Destino no la modifica: se suma al total del jugador. Si la dificultad queda por debajo de 0, se considera 0. Si el total del jugador con el Destino queda por debajo de 0, también se considera 0.
 
 > [!ejemplo]
-> En «Desembarco nocturno», que da −1 a las Pruebas de EXP, el Guía del istmo (−1 a las Pruebas de EXP en Naturaleza) viaja con el jugador. Este revela «Manzanillas de la muerte»: EXP 3, con «Explorador −2» debajo. Asigna al Rastreador de la selva, así que la dificultad es 3 − 2 − 1 − 1 = −1, que se considera 0. Sale el Destino de la carta «La sirena»: −1, y «El Tripulante asignado con la habilidad más baja no suma». El Rastreador no suma y el total, 0 − 1, se considera 0: con 0 contra 0, el jugador supera la Prueba. Si hubiera salido el Destino de la carta «Sin rumbo» (+2 con un Explorador asignado), el total habría sido 3 + 2 = 5.
+> En «Desembarco nocturno», que da −1 a las Pruebas de EXP, el Guía del istmo (−1 a las Pruebas de EXP en Naturaleza) viaja con el jugador. Este revela «Manzanillas de la muerte»: EXP 3, con «Explorador −2» debajo. Asigna al Rastreador de la selva, así que la dificultad es 3 − 2 − 1 − 1 = −1, que se considera 0. Sale el Destino de la carta «La sirena»: −1. El total del Rastreador (EXP 3) baja a 2: con 2 contra 0, el jugador supera la Prueba.
 
 *Véase también:* Prueba de una Acción, Sin ayuda.
 
@@ -1258,7 +1269,7 @@ La reputación representa los puntos de victoria del jugador. Se gana al superar
 
 ### Respuesta
 
-Respuesta es una etiqueta de capacidad. Una capacidad de **Respuesta:** puede usarse justo después de que ocurra lo que indica («Después de que superes una Prueba…», «Después de zarpar…»). Cada vez que eso ocurre, el jugador puede usarla una vez.
+Respuesta es una etiqueta de capacidad. Una capacidad de **Respuesta:** puede usarse justo después de que ocurra lo que indica («Después de que superes una Prueba…», «Después de zarpar…»). Cada vez que eso ocurre, el jugador puede usarla una vez. Una Respuesta «Después de zarpar» se juega cuando ya se han aplicado las capacidades Al zarpar de la misión y de las cartas en juego (ver Al zarpar).
 
 ### Retirarte
 
@@ -1275,6 +1286,10 @@ Sin ayuda es una palabra clave que aparece en algunos encuentros con Prueba. Sol
 - El jugador puede añadir cartas de Habilidad de su mano por sus iconos. Los Eventos no suman, ni siquiera por sus iconos, y durante esa Prueba no pueden jugarse Eventos.
 - Las bonificaciones constantes del Tripulante y de sus Mejoras siguen sumando.
 - Un Tripulante Asustado no puede ser asignado él solo; por tanto, tampoco puede ser asignado a una Prueba Sin ayuda.
+- Es un duelo: si el fallo dice «el Tripulante asignado sufre…», las heridas son para el que hizo la Prueba, y no puede encajarlas otro que se quedó a bordo. Si no hay nadie asignado, son heridas libres.
+
+> [!ejemplo]
+> En «La fiera en la bodega» (COM 5, Sin ayuda), el jugador asigna solo al Bucanero veterano y falla: «El Tripulante asignado sufre 2 heridas y queda Asustado». Las 2 heridas son para el Bucanero, aunque Diego, con más Vida, se haya quedado a bordo.
 
 > [!ejemplo]
 > En «La última mano» (EXP 3, Sin ayuda), el jugador asigna solo a Catalina (EXP 3). Añade «Ojo avizor» (Habilidad, dos iconos de EXP); cada carta que añade suma 1 más, como indica el encuentro: 3 + 2 + 1 = 6. El jugador no puede añadir «Rumores de taberna» por su icono, porque es un Evento.

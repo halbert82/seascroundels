@@ -21,6 +21,7 @@ import {
   descartar,
   dificultad,
   heridasAsignados,
+  heridaPorAsignado,
   mas,
   mejorasDeBarco,
   menos,
@@ -54,7 +55,9 @@ registrarPeligro('p2_tortugas', {
     ciu: { exito: [robar(2)], fallo: [descartar(1)] },
   },
   // −1. Si superas, el comprometido con la habilidad más alta queda Aguerrido. Sin oposición: pierdes 1 Avance.
-  destino: { siSuperas: [comprometidoCon(mas('prueba'), { tipo: 'estado', estado: 'aguerrido' })], sinOposicion: [pierdesAvance(1)] },
+  // +1. Sin oposición (fase 13, I1 e I6): −1 [avance] (mín. 0). Fuera «si superas, el de la habilidad más alta queda
+  // Aguerrido».
+  destino: { sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
 
 // 13. Sol de justicia · Leve
@@ -70,7 +73,8 @@ registrarPeligro('p2_sol', {
       ],
       exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }],
       // Fase 10b: fuera Aturdido: 1 herida a cada asignado.
-      fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
+      // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado» (libres).
+      fallo: [heridaPorAsignado()],
     },
     // EXP 2, +1 por cada Tripulante comprometido después del primero.
     ciu: {
@@ -80,7 +84,8 @@ registrarPeligro('p2_sol', {
     },
   },
   // +1; +2 en su lugar si la Prueba es de COM. Sin oposición: el Capitán sufre 1 herida.
-  destino: { modificador: (_s, p) => (p.hab === 'COM' ? 2 : 1), sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
+  // −1. Sin oposición: el Capitán sufre 1 herida. (Fase 13, I1: fuera «Prueba de COM: −2 en su lugar».)
+  destino: { sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
 })
 
 // 14. El hambre · Leve
@@ -109,7 +114,8 @@ registrarPeligro('p2_hambre', {
     },
   },
   // +0. El comprometido con la habilidad más alta no se prepara en tu próximo Inicio. Sin oposición: descarta 1 carta.
-  destino: { efectos: [comprometidoCon(mas('prueba'), { tipo: 'noPrepara', hasta: 'inicio' })], sinOposicion: [descartar(1)] },
+  // 0. Sin oposición: descarta 1 carta. (Fase 13, I1: fuera «el de la habilidad más alta no se prepara».)
+  destino: { sinOposicion: [descartar(1)] },
 })
 
 // 15. Sin rumbo · Leve
@@ -117,7 +123,8 @@ const lleva = (s: Estado, c: InstId, id: string) => vinculadas(s, c).some((m) =>
 registrarPeligro('p2_sinrumbo', {
   encuentros: {
     // NAV 3 (1 con un Vigía). Éxito: mira las 2 de arriba y pon 1 al fondo. Fallo: el siguiente encuentro no da Avance.
-    mar: { exito: [{ tipo: 'mirarOrdenar', n: 2, fondo: 'una' }], fallo: [{ tipo: 'siguiente', mod: { de: 'encuentro', sinAvance: true } }] },
+    // Fase 13: éxito, «Otea 2» (I7); fallo, «−1 [avance]» (I2: antes, «el siguiente encuentro no da Avance»).
+    mar: { exito: [{ tipo: 'mirarOrdenar', n: 2, fondo: 'libre' }], fallo: [pierdesAvance(1)] },
     // NAV 3 (1 si un comprometido lleva una Brújula). Fallo: el comprometido con más NAV se pierde (no se prepara hasta
     // el final de la misión); Acción: agota un Vigía o un Explorador para encontrarlo y prepararlo.
     nat: {
@@ -129,10 +136,8 @@ registrarPeligro('p2_sinrumbo', {
     ciu: { exito: [{ tipo: 'siguiente', mod: { de: 'prueba', n: -1 } }], fallo: [{ tipo: 'descartarAzar', n: 1 }] },
   },
   // −1; −2 en su lugar si comprometiste a un Vigía o un Explorador. Sin oposición: pierdes 1 Avance.
-  destino: {
-    modificador: (s, p) => (p.comprometidos.some((c) => tieneRasgo(s, c, 'Vigía') || tieneRasgo(s, c, 'Explorador')) ? -2 : -1),
-    sinOposicion: [pierdesAvance(1)],
-  },
+  // +1. Sin oposición (fase 13, I1 e I6): −1 [avance] (mín. 0). Fuera «con un Vigía o un Explorador asignado: +2».
+  destino: { sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
 
 // Acción (del Tripulante perdido): agota a un Vigía o a un Explorador para encontrarlo y prepararlo.
@@ -189,20 +194,12 @@ registrarPeligro('p2_serpientes', {
   },
   // +0. Si fallas, el comprometido con la habilidad más alta queda Envenenado. Sin oposición: el preparado con menos
   // Vida sufre 1 herida.
-  destino: {
-    siFallas: [comprometidoCon(mas('prueba'), { tipo: 'estado', estado: 'envenenado' })],
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
-  },
+  // 0. Sin oposición: el preparado con menos Vida sufre 1 herida. (Fase 13, I1: fuera «si fallas, Envenenado».)
+  destino: { sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] },
 })
 
 // 17. Fiebre amarilla · Duro
 const LAZARETO = 'p2_fiebre.lazareto'
-// «Si fallas, cada Tripulante comprometido que ya tenga heridas sufre 1 herida más.»
-registrarCodigo('p2_fiebre.vomito', (s): NuevaTarea[] =>
-  (s.prueba?.comprometidos ?? [])
-    .filter((c) => s.zonas.tripulacion.includes(c) && copia(s, c).heridas > 0)
-    .map((c) => ({ tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })),
-)
 registrarPeligro('p2_fiebre', {
   encuentros: {
     // NAV 4. Éxito: cura 1 herida a cada Tripulante. Fallo: no puedes retirarte de esta misión.
@@ -225,8 +222,9 @@ registrarPeligro('p2_fiebre', {
       ],
     },
   },
-  // +1. Si fallas, cada comprometido que ya tenga heridas sufre 1 herida más. Sin oposición: el Capitán queda Envenenado.
-  destino: { siFallas: [codigo('p2_fiebre.vomito')], sinOposicion: [{ tipo: 'estado', estado: 'envenenado', a: 'capitan' }] },
+  // −1. Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, «si fallas, cada asignado herido sufre 1 más»).
+  // Sin oposición: el Capitán queda Envenenado.
+  destino: { efectos: [heridasAsignados(1)], sinOposicion: [{ tipo: 'estado', estado: 'envenenado', a: 'capitan' }] },
 })
 // «Si lo rescatas, vuelve sin heridas (allí lo curan).»
 registrarCapacidades({
@@ -263,17 +261,16 @@ registrarPeligro('p2_tiburones', {
     nat: {
       restriccion: { veto: (s, c) => (copia(s, c).heridas > 0 ? `${nombre(s, c)} está herido: no puede ser asignado` : null) },
       exito: [{ tipo: 'descartarArriba', n: 1 }],
-      fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
+      // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado» (libres).
+      fallo: [heridaPorAsignado()],
     },
     // Al revelarse, Incautado: 1 carta al azar por cada herido (mín. 1, máx. 3). Éxito: recupéralas ya y robas 1.
     ciu: { alRevelarse: [codigo('p2_tiburones.prendas')], exito: [{ tipo: 'recuperarIncautadas' }, robar(1)] },
   },
   // +1. Si algún Tripulante está herido, el que tenga más heridas sufre 1 más (comprometido o no). Sin oposición: el
   // Tripulante con menos Vida sufre 1 herida.
-  destino: {
-    efectos: [{ tipo: 'aQuien', quien: { de: 'heridos', por: 'masHeridas' }, hacer: { tipo: 'heridas', n: 1 } }],
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
-  },
+  // −1. Sin oposición: el Tripulante con menos Vida sufre 1 herida. (Fase 13, I1: fuera «el de más heridas sufre 1».)
+  destino: { sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] },
 })
 
 // 19. Murciélagos vampiro · Duro
@@ -289,10 +286,8 @@ registrarPeligro('p2_murcielagos', {
     ciu: { exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }], fallo: [{ tipo: 'heridas', n: 1, capitan: true }, descartar(1)] },
   },
   // +1. Persigue. Sin oposición: el agotado con menos Vida sufre 1 herida.
-  destino: {
-    persigue: true,
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
-  },
+  // −1. Sin oposición: el agotado con menos Vida sufre 1 herida. (Fase 13, I1: fuera «Persigue».)
+  destino: { sinOposicion: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] },
 })
 
 // 20. Arenas movedizas · Duro
@@ -348,7 +343,8 @@ registrarPeligro('p2_arenas', {
     ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 99, que: 'mejora' }], fallo: [{ tipo: 'perderMejora', n: 1, deComprometidos: true }] },
   },
   // +1, +1 más por cada Tripulante comprometido después del segundo (máx. +3 en total). Sin oposición: agota 1.
-  destino: { modificador: (_s, p) => Math.min(3, 1 + Math.max(0, p.comprometidos.length - 2)), sinOposicion: [agotar(1)] },
+  // −1. Sin oposición: agota a 1 Tripulante. (Fase 13, I1: fuera «−1 más por cada asignado después del segundo».)
+  destino: { sinOposicion: [agotar(1)] },
 })
 
 // 21. El jaguar · Terrible
@@ -407,10 +403,9 @@ registrarPeligro('p2_jaguar', {
   },
   // +2. Si algún preparado no está comprometido, el de menos Vida sufre 1 herida. Sin oposición: el Tripulante con
   // menos Vida sufre 2 heridas.
-  destino: {
-    efectos: [{ tipo: 'aQuien', quien: { de: 'noComprometidosPreparados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }],
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }],
-  },
+  // −2. Sin oposición: el Tripulante con menos Vida sufre 2 heridas. (Fase 13, I1: fuera «el preparado no asignado con
+  // menos Vida sufre 1 herida».)
+  destino: { sinOposicion: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }] },
 })
 
 // 22. El caimán · Terrible
@@ -478,10 +473,10 @@ registrarPeligro('p2_caiman', {
         },
       ],
     },
-    // Éxito: la siguiente Prueba #Guardia# o #Militar# −2. Fallo: el comprometido con más NAV sufre 2 heridas o queda
-    // rehén (tú eliges).
+    // Éxito (fase 13, I2): +1 [avance] (antes, «la siguiente Prueba #Guardia# o #Militar# −2»). Fallo: el asignado con
+    // más NAV sufre 2 heridas o queda rehén (tú eliges).
     ciu: {
-      exito: [{ tipo: 'siguiente', mod: { de: 'prueba', claves: ['Guardia', 'Militar'], n: -2 } }],
+      exito: [avance(1)],
       fallo: [
         comprometidoCon(mas('NAV'), {
           tipo: 'elegir',

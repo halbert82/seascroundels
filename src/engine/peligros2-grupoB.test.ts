@@ -39,15 +39,21 @@ describe('12 · Tortugas', () => {
     expect(j.zona('mano').length).toBe(antes + 2)
   })
 
-  it('Destino «Concha dura»: −1; si superas, el comprometido con la habilidad más alta queda Aguerrido; Sin oposición, pierdes 1 Avance', () => {
+  it('Destino «Concha dura»: +1 y nada más (fase 13, I1: ya no deja Aguerrido); Sin oposición, el encuentro da 1 de Avance menos (mín. 0)', () => {
     const j = en('mar', ['p2_corriente', 'p2_tortugas', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas()
     expect(dificultadConDestino(j.estado)).toBe(1)
     j.seguir()
-    expect(j.estados('viejo_lobo')).toEqual(['aguerrido'])
-    const k = en('mar', ['p2_corriente', 'p2_tortugas', 'calma'], { avance: { 'pruebas-mar5': 2 } })
+    expect(j.estados('viejo_lobo')).toEqual([])
+    // «Arrecife de los Colorados» (Avance 3 / 2) sin nadie asignado: da 2 − 1.
+    const k = en('mar', ['p2_arrecife', 'p2_tortugas', 'calma'])
     k.comprometer('NAV', []).seguir()
-    expect(avance(k, 'mar')).toBe(2) // 2 − 1 + 1 del encuentro (Avance 2 / 1: no la supera)
+    expect(k.registro).toContain('Este encuentro da 1 de Avance menos (mín. 0).')
+    expect(avance(k, 'mar')).toBe(1)
+    // «Corriente del Golfo» (1 / 1): da 0, y la misión no pierde el Avance que ya tenía.
+    const m = en('mar', ['p2_corriente', 'p2_tortugas', 'calma'], { avance: { 'pruebas-mar5': 2 } })
+    m.comprometer('NAV', []).seguir()
+    expect(avance(m, 'mar')).toBe(2)
   })
 })
 
@@ -73,6 +79,14 @@ describe('13 · Sol de justicia', () => {
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
+  it('Naturaleza: si fallas la Prueba, 1 herida por cada asignado, libres (fase 13, P79): pueden ir a un no asignado', () => {
+    const j = en('nat', ['p2_sol', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
+    j.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
+    j.repartir({ capitan: 2 })
+    expect([j.copia('capitan').heridas, j.copia('bucanero').heridas, j.copia('marinero_p').heridas]).toEqual([2, 0, 0])
+  })
+
   it('Naturaleza: sin Avance que perder, no se puede volver al arroyo: se hace la Prueba', () => {
     const j = en('nat', ['p2_sol', 'chubasco', 'calma'])
     expect(j.decision).toMatchObject({ tipo: 'comprometer' })
@@ -86,13 +100,13 @@ describe('13 · Sol de justicia', () => {
     expect(j.estados('capitan')).toEqual(['buscado'])
   })
 
-  it('Destino «Mediodía»: +1, +2 si la Prueba es de COM; Sin oposición, el Capitán sufre 1 herida', () => {
+  it('Destino «Mediodía»: −1 en cualquier Prueba (fase 13, I1: ya no −2 en las de COM); Sin oposición, el Capitán sufre 1 herida', () => {
     const j = en('mar', ['p2_corriente', 'p2_sol', 'calma'])
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('mar', ['fauna', 'p2_sol', 'calma'])
     k.comprometer('COM', ['capitan'])
-    expect(dificultadConDestino(k.estado)).toBe(4)
+    expect(dificultadConDestino(k.estado)).toBe(3) // «Tiburones» (COM 2) + 1
     const m = en('mar', ['p2_corriente', 'p2_sol', 'calma'])
     m.comprometer('NAV', [])
     expect(m.copia('capitan').heridas).toBe(1)
@@ -134,10 +148,11 @@ describe('14 · El hambre', () => {
     expect(k.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'menosMando', desdeTurno: k.estado.turno + 1 }))
   })
 
-  it('Destino «Ración corta»: el comprometido con la habilidad más alta no se prepara en tu próximo Inicio; Sin oposición, descartas 1', () => {
+  it('Destino «Ración corta»: 0 y nada más (fase 13, I1: el de la habilidad más alta ya no se queda sin preparar); Sin oposición, descartas 1', () => {
     const j = en('mar', ['p2_corriente', 'p2_hambre', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas()
-    expect(j.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'noPrepara', hasta: 'inicio', inst: j.inst('viejo_lobo') }))
+    expect(dificultadConDestino(j.estado)).toBe(2)
+    expect(j.estado.temporales.some((t) => t.clave === 'noPrepara')).toBe(false)
     const k = en('mar', ['p2_corriente', 'p2_hambre', 'calma'], { mano: ['ojo'] })
     k.comprometer('NAV', [])
     expect(k.zona('mano')).toEqual([])
@@ -145,13 +160,19 @@ describe('14 · El hambre', () => {
 })
 
 describe('15 · Sin rumbo', () => {
-  it('Mar: si superas, miras las 2 de arriba y pones 1 al fondo; si fallas, el siguiente encuentro no da Avance', () => {
-    const j = en('mar', ['p2_sinrumbo', 'chubasco', 'calma', 'calma'], { tripulacion: ['vigia'] })
+  it('Mar: si superas, Otea 2 (fase 13, I7: cada una arriba o al fondo); si fallas, −1 Avance (I2: el siguiente encuentro sí da el suyo)', () => {
+    const j = en('mar', ['p2_sinrumbo', 'chubasco', 'racha', 'calma', 'fauna'], { tripulacion: ['vigia'] })
     j.comprometer('NAV', ['capitan']).pasarOfertas().seguir()
-    expect(j.decision.motivo.clave).toMatch(/otear|alFondo/)
-    const k = en('mar', ['p2_sinrumbo', 'chubasco', 'calma', 'calma'])
-    k.comprometer('NAV', []).seguir().seguir()
-    expect(avance(k, 'mar')).toBe(1) // 1 del encuentro (2 / 1: no la supera); la «calma» siguiente no da su Avance
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'racha' } })
+    j.opcion('fondo')
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'calma' } })
+    j.opcion('arriba')
+    expect(j.zona('mazoPeligros')).toEqual(['calma', 'fauna', 'racha'])
+    const k = en('mar', ['p2_sinrumbo', 'chubasco', 'calma', 'calma'], { avance: { 'pruebas-mar5': 2 } })
+    k.comprometer('NAV', []).seguir()
+    expect(avance(k, 'mar')).toBe(2) // 2 − 1 del fallo + 1 del encuentro (1 / 1)
+    k.seguir()
+    expect(avance(k, 'mar')).toBe(4) // la «calma» siguiente da sus 2
   })
 
   it('Naturaleza: NAV 1 si un comprometido lleva una Brújula', () => {
@@ -180,13 +201,17 @@ describe('15 · Sin rumbo', () => {
     expect(k.zona('mano')).toHaveLength(1)
   })
 
-  it('Destino «Aguja de marear»: −1, −2 con un Vigía o un Explorador comprometido', () => {
+  it('Destino «Aguja de marear»: +1, también con un Vigía asignado (fase 13, I1); Sin oposición, el encuentro da 1 de Avance menos (mín. 0)', () => {
     const j = en('mar', ['p2_corriente', 'p2_sinrumbo', 'calma'])
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(1)
     const k = en('mar', ['p2_corriente', 'p2_sinrumbo', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('NAV', ['capitan', 'vigia']).pasarOfertas()
-    expect(dificultadConDestino(k.estado)).toBe(0)
+    expect(dificultadConDestino(k.estado)).toBe(1)
+    // Sin nadie asignado, «Arrecife de los Colorados» (3 / 2) da 1 de Avance, y no quita los 2 que ya tenía la misión.
+    const m = en('mar', ['p2_arrecife', 'p2_sinrumbo', 'calma'], { avance: { 'pruebas-mar5': 2 } })
+    m.comprometer('NAV', []).seguir()
+    expect(avance(m, 'mar')).toBe(3)
   })
 })
 
@@ -214,10 +239,13 @@ describe('16 · Serpientes', () => {
     expect(j.estados('bucanero')).toEqual([])
   })
 
-  it('Destino «Colmillo»: si fallas, el comprometido con la habilidad más alta queda Envenenado; Sin oposición, el preparado con menos Vida sufre 1', () => {
+  it('Destino «Colmillo»: 0 y nada más (fase 13, I1: ya no Envenena al fallar); Sin oposición, el preparado con menos Vida sufre 1', () => {
     const j = en('mar', ['p2_arrecife', 'p2_serpientes', 'calma'])
-    j.comprometer('NAV', ['capitan']).seguir()
-    expect(j.estados('capitan')).toContain('envenenado')
+    j.comprometer('NAV', ['capitan'])
+    expect(dificultadConDestino(j.estado)).toBe(4)
+    j.seguir()
+    expect(j.registro).toContain('Total 3 contra 4: fallas la Prueba.')
+    expect(j.estados('capitan')).toEqual([])
     const k = en('mar', ['p2_corriente', 'p2_serpientes', 'calma'], { tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', [])
     expect(k.copia('viejo_lobo').heridas).toBe(1)
@@ -297,18 +325,23 @@ describe('17 · Fiebre amarilla', () => {
     expect(j.copia('bucanero').heridas).toBe(0)
   })
 
-  it('Destino «Vómito negro»: +1; si fallas, cada comprometido que ya tenga heridas sufre 1 más; sin oposición, el Capitán queda Envenenado (fase 10b)', () => {
+  it('Destino «Vómito negro»: −1 e inflige 1 herida a un asignado (fase 13, I1: antes, solo al fallar y a los ya heridos); Sin oposición, la herida es libre y el Capitán queda Envenenado', () => {
     const j = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3) // Chubasco repentino, NAV 2, +1
-    // «Timba en la taberna» (EXP 3, +1; sin efecto al fallar): el Bucanero (herido) y el Rufián (sano) suman 2 y fallan.
-    const k = en('ciu', ['oportunidad', 'p2_fiebre', 'calma'], { tripulacion: [{ id: 'bucanero', heridas: 1, mejoras: ['coleto'] }, 'marinero_p'] })
-    k.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
-    expect(k.registro).toContain('Total 1 contra 3: fallas la Prueba.') // fase 10: el Destino (−1) resta del total
-    expect(k.copia('bucanero').heridas).toBe(2)
-    expect(k.copia('marinero_p').heridas).toBe(0)
-    const m = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
-    m.comprometer('NAV', [])
+    expect(j.copia('capitan').heridas).toBe(1) // el único asignado, aunque supere la Prueba
+    // Con dos asignados, eliges a cuál de ellos: el Capitán, que no está asignado, no puede recibirla.
+    const k = en('mar', ['chubasco', 'p2_fiebre', 'calma'], { tripulacion: ['bucanero', 'viejo_lobo'] })
+    k.comprometer('NAV', ['bucanero', 'viejo_lobo']).pasarOfertas()
+    expect(k.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
+    expect(() => k.repartir({ capitan: 1 })).toThrow(/No se puede repartir/)
+    k.repartir({ viejo_lobo: 1 })
+    expect([k.copia('capitan').heridas, k.copia('bucanero').heridas, k.copia('viejo_lobo').heridas]).toEqual([0, 0, 1])
+    // Sin nadie asignado: la herida va a quien elijas, y el Capitán queda Envenenado.
+    const m = en('mar', ['chubasco', 'p2_fiebre', 'calma'], { tripulacion: ['viejo_lobo'] })
+    m.comprometer('NAV', []).elegir('viejo_lobo')
+    expect(m.copia('viejo_lobo').heridas).toBe(1)
+    expect(m.copia('capitan').heridas).toBe(0)
     expect(m.estados('capitan')).toEqual(['envenenado'])
   })
 })
@@ -329,6 +362,15 @@ describe('18 · Tiburones', () => {
     expect(() => j.comprometer('NAV', ['viejo_lobo'])).toThrow(/no se puede comprometer/)
   })
 
+  it('Naturaleza: si fallas, 1 herida por cada asignado, libres (fase 13, P79): las repartes entre todos tus Tripulantes', () => {
+    const j = en('nat', ['p2_tiburones', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'carpintero', 'viejo_lobo'] })
+    j.comprometer('NAV', ['bucanero', 'carpintero']).seguir() // 2 + 1 contra NAV 4
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
+    j.repartir({ capitan: 1, viejo_lobo: 1 })
+    expect([j.copia('capitan').heridas, j.copia('viejo_lobo').heridas]).toEqual([1, 1])
+    expect([j.copia('bucanero').heridas, j.copia('carpintero').heridas]).toEqual([0, 0])
+  })
+
   it('Ciudad: al revelarse, Incautado 1 carta al azar por herido (mín. 1); si superas, las recuperas ya y robas 1', () => {
     const j = en('ciu', ['p2_tiburones', 'chubasco', 'calma'], { mano: ['ojo', 'timon', 'coraje'], tripulacion: ['isabela'] })
     expect(j.zona('incautadas')).toHaveLength(1)
@@ -337,10 +379,11 @@ describe('18 · Tiburones', () => {
     expect(j.zona('mano')).toHaveLength(4)
   })
 
-  it('Destino «Sangre en el agua»: el que tenga más heridas sufre 1 más; Sin oposición, el de menos Vida sufre 1', () => {
+  it('Destino «Sangre en el agua»: −1 y nada más (fase 13, I1: el más herido ya no sufre 1 más); Sin oposición, el de menos Vida sufre 1', () => {
     const j = en('mar', ['p2_corriente', 'p2_tiburones', 'calma'], { capitan: { heridas: 1 } })
     j.comprometer('NAV', ['capitan'])
-    expect(j.copia('capitan').heridas).toBe(2)
+    expect(dificultadConDestino(j.estado)).toBe(3)
+    expect(j.copia('capitan').heridas).toBe(1)
     const k = en('mar', ['p2_corriente', 'p2_tiburones', 'calma'], { tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', [])
     expect(k.copia('viejo_lobo').heridas).toBe(1)
@@ -369,10 +412,13 @@ describe('19 · Murciélagos vampiro', () => {
     expect(j.zona('mano')).toEqual([])
   })
 
-  it('Destino «Alas en la noche»: +1 y Persigue (vuelve encima del mazo); Sin oposición, el agotado con menos Vida sufre 1', () => {
+  it('Destino «Alas en la noche»: −1 y ya no Persigue (fase 13, I1): se descarta; Sin oposición, el agotado con menos Vida sufre 1', () => {
     const j = en('mar', ['p2_corriente', 'p2_murcielagos', 'calma'])
-    j.comprometer('NAV', ['capitan']).seguir()
-    expect(j.zona('mazoPeligros')[0]).toBe('p2_murcielagos')
+    j.comprometer('NAV', ['capitan'])
+    expect(dificultadConDestino(j.estado)).toBe(3)
+    j.seguir()
+    expect(j.zona('mazoPeligros')).toEqual(['calma'])
+    expect(j.zona('descartesPeligros')).toContain('p2_murcielagos')
     const k = en('mar', ['p2_corriente', 'p2_murcielagos', 'calma'], { tripulacion: [{ id: 'viejo_lobo', agotada: true }] })
     k.comprometer('NAV', [])
     expect(k.copia('viejo_lobo').heridas).toBe(1)
@@ -417,10 +463,14 @@ describe('20 · Arenas movedizas', () => {
     expect(k.zona('mejoras')).toEqual(['sable', 'vela']) // sin comprometidos, nadie pierde nada
   })
 
-  it('Destino «Cuanto más peso»: +1, +1 más por cada comprometido después del segundo (máx. +3)', () => {
+  it('Destino «Cuanto más peso»: −1, sin más por cada asignado (fase 13, I1); Sin oposición, agotas a 1 Tripulante', () => {
     const j = en('mar', ['p2_corriente', 'p2_arenas', 'calma'], { tripulacion: ['viejo_lobo', 'bucanero', 'vigia'] })
     j.comprometer('NAV', ['capitan', 'viejo_lobo', 'bucanero', 'vigia']).pasarOfertas()
-    expect(dificultadConDestino(j.estado)).toBe(5)
+    expect(dificultadConDestino(j.estado)).toBe(3)
+    const k = en('mar', ['p2_corriente', 'p2_arenas', 'calma'], { tripulacion: ['viejo_lobo'] })
+    k.comprometer('NAV', []).elegir('viejo_lobo')
+    expect(k.copia('viejo_lobo').agotada).toBe(true)
+    expect(k.copia('capitan').agotada).toBe(false)
   })
 })
 
@@ -459,15 +509,15 @@ describe('21 · El jaguar', () => {
     expect(j.zona('muelle')).toEqual(['casco'])
   })
 
-  it('Destino «Salto desde la rama»: +2 y el preparado no comprometido con menos Vida sufre 1; Sin oposición, el de menos Vida sufre 2', () => {
+  it('Destino «Salto desde la rama»: −2 y nada más (fase 13, I1: el preparado no asignado con menos Vida ya no sufre 1); Sin oposición, el de menos Vida sufre 2', () => {
     const j = en('mar', ['p2_corriente', 'p2_jaguar', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(4)
-    expect(j.copia('viejo_lobo').heridas).toBe(1)
-    // Sin nadie comprometido se aplican las dos cosas: 1 herida al preparado con menos Vida y 2 de Sin oposición.
+    expect(j.copia('viejo_lobo').heridas).toBe(0)
+    // Sin nadie asignado, solo las 2 heridas de Sin oposición.
     const k = en('mar', ['p2_corriente', 'p2_jaguar', 'calma'])
     k.comprometer('NAV', [])
-    expect(k.copia('capitan').heridas).toBe(3)
+    expect(k.copia('capitan').heridas).toBe(2)
   })
 })
 
@@ -494,6 +544,13 @@ describe('22 · El caimán', () => {
     expect(totalSinDestinoPrueba(j.estado)).toBe(3)
     j.seguir()
     expect(j.zona('muelle')).toContain('loro')
+  })
+
+  it('Ciudad: si superas, +1 Avance (fase 13, I2: antes, la siguiente Prueba Guardia o Militar −2)', () => {
+    const j = en('ciu', ['p2_caiman', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
+    j.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir() // Diego 2 + Viejo lobo 3 contra NAV 5
+    expect(j.registro).toContain('El caimán: +1 de Avance (1/4).')
+    expect(j.registro).toContain('Ganas 3 de Avance (4/4).') // con los 3 del encuentro, supera la misión
   })
 
   it('Ciudad: si fallas, el comprometido con más NAV elige entre 2 heridas o quedar rehén', () => {

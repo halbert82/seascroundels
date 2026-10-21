@@ -542,8 +542,8 @@ describe('N17 · Una Prueba superada automáticamente cuenta como superada, sin 
   })
 })
 
-describe('N18 · Son Cañones las cuatro Mejoras con el Rasgo Cañón, y solo se usan en el Mar', () => {
-  it('el Pedrero no se usa en Ciudad; «Los Cañones no suman» anula también la Culebrina', () => {
+describe('N18 · Son Cañones las cuatro Mejoras con el Rasgo Cañón (fase 13: solo en el Mar si su carta lo dice, «[mar], [agotar]»)', () => {
+  it('el Pedrero («[mar], [agotar]») no se usa en Ciudad; «Los Cañones no suman» anula también la Culebrina', () => {
     const tierra = Jugador.enMision({ barco: { mejoras: ['pedrero'] }, mazoPeligros: ['rivales', 'calma', 'calma'] })
     expect(tierra.ofreceCapacidad('pedrero.disparar')).toBe(false)
     const niebla = Jugador.enMision({ misiones: ['fantasma-I'], barco: { mejoras: ['culebrina'] }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
@@ -590,7 +590,7 @@ describe('P61 y fase 10 · La dificultad suma sus modificadores y el Destino va 
       mazoPeligros: ['p2_hambre', destino, 'calma', 'calma'],
     }).comprometer('EXP', ['baqueano'])
 
-  it('el ejemplo del reglamento: la dificultad 1 − 1 − 1 cuenta como 0; con «Canto lejano» (−1) el total 0 − 1 cuenta como 0, y superas', () => {
+  it('el ejemplo del reglamento: la dificultad 1 − 1 − 1 cuenta como 0; con «La sirena» (−1) el Rastreador suma 3 − 1 = 2, y superas', () => {
     const j = manzanillas('p2_sirena')
     expect(dificultadPrueba(j.estado)).toBe(0)
     expect(desgloseDificultad(j.estado).map((p) => [p.etiqueta, p.n])).toEqual([
@@ -599,24 +599,37 @@ describe('P61 y fase 10 · La dificultad suma sus modificadores y el Destino va 
       ['El guía del istmo', -1],
       ['No baja de 0', 1],
     ])
-    // «Canto lejano»: el Tripulante asignado con la habilidad más baja (el Rastreador, solo) no suma.
-    expect(totalPrueba(j.estado)).toBe(0)
+    // Fase 13 (I1): «Canto lejano» ya no anula a nadie; solo queda su −1.
+    expect(totalPrueba(j.estado)).toBe(2)
     expect(desgloseTotal(j.estado).map((p) => [p.etiqueta, p.n, p.anulada ?? false])).toEqual([
-      ['Rastreador de la selva', 3, true],
+      ['Rastreador de la selva', 3, false],
       ['Destino de «La sirena»', -1, false],
-      ['No baja de 0', 1, false],
     ])
     j.seguir()
-    expect(j.registro).toContain('Total 0 contra 0: superas la Prueba.')
+    expect(j.registro).toContain('Total 2 contra 0: superas la Prueba.')
   })
 
-  it('el Destino suma al total: «Aguja de marear» (+2 con un Explorador asignado) lleva al Rastreador de 3 a 5', () => {
+  it('el Destino suma al total y su resultado no baja de 0: con «Aguja de marear» (+1) el Rastreador suma 4', () => {
     const j = manzanillas('p2_sinrumbo')
     expect(dificultadPrueba(j.estado)).toBe(0)
     const partes = desgloseDificultad(j.estado)
     expect(partes.filter((p) => p.etiqueta === 'No baja de 0')).toEqual([{ etiqueta: 'No baja de 0', n: 1, tipo: 'modificador' }])
     expect(partes.at(-1)?.etiqueta).toBe('No baja de 0')
     expect(partes.reduce((n, p) => n + p.n, 0)).toBe(0)
-    expect(totalPrueba(j.estado)).toBe(5)
+    expect(totalPrueba(j.estado)).toBe(4)
+  })
+
+  it('el total no baja de 0: sin nadie asignado, «La sirena» (−1) deja el total en 0, no en −1', () => {
+    const j = Jugador.enMision({
+      misiones: ['sanfelipe-I'],
+      pasajeros: ['guia'],
+      cubrir: ['capitan'],
+      mazoPeligros: ['p2_hambre', 'p2_sirena', 'calma', 'calma'],
+    }).comprometer('EXP', [])
+    expect(totalPrueba(j.estado)).toBe(0)
+    expect(desgloseTotal(j.estado).map((p) => [p.etiqueta, p.n])).toEqual([
+      ['Destino de «La sirena»', -1],
+      ['No baja de 0', 1],
+    ])
   })
 })

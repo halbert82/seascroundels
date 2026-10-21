@@ -215,25 +215,29 @@ describe('112 · Nassau: Entrenamiento', () => {
   })
 })
 
-describe('240 · Arenga del capitán (fase 13)', () => {
-  it('en la Fase de Reclutamiento, todos tus Tripulantes quedan Inspirados: cada Prueba de la misión recibe +1 por cada Inspirado asignado, y al final del turno se quitan', () => {
-    const j = Jugador.en({
-      mano: ['arenga', 'ojo', 'timon'],
-      tripulacion: ['bucanero', 'carpintero'],
+describe('240 · Arenga del capitán (fase 13, P76)', () => {
+  const arenga = (op: Parameters<typeof Jugador.enMision>[0] = {}) =>
+    Jugador.enMision({
       misiones: ['pruebas-mar5'],
+      mano: ['arenga', 'ojo'],
+      tripulacion: ['bucanero', 'carpintero'],
       mazoPeligros: ['chubasco', 'calma', 'chubasco', 'calma', 'calma'],
+      ...op,
     })
+
+  it('Respuesta: después de zarpar, agota a tu Capitán: todos tus Tripulantes quedan Inspirados, +1 por cada Inspirado asignado, y al final del turno se quitan', () => {
+    const j = arenga()
+    expect(j.ofreceCapacidad('arenga.jugar')).toBe(true)
     j.usar('arenga.jugar').elegir('ojo')
+    expect(j.copia('capitan').agotada).toBe(true)
     expect(j.estados('capitan')).toEqual(['inspirado'])
     expect(j.estados('bucanero')).toEqual(['inspirado'])
     expect(j.estados('carpintero')).toEqual(['inspirado'])
     expect(j.zona('descartesCapitan')).toEqual(expect.arrayContaining(['arenga', 'ojo']))
-    j.zarpar('pruebas-mar5').pasarOfertas()
-    j.comprometer('NAV', ['capitan', 'bucanero'])
-    // «Chubasco repentino» (NAV 2): Diego 2 + Bucanero 1 + Barco 1, y +1 por cada Inspirado asignado.
-    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
-    // En la misión ya no se puede jugar: es de la Fase de Reclutamiento.
-    expect(j.ofreceCapacidad('arenga.jugar')).toBe(false)
+    j.pasarOfertas().comprometer('NAV', ['bucanero', 'carpintero'])
+    // «Chubasco repentino» (NAV 2): Bucanero 1 + Carpintero 0 + Barco 1, y +1 por cada Inspirado asignado. Diego, agotado,
+    // ya no da +1 a los demás.
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4)
     // El Destino («Calma», 0) prepara a uno de los asignados si la superas.
     j.seguir().elegir('bucanero').retirarse().opcion('dejar')
     while (j.estado.pendiente && j.estado.paso === 'final') {
@@ -246,17 +250,38 @@ describe('240 · Arenga del capitán (fase 13)', () => {
     expect(j.estados('carpintero')).toEqual([])
   })
 
-  it('no se juega fuera de la Fase de Reclutamiento', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mano: ['arenga', 'ojo'], mazoPeligros: ['chubasco', 'calma', 'calma'] })
+  it('regla general 2: primero se aplica el «Al zarpar» de la misión y después la Respuesta (ejemplo del reglamento: El templo)', () => {
+    const j = Jugador.en({
+      empezarEn: 'quedarseOZarpar',
+      escenario: ['pruebas-calma'],
+      misiones: ['templo-IV'],
+      mano: ['arenga', 'ojo'],
+      tripulacion: ['bucanero', 'carpintero'],
+      mazoPeligros: ['calma', 'calma', 'calma', 'calma', 'calma', 'calma', 'chubasco'],
+    })
+    j.zarpar('templo-IV')
+    // Cuando se ofrece la Arenga, el mazo del Templo ya está barajado con 6 cartas del mazo de Peligros.
+    expect(j.ofreceCapacidad('arenga.jugar')).toBe(true)
+    expect(j.zona('mazoPeligros')).toEqual(['chubasco'])
+    expect(j.zona('mazoMision')).toHaveLength(12)
+    j.usar('arenga.jugar').elegir('ojo')
+    expect(j.estados('bucanero')).toEqual(['inspirado'])
+  })
+
+  it('no se juega si el Capitán ya está agotado (por ejemplo, para cubrir la Distancia), ni antes de zarpar', () => {
+    expect(arenga({ capitan: { agotada: true } }).ofreceCapacidad('arenga.jugar')).toBe(false)
+    const j = Jugador.en({ mano: ['arenga', 'ojo'], tripulacion: ['bucanero', 'carpintero'], misiones: ['pruebas-mar5'] })
     expect(j.ofreceCapacidad('arenga.jugar')).toBe(false)
   })
 
-  it('el jugador automático la juega en la Fase de Reclutamiento si va a zarpar con 2 o más Tripulantes preparados', async () => {
+  it('el jugador automático la juega después de zarpar si el Capitán sigue preparado y hay 2 o más Tripulantes preparados además de él', async () => {
     const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
     const criterio = jugadorConCriterio()
     const juega = (j: Jugador) => JSON.stringify(criterio(j.estado, j.decision)).includes('arenga.jugar')
-    expect(juega(Jugador.en({ mano: ['arenga', 'ojo', 'timon'], tripulacion: ['bucanero'], misiones: ['prueba-I'] }))).toBe(true)
-    // Solo con Diego, no.
-    expect(juega(Jugador.en({ mano: ['arenga', 'ojo', 'timon'], misiones: ['prueba-I'] }))).toBe(false)
+    expect(juega(arenga())).toBe(true)
+    // Con un solo Tripulante además de Diego, no.
+    expect(juega(arenga({ tripulacion: ['bucanero'] }))).toBe(false)
+    // Con el Carpintero agotado, tampoco.
+    expect(juega(arenga({ tripulacion: ['bucanero', { id: 'carpintero', agotada: true }] }))).toBe(false)
   })
 })

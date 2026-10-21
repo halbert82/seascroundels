@@ -31,7 +31,8 @@ import {
   participantesCtx,
   pierdesAvance,
   preparar,
-  reparar,
+  heridasAsignados,
+  heridaPorAsignado,
   reputacion,
   robar,
   tieneRasgo,
@@ -128,18 +129,14 @@ registrarPeligro('p2_estrella', {
     },
   },
   // −2, pero la siguiente Prueba de esta misión recibe +1. Sin oposición: +2 en vez de +1.
-  destino: { efectos: [{ tipo: 'si', condicion: hayComprometidos, entonces: [siguientePrueba(1)], sino: [siguientePrueba(2)] }] },
+  // +2. Sin oposición: la siguiente Prueba de esta misión recibe +2. (Fase 13, I1: fuera «la siguiente Prueba recibe +1»;
+  // el Sin oposición ya no dice «en lugar de +1».)
+  destino: { sinOposicion: [siguientePrueba(2)] },
 })
 
 // 46. Restos del naufragio · Favorable -----------------------------------------------
 
 // «Cada Tripulante comprometido después del primero sufre 1 herida»: eliges al que se libra.
-registrarCodigo('p2_restos.aire', (s) => {
-  const comprometidos = (s.prueba?.comprometidos ?? []).filter((c) => s.zonas.tripulacion.includes(c))
-  const n = comprometidos.length - 1
-  if (n <= 0) return []
-  return [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true, maximo: n }, hacer: { tipo: 'heridas', n: 1 } }]
-})
 
 /** Portadores posibles de una Mejora del muelle. */
 function portadores(s: Estado, carta: InstId): (InstId | 'barco')[] {
@@ -185,8 +182,9 @@ registrarCodigo('p2_restos.subasta', () => [{ tipo: 'especial', clave: 'p2_resto
 
 registrarPeligro('p2_restos', {
   encuentros: {
-    // Éxito: robas 1 por cada Tripulante comprometido (máx. 3). Fallo: cada comprometido después del primero, 1 herida.
-    mar: { exito: [{ tipo: 'porCada', medida: 'comprometidos', efectos: [robar(1)], maximo: 3 }], fallo: [codigo('p2_restos.aire')] },
+    // Éxito: robas 1 por cada Tripulante asignado (máx. 3). Fallo (fase 13, P79): «Inflige 1 herida por cada Tripulante
+    // asignado después del primero» (libres).
+    mar: { exito: [{ tipo: 'porCada', medida: 'comprometidos', efectos: [robar(1)], maximo: 3 }], fallo: [heridaPorAsignado({ trasElPrimero: true })] },
     // A tu elección: el de ron (prepara a todos los agotados, que quedan Borrachos) o el de pólvora (+2 munición).
     nat: {
       efecto: [
@@ -207,7 +205,8 @@ registrarPeligro('p2_restos', {
   },
   // +0. Si superas, repara 1 daño. Sin oposición: en el Mar, el Barco sufre 1 daño; en Naturaleza o Ciudad, descarta
   // 1 carta.
-  destino: { siSuperas: [reparar(1)], sinOposicion: [enElMar([dano(1)], [descartar(1)])] },
+  // 0. Sin oposición: [mar]: Daña 1; [nat]/[ciu]: descarta 1 carta. (Fase 13, I1: fuera «si superas, repara 1».)
+  destino: { sinOposicion: [enElMar([dano(1)], [descartar(1)])] },
 })
 
 // 47. Presa fácil · Favorable ------------------------------------------------------
@@ -229,7 +228,8 @@ registrarPeligro('p2_presa', {
       fallo: [dano(1)],
     },
     // Éxito: robas 3, pero la siguiente Prueba de EXP de esta misión recibe +1. Fallo: pierdes 1 Avance.
-    nat: { exito: [robar(3), { tipo: 'siguiente', mod: { de: 'prueba', hab: 'EXP', n: 1 } }], fallo: [pierdesAvance(1)] },
+    // Fase 13 (I2): «Robas 3 y agota a 1 Tripulante (la plata pesa)» (antes, la siguiente Prueba de EXP +1).
+    nat: { exito: [robar(3), agotar(1)], fallo: [pierdesAvance(1)] },
     // Puedes colarte: recuperas 2 cartas de tu descarte y un Tripulante a tu elección queda Buscado.
     ciu: {
       efecto: [
@@ -246,11 +246,8 @@ registrarPeligro('p2_presa', {
       ],
     },
   },
-  // +0. Si superas, robas 1 (2 si comprometiste a un Contrabandista). Sin oposición: descartas 1 al azar.
-  destino: {
-    siSuperas: [{ tipo: 'si', condicion: { tipo: 'comprometidoRasgo', rasgo: 'Contrabandista' }, entonces: [robar(2)], sino: [robar(1)] }],
-    sinOposicion: [{ tipo: 'descartarAzar', n: 1 }],
-  },
+  // 0. Sin oposición: descarta 1 carta al azar. (Fase 13, I1: fuera «si superas, roba 1 (2 con un Contrabandista)».)
+  destino: { sinOposicion: [{ tipo: 'descartarAzar', n: 1 }] },
 })
 
 // 48. Fuego de San Telmo · Leve -------------------------------------------------------
@@ -258,7 +255,8 @@ registrarPeligro('p2_presa', {
 registrarPeligro('p2_santelmo', {
   encuentros: {
     // Éxito: el comprometido con más NAV queda Inspirado. Fallo: en la siguiente Prueba, 2 Destinos y el peor.
-    mar: { exito: [comprometidoCon(mas('NAV'), estado('inspirado'))], fallo: [{ tipo: 'siguiente', mod: { de: 'prueba', dosDestinos: true } }] },
+    // Fase 13 (I4): éxito, prepara a 1 Tripulante asignado (antes, Inspirado).
+    mar: { exito: [comprometidoCon('eleccion', { tipo: 'preparar' })], fallo: [{ tipo: 'siguiente', mod: { de: 'prueba', dosDestinos: true } }] },
     // Un Vigía comprometido suma +2. Éxito: busca una Mejora. Fallo: pierdes 2 Avance.
     // P46 (confirmada): «busca una Mejora en tu mazo y añádela a tu mano»: las Mejoras van en el mazo de muelle, no en
     // la mano. Por defecto: buscas una Mejora en el mazo de muelle y la pones en el muelle, como las recompensas.
@@ -276,7 +274,8 @@ registrarPeligro('p2_santelmo', {
     },
   },
   // −1. No se pueden usar capacidades de Tripulantes ni de Mejoras. Sin oposición: +1 en vez de −1.
-  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1), prueba: { sinCapTripulantes: true, sinCapMejoras: true } },
+  // +1. Sin oposición: −1 en su lugar. (Fase 13, I1: fuera «no se pueden usar capacidades de Tripulantes ni de Mejoras».)
+  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1) },
 })
 registrarCodigo('p2_santelmo.buscar', () => [{ tipo: 'buscarMuelle', filtro: 'mejora' }])
 
@@ -316,13 +315,11 @@ registrarPeligro('p2_sirena', {
     // Invierte el modificador del Destino. Éxito: cura 1 a cada comprometido. Fallo: el comprometido con menos EXP, 2 heridas.
     nat: { prueba: { invertirDestino: true }, exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }], fallo: [comprometidoCon(menos('EXP'), { tipo: 'heridas', n: 2 })] },
     // Las cartas de la mano no suman. Éxito: un comprometido queda Inspirado. Fallo: descartas 2 al azar.
-    ciu: { prueba: { sinCartas: true }, exito: [comprometidoCon('eleccion', estado('inspirado'))], fallo: [{ tipo: 'descartarAzar', n: 2 }] },
+    // Fase 13 (I4): éxito, prepara a 1 Tripulante asignado (antes, Inspirado).
+    ciu: { prueba: { sinCartas: true }, exito: [comprometidoCon('eleccion', { tipo: 'preparar' })], fallo: [{ tipo: 'descartarAzar', n: 2 }] },
   },
-  // +1. El comprometido con la habilidad más baja no suma. Sin oposición: el preparado con menos EXP sufre 1 herida.
-  destino: {
-    efectos: [comprometidoCon(menos('prueba'), { tipo: 'noSuma' })],
-    sinOposicion: [alguno('preparados', menos('EXP'), { tipo: 'heridas', n: 1 })],
-  },
+  // −1. Sin oposición: el preparado con menos EXP sufre 1 herida. (Fase 13, I1: fuera «el de la habilidad más baja no suma».)
+  destino: { sinOposicion: [alguno('preparados', menos('EXP'), { tipo: 'heridas', n: 1 })] },
 })
 
 // 50. Mal presagio · Leve ----------------------------------------------------------
@@ -369,12 +366,14 @@ registrarPeligro('p2_presagio', {
     // EXP queda Asustado.
     ciu: {
       prueba: { destinoAntes: true },
-      exito: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'no' }],
+      // Fase 13 (I7): «Otea 3».
+      exito: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'libre' }],
       fallo: [comprometidoCon(mas('EXP'), estado('asustado'))],
     },
   },
   // +1. Si fallas, la siguiente Prueba de esta misión recibe +1. Sin oposición: agota 1 Tripulante.
-  destino: { siFallas: [siguientePrueba(1)], sinOposicion: [agotar(1)] },
+  // −1. Sin oposición: agota a 1 Tripulante. (Fase 13, I1: fuera «si fallas, la siguiente Prueba recibe +1».)
+  destino: { sinOposicion: [agotar(1)] },
 })
 
 // 51. La maldición del bokor · Duro ---------------------------------------------------
@@ -416,7 +415,9 @@ registrarPeligro('p2_bokor', {
     },
   },
   // +1. Si fallas, uno de los comprometidos sufre 1 herida. Sin oposición: el Capitán sufre 1 herida.
-  destino: { siFallas: [{ tipo: 'herirComprometido', n: 1 }], sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
+  // −1. Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, solo si fallabas). Sin oposición: el Capitán
+  // sufre 1 herida.
+  destino: { efectos: [heridasAsignados(1)], sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
 })
 
 // 52. El oro de los muertos · Duro ----------------------------------------------------
@@ -485,18 +486,9 @@ registrarPeligro('p2_serpiente_marina', {
     // Éxito: robas 2. Fallo: −1 reputación.
     ciu: { exito: [robar(2)], fallo: [reputacion(-1)] },
   },
-  // +1. Si la Prueba es de COM, el comprometido con la habilidad más alta sufre 1 herida aunque superes. Sin oposición:
+  // −1. Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, en Pruebas de COM, al de más COM). Sin oposición:
   // el preparado con menos Vida sufre 2 heridas.
-  destino: {
-    efectos: [
-      {
-        tipo: 'si',
-        condicion: { tipo: 'todas', condiciones: [{ tipo: 'hab', hab: 'COM' }, hayComprometidos] },
-        entonces: [comprometidoCon(mas('prueba'), { tipo: 'heridas', n: 1 })],
-      },
-    ],
-    sinOposicion: [alguno('preparados', 'menosVida', { tipo: 'heridas', n: 2 })],
-  },
+  destino: { efectos: [heridasAsignados(1)], sinOposicion: [alguno('preparados', 'menosVida', { tipo: 'heridas', n: 2 })] },
 })
 
 // 54. La Santa Compaña · Duro ---------------------------------------------------------

@@ -12,7 +12,7 @@ import {
   dano,
   descartar,
   dificultad,
-  encuentroEs,
+  heridasAsignados,
   heridas,
   mas,
   menos,
@@ -49,8 +49,9 @@ registrarPeligro('esqueleto', {
 // Trampa de dardos · Leve
 registrarPeligro('dardos', {
   encuentros: { unico: { exito: [preparaCanon()], fallo: [comprometidoCon(menos('EXP'), { tipo: 'estado', estado: 'envenenado' })] } },
+  // Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, al de la habilidad más baja).
   destino: {
-    efectos: [comprometidoCon(menos('prueba'), { tipo: 'heridas', n: 1 })],
+    efectos: [heridasAsignados(1)],
     // Sin oposición: inflige 1 herida a un Tripulante (fase 10: ya no tiene que estar preparado).
     sinOposicion: [heridas(1)],
   },
@@ -68,12 +69,14 @@ registrarPeligro('idolo', {
       fallo: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'maldito' })],
     },
   },
-  destino: { prueba: { sinCartas: true }, sinOposicion: [descartar(1)] },
+  // −1. Sin oposición: descarta 1 carta. (Fase 13, I1 e I5: fuera «las cartas de tu mano no suman», que no servía.)
+  destino: { sinOposicion: [descartar(1)] },
 })
 
 // Pasadizo secreto · Favorable · Sin Prueba: mira las 3 de arriba del mazo del Templo y pon 1 al fondo.
 registrarPeligro('pasadizo', {
-  encuentros: { unico: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'una' }] } },
+  // Fase 13 (I7): «Otea 3» (mira el mazo del que revelas, el del Templo mezclado; P73).
+  encuentros: { unico: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'libre' }] } },
   // −1. Sin oposición: +0 en su lugar.
   destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 0 : -1) },
 })
@@ -90,7 +93,8 @@ registrarPeligro('losa', {
   encuentros: {
     unico: { pone: { carta: 'pm_losa', junto: { de: 'preparados', por: mas('EXP') } } },
   },
-  destino: { siFallas: [pierdesAvance(1)], sinOposicion: [agotar(1)] },
+  // −1. Sin oposición: agota a 1 Tripulante. (Fase 13, I1: fuera «si fallas, −1 de Avance».)
+  destino: { sinOposicion: [agotar(1)] },
 })
 
 // El guardián de jade · Terrible
@@ -129,15 +133,13 @@ registrarPeligro('galeon', {
 registrarPeligro('escolta', {
   encuentros: {
     unico: {
-      exito: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Barco'], n: -1 } }],
+      // Fase 13 (I2): +1 [avance] (antes, «el siguiente encuentro #Barco# −1»).
+      exito: [avance(1)],
       fallo: [dano(2)],
     },
   },
-  // +1; +2 en su lugar si el encuentro es #Barco#. Sin oposición: el Barco queda Perseguido.
-  destino: {
-    modificador: (s) => (encuentroEs(s, 'Barco') ? 2 : 1),
-    sinOposicion: [{ tipo: 'estadoBarco', estado: 'perseguido' }],
-  },
+  // −1. Sin oposición: el Barco queda Perseguido. (Fase 13, I1: fuera «encuentro de tipo Barco: −2».)
+  destino: { sinOposicion: [{ tipo: 'estadoBarco', estado: 'perseguido' }] },
 })
 
 // Fuego de cobertura · Leve. Fase 11: pon en juego la carta 237 del mazo de historia.
@@ -150,7 +152,8 @@ registrarPeligro('cobertura', {
   encuentros: {
     unico: { pone: { carta: 'pm_cobertura' } },
   },
-  destino: { prueba: { sinCanones: true }, sinOposicion: [dano(1)] },
+  // 0. Sin oposición: Daña 1. (Fase 13, I1: fuera «los Cañones no suman».)
+  destino: { sinOposicion: [dano(1)] },
 })
 
 // Marineros del galeón hundido · Favorable
@@ -183,7 +186,8 @@ registrarPeligro('cofres', {
       fallo: [agotar(1)],
     },
   },
-  destino: { siSuperas: [robar(1)], sinOposicion: [descartar(1)] },
+  // −1. Sin oposición: descarta 1 carta. (Fase 13, I1: fuera «si superas, roba 1 carta».)
+  destino: { sinOposicion: [descartar(1)] },
 })
 
 // ---------------------------------------------------------------------------
@@ -200,8 +204,6 @@ registrarPeligro('armada', {
     ciu: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'rehen' })] },
   },
   // +1; +2 en su lugar si el encuentro es #Militar# o #Guardia#. Sin oposición: el Barco queda Perseguido.
-  destino: {
-    modificador: (s) => (encuentroEs(s, 'Armada', 'Militar', 'Guardia') ? 2 : 1),
-    sinOposicion: [{ tipo: 'estadoBarco', estado: 'perseguido' }],
-  },
+  // −1. Sin oposición: el Barco queda Perseguido. (Fase 13, I1: fuera «Armada, Militar o Guardia: −2 en su lugar».)
+  destino: { sinOposicion: [{ tipo: 'estadoBarco', estado: 'perseguido' }] },
 })

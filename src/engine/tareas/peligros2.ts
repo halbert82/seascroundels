@@ -61,11 +61,15 @@ export function baseDelSelector(s: Estado, q: Selector, hacer?: AccionSobre): In
   const comp = comprometidos(s)
   let base: InstId[]
   switch (q.de) {
-    case 'comprometidos':
+    case 'comprometidos': {
       // Sin comprometidos en juego, las heridas y el rehén van a cualquiera (D2a, N7).
       // (Solo cuando es «uno de los comprometidos»: «cada comprometido» sin comprometidos no le toca a nadie.)
-      base = comp.length > 0 || q.cada || !(hacer?.tipo === 'heridas' || hacer?.tipo === 'rehen') ? comp : [...enJuego]
+      // Fase 13 (P72, regla general de Albert): «el Tripulante asignado con más (o menos) X» sin nadie asignado es el que
+      // tiene más (o menos) X de toda la tripulación.
+      const conCriterio = q.por !== undefined && q.por !== 'eleccion' && q.por !== 'azar'
+      base = comp.length > 0 || q.cada || !(conCriterio || hacer?.tipo === 'heridas' || hacer?.tipo === 'rehen') ? comp : [...enJuego]
       break
+    }
     case 'tripulacion':
       base = [...enJuego]
       break

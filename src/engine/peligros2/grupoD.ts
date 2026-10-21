@@ -3,8 +3,8 @@
 import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { iconosDe } from '../catalogo.ts'
 import type { Efecto } from '../efectos.ts'
-import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
-import { ponerEstado, tieneEstado } from '../estados.ts'
+import { anotar, copia, nombre, nombres } from '../estado.ts'
+import { ponerEstado } from '../estados.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { margen, registrarCodigo } from '../tareas/efectos.ts'
@@ -13,16 +13,15 @@ import { mover, moverA, rebarajar } from '../zonas.ts'
 import {
   agotar,
   avance,
-  cadaComprometido,
   codigo,
   comprometidoCon,
   dano,
   descartar,
   dificultad,
-  encuentroEs,
   habilidadDe,
   heridas,
   heridasAsignados,
+  heridaPorAsignado,
   mas,
   preparaCanon,
   participantesCtx,
@@ -34,11 +33,6 @@ import {
   siTienes,
   tieneRasgo,
 } from './comun.ts'
-
-/** Tripulantes comprometidos que siguen en juego. */
-function comprometidos(s: Estado): InstId[] {
-  return s.prueba ? s.prueba.comprometidos.filter((c) => s.zonas.tripulacion.includes(c)) : []
-}
 
 function herida(objetivo: InstId, cantidad = 1): NuevaTarea {
   return { tipo: 'evento', ev: { tipo: 'heridas', objetivo, cantidad }, fase: 'antes', cancelado: false, usadas: [] }
@@ -58,10 +52,8 @@ registrarPeligro('p2_hermanos', {
     ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante' }], fallo: [descartar(1)] },
   },
   // −1; −2 en su lugar si el encuentro es Pirata y comprometiste a un Bucanero. Sin oposición: pierdes 1 munición.
-  destino: {
-    modificador: (s, p) => (encuentroEs(s, 'Pirata') && p.comprometidos.some((c) => s.zonas.tripulacion.includes(c) && tieneRasgo(s, c, 'Bucanero')) ? -2 : -1),
-    sinOposicion: [agotaCanones(1)],
-  },
+  // −1. Sin oposición: agota 1 Cañón. (Fase 13, I1: fuera «Pirata con un Bucanero asignado: +2».)
+  destino: { sinOposicion: [agotaCanones(1)] },
 })
 
 // 35. Barril de ron · Favorable
@@ -105,10 +97,8 @@ registrarPeligro('p2_barril', {
     ciu: { efecto: [codigo('p2_barril.lenguas')] },
   },
   // −1; −2 en su lugar si comprometiste a un Tripulante Borracho. Sin oposición: el preparado con más NAV queda Borracho.
-  destino: {
-    modificador: (s, p) => (p.comprometidos.some((c) => s.zonas.tripulacion.includes(c) && tieneEstado(s, c, 'borracho')) ? -2 : -1),
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: mas('NAV') }, hacer: { tipo: 'estado', estado: 'borracho' } }],
-  },
+  // +1. Sin oposición: el preparado con más NAV queda Borracho. (Fase 13, I1: fuera «con un Borracho asignado: +2».)
+  destino: { sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', por: mas('NAV') }, hacer: { tipo: 'estado', estado: 'borracho' } }] },
 })
 
 // 36. Sangre caliente · Leve
@@ -146,35 +136,6 @@ registrarCodigo('p2_sangre.bronca', (_s, fuente) => [{ tipo: 'especial', clave: 
 registrarCodigo('p2_sangre.golpes', (s, fuente) =>
   s.temporales.filter((x) => x.clave === PELEA && x.inst && (!fuente || x.carta === fuente) && s.zonas.tripulacion.includes(x.inst)).map((x) => herida(x.inst as InstId)),
 )
-// Destino «Echarse la culpa»: si fallas y comprometiste a dos o más, el de la habilidad más alta y el de la más baja
-// sufren 1 herida cada uno (si empatan, eliges).
-// P43 (confirmada): son siempre dos Tripulantes distintos: si todos empatan, eliges uno como «el más alto» y otro como
-// «el más bajo» (nadie sufre 2 heridas).
-registrarEspecial('p2_sangre.culpa', (s, t, e) => {
-  const comp = comprometidos(s)
-  const hab = s.prueba?.hab
-  if (comp.length < 2 || !hab) return 'hecha'
-  const valorDe = (c: InstId) => habilidadImpresa(s, c, hab)
-  if (t.paso === 0) {
-    const maximo = Math.max(...comp.map(valorDe))
-    const altos = comp.filter((c) => valorDe(c) === maximo)
-    const alto = altos.length === 1 ? altos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
-    if (!alto) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'sufre 1 herida (la habilidad más alta)', n: 1 }, candidatas: altos, min: 1, max: 1 })
-    t.datos.alto = alto
-    t.paso = 1
-    return 'sigue'
-  }
-  const alto = t.datos.alto as InstId
-  const resto = comp.filter((c) => c !== alto)
-  const minimo = Math.min(...resto.map(valorDe))
-  const bajos = resto.filter((c) => valorDe(c) === minimo)
-  const bajo = bajos.length === 1 ? bajos[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
-  if (!bajo) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'sufre 1 herida (la habilidad más baja)', n: 1 }, candidatas: bajos, min: 1, max: 1 })
-  anotar(s, 'efecto', `Se echan la culpa: ${nombre(s, alto)} y ${nombre(s, bajo)}.`)
-  encolar(s, herida(alto), herida(bajo))
-  return 'hecha'
-})
-registrarCodigo('p2_sangre.culpa', () => [{ tipo: 'especial', clave: 'p2_sangre.culpa', datos: {}, paso: 0 }])
 registrarPeligro('p2_sangre', {
   encuentros: {
     // Los dos con más COM no pueden comprometerse. Cada Oficial comprometido suma +1.
@@ -195,7 +156,9 @@ registrarPeligro('p2_sangre', {
     ciu: { exito: [avance(1), robar(1)], fallo: [comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 }), descartar(1)] },
   },
   // +1. Si fallas con dos o más comprometidos, el más alto y el más bajo sufren 1 herida. Sin oposición: agota 1.
-  destino: { siFallas: [codigo('p2_sangre.culpa')], sinOposicion: [agotar(1)] },
+  // −1. Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, «Echarse la culpa»: si fallas con dos o más
+  // asignados, el más alto y el más bajo sufren 1 herida cada uno). Sin oposición: agota a 1 Tripulante.
+  destino: { efectos: [heridasAsignados(1)], sinOposicion: [agotar(1)] },
 })
 
 // 37. El tahúr · Leve
@@ -313,7 +276,8 @@ registrarPeligro('p2_paga', {
     },
   },
   // +1; +2 en su lugar si comprometiste a 3 o más. Sin oposición: −1 Mando en tu próximo turno.
-  destino: { modificador: (_s, p) => (p.comprometidos.length >= 3 ? 2 : 1), sinOposicion: [{ tipo: 'menosMando', proximo: true }] },
+  // −1. Sin oposición: −1 Mando en tu próximo turno. (Fase 13, I1: fuera «con 3 o más asignados: −2».)
+  destino: { sinOposicion: [{ tipo: 'menosMando', proximo: true }] },
 })
 
 // 39. A sueldo · Leve
@@ -340,16 +304,8 @@ registrarPeligro('p2_sueldo', {
   },
   // +0. Si comprometiste a dos o más, el de menor coste no suma. Sin oposición: descarta 2 cartas.
   // P41 (confirmada): el Capitán no tiene coste impreso: no cuenta como «el de menor coste».
-  destino: {
-    efectos: [
-      {
-        tipo: 'si',
-        condicion: { tipo: 'comprometidos', minimo: 2 },
-        entonces: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menorCoste', sinCapitan: true }, hacer: { tipo: 'noSuma' } }],
-      },
-    ],
-    sinOposicion: [descartar(2)],
-  },
+  // 0. Sin oposición: descarta 2 cartas. (Fase 13, I1: fuera «con dos o más asignados, el de menor coste no suma».)
+  destino: { sinOposicion: [descartar(2)] },
 })
 
 // 40. La sombra de Bastián · Duro
@@ -365,7 +321,8 @@ registrarPeligro('p2_bastian', {
     ciu: { exito: [avance(1)], fallo: [{ tipo: 'siguiente', mod: { de: 'prueba', n: 2 } }] },
   },
   // +1. Persigue. Sin oposición: pierdes 1 Avance.
-  destino: { persigue: true, sinOposicion: [pierdesAvance(1)] },
+  // −1, Persigue. Sin oposición (fase 13, I6): −1 [avance] (mín. 0).
+  destino: { persigue: true, sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
 
 // 41. Los holandeses de Curazao · Duro
@@ -402,23 +359,15 @@ registrarPeligro('p2_curazao', {
     },
     nat: {
       exito: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true, maximo: 3 }, hacer: { tipo: 'curar', n: 1 } }],
-      fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true, maximo: 3 }, hacer: { tipo: 'heridas', n: 1 } }],
+      // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado (máx. 3)» (libres).
+      fallo: [heridaPorAsignado({ maximo: 3 })],
     },
-    // «Te roban el barco»: la carta dice expresamente que daña el Barco en tierra (P19).
-    ciu: { exito: [reparar(1), preparaCanon()], fallo: [{ tipo: 'dano', n: 2, enTierra: true }, descartar(1)] },
+    // «Te roban el barco»: «Daña 2» (fase 13: las cartas se leen al pie de la letra, también en tierra).
+    ciu: { exito: [reparar(1), preparaCanon()], fallo: [dano(2), descartar(1)] },
   },
-  // −1. Prueba de COM: el Tripulante asignado con la COM más alta sufre 1 herida.
-  // Sin oposición: inflige 1 herida a un Tripulante (fase 10: ya no tiene que estar preparado).
-  destino: {
-    efectos: [
-      {
-        tipo: 'si',
-        condicion: { tipo: 'todas', condiciones: [{ tipo: 'hab', hab: 'COM' }, { tipo: 'comprometidos', minimo: 1 }] },
-        entonces: [comprometidoCon(mas('prueba'), { tipo: 'heridas', n: 1 })],
-      },
-    ],
-    sinOposicion: [heridas(1)],
-  },
+  // −1. Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, en Pruebas de COM, al de más COM).
+  // Sin oposición: inflige 1 herida.
+  destino: { efectos: [heridasAsignados(1)], sinOposicion: [heridas(1)] },
 })
 
 // 42. Viejas cuentas · Duro
@@ -428,7 +377,8 @@ registrarPeligro('p2_cuentas', {
     mar: {
       sinAyuda: true,
       capacidades: [dificultad('vizcaino', (ctx) => (participantesCtx(ctx).some((c) => c !== ctx.s.capitan) ? 1 : 0))],
-      exito: [preparaCanon(), cadaComprometido({ tipo: 'estado', estado: 'inspirado' })],
+      // Fase 13 (I4): prepara un Cañón y a 1 Tripulante asignado (antes, el duelista quedaba Inspirado).
+      exito: [preparaCanon(), comprometidoCon('eleccion', { tipo: 'preparar' })],
       fallo: [heridasAsignados(2), comprometidoCon(undefined, { tipo: 'estado', estado: 'sangrando' })],
     },
     // Si comprometes al Capitán, −2.
@@ -440,7 +390,8 @@ registrarPeligro('p2_cuentas', {
     ciu: { exito: [{ tipo: 'recuperarDescarte', n: 1 }], fallo: [{ tipo: 'ocuparMuelle', coste: 3 }] },
   },
   // +1; +2 en su lugar si el Capitán está comprometido. Sin oposición: el Capitán sufre 1 herida.
-  destino: { modificador: (s, p) => (p.comprometidos.includes(s.capitan) ? 2 : 1), sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
+  // −1. Sin oposición: el Capitán sufre 1 herida. (Fase 13, I1: fuera «con el Capitán asignado: −2».)
+  destino: { sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
 })
 
 // 43. Motín · Terrible
@@ -514,10 +465,8 @@ registrarPeligro('p2_motin', {
     ciu: { alRevelarse: [NO_OFICIALES], pone: { carta: 'pm_taberna' } },
   },
   // +2; +4 en su lugar si no has comprometido a ningún Oficial. Sin oposición: 2 heridas repartidas.
-  destino: {
-    modificador: (s, p) => (p.comprometidos.some((c) => s.zonas.tripulacion.includes(c) && tieneRasgo(s, c, 'Oficial')) ? 2 : 4),
-    sinOposicion: [codigo('p2_motin.dosHeridas')],
-  },
+  // −2. Sin oposición: inflige 2 heridas. (Fase 13, I1: fuera «sin ningún Oficial asignado: −4».)
+  destino: { sinOposicion: [codigo('p2_motin.dosHeridas')] },
 })
 
 // 44. El cazador de piratas · Terrible
@@ -533,8 +482,6 @@ registrarPeligro('p2_cazador', {
     ciu: { exito: [robar(2)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'rehen' }), { tipo: 'entraEnMazo', carta: 'armada' }] },
   },
   // +2. Si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén. Sin oposición: + La Armada.
-  destino: {
-    siFallas: [{ tipo: 'si', condicion: { tipo: 'falladaPor', minimo: 3 }, entonces: [comprometidoCon(mas('prueba'), { tipo: 'rehen' })] }],
-    sinOposicion: [{ tipo: 'entraEnMazo', carta: 'armada' }],
-  },
+  // −2. Sin oposición: añade la carta 95 al mazo de Peligros. (Fase 13, I1: fuera «si fallas por 3 o más, rehén».)
+  destino: { sinOposicion: [{ tipo: 'entraEnMazo', carta: 'armada' }] },
 })

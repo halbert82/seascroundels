@@ -13,10 +13,10 @@ export type Efecto =
    */
   | { tipo: 'heridas'; n: number; capitan?: boolean; soloEnTierra?: boolean; asignados?: boolean }
   /**
-   * Daño al Barco (solo en el Mar). `soloEnMar`: tiene alternativa en tierra. `enTierra`: la carta dice expresamente que
-   * daña el Barco fuera del Mar («Te roban el barco», en Ciudad): la carta manda sobre la regla (P19).
+   * Daño al Barco, en cualquier Entorno (fase 13: las cartas se leen al pie de la letra; fuera P19). `soloEnMar`: la
+   * carta da una alternativa para tierra («/ 1 herida»), que se aplica fuera del Mar en su lugar.
    */
-  | { tipo: 'dano'; n: number; soloEnMar?: boolean; enTierra?: boolean }
+  | { tipo: 'dano'; n: number; soloEnMar?: boolean }
   | { tipo: 'reparar'; n: number }
   | { tipo: 'agotar'; n: number | 'todos' }
   | { tipo: 'descartar'; n: number }
@@ -241,6 +241,8 @@ export type Medida =
   | 'mano'
   | 'heridos'
   | 'comprometidos'
+  /** Fase 13: los asignados después del primero («Pecio en aguas someras»). */
+  | 'comprometidosTrasElPrimero'
   | { rasgo: string }
   | { estado: FichaTripulante }
 

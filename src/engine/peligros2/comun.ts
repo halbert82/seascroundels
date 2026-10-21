@@ -72,6 +72,16 @@ export const heridas = (n: number): Efecto => ({ tipo: 'heridas', n })
 /** «N heridas repartidas entre los Tripulantes asignados», «un Tripulante asignado sufre N heridas» (fase 10). */
 export const heridasAsignados = (n: number): Efecto => ({ tipo: 'heridas', n, asignados: true })
 export const robar = (n: number): Efecto => ({ tipo: 'robar', n })
+/**
+ * Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado (máx. N)»: heridas libres, tantas como asignados (o como
+ * asignados después del primero).
+ */
+export const heridaPorAsignado = (opciones: { maximo?: number; trasElPrimero?: boolean } = {}): Efecto => ({
+  tipo: 'porCada',
+  medida: opciones.trasElPrimero ? 'comprometidosTrasElPrimero' : 'comprometidos',
+  efectos: [{ tipo: 'heridas', n: 1 }],
+  ...(opciones.maximo !== undefined ? { maximo: opciones.maximo } : {}),
+})
 export const descartar = (n: number): Efecto => ({ tipo: 'descartar', n })
 /** «Prepara un Cañón» (fase 10b: antes, «gana N munición»). */
 export const preparaCanon = (): Efecto => ({ tipo: 'prepararCanones', n: 1 })

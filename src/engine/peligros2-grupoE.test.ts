@@ -24,6 +24,10 @@ const marcado = (j: Jugador, clave: string) => {
   const t = j.estado.temporales.find((x) => x.clave === clave)
   return t?.inst ? j.estado.cartas[t.inst]?.id : undefined
 }
+/** Entre quiénes se pueden repartir las heridas de la decisión en curso. */
+const repartibles = (j: Jugador) => Object.keys((j.decision as { maximos: Record<InstId, number> }).maximos).map((c) => j.estado.cartas[c as InstId]?.id)
+/** Modificadores para la siguiente Prueba de la misión (ninguno si no hay). */
+const siguientes = (j: Jugador) => j.estado.mision?.modsSiguientes ?? []
 
 describe('45 · Buena estrella', () => {
   it('Mar: pone en juego la permanente 234 y cada Prueba de NAV superada da 1 Avance más', () => {
@@ -84,11 +88,11 @@ describe('45 · Buena estrella', () => {
     expect(k.zona('descartesPeligros')).toContain('chubasco')
   })
 
-  it('Destino «Estrella fugaz»: −2, pero la siguiente Prueba +1 (+2 sin oposición)', () => {
+  it('Destino «Estrella fugaz»: −2 a la dificultad y nada más (fase 13, I1); sin oposición, la siguiente Prueba +2', () => {
     const j = en('mar', ['oportunidad', 'p2_estrella', 'calma'])
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(1)
-    expect(j.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', n: 1 }])
+    expect(siguientes(j)).toEqual([])
     const k = en('mar', ['oportunidad', 'p2_estrella', 'calma'])
     k.comprometer('NAV', [])
     expect(k.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', n: 2 }])
@@ -102,14 +106,16 @@ describe('46 · Restos del naufragio', () => {
     expect(robas(j, 2)).toBe(true)
   })
 
-  it('Mar: si fallas, cada comprometido después del primero sufre 1 herida (eliges quién se libra)', () => {
-    const j = en('mar', ['p2_restos', 'leyenda', 'calma'], { tripulacion: ['bucanero', 'filibustero'] })
+  it('Mar: si fallas, Inflige 1 herida por cada asignado después del primero, libres: también a uno no asignado (fase 13, P79)', () => {
+    const j = en('mar', ['p2_restos', 'leyenda', 'calma'], { tripulacion: ['bucanero', 'filibustero', 'carpintero'] })
     j.comprometer('EXP', ['capitan', 'bucanero', 'filibustero']).seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' }, min: 2, max: 2 })
-    j.elegir('bucanero', 'filibustero')
-    expect(j.copia('bucanero').heridas).toBe(1)
-    expect(j.copia('filibustero').heridas).toBe(1)
-    expect(j.copia('capitan').heridas).toBe(0)
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
+    expect(repartibles(j)).toContain('carpintero')
+    j.repartir({ capitan: 1, carpintero: 1 })
+    expect(j.copia('capitan').heridas).toBe(1)
+    expect(j.copia('carpintero').heridas).toBe(1) // se quedó a bordo
+    expect(j.copia('bucanero').heridas).toBe(0)
+    expect(j.copia('filibustero').heridas).toBe(0)
   })
 
   it('Naturaleza: el barril de ron prepara a los agotados, que quedan Borrachos; o el de pólvora prepara un Cañón', () => {
@@ -139,10 +145,14 @@ describe('46 · Restos del naufragio', () => {
     expect(j.zona('descartesMuelle')).toContain('casco')
   })
 
-  it('Destino «Madera del pecio»: si superas, reparas 1; sin oposición, 1 daño', () => {
-    const j = en('mar', ['oportunidad', 'p2_restos', 'calma'], { barco: { dano: 1 } })
-    j.comprometer('NAV', ['capitan']).seguir()
-    expect(j.estado.danoBarco).toBe(0)
+  it('Destino «Madera del pecio»: 0 y ya no repara al superar (fase 13, I1); sin oposición, 1 daño', () => {
+    // Chubasco (NAV 2), que no repara: Diego 2 + Barco 1 supera.
+    const j = en('mar', ['chubasco', 'p2_restos', 'calma'], { barco: { dano: 1 } })
+    j.comprometer('NAV', ['capitan'])
+    expect(dificultadConDestino(j.estado)).toBe(2)
+    j.pasarOfertas().seguir()
+    expect(j.registro.some((r) => r.includes('superas la Prueba'))).toBe(true)
+    expect(j.estado.danoBarco).toBe(1)
     const k = en('mar', ['oportunidad', 'p2_restos', 'calma'])
     k.comprometer('NAV', []).seguir()
     expect(k.estado.danoBarco).toBe(1)
@@ -171,11 +181,15 @@ describe('47 · Presa fácil', () => {
     expect(j.estado.danoBarco).toBe(1)
   })
 
-  it('Naturaleza: si superas, robas 3 y la siguiente Prueba de EXP recibe +1', () => {
-    const j = en('nat', ['p2_presa', 'chubasco', 'calma'])
-    j.comprometer('NAV', ['capitan']).seguir()
+  it('Naturaleza: si superas, robas 3 y agotas a 1 Tripulante (fase 13, I2; ya no hay +1 a la siguiente Prueba de EXP)', () => {
+    const j = en('nat', ['p2_presa', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
+    j.comprometer('NAV', ['capitan']).pasarOfertas().seguir()
     expect(robas(j, 3)).toBe(true)
-    expect(j.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', hab: 'EXP', n: 1 }])
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'agotar' } })
+    j.elegir('vigia')
+    expect(j.copia('vigia').agotada).toBe(true)
+    expect(j.copia('bucanero').agotada).toBe(false)
+    expect(siguientes(j)).toEqual([])
   })
 
   it('Ciudad: si te cuelas, recuperas 2 cartas del descarte y un Tripulante queda Buscado', () => {
@@ -185,10 +199,13 @@ describe('47 · Presa fácil', () => {
     expect(j.estados('capitan')).toEqual(['buscado'])
   })
 
-  it('Destino «Bolsa sin dueño»: si superas, robas 1 (2 con un Contrabandista); sin oposición, descartas 1 al azar', () => {
+  it('Destino «Bolsa sin dueño»: 0 y ya no roba al superar, ni con un Contrabandista (fase 13, I1); sin oposición, descartas 1 al azar', () => {
     const j = en('mar', ['oportunidad', 'p2_presa', 'calma'], { tripulacion: ['contrabandista'] })
-    j.comprometer('NAV', ['contrabandista']).pasarOfertas().seguir().pasarOfertas()
-    expect(robas(j, 2)).toBe(true)
+    j.comprometer('NAV', ['contrabandista']).pasarOfertas()
+    expect(dificultadConDestino(j.estado)).toBe(3)
+    j.seguir().pasarOfertas()
+    expect(j.registro.some((r) => r.includes('superas la Prueba'))).toBe(true)
+    expect(j.registro.some((r) => r.startsWith('Robas'))).toBe(false)
     const k = en('mar', ['oportunidad', 'p2_presa', 'calma'], { mano: ['ojo'] })
     k.comprometer('NAV', [])
     expect(k.zona('mano')).toEqual([])
@@ -196,10 +213,14 @@ describe('47 · Presa fácil', () => {
 })
 
 describe('48 · Fuego de San Telmo', () => {
-  it('Mar: si superas, el comprometido con más NAV queda Inspirado; si fallas, la siguiente Prueba revela 2 Destinos', () => {
+  it('Mar: si superas, preparas a 1 Tripulante asignado (fase 13, I4); si fallas, la siguiente Prueba revela 2 Destinos', () => {
     const j = en('mar', ['p2_santelmo', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
-    expect(j.estados('viejo_lobo')).toEqual(['inspirado'])
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } })
+    j.elegir('viejo_lobo')
+    expect(j.copia('viejo_lobo').agotada).toBe(false)
+    expect(j.copia('capitan').agotada).toBe(true)
+    expect(j.estados('viejo_lobo')).toEqual([])
     const k = en('mar', ['p2_santelmo', 'chubasco', 'calma'])
     k.comprometer('NAV', []).seguir()
     expect(k.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', dosDestinos: true }])
@@ -224,11 +245,11 @@ describe('48 · Fuego de San Telmo', () => {
     expect(robas(k, 2)).toBe(true)
   })
 
-  it('Destino «Fuego del santo»: −1 y no se pueden usar capacidades de Tripulantes; sin oposición, +1', () => {
+  it('Destino «Fuego del santo»: −1 a la dificultad y ya se pueden usar capacidades (fase 13, I1); sin oposición, +1', () => {
     const j = en('mar', ['oportunidad', 'p2_santelmo', 'calma'], { tripulacion: ['carpintero'], barco: { dano: 1 } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(2)
-    expect(j.ofreceCapacidad('carpintero.reparar')).toBe(false)
+    expect(j.ofreceCapacidad('carpintero.reparar')).toBe(true)
     const k = en('mar', ['oportunidad', 'p2_santelmo', 'calma'])
     k.comprometer('NAV', [])
     expect(dificultadConDestino(k.estado)).toBe(4)
@@ -263,18 +284,21 @@ describe('49 · La sirena', () => {
     expect(dificultadConDestino(j.estado)).toBe(2)
   })
 
-  it('Ciudad: las cartas de la mano no suman', () => {
+  it('Ciudad: las cartas de la mano no suman; si superas, preparas a 1 Tripulante asignado (fase 13, I4)', () => {
     const j = en('ciu', ['p2_sirena', 'chubasco', 'calma'], { mano: ['abordaje'] })
     j.comprometer('COM', ['capitan'], ['abordaje'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(3)
+    expect(j.copia('capitan').agotada).toBe(true)
     j.seguir()
-    expect(j.estados('capitan')).toEqual(['inspirado'])
+    expect(j.copia('capitan').agotada).toBe(false) // el único asignado: se prepara solo
+    expect(j.estados('capitan')).toEqual([])
   })
 
-  it('Destino «Canto lejano»: el comprometido con la habilidad más baja no suma; sin oposición, el preparado con menos EXP sufre 1 herida', () => {
+  it('Destino «Canto lejano»: +1 a la dificultad y todos los asignados suman (fase 13, I1); sin oposición, el preparado con menos EXP sufre 1 herida', () => {
     const j = en('mar', ['oportunidad', 'p2_sirena', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas()
-    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego (NAV 2) no suma: Viejo lobo 3 + Barco 1
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6) // Diego 2 + Viejo lobo 3 + Barco 1
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('mar', ['oportunidad', 'p2_sirena', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('NAV', [])
     expect(k.copia('capitan').heridas).toBe(1)
@@ -319,13 +343,30 @@ describe('50 · Mal presagio', () => {
     expect(j.registro.filter((r) => r.startsWith('Destino de la carta')).length).toBe(1)
   })
 
-  it('Destino «Mal agüero»: si fallas, la siguiente Prueba +1; sin oposición, agotas 1', () => {
+  it('Ciudad: si superas, Otea 3 (fase 13, I7): cada carta arriba o al fondo, y ordenas las que quedan arriba', () => {
+    const j = en('ciu', ['p2_presagio', 'chubasco', 'calma', 'racha', 'fauna', 'niebla'], { tripulacion: ['baqueano'] })
+    j.comprometer('EXP', ['baqueano']).pasarOfertas().seguir()
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'calma' } })
+    j.opcion('fondo').opcion('arriba').opcion('arriba')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'ordenarOteo' } })
+    j.elegir('fauna', 'racha')
+    // La cuarta (Niebla) no se otea: queda debajo de las que siguen arriba, y Remanso, al fondo.
+    expect(j.zona('mazoPeligros')).toEqual(['fauna', 'racha', 'niebla', 'calma'])
+  })
+
+  it('Destino «Mal agüero»: +1 a la dificultad y nada más si fallas (fase 13, I1); sin oposición, agotas 1', () => {
+    const m = en('mar', ['oportunidad', 'p2_presagio', 'calma'], { tripulacion: ['bucanero'] })
+    m.comprometer('NAV', ['bucanero']).pasarOfertas()
+    expect(dificultadConDestino(m.estado)).toBe(4)
+    m.seguir()
+    expect(m.registro.some((r) => r.includes('fallas la Prueba'))).toBe(true)
+    expect(siguientes(m)).toEqual([])
     const j = en('mar', ['oportunidad', 'p2_presagio', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('NAV', [])
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'agotar' } })
     j.elegir('bucanero').seguir()
     expect(j.copia('bucanero').agotada).toBe(true)
-    expect(j.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', n: 1 }])
+    expect(siguientes(j)).toEqual([])
   })
 })
 
@@ -374,13 +415,23 @@ describe('51 · La maldición del bokor', () => {
     expect(j.zona('mano')).toEqual([])
   })
 
-  it('Destino «Alfiler en el muñeco»: si fallas, la herida va al Maldito comprometido; sin oposición, al Capitán', () => {
-    const j = en('nat', ['oportunidad', 'p2_bokor', 'calma'], { tripulacion: ['marinero_p', { id: 'bucanero', estados: ['maldito'] }] })
-    j.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
+  it('Destino «Alfiler en el muñeco»: Inflige 1 herida a un asignado, aunque superes (fase 13, I1); sin nadie, una libre y otra al Capitán', () => {
+    // Navío a la deriva (NAV 3): Viejo lobo 4 + Bucanero 2 + Barco 1 − 1 supera.
+    const j = en('mar', ['oportunidad', 'p2_bokor', 'calma'], { tripulacion: ['viejo_lobo', 'bucanero'] })
+    j.comprometer('NAV', ['viejo_lobo', 'bucanero']).pasarOfertas()
+    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
+    expect(repartibles(j)).toEqual(['viejo_lobo', 'bucanero']) // solo los asignados: Diego, no
+    j.repartir({ bucanero: 1 }).pasarOfertas().seguir()
+    expect(j.registro.some((r) => r.includes('superas la Prueba'))).toBe(true)
     expect(j.copia('bucanero').heridas).toBe(1)
-    expect(j.copia('marinero_p').heridas).toBe(0)
-    const k = en('nat', ['oportunidad', 'p2_bokor', 'calma'])
+    expect(j.copia('capitan').heridas).toBe(0)
+    // Sin nadie asignado, la herida es libre y, además, la del Sin oposición va al Capitán.
+    const k = en('nat', ['oportunidad', 'p2_bokor', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('EXP', [])
+    expect(k.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir' } })
+    k.elegir('bucanero')
+    expect(k.copia('bucanero').heridas).toBe(1)
     expect(k.copia('capitan').heridas).toBe(1)
   })
 })
@@ -470,17 +521,24 @@ describe('53 · La serpiente marina', () => {
     expect(j.estado.reputacion).toBe(2)
   })
 
-  it('Destino «Coletazo»: en una Prueba de COM, el comprometido con la habilidad más alta sufre 1 herida aunque superes', () => {
-    const j = en('mar', ['civiles', 'p2_serpiente_marina', 'calma'], { tripulacion: ['isabela'] })
-    j.comprometer('COM', ['capitan', 'isabela']).pasarOfertas()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } }) // empatan a COM 3
-    j.elegir('capitan')
-    expect(j.copia('capitan').heridas).toBe(1)
+  it('Destino «Coletazo»: Inflige 1 herida a un asignado en cualquier Prueba (fase 13, I1); sin nadie, una libre y 2 al preparado con menos Vida', () => {
+    const j = en('mar', ['civiles', 'p2_serpiente_marina', 'calma'], { tripulacion: ['isabela', 'bucanero'] })
+    j.comprometer('COM', ['capitan', 'isabela'])
+    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
+    expect(repartibles(j)).toEqual(['capitan', 'isabela'])
+    j.repartir({ isabela: 1 })
+    expect(j.copia('isabela').heridas).toBe(1)
+    expect(j.copia('capitan').heridas).toBe(0)
+    // También en una Prueba de NAV; con un solo asignado, le toca a él.
     const k = en('mar', ['oportunidad', 'p2_serpiente_marina', 'calma'])
     k.comprometer('NAV', ['capitan'])
-    expect(k.copia('capitan').heridas).toBe(0)
-    const sin = en('mar', ['oportunidad', 'p2_serpiente_marina', 'calma'], { tripulacion: ['vigia'] })
+    expect(k.copia('capitan').heridas).toBe(1)
+    const sin = en('mar', ['oportunidad', 'p2_serpiente_marina', 'calma'], { tripulacion: ['vigia', 'bucanero'] })
     sin.comprometer('NAV', [])
+    expect(sin.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir' } })
+    sin.elegir('bucanero')
+    expect(sin.copia('bucanero').heridas).toBe(1)
     expect(sin.zona('descartesMuelle')).toContain('vigia') // el preparado con menos Vida sufre 2 heridas
   })
 })
@@ -555,10 +613,19 @@ describe('55 · El Holandés errante', () => {
     expect(j.copia('viejo_lobo').heridas).toBe(1)
   })
 
-  it('Ciudad: si superas, miras las 5 de arriba; si fallas, Perseguido y descartas 2', () => {
-    const j = en('ciu', ['p2_holandes', 'chubasco', 'calma', 'calma'], { tripulacion: ['baqueano', 'viejo_lobo'] })
-    j.comprometer('EXP', ['baqueano', 'viejo_lobo']).pasarOfertas().seguir().pasarOfertas()
+  it('Ciudad: si superas, Otea 5 (fase 13, I7); si fallas, Perseguido y descartas 2', () => {
+    const j = en('ciu', ['p2_holandes', 'chubasco', 'calma', 'racha', 'fauna', 'niebla', 'amigos', 'escollos'], { tripulacion: ['baqueano', 'viejo_lobo'] })
+    j.comprometer('EXP', ['baqueano', 'viejo_lobo']).pasarOfertas().seguir()
     expect(j.registro.some((r) => r.startsWith('Oteas del mazo de Peligros:'))).toBe(true)
+    // Las 5 de arriba, una a una; la sexta (Escollos) no se otea.
+    const oteadas: CartaId[] = []
+    while (j.decision.motivo.clave === 'otear') {
+      oteadas.push((j.decision.motivo as { carta: CartaId }).carta)
+      j.opcion(oteadas.length === 1 ? 'fondo' : 'arriba')
+    }
+    expect(oteadas).toEqual(['calma', 'racha', 'fauna', 'niebla', 'amigos'])
+    j.resolverOteo()
+    expect(j.zona('mazoPeligros')).toEqual(['racha', 'fauna', 'niebla', 'amigos', 'escollos', 'calma'])
     const k = en('ciu', ['p2_holandes', 'chubasco', 'calma'], { mano: ['ojo', 'timon'] })
     k.comprometer('EXP', []).seguir()
     expect(k.estadosBarco).toEqual(['perseguido'])

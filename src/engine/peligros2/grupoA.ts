@@ -10,7 +10,6 @@ import { agotar as agotarCarta } from '../estados.ts'
 import {
   agotar,
   avance,
-  cadaComprometido,
   codigo,
   comprometidoCon,
   dano,
@@ -22,7 +21,6 @@ import {
   mejorasDeBarco,
   menos,
   preparaCanon,
-  canonesListos,
   participantesCon,
   participantesCtx,
   pierdesAvance,
@@ -32,6 +30,7 @@ import {
   reputacion,
   robar,
   siTienes,
+  heridaPorAsignado,
   SIN_LIMITE_DE_COSTE,
 } from './comun.ts'
 
@@ -68,7 +67,8 @@ registrarPeligro('p2_corriente', {
 registrarPeligro('p2_cielo', {
   encuentros: {
     // Mira las 3 de arriba del mazo de Peligros y ordénalas. Si tienes un Piloto en la tripulación, +1 Avance.
-    mar: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'no' }, siTienes('Piloto', [avance(1)])] },
+    // Fase 13 (I7): «Otea 3» (antes, «mira las 3 y ordénalas»: ahora puedes mandar cartas al fondo).
+    mar: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'libre' }, siTienes('Piloto', [avance(1)])] },
     nat: { exito: [avance(1)], fallo: [pierdesAvance(1)] },
     // Éxito: prepara a 1 Tripulante asignado (fase 13: antes quedaba Inspirado, pero el asignado ya está agotado y la
     // ficha se quita al final del turno: nunca llegaba a usarla). Fallo: descarta 1 carta.
@@ -124,14 +124,15 @@ registrarPeligro('p2_niebla', {
   destino: { sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
 // «Bruma en la selva», fallo: «Descarta al Tripulante asignado con menos [EXP]. Si es el Capitán, sufre 1 herida en su
-// lugar.» TODO(regla), opciones por defecto hasta que Albert confirme: si hay empate, elige el jugador; si no hay nadie
-// asignado, no se descarta a nadie; el Tripulante se descarta con las reglas normales (sus Mejoras se descartan con él y
-// sus Tesoros pasan a otro, como al descartar cualquier Tripulante).
+// lugar.» P72 (Albert): si hay empate, elige el jugador; el Tripulante se descarta con las reglas normales (sus Mejoras con
+// él y sus Tesoros pasan a otro). Sin nadie asignado se aplica igual, al de menos EXP de toda la tripulación (regla
+// general de la fase 13 para «el Tripulante asignado con más / menos X»).
 registrarEspecial('p2_niebla.separados', (s, _t, e) => {
   const asignados = comprometidosDe(s).filter((c) => s.zonas.tripulacion.includes(c))
-  if (asignados.length === 0) return 'hecha'
-  const minimo = Math.min(...asignados.map((c) => habilidadImpresa(s, c, 'EXP')))
-  const empatados = asignados.filter((c) => habilidadImpresa(s, c, 'EXP') === minimo)
+  const entre = asignados.length > 0 ? asignados : [...s.zonas.tripulacion]
+  if (entre.length === 0) return 'hecha'
+  const minimo = Math.min(...entre.map((c) => habilidadImpresa(s, c, 'EXP')))
+  const empatados = entre.filter((c) => habilidadImpresa(s, c, 'EXP') === minimo)
   let c = empatados.length === 1 ? empatados[0] : undefined
   if (!c) {
     if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'separados' }, candidatas: empatados, min: 1, max: 1 })
@@ -195,9 +196,9 @@ registrarPeligro('p2_arrecife', {
     // Fase 13: éxito, adquiere sin coste una Mejora del muelle, sea cual sea su coste (si no cabe, la regla normal de
     // adquirir: no se puede). Fallo: Inflige 2 heridas (heridas libres).
     nat: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: SIN_LIMITE_DE_COSTE, que: 'mejora' }], fallo: [heridas(2)] },
-    // NAV 4 (Marinero asignado −2). Fase 13: éxito, roba 1; fallo, Daña 1. Es un encuentro de Ciudad: como «Te roban el
-    // barco» (P19), la carta dice que daña el Barco aunque estés en tierra. TODO(regla): confirmar con Albert.
-    ciu: { exito: [robar(1)], fallo: [{ tipo: 'dano', n: 1, enTierra: true }] },
+    // NAV 4 (Marinero asignado −2). Fase 13: éxito, roba 1; fallo, Daña 1 (P75: las cartas se leen al pie de la letra, el
+    // Barco sufre el daño también en Ciudad).
+    ciu: { exito: [robar(1)], fallo: [dano(1)] },
   },
   // −1 (fase 13: fuera «Con un Vigía asignado: 0 en su lugar»). Sin oposición: [mar]: Daña 1. [nat]/[ciu]: Inflige 1 herida.
   destino: { sinOposicion: [enElMar([dano(1)], [heridas(1)])] },
@@ -233,8 +234,8 @@ registrarPeligro('p2_fuego', {
       fallo: [reputacion(-1)],
     },
   },
-  // +1; +2 en su lugar si tienes 3 o más munición. Sin oposición: pierdes 1 munición.
-  destino: { modificador: (s) => (canonesListos(s) >= 2 ? 2 : 1), sinOposicion: [agotaCanones(1)] },
+  // −1. Sin oposición: agota 1 Cañón. (Fase 13, I1: fuera «Con 2 o más Cañones preparados: −2 en su lugar».)
+  destino: { sinOposicion: [agotaCanones(1)] },
 })
 
 // Permanente 227 «La manigua arde» (de «Fuego a bordo»): cada otro Peligro revelado, 1 ficha de Fuego; con 3, cada
@@ -267,13 +268,14 @@ registrarPeligro('p2_broma', {
     nat: {
       capacidades: [dificultad('peso', (ctx) => Math.max(0, participantesCtx(ctx).length - 1))],
       exito: [{ tipo: 'si', condicion: { tipo: 'comprometidos', minimo: 1, maximo: 1 }, entonces: [avance(1)] }],
-      fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
+      // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado» (libres).
+      fallo: [heridaPorAsignado()],
     },
     ciu: { exito: [robar(2)], fallo: [{ tipo: 'descartarMayorCoste' }] },
   },
-  // +0. Las Mejoras no suman ni se pueden usar en esta Prueba. Sin oposición: en el Mar, 1 daño al Barco; en
-  // Naturaleza o Ciudad, descarta 1 carta.
-  destino: { prueba: { sinMejoras: true }, sinOposicion: [enElMar([dano(1)], [descartar(1)])] },
+  // 0. Sin oposición: [mar]: Daña 1; [nat]/[ciu]: descarta 1 carta. (Fase 13, I1: fuera «las Mejoras no suman ni se pueden
+  // usar».)
+  destino: { sinOposicion: [enElMar([dano(1)], [descartar(1)])] },
 })
 
 // 9. Turbonada · Duro
@@ -392,6 +394,6 @@ registrarPeligro('p2_maremoto', {
     nat: { exito: [robar(2), avance(1)], fallo: [pierdesAvance(2), comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 })] },
     ciu: { exito: [reputacion(1)], fallo: [{ tipo: 'rehen' }] },
   },
-  // +2. Si fallas, la siguiente Prueba de esta misión recibe +1. Sin oposición: el Capitán sufre 1 herida.
-  destino: { siFallas: [{ tipo: 'siguiente', mod: { de: 'prueba', n: 1 } }], sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
+  // −2. Sin oposición: el Capitán sufre 1 herida. (Fase 13, I1: fuera «si fallas, la siguiente Prueba recibe +1».)
+  destino: { sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
 })

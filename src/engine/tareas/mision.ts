@@ -266,8 +266,8 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   if (r.reclutaGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.reclutaGratis, que: 'tripulante' })
   if (r.adquiereGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.adquiereGratis, que: 'mejora' })
   if (r.oteaMisiones) tareas.push({ tipo: 'otear', n: r.oteaMisiones, mazo: 'misiones', cartas: [], arriba: [], fondo: [] })
-  // Fase 11: el precio de las misiones iniciales. «Agua y leña» (Naturaleza): «El Barco sufre 1 daño, aunque estés en
-  // tierra» (P64), así que su daño lleva `enTierra`.
+  // Fase 11: el precio de las misiones iniciales. «Agua y leña» (Naturaleza): «El Barco sufre 1 daño» (fase 13: las cartas
+  // se leen al pie de la letra, así que daña el Barco aunque la misión sea de tierra).
   if (r.precio && r.precio.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: r.precio, contexto: 'efecto' })
   if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
   // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda y el otro sale de la partida.

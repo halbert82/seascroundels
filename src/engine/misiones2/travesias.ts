@@ -157,8 +157,9 @@ registrarMision('espia-I', {
     {
       tipo: 'alZarparOpcional',
       coste: { tipo: 'descartar', n: 2 },
-      efectos: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'no' }],
-      texto: 'Descartar 2 cartas para mirar las 3 de arriba del mazo de Peligros y ordenarlas',
+      // Fase 13 (I7): «Puedes descartar 2 cartas. Si lo haces, Otea 3.»
+      efectos: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'libre' }],
+      texto: 'Descartar 2 cartas para otear 3',
     },
   ],
   fichas: [{ ficha: 'sospecha', nombre: 'Sospecha', umbral: 3, inicial: 0, nota: 'Con 3, el espía te descubre y la misión falla.' }],

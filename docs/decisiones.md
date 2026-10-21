@@ -49,7 +49,7 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N15 · «Perdidos en la espesura» ignora el recuadro rojo y la herida extra de la misión, pero no lo que añade el Destino.** *Ejemplo:* en «El templo» fallas la Trampa de dardos (1 herida · 1 herida) con el Destino «Fiebre»: sin la carta son 4 heridas; con ella, 1 (la de «Fiebre»).
 - **N16 · «Retirada a tiempo» quita el encuentro, pero el Destino ya revelado se aplica** (su efecto añadido y su línea Sin oposición). No hay Prueba que resolver, ni Avance, ni recuadros, y la carta no cuenta como resuelta (D5b). *Ejemplo:* comprometes al Bucanero contra la Patrulla española y sale «Celada» (+2; un comprometido sufre 1 herida); juegas «Retirada a tiempo»: el Bucanero sufre la herida, pero te ahorras el fallo.
 - **N17 · Una Prueba superada automáticamente («Carronadas», «Soborno») cuenta como superada, sin participantes.** Se activan «Prisionero liberado» y las reglas de misión de «al superar»; no se activan Uñas largas, el Contrabandista ni el Rastreador. Si el encuentro tiene dos opciones, eliges cuál superas. *Ejemplo:* juegas «Soborno» ante «Perros de la guardia» (COM 3 o EXP 3): eliges COM y luego puedes jugar «Prisionero liberado».
-- **N18 · Son Cañones las cuatro Mejoras con munición** (Cañones de bronce, Carronadas, Culebrina y Pedrero), **y solo se usan en misiones de Mar**, también el Pedrero. *Ejemplo:* en «Cobrar la deuda» (Ciudad) revelas la Pelea de taberna (COM 3): no puedes descartarla con el Pedrero.
+- **N18 · Son Cañones las cuatro Mejoras con munición** (Cañones de bronce, Carronadas, Culebrina y Pedrero), **y solo se usan en misiones de Mar**, también el Pedrero. *(Fase 13: ya no es regla general; lo dice cada carta con «[mar], [agotar]:». Ver «Reglas generales nuevas».)* *Ejemplo:* en «Cobrar la deuda» (Ciudad) revelas la Pelea de taberna (COM 3): no puedes descartarla con el Pedrero.
 - **N19 · El descuento de Catalina se gasta con el siguiente Tripulante que reclutes, aunque sea gratis.** *Ejemplo:* agotas a Catalina y juegas «Náufrago en la playa»: el Tripulante que reclutas gratis se lleva el descuento y el siguiente cuesta lo normal.
 - **Loro parlanchín: si nadie se compromete a la Prueba, puede unirse después del Destino**, tal como dice su texto (confirmado por Albert al responder N14). *Ejemplo:* no comprometes a nadie contra los Tiburones; después de revelar el Destino, el Loro se compromete a esa Prueba.
 - **Isabela y el Amuleto vudú: «reduce su Vida a 1» significa que el Tripulante queda con 1 de Vida restante** (heridas = Vida − 1), no que cambie su Vida impresa (confirmado por Albert). *Ejemplo:* el Bucanero (Vida 2) va a sufrir su 2.ª herida; Isabela lo evita y se queda con 1 herida.
@@ -117,7 +117,7 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
   - **P27** · «el siguiente encuentro recibe ±N» se gasta aunque ese encuentro no tenga Prueba.
 - **P4 · Incendio a bordo** solo hace daño en misiones de Mar, como Vía de agua. Pero si la misión termina sin apagarlo, en cualquier Entorno, pierdes una Mejora de barco y la ficha sigue.
 - **P15 · Maldito** solo se quita si ese Tripulante participa en la Prueba del encuentro Sobrenatural que se supera.
-- **P19 · El Barco solo recibe daño en el Mar.** Los encuentros que dicen expresamente que dañan el Barco en tierra («Te roban el barco», en Ciudad) sí lo dañan: la carta manda sobre la regla.
+- **P19 · El Barco solo recibe daño en el Mar.** *(Fase 13: sustituida por la regla 1, las cartas al pie de la letra: si una carta daña el Barco, lo daña en cualquier Entorno.)* Los encuentros que dicen expresamente que dañan el Barco en tierra («Te roban el barco», en Ciudad) sí lo dañan: la carta manda sobre la regla.
 - **P3, P21 y P24** ya no aplican (no hay Fiebre, no hay refuerzo, Cortar por lo sano cuesta 0).
 
 ### Lecturas tomadas sin duda (para que conste)
@@ -592,7 +592,7 @@ R1 no sirve: en 11 turnos casi nunca se acaba una travesía (los capítulos II y
 
 - **P62, reputación:** El Paso de los Vientos (126, Flota I) pasa de 2 a 1 y Un soplo en Port Royal (135, Espía I) de 0 a 1; el resto de la tabla no cambia y se sigue ganando con 9 / 12 / 16. El ejemplo de Port Royal vuelve a dar 1 de reputación.
 - **P63, «¡La guardia!» es una permanente:** la carta 220 lleva «Permanente» en la cinta, va a la zona de permanentes y Cortar por lo sano puede devolverla. Texto nuevo, sin «Se queda en juego» ni «vuelve a apartarse» (lo dice la regla de las permanentes). La casa del gobernador y Por el aljibe dicen «pon en juego la carta 220 del mazo de historia». Ya no hay «cartas de misión»: Componentes cuenta 13 permanentes. Las partidas guardadas con la guardia en juego se convierten.
-- **P64, Agua y leña:** «El Barco sufre 1 daño, aunque estés en tierra.» (el comportamiento no cambia).
+- **P64, Agua y leña:** «El Barco sufre 1 daño, aunque estés en tierra.» (el comportamiento no cambia). *(Fase 13: fuera «aunque estés en tierra», que ya no hace falta.)*
 - **P65, «Casco comido por la broma» (Mar, EXP X de 3 a 5):** se queda en 3 / 2.
 - **P66, cifras de reputación de las cartas** (proporción de 18 a 12): «Tu cara en el muelle», 1 más con 6 o más de reputación (antes 9); «Ahorcan a uno de los vuestros», −2 con 8 o más (antes 12); «Las puertas de Panamá», 6 para zarpar (antes 9).
 - **118:** fuera «La isla no sale en ningún mapa:» (lo dice ya su cita); la regla empieza en «No puedes superar esta misión…». Letra: 13,6 px en la galería, 12,8–13,6 en la mesa y 12,8 en el libro.
@@ -753,20 +753,42 @@ Las heridas de un encuentro (de su Prueba fallada o de su efecto) las reparte el
 
 ### Arenga del capitán (240)
 
-Evento, coste 1, Neutral, un icono de COM: «Todos tus Tripulantes quedan **Inspirados**.» Ambiente: «"Hoy nadie vuelve con las manos vacías. ¿Quién viene conmigo?"». Ilustración pendiente. Está en la colección (224 cartas, 30 Eventos) pero no en el mazo de inicio de Diego. Se juega en la Fase de Reclutamiento (ver P76). El jugador automático la juega si va a zarpar con 2 o más Tripulantes preparados, después de reclutar y adquirir.
+Evento, coste 1, Neutral, un icono de COM. Texto (segunda ronda, P76): «**Respuesta:** Después de zarpar, agota a tu Capitán: todos tus Tripulantes quedan **Inspirados**.» Ambiente: «"Hoy nadie vuelve con las manos vacías. ¿Quién viene conmigo?"». Ilustración pendiente. Está en la colección (224 cartas, 30 Eventos) pero no en el mazo de inicio de Diego. Si el Capitán ya está agotado (por ejemplo, para cubrir la Distancia), no se puede jugar. El jugador automático la juega después de zarpar si el Capitán sigue preparado y le quedan 2 o más Tripulantes preparados además de él.
 
-### Pendiente de Albert (opciones por defecto aplicadas y marcadas `TODO(regla)`)
+### Respuestas de Albert P71–P80 (21 de octubre de 2026)
 
-- **P71 · Dos Destinos:** la lectura de arriba (se suman, se aplican los dos, los dos Sin oposición, una carta que cancela elige uno). Con «Mal agüero» a la vez, el primero sale de sus 2 y el segundo es otro.
-- **P72 · Bruma en la selva, fallo:** empate en EXP, elige el jugador; sin nadie asignado, no se descarta a nadie; el Tripulante se descarta como cualquier otro (sus Mejoras con él; sus Tesoros pasan a otro).
-- **P73 · Otear con un mazo propio mezclado:** mira ese mazo, el del que revelas.
-- **P74 · «Cobrar la deuda»:** el texto sin «Otea».
-- **P75 · «La barra del puerto», fallo «Daña 1»:** es un encuentro de Ciudad; por defecto daña el Barco aunque estés en tierra, como «Te roban el barco» (P19).
-- **P76 · Arenga del capitán:** por defecto solo en la Fase de Reclutamiento, como dijo Albert; pero el reglamento deja jugar un Evento sin momento propio en cualquier momento (N2).
-- **P77 · «−1 [avance] (mín. 0)» en la Prueba de una Acción** (no es de un encuentro): no hace nada.
-- **P78 · Heridas de los Sin ayuda** (la fiera, el duelo, la última mano, la cacería del jaguar): siguen yendo al Tripulante que hizo la Prueba.
-- **P79 · «Cada Tripulante asignado sufre 1 herida»** (161, 175, 180, 190, 203 y 208): sin cambiar.
-- **P80 · Abordaje con solo el Capitán asignado y 3 o más puntos de falta:** el motor elige al azar el rehén entre los demás Tripulantes (el Capitán no puede serlo). Escrito así en la entrada «Abordaje» y en la ayuda de la mesa.
+- **P71 · Dos Destinos: sí.** Se suman, se aplican los dos y, sin nadie asignado, los dos Sin oposición; una carta que cancela o cambia un Destino (Reflejos de gato, Escapulario, Espada, Viejo lobo, Farol) elige uno. Con «Mal agüero» a la vez, el primero sale de sus 2 y el segundo es otro.
+- **P72 · Bruma en la selva: sí, y regla general** (ver abajo, «el asignado con más / menos X»). Empate, elige el jugador; el Tripulante se descarta como cualquier otro (sus Mejoras con él; sus Tesoros pasan a otro). Sin nadie asignado se descarta el de menos EXP de toda la tripulación; si es el Capitán, sufre 1 herida.
+- **P73 · Otear con un mazo propio mezclado: sí**, mira ese mazo, el del que revelas.
+- **P74 · «Cobrar la deuda»: sí**, el texto sin «Otea».
+- **P75 · «La barra del puerto»: «Daña {1 dano}» tal cual** (regla general 1: la carta se lee al pie de la letra).
+- **P76 · Arenga del capitán:** pasa a «**Respuesta:** Después de zarpar, agota a tu Capitán: …» (ver arriba). Fuera la restricción a la Fase de Reclutamiento y su `TODO(regla)`.
+- **P77 · «−1 [avance] (mín. 0)» en la Prueba de una Acción: sí**, no hace nada (no es de un encuentro).
+- **P78 · Sin ayuda** (la fiera, el duelo, la última mano, la cacería del jaguar): las heridas van solo al que hizo la Prueba, y la carta lo dice: «el Tripulante asignado sufre…» (183 mar, 204 mar, 199 ciu y la permanente 229). Sin nadie asignado, heridas libres. Reglamento: entrada Sin ayuda, con el ejemplo de la fiera.
+- **P79 · «Cada Tripulante asignado sufre 1 herida»** (161, 175, 180, 190, 203 y 208) pasa a «Inflige {1 herida} por cada Tripulante asignado» (190 y 203 «(máx. 3)»; 208 «… después del primero»): heridas libres, tantas como asignados.
+- **P80 · Abordaje con solo el Capitán asignado: sí**, el rehén se elige al azar entre los demás Tripulantes.
+
+### Reglas generales nuevas (segunda ronda)
+
+- **Regla 1 · Las cartas se aplican al pie de la letra.** Si una carta daña el Barco, lo daña en cualquier Entorno. Fuera P19 («el Barco solo recibe daño en el Mar») y el «aunque estés en tierra» de Agua y leña (P64), que ya no hace falta. Solo una carta que da una alternativa con el icono de un Entorno («[mar]: Daña 1. [nat]/[ciu]: Inflige 1 herida») aplica cada parte en su Entorno. Reglamento: regla de oro, Daño al Barco, Barco, Daño y Destino. *Ejemplo:* en Ciudad fallas «La barra del puerto»: el Barco sufre 1 daño.
+- **Regla 2 · «Al zarpar:» y «Respuesta: Después de zarpar».** «**Al zarpar:**» lo llevan solo las cartas en juego (misiones, Mejoras, Tesoros) y se aplica solo. Los Eventos dicen «**Respuesta:** Después de zarpar, …». Orden: zarpas, pagas la Distancia, se aplican los «Al zarpar» (de la misión y de las cartas en juego) y después se ofrecen las Respuestas. Cambian «Mapa robado» (50) y «Senda escondida» (61); las demás cartas de jugador con «Al zarpar» (Vela mayor, Chalupa, Los despachos del Rey) están en juego. Reglamento: entradas Al zarpar y Respuesta. *Ejemplo:* zarpas a «El templo»: primero se baraja su mazo con 6 cartas de Peligro y después juegas la Arenga.
+- **Regla 3 (P72) · «El Tripulante asignado con más (o menos) X» sin nadie asignado** es el que tiene más (o menos) X de toda la tripulación. Reglamento: entrada Asignado. *Ejemplo:* no asignas a nadie a «Bruma en la selva» y fallas; llevas a Diego (EXP 1) y al Rufián de cubierta (EXP 0): se descarta el Rufián. Lo de la fase 10 («uno de los asignados» sin nadie asignado: heridas libres) se queda.
+- **Regla 4 · Mejoras de barco en cualquier ventana.** Que los Cañones solo se usen en el Mar era regla antigua (N18): si la carta no lo dice, una Mejora de barco se usa en cualquier ventana de acción. La restricción va en la carta con la estructura «[mar], [agotar]: efecto». Esa estructura se usará para todos los efectos que dependan del Entorno. Por defecto, los cuatro Cañones la llevan (Cañones de bronce, Carronadas, Culebrina de proa y Pedrero de borda: «**Respuesta:** [mar], [agotar]: Después de…»), a la espera de que Albert diga cuáles se usan también en tierra. Reglamento: Cañón y Entorno.
+
+### Destinos simplificados y demás textos (I1–I11)
+
+- **I1 · Destinos:** 41 Destinos se quedan con su modificador y su Sin oposición, sin efecto extra: 95, 124, 131, 132, 160, 161, 164, 174–178, 180–183, 185–194, 196, 197, 200, 201, 204–212, 223 y 225. Seis pasan a «Inflige {1 herida} a un Tripulante asignado.» (123, 179, 198, 203, 213 y 215): se aplica siempre (superes o falles); con varios asignados elige el jugador; sin nadie asignado, la herida es libre y se suma a la de su Sin oposición si la tiene. Once no cambian: 122, 158, 162, 163, 184, 195, 199, 202, 214, 216 y 217. Los 68 Destinos tienen Sin oposición. 185 y 210 conservan su Sin oposición «−1 en su lugar».
+- **I2 · Alternativas a «el siguiente encuentro de tipo X»:** 177 mar fallo «−1 [avance]»; 184 ciu, 185 ciu y 131 éxito «+1 [avance]»; 209 nat éxito «Robas 3 y agota a 1 Tripulante (la plata pesa)».
+- **I3 · Heridas y curación con icono** en todas las cartas de Peligro y de mazo propio («sufre {1 herida}», «Cura {2 herida g}»).
+- **I4 · «Prepara a 1 Tripulante asignado»** en lugar de «queda Inspirado»: 188 mar, 192 ciu, 204 mar («Prepara un Cañón y a 1 Tripulante asignado»), 210 mar y 211 ciu.
+- **I5 · 124 «Maldición del ídolo»:** solo modificador y Sin oposición (entra en I1).
+- **I6 · Sin oposición «{−1 avance} (mín. 0)»** en 174, 177, 195 y 202.
+- **I7 · Otear:** 217 ciu «Otea 5»; 155 mar y 212 ciu «Otea 3»; 177 mar «Otea 2»; 125 «Otea 3»; la regla de 135 «Puedes descartar 2 cartas ~(pagas al soplón)~. Si lo haces, Otea 3.»
+- **I8 · Abordaje:** solo «**Abordaje**» en 95, 130, 195, 203 y 206; 217 conserva «(el rehén pasa a su tripulación de muertos)».
+- **I9 · Sin «preparado(s)»:** 199 nat «Agota a 1 Tripulante» y 213 nat «Agota a 2 Tripulantes».
+- **I10 · «Gratis» → «sin coste»:** 163 ciu, 182 ciu, 189 mar, 196 ciu, 206 nat, 210 ciu y 133.
+- **I11 · Nombres de las opciones de los «Elige»:** valen.
+- Además: Sin oposición de 207 «La siguiente Prueba de esta misión recibe +2 de dificultad.» y de 191 «Agota a 2 Tripulantes.» (su Destino ya no agota a nadie).
 
 ### Equilibrio de la fase 13 (solo como información; 1000 partidas por modo, semillas 1–1000, el mismo jugador automático)
 
@@ -779,3 +801,15 @@ Evento, coste 1, Neutral, un icono de COM: «Todos tus Tripulantes quedan **Insp
 - Panamá terminada: 0,3 / 0,3 / 1,5 % (con la Arenga, 0,2 / 0,3 / 1,6 %): por debajo del 10 %.
 - La diferencia con la fase 12 es la suma de todo lo de esta fase (cartas 154–159, heridas libres, dos Destinos). La normal baja 2,5 puntos, algo más que el ruido (±1,5).
 - La Arenga (mazo de prueba, `MEDIR_VARIANTE=MAZO:ron_valientes=arenga`) se juega en una de cada cuatro partidas, más o menos (26 veces en 100 partidas): no mueve las victorias.
+
+### Equilibrio de la segunda ronda (solo como información; 1000 partidas por modo, semillas 1–1000, el mismo jugador automático)
+
+| Modo | Primera ronda | Segunda ronda | Segunda ronda con la Arenga en lugar de «Ron para los valientes» |
+| --- | --- | --- | --- |
+| Corta | 43,0 % | 42,5 % | 41,9 % |
+| Normal | 35,4 % | 34,1 % | 33,9 % |
+| Larga | 33,0 % | 30,4 % | 29,9 % |
+
+- Panamá terminada: 0,1 / 0,5 / 1,6 % (con la Arenga, 0,1 / 0,6 / 1,3 %): por debajo del 10 %.
+- Heridas por misión: 1,13 → 1,30 (normal). Las partidas que se pierden por el Capitán derrotado pasan de 283 a 349 de 1000. No lo he medido por separado: lo más probable es que venga de los seis Destinos que hieren a un asignado aunque superes la Prueba y de las heridas libres por asignado (P79), que los 41 Destinos sin efecto extra no compensan del todo.
+- La Arenga como Respuesta tras zarpar se juega menos que antes (44 veces en 300 partidas, en 42 de ellas): muchas veces el Capitán ya se ha agotado para cubrir la Distancia. No mueve las victorias (dentro del ruido, ±1,5).

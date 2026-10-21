@@ -211,7 +211,7 @@ export function costeImpreso(id: string): number {
   return 'coste' in c && typeof c.coste === 'number' ? c.coste : 0
 }
 
-/** Cañones: las Mejoras de barco con munición (N18). */
+/** Cañones: las Mejoras de barco con el Rasgo Cañón (N18; fase 13: el Entorno lo dice su carta, «[mar], [agotar]»). */
 export function esCanon(id: string): boolean {
   const e = porId(id)
   return e.tipo === 'mejoraBarco' && e.carta.canon

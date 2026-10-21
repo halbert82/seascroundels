@@ -124,6 +124,8 @@ export function medir(s: Estado, m: Medida): number {
       return s.zonas.tripulacion.filter((x) => copia(s, x).heridas > 0).length
     case 'comprometidos':
       return comprometidosEnJuego(s).length
+    case 'comprometidosTrasElPrimero':
+      return Math.max(0, comprometidosEnJuego(s).length - 1)
     case 'mejoras':
       return s.zonas.mejoras.length
     case 'mejorasBarco':
@@ -232,9 +234,10 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         break
       }
       case 'dano':
-        // El Barco solo recibe daño en el Mar; en tierra se aplica la alternativa («/ 1 herida»), si la hay, salvo que la
-        // carta diga expresamente que lo daña en tierra (P19).
-        if (enMar || e.enTierra) tareas.push(suceso({ tipo: 'danoBarco', cantidad: e.n }))
+        // Fase 13, regla general de Albert: las cartas se leen al pie de la letra. Si una carta daña el Barco, lo daña en
+        // cualquier Entorno. Solo las que dan una alternativa para tierra («/ 1 herida», `soloEnMar`) la aplican fuera
+        // del Mar; los Destinos dicen ellos mismos qué hacen en cada Entorno (`enElMar`).
+        if (enMar || !e.soloEnMar) tareas.push(suceso({ tipo: 'danoBarco', cantidad: e.n }))
         break
       case 'reparar':
         tareas.push({ tipo: 'reparar', n: e.n })
@@ -260,7 +263,7 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         break
       case 'menosAvanceEncuentro':
         // Fase 13: lo apunta la Prueba del encuentro y se descuenta al ganar su Avance (nunca por debajo de 0).
-        // TODO(regla): en la Prueba de una Acción (sin encuentro) no hay Avance del que descontar: no hace nada.
+        // P77 (Albert): en la Prueba de una Acción (sin encuentro) no hay Avance del que descontar: no hace nada.
         if (s.prueba && s.prueba.origen !== 'accion') {
           s.prueba.avanceMenos = (s.prueba.avanceMenos ?? 0) + e.n
           anotar(s, 'efecto', `Este encuentro da ${e.n} de Avance menos (mín. 0).`)

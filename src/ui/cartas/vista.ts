@@ -610,8 +610,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       else if (r.draw) recompensaTexto = `y roba ${r.draw}`
       else if (r.reclutaGratis !== undefined) recompensaTexto = `Recluta sin coste un Tripulante del muelle de coste ${r.reclutaGratis} o menos.${textoPrecio(r.precio)}`
       else if (r.adquiereGratis !== undefined) recompensaTexto = `Adquiere sin coste una Mejora del muelle de coste ${r.adquiereGratis} o menos.${textoPrecio(r.precio)}`
-      // Fase 13: Otear es siempre del mazo de Peligros. «Cobrar la deuda» lo dice sin la palabra clave (mismo efecto).
-      // TODO(regla): texto por defecto hasta que Albert lo confirme.
+      // Fase 13 (P74, confirmado por Albert): Otear es siempre del mazo de Peligros. «Cobrar la deuda» lo dice sin la
+      // palabra clave (mismo efecto).
       else if (r.oteaMisiones)
         recompensaTexto = `Mira las ${r.oteaMisiones} cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles.`
       const vista: VistaCapitulo = {
@@ -660,7 +660,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
 function textoPrecio(precio: readonly Efecto[] | undefined): string {
   return (precio ?? [])
     .map((e) => {
-      if (e.tipo === 'dano') return ` El Barco sufre ${e.n} ${e.n === 1 ? 'daño' : 'daños'}${e.enTierra ? ', aunque estés en tierra' : ''}.`
+      // Fase 13: las cartas se leen al pie de la letra; ya no hace falta «aunque estés en tierra».
+      if (e.tipo === 'dano') return ` El Barco sufre ${e.n} ${e.n === 1 ? 'daño' : 'daños'}.`
       if (e.tipo === 'heridas') return ` Un Tripulante sufre ${e.n} ${e.n === 1 ? 'herida' : 'heridas'}.`
       throw new Error(`Precio de recompensa sin texto: ${e.tipo}`)
     })

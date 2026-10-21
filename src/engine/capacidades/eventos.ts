@@ -4,7 +4,6 @@
 
 import { tipoDe } from '../catalogo.ts'
 import { anotar, copia } from '../estado.ts'
-import { tieneEstado } from '../estados.ts'
 import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
@@ -42,15 +41,6 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     // «Cura 2 heridas.» (repartidas como quieras)
     requisito: hayHeridos,
     efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('vendas'), 'herida'), modo: 'repartir' }],
-  }),
-  evento('arenga', 'libre', {
-    // Fase 13, «Arenga del capitán» (240): «Todos tus Tripulantes quedan Inspirados.» La ficha dura hasta el final del
-    // turno (toda la misión de ese turno). Los Pasajeros no son Tripulantes: no reciben Ventajas.
-    // TODO(regla): Albert la quiere en la Fase de Reclutamiento («como cualquier Evento sin momento propio»), pero el
-    // reglamento (Evento, N2) deja jugar un Evento sin momento propio en cualquier momento. Por ahora, como dijo Albert:
-    // solo en la Fase de Reclutamiento.
-    requisito: (s) => s.paso === 'jugarCartas' && s.zonas.tripulacion.some((c) => !tieneEstado(s, c, 'inspirado')),
-    efecto: () => [{ tipo: 'aplicarEfectos', efectos: [{ tipo: 'estado', estado: 'inspirado', a: 'todos' }], contexto: 'efecto' }],
   }),
   evento('polvora_c', 'libre', {
     // «Prepara todos tus Cañones.» (fase 10b)
@@ -121,7 +111,7 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
 
   // Respuestas en otros momentos.
   evento('mapa', 'respuesta', {
-    // «Respuesta: Después de zarpar, gana 1 de Avance y roba 1.»
+    // «Respuesta: Después de zarpar, gana 1 de Avance y roba 1.» (Fase 13, regla general 2: antes decía «Al zarpar:».)
     disparo: (_s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'zarpar',
     efecto: () => [
       { tipo: 'ganarAvance', n: numeroConIcono(texto('mapa'), 'avance'), motivo: 'Mapa robado' },
@@ -129,9 +119,18 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     ],
   }),
   evento('senda', 'respuesta', {
-    // «Respuesta: Después de zarpar hacia una misión de Naturaleza, gana 2 de Avance.»
+    // «Respuesta: Después de zarpar hacia una misión de Naturaleza, gana 2 de Avance.» (Fase 13: antes, «Al zarpar…:».)
     disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'zarpar' && enEntorno(s, 'nat'),
     efecto: () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('senda'), 'avance'), motivo: 'Senda escondida' }],
+  }),
+  evento('arenga', 'respuesta', {
+    // Fase 13 (P76), «Arenga del capitán» (240): «Respuesta: Después de zarpar, agota a tu Capitán: todos tus Tripulantes
+    // quedan Inspirados.» Se juega después de los efectos «Al zarpar» (regla general 2). Si el Capitán ya está agotado (por
+    // ejemplo, para la Distancia), no se puede jugar. La ficha dura hasta el final del turno. Los Pasajeros no son
+    // Tripulantes: no reciben Ventajas.
+    coste: [{ tipo: 'agotarCapitan' }],
+    disparo: (_s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'zarpar',
+    efecto: () => [{ tipo: 'aplicarEfectos', efectos: [{ tipo: 'estado', estado: 'inspirado', a: 'todos' }], contexto: 'efecto' }],
   }),
   evento('todos', 'respuesta', {
     // «Respuesta: Después de que comprometas Tripulantes en una Prueba, suma +1 por cada Tripulante comprometido.»

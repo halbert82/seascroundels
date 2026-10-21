@@ -47,10 +47,10 @@ describe('34 · Hermanos de la Costa', () => {
     expect(j.zona('descartesCapitan')).toContain('ojo')
   })
 
-  it('Destino «Código de la Costa»: −2 si el encuentro es Pirata y comprometiste a un Bucanero; Sin oposición: agota 1 Cañón (fase 10b)', () => {
+  it('Destino «Código de la Costa»: +1 en cualquier Prueba, también Pirata con un Bucanero (fase 13, I1); Sin oposición: agota 1 Cañón', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'])
-    j.comprometer('COM', ['capitan']) // Pulso en el muelle es Pirata; Diego es Bucanero
-    expect(dificultadConDestino(j.estado)).toBe(0)
+    j.comprometer('COM', ['capitan']) // Pulso en el muelle es Pirata y Diego es Bucanero: ya no hay +2
+    expect(dificultadConDestino(j.estado)).toBe(1)
     const k = en('ciu', ['p2_hermanos', 'p2_hermanos', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('COM', ['vigia'])
     expect(dificultadConDestino(k.estado)).toBe(1)
@@ -84,6 +84,13 @@ describe('35 · Barril de ron', () => {
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
+  it('Naturaleza: si fallas sin nadie asignado, la herida va al de más EXP de toda la tripulación (fase 13, P72)', () => {
+    const j = en('nat', ['p2_barril', 'chubasco', 'calma'], { tripulacion: ['vigia'] })
+    j.comprometer('EXP', []).seguir()
+    expect(j.registro).toContain('Vigía inexperta sufre 1 herida.') // EXP 2 contra la 1 de Diego
+    expect(j.copia('capitan').heridas).toBe(0)
+  })
+
   it('Ciudad: miras las 3 de arriba del mazo de muelle, una sustituye a la de más a la izquierda y las otras van al fondo', () => {
     const j = en('ciu', ['p2_barril', 'calma'], {
       muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
@@ -96,10 +103,10 @@ describe('35 · Barril de ron', () => {
     expect(j.zona('mazoMuelle')).toEqual(['hamacas', 'vigia', 'vela'])
   })
 
-  it('Destino «Valor de barril»: −2 si comprometiste a un Borracho; Sin oposición: el preparado con más NAV queda Borracho', () => {
+  it('Destino «Valor de barril»: +1 en cualquier Prueba, también con un Borracho asignado (fase 13, I1); Sin oposición: el preparado con más NAV queda Borracho', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_barril', 'calma'], { tripulacion: [{ id: 'bucanero', estados: ['borracho'] }] })
     j.comprometer('COM', ['bucanero'])
-    expect(dificultadConDestino(j.estado)).toBe(0)
+    expect(dificultadConDestino(j.estado)).toBe(1)
     const k = en('ciu', ['p2_hermanos', 'p2_barril', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('COM', ['bucanero'])
     expect(dificultadConDestino(k.estado)).toBe(1)
@@ -152,17 +159,21 @@ describe('36 · Sangre caliente', () => {
     expect(k.zona('descartesCapitan')).toContain('ojo')
   })
 
-  it('Destino «Echarse la culpa»: si fallas con dos o más comprometidos, el de la habilidad más alta y el de la más baja sufren 1 herida', () => {
-    // «Pasos a tu espalda» (EXP 3): Bucanero y Filibustero (EXP 0 + 1 de Diego) suman 2 contra 4.
+  it('Destino «Echarse la culpa» (fase 13, I1): −1 e inflige 1 herida a un Tripulante asignado; Sin oposición: herida libre y agota a 1', () => {
+    // «Pasos a tu espalda» (EXP 3): con dos asignados, el jugador elige cuál de ellos sufre la herida (Diego no está).
     const j = en('ciu', ['p2_bastian', 'p2_sangre', 'calma'], { tripulacion: ['bucanero', 'filibustero'] })
-    j.comprometer('EXP', ['bucanero', 'filibustero']).seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } }) // empatan en EXP impresa
-    j.elegir('bucanero')
-    expect(j.copia('bucanero').heridas).toBe(1)
+    j.comprometer('EXP', ['bucanero', 'filibustero'])
+    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
+    expect(ids(j, Object.keys((j.decision as { maximos: object }).maximos)).sort()).toEqual(['bucanero', 'filibustero'])
+    j.repartir({ filibustero: 1 })
     expect(j.copia('filibustero').heridas).toBe(1)
+    expect(j.copia('bucanero').heridas).toBe(0)
+    // Sin nadie asignado, la herida es libre (aquí solo está Diego) y además se agota a 1 Tripulante.
     const k = en('ciu', ['p2_bastian', 'p2_sangre', 'calma'])
     k.comprometer('EXP', [])
-    expect(k.copia('capitan').agotada).toBe(true) // Sin oposición: agota 1 Tripulante preparado
+    expect(k.copia('capitan').heridas).toBe(1)
+    expect(k.copia('capitan').agotada).toBe(true)
   })
 })
 
@@ -274,10 +285,10 @@ describe('38 · Paga atrasada', () => {
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
-  it('Destino «Demasiadas voces»: +2 con 3 o más comprometidos; Sin oposición: −1 Mando en tu próximo turno', () => {
+  it('Destino «Demasiadas voces»: −1 en cualquier Prueba, también con 3 o más asignados (fase 13, I1); Sin oposición: −1 Mando en tu próximo turno', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     j.comprometer('COM', ['capitan', 'bucanero', 'vigia'])
-    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'])
     k.comprometer('COM', [])
     expect(k.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'menosMando', desdeTurno: k.estado.turno + 1 }))
@@ -329,10 +340,11 @@ describe('39 · A sueldo', () => {
     expect(j.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
   })
 
-  it('Destino «Lealtad comprada»: con dos o más comprometidos, el de menor coste no suma; Sin oposición: descartas 2', () => {
+  it('Destino «Lealtad comprada»: 0 y todos los asignados suman (fase 13, I1: fuera «el de menor coste no suma»); Sin oposición: descartas 2', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_sueldo', 'calma'], { tripulacion: ['bucanero', 'isabela'] })
     j.comprometer('COM', ['bucanero', 'isabela'])
-    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // solo Isabela: COM 3 + 1 de Diego
+    expect(dificultadConDestino(j.estado)).toBe(2)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(7) // Bucanero COM 2 + Isabela COM 3, +1 de Diego a cada uno
     const k = en('ciu', ['p2_hermanos', 'p2_sueldo', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     k.comprometer('COM', []).elegir('ojo', 'timon')
     expect(k.zona('mano')).toEqual(['coraje'])
@@ -364,10 +376,21 @@ describe('40 · La sombra de Bastián', () => {
     expect(k.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', n: 2 }])
   })
 
-  it('Destino «A tu estela»: Persigue; Sin oposición: pierdes 1 Avance', () => {
+  it('Destino «A tu estela»: −1 y Persigue', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_bastian', 'calma'])
-    j.comprometer('COM', ['capitan']).pasarOfertas().seguir()
+    j.comprometer('COM', ['capitan'])
+    expect(dificultadConDestino(j.estado)).toBe(3)
+    j.pasarOfertas().seguir()
     expect(j.zona('mazoPeligros')[0]).toBe('p2_bastian')
+  })
+
+  it('Destino «A tu estela», Sin oposición (fase 13, I6): el encuentro da 1 de Avance menos (mín. 0), sin quitar el que ya tenías', () => {
+    // «Pulso en el muelle» da Avance 1 / 1: sin nadie asignado, 1 − 1 = 0.
+    const j = en('ciu', ['p2_hermanos', 'p2_bastian', 'calma'], { avance: { 'pruebas-ciu4': 2 } })
+    j.comprometer('COM', []).pasarOfertas().seguir()
+    expect(j.registro).toContain('Este encuentro da 1 de Avance menos (mín. 0).')
+    expect(j.registro).not.toContain('Pierdes 1 de Avance.')
+    expect(avance(j, 'ciu')).toBe(2)
   })
 })
 
@@ -392,15 +415,19 @@ describe('41 · Los holandeses de Curazao', () => {
     expect(j.copia('capitan').heridas).toBe(2)
   })
 
-  it('Naturaleza: si superas, curas 1 a cada comprometido; si fallas, 1 herida a cada comprometido', () => {
+  it('Naturaleza: si superas, curas 1 a cada asignado; si fallas, 1 herida libre por cada asignado (fase 13, P79)', () => {
     const j = en('nat', ['p2_curazao', 'chubasco', 'calma'], { capitan: { heridas: 1 }, tripulacion: [{ id: 'isabela', heridas: 1 }] })
     j.comprometer('COM', ['capitan', 'isabela']).pasarOfertas().seguir()
     expect(j.copia('capitan').heridas).toBe(0)
     expect(j.copia('isabela').heridas).toBe(0)
-    const k = en('nat', ['p2_curazao', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
-    k.comprometer('COM', ['bucanero']).seguir() // 2 + 1 de Diego contra 4
-    expect(k.copia('bucanero').heridas).toBe(1)
-    expect(k.copia('capitan').heridas).toBe(0)
+    // Carpintero y Vigía (COM 0 + 1 de Diego) suman 2 contra 4: 2 heridas, y el jugador se las da a Diego, que no fue.
+    const k = en('nat', ['p2_curazao', 'chubasco', 'calma'], { tripulacion: ['carpintero', 'vigia'] })
+    k.comprometer('COM', ['carpintero', 'vigia']).seguir()
+    expect(k.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
+    k.repartir({ capitan: 2 })
+    expect(k.copia('capitan').heridas).toBe(2)
+    expect(k.copia('carpintero').heridas).toBe(0)
+    expect(k.copia('vigia').heridas).toBe(0)
   })
 
   it('Ciudad: «Te roban el barco»: si fallas, 2 daños al Barco aunque estés en tierra, y descartas 1', () => {
@@ -410,20 +437,31 @@ describe('41 · Los holandeses de Curazao', () => {
     expect(j.zona('mano')).toEqual([])
   })
 
-  it('Destino «Cuerpo a cuerpo»: en una Prueba de COM, el comprometido con la habilidad más alta sufre 1 herida; Sin oposición: 1 herida a un preparado', () => {
+  it('Destino «Cuerpo a cuerpo» (fase 13, I1): −1 e inflige 1 herida a un Tripulante asignado, en cualquier Prueba; Sin oposición: 1 herida más', () => {
+    // Con dos asignados, el jugador elige cuál sufre la herida (ya no es por fuerza el de más COM).
     const j = en('ciu', ['p2_hermanos', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['capitan', 'bucanero'])
-    expect(j.copia('capitan').heridas).toBe(1)
-    expect(j.copia('bucanero').heridas).toBe(0)
-    const k = en('ciu', ['p2_hermanos', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
-    k.comprometer('COM', []).elegir('bucanero')
+    expect(dificultadConDestino(j.estado)).toBe(3)
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
+    j.repartir({ bucanero: 1 })
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.copia('capitan').heridas).toBe(0)
+    // Con un solo asignado, la sufre él, también en una Prueba de EXP («Pasos a tu espalda»).
+    const k = en('ciu', ['p2_bastian', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
+    k.comprometer('EXP', ['bucanero'])
     expect(k.copia('bucanero').heridas).toBe(1)
-    expect(k.copia('capitan').heridas).toBe(0)
+    // Sin nadie asignado, la herida del Destino es libre y Sin oposición inflige otra.
+    const l = en('ciu', ['p2_hermanos', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
+    l.comprometer('COM', []).elegir('bucanero')
+    expect(l.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir' } })
+    l.elegir('capitan')
+    expect(l.copia('bucanero').heridas).toBe(1)
+    expect(l.copia('capitan').heridas).toBe(1)
   })
 })
 
 describe('42 · Viejas cuentas', () => {
-  it('Mar: Sin ayuda; si mandas a otro en lugar del Capitán, +1; si ganas, preparas un Cañón y tu duelista queda Inspirado', () => {
+  it('Mar: Sin ayuda; si mandas a otro en lugar del Capitán, +1; si ganas, preparas un Cañón y a 1 asignado (fase 13, I4: ya no queda Inspirado)', () => {
     const j = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(5)
@@ -432,7 +470,8 @@ describe('42 · Viejas cuentas', () => {
     expect(dificultadConDestino(k.estado)).toBe(4)
     k.seguir()
     expect(k.copia('bronce').agotada).toBe(false)
-    expect(k.estados('capitan')).toEqual(['inspirado'])
+    expect(k.copia('capitan').agotada).toBe(false) // se agotó al ser asignado y se prepara
+    expect(k.estados('capitan')).toEqual([])
   })
 
   it('Mar: si pierdes, tu duelista sufre 2 heridas y queda Sangrando', () => {
@@ -440,6 +479,15 @@ describe('42 · Viejas cuentas', () => {
     j.comprometer('COM', ['capitan']).seguir()
     expect(j.copia('capitan').heridas).toBe(2)
     expect(j.estados('capitan')).toEqual(['sangrando'])
+  })
+
+  it('Mar: si nadie acepta el duelo, las 2 heridas son libres (fase 13, P78)', () => {
+    const j = en('mar', ['p2_cuentas', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
+    j.comprometer('COM', []).seguir()
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
+    j.repartir({ capitan: 1, bucanero: 1 })
+    expect(j.copia('capitan').heridas).toBe(1)
+    expect(j.copia('bucanero').heridas).toBe(1)
   })
 
   it('Naturaleza: −2 si comprometes al Capitán; si fallas, 2 heridas al comprometido con más EXP', () => {
@@ -461,10 +509,10 @@ describe('42 · Viejas cuentas', () => {
     expect(k.zona('muelle')).not.toContain('isabela')
   })
 
-  it('Destino «El que te conoce»: +2 si el Capitán está comprometido; Sin oposición: el Capitán sufre 1 herida', () => {
+  it('Destino «El que te conoce»: −1 en cualquier Prueba, también con el Capitán asignado (fase 13, I1); Sin oposición: el Capitán sufre 1 herida', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_cuentas', 'calma'])
     j.comprometer('COM', ['capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('ciu', ['p2_hermanos', 'p2_cuentas', 'calma'])
     k.comprometer('COM', [])
     expect(k.copia('capitan').heridas).toBe(1)
@@ -512,10 +560,10 @@ describe('43 · Motín', () => {
     expect(j.estado.temporales.filter((t) => t.clave === 'noPrepara')).toEqual([])
   })
 
-  it('Destino «Puñal en la espalda»: +4 si no has comprometido a ningún Oficial; Sin oposición: 2 heridas repartidas', () => {
+  it('Destino «Puñal en la espalda»: −2 en cualquier Prueba, también sin ningún Oficial asignado (fase 13, I1); Sin oposición: 2 heridas repartidas', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_motin', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['bucanero'])
-    expect(dificultadConDestino(j.estado)).toBe(6)
+    expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('ciu', ['p2_hermanos', 'p2_motin', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('COM', ['capitan'])
     expect(dificultadConDestino(k.estado)).toBe(4)
@@ -564,10 +612,13 @@ describe('44 · El cazador de piratas', () => {
     expect(j.zona('mazoPeligros')).toContain('armada')
   })
 
-  it('Destino «Recompensa»: si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén; Sin oposición: + La Armada', () => {
+  it('Destino «Recompensa»: −2 y nadie queda rehén aunque falles por 3 o más (fase 13, I1); Sin oposición: + La Armada', () => {
     const j = en('ciu', ['p2_bastian', 'p2_cazador', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
-    j.comprometer('EXP', ['bucanero']).seguir() // EXP 0 + 1 de Diego contra 3 + 2: falla por 4
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
+    j.comprometer('EXP', ['bucanero'])
+    expect(dificultadConDestino(j.estado)).toBe(5)
+    j.seguir() // EXP 0 + 1 de Diego contra 3 + 2: falla por 4
+    expect(j.zona('rehenes')).toEqual([])
+    expect(j.zona('tripulacion')).toContain('bucanero')
     const k = en('ciu', ['p2_bastian', 'p2_cazador', 'calma'])
     k.comprometer('EXP', [])
     expect(k.zona('mazoPeligros')).toContain('armada')

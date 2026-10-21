@@ -54,10 +54,18 @@ describe('123 · Trampa de dardos', () => {
     expect(k.copia('capitan').estados).toContain('envenenado')
   })
 
-  it('Destino «Dardos desde el techo»: el comprometido con la habilidad más baja sufre 1 herida', () => {
-    const j = en('nat', ['fauna', 'dardos', 'calma'], { tripulacion: ['baqueano'] })
-    j.comprometer('EXP', ['capitan', 'baqueano'])
-    expect(j.copia('capitan').heridas).toBe(1)
+  it('Destino «Dardos desde el techo»: inflige 1 herida a un Tripulante asignado, el que elijas (fase 13, I1: antes, al de la habilidad más baja); Sin oposición, 1 herida más', () => {
+    const j = en('nat', ['chubasco', 'dardos', 'calma'], { tripulacion: ['carpintero'] })
+    j.comprometer('EXP', ['capitan', 'carpintero'])
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
+    j.repartir({ carpintero: 1 }) // el Carpintero, aunque el Capitán tenga menos EXP
+    expect([j.copia('capitan').heridas, j.copia('carpintero').heridas]).toEqual([0, 1])
+    // Sin nadie asignado, la herida del Destino y la de Sin oposición van a quien elijas.
+    const k = en('nat', ['chubasco', 'dardos', 'calma'], { tripulacion: ['carpintero'] })
+    k.comprometer('EXP', [])
+    expect(k.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir', n: 1 } })
+    k.elegir('carpintero').elegir('capitan')
+    expect([k.copia('capitan').heridas, k.copia('carpintero').heridas]).toEqual([1, 1])
   })
 })
 
@@ -81,11 +89,11 @@ describe('124 · Ídolo maldito', () => {
 })
 
 describe('125 · Pasadizo secreto', () => {
-  it('sin Prueba: miras las 3 de arriba del mazo y pones 1 al fondo; Destino −1 (+0 sin oposición)', () => {
-    const j = en('nat', ['pasadizo', 'calma', 'fauna', 'chubasco'])
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'alFondo', n: 1 } })
-    j.elegir('fauna').elegir('calma', 'chubasco') // las otras dos, en el orden que quieras
-    expect(j.zona('mazoPeligros').at(-1)).toBe('fauna')
+  it('sin Prueba: Otea 3 (fase 13, I7: cada una arriba o al fondo, antes solo 1 al fondo); Destino −1 (+0 sin oposición)', () => {
+    const j = en('nat', ['pasadizo', 'calma', 'fauna', 'chubasco', 'escollos'])
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'calma' } })
+    j.opcion('fondo').opcion('fondo').opcion('arriba') // dos al fondo: ya no hay que dejar dos arriba
+    expect(j.zona('mazoPeligros')).toEqual(['chubasco', 'escollos', 'calma', 'fauna'])
     const k = en('nat', ['fauna', 'pasadizo', 'calma'])
     k.comprometer('EXP', ['capitan'])
     expect(dificultadConDestino(k.estado)).toBe(1)
@@ -144,23 +152,26 @@ describe('130 · Galeón de la plata', () => {
 })
 
 describe('131 · Navío de escolta', () => {
-  it('NAV 5: si superas, el siguiente encuentro #Barco# recibe −1; si fallas, 2 daños', () => {
+  it('NAV 5: si superas, +1 Avance (fase 13, I2: antes, el siguiente encuentro #Barco# −1); si fallas, 2 daños', () => {
     const j = en('mar', ['escolta', 'calma', 'oportunidad', 'calma'], { tripulacion: ['viejo_lobo'] })
-    resolver(j.comprometer('NAV', ['capitan', 'viejo_lobo'])).seguir()
+    resolver(j.comprometer('NAV', ['capitan', 'viejo_lobo']))
+    expect(j.registro).toContain('Navío de escolta: +1 de Avance (1/5).')
+    expect(j.registro).toContain('Ganas 3 de Avance (4/5).') // y los 3 del encuentro (3 / 2)
+    j.seguir()
     j.comprometer('NAV', [j.copia('capitan').agotada ? 'viejo_lobo' : 'capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(2) // Navío a la deriva (Barco): NAV 3 − 1
+    expect(dificultadConDestino(j.estado)).toBe(3) // Navío a la deriva (Barco): NAV 3, ya sin −1
     const k = en('mar', ['escolta', 'calma', 'calma'])
     k.comprometer('NAV').seguir()
     expect(k.estado.danoBarco).toBe(2)
   })
 
-  it('Destino «Señales entre los mástiles»: +2 si el encuentro es #Barco#; Sin oposición, el Barco queda Perseguido', () => {
+  it('Destino «Señales entre los mástiles»: −1 en cualquier encuentro (fase 13, I1: fuera el −2 con #Barco#); Sin oposición, el Barco queda Perseguido', () => {
     const j = en('mar', ['oportunidad', 'escolta', 'calma'])
     j.comprometer('NAV')
     expect(j.estadosBarco).toContain('perseguido')
     const k = en('mar', ['oportunidad', 'escolta', 'calma'])
     k.comprometer('NAV', ['capitan'])
-    expect(dificultadConDestino(k.estado)).toBe(5)
+    expect(dificultadConDestino(k.estado)).toBe(4) // Navío a la deriva (Barco): NAV 3 + 1, ya no + 2
   })
 })
 
@@ -207,10 +218,18 @@ describe('225 · Cofres por la borda', () => {
     expect(sigue.registro.some((r) => r.startsWith('Ganas 3 de Avance'))).toBe(true) // fase 10b: 3 / 1
   })
 
-  it('Destino «El brillo de la plata»: si superas, robas 1; Sin oposición, descartas 1', () => {
+  it('Destino «El brillo de la plata»: −1 y nada más (fase 13, I1: fuera «si superas, roba 1 carta»); Sin oposición, descartas 1', () => {
     const j = en('mar', ['chubasco', 'cofres', 'calma'])
-    j.comprometer('NAV', ['capitan']).seguir()
-    expect(robas(j, 1)).toBe(true)
+    j.comprometer('NAV', ['capitan'])
+    expect(dificultadConDestino(j.estado)).toBe(3) // Chubasco repentino: NAV 2 + 1
+    j.seguir()
+    expect(j.registro).toContain('Total 2 contra 2: superas la Prueba.')
+    expect(robas(j, 1)).toBe(false)
+    const k = en('mar', ['chubasco', 'cofres', 'calma'], { mano: ['ojo', 'timon'] })
+    k.comprometer('NAV', [])
+    expect(k.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'descartar', n: 1 } })
+    k.elegir('timon')
+    expect(k.zona('mano')).toEqual(['ojo'])
   })
 })
 
@@ -250,10 +269,10 @@ describe('095 · La Armada te persigue (rehecha, P51)', () => {
     expect(k.zona('rehenes')).toEqual(['vigia'])
   })
 
-  it('Destino «Velas en el horizonte»: +2 si el encuentro es #Militar# o #Guardia#; Sin oposición, el Barco queda Perseguido', () => {
+  it('Destino «Velas en el horizonte»: −1 en cualquier encuentro (fase 13, I1: fuera el −2 con #Armada#, #Militar# o #Guardia#); Sin oposición, el Barco queda Perseguido', () => {
     const j = en('ciu', ['ley', 'armada', 'calma'])
     j.comprometer('COM', ['capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(5) // Ronda de la guardia: COM 3 + 2
+    expect(dificultadConDestino(j.estado)).toBe(4) // Ronda de la guardia (Guardia, Militar): COM 3 + 1, ya no + 2
     const k = en('ciu', ['ley', 'armada', 'calma'])
     k.comprometer('COM')
     expect(k.estadosBarco).toContain('perseguido')

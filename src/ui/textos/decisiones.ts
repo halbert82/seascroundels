@@ -299,8 +299,6 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: 'Subasta del naufragio', ayuda: 'Puedes poner en juego una Mejora del muelle pagando 2 cartas menos de su coste (o ninguna).' }
     case 'recuperarDescarte':
       return { titulo: `Recupera ${plural(n, 'carta', 'cartas')} de tu descarte` }
-    case 'baterias':
-      return { titulo: 'Las baterías del castillo', ayuda: 'El Destino es −4, salvo que descartes 2 cartas para poneros a cubierto: entonces es −2.' }
     case 'quitarUnEstado':
       return { titulo: '¿A quién le quitas el Estado?', ayuda: m.texto ? `Puedes quitar: ${m.texto}.` : undefined }
     case 'cualEstado':
@@ -624,6 +622,7 @@ function describirMedida(m: Medida): string {
     mano: 'carta de tu mano',
     heridos: 'Tripulante herido',
     comprometidos: 'Tripulante asignado',
+    comprometidosTrasElPrimero: 'Tripulante asignado después del primero',
   }
   return nombres[m]
 }

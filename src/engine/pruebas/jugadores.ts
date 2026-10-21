@@ -18,7 +18,6 @@ import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valore
 import { cumple } from '../tareas/efectos.ts'
 import { puedePrepararse } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
-import { puedeZarpar } from '../tareas/mision.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
 
@@ -387,15 +386,12 @@ function mejorZarpe(s: Estado, misiones: readonly InstId[]): InstId | null {
 }
 
 /**
- * Fase 13, «Arenga del capitán»: la juega en la Fase de Reclutamiento si va a zarpar con 2 o más Tripulantes preparados,
- * después de reclutar y adquirir (así los recién llegados también quedan Inspirados).
+ * Fase 13 (P76), «Arenga del capitán» («Respuesta: Después de zarpar, agota a tu Capitán…»): la juega si el Capitán sigue
+ * preparado y le quedan 2 o más Tripulantes preparados además de él.
  */
-function convieneArenga(s: Estado, d: Decision): boolean {
-  if (d.tipo !== 'ventanaAccion' || d.motivo.clave !== 'jugarCartas') return false
-  const antes = elegirEnJugarCartas(s, d.acciones)
-  if (antes.tipo === 'accion' && antes.accion.tipo !== 'terminarPaso') return false
-  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
-  return preparados >= 2 && mejorZarpe(s, s.zonas.misionesDisponibles.filter((m) => puedeZarpar(s, m))) !== null
+function convieneArenga(s: Estado): boolean {
+  if (copia(s, s.capitan).agotada) return false
+  return s.zonas.tripulacion.filter((c) => c !== s.capitan && !copia(s, c).agotada).length >= 2
 }
 
 function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>): Eleccion {
@@ -893,7 +889,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'a_por_ellos.jugar':
       return trasEncuentro && s.zonas.rehenes.length > 0 && s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? 3 : 0
     case 'arenga.jugar':
-      return convieneArenga(s, d) ? 2 : 0
+      return convieneArenga(s) ? 2 : 0
     case 'ron_valientes.jugar':
       return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
     case 'pm_ojos.accion0':

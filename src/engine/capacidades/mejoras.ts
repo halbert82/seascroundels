@@ -99,7 +99,8 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
       return []
     },
   },
-  // Cañones de bronce: «Agotar: Una Prueba de COM recibe +2.» Los Cañones, solo en el Mar (N18). Fase 10b: sin munición.
+  // Cañones de bronce: «[mar], Agotar: Una Prueba de COM recibe +2.» Fase 10b: sin munición. Fase 13 (Albert): fuera N18;
+  // una Mejora de barco se usa en cualquier Entorno salvo que la carta lo limite, como aquí («[mar], [agotar]: …»).
   {
     clave: 'bronce.disparar',
     carta: 'bronce',
@@ -127,7 +128,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
       return []
     },
   },
-  // Culebrina de proa: «Agotar: Una Prueba de NAV en el Mar recibe +2.»
+  // Culebrina de proa: «[mar], Agotar: Una Prueba de NAV recibe +2.»
   {
     clave: 'culebrina.disparar',
     carta: 'culebrina',
@@ -138,7 +139,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     efecto: (s) => bono(s, numerosEntreLlaves(texto('culebrina'))[0] ?? 0, true, 'culebrina'),
   },
   // Pedrero de borda: «Respuesta: Agotar: Después de que reveles una carta de Peligro con Prueba de COM,
-  // descártala sin resolverla y revela otra.» Solo en el Mar, como todo Cañón (N18).
+  // descártala sin resolverla y revela otra.» Fase 13: solo en el Mar porque la carta lo dice («[mar], [agotar]»).
   {
     clave: 'pedrero.disparar',
     carta: 'pedrero',

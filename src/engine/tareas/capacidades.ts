@@ -22,7 +22,7 @@ function evento(ev: Extract<NuevaTarea, { tipo: 'evento' }>['ev']): NuevaTarea {
 
 /**
  * Otear N: mira las N cartas superiores del mazo de Peligros y deja cada una arriba o al fondo. Fase 13: Otear es siempre
- * del mazo de Peligros («Otea N»). TODO(regla): si la misión revela de un mazo propio mezclado (El templo, El galeón
+ * del mazo de Peligros («Otea N»). P73 (Albert): si la misión revela de un mazo propio mezclado (El templo, El galeón
  * rezagado), Otear mira ese mazo, el del que revelas (`mazoActivo`). El de Misiones (`mazo: 'misiones'`) solo lo usa la
  * recompensa de «Cobrar la deuda», que ya no dice Otear («Mira las 3 cartas superiores del mazo de Misiones…»).
  */
@@ -96,9 +96,9 @@ export const quitarEncuentro: Manejador<'quitarEncuentro'> = (s, t) => {
 
 /**
  * Cancela el Destino revelado, o lo descarta y revela otro (que pasa por su propia ventana). Fase 13: si la Prueba
- * resuelve dos Destinos («Bruma en la selva»), el jugador elige a cuál de los dos afecta. TODO(regla): Albert lo dijo
- * para «Reflejos de gato» (cancela solo uno, el que elija el jugador); se hace igual con las demás cartas que cancelan o
- * cambian el Destino (Escapulario, Espada, Viejo lobo de mar, Farol de los ahogados).
+ * resuelve dos Destinos («Bruma en la selva»), el jugador elige a cuál de los dos afecta. P71 (Albert): cancela o
+ * cambia solo uno, el que elija el jugador; vale para «Reflejos de gato», el Escapulario, la Espada, el Viejo lobo de mar
+ * y el Farol de los ahogados.
  */
 export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t, e) => {
   const p = s.prueba

@@ -2,15 +2,12 @@
 
 import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { registrarCapacidades } from '../capacidades/index.ts'
-import { participantes as comprometidosDe } from '../capacidades/comun.ts'
 import type { Condicion } from '../efectos.ts'
-import { anotar, copia, encolar } from '../estado.ts'
+import { anotar, copia } from '../estado.ts'
 import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
-import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
-import { marcado, registrarEspecial, sucesoRehen } from '../tareas/peligros2.ts'
-import type { CartaId, Estado } from '../tipos.ts'
-import { vinculadas } from '../zonas.ts'
+import { marcado, sucesoRehen } from '../tareas/peligros2.ts'
+import type { CartaId } from '../tipos.ts'
 import {
   agotar,
   avance,
@@ -19,10 +16,10 @@ import {
   dano,
   descartar,
   dificultad,
-  encuentroEs,
   enElMar,
   habilidadDe,
   heridas,
+  heridaPorAsignado,
   mas,
   preparaCanon,
   canonesListos,
@@ -38,11 +35,6 @@ import {
 
 const tienesLa = (id: CartaId): Condicion => ({ tipo: 'cartaEnJuego', id })
 
-/** ¿Algún comprometido lleva esta Mejora? */
-function comprometidoLleva(s: Estado, id: CartaId): boolean {
-  return comprometidosDe(s).some((c) => vinculadas(s, c).some((m) => copia(s, m).id === id))
-}
-
 // 23. Desertores del rey · Favorable
 registrarPeligro('p2_desertores', {
   encuentros: {
@@ -50,14 +42,13 @@ registrarPeligro('p2_desertores', {
     mar: { efecto: [preparaCanon()] },
     nat: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'heridas', n: 1 })] },
     // Sin Prueba: el siguiente encuentro #Guardia# o #Militar# de esta misión recibe −2.
-    ciu: { efecto: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia', 'Militar'], n: -2 } }] },
+    // Fase 13 (I2): +1 [avance] (antes, «el siguiente encuentro #Guardia# o #Militar# −2»).
+    ciu: { efecto: [avance(1)] },
   },
   // −1; −2 en su lugar si el encuentro es #Militar# o #Guardia#. Si aun así fallas, el Barco queda Perseguido.
   // Sin oposición: +1 en su lugar.
-  destino: {
-    modificador: (s, p) => (p.comprometidos.length === 0 ? 1 : encuentroEs(s, 'Armada', 'Militar', 'Guardia') ? -2 : -1),
-    siFallas: [{ tipo: 'estadoBarco', estado: 'perseguido' }],
-  },
+  // +1. Sin oposición: −1 en su lugar. (Fase 13, I1: fuera «Armada, Militar o Guardia: +2» y «si fallas, Perseguido».)
+  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1) },
 })
 
 // 24. Se busca · Leve
@@ -94,11 +85,8 @@ registrarPeligro('p2_sebusca', {
     },
   },
   // +1; +2 en su lugar si algún comprometido está Buscado o el Barco está Perseguido. Sin oposición: el Capitán, 1 herida.
-  destino: {
-    modificador: (s, p) =>
-      p.comprometidos.some((c) => s.zonas.tripulacion.includes(c) && tieneEstado(s, c, 'buscado')) || tieneEstadoBarco(s, 'perseguido') ? 2 : 1,
-    sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }],
-  },
+  // −1. Sin oposición: el Capitán sufre 1 herida. (Fase 13, I1: fuera «Buscado o Perseguido: −2».)
+  destino: { sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },
 })
 
 // 25. La aduana del rey · Leve
@@ -122,18 +110,16 @@ registrarPeligro('p2_aduana', {
     },
   },
   // +0; −1 en su lugar si comprometiste a un Contrabandista. Si fallas, descarta 1 carta. Sin oposición: 1 al azar.
-  destino: {
-    modificador: (s) => (comprometidosDe(s).some((c) => tieneRasgo(s, c, 'Contrabandista')) ? -1 : 0),
-    siFallas: [descartar(1)],
-    sinOposicion: [{ tipo: 'descartarAzar', n: 1 }],
-  },
+  // 0. Sin oposición: descarta 1 carta al azar. (Fase 13, I1: fuera «con un Contrabandista, +1» y «si fallas, descarta 1».)
+  destino: { sinOposicion: [{ tipo: 'descartarAzar', n: 1 }] },
 })
 
 // 26. Ojos del gobernador · Leve
 registrarPeligro('p2_ojos', {
   encuentros: {
     mar: {
-      exito: [comprometidoCon(mas('NAV'), { tipo: 'estado', estado: 'inspirado' })],
+      // Fase 13 (I4): prepara a 1 Tripulante asignado (antes, el de más NAV quedaba Inspirado: nunca llegaba a usarlo).
+      exito: [comprometidoCon('eleccion', { tipo: 'preparar' })],
       fallo: [{ tipo: 'siguiente', mod: { de: 'prueba', n: 1 } }],
     },
     nat: { exito: [avance(2)], fallo: [pierdesAvance(1), agotar(1)] },
@@ -149,7 +135,8 @@ registrarPeligro('p2_ojos', {
     },
   },
   // +1. No puedes jugar Eventos en esta Prueba. Sin oposición: robas 1 menos al final de este turno.
-  destino: { prueba: { sinEventos: true }, sinOposicion: [{ tipo: 'menosMando' }] },
+  // −1. Sin oposición: −1 Mando. (Fase 13, I1: fuera «no puedes jugar Eventos en esta Prueba».)
+  destino: { sinOposicion: [{ tipo: 'menosMando' }] },
 })
 
 // 27. Los grilletes del rey · Duro
@@ -171,10 +158,8 @@ registrarPeligro('p2_grilletes', {
     ciu: { exito: [preparar(2)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'rehen' } }] },
   },
   // +1. En esta Prueba no se pueden usar capacidades de Tripulantes. Sin oposición: agota a 1 Tripulante (fase 10b).
-  destino: {
-    prueba: { sinCapTripulantes: true },
-    sinOposicion: [{ tipo: 'agotar', n: 1 }],
-  },
+  // −1. Sin oposición: agota a 1 Tripulante. (Fase 13, I1: fuera «no se pueden usar capacidades de Tripulantes».)
+  destino: { sinOposicion: [{ tipo: 'agotar', n: 1 }] },
 })
 
 // 28. El Santo Oficio · Duro
@@ -192,7 +177,8 @@ registrarPeligro('p2_santooficio', {
     // Fallo: 1 herida a cada Tripulante comprometido (máx. 3).
     nat: {
       exito: [{ tipo: 'curar', n: 2 }],
-      fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true, maximo: 3 }, hacer: { tipo: 'heridas', n: 1 } }],
+      // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado (máx. 3)» (libres).
+      fallo: [heridaPorAsignado({ maximo: 3 })],
     },
     // Al revelarse: Incautado, una Mejora a tu elección; si llevas el Amuleto, tiene que ser él.
     ciu: {
@@ -202,10 +188,8 @@ registrarPeligro('p2_santooficio', {
     },
   },
   // +1; +2 en su lugar si un comprometido lleva el Amuleto; +0 si lleva el Escapulario. Sin oposición: descarta 2.
-  destino: {
-    modificador: (s) => (comprometidoLleva(s, 'amuleto') ? 2 : comprometidoLleva(s, 'escapulario') ? 0 : 1),
-    sinOposicion: [descartar(2)],
-  },
+  // −1. Sin oposición: descarta 2 cartas. (Fase 13, I1: fuera el Amuleto y el Escapulario.)
+  destino: { sinOposicion: [descartar(2)] },
 })
 // La marca del fallo en el Mar: mientras dure, el Barco no da su +1 de NAV (se lee como efecto temporal por su clave).
 registrarCapacidades({
@@ -245,16 +229,8 @@ registrarPeligro('p2_rebato', {
     ciu: { pone: { carta: 'pm_campanas' } },
   },
   // −1. Agota 1 Tripulante no comprometido. Sin oposición: agota 2 en lugar de 1.
-  destino: {
-    efectos: [
-      {
-        tipo: 'si',
-        condicion: { tipo: 'comprometidos', minimo: 1 },
-        entonces: [{ tipo: 'aQuien', quien: { de: 'noComprometidosPreparados', por: 'eleccion' }, hacer: { tipo: 'agotar' } }],
-      },
-    ],
-    sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', cada: true, maximo: 2 }, hacer: { tipo: 'agotar' } }],
-  },
+  // +1. Sin oposición: agota a 2 Tripulantes. (Fase 13, I1: fuera «agota a 1 Tripulante no asignado».)
+  destino: { sinOposicion: [{ tipo: 'aQuien', quien: { de: 'preparados', cada: true, maximo: 2 }, hacer: { tipo: 'agotar' } }] },
 })
 
 // 30. El quinto del rey · Duro
@@ -278,48 +254,15 @@ registrarPeligro('p2_quinto', {
       exito: [robar(2)],
       fallo: [comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 }), pierdesAvance(1)],
     },
-    ciu: { exito: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'inspirado' })], fallo: [{ tipo: 'ocuparMuelle', coste: 3 }] },
+    // Fase 13 (I4): éxito, prepara a 1 Tripulante asignado (antes, Inspirado).
+    ciu: { exito: [comprometidoCon('eleccion', { tipo: 'preparar' })], fallo: [{ tipo: 'ocuparMuelle', coste: 3 }] },
   },
   // +0. Si superas, descarta 1 carta (con la Patente de corso, no pagas). Sin oposición: pierdes 1 munición.
-  destino: {
-    siSuperas: [{ tipo: 'si', condicion: { tipo: 'no', condicion: tienesLa('patente') }, entonces: [descartar(1)] }],
-    sinOposicion: [agotaCanones(1)],
-  },
+  // 0. Sin oposición: agota 1 Cañón. (Fase 13, I1: fuera «si superas, descarta 1 carta salvo con la Patente».)
+  destino: { sinOposicion: [agotaCanones(1)] },
 })
 
 // 31. Bajo los cañones del Morro · Terrible
-registrarEspecial('p2_morro.baterias', (s, t, e) => {
-  const p = s.prueba
-  if (!p) return 'hecha'
-  if (t.paso === 0) {
-    // «+4 en su lugar salvo que descartes 2 cartas»: sin 2 cartas en la mano, +4.
-    if (s.zonas.mano.length < 2) {
-      // −2 impreso → −4: se suma la diferencia (fase 13: con dos Destinos, el otro también cuenta).
-      p.modDestino += 2
-      anotar(s, 'efecto', 'Las baterías del castillo: no puedes descartar 2 cartas, el Destino es +4.')
-      return 'hecha'
-    }
-    if (!e) {
-      return preguntar({
-        tipo: 'elegirOpcion',
-        motivo: { clave: 'baterias' },
-        opciones: [
-          { clave: 'descartar', texto: 'Descartar 2 cartas: el Destino es +2' },
-          { clave: 'no', texto: 'No descartar: el Destino es +4' },
-        ],
-      })
-    }
-    if (eleccionDe(e, 'opcion').clave === 'descartar') {
-      anotar(s, 'jugada', 'Os ponéis a cubierto: el Destino se queda en +2.')
-      encolar(s, { tipo: 'pagar', cantidad: 2, motivo: 'p2_morro' })
-      return 'hecha'
-    }
-    p.modDestino += 2
-    anotar(s, 'jugada', 'Las baterías del castillo: el Destino es +4.')
-  }
-  return 'hecha'
-})
-registrarCodigo('p2_morro.baterias', () => [{ tipo: 'especial', clave: 'p2_morro.baterias', datos: {}, paso: 0 }])
 // Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Prueba de COM 5 (4 con un Carpintero):
 // si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.
 registrarPermanente('pm_cadena', {
@@ -356,7 +299,9 @@ registrarPeligro('p2_morro', {
   },
   // +2; +4 en su lugar salvo que descartes 2 cartas. Sin oposición: en el Mar, el Barco sufre 1 daño; en Naturaleza o
   // Ciudad, el Capitán sufre 1 herida.
-  destino: { efectos: [codigo('p2_morro.baterias')], sinOposicion: [enElMar([dano(1)], [{ tipo: 'heridas', n: 1, capitan: true }])] },
+  // −2. Sin oposición: [mar]: Daña 1; [nat]/[ciu]: el Capitán sufre 1 herida. (Fase 13, I1: fuera «−4 en su lugar, salvo
+  // que descartes 2 cartas».)
+  destino: { sinOposicion: [enElMar([dano(1)], [{ tipo: 'heridas', n: 1, capitan: true }])] },
 })
 
 // 32. La horca · Terrible
@@ -406,10 +351,8 @@ registrarPeligro('p2_horca', {
     },
   },
   // +2. Si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén. Sin oposición: el Capitán, Buscado.
-  destino: {
-    siFallas: [{ tipo: 'si', condicion: { tipo: 'falladaPor', minimo: 3 }, entonces: [comprometidoCon(mas('prueba'), { tipo: 'rehen' })] }],
-    sinOposicion: [{ tipo: 'estado', estado: 'buscado', a: 'capitan' }],
-  },
+  // −2. Sin oposición: el Capitán queda Buscado. (Fase 13, I1: fuera «si fallas por 3 o más, rehén».)
+  destino: { sinOposicion: [{ tipo: 'estado', estado: 'buscado', a: 'capitan' }] },
 })
 
 // 33. La Armada de Barlovento · Terrible
@@ -426,5 +369,6 @@ registrarPeligro('p2_armada', {
     ciu: { fallo: [{ tipo: 'descartarAzar', n: 3 }] },
   },
   // +1. Persigue. Sin oposición: pierdes 1 Avance.
-  destino: { persigue: true, sinOposicion: [pierdesAvance(1)] },
+  // −1, Persigue. Sin oposición (fase 13, I6): −1 [avance] (mín. 0).
+  destino: { persigue: true, sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
