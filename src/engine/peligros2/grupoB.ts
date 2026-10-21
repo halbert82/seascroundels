@@ -60,7 +60,7 @@ registrarPeligro('p2_tortugas', {
 // 13. Sol de justicia · Leve
 registrarPeligro('p2_sol', {
   encuentros: {
-    // NAV 3 (1 con un Carpintero, en los datos). Éxito: prepara 1. Fallo: Vía de agua.
+    // NAV 3 (Carpintero −2, en los datos). Éxito: prepara 1. Fallo: Vía de agua.
     mar: { exito: [preparar(1)], fallo: [{ tipo: 'estadoBarco', estado: 'viaDeAgua' }] },
     // Elige: volver al último arroyo (pierdes 1 Avance) o buscar agua por delante (Prueba de EXP 3).
     nat: {

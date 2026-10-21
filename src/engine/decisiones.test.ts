@@ -196,7 +196,7 @@ describe('N4 · La pausa del Inicio va al final del paso, después de preparar',
 })
 
 describe('D1b · La rebaja por Rasgo se mantiene aunque ese Tripulante se comprometa', () => {
-  it('Arrecife de los Ahorcados (NAV 4, NAV 2 con un Vigía): comprometer a Íñigo deja la dificultad en 2', () => {
+  it('Arrecife de los Ahorcados (NAV 4, Vigía −2): comprometer a Íñigo deja la dificultad en 2', () => {
     const j = enMision({ misiones: ['pruebas-mar5'], tripulacion: ['bartolome'], mazoPeligros: ['arrecifes', 'chubasco', 'calma'] })
     j.pasar() // No descarta el Arrecife con Íñigo.
     j.comprometer('NAV', ['bartolome']).seguir()
@@ -579,7 +579,7 @@ describe('Barco hundido: las Mejoras que se pierden activan sus efectos «despu�
 
 describe('P61 y fase 10 · La dificultad suma sus modificadores y el Destino va al total; los dos, si quedan por debajo de 0, cuentan como 0', () => {
   // «Desembarco nocturno»: las Pruebas de EXP reciben −1. El Guía del istmo: −1 a EXP en Naturaleza.
-  // «Manzanillas de la muerte» (El hambre): EXP 3, o 1 con un Explorador (el Rastreador de la selva).
+  // «Manzanillas de la muerte» (El hambre): EXP 3, Explorador −2 (el Rastreador de la selva).
   const manzanillas = (destino: string) =>
     Jugador.enMision({
       misiones: ['sanfelipe-I'],

@@ -43,7 +43,7 @@ describe('122 · Guerreros esqueleto', () => {
 })
 
 describe('123 · Trampa de dardos', () => {
-  it('EXP 3 (2 con un Explorador): si superas, preparas un Cañón; si fallas, el comprometido con menos EXP queda Envenenado', () => {
+  it('EXP 3 (Explorador −1): si superas, preparas un Cañón; si fallas, el comprometido con menos EXP queda Envenenado', () => {
     const j = en('nat', ['dardos', 'calma', 'calma'], { tripulacion: ['baqueano'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('EXP', ['baqueano'])
     expect(dificultadConDestino(j.estado)).toBe(2)
