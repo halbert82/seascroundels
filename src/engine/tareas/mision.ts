@@ -440,7 +440,7 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   s.mision = null
   s.prueba = null
   // Lo que dura «hasta el final de la misión», «hasta que superes otra Prueba» o «mientras esta carta siga en juego».
-  s.temporales = s.temporales.filter((x) => !['finMision', 'finPrueba', 'superarPrueba', 'carta'].includes(x.hasta))
+  s.temporales = s.temporales.filter((x) => !['finMision', 'finPrueba', 'carta'].includes(x.hasta))
   for (const clave of Object.keys(s.usos)) if (clave.startsWith('mision:')) delete s.usos[clave]
   s.paso = 'quedarseOZarpar'
   anotar(s, 'efecto', 'Vuelves a puerto.')

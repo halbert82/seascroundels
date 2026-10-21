@@ -19,7 +19,8 @@ function arrecife(op: Parameters<typeof Jugador.enMision>[0] = {}) {
 describe('Avance X / Y', () => {
   it('si superas la Prueba, ganas X: «Arrecife de los Colorados» da 3', () => {
     // Viejo lobo (NAV 3) + Diego (NAV 2) + el Barco (+1 en el Mar) = 6 contra 4.
-    const j = arrecife().comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
+    // Fase 13: si la superas, Otea 1 (se deja la carta arriba).
+    const j = arrecife().comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir().resolverOteo()
     expect(j.registro).toContain('Ganas 3 de Avance (3/5).')
   })
 
@@ -53,7 +54,7 @@ describe('Avance X / Y', () => {
   })
 
   it('lo que la misión da de más al superar una Prueba se suma a X («La goleta del correo»: +1 por cada Prueba de NAV superada)', () => {
-    const supera = arrecife({ misiones: ['espia-II'] }).comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
+    const supera = arrecife({ misiones: ['espia-II'] }).comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir().resolverOteo()
     expect(supera.registro.some((r) => r.startsWith('Ganas 4 de Avance'))).toBe(true)
     const nadie = arrecife({ misiones: ['espia-II'] }).comprometer('NAV').seguir()
     expect(nadie.registro.some((r) => r.startsWith('Ganas 2 de Avance'))).toBe(true)

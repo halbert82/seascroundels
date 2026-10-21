@@ -24,7 +24,7 @@ import {
   dificultad,
   enElMar,
   habilidadDe,
-  heridasAsignados,
+  heridas,
   mas,
   menos,
   preparaCanon,
@@ -308,7 +308,7 @@ registrarPeligro('p2_sirena', {
       alRevelarse: [alguno('preparados', menos('EXP'), { tipo: 'marcar', clave: CANTO })],
       elige: [
         { texto: 'Atarlo al palo mayor: lo agotas a él y a otro Tripulante preparado', si: { tipo: 'preparados', minimo: 2 }, efectos: [codigo('p2_sirena.atar')] },
-        { texto: 'Dejarle saltar e ir tras él en el bote: Prueba de NAV 3', prueba: true },
+        { texto: 'Ir tras él en el bote: NAV 3', prueba: true },
       ],
       exito: [robar(3)],
       fallo: [codigo('p2_sirena.ahogado')],
@@ -409,7 +409,7 @@ registrarPeligro('p2_bokor', {
           si: { tipo: 'cartaEnJuego', id: 'amuleto' },
           efectos: [descartar(2), ...quitarMaldicion, { tipo: 'estado', estado: 'aguerrido', a: 'uno' }],
         },
-        { texto: 'Buscar tú el muñeco: Prueba de EXP 4', prueba: true },
+        { texto: 'Buscar tú el muñeco: EXP 4', prueba: true },
       ],
       exito: [...quitarMaldicion, robar(2)],
       fallo: [{ tipo: 'estado', estado: 'maldito', a: 'capitan' }, descartar(1)],
@@ -545,7 +545,8 @@ registrarPeligro('p2_holandes', {
     },
     // Antes de resolver, cada preparado no comprometido sufre 1 herida. Éxito: robas 2. Fallo: 3 heridas repartidas
     // entre los comprometidos.
-    nat: { capacidades: [rezagados], exito: [robar(2)], fallo: [heridasAsignados(3)] },
+    // Fase 13: heridas libres («Inflige 3 heridas»; antes, repartidas entre los asignados).
+    nat: { capacidades: [rezagados], exito: [robar(2)], fallo: [heridas(3)] },
     // Éxito: mira las 5 de arriba; las que quieras al fondo y el resto encima, en el orden que quieras. Fallo: el Barco
     // queda Perseguido y descartas 2.
     ciu: { exito: [{ tipo: 'mirarOrdenar', n: 5, fondo: 'libre' }], fallo: [{ tipo: 'estadoBarco', estado: 'perseguido' }, descartar(2)] },

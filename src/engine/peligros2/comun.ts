@@ -62,6 +62,9 @@ export function noSuman(clave: string, si: (s: Estado, c: InstId) => boolean): C
 
 // Efectos cortos ---------------------------------------------------------------
 
+/** «Adquiere sin coste una Mejora del muelle» sin límite de coste (fase 13, «Raqueros de la costa»). */
+export const SIN_LIMITE_DE_COSTE = 99
+
 export const avance = (n: number): Efecto => ({ tipo: 'ganarAvance', n })
 export const pierdesAvance = (n: number): Efecto => ({ tipo: 'perderAvance', n })
 export const dano = (n: number): Efecto => ({ tipo: 'dano', n })

@@ -14,22 +14,28 @@ import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { ganarAvanceMision } from './mision.ts'
 import { alComprometerse } from './encuentro.ts'
 import { puedePrepararse } from './peligros2.ts'
-import { definicionActual, problemaCompromiso } from '../prueba.ts'
+import { definicionActual, destinosDeLaPrueba, problemaCompromiso } from '../prueba.ts'
 
 function evento(ev: Extract<NuevaTarea, { tipo: 'evento' }>['ev']): NuevaTarea {
   return { tipo: 'evento', ev, fase: 'antes', cancelado: false, usadas: [] }
 }
 
-/** Otear N: mira las N primeras cartas del mazo de Peligros activo y deja cada una arriba o al fondo. */
+/**
+ * Otear N: mira las N cartas superiores del mazo de Peligros y deja cada una arriba o al fondo. Fase 13: Otear es siempre
+ * del mazo de Peligros («Otea N»). TODO(regla): si la misión revela de un mazo propio mezclado (El templo, El galeón
+ * rezagado), Otear mira ese mazo, el del que revelas (`mazoActivo`). El de Misiones (`mazo: 'misiones'`) solo lo usa la
+ * recompensa de «Cobrar la deuda», que ya no dice Otear («Mira las 3 cartas superiores del mazo de Misiones…»).
+ */
 export const otear: Manejador<'otear'> = (s, t, e) => {
-  // Fase 10b: «Otea N del mazo X». El de Misiones no tiene descartes (las misiones van a su fondo).
+  // El de Misiones no tiene descartes (las misiones van a su fondo).
   const { mazo, descartes } = t.mazo === 'misiones' ? { mazo: 'mazoMisiones' as const, descartes: null } : mazoActivo(s)
   if (t.cartas.length + t.arriba.length + t.fondo.length === 0) {
     if (descartes && s.zonas[mazo].length === 0 && s.zonas[descartes].length > 0) rebarajar(s, descartes, mazo)
     t.cartas = s.zonas[mazo].slice(0, t.n)
     if (t.cartas.length === 0) return 'hecha'
     s.infoRevelada++
-    anotar(s, 'revelar', `Oteas ${t.mazo === 'misiones' ? 'del mazo de Misiones' : 'del mazo de Peligros'}: ${nombres(s, t.cartas)}.`)
+    const deDonde = t.mazo === 'misiones' ? 'Miras las cartas superiores del mazo de Misiones' : mazo === 'mazoMision' ? 'Oteas del mazo de la misión' : 'Oteas del mazo de Peligros'
+    anotar(s, 'revelar', `${deDonde}: ${nombres(s, t.cartas)}.`)
     return 'sigue'
   }
   // «Ordénalas como quieras» (ninguna al fondo) o «pon N al fondo»: se decide de una vez.
@@ -88,27 +94,62 @@ export const quitarEncuentro: Manejador<'quitarEncuentro'> = (s, t) => {
   return 'hecha'
 }
 
-/** Cancela el Destino revelado, o lo descarta y revela otro (que pasa por su propia ventana). */
-export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t) => {
+/**
+ * Cancela el Destino revelado, o lo descarta y revela otro (que pasa por su propia ventana). Fase 13: si la Prueba
+ * resuelve dos Destinos («Bruma en la selva»), el jugador elige a cuál de los dos afecta. TODO(regla): Albert lo dijo
+ * para «Reflejos de gato» (cancela solo uno, el que elija el jugador); se hace igual con las demás cartas que cancelan o
+ * cambian el Destino (Escapulario, Espada, Viejo lobo de mar, Farol de los ahogados).
+ */
+export const cambiarDestino: Manejador<'cambiarDestino'> = (s, t, e) => {
   const p = s.prueba
   if (!p?.destino) return 'hecha'
-  const viejo = nombre(s, p.destino)
+  const vigentes = destinosDeLaPrueba(p).filter((d) => !d.cancelado)
+  if (vigentes.length === 0) return 'hecha'
+  if (!t.cual) {
+    if (vigentes.length > 1) {
+      if (!e) {
+        return preguntar({
+          tipo: 'elegirOpcion',
+          motivo: { clave: t.modo === 'cancelar' ? 'cancelarCualDestino' : 'cambiarCualDestino' },
+          opciones: vigentes.map((d) => ({ clave: d.carta, texto: `El Destino de la carta «${nombre(s, d.carta)}» (${destinoDe(copia(s, d.carta).id).impreso})` })),
+        })
+      }
+      t.cual = eleccionDe(e, 'opcion').clave as InstId
+    } else t.cual = vigentes[0]?.carta
+  }
+  const elegido = vigentes.find((d) => d.carta === t.cual)
+  if (!elegido) return 'hecha'
+  const viejo = nombre(s, elegido.carta)
   if (t.modo === 'cancelar') {
-    p.destinoCancelado = true
+    if (elegido.segundo) p.segundoCancelado = true
+    else p.destinoCancelado = true
     anotar(s, 'efecto', `Cancelas el Destino de la carta «${viejo}»: no se aplica nada de él.`)
     return 'hecha'
   }
-  descartarPeligro(s, p.destino)
-  p.destino = null
-  p.destinoCancelado = false
+  descartarPeligro(s, elegido.carta)
+  if (elegido.segundo) {
+    p.segundoDestino = null
+    p.segundoCancelado = false
+  } else {
+    p.destino = null
+    p.destinoCancelado = false
+  }
   const carta = cartaDeArriba(s, 'destino')
   if (!carta) {
     anotar(s, 'aviso', `Descartas el Destino de la carta «${viejo}» y no quedan cartas para revelar otro.`)
+    // El otro Destino (si lo había) pasa a ser el de la Prueba.
+    if (!p.destino && p.segundoDestino) {
+      p.destino = p.segundoDestino
+      p.destinoCancelado = p.segundoCancelado ?? false
+      p.segundoDestino = null
+      p.segundoCancelado = false
+    }
     return 'hecha'
   }
   mover(s, carta, 'destino')
   s.infoRevelada++
-  p.destino = carta
+  if (elegido.segundo) p.segundoDestino = carta
+  else p.destino = carta
   const d = destinoDe(copia(s, carta).id)
   anotar(s, 'revelar', `Descartas el Destino de la carta «${viejo}». Nuevo Destino, de la carta «${nombre(s, carta)}»: ${d.impreso}.`, { tipo: 'revelado', inst: carta, como: 'destino' })
   encolar(s, evento({ tipo: 'revelarDestino', carta }))

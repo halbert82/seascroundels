@@ -105,6 +105,8 @@ Recursos visuales:
 
 12. **Travesías de 2 y 4 capítulos:** El espía de Cádiz y El barco fantasma pasan a dos capítulos (135 y 147 unen los dos primeros; quedan libres los números 136 y 148); La Flota de la Plata y El templo perdido, a cuatro, con dos capítulos III nuevos (238 «Al abordaje del galeón» y 239 «La escalinata de los sacerdotes», con la ficha de Derrumbe). Al superar un capítulo, el siguiente va siempre encima del mazo de Misiones (sin barajar) y sale enseguida entre las disponibles. Detalle en la sección «Fase 12» de `docs/decisiones.md`.
 
+13. **Revisión de las cartas de Peligro (tandas 1 y 2):** cartas 154 a 159, reglas de estilo de los Peligros y mazos propios (sin «Sin Prueba», Avance y daño con icono, «superior», «Elige» por líneas, «Vigía −2» bajo la Prueba, Otear siempre del mazo de Peligros), heridas libres en los encuentros, dos Destinos («Bruma en la selva») y la carta nueva 240 «Arenga del capitán» (en la colección, no en el mazo de inicio). Detalle en la sección «Fase 13» de `docs/decisiones.md`.
+
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
 ## Decisiones de reglas
@@ -122,3 +124,4 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
 - **Avance X / Y (19 de octubre de 2026):** los encuentros con Prueba dan X si la superas e Y si no. Albert eligió Y = mitad de X **hacia arriba** (1 / 1, 2 / 1, 3 / 2, 4 / 2), en el campo `avanceSinSuperar` de cada encuentro. Detalle en la sección «Avance con dos valores» de `docs/decisiones.md`.
 - **Fase 8:** cambios, lecturas y respuestas P57–P59 en la sección «Fase 8» de `docs/decisiones.md` (alisios y huracanes cambian las Distancias de todas las misiones; Escasez se salta la Recarga; Impuestos pierde la Mejora de mayor coste; La Armada patrulla pone La Armada encima del mazo). P60 cerrada: el soborno de La Armada patrulla es 1 carta. P61: la dificultad suma todos los modificadores, el Destino incluido, y solo el resultado final no baja de 0.
 - **Fase 12:** respuestas P67–P70 en la sección «Fase 12» de `docs/decisiones.md`. El equilibrio se ajusta jugando (Albert prefiere un reto antes que un juego fácil): para publicar, el único tope duro es Panamá por debajo del 10 % de las partidas. «Rumores del tesoro» da 2 en los capítulos II, III y IV.
+- **Fase 13:** las heridas de los encuentros son siempre libres (las reparte el jugador entre todos sus Tripulantes); herir a un asignado queda para los Destinos. Pendientes P71–P80 en la sección «Fase 13» de `docs/decisiones.md`.

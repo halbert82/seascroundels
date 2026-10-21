@@ -87,9 +87,9 @@ export interface Temporal {
   fuente: CartaId
   /**
    * `inicio`: hasta después de preparar en tu próximo Inicio. `carta`: mientras la carta `carta` siga en juego.
-   * `superarPrueba`: hasta que superes una Prueba (o termine la misión).
+   * (Fase 13: fuera `superarPrueba`, que solo usaba «Bruma en la selva»; guardado.ts quita los de partidas viejas.)
    */
-  hasta: 'finTurno' | 'finMision' | 'finPrueba' | 'inicio' | 'carta' | 'superarPrueba'
+  hasta: 'finTurno' | 'finMision' | 'finPrueba' | 'inicio' | 'carta'
   /** La copia concreta a la que afecta (el Filibustero que se ha herido, el Tripulante del Náufrago…). */
   inst?: InstId
   /** Para `hasta: 'carta'`: la permanente (o la carta del encuentro en curso) de la que depende. */
@@ -276,6 +276,20 @@ export interface PruebaEnCurso {
   destinoAntes?: boolean
   /** Se revelan 2 Destinos y se aplica el peor. */
   dosDestinos?: boolean
+  /**
+   * Fase 13, «Bruma en la selva»: «Resuelve 2 cartas de Destino en esta Prueba». Se revelan las dos cartas superiores
+   * del mazo de Peligros y valen las dos (`segundoDestino`): se suman sus modificadores y se aplican sus efectos.
+   */
+  dosDestinosSuman?: boolean
+  /** El segundo Destino de una Prueba que resuelve dos («Bruma en la selva»), si se ha cancelado y si persigue. */
+  segundoDestino?: InstId | null
+  segundoCancelado?: boolean
+  segundoPersigue?: boolean
+  /**
+   * Fase 13: Sin oposición «−1 [avance] (mín. 0)»: el encuentro de esta Prueba da tanto Avance menos (nunca baja de 0
+   * ni quita el Avance que ya tenía la misión).
+   */
+  avanceMenos?: number
   /** Total y dificultad al resolver (para «si fallas por 3 o más» y «por cada punto que superes»). */
   final?: { total: number; dificultad: number }
   resultado: 'superada' | 'fallada' | null
@@ -477,7 +491,8 @@ export type Tarea = { id: number } & (
   /** Quita la carta de Peligro revelada sin resolverla (no cuenta como resuelta, D5b). */
   | { tipo: 'quitarEncuentro'; modo: 'descartar' | 'fondo'; avance: boolean }
   /** Cancela el Destino revelado, o lo descarta y revela otro. */
-  | { tipo: 'cambiarDestino'; modo: 'cancelar' | 'otro' }
+  /** `cual`: con dos Destinos (fase 13, «Bruma en la selva»), el que eligió el jugador. */
+  | { tipo: 'cambiarDestino'; modo: 'cancelar' | 'otro'; cual?: InstId }
   /** Las heridas de un participante las sufre otro participante («Ni un hombre atrás»). */
   | { tipo: 'desviarHeridas'; suceso: number; entre: InstId[] }
   /** Compromete a un Tripulante en la Prueba en curso, ya revelado el Destino (el Loro). */

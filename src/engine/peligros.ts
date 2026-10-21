@@ -83,7 +83,11 @@ export function cerrarPrueba(s: Estado): void {
   const p = s.prueba
   for (const d of [...s.zonas.destino]) {
     // «Persigue»: pasa por su suceso (una Interrupción puede mandarla al fondo del mazo).
-    if (p?.persigue && p.destino === d && !p.destinoCancelado) {
+    // Fase 13: con dos Destinos, el segundo también puede perseguir. TODO(regla): si persiguen los dos, los dos vuelven
+    // encima del mazo, pero solo el último cuenta como «el que persigue».
+    const persigue = p?.persigue && p.destino === d && !p.destinoCancelado
+    const persigueSegundo = p?.segundoPersigue && p.segundoDestino === d && !p.segundoCancelado
+    if (persigue || persigueSegundo) {
       encolar(s, { tipo: 'evento', ev: { tipo: 'persigue', carta: d }, fase: 'antes', cancelado: false, usadas: [] })
     } else descartarPeligro(s, d)
   }
@@ -130,6 +134,10 @@ export function devolverPeligros(s: Estado): void {
     // Si la misión termina, la carta que persigue se queda encima del mazo de Peligros (normal) y sale en la siguiente.
     mover(s, p.destino, 'mazoPeligros', 'arriba')
     s.persigue = p.destino
+  }
+  if (p?.segundoPersigue && p.segundoDestino && !p.segundoCancelado && s.zonas.destino.includes(p.segundoDestino)) {
+    mover(s, p.segundoDestino, 'mazoPeligros', 'arriba')
+    s.persigue = p.segundoDestino
   }
   const persigue = persigueVigente(s)
   if (persigue && s.zonas.mazoMision.includes(persigue)) mover(s, persigue, 'mazoPeligros', 'arriba')

@@ -232,10 +232,11 @@ registrarCodigo('p2_tahur.dados', (s) => {
   if (!c || !p) return []
   const id = copia(s, c).id
   if (iconosDe(id, 'COM') > 0) {
-    p.modDestino = 2
+    // Su modificador impreso es 0: se suma (fase 13: con dos Destinos, el otro también cuenta).
+    p.modDestino += 2
     anotar(s, 'efecto', '«Dados cargados»: tiene icono de COM, te pillan la trampa: +2.')
   } else if (iconosDe(id, 'EXP') > 0) {
-    p.modDestino = -1
+    p.modDestino += -1
     anotar(s, 'efecto', '«Dados cargados»: tiene icono de EXP: −1.')
   }
   return []
@@ -304,7 +305,7 @@ registrarPeligro('p2_paga', {
     ciu: {
       elige: [
         { texto: 'Pagar: descarta 1 carta por cada Tripulante que tengas (máx. 3)', efectos: [{ tipo: 'porCada', medida: 'tripulantes', efectos: [descartar(1)], maximo: 3 }] },
-        { texto: 'Plantarte: Prueba de COM 3, +1 por cada Bucanero (máx. +2)', prueba: true },
+        { texto: 'Plantarte: COM 3, +1 de dificultad por cada Bucanero (máx. +2)', prueba: true },
       ],
       capacidades: [dificultad('bucaneros', (ctx) => Math.min(2, ctx.s.zonas.tripulacion.filter((c) => tieneRasgo(ctx.s, c, 'Bucanero')).length))],
       exito: [robar(2)],
@@ -321,8 +322,8 @@ registrarPeligro('p2_sueldo', {
     // Elige antes de comprometer: le das 2 munición (si no las tienes, no puedes), o la Prueba recibe +2.
     mar: {
       elige: [
-        { texto: 'Agotas 2 Cañones: Prueba de EXP 3', efectos: [agotaCanones(2)], prueba: true },
-        { texto: 'No le das nada: la Prueba recibe +2', prueba: true, modDificultad: 2 },
+        { texto: 'Pagar el peaje: agota 2 Cañones y haces la Prueba de EXP 3', efectos: [agotaCanones(2)], prueba: true },
+        { texto: 'No pagar: la Prueba recibe +2 de dificultad', prueba: true, modDificultad: 2 },
       ],
       exito: [avance(1)],
       fallo: [dano(1), agotaCanones(1)],

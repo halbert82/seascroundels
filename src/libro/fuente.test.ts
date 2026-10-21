@@ -107,7 +107,7 @@ describe('Textos de la última ronda (docs/archivo/reglamento-textos.md)', () =>
   // Registro formal (docs/archivo/reglamento-estilo.md): los ejemplos, en tercera persona y en presente.
   it('el ejemplo de juego va en tercera persona, como los demás ejemplos, y no nombra a nadie de fuera del juego', () => {
     expect(fuente).not.toMatch(/Albert/)
-    expect(htmlDe(capitulo('Ejemplo de juego').bloques)).toContain('El jugador revela la primera carta del mazo de Escenario')
+    expect(htmlDe(capitulo('Ejemplo de juego').bloques)).toContain('El jugador revela la carta superior del mazo de Escenario') // fase 13: «superior»
   })
 
   it('«Mazos de inicio» es el último apartado de «Aprende a jugar» y se dibuja desde los datos', () => {

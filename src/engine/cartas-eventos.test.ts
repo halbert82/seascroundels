@@ -214,3 +214,49 @@ describe('112 · Nassau: Entrenamiento', () => {
     expect(j.valor({ tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'NAV' })).toBe(1 + 1 + 1)
   })
 })
+
+describe('240 · Arenga del capitán (fase 13)', () => {
+  it('en la Fase de Reclutamiento, todos tus Tripulantes quedan Inspirados: cada Prueba de la misión recibe +1 por cada Inspirado asignado, y al final del turno se quitan', () => {
+    const j = Jugador.en({
+      mano: ['arenga', 'ojo', 'timon'],
+      tripulacion: ['bucanero', 'carpintero'],
+      misiones: ['pruebas-mar5'],
+      mazoPeligros: ['chubasco', 'calma', 'chubasco', 'calma', 'calma'],
+    })
+    j.usar('arenga.jugar').elegir('ojo')
+    expect(j.estados('capitan')).toEqual(['inspirado'])
+    expect(j.estados('bucanero')).toEqual(['inspirado'])
+    expect(j.estados('carpintero')).toEqual(['inspirado'])
+    expect(j.zona('descartesCapitan')).toEqual(expect.arrayContaining(['arenga', 'ojo']))
+    j.zarpar('pruebas-mar5').pasarOfertas()
+    j.comprometer('NAV', ['capitan', 'bucanero'])
+    // «Chubasco repentino» (NAV 2): Diego 2 + Bucanero 1 + Barco 1, y +1 por cada Inspirado asignado.
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
+    // En la misión ya no se puede jugar: es de la Fase de Reclutamiento.
+    expect(j.ofreceCapacidad('arenga.jugar')).toBe(false)
+    // El Destino («Calma», 0) prepara a uno de los asignados si la superas.
+    j.seguir().elegir('bucanero').retirarse().opcion('dejar')
+    while (j.estado.pendiente && j.estado.paso === 'final') {
+      const d = j.decision
+      if (d.tipo === 'elegirCartas') j.ninguna()
+      else if (d.tipo === 'ofrecer') j.pasar()
+      else break
+    }
+    expect(j.estados('capitan')).toEqual([])
+    expect(j.estados('carpintero')).toEqual([])
+  })
+
+  it('no se juega fuera de la Fase de Reclutamiento', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mano: ['arenga', 'ojo'], mazoPeligros: ['chubasco', 'calma', 'calma'] })
+    expect(j.ofreceCapacidad('arenga.jugar')).toBe(false)
+  })
+
+  it('el jugador automático la juega en la Fase de Reclutamiento si va a zarpar con 2 o más Tripulantes preparados', async () => {
+    const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
+    const criterio = jugadorConCriterio()
+    const juega = (j: Jugador) => JSON.stringify(criterio(j.estado, j.decision)).includes('arenga.jugar')
+    expect(juega(Jugador.en({ mano: ['arenga', 'ojo', 'timon'], tripulacion: ['bucanero'], misiones: ['prueba-I'] }))).toBe(true)
+    // Solo con Diego, no.
+    expect(juega(Jugador.en({ mano: ['arenga', 'ojo', 'timon'], misiones: ['prueba-I'] }))).toBe(false)
+  })
+})

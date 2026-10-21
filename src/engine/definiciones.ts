@@ -106,7 +106,16 @@ export interface PonePermanente {
 export type CambiosDePrueba = Partial<
   Pick<
     PruebaEnCurso,
-    'sinMejoras' | 'mejorasNoSuman' | 'sinCapTripulantes' | 'sinCapMejoras' | 'sinEventos' | 'sinCartas' | 'sinCanones' | 'invertirDestino' | 'destinoAntes'
+    | 'sinMejoras'
+    | 'mejorasNoSuman'
+    | 'sinCapTripulantes'
+    | 'sinCapMejoras'
+    | 'sinEventos'
+    | 'sinCartas'
+    | 'sinCanones'
+    | 'invertirDestino'
+    | 'destinoAntes'
+    | 'dosDestinosSuman'
   >
 >
 

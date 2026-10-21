@@ -75,6 +75,7 @@ export function TextoCarta({ segmentos, tema = 'claro' }: { segmentos: Segmento[
                 <Icono icono={s.icono} color={colorIcono(s.icono, tema)} />
               </>
             )}
+            {s.tras && <span style={{ color: COLOR_NUMERO[tema].tinta, fontWeight: 400 }}>{s.tras}</span>}
           </span>
         )
       case 'icono':

@@ -24,6 +24,11 @@ export type Efecto =
   /** Curar N: repartidas (por defecto), N a cada comprometido, a cada Tripulante, a cada herido, o a uno. */
   | { tipo: 'curar'; n: number; modo?: 'repartir' | 'cadaComprometido' | 'cadaUno' | 'cadaHerido' | 'uno' }
   | { tipo: 'perderAvance'; n: number | 'todo' }
+  /**
+   * Fase 13, Sin oposición «−1 [avance] (mín. 0)» de los Destinos de 154, 157 y 158: el encuentro de esta Prueba da N de
+   * Avance menos (mínimo 0). Nunca quita el Avance que la misión ya tenía (eso es «−N [avance]», `perderAvance`).
+   */
+  | { tipo: 'menosAvanceEncuentro'; n: number }
   /** Agota N Cañones preparados, o todos («pierdes N munición» antes de la fase 10b). */
   | { tipo: 'agotarCanones'; n: number | 'todos' }
   /** Pierdes N Mejoras (`deComprometidos`: de un Tripulante comprometido; `mayorCoste`: la de mayor coste, si empatan eliges). */
@@ -175,8 +180,8 @@ export type AccionSobre =
   | { tipo: 'curar'; n: number }
   /** Vuelve al muelle con sus Mejoras (nunca el Capitán). */
   | { tipo: 'alMuelle' }
-  /** No se prepara: en tu próximo Inicio, hasta el final de la misión, hasta que superes otra Prueba o mientras esta carta siga en juego. */
-  | { tipo: 'noPrepara'; hasta: 'inicio' | 'finMision' | 'superarPrueba' | 'carta' }
+  /** No se prepara: en tu próximo Inicio, hasta el final de la misión o mientras esta carta siga en juego. */
+  | { tipo: 'noPrepara'; hasta: 'inicio' | 'finMision' | 'carta' }
   /** Queda señalado por esta carta (para lo que diga después: «ese Tripulante…»), hasta el final de la misión. */
   | { tipo: 'marcar'; clave: string }
   /** El jugador elige qué le pasa («sufre 2 heridas o queda rehén»). */

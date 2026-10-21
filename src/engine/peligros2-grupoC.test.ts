@@ -447,16 +447,18 @@ describe('31 · Bajo los cañones del Morro', () => {
     expect(j.zona('permanentes')).toEqual(['pm_cadena'])
   })
 
-  it('Naturaleza: COM 6 (4 con un Artillero); si superas, preparas un Cañón; si fallas, 3 heridas repartidas entre los comprometidos', () => {
+  it('Naturaleza: COM 6 (Artillero −2); si superas, preparas un Cañón; si fallas, Inflige 3 heridas, libres (fase 13)', () => {
     const j = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'canonero'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     j.comprometer('COM', ['capitan', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(4)
     j.seguir()
     expect(j.copia('bronce').agotada).toBe(false)
-    const k = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
-    k.comprometer('COM', ['capitan', 'bucanero']).seguir().repartir({ capitan: 2, bucanero: 1 })
+    // Fase 13: las heridas del fallo van a quien quiera el jugador, también al Carpintero, que se quedó a bordo.
+    const k = en('nat', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'carpintero'] })
+    k.comprometer('COM', ['capitan', 'bucanero']).seguir().repartir({ capitan: 2, carpintero: 1 })
     expect(k.copia('capitan').heridas).toBe(2)
-    expect(k.copia('bucanero').heridas).toBe(1)
+    expect(k.copia('carpintero').heridas).toBe(1)
+    expect(k.copia('bucanero').heridas).toBe(0)
   })
 
   it('Ciudad: si superas, rescatas a los rehenes (si no hay, +1 Avance); si fallas, el de más NAV sufre 1 herida y queda rehén (fase 10b)', () => {
@@ -587,14 +589,15 @@ describe('33 · La Armada de Barlovento', () => {
     expect(m.copia('capitan').heridas).toBe(3)
   })
 
-  it('Naturaleza: si superas, preparas a los comprometidos; si fallas, 2 heridas repartidas y pierdes 1 Avance', () => {
+  it('Naturaleza: si superas, preparas a los asignados; si fallas, Inflige 2 heridas (libres, fase 13) y −1 [avance]', () => {
     const j = en('nat', ['p2_armada', 'chubasco', 'calma'], { tripulacion: ['baqueano'], mano: ['ojo'] })
     j.comprometer('EXP', ['capitan', 'baqueano'], ['ojo']).seguir()
     expect(j.copia('capitan').agotada).toBe(false)
     expect(j.copia('baqueano').agotada).toBe(false)
-    const k = en('nat', ['p2_armada', 'chubasco', 'calma'], { avance: { [MISION.nat]: 1 } })
-    k.comprometer('EXP', ['capitan']).seguir()
-    expect(k.copia('capitan').heridas).toBe(2)
+    const k = en('nat', ['p2_armada', 'chubasco', 'calma'], { avance: { [MISION.nat]: 1 }, tripulacion: ['carpintero'] })
+    k.comprometer('EXP', ['capitan']).seguir().repartir({ capitan: 1, carpintero: 1 })
+    expect(k.copia('capitan').heridas).toBe(1)
+    expect(k.copia('carpintero').heridas).toBe(1)
     expect(avance(k, 'nat')).toBe(2) // 1 − 1 + 2 (Avance 3 / 2: no la supera)
   })
 

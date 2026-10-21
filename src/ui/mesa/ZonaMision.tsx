@@ -253,7 +253,7 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
             ? 'El Destino ya está a la vista (se aplica al asignar). Pulsa Tripulantes y cartas de tu mano para asignarlos.'
             : 'Previsión antes del Destino. Pulsa Tripulantes y cartas de tu mano para asignarlos.'}
         </p>
-        {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={Math.min(ancho, 400)} />}
+        <DestinosDeLaPrueba ancho={Math.min(ancho, 400)} />
       </div>
     )
   }
@@ -286,8 +286,25 @@ export function PanelPrueba({ decision, sel, ancho }: { decision: Decision | nul
           <Partes partes={desgloseDificultad(s)} />
         </div>
       </div>
-      {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={Math.min(ancho, 400)} />}
+      <DestinosDeLaPrueba ancho={Math.min(ancho, 400)} />
     </div>
+  )
+}
+
+/**
+ * El Destino de la Prueba en curso, o los dos si el encuentro dice «Resuelve 2 cartas de Destino en esta Prueba» (fase 13,
+ * «Bruma en la selva»): uno debajo de otro, con su rótulo «Destino 1 de 2» y «Destino 2 de 2».
+ */
+function DestinosDeLaPrueba({ ancho }: { ancho: number }) {
+  const { s } = useMesa()
+  const p = s.prueba
+  if (!p?.destino && !p?.segundoDestino) return null
+  const dos = !!p.destino && !!p.segundoDestino
+  return (
+    <>
+      {p.destino && <DestinoGrande inst={p.destino} cancelado={p.destinoCancelado} ancho={ancho} rotulo={dos ? 'Destino 1 de 2' : 'Destino'} />}
+      {p.segundoDestino && <DestinoGrande inst={p.segundoDestino} cancelado={p.segundoCancelado ?? false} ancho={ancho} rotulo={dos ? 'Destino 2 de 2' : 'Destino'} />}
+    </>
   )
 }
 
@@ -355,7 +372,7 @@ function Marcador(p: { total: number; dificultad: number; prevision?: boolean; n
 }
 
 /** El Destino revelado, ampliado, con su línea Sin oposición en palabras (tachada si hay alguien comprometido). */
-function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: boolean; ancho: number }) {
+function DestinoGrande({ inst, cancelado, ancho, rotulo = 'Destino' }: { inst: InstId; cancelado: boolean; ancho: number; rotulo?: string }) {
   const { s } = useMesa()
   const id = copia(s, inst).id
   const vista = vistaDeCarta(porId(id))
@@ -389,7 +406,7 @@ function DestinoGrande({ inst, cancelado, ancho }: { inst: InstId; cancelado: bo
       animate={{ rotateX: 0, opacity: 1 }}
       transition={{ duration: duracion(velocidad, 0.35) }}
     >
-      <span className="destino-rotulo">Destino</span>
+      <span className="destino-rotulo">{rotulo}</span>
       <div
         className="destino-ventana"
         style={{ width: 362 * escala, height: 132 * escala }}

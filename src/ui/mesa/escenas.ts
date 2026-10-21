@@ -8,7 +8,20 @@ import { Jugador } from '../../engine/pruebas/situacion.ts'
 import type { Estado, InstId } from '../../engine/tipos.ts'
 import { empezar, type PartidaEnMesa } from './usePartida.ts'
 
-export const ESCENAS = ['puerto', 'prueba', 'finMision', 'enJuego', 'muelleOcupado', 'alarma', 'finalMision', 'mano5', 'mano8', 'permanentes', 'capituloNuevo'] as const
+export const ESCENAS = [
+  'puerto',
+  'prueba',
+  'finMision',
+  'enJuego',
+  'muelleOcupado',
+  'alarma',
+  'finalMision',
+  'mano5',
+  'mano8',
+  'permanentes',
+  'capituloNuevo',
+  'dosDestinos',
+] as const
 export type Escena = (typeof ESCENAS)[number]
 
 function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): PartidaEnMesa | null {
@@ -25,7 +38,10 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
   return null
 }
 
-const CONDICION: Record<Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo'>, (s: Estado, desde: number) => boolean> = {
+const CONDICION: Record<
+  Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo' | 'dosDestinos'>,
+  (s: Estado, desde: number) => boolean
+> = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
   puerto: (s) => s.turno >= 3 && s.pendiente?.motivo.clave === 'jugarCartas' && s.zonas.tripulacion.length >= 3,
   // Una Prueba con comprometidos y el Destino revelado, en la ventana de acción.
@@ -190,6 +206,23 @@ function capituloNuevo(): PartidaEnMesa {
 }
 
 /**
+ * Fase 13, en Naturaleza: «Bruma en la selva» resuelve 2 cartas de Destino. Salen los de «La corriente del Golfo» (+1)
+ * y «Calma chicha» (−1), y los dos se ven a la vez en el panel de la Prueba.
+ */
+function dosDestinos(): PartidaEnMesa {
+  const j = Jugador.enMision({
+    misiones: ['pruebas-nat3'],
+    mazoPeligros: ['p2_niebla', 'p2_corriente', 'p2_calma', 'chubasco', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje', 'reflejos'],
+    tripulacion: ['baqueano', 'bucanero'],
+    reputacion: 3,
+  })
+  j.comprometer('EXP', ['capitan', 'baqueano']).pasarOfertas()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
+}
+
+/**
  * En puerto, en Jugar cartas, con la mano llena: 5 cartas (el Mando del Capitán) o, robando 3 más del mazo del capitán,
  * 8 (una mano muy llena). Para ver que la mano se ve entera en una tableta.
  */
@@ -213,6 +246,7 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'alarma') return alarma()
   if (nombre === 'finalMision') return finalMision()
   if (nombre === 'capituloNuevo') return capituloNuevo()
+  if (nombre === 'dosDestinos') return dosDestinos()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

@@ -71,9 +71,15 @@ export function conPruebaDe(s: Estado, carta: InstId, hab: Habilidad): boolean {
   return encuentroDe(s, carta).prueba.some((o) => o.hab === hab)
 }
 
-/** Este Destino es el de la Prueba en curso y no se ha cancelado. */
+/**
+ * Este Destino es el de la Prueba en curso y no se ha cancelado. Fase 13: con dos Destinos («Bruma en la selva») se
+ * revelan a la vez y vale mientras quede alguno sin cancelar (al usar la carta, el jugador elige a cuál afecta).
+ */
 export function destinoVigente(s: Estado, ev: Evento): ev is Extract<Evento, { tipo: 'revelarDestino' }> {
-  return ev.tipo === 'revelarDestino' && s.prueba !== null && s.prueba.destino === ev.carta && !s.prueba.destinoCancelado
+  const p = s.prueba
+  if (ev.tipo !== 'revelarDestino' || p === null) return false
+  if (p.destino === ev.carta && !p.destinoCancelado) return true
+  return (p.destino === ev.carta || p.segundoDestino === ev.carta) && !!p.segundoDestino && !p.segundoCancelado
 }
 
 /** Hay algo que curar: heridas. */

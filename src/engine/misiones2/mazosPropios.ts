@@ -14,7 +14,6 @@ import {
   dificultad,
   encuentroEs,
   heridas,
-  heridasAsignados,
   mas,
   menos,
   preparaCanon,
@@ -42,7 +41,8 @@ registrarCodigo('esqueleto.levantarse', (s, fuente) => {
   return []
 })
 registrarPeligro('esqueleto', {
-  encuentros: { unico: { exito: [{ tipo: 'seRetira' }], fallo: [heridasAsignados(2)] } },
+  // Fase 13: heridas libres («Inflige 2 heridas»; antes, repartidas entre los asignados).
+  encuentros: { unico: { exito: [{ tipo: 'seRetira' }], fallo: [heridas(2)] } },
   destino: { siFallas: [codigo('esqueleto.levantarse')], sinOposicion: [heridas(1)] },
 })
 
@@ -61,8 +61,8 @@ registrarPeligro('idolo', {
   encuentros: {
     unico: {
       elige: [
-        { texto: 'Dejarlo en su sitio (pierdes 1 Avance)', efectos: [pierdesAvance(1)] },
-        { texto: 'Cogerlo: Prueba de EXP 4', prueba: true },
+        { texto: 'Dejarlo en su sitio: −1 de Avance', efectos: [pierdesAvance(1)] },
+        { texto: 'Cogerlo: EXP 4', prueba: true },
       ],
       exito: [robar(3)],
       fallo: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'maldito' })],
@@ -176,8 +176,8 @@ registrarPeligro('cofres', {
   encuentros: {
     unico: {
       elige: [
-        { texto: 'Pararos a recoger la plata (robas 3 y pierdes 1 Avance)', efectos: [robar(3), pierdesAvance(1)] },
-        { texto: 'Seguir tras el galeón: Prueba de NAV 4', prueba: true },
+        { texto: 'Pararse a recogerla: robas 3 y −1 de Avance', efectos: [robar(3), pierdesAvance(1)] },
+        { texto: 'Seguir tras él: NAV 4', prueba: true },
       ],
       exito: [avance(2)],
       fallo: [agotar(1)],

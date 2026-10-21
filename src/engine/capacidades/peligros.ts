@@ -13,7 +13,7 @@ import {
 } from '../definiciones.ts'
 import { entornoActual } from '../peligros.ts'
 import type { Capacidad, CartaId, Estado, Evento, InstId, NuevaTarea } from '../tipos.ts'
-import { destinoVigente } from '../valores.ts'
+import { destinosVigentes } from '../valores.ts'
 
 /** Envuelve una capacidad escrita en las reglas para que solo funcione cuando toca (`activa`). */
 function envolver(
@@ -53,7 +53,7 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
   const caps: Capacidad[] = []
   // El Destino: mientras se aplica en la Prueba en curso.
   for (const c of reglas.destino?.capacidades ?? []) {
-    caps.push(envolver(id, 'destino', `${id}.destino`, c, (s, yo) => yo !== null && destinoVigente(s) === yo))
+    caps.push(envolver(id, 'destino', `${id}.destino`, c, (s, yo) => yo !== null && destinosVigentes(s).includes(yo)))
   }
   for (const [entorno, r] of Object.entries(reglas.encuentros ?? {})) {
     if (!r) continue

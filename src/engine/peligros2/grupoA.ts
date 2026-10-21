@@ -16,17 +16,13 @@ import {
   dano,
   descartar,
   dificultad,
-  encuentroEs,
   enElMar,
-  habilidadDe,
   heridas,
-  heridasAsignados,
   mas,
   mejorasDeBarco,
   menos,
   preparaCanon,
   canonesListos,
-  noSuman,
   participantesCon,
   participantesCtx,
   pierdesAvance,
@@ -36,24 +32,25 @@ import {
   reputacion,
   robar,
   siTienes,
-  tieneRasgo,
+  SIN_LIMITE_DE_COSTE,
 } from './comun.ts'
 
 // 1. La corriente del Golfo · Favorable
 registrarPeligro('p2_corriente', {
   encuentros: {
-    // Éxito: +1 Avance por cada punto que superes (máx. +2). Fallo: 1 daño al Barco.
+    // Éxito: +1 [avance] por cada punto que superes (máx. +2). Fallo: Daña 1.
     mar: { exito: [{ tipo: 'porCada', medida: 'margen', efectos: [avance(1)], maximo: 2 }], fallo: [dano(1)] },
-    // Éxito: prepara 1 Tripulante. Fallo: un Tripulante comprometido sufre 1 herida.
-    nat: { exito: [preparar(1)], fallo: [heridasAsignados(1)] },
-    // Puedes agotar a 1 Tripulante para reclutar o adquirir gratis 1 carta del muelle de coste 2 o menos.
+    // Éxito: prepara 1 Tripulante. Fallo: Inflige 1 herida (fase 13: heridas libres, también las que antes iban a un
+    // Tripulante asignado).
+    nat: { exito: [preparar(1)], fallo: [heridas(1)] },
+    // Puedes agotar a 1 Tripulante para reclutar o adquirir sin coste 1 carta del muelle de coste 2 o menos.
     ciu: {
       efecto: [
         {
           tipo: 'elegir',
           opciones: [
             {
-              texto: 'Agotar a 1 Tripulante: reclutar o adquirir gratis una carta del muelle de coste 2 o menos',
+              texto: 'Agotar a 1 Tripulante: reclutar o adquirir sin coste una carta del muelle de coste 2 o menos',
               efectos: [{ tipo: 'agotarPago', n: 1 }, { tipo: 'gratisDelMuelle', maxCoste: 2, que: 'cualquiera' }],
             },
             { texto: 'No', efectos: [] },
@@ -62,8 +59,9 @@ registrarPeligro('p2_corriente', {
       ],
     },
   },
-  // −1; −2 en su lugar si la Prueba es de NAV. Sin oposición: pierdes 1 Avance.
-  destino: { modificador: (_s, p) => (p.hab === 'NAV' ? -2 : -1), sinOposicion: [pierdesAvance(1)] },
+  // +1 (fase 13: fuera «Prueba de NAV: +2 en su lugar»). Sin oposición: −1 [avance] (mín. 0): este encuentro da 1 de
+  // Avance menos; nunca quita el que la misión ya tenía.
+  destino: { sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
 
 // 2. Cielo estrellado · Favorable
@@ -72,11 +70,13 @@ registrarPeligro('p2_cielo', {
     // Mira las 3 de arriba del mazo de Peligros y ordénalas. Si tienes un Piloto en la tripulación, +1 Avance.
     mar: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'no' }, siTienes('Piloto', [avance(1)])] },
     nat: { exito: [avance(1)], fallo: [pierdesAvance(1)] },
-    // Éxito: el comprometido con más EXP queda Inspirado y robas 1. Fallo: descarta 1 carta.
-    ciu: { exito: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'inspirado' }), robar(1)], fallo: [descartar(1)] },
+    // Éxito: prepara a 1 Tripulante asignado (fase 13: antes quedaba Inspirado, pero el asignado ya está agotado y la
+    // ficha se quita al final del turno: nunca llegaba a usarla). Fallo: descarta 1 carta.
+    ciu: { exito: [comprometidoCon('eleccion', { tipo: 'preparar' })], fallo: [descartar(1)] },
   },
-  // −1. Las cartas de tu mano no suman en esta Prueba (las que se comprometieron no cuentan). Sin oposición: +1 en su lugar.
-  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1), prueba: { sinCartas: true } },
+  // +1. Sin oposición: −1 en su lugar. (Fase 13: fuera «las cartas de tu mano no suman», que no servía: la mano se
+  // añade antes del Destino.)
+  destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1) },
 })
 
 // 3. Calma chicha · Leve
@@ -84,46 +84,70 @@ registrarPeligro('p2_calma', {
   encuentros: {
     mar: {
       elige: [
-        { texto: 'A remar: agota 2 Tripulantes preparados (o 1 Marinero)', efectos: [{ tipo: 'agotarPago', n: 2, oRasgo: 'Marinero' }] },
-        { texto: 'Esperar el viento: Prueba de NAV 3', prueba: true },
+        { texto: 'A remar: agota 2 Tripulantes (o 1 Marinero)', efectos: [{ tipo: 'agotarPago', n: 2, oRasgo: 'Marinero' }] },
+        { texto: 'Esperar el viento: NAV 3', prueba: true },
       ],
       exito: [avance(1)],
-      fallo: [cadaComprometido({ tipo: 'heridas', n: 1 })],
+      // Fase 13: sufre toda la tripulación, Capitán incluido, 1 herida cada uno (no se reparten).
+      fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', cada: true }, hacer: { tipo: 'heridas', n: 1 } }],
     },
-    // Cada Tripulante comprometido que tenga alguna herida suma 1 menos.
+    // Fase 13: suma 1 a la dificultad por cada Tripulante asignado que esté herido (antes, cada uno sumaba 1 menos).
     nat: {
-      capacidades: [habilidadDe('heridos', (ctx, c) => (copia(ctx.s, c).heridas > 0 ? -1 : 0))],
+      capacidades: [dificultad('heridos', (ctx) => participantesCtx(ctx).filter((c) => copia(ctx.s, c).heridas > 0).length)],
       exito: [{ tipo: 'curar', n: 2 }],
       fallo: [agotar(1)],
     },
     ciu: { exito: [preparar(1), { tipo: 'curar', n: 1 }], fallo: [descartar(2)] },
   },
-  // +1. Si la Prueba es de NAV, el Barco no da su +1. Sin oposición: agota 1 Tripulante.
-  destino: {
-    capacidades: [{ clave: 'sinNav', ventana: 'constante', modifica: (ctx, _yo, c) => (c.tipo === 'sinNavBarco' && ctx.s.prueba?.hab === 'NAV' ? 1 : 0) }],
-    sinOposicion: [agotar(1)],
-  },
+  // −1. Sin oposición: agota a 1 Tripulante. (Fase 13: fuera «Prueba de NAV: el Barco no da su +1».)
+  destino: { sinOposicion: [agotar(1)] },
 })
 
 // 4. Niebla · Leve
 registrarPeligro('p2_niebla', {
   encuentros: {
-    // COM 3 (2 si tienes un Vigía). Éxito: +1 munición. Fallo: Abordaje.
-    mar: { abordaje: true, exito: [preparaCanon()] },
-    // Los Vigías no suman. Fallo: el comprometido con menos EXP se pierde hasta que superes otra Prueba o acabe la misión.
+    // COM 3 (Vigía −1). Éxito: nada más (fase 13: fuera «Prepara un Cañón»). Fallo: Abordaje.
+    mar: { abordaje: true, exito: [] },
+    // Fase 13: «Resuelve 2 cartas de Destino en esta Prueba» (fuera «los Vigías no suman»). Fallo: descarta al asignado
+    // con menos EXP; si es el Capitán, sufre 1 herida en su lugar.
     nat: {
-      capacidades: [noSuman('vigias', (s, c) => tieneRasgo(s, c, 'Vigía'))],
+      prueba: { dosDestinosSuman: true },
       exito: [avance(1)],
-      fallo: [comprometidoCon(menos('EXP'), { tipo: 'noPrepara', hasta: 'superarPrueba' })],
+      fallo: [codigo('p2_niebla.separados')],
     },
     ciu: {
       exito: [siTienes('Contrabandista', [robar(3)], [robar(2)])],
       fallo: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'buscado' })],
     },
   },
-  // +1; −1 en su lugar si el encuentro es Barco, Pirata o Guardia. Sin oposición: pierdes 1 Avance.
-  destino: { modificador: (s) => (encuentroEs(s, 'Barco', 'Pirata', 'Guardia') ? -1 : 1), sinOposicion: [pierdesAvance(1)] },
+  // −1 (fase 13: fuera «Encuentro de tipo Barco, Pirata o Guardia: +1 en su lugar»). Sin oposición: −1 [avance] (mín. 0).
+  destino: { sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
+// «Bruma en la selva», fallo: «Descarta al Tripulante asignado con menos [EXP]. Si es el Capitán, sufre 1 herida en su
+// lugar.» TODO(regla), opciones por defecto hasta que Albert confirme: si hay empate, elige el jugador; si no hay nadie
+// asignado, no se descarta a nadie; el Tripulante se descarta con las reglas normales (sus Mejoras se descartan con él y
+// sus Tesoros pasan a otro, como al descartar cualquier Tripulante).
+registrarEspecial('p2_niebla.separados', (s, _t, e) => {
+  const asignados = comprometidosDe(s).filter((c) => s.zonas.tripulacion.includes(c))
+  if (asignados.length === 0) return 'hecha'
+  const minimo = Math.min(...asignados.map((c) => habilidadImpresa(s, c, 'EXP')))
+  const empatados = asignados.filter((c) => habilidadImpresa(s, c, 'EXP') === minimo)
+  let c = empatados.length === 1 ? empatados[0] : undefined
+  if (!c) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'separados' }, candidatas: empatados, min: 1, max: 1 })
+    c = eleccionDe(e, 'cartas').ids[0]
+  }
+  if (!c) return 'hecha'
+  if (c === s.capitan) {
+    anotar(s, 'efecto', `${nombre(s, c)} se pierde en la bruma, pero el Capitán no se descarta: sufre 1 herida en su lugar.`)
+    encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })
+    return 'hecha'
+  }
+  anotar(s, 'efecto', `${nombre(s, c)} se pierde en la bruma.`)
+  encolar(s, { tipo: 'sacarTripulante', carta: c, destino: 'descartesMuelle', motivo: 'descartado' })
+  return 'hecha'
+})
+registrarCodigo('p2_niebla.separados', (_s, fuente) => [{ tipo: 'especial', clave: 'p2_niebla.separados', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
 
 // 5. Bajamar · Leve
 // Permanente 226 «Varados en el banco»: no puedes superar la misión ni retirarte. Cada Peligro revelado, 1 ficha de
@@ -145,36 +169,38 @@ registrarPeligro('p2_bajamar', {
   encuentros: {
     // Pon en juego la carta 226 del mazo de historia.
     mar: { pone: { carta: 'pm_varados' } },
+    // Fase 13: éxito, «la siguiente Prueba de esta misión recibe −1 de dificultad» (sin tipo de encuentro; si la misión
+    // termina antes, no se aplica). Fallo: el asignado con menos NAV sufre 1 herida y −1 [avance] (señala a un Tripulante
+    // concreto: aprobado así por Albert).
     nat: {
-      exito: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Militar', 'Guardia', 'Bestia'], n: -1 } }],
+      exito: [{ tipo: 'siguiente', mod: { de: 'prueba', n: -1 } }],
       fallo: [comprometidoCon(menos('NAV'), { tipo: 'heridas', n: 1 }), pierdesAvance(1)],
     },
+    // «Casco en seco» (fase 13): Repara 1 (2 si tienes un Carpintero).
     ciu: {
-      exito: [siTienes('Carpintero', [reparar(3)], [reparar(2)])],
+      exito: [siTienes('Carpintero', [reparar(2)], [reparar(1)])],
       fallo: [{ tipo: 'porCada', medida: 'dano', efectos: [descartar(1)], minimo: 1, maximo: 3 }],
     },
   },
-  // +0. Si superas, +1 Avance; si fallas, pierdes 1 Avance. Sin oposición: pierdes 1 Avance.
-  destino: { siSuperas: [avance(1)], siFallas: [pierdesAvance(1)], sinOposicion: [pierdesAvance(1)] },
+  // 0. Si superas, +1 [avance]; si fallas, −1 [avance]. Sin oposición (fase 13): −1 [avance] (mín. 0), solo de este
+  // encuentro.
+  destino: { siSuperas: [avance(1)], siFallas: [pierdesAvance(1)], sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
 
 // 6. Arrecife · Duro
 registrarPeligro('p2_arrecife', {
   encuentros: {
-    mar: { exito: [{ tipo: 'descartarArriba', n: 1 }], fallo: [dano(2), agotaCanones(1)] },
-    nat: { exito: [preparaCanon(), robar(1)], fallo: [heridasAsignados(2)] },
-    // NAV 4 (2 si comprometes a un Marinero).
-    ciu: {
-      exito: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia'], n: -2 } }],
-      fallo: [{ tipo: 'siguiente', mod: { de: 'encuentro', claves: ['Guardia', 'Militar'], n: 2 } }],
-    },
+    // NAV 4 (Vigía −2). Fase 13: éxito, Otea 1 (antes descartaba la carta superior); fallo, Daña 2 (fuera «agota 1 Cañón»).
+    mar: { exito: [{ tipo: 'mirarOrdenar', n: 1, fondo: 'libre' }], fallo: [dano(2)] },
+    // Fase 13: éxito, adquiere sin coste una Mejora del muelle, sea cual sea su coste (si no cabe, la regla normal de
+    // adquirir: no se puede). Fallo: Inflige 2 heridas (heridas libres).
+    nat: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: SIN_LIMITE_DE_COSTE, que: 'mejora' }], fallo: [heridas(2)] },
+    // NAV 4 (Marinero asignado −2). Fase 13: éxito, roba 1; fallo, Daña 1. Es un encuentro de Ciudad: como «Te roban el
+    // barco» (P19), la carta dice que daña el Barco aunque estés en tierra. TODO(regla): confirmar con Albert.
+    ciu: { exito: [robar(1)], fallo: [{ tipo: 'dano', n: 1, enTierra: true }] },
   },
-  // +1; +0 en su lugar si comprometiste a un Vigía. Sin oposición: en el Mar, 1 daño al Barco; en Naturaleza o Ciudad,
-  // 1 herida a un Tripulante.
-  destino: {
-    modificador: (s) => (comprometidosDe(s).some((c) => tieneRasgo(s, c, 'Vigía')) ? 0 : 1),
-    sinOposicion: [enElMar([dano(1)], [heridas(1)])],
-  },
+  // −1 (fase 13: fuera «Con un Vigía asignado: 0 en su lugar»). Sin oposición: [mar]: Daña 1. [nat]/[ciu]: Inflige 1 herida.
+  destino: { sinOposicion: [enElMar([dano(1)], [heridas(1)])] },
 })
 
 // 7. Fuego a bordo · Duro
@@ -186,7 +212,7 @@ registrarPeligro('p2_fuego', {
           texto: 'Anegar la santabárbara: agota todos tus Cañones y el Barco queda con Pólvora mojada',
           efectos: [agotaCanones('todos'), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
         },
-        { texto: 'Atacar el fuego: Prueba de NAV 4 (+1 si tienes algún Cañón preparado)', prueba: true, modSi: { condicion: { tipo: 'canonesPreparados', minimo: 1 }, n: 1 } },
+        { texto: 'Atacar el fuego: NAV 4 (+1 de dificultad si tienes algún Cañón preparado)', prueba: true, modSi: { condicion: { tipo: 'canonesPreparados', minimo: 1 }, n: 1 } },
       ],
       exito: [preparaCanon()],
       // Fase 10b: fuera Incendio a bordo: 1 daño y Pólvora mojada.
@@ -291,7 +317,8 @@ registrarEspecial('p2_huracan.vendaval', (s, t, e) => {
     const clave = eleccionDe(e, 'opcion').clave
     if (clave === 'fallar') return 'hecha'
     p.falla = false
-    p.modDestino = 2
+    // Se suma (fase 13: con dos Destinos, el otro también cuenta). Un ✕ no aportaba nada al modificador.
+    p.modDestino += 2
     anotar(s, 'jugada', 'Sujetáis lo que se suelta: el Destino es +2 en vez de hacerte fallar.')
     if (clave === 'descartar') {
       encolar(s, { tipo: 'pagar', cantidad: 2, motivo: 'p2_huracan' })
@@ -331,8 +358,9 @@ registrarPeligro('p2_huracan', {
             {
               tipo: 'elegir',
               opciones: [
-                { texto: '1 herida a un Tripulante asignado', efectos: [comprometidoCon('eleccion', { tipo: 'heridas', n: 1 })] },
-                { texto: 'Pierdes 1 Avance', efectos: [pierdesAvance(1)] },
+                // Fase 13: heridas libres (antes, «1 herida a un Tripulante asignado»).
+                { texto: 'Inflige 1 herida', efectos: [heridas(1)] },
+                { texto: '−1 de Avance', efectos: [pierdesAvance(1)] },
               ],
             },
           ],

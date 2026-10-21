@@ -444,11 +444,16 @@
 .test2 .alt{display:block;margin:0;font-size:calc(var(--fs2) * .86);line-height:1.15;color:#5A4734;white-space:normal}
 .test2 .alt.nota{font-style:italic;font-weight:400}
 .test2 .alt .ic{font-size:1.2em;vertical-align:-.22em}
+/* Fase 13: «Vigía −2»: el Rasgo en negrita cursiva, como en el texto, y la rebaja en verde (ayuda). */
+.test2 .alt i,.test .alt i{font-weight:800}
+.alt .rebaja{color:#3D6631;font-weight:800;white-space:nowrap}
 .filete{flex:none;width:1.2px;margin:1px calc(var(--fs2) * .55);background:linear-gradient(180deg,transparent,#B08E50 18%,#B08E50 82%,transparent)}
 .outs2{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:calc(var(--fs2) * .3)}
-.sinp{margin-left:auto;font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:calc(var(--fs2) * .9);letter-spacing:.06em;color:#7A6248}
 .t2{margin:0;font-size:var(--fs2);line-height:1.22;color:#2A2118}
 .t2 .ic{font-size:1.25em;vertical-align:-.25em}
+/* Fase 13: cada opción de un «Elige» va en su línea; el número con su icono (y el punto que lo sigue) no se parte. */
+.t2 .br{display:block;height:calc(var(--fs2) * .15)}
+.t2 .num{white-space:nowrap}
 .t2 .kw{font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;letter-spacing:.04em}
 .t2.nota{color:#5A4734;font-style:italic}
 .t2 .amb{font-family:'Alegreya',Georgia,serif;font-style:italic;color:#5A4734}

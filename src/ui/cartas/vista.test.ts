@@ -72,7 +72,7 @@ describe('vista de las cartas', () => {
     expect(v.destino.colorMod).toBe(COLOR_MOD['0'])
 
     const fiebres = vistaDeCarta(carta(87)) as VistaPeligro
-    expect(fiebres.encuentros[0]?.opciones[0]?.alternativa).toEqual({ texto: '1 con', rasgo: 'Cirujano' })
+    expect(fiebres.encuentros[0]?.opciones[0]?.alternativa).toEqual({ rasgo: 'Cirujano', asignado: false, rebaja: 2 }) // fase 13: «Cirujano −2»
 
     // «La Armada te persigue» ya tiene el formato de los Peligros 2.0 (Navío de línea de la Armada).
     const armada = vistaDeCarta(carta(95)) as VistaPeligro
@@ -102,7 +102,10 @@ describe('vista de las cartas', () => {
 
     const deuda = vistaDeCarta(carta(113)) as VistaCapitulo
     expect([deuda.sello, deuda.de, deuda.travesia]).toEqual(['I', 'I', 'Misión inicial'])
-    expect(deuda.recompensaTexto).toBe('Otea 3 del mazo de Misiones') // fase 10b
+    // Fase 13: sin «Otea» (Otear es siempre del mazo de Peligros); el mismo efecto.
+    expect(deuda.recompensaTexto).toBe(
+      'Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles.',
+    )
     const aguada = vistaDeCarta(carta(115)) as VistaCapitulo
     expect(aguada.recompensa).toEqual([{ texto: '0', icono: 'rep' }])
     expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño, aunque estés en tierra.')

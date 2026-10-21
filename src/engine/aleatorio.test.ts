@@ -78,7 +78,9 @@ describe('Prueba masiva: mazos de muelle variados', () => {
     // en el Mar: también tiene su propia prueba.
     // «Ni un hombre atrás» (fase 12): con las travesías nuevas no sale en estas 900; en las 1800 siguientes, en 3. Tiene
     // sus pruebas propias (cartas-eventos y decisiones).
-    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo', 'ni_hombre.jugar'])
+    // «Arenga del capitán» (fase 13) está en la colección pero no en el mazo de inicio de Diego: aquí no sale nunca. Tiene
+    // su prueba propia (cartas-eventos) y su medida con un mazo de prueba (medir.informe).
+    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo', 'ni_hombre.jugar', 'arenga.jugar'])
     expect(capacidadesDelJugador().filter((c) => !usadas.has(c) && !rarisimas.has(c))).toEqual([])
   })
 })

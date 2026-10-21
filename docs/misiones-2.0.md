@@ -192,7 +192,7 @@ Sustituyen a las reglas y recompensas de las 12 misiones actuales. Se mantienen 
 ---
 
 ## Aclaraciones (respuestas de Albert, 18 de octubre de 2026)
-- «Cada Peligro sin Prueba» (El ladrón del puerto, La huida con la plata) son las cartas que llevan impreso «Sin Prueba». Un «Elige» en el que pagas en vez de hacer la Prueba no cuenta.
+- «Cada Peligro sin Prueba» (El ladrón del puerto, La huida con la plata) son los encuentros sin Prueba (los que no tienen recuadro de Prueba). Un «Elige» en el que pagas en vez de hacer la Prueba no cuenta (sí tiene recuadro). (Fase 13: las cartas ya no llevan la etiqueta «Sin Prueba».)
 - «¡La guardia!»: su +1 a todas las Pruebas también vale para su propia Prueba de COM 5 (queda en COM 6).
 - «Seguirle por los muelles»: una Prueba sin nadie comprometido no cuenta como «fallar por 2 o más» (no pone Sospecha).
 - Don Anselmo vuelve a subir cada vez que zarpas a «Los muelles de Maracaibo» (si se había bajado). Mientras viaja contigo, su −1 a los encuentros #Guardia# y #Civil# vale en cualquier misión.

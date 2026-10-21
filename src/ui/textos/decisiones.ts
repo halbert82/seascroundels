@@ -58,7 +58,10 @@ export function textoPlano(id: string): string {
 
 /** «COM 3 o EXP 3» */
 export function textoOpciones(opciones: readonly OpcionPrueba[]): string {
-  return opciones.map((o) => `${o.hab} ${o.dificultad}${o.alternativa ? ` (${o.alternativa.dificultad} con un ${o.alternativa.rasgo})` : ''}`).join(' o ')
+  // Fase 13 (regla A6): «NAV 4 (Vigía −2)», «NAV 4 (Marinero asignado −2)».
+  return opciones
+    .map((o) => `${o.hab} ${o.dificultad}${o.alternativa ? ` (${o.alternativa.rasgo}${o.alternativa.comprometido ? ' asignado' : ''} −${o.dificultad - o.alternativa.dificultad})` : ''}`)
+    .join(' o ')
 }
 
 /** Cómo se quita una carta de Peligro en juego, en palabras. */
@@ -285,7 +288,11 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'lenguasSueltas':
       return { titulo: '¿Cuál pones en el muelle?', ayuda: 'Sustituye a la carta de más a la izquierda del muelle; las otras van al fondo del mazo de muelle.' }
     case 'gratisDelMuelle':
-      return { titulo: 'Gratis del muelle', ayuda: `Puedes poner en juego sin pagar una carta del muelle de coste ${n} o menos (o ninguna).` }
+      // Fase 13: «sin coste», el término del reglamento (nunca «gratis»).
+      return {
+        titulo: 'Del muelle, sin coste',
+        ayuda: n >= 99 ? 'Puedes poner en juego sin pagar su coste una carta del muelle, sea cual sea su coste (o ninguna).' : `Puedes poner en juego sin pagar su coste una carta del muelle de coste ${n} o menos (o ninguna).`,
+      }
     case 'portadorGratis':
       return { titulo: `¿Quién lleva «${nombreCarta(m.carta)}»?` }
     case 'subasta':
@@ -302,6 +309,12 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: `¿Junto a quién va «${nombreCarta(m.carta)}»?`, ayuda: 'Hay empate: eliges tú. La permanente va junto a ese Tripulante.' }
     case 'quitarPermanente':
       return { titulo: '¿Qué permanente devuelves al mazo de historia?', ayuda: 'Elige una carta de la zona de permanentes.' }
+    case 'separados':
+      return { titulo: 'Os separáis en la bruma', ayuda: 'Varios asignados empatan con la EXP más baja: eliges quién se pierde (se descarta con sus Mejoras; si es el Capitán, sufre 1 herida en su lugar).' }
+    case 'cancelarCualDestino':
+      return { titulo: '¿Qué Destino cancelas?', ayuda: 'Esta Prueba resuelve 2 Destinos: la carta cancela solo uno, el que elijas.' }
+    case 'cambiarCualDestino':
+      return { titulo: '¿Qué Destino cambias?', ayuda: 'Esta Prueba resuelve 2 Destinos: descartas el que elijas y revelas otro en su lugar.' }
     case 'cazador':
       return { titulo: '¿Quién sale a cazar al jaguar?', ayuda: 'Se agota y hace la Prueba solo: COM 5, o EXP 3 si es un Explorador.' }
     case 'giroDeLaMuerte':
@@ -351,9 +364,9 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'reclutaEncuentro':
       return { titulo: 'Puedes reclutar a un Tripulante', ayuda: 'Del muelle, pagando su coste (o ninguno).' }
     case 'reclutarGratis':
-      return { titulo: 'Recluta gratis', ayuda: `Un Tripulante del muelle de coste ${n} o menos, sin pagar (o ninguno).` }
+      return { titulo: 'Recluta sin coste', ayuda: `Un Tripulante del muelle de coste ${n} o menos, sin pagar su coste (o ninguno).` }
     case 'naufrago':
-      return { titulo: 'Náufrago en la playa', ayuda: 'Puedes reclutar gratis a uno de estos Tripulantes. Al final del turno se descarta.' }
+      return { titulo: 'Náufrago en la playa', ayuda: 'Puedes reclutar sin coste a uno de estos Tripulantes. Al final del turno se descarta.' }
     case 'desviarHeridas':
       return { titulo: n === 1 ? '¿Quién sufre la herida en su lugar?' : `¿Quién sufre las ${n} heridas en su lugar?` }
     case 'curarUno':
@@ -402,6 +415,8 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       return `curas ${e.n}`
     case 'perderAvance':
       return e.n === 'todo' ? 'pierdes todo el Avance' : `pierdes ${e.n} de Avance`
+    case 'menosAvanceEncuentro':
+      return `este encuentro da ${e.n} de Avance menos (mín. 0)`
     case 'agotarCanones':
       return e.n === 'todos' ? 'agotas todos tus Cañones' : `agotas ${n2(e.n, 'Cañón', 'Cañones')}`
     case 'perderMejora':
@@ -441,9 +456,9 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
     case 'modSiguientePrueba':
       return `la siguiente Prueba de esta misión recibe ${e.n > 0 ? '+' : ''}${e.n}`
     case 'mirarPeligros':
-      return `miras ${e.n === 1 ? 'la carta' : `las ${e.n} cartas`} de arriba del mazo de Peligros`
+      return `miras ${e.n === 1 ? 'la carta superior' : `las ${e.n} cartas superiores`} del mazo de Peligros`
     case 'descartarArriba':
-      return `descartas ${e.n === 1 ? 'la carta' : `las ${e.n} cartas`} de arriba del mazo de Peligros sin resolverla${e.n === 1 ? '' : 's'}`
+      return `descartas ${e.n === 1 ? 'la carta superior' : `las ${e.n} cartas superiores`} del mazo de Peligros sin resolverla${e.n === 1 ? '' : 's'}`
     case 'noRetirarse':
       return 'no puedes retirarte de esta misión'
     case 'retirarse':
@@ -474,7 +489,7 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
     case 'agotarPago':
       return `agotas a ${n2(e.n, 'Tripulante', 'Tripulantes')}${e.oRasgo ? ` (o a 1 ${e.oRasgo})` : ''}`
     case 'mirarOrdenar':
-      return `miras las ${e.n} de arriba del mazo de Peligros${e.fondo === 'una' ? ' y pones 1 al fondo' : e.fondo === 'no' ? ' y las ordenas' : ''}`
+      return e.fondo === 'libre' ? `oteas ${e.n}` : `miras las ${e.n} cartas superiores del mazo de Peligros${e.fondo === 'una' ? ' y pones 1 al fondo' : ' y las ordenas'}`
     case 'siguiente':
       return textoModSiguiente(e.mod).replace(/\.$/, '').toLowerCase()
     case 'alFondo':
@@ -482,7 +497,7 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
     case 'elegir':
       return `eliges: ${e.opciones.map((o) => o.texto).join(' o ')}`
     case 'gratisDelMuelle':
-      return `pones en juego gratis una carta del muelle de coste ${e.maxCoste} o menos`
+      return e.maxCoste >= 99 ? 'pones en juego sin coste una carta del muelle' : `pones en juego sin coste una carta del muelle de coste ${e.maxCoste} o menos`
     case 'rescatarRehenes':
       return 'rescatas a los rehenes'
     case 'recuperarIncautadas':

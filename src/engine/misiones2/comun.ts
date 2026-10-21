@@ -109,7 +109,8 @@ export function alFallarPrueba(clave: string, efecto: (s: Estado, p: PruebaHecha
 }
 
 /**
- * «Cada Peligro sin Prueba»: el encuentro resuelto no tenía Prueba impresa (en la carta pone «Sin Prueba»).
+ * «Cada Peligro sin Prueba»: el encuentro resuelto no tenía Prueba impresa (no tiene recuadro de Prueba; fase 13: la
+ * etiqueta «Sin Prueba» ya no se imprime).
  * P49 (confirmada): un «Elige» en el que pagas en vez de hacer la Prueba no cuenta como Peligro sin Prueba.
  */
 export function alResolverSinPrueba(clave: string, efecto: (s: Estado) => NuevaTarea[]): CapacidadDeCarta {

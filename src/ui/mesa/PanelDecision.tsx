@@ -187,7 +187,8 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
                 <Icono id={o.hab} /> {o.hab} {o.dificultad}
                 {o.alternativa && (
                   <small>
-                    ({o.alternativa.dificultad} con {o.alternativa.rasgo})
+                    ({o.alternativa.rasgo}
+                    {o.alternativa.comprometido ? ' asignado' : ''} −{o.dificultad - o.alternativa.dificultad})
                   </small>
                 )}
               </button>

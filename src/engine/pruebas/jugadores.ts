@@ -18,6 +18,7 @@ import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valore
 import { cumple } from '../tareas/efectos.ts'
 import { puedePrepararse } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
+import { puedeZarpar } from '../tareas/mision.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
 
@@ -371,21 +372,42 @@ function elegirEnJugarCartas(s: Estado, acciones: readonly Accion[]): Eleccion {
   return { tipo: 'accion', accion: mejor?.accion ?? { tipo: 'terminarPaso' } }
 }
 
+/** La misión a la que zarparía entre estas (o null si se queda en puerto). */
+function mejorZarpe(s: Estado, misiones: readonly InstId[]): InstId | null {
+  const capitan = copia(s, s.capitan)
+  const enPeligro = vidaRestante(s, s.capitan) <= 1 || s.danoBarco >= valor(s, { tipo: 'danoMaximo' }) - 1
+  const tarde = s.ultimoTurno || diasRestantes(s) <= 1
+  let mejor: { puntos: number; mision: InstId } | null = null
+  for (const m of misiones) {
+    const puntos = puntuacionMision(s, m)
+    if (!mejor || puntos > mejor.puntos) mejor = { puntos, mision: m }
+  }
+  if (mejor && (tarde || (!enPeligro && mejor.puntos > -1.5) || (capitan.heridas === 0 && mejor.puntos > -3))) return mejor.mision
+  return null
+}
+
+/**
+ * Fase 13, «Arenga del capitán»: la juega en la Fase de Reclutamiento si va a zarpar con 2 o más Tripulantes preparados,
+ * después de reclutar y adquirir (así los recién llegados también quedan Inspirados).
+ */
+function convieneArenga(s: Estado, d: Decision): boolean {
+  if (d.tipo !== 'ventanaAccion' || d.motivo.clave !== 'jugarCartas') return false
+  const antes = elegirEnJugarCartas(s, d.acciones)
+  if (antes.tipo === 'accion' && antes.accion.tipo !== 'terminarPaso') return false
+  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
+  return preparados >= 2 && mejorZarpe(s, s.zonas.misionesDisponibles.filter((m) => puedeZarpar(s, m))) !== null
+}
+
 function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>): Eleccion {
   const claves = d.opciones.map((o) => o.clave)
   const elegir = (clave: string) => ({ tipo: 'opcion' as const, clave })
   switch (d.motivo.clave) {
     case 'quedarseOZarpar': {
-      const capitan = copia(s, s.capitan)
-      const enPeligro = vidaRestante(s, s.capitan) <= 1 || s.danoBarco >= valor(s, { tipo: 'danoMaximo' }) - 1
-      const tarde = s.ultimoTurno || diasRestantes(s) <= 1
-      let mejor: { puntos: number; clave: string } | null = null
-      for (const clave of claves.filter((c) => c.startsWith('zarpar:'))) {
-        const puntos = puntuacionMision(s, clave.slice(7) as InstId)
-        if (!mejor || puntos > mejor.puntos) mejor = { puntos, clave }
-      }
-      if (mejor && (tarde || (!enPeligro && mejor.puntos > -1.5) || (capitan.heridas === 0 && mejor.puntos > -3))) return elegir(mejor.clave)
-      return elegir('quedarse')
+      const mision = mejorZarpe(
+        s,
+        claves.filter((c) => c.startsWith('zarpar:')).map((c) => c.slice(7) as InstId),
+      )
+      return elegir(mision ? `zarpar:${mision}` : 'quedarse')
     }
     case 'opcionPuerto': {
       const heridas = s.zonas.tripulacion.reduce((n, c) => n + copia(s, c).heridas, 0)
@@ -512,6 +534,18 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
         return (o.rep ?? 0) + (o.tesoro ? tesoro : 0) - malo
       }
       return elegir([...claves].sort((a, b) => valorDe(b) - valorDe(a))[0]!)
+    }
+    // Fase 13: con dos Destinos («Bruma en la selva»), cancela (o cambia) el peor.
+    case 'cancelarCualDestino':
+    case 'cambiarCualDestino': {
+      const p = s.prueba
+      if (!p?.hab) return elegir(claves[0]!)
+      const hab = p.hab
+      const peor = (c: string) => {
+        const m = modificadorDeDestino(s, c as InstId, p.encuentro, hab)
+        return m === 'fallo' ? 99 : m
+      }
+      return elegir([...claves].sort((a, b) => peor(b) - peor(a))[0]!)
     }
     default:
       return elegir(claves[0]!)
@@ -858,6 +892,8 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return trasEncuentro && mano >= 4 ? 2 : 0
     case 'a_por_ellos.jugar':
       return trasEncuentro && s.zonas.rehenes.length > 0 && s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? 3 : 0
+    case 'arenga.jugar':
+      return convieneArenga(s, d) ? 2 : 0
     case 'ron_valientes.jugar':
       return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
     case 'pm_ojos.accion0':

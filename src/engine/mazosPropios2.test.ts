@@ -22,13 +22,15 @@ function resolver(j: Jugador): Jugador {
 const robas = (j: Jugador, n: number) => j.registro.some((r) => r.startsWith(`Robas ${n}:`))
 
 describe('122 · Guerreros esqueleto', () => {
-  it('COM 4: si superas, esta carta Se retira; si fallas, 2 heridas repartidas entre los comprometidos', () => {
+  it('COM 4: si superas, esta carta Se retira; si fallas, Inflige 2 heridas, libres (fase 13)', () => {
     const j = en('nat', ['esqueleto', 'calma', 'calma'], { tripulacion: ['reinaldo'] })
     j.comprometer('COM', ['capitan', 'reinaldo']).seguir()
     expect(j.zona('fueraDeJuego')).toContain('esqueleto')
-    const k = en('nat', ['esqueleto', 'calma', 'calma'])
-    k.comprometer('COM', ['capitan']).seguir()
-    expect(k.copia('capitan').heridas).toBe(2)
+    // Las 2 heridas del fallo van a quien quiera el jugador: también al Carpintero, que no fue asignado.
+    const k = en('nat', ['esqueleto', 'calma', 'calma'], { tripulacion: ['carpintero'] })
+    k.comprometer('COM', ['capitan']).seguir().repartir({ capitan: 1, carpintero: 1 })
+    expect(k.copia('capitan').heridas).toBe(1)
+    expect(k.copia('carpintero').heridas).toBe(1)
   })
 
   it('Destino «Huesos que se levantan»: si fallas, la carta vuelve encima del mazo; Sin oposición, 1 herida', () => {
@@ -257,3 +259,19 @@ describe('095 · La Armada te persigue (rehecha, P51)', () => {
     expect(k.estadosBarco).toContain('perseguido')
   })
 })
+
+describe('Fase 13 · Otear con un mazo propio mezclado', () => {
+  it('si la misión revela de un mazo mezclado («El galeón rezagado»), Otear mira ese mazo, el del que revelas', () => {
+    // Sin cartas del mazo propio en el mazo de historia, el mazo de la misión son las 6 cartas de Peligro que se mezclan.
+    const j = Jugador.enMision({ misiones: ['flota-II'], mazoHistoria: [], tripulacion: ['vigia'], mazoPeligros: ['ley', 'fauna', 'chubasco', 'escollos', 'calma', 'racha', 'amigos'] })
+    expect(j.estado.mision?.mazoMezclado).toBe(true)
+    const arriba = j.estado.zonas.mazoMision[0]
+    j.usar('vigia.otear')
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear' } })
+    expect(j.registro.some((r) => r.startsWith('Oteas del mazo de la misión:'))).toBe(true)
+    j.opcion('fondo')
+    expect(j.estado.zonas.mazoMision.at(-1)).toBe(arriba)
+    expect(j.zona('mazoPeligros')).toEqual(['amigos'])
+  })
+})
+

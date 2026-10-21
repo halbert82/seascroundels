@@ -258,6 +258,14 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
       case 'perderAvance':
         tareas.push({ tipo: 'perderAvance', n: e.n })
         break
+      case 'menosAvanceEncuentro':
+        // Fase 13: lo apunta la Prueba del encuentro y se descuenta al ganar su Avance (nunca por debajo de 0).
+        // TODO(regla): en la Prueba de una Acción (sin encuentro) no hay Avance del que descontar: no hace nada.
+        if (s.prueba && s.prueba.origen !== 'accion') {
+          s.prueba.avanceMenos = (s.prueba.avanceMenos ?? 0) + e.n
+          anotar(s, 'efecto', `Este encuentro da ${e.n} de Avance menos (mín. 0).`)
+        }
+        break
       case 'agotarCanones':
         tareas.push({ tipo: 'agotarCanones', n: e.n })
         break

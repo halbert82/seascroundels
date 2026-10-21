@@ -243,6 +243,8 @@ const HABILIDAD = /\b(NAV|COM|EXP)\b/g
 const FICHA_NUM = /(\b\d+|\bN|−\d+)(\s)(heridas?|daños?)\b/g
 const FICHA_DE = /(\b\d+|\bN)( de )(Avance|reputación)\b/g
 const ICONO_FICHA: Record<string, string> = { herida: 'herida', heridas: 'herida', daño: 'dano', daños: 'dano', Avance: 'avance', reputación: 'rep' }
+/** Fase 13: «Daña 1», «Repara 2»: el número va con el icono del casco del Barco, como en las cartas. */
+const DANA_REPARA = /\b([Dd]aña|[Rr]epara) (\d+|N)\b(?!\s+daños?\b)/g
 
 const habilidad = (h: string) => `<span class="hab hab-${h.toLowerCase()}"><i class="ic i-${h.toLowerCase()}"></i>${h}</span>`
 
@@ -252,6 +254,7 @@ function iconos(trozos: Trozo[]): Trozo[] {
   r = aplicar(r, HABILIDAD, (m) => [{ h: habilidad(m[1] ?? '') }])
   r = aplicar(r, FICHA_NUM, (m) => [{ t: `${m[1]} ` }, { h: `<i class="ic ic-ficha i-${ICONO_FICHA[m[3] ?? '']}"></i>` }, { t: `${m[3]}` }])
   r = aplicar(r, FICHA_DE, (m) => [{ t: `${m[1]} ` }, { h: `<i class="ic ic-ficha i-${ICONO_FICHA[m[3] ?? '']}"></i>` }, { t: `de ${m[3]}` }])
+  r = aplicar(r, DANA_REPARA, (m) => [{ t: `${m[1]} ${m[2]}` }, { h: '<i class="ic ic-ficha ic-tras i-dano"></i>' }])
   return r
 }
 

@@ -106,6 +106,17 @@ export function gastarModsSiguientes(s: Estado, p: PruebaEnCurso, def: Definicio
   if (aplican.some((x) => x.dosDestinos)) p.dosDestinos = true
 }
 
+/**
+ * Los Destinos de la Prueba con si están cancelados: uno, o dos si el encuentro dice «Resuelve 2 cartas de Destino en
+ * esta Prueba» (fase 13, «Bruma en la selva»).
+ */
+export function destinosDeLaPrueba(p: PruebaEnCurso): { carta: InstId; cancelado: boolean; segundo: boolean }[] {
+  const lista: { carta: InstId; cancelado: boolean; segundo: boolean }[] = []
+  if (p.destino) lista.push({ carta: p.destino, cancelado: p.destinoCancelado, segundo: false })
+  if (p.segundoDestino) lista.push({ carta: p.segundoDestino, cancelado: p.segundoCancelado ?? false, segundo: true })
+  return lista
+}
+
 /** ¿No suma este comprometido en la Prueba en curso? (Aturdido, «los Vigías no suman», Destinos…) */
 export function noSuma(s: Estado, c: InstId): boolean {
   return (s.prueba?.sinSumar?.includes(c) ?? false) || modificadores(s, { tipo: 'noSuma', carta: c }) > 0
@@ -295,9 +306,29 @@ export function desgloseTotal(s: Estado): ParteDesglose[] {
     if (a.inst) parte.inst = a.inst
     partes.push(parte)
   }
-  // El Destino se suma al total («el Destino de la carta X»).
-  if (p.destino) {
+  // El Destino se suma al total («el Destino de la carta X»). Fase 13: con dos Destinos, una línea por cada uno.
+  const destinos = destinosDeLaPrueba(p)
+  if (destinos.length === 1 && p.destino) {
     partes.push({ etiqueta: `Destino de «${nombreDe(copia(s, p.destino).id)}»`, n: -p.modDestino, tipo: 'destino', inst: p.destino, anulada: p.destinoCancelado })
+  } else if (destinos.length > 1) {
+    // Lo que aporta cada uno; si una carta ha cambiado el modificador sobre la marcha («Dados cargados»…), la diferencia
+    // va en el primero que siga en pie, para que las líneas sumen el total.
+    const mods = destinos.map((d) => {
+      const m = d.cancelado ? 0 : modificadorDeDestino(s, d.carta, p.encuentro, hab)
+      const n = m === 'fallo' ? 0 : p.invertirDestino ? -m : m
+      return -n
+    })
+    const resto = -p.modDestino - mods.reduce((a, b) => a + b, 0)
+    const primero = destinos.findIndex((d) => !d.cancelado)
+    destinos.forEach((d, i) => {
+      partes.push({
+        etiqueta: `Destino de «${nombreDe(copia(s, d.carta).id)}»`,
+        n: (mods[i] ?? 0) + (i === primero ? resto : 0),
+        tipo: 'destino',
+        inst: d.carta,
+        anulada: d.cancelado,
+      })
+    })
   }
   // Con el Destino, si el total queda por debajo de 0, cuenta como 0 (una sola línea, al final).
   const suma = partes.filter((x) => !x.anulada).reduce((n, x) => n + x.n, 0)

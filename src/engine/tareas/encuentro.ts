@@ -16,6 +16,7 @@ import {
   definicionActual,
   dificultadDeOpcion,
   gastarModsSiguientes,
+  destinosDeLaPrueba,
   dificultadPrueba,
   modificadorDeDestino,
   nombreDelEncuentro,
@@ -110,7 +111,8 @@ export function avancePrevisto(s: Estado, hab: Habilidad | null): { siSuperas: n
   const alSuperar = hab
     ? valor(s, { tipo: 'avanceExtraEncuentro', claves, hab, margen: 0 }) + valor(s, { tipo: 'avanceExtraPrueba', hab }) + p.avanceSiSuperas
     : siempre + p.avanceSiSuperas
-  return { siSuperas: def.avance + alSuperar, siNo: avanceSinSuperar(s, def) + siempre }
+  const menos = p.avanceMenos ?? 0
+  return { siSuperas: Math.max(0, def.avance + alSuperar - menos), siNo: Math.max(0, avanceSinSuperar(s, def) + siempre - menos) }
 }
 
 /** Al terminar de resolverse, la carta del encuentro va a los descartes o, si lo dice, ocupa el muelle. */
@@ -238,6 +240,8 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       const extra = t.pone && def.avance === 0 ? 0 : avanceExtraEncuentro(s, claves, t.pone ? null : p)
       let n = t.sinAvance ? 0 : base + extra
       if (p?.resultado === 'superada' && p.hab) n += p.avanceSiSuperas + valor(s, { tipo: 'avanceExtraPrueba', hab: p.hab })
+      // Fase 13: Sin oposición «−1 [avance] (mín. 0)»: este encuentro da menos, sin bajar de 0.
+      if (p?.encuentro === carta && p.avanceMenos) n = Math.max(0, n - p.avanceMenos)
       const mc = copia(s, m.carta)
       mc.avance += n
       m.cartasResueltas++
@@ -301,19 +305,54 @@ function revelarDestino(s: Estado, p: PruebaEnCurso): void {
   }
   p.destino = carta
   const d = destinoDe(copia(s, carta).id)
-  anotar(s, 'revelar', `Destino de la carta «${nombre(s, carta)}»: ${d.impreso}.`, { tipo: 'revelado', inst: carta, como: 'destino' })
+  // Fase 13, «Bruma en la selva»: «Resuelve 2 cartas de Destino en esta Prueba». Se revelan las dos cartas superiores
+  // del mazo de Peligros y valen las dos. TODO(regla): Albert tiene que confirmar la lectura (se suman los dos
+  // modificadores, se aplican los efectos de los dos y, sin nadie asignado, los dos Sin oposición; «Reflejos de gato»
+  // cancela solo uno, el que elija el jugador). Con «Mal agüero» a la vez, el primero sale de los 2 de Mal agüero.
+  const otra = p.dosDestinosSuman ? cartaDeArriba(s, 'destino') : null
+  if (otra) {
+    mover(s, otra, 'destino')
+    s.infoRevelada++
+    p.segundoDestino = otra
+    p.segundoCancelado = false
+    const d2 = destinoDe(copia(s, otra).id)
+    anotar(s, 'revelar', `Destino de la carta «${nombre(s, carta)}»: ${d.impreso}.`, { tipo: 'revelado', inst: carta, como: 'destino' })
+    anotar(s, 'revelar', `Segundo Destino, de la carta «${nombre(s, otra)}»: ${d2.impreso}. Valen los dos.`, { tipo: 'revelado', inst: otra, como: 'destino' })
+  } else {
+    anotar(s, 'revelar', `Destino de la carta «${nombre(s, carta)}»: ${d.impreso}.`, { tipo: 'revelado', inst: carta, como: 'destino' })
+  }
   encolar(s, evento({ tipo: 'revelarDestino', carta }))
 }
 
-/** Aplica el Destino revelado (si no se ha cancelado): modificador, efecto añadido y Sin oposición (N9). */
+/**
+ * Aplica los Destinos revelados que no se han cancelado: modificador, efecto añadido y Sin oposición (N9). Fase 13: con
+ * dos Destinos («Bruma en la selva»), sus modificadores se suman y se aplica todo lo de los dos, uno detrás de otro.
+ */
 function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
-  if (!p.destino || p.destinoCancelado || !p.hab) return []
-  const d = destinoDe(copia(s, p.destino).id)
-  const impreso = modificadorDeDestino(s, p.destino, p.encuentro, p.hab)
-  // «La Madre de agua»: el modificador se invierte («Fallas la Prueba» no cambia).
-  const mod = impreso !== 'fallo' && p.invertirDestino ? -impreso : impreso
-  if (mod === 'fallo') p.falla = true
-  else p.modDestino = mod
+  if (!p.hab) return []
+  // N14: Sin oposición se mira al aplicar el Destino, después de su ventana (N9). Si el Loro se ha unido
+  // en ella, ya hay alguien comprometido y no se aplica.
+  p.sinOposicion = p.comprometidos.length === 0
+  const tareas: NuevaTarea[] = []
+  let suma = 0
+  for (const { carta, cancelado, segundo } of destinosDeLaPrueba(p)) {
+    if (cancelado) continue
+    tareas.push(...aplicarUnDestino(s, p, carta, segundo))
+    const impreso = modificadorDeDestino(s, carta, p.encuentro, p.hab)
+    // «La Madre de agua»: el modificador se invierte («Fallas la Prueba» no cambia).
+    const mod = impreso !== 'fallo' && p.invertirDestino ? -impreso : impreso
+    if (mod === 'fallo') p.falla = true
+    else suma += mod
+  }
+  p.modDestino = suma
+  return tareas
+}
+
+/** Lo que un Destino hace además de su modificador (su efecto, su Sin oposición, «persigue»…). */
+function aplicarUnDestino(s: Estado, p: PruebaEnCurso, carta: InstId, segundo: boolean): NuevaTarea[] {
+  const hab = p.hab
+  if (!hab) return []
+  const d = destinoDe(copia(s, carta).id)
   p.sinCartas = p.sinCartas || (d.sinCartas ?? false)
   p.sinCanones = p.sinCanones || (d.sinCanones ?? false)
   p.heridaSiFallas += d.heridaSiFallas ?? 0
@@ -325,20 +364,19 @@ function aplicarDestino(s: Estado, p: PruebaEnCurso): NuevaTarea[] {
     tareas.push({ tipo: 'herirUno', n: d.heridaComprometido, entre: comprometidos })
   }
   if (d.heridaMasFuerte && comprometidos.length > 0) {
-    const hab = p.hab
     const valores = comprometidos.map((c) => valor(s, { tipo: 'habilidad', carta: c, hab }))
     const maximo = Math.max(...valores)
     tareas.push({ tipo: 'herirUno', n: d.heridaMasFuerte, entre: comprometidos.filter((_, i) => valores[i] === maximo) })
   }
-  // N14: Sin oposición se mira al aplicar el Destino, después de su ventana (N9). Si el Loro se ha unido
-  // en ella, ya hay alguien comprometido y no se aplica.
-  p.sinOposicion = p.comprometidos.length === 0
   // Reglas nuevas del Destino: lo que cambia en la Prueba, efectos añadidos y «persigue» (vuelve encima del mazo).
-  const reglas = reglasDe(copia(s, p.destino).id)?.destino
+  const reglas = reglasDe(copia(s, carta).id)?.destino
   if (reglas?.prueba) Object.assign(p, reglas.prueba)
-  if (reglas?.efectos && reglas.efectos.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: reglas.efectos, contexto: 'efecto', fuente: p.destino })
-  if (p.sinOposicion) tareas.push({ tipo: 'aplicarEfectos', efectos: d.sinOposicion, contexto: 'sinOposicion', fuente: p.destino })
-  if (reglas?.persigue || d.persigue) p.persigue = true
+  if (reglas?.efectos && reglas.efectos.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: reglas.efectos, contexto: 'efecto', fuente: carta })
+  if (p.sinOposicion) tareas.push({ tipo: 'aplicarEfectos', efectos: d.sinOposicion, contexto: 'sinOposicion', fuente: carta })
+  if (reglas?.persigue || d.persigue) {
+    if (segundo) p.segundoPersigue = true
+    else p.persigue = true
+  }
   return tareas
 }
 

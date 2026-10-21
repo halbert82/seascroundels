@@ -110,7 +110,7 @@ describe('Glosario de la mesa', () => {
   })
 
   it('un «no se prepara» o «no puede comprometerse» dice qué carta lo causa y cuándo termina', () => {
-    const hastas: Temporal['hasta'][] = ['inicio', 'finMision', 'superarPrueba', 'finPrueba', 'carta', 'finTurno']
+    const hastas: Temporal['hasta'][] = ['inicio', 'finMision', 'finPrueba', 'carta', 'finTurno']
     for (const h of hastas) {
       completa(ayudaLimitacion('noPrepara', h, 'Noche en vela', 'Noche en vela'))
       completa(ayudaLimitacion('noCompromete', h, null, null))

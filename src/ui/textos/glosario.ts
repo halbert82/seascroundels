@@ -197,7 +197,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     {
       rotulo: 'Detalles',
       texto:
-        'Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas las repartes como quieras entre tus Tripulantes, preparados o agotados, como cualquier otra herida. Si no asignaste a nadie, el rehén se elige al azar (nunca el Capitán).',
+        'Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas las repartes como quieras entre tus Tripulantes, preparados o agotados, como cualquier otra herida. Si no asignaste a nadie, o solo al Capitán, el rehén se elige al azar (nunca el Capitán).',
     },
   ),
   permanente: regla(
@@ -256,7 +256,8 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Línea de algunos Destinos que solo se aplica cuando no asignas a nadie a la Prueba. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
     {
       rotulo: 'Avance',
-      texto: 'Sin nadie asignado, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea diga que no se aplica el efecto de fallo.',
+      texto:
+        'Sin nadie asignado, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea diga que no se aplica el efecto de fallo. «−1 de Avance (mín. 0)»: ese encuentro da 1 de Avance menos, sin bajar de 0; no quita el Avance que ya tenía la misión.',
     },
   ),
   rehen: regla(
@@ -268,7 +269,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   recluta: regla(
     'recluta',
     'Recluta',
-    'Pagas el coste de un Tripulante del muelle y entra en juego, preparado (si la carta dice «gratis», no lo pagas). Tu Barco no puede llevar más Tripulantes que su Capacidad (el Capitán no cuenta).',
+    'Pagas el coste de un Tripulante del muelle y entra en juego, preparado (si la carta dice «sin coste», no lo pagas). Tu Barco no puede llevar más Tripulantes que su Capacidad (el Capitán no cuenta).',
     { rotulo: 'Durante una misión', texto: 'El Tripulante entra preparado, ocupa Capacidad (si no cabe, no puedes reclutarlo) y cuenta como reclutar.' },
   ),
   comprometidoCon: regla(
@@ -338,7 +339,11 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     { rotulo: 'Cuándo se va', texto: 'Se queda en juego entre misiones hasta que su carta diga que se va.' },
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
-  otear: regla('otear', 'Otear', 'Otear N: mira las N primeras cartas del mazo de Peligros y devuélvelas encima o al fondo del mazo, en el orden que quieras.'),
+  otear: regla(
+    'otear',
+    'Otear',
+    'Otea N: mira las N cartas superiores del mazo de Peligros y devuélvelas encima o al fondo del mazo, en el orden que quieras. Si la misión revela de un mazo propio mezclado, mira ese mazo.',
+  ),
   entrenamiento: regla(
     'entrenamiento',
     'Entrenamiento',
@@ -375,8 +380,6 @@ function finLimitacion(hasta: Temporal['hasta'], carta: string | null): string {
       return 'Después de tu próxima Fase de Inicio (en esa fase no se prepara).'
     case 'finMision':
       return 'Al terminar la misión.'
-    case 'superarPrueba':
-      return 'Cuando superes otra Prueba en esta misión, o al terminar la misión.'
     case 'finPrueba':
       return 'Al terminar esta Prueba.'
     case 'carta':

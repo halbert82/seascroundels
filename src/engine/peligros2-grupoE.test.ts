@@ -541,13 +541,18 @@ describe('55 · El Holandés errante', () => {
     expect(j.zona('rehenes')).toEqual(['bucanero'])
   })
 
-  it('Naturaleza: cada preparado que no comprometas sufre 1 herida; si fallas, 3 heridas entre los comprometidos', () => {
-    const j = en('nat', ['p2_holandes', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'isabela'] })
+  it('Naturaleza: cada preparado que no asignes sufre 1 herida; si fallas, Inflige 3 heridas, libres (fase 13)', () => {
+    const j = en('nat', ['p2_holandes', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'isabela', { id: 'viejo_lobo', agotada: true }] })
     j.comprometer('COM', ['capitan'])
     expect(j.copia('bucanero').heridas).toBe(1)
     expect(j.copia('isabela').heridas).toBe(1)
+    expect(j.copia('viejo_lobo').heridas).toBe(0) // estaba agotado: no se quedó atrás
     j.pasarOfertas().seguir()
-    expect(j.copia('capitan').heridas).toBe(3)
+    // Las 3 del fallo van a quien quiera el jugador: también al Viejo lobo, que no fue asignado.
+    expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 3 })
+    j.repartir({ capitan: 2, viejo_lobo: 1 })
+    expect(j.copia('capitan').heridas).toBe(2)
+    expect(j.copia('viejo_lobo').heridas).toBe(1)
   })
 
   it('Ciudad: si superas, miras las 5 de arriba; si fallas, Perseguido y descartas 2', () => {

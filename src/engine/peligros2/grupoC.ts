@@ -22,7 +22,7 @@ import {
   encuentroEs,
   enElMar,
   habilidadDe,
-  heridasAsignados,
+  heridas,
   mas,
   preparaCanon,
   canonesListos,
@@ -114,8 +114,8 @@ registrarPeligro('p2_aduana', {
     nat: { restriccion: { maximo: 2 }, fallo: [agotaCanones(1), comprometidoCon(mas('NAV'), { tipo: 'heridas', n: 1 })] },
     ciu: {
       elige: [
-        { texto: 'Le untas la mano: descarta 2 cartas y ganas el Avance sin Prueba', efectos: [descartar(2)] },
-        { texto: 'Pasas el género por tu cuenta: Prueba de EXP 3', prueba: true },
+        { texto: 'Untarle la mano: descarta 2 cartas y ganas el Avance sin Prueba', efectos: [descartar(2)] },
+        { texto: 'Pasar el género por tu cuenta: EXP 3', prueba: true },
       ],
       exito: [avance(1), robar(1)],
       fallo: [{ tipo: 'descartarAzar', n: 2 }],
@@ -141,8 +141,8 @@ registrarPeligro('p2_ojos', {
     // P35 (confirmada): si le pagas, se hace igualmente la Prueba de COM 2 (sin el +2); no se gana el Avance sin Prueba.
     ciu: {
       elige: [
-        { texto: 'Le pagas por callar: descarta 2 cartas y Prueba de COM 2', efectos: [descartar(2)], prueba: true },
-        { texto: 'No le pagas: Prueba de COM 2 con +2 (vuelve con los alguaciles)', prueba: true, modDificultad: 2 },
+        { texto: 'Pagarle por callar: descarta 2 cartas y haces la Prueba de COM 2', efectos: [descartar(2)], prueba: true },
+        { texto: 'No pagarle: la Prueba recibe +2 de dificultad (vuelve con los alguaciles)', prueba: true, modDificultad: 2 },
       ],
       exito: [robar(2)],
       fallo: [{ tipo: 'estado', estado: 'buscado', a: 'capitan' }],
@@ -294,7 +294,8 @@ registrarEspecial('p2_morro.baterias', (s, t, e) => {
   if (t.paso === 0) {
     // «+4 en su lugar salvo que descartes 2 cartas»: sin 2 cartas en la mano, +4.
     if (s.zonas.mano.length < 2) {
-      p.modDestino = 4
+      // −2 impreso → −4: se suma la diferencia (fase 13: con dos Destinos, el otro también cuenta).
+      p.modDestino += 2
       anotar(s, 'efecto', 'Las baterías del castillo: no puedes descartar 2 cartas, el Destino es +4.')
       return 'hecha'
     }
@@ -313,7 +314,7 @@ registrarEspecial('p2_morro.baterias', (s, t, e) => {
       encolar(s, { tipo: 'pagar', cantidad: 2, motivo: 'p2_morro' })
       return 'hecha'
     }
-    p.modDestino = 4
+    p.modDestino += 2
     anotar(s, 'jugada', 'Las baterías del castillo: el Destino es +4.')
   }
   return 'hecha'
@@ -337,7 +338,8 @@ registrarPeligro('p2_morro', {
     // Pon en juego la carta 231 del mazo de historia («La cadena de la bocana»).
     mar: { pone: { carta: 'pm_cadena' } },
     // COM 6 (4 con un Artillero). Fallo: 3 heridas repartidas entre los comprometidos.
-    nat: { exito: [preparaCanon()], fallo: [heridasAsignados(3)] },
+    // Fase 13: heridas libres («Inflige 3 heridas»; antes, repartidas entre los asignados).
+    nat: { exito: [preparaCanon()], fallo: [heridas(3)] },
     ciu: {
       exito: [{ tipo: 'rescatarRehenes', siNo: [avance(1)] }],
       fallo: [
@@ -419,7 +421,8 @@ registrarPeligro('p2_armada', {
       abordaje: true,
       capacidades: [dificultad('velas', (ctx) => (tieneEstadoBarco(ctx.s, 'velasRotas') ? 2 : 0))],
     },
-    nat: { exito: [preparar('comprometidos')], fallo: [heridasAsignados(2), pierdesAvance(1)] },
+    // Fase 13: heridas libres («Inflige 2 heridas»; antes, repartidas entre los asignados).
+    nat: { exito: [preparar('comprometidos')], fallo: [heridas(2), pierdesAvance(1)] },
     ciu: { fallo: [{ tipo: 'descartarAzar', n: 3 }] },
   },
   // +1. Persigue. Sin oposición: pierdes 1 Avance.

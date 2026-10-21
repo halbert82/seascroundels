@@ -4,6 +4,7 @@
 
 import { tipoDe } from '../catalogo.ts'
 import { anotar, copia } from '../estado.ts'
+import { tieneEstado } from '../estados.ts'
 import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
@@ -41,6 +42,15 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     // «Cura 2 heridas.» (repartidas como quieras)
     requisito: hayHeridos,
     efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('vendas'), 'herida'), modo: 'repartir' }],
+  }),
+  evento('arenga', 'libre', {
+    // Fase 13, «Arenga del capitán» (240): «Todos tus Tripulantes quedan Inspirados.» La ficha dura hasta el final del
+    // turno (toda la misión de ese turno). Los Pasajeros no son Tripulantes: no reciben Ventajas.
+    // TODO(regla): Albert la quiere en la Fase de Reclutamiento («como cualquier Evento sin momento propio»), pero el
+    // reglamento (Evento, N2) deja jugar un Evento sin momento propio en cualquier momento. Por ahora, como dijo Albert:
+    // solo en la Fase de Reclutamiento.
+    requisito: (s) => s.paso === 'jugarCartas' && s.zonas.tripulacion.some((c) => !tieneEstado(s, c, 'inspirado')),
+    efecto: () => [{ tipo: 'aplicarEfectos', efectos: [{ tipo: 'estado', estado: 'inspirado', a: 'todos' }], contexto: 'efecto' }],
   }),
   evento('polvora_c', 'libre', {
     // «Prepara todos tus Cañones.» (fase 10b)

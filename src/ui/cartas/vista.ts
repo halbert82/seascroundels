@@ -147,8 +147,11 @@ export interface VistaJugador {
 export interface Opcion {
   hab: Habilidad
   dificultad: number
-  /** «1 con» + «Cirujano» */
-  alternativa?: { texto: string; rasgo: string }
+  /**
+   * Fase 13 (regla A6): la dificultad por Rasgo se lee «Vigía −2» (o «Marinero asignado −2» si el Tripulante tiene que
+   * estar asignado): con ese Rasgo, la dificultad baja `rebaja`.
+   */
+  alternativa?: { rasgo: string; asignado: boolean; rebaja: number }
   /** La dificultad es «X». */
   variable?: boolean
 }
@@ -292,10 +295,13 @@ function base(entrada: EntradaCatalogo): Omit<VistaJugador, 'nombre' | 'color' |
   }
 }
 
+/** Fase 13: en las cartas de Peligro, «Daña 2» no se parte entre dos líneas. */
+const UNIR = { unirNumero: true } as const
+
 function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): VistaEncuentro {
   const opciones = e.prueba.map((p) => {
     const opcion: Opcion = { hab: p.hab, dificultad: p.dificultad }
-    if (p.alternativa) opcion.alternativa = { texto: `${p.alternativa.dificultad} ${p.alternativa.comprometido ? 'si asignas a un' : 'con'}`, rasgo: p.alternativa.rasgo }
+    if (p.alternativa) opcion.alternativa = { rasgo: p.alternativa.rasgo, asignado: p.alternativa.comprometido === true, rebaja: p.dificultad - p.alternativa.dificultad }
     if (p.variable) opcion.variable = true
     return opcion
   })
@@ -312,10 +318,10 @@ function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): Vista
         efecto: [],
         textos: {
           etiquetas: e.etiquetas ?? [],
-          nota: parsearTexto(e.notaPrueba ?? ''),
-          texto: parsearTexto(e.textoEfecto ?? ''),
-          exito: parsearTexto(e.textoExito ?? ''),
-          fallo: parsearTexto(e.textoFallo ?? ''),
+          nota: parsearTexto(e.notaPrueba ?? '', UNIR),
+          texto: parsearTexto(e.textoEfecto ?? '', UNIR),
+          exito: parsearTexto(e.textoExito ?? '', UNIR),
+          fallo: parsearTexto(e.textoFallo ?? '', UNIR),
           peso: 130 + (e.notaPrueba ?? '').length + (e.textoEfecto ?? '').length + (e.textoExito ?? '').length + (e.textoFallo ?? '').length,
         },
       }
@@ -334,6 +340,11 @@ function vistaEncuentro(e: EncuentroDatos, entorno?: Entorno, v2 = false): Vista
   return vista
 }
 
+/** «Vigía −2», «Marinero asignado −2» (fase 13, regla A6). */
+export function textoAlternativa(a: NonNullable<Opcion['alternativa']>): string {
+  return `${a.rasgo}${a.asignado ? ' asignado' : ''} −${a.rebaja}`
+}
+
 /** «−0», «+0» o «0» se dibujan igual: un «0» sin signo (decisión de Albert, 19 de octubre de 2026). */
 export function modificadorDestino(mod: string): string {
   return /^[−+-]?0$/.test(mod.trim()) ? '0' : mod
@@ -349,9 +360,9 @@ function vistaDestino(d: DestinoDatos, v2 = false): VistaDestino {
     colorMod,
     ambientacion: d.ambientacion,
     // Fase 10: en el Destino, «+N» suma al total del jugador (verde) y «−N» le resta (rojo), como en el resto del texto.
-    texto: parsearTexto(d.texto),
+    texto: parsearTexto(d.texto, v2 ? UNIR : {}),
     sinOposicion: v2 ? [] : parsearFichas(d.textoSinOposicion),
-    ...(v2 ? { sinOposicionTexto: parsearTexto(d.textoSinOposicion) } : {}),
+    ...(v2 ? { sinOposicionTexto: parsearTexto(d.textoSinOposicion, UNIR) } : {}),
   }
 }
 
@@ -599,7 +610,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       else if (r.draw) recompensaTexto = `y roba ${r.draw}`
       else if (r.reclutaGratis !== undefined) recompensaTexto = `Recluta sin coste un Tripulante del muelle de coste ${r.reclutaGratis} o menos.${textoPrecio(r.precio)}`
       else if (r.adquiereGratis !== undefined) recompensaTexto = `Adquiere sin coste una Mejora del muelle de coste ${r.adquiereGratis} o menos.${textoPrecio(r.precio)}`
-      else if (r.oteaMisiones) recompensaTexto = `Otea ${r.oteaMisiones} del mazo de Misiones`
+      // Fase 13: Otear es siempre del mazo de Peligros. «Cobrar la deuda» lo dice sin la palabra clave (mismo efecto).
+      // TODO(regla): texto por defecto hasta que Albert lo confirme.
+      else if (r.oteaMisiones)
+        recompensaTexto = `Mira las ${r.oteaMisiones} cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles.`
       const vista: VistaCapitulo = {
         forma: 'capitulo',
         num: entrada.num,

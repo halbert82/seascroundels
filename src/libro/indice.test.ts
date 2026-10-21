@@ -66,16 +66,31 @@ function nombres(x: Json, salida = new Set<string>()): Set<string> {
 /** Nombres de cartas, encuentros y Destinos: en negrita en una carta, no son términos de juego. */
 const NOMBRES_DE_CARTAS = nombres(cartas.map((c) => c.carta))
 
+/** El texto de los encuentros con la etiqueta «Elige» (fase 13: sin la palabra «Elige» en el texto). */
+function textosDeElige(x: Json, salida = new Set<string>()): Set<string> {
+  if (Array.isArray(x)) for (const y of x) textosDeElige(y, salida)
+  else if (x && typeof x === 'object') {
+    const etiquetas = x.etiquetas
+    if (Array.isArray(etiquetas) && etiquetas.includes('Elige') && typeof x.textoEfecto === 'string') salida.add(x.textoEfecto)
+    for (const v of Object.values(x)) textosDeElige(v, salida)
+  }
+  return salida
+}
+
 /**
  * Las negritas de las cartas que son términos de juego («**Acción:**», «**Envenenado**»…). No cuentan los nombres de
- * cartas («**Don Anselmo, el comerciante**») ni los nombres de las opciones de un «Elige» («**Elige. A remar:** …
+ * cartas («**Don Anselmo, el comerciante**») ni los nombres de las opciones de un «Elige» («**A remar:** …
  * **Esperar el viento:** …»).
  */
 function negritasDeCartas(): Map<string, string> {
   const encontradas = new Map<string, string>()
   for (const { id, carta } of cartas) {
+    const deElige = textosDeElige(carta)
     for (const texto of textos(carta)) {
-      let trasElige = false
+      // Fase 13 (regla A4): un encuentro «Elige» ya no lleva la palabra en su texto (sale junto a las palabras clave):
+      // sus negritas «**Nombre de la opción:**» son nombres de opciones desde el principio.
+      if (deElige.has(texto)) encontradas.set('Elige', id)
+      let trasElige = deElige.has(texto)
       for (const m of texto.matchAll(/\*\*(.+?)\*\*/g)) {
         const crudo = (m[1] ?? '').trim()
         const termino = crudo.replace(/\s*[:.]\s*$/, '')

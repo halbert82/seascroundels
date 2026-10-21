@@ -12,7 +12,7 @@
  "carpintero": "[agotar]: Repara {N dano g} o quita **Vía de agua** del Barco.",
  "matasanos": "[agotar]: Cura {N herida g} a un Tripulante.",
  "espadachin": "Si Espadachín errante es el único Tripulante que participa en una Prueba, recibe {N COM}.",
- "vigia": "[agotar]: Otea N del mazo de Peligros.",
+ "vigia": "[agotar]: Otea N.",
  "viejo_lobo": "**Respuesta:** Después de que se revele el Destino de una Prueba en la que participe Viejo lobo de mar, descarta ese Destino y revela otro. (Límite de una vez por turno.)",
  "baqueano": "**Respuesta:** Después de que superes una Prueba de [EXP] en la que participe Rastreador de la selva, gana {N avance}.",
  "loro": "**Respuesta:** Después de que se revele el Destino de una Prueba, asigna a Loro parlanchín a ella.",
@@ -39,7 +39,7 @@
  "patente": "Solo puede llevarla el Capitán.\nLos encuentros de tipo #Armada#, #Militar# y #Guardia# reciben {N g} de dificultad.",
  "coleto": "{N vida}",
  "botin": "Busca una Mejora.",
- "taberna": "Otea N del mazo de Peligros.",
+ "taberna": "Otea N.",
  "reparacion": "Repara {N dano g}.",
  "vendas": "Cura {N herida g}.",
  "ron_descanso": "**Acción:** Agota a tu Capitán: Cura {N herida g} a cada Tripulante.",
@@ -54,7 +54,7 @@
  "soborno": "**Respuesta:** Después de que reveles una carta de Peligro con Prueba en [ciu], supera automáticamente esa Prueba, sin revelar Destino.",
  "todos": "**Respuesta:** Después de que asignes Tripulantes a una Prueba, suma {N} por cada Tripulante asignado.",
  "ni_hombre": "**Interrupción:** Cuando un Tripulante que participe en una Prueba vaya a sufrir heridas, elige a otro Tripulante que participe en esa Prueba. Ese Tripulante las sufre en su lugar.",
- "naufrago": "**Acción:** Mira las N primeras cartas del mazo de muelle. Puedes reclutar a un Tripulante de entre ellas sin pagar su coste. Descarta las demás.\nAl final del turno, descarta a ese Tripulante.",
+ "naufrago": "**Acción:** Mira las N cartas superiores del mazo de muelle. Puedes reclutar a un Tripulante de entre ellas sin pagar su coste. Descarta las demás.\nAl final del turno, descarta a ese Tripulante.",
  "prisionero": "**Respuesta:** Después de que superes una Prueba de [COM], recluta del muelle un Tripulante de coste N o menos sin pagar su coste.",
  "senda": "**Al zarpar hacia una misión [nat]:** Gana {N avance}.",
  "espesura": "**Interrupción:** Cuando vayas a aplicar los efectos de fallo de una Prueba en [nat], ignóralos.",
@@ -63,7 +63,7 @@
  "retirada": "**Respuesta:** Después de que se revele el Destino de una Prueba, descarta la carta de Peligro sin resolverla.",
  "espada": "{N COM}.\n**Interrupción:** Cuando se revele el Destino de una Prueba de [COM] en la que participe el portador, cancélalo. (Límite de una vez por misión.)",
  "mascaron": "Indestructible.\n{N dano}.\n**Interrupción:** Cuando el Barco vaya a recibir daño, evítalo. (Límite de una vez por misión.)",
- "despachos": "Indestructible.\n**Al zarpar:** Otea N del mazo de Peligros.",
+ "despachos": "Indestructible.\n**Al zarpar:** Otea N.",
  "mapa_calas": "Indestructible.\nTus misiones [nat] necesitan {N avance g}.",
  "polvora_rey": "Al entrar en juego, pon N fichas sobre esta carta.\n**Respuesta:** Después de agotar un Cañón en una Prueba de [COM], quita N ficha de esta carta: esa Prueba recibe {N} más. Si no quedan fichas, descarta esta carta.",
  "farol": "Indestructible.\n**Respuesta:** Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)",
@@ -76,5 +76,6 @@
  "cortar": "**Acción:** Descarta N cartas de tu mano: Devuelve al mazo de historia una carta de la zona de permanentes.",
  "a_por_ellos": "**Acción:** Haz una Prueba de [COM] N. Si la superas, rescata a todos los rehenes de esta misión: vuelven preparados.",
  "ron_valientes": "**Acción:** Un Tripulante queda **Borracho** y **Aguerrido**.",
- "virar": "**Interrupción:** Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar."
+ "virar": "**Interrupción:** Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar.",
+ "arenga": "Todos tus Tripulantes quedan **Inspirados**."
 }

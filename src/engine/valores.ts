@@ -26,9 +26,14 @@ export function mejoraActiva(s: Estado, inst: InstId): boolean {
 }
 
 /** La carta cuyo Destino se aplica en la Prueba en curso (revelado y sin cancelar). */
-export function destinoVigente(s: Estado): InstId | null {
+export function destinosVigentes(s: Estado): InstId[] {
   const p = s.prueba
-  return p?.destino && !p.destinoCancelado && s.zonas.destino.includes(p.destino) ? p.destino : null
+  if (!p) return []
+  // Fase 13: dos Destinos en «Bruma en la selva»; cada uno vale mientras no se cancele.
+  const lista: InstId[] = []
+  if (p.destino && !p.destinoCancelado && s.zonas.destino.includes(p.destino)) lista.push(p.destino)
+  if (p.segundoDestino && !p.segundoCancelado && s.zonas.destino.includes(p.segundoDestino)) lista.push(p.segundoDestino)
+  return lista
 }
 
 /** Capacidades constantes activas, con la carta que las da (null para temporales y Barco). */
@@ -67,8 +72,7 @@ function* constantesActivas(s: Estado): Generator<[Capacidad, InstId | null]> {
   for (const inst of s.zonas.encuentro) {
     for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.ventana === 'constante' && cap.desde === 'encuentro') yield [cap, inst]
   }
-  const destino = destinoVigente(s)
-  if (destino) {
+  for (const destino of destinosVigentes(s)) {
     for (const cap of capacidadesDe(copia(s, destino).id)) if (cap.ventana === 'constante' && cap.desde === 'destino') yield [cap, destino]
   }
   for (const inst of s.zonas.permanentes) {

@@ -34,6 +34,8 @@ function migrar(s: Estado): void {
     s.estadosBarco = s.estadosBarco.filter((e) => !fuera.has(e))
     if (s.estadosBarco.length === 0) delete s.estadosBarco
   }
+  // Fase 13: fuera «no se prepara hasta que superes otra Prueba» (lo usaba solo «Bruma en la selva»): se acaba ya.
+  s.temporales = (s.temporales ?? []).filter((t) => (t.hasta as string) !== 'superarPrueba')
   const fichas = s.mision?.fichas as Record<string, number> | undefined
   if (fichas && 'ventaja' in fichas) {
     fichas.ladron = fichas.ventaja ?? 0

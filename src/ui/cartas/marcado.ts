@@ -51,7 +51,8 @@ export type Segmento =
   | { tipo: 'ambiente'; texto: string }
   /** `pegado`: texto en negrita que va justo detrás del icono, sin espacio (p. ej. «:»). */
   | { tipo: 'icono'; icono: IconoId; negrita: boolean; pegado?: string }
-  | { tipo: 'numero'; valor: string; icono?: IconoId; color: ColorNumero }
+  /** `tras`: puntuación pegada detrás del icono («Daña 2.»), para que no se quede sola al principio de una línea. */
+  | { tipo: 'numero'; valor: string; icono?: IconoId; color: ColorNumero; tras?: string }
   | { tipo: 'parrafo' }
 
 const PATRON = /\*\*|\[([A-Za-z]+)\]|\{([^}]*)\}|_([^_]+)_|#([^#]+)#|~([^~]+)~|\n/g
@@ -59,6 +60,11 @@ const PATRON = /\*\*|\[([A-Za-z]+)\]|\{([^}]*)\}|_([^_]+)_|#([^#]+)#|~([^~]+)~|\
 /** Opciones de interpretación. En la franja de Destino, un «+N» sin marca sube la dificultad: va en rojo. */
 export interface OpcionesTexto {
   masEsMalo?: boolean
+  /**
+   * Fase 13 (cartas de Peligro): un número con icono no se separa de la palabra que lo lleva («Daña 2», «Inflige 1»): el
+   * espacio de antes no parte la línea.
+   */
+  unirNumero?: boolean
 }
 
 function colorDeNumero(
@@ -147,6 +153,26 @@ export function parsearTexto(texto: string, opciones: OpcionesTexto = {}): Segme
     const resto = siguiente.texto.slice(pegado.length)
     if (resto) siguiente.texto = resto
     else segmentos.splice(i + 1, 1)
+  }
+
+  if (opciones.unirNumero) {
+    for (let i = 0; i < segmentos.length - 1; i++) {
+      const actual = segmentos[i]
+      const siguiente = segmentos[i + 1]
+      if (actual?.tipo === 'texto' && siguiente?.tipo === 'numero' && siguiente.icono && /\p{L} $/u.test(actual.texto)) {
+        actual.texto = `${actual.texto.slice(0, -1)}\u00a0`
+      }
+      // La puntuación que sigue al icono va con él.
+      if (actual?.tipo === 'numero' && actual.icono && siguiente?.tipo === 'texto') {
+        const signos = /^[.,;:)]+/.exec(siguiente.texto)?.[0]
+        if (signos) {
+          actual.tras = signos
+          const resto = siguiente.texto.slice(signos.length)
+          if (resto) siguiente.texto = resto
+          else segmentos.splice(i + 1, 1)
+        }
+      }
+    }
   }
 
   return segmentos

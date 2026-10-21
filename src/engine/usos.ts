@@ -6,7 +6,7 @@ import { claveUso, copia, encolar } from './estado.ts'
 import { estadosDe } from './estados.ts'
 import { cartaDeEstado } from './infoEstados.ts'
 import type { Capacidad, Coste, Estado, Evento, InstId, Uso, Ventana } from './tipos.ts'
-import { destinoVigente, mejoraActiva, valor } from './valores.ts'
+import { destinosVigentes, mejoraActiva, valor } from './valores.ts'
 import { estaEn } from './zonas.ts'
 import { canonesPreparados } from './capacidades/comun.ts'
 
@@ -36,8 +36,7 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   // Fase 6: el encuentro que se resuelve, el Destino de la Prueba, las permanentes (fase 11), cartas de Peligro en el
   // muelle y Estados.
   for (const inst of s.zonas.encuentro) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'encuentro') yield [cap, inst]
-  const destino = destinoVigente(s)
-  if (destino) for (const cap of capacidadesDe(copia(s, destino).id)) if (cap.desde === 'destino') yield [cap, destino]
+  for (const destino of destinosVigentes(s)) for (const cap of capacidadesDe(copia(s, destino).id)) if (cap.desde === 'destino') yield [cap, destino]
   for (const inst of s.zonas.permanentes) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'permanente') yield [cap, inst]
   for (const inst of s.zonas.muelle) {
     if (s.peligrosEnMuelle?.[inst] === undefined) continue

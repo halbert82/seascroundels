@@ -445,7 +445,8 @@ describe('Partida de aprendizaje, sin Escenario (fase 10c)', () => {
     expect(s.sinEscenario.dias).toBe(0)
   })
 
-  it('como con el mazo: 11 días dan 12 turnos, y el último se juega y se pierde', async () => {
+  // Juega 5 partidas enteras (unos 2 s): con toda la batería en paralelo pasaba de los 5 s por defecto.
+  it('como con el mazo: 11 días dan 12 turnos, y el último se juega y se pierde', { timeout: 60_000 }, async () => {
     const { jugarPartida } = await import('./pruebas/equilibrio.ts')
     const jugador = jugadorConCriterio()
     for (const semilla of [1, 2, 3, 4, 5]) {

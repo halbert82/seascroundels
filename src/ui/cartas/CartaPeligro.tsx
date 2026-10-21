@@ -3,7 +3,32 @@
 import { Fragment, useLayoutEffect, useRef, type CSSProperties } from 'react'
 import { Fichas, TextoCarta, claseIcono } from './TextoCarta.tsx'
 import { esNombreEncuentroLargo } from './ajustes.ts'
-import { COLOR_ENTORNO, COLOR_HABILIDAD, type TextosEncuentro, type VistaDestino, type VistaEncuentro, type VistaMazoPropio, type VistaPeligro } from './vista.ts'
+import {
+  COLOR_ENTORNO,
+  COLOR_HABILIDAD,
+  textoAlternativa,
+  type Opcion,
+  type TextosEncuentro,
+  type VistaDestino,
+  type VistaEncuentro,
+  type VistaMazoPropio,
+  type VistaPeligro,
+} from './vista.ts'
+
+/**
+ * La dificultad por Rasgo, debajo del recuadro de la Prueba (fase 13, regla A6): «Vigía −2», «Marinero asignado −2».
+ * Con un Tripulante con ese Rasgo (asignado, si lo dice), la dificultad baja esa cifra.
+ */
+function Alternativa({ a }: { a: NonNullable<Opcion['alternativa']> }) {
+  return (
+    <span title={`Si tienes un ${a.rasgo}${a.asignado ? ' asignado a la Prueba' : ' en la tripulación'}, la dificultad baja ${a.rebaja}.`}>
+      <i>{a.rasgo}</i>
+      {a.asignado ? ' asignado' : ''}
+      {'\u00a0'}
+      <b className="rebaja">−{a.rebaja}</b>
+    </span>
+  )
+}
 
 /** «3 / 2»: lo que ganas si superas la Prueba y, más pequeño, si no la superas. */
 function AvanceEncuentro({ e }: { e: VistaEncuentro }) {
@@ -48,7 +73,7 @@ function Encuentro({ e }: { e: VistaEncuentro }) {
                   </span>
                   {o.alternativa && (
                     <span className="alt">
-                      ({o.alternativa.texto} <i>{o.alternativa.rasgo}</i>)
+                      (<Alternativa a={o.alternativa} />)
                     </span>
                   )}
                 </Fragment>
@@ -125,7 +150,7 @@ function Prueba2({ e, nota }: { e: VistaEncuentro; nota: TextosEncuentro['nota']
           </span>
           {o.alternativa && (
             <span className="alt">
-              {o.alternativa.texto} <i>{o.alternativa.rasgo}</i>
+              <Alternativa a={o.alternativa} />
             </span>
           )}
         </Fragment>
@@ -150,13 +175,14 @@ function largoDe(segmentos: TextosEncuentro['nota']): number {
  */
 function pideColumnaAncha(e: VistaEncuentro): boolean {
   const nota = e.textos ? largoDe(e.textos.nota) : 0
-  return nota > 34 || e.opciones.some((o) => o.alternativa && o.alternativa.texto.length + o.alternativa.rasgo.length > 12)
+  return nota > 34 || e.opciones.some((o) => o.alternativa && textoAlternativa(o.alternativa).length > 15)
 }
 
 /**
  * Un encuentro de los Peligros 2.0 (fase 10, segunda revisión de Albert). Arriba, el nombre, el Avance y las etiquetas;
  * debajo, el texto del encuentro a todo el ancho; y al pie, la Prueba a la izquierda, un filete y, a su derecha, Éxito
- * encima de Fallo. Sin Prueba, el efecto ocupa todo el ancho.
+ * encima de Fallo. Sin Prueba, el efecto ocupa todo el ancho (fase 13: sin la etiqueta «Sin Prueba»: un encuentro sin
+ * recuadro de Prueba ya se entiende).
  */
 function Encuentro2({ e, ancha }: { e: VistaEncuentro; ancha: boolean }) {
   const t = e.textos
@@ -184,7 +210,6 @@ function Encuentro2({ e, ancha }: { e: VistaEncuentro; ancha: boolean }) {
               {x}
             </span>
           ))}
-          {!e.conPrueba && <span className="sinp">Sin Prueba</span>}
         </div>
         {t.texto.length > 0 && (
           <p className={e.conPrueba ? 't2 fx' : 't2 fx solo'}>

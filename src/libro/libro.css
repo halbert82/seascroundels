@@ -448,6 +448,12 @@ body {
   margin-right: 0.14em;
 }
 
+/* «Daña 1»: el icono va detrás del número, como en las cartas. */
+.libro .ic-ficha.ic-tras {
+  margin-left: 0.14em;
+  margin-right: 0;
+}
+
 .libro .ic-ficha.i-herida {
   color: #a3271c;
 }

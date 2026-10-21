@@ -3,7 +3,7 @@
 import { esCanon, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada } from '../estado.ts'
 import { agotar, quitarEstadoAnotado, quitarEstadoBarco } from '../estados.ts'
-import { definicionActual } from '../prueba.ts'
+import { definicionActual, destinosDeLaPrueba } from '../prueba.ts'
 import { reglasDe } from '../definiciones.ts'
 import { mazoActivo, ponerAPerseguir } from '../peligros.ts'
 import type { Estado, Evento, NuevaTarea, TareaDe } from '../tipos.ts'
@@ -15,9 +15,14 @@ import { preguntar, type Manejador, type Resultado } from './comun.ts'
 /** «Si superas…» / «Si fallas…» del Destino de la Prueba en curso (si no se ha cancelado). */
 function efectosDelDestino(s: Estado, cuando: 'siSuperas' | 'siFallas'): NuevaTarea[] {
   const p = s.prueba
-  if (!p?.destino || p.destinoCancelado) return []
-  const efectos = reglasDe(copia(s, p.destino).id)?.destino?.[cuando]
-  return efectos && efectos.length > 0 ? [{ tipo: 'aplicarEfectos', efectos, contexto: cuando === 'siSuperas' ? 'exito' : 'fallo', fuente: p.destino }] : []
+  if (!p) return []
+  // Fase 13: con dos Destinos («Bruma en la selva»), los de los dos.
+  return destinosDeLaPrueba(p)
+    .filter((d) => !d.cancelado)
+    .flatMap((d): NuevaTarea[] => {
+      const efectos = reglasDe(copia(s, d.carta).id)?.destino?.[cuando]
+      return efectos && efectos.length > 0 ? [{ tipo: 'aplicarEfectos', efectos, contexto: cuando === 'siSuperas' ? 'exito' : 'fallo', fuente: d.carta }] : []
+    })
 }
 
 function aplicarSuceso(s: Estado, ev: Evento): void {
@@ -63,8 +68,6 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
       if (p.preparaSiSuperas) tareas.push({ tipo: 'prepararUno', entre: [...p.comprometidos] })
       // Lo que el Destino de esta Prueba hace si la superas.
       tareas.push(...efectosDelDestino(s, 'siSuperas'))
-      // «Hasta que superes otra Prueba» se acaba aquí.
-      s.temporales = s.temporales.filter((x) => x.hasta !== 'superarPrueba')
       // Fase 10b: Maldito se quita al superar una Prueba a la que esté asignado (cualquiera), y Perseguido, al superar
       // un encuentro de tipo Armada.
       for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'maldito', 'supera la Prueba')

@@ -168,7 +168,7 @@ Fuente: `docs/misiones-2.0.md`. Las reglas impresas en `cartas.json` son para le
 ### Respuestas de Albert a P49–P56 (18 de octubre de 2026)
 
 - **Confirmadas tal cual:**
-  - **P49** · «Cada Peligro sin Prueba» son las cartas que llevan impreso «Sin Prueba»: un «Elige» en el que pagas no cuenta;
+  - **P49** · «Cada Peligro sin Prueba» son los encuentros sin Prueba (los que no tienen recuadro de Prueba; fase 13: la etiqueta «Sin Prueba» ya no se imprime): un «Elige» en el que pagas no cuenta;
   - **P53** · si La Armada ya estaba en el mazo cuando os dan alcance en la Flota III, se saca de ahí y, después de resolverla, se aparta;
   - **P54** · el +1 de «¡La guardia!» también vale para su propia Prueba de COM 5 (queda en COM 6);
   - **P55** · Seguirle por los muelles: una Prueba sin nadie comprometido no pone Sospecha;
@@ -712,3 +712,70 @@ Encargo de Albert: El espía y El barco fantasma pasan a dos capítulos; La Flot
 - **Travesías terminadas** (% de partidas, normal; entre paréntesis, % de victorias de esas): el templo 0,6 → 11,9 (55); la Flota 0,8 → 9,2 (76); San Felipe 7,2 → 18,6 (67); Maracaibo 4,9 → 18,0 (66); el fantasma 16,9 → 18,6 (71); el espía 14,2 → 14,3 (59); Panamá 0,3 → 1,1 (100). En la larga, el templo 18,9 % y la Flota 16,5 %.
 - **Panamá sale** (% de partidas normales en que llega a estar disponible): I 52,2 → 35,0; II 15,4 → 21,0; III 5,0 → 16,1.
 - La medida nueva (turnos de espera y apariciones de Panamá) está en la medida rápida; `docs/informe-equilibrio.md`, regenerado.
+
+## Fase 13: revisión de Peligros (tandas 1 y 2), heridas libres y Arenga del capitán (21 de octubre de 2026)
+
+Albert revisa las cartas de Peligro una a una. Esta fase aplica las tandas 1 y 2 (cartas 154 a 159), las reglas de estilo para todas las cartas de Peligro y de mazo propio, el cambio de regla de las heridas y una carta de jugador nueva. Las permanentes (226–237) no se han tocado: Albert las revisará aparte.
+
+### Reglas de estilo (todas las cartas de Peligro y de mazo propio)
+
+- **A1 · Sin la etiqueta «Sin Prueba».** Un encuentro sin recuadro de Prueba ya se entiende. Lo que significa no cambia: «un encuentro sin Prueba (el que no tiene recuadro de Prueba)». Reescrito en el reglamento, en `docs/misiones-2.0.md` y en P49. Un «Elige» en el que pagas sigue sin contar como encuentro sin Prueba.
+- **A2 · Avance con icono:** «+1 [avance]», «−1 [avance]» (`{+1 avance}`, `{−1 avance}`). 41 cartas. «−N» sigue quitando Avance a la misión (nunca baja de 0). Única excepción, el Sin oposición «−1 [avance] (mín. 0)» de 154, 157 y 158: ese encuentro da 1 menos (mínimo 0) y nunca quita Avance que la misión ya tenía (efecto `menosAvanceEncuentro`; la mesa lo descuenta de lo que prevé ganar).
+- **A3 · «Superior»:** 9 cartas de Peligro (155, 177, 180, 197, 199, 207, 212, 217 y el Pasadizo, 125), «Náufrago en la playa», la regla de «Seguirle por Port Royal» (135), el reglamento (Inicio, Final de turno, misiones disponibles, revelar Peligros y Destino, perder un día, Revelar, ejemplo de juego) y la mesa.
+- **A4 · «Elige»:** sin la palabra en el texto (sale junto a las palabras clave), cada opción en su línea y la Prueba como «**Nombre:** [habilidad] N». 12 encuentros: 156, 160, 175, 176, 187, 188, 200, 201, 211, 213, 124 y 225. Donde las opciones no tenían nombre se les ha puesto uno sacado del texto (lista en el informe). En 187 sale del texto «(1 con un _Contrabandista_)»: ya lo dice «Contrabandista −2» bajo la Prueba.
+- **A5 · «Agota a 1 Tripulante»:** 156 (A remar y Bochorno) y 174. Sin tocar (dudosas): 199 nat («Agota 1 Tripulante preparado (le toca desollar sus reses)») y 213 nat («Agota a 2 Tripulantes preparados; no se preparan en tu próxima Fase de Inicio»).
+- **A6 · Dificultad por Rasgo:** debajo del recuadro de la Prueba sale «Vigía −2» o «Marinero asignado −2» (N = dificultad base − alternativa). Mismo efecto. Son 24 Pruebas: las 23 de la lista de Albert y la de «Trampa de dardos» (123, «Explorador −1»). Reglamento: anatomía del Peligro, «Resolver una Prueba», entradas Prueba y Rasgo con ejemplo; mesa: panel de asignar y textos de las opciones.
+- **A7 · Daña / Repara con el icono del casco** (`{N dano}`, `{N dano g}`): 29 cartas (25 de Peligro y 4 de mazo propio). Reglamento: Daño al Barco, Daño, Curar y reparar, Referencia rápida. El libro pone el icono del casco detrás de «Daña N» y «Repara N».
+- **A8 · Otear siempre del mazo de Peligros:** «Otea N». Vigía inexperta, Rumores de taberna y Los despachos del Rey ya no dicen «del mazo de Peligros». «Cobrar la deuda» dice «Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles» (mismo efecto). Si la misión revela de un mazo propio mezclado, Otear mira ese mazo (como ya hacía el motor). No hay más usos de Otear sobre el mazo de Misiones.
+- **A9 · Entornos con icono** («[mar]:», «[nat]/[ciu]:»): Destinos de 159, 161, 163, 193, 208 y 217. No hay más en los textos de los encuentros.
+- **A10 y A11:** inventarios con propuestas en el informe (sin cambiar cartas).
+- **A12–A14** (solo 154–159 y las del punto B): icono de herida, «Inflige N», «X sufre N», «Cura N» y «sin coste».
+
+### Cambio de regla: las heridas de los encuentros son siempre libres
+
+Las heridas de un encuentro (de su Prueba fallada o de su efecto) las reparte el jugador como quiera entre todos sus Tripulantes, el Capitán incluido, preparados o agotados. Herir a un Tripulante asignado queda para los Destinos.
+
+- Pasan a heridas libres (texto «Inflige {N herida}»): Río abajo (154), Raqueros de la costa (159), el fortín (193), los dragones (195), los ahogados (217), los Guerreros esqueleto (122) y el Aguacero de huracán (163: «elige: inflige 1 herida o −1 [avance]»).
+- No cambian (señalan a un Tripulante concreto): la fiera (183, Sin ayuda: «El Tripulante sufre 2 heridas y queda Asustado»), el duelo (204, «Tu duelista…»), la última mano (199, «Tu jugador…»), la cacería del jaguar (permanente 229, «solo con él»), los «el asignado con más/menos X», Abordaje (sus heridas ya eran libres) y los Destinos que hieren a un asignado.
+- Reglamento: Heridas (Aprende a jugar) y Herida y Prueba (Referencia), con el ejemplo del «tanque» («Raqueros de la costa»: las 2 heridas van a Diego, que se quedó a bordo). Fuera la excepción «uno de los Tripulantes asignados».
+- Jugador automático: el mismo criterio que con las heridas libres de la fase 10.
+
+### Cartas 154 a 159
+
+- **154 · La corriente del Golfo:** ambientes nuevos, «Daña 1», Río abajo con heridas libres, «sin coste». Destino «Chorro»: +1 en cualquier Prueba (fuera «Prueba de NAV: +2»); Sin oposición «−1 [avance] (mín. 0)».
+- **155 · Cielo estrellado:** «Guiarse por las estrellas»; El cosmógrafo prepara a 1 Tripulante asignado (fuera Inspirado y robar). Destino «Estrella polar»: fuera «las cartas de la mano no suman».
+- **156 · Calma chicha:** el fallo hiere a toda la tripulación (1 cada uno). Bochorno: +1 de dificultad por cada asignado herido (antes, −1 al total por cada uno). Destino «Ni un soplo»: fuera «el Barco no da su +1».
+- **157 · Niebla:** Proa en la niebla, «Vigía −1», éxito sin efecto y fallo «**Abordaje**». Bruma en la selva: «Resuelve 2 cartas de Destino en esta Prueba» y, si fallas, se descarta el asignado con menos EXP (el Capitán sufre 1 herida en su lugar). Noche de niebla: ambiente nuevo y «la guardia». Destino «Bruma»: −1 siempre; Sin oposición «−1 [avance] (mín. 0)». Fuera del motor «no se prepara hasta que superes otra Prueba» (solo lo usaba la Bruma; las partidas guardadas lo pierden al cargarse).
+- **158 · Bajamar:** El estero sube con ambiente nuevo, «la siguiente Prueba de esta misión recibe −1» y fallo «El asignado con menos NAV sufre 1 herida. −1 [avance]». «Casco en seco» (antes «Carenar en la bajamar»): Repara 1 (2 con un Carpintero). Destino: Sin oposición «−1 [avance] (mín. 0)».
+- **159 · Arrecife:** Arrecife de los Colorados, «Otea 1» y «Daña 2» (fuera agotar un Cañón). Raqueros: «Adquiere sin coste una Mejora del muelle» (cualquier coste; si no cabe, no se puede) y heridas libres. La barra del puerto: «Marinero asignado −2», «Roba 1» y «Daña 1». Destino «Coral bajo la quilla»: −1 siempre.
+
+**Dos Destinos («Bruma en la selva»).** Se revelan las dos cartas superiores del mazo de Peligros y valen las dos: se suman sus modificadores, se aplican los efectos de las dos y, si no hay nadie asignado, los dos Sin oposición. «Reflejos de gato» cancela solo uno, el que elija el jugador; igual el Escapulario y la Espada, y el Viejo lobo y el Farol eligen cuál cambian. Las dos cartas se descartan. La mesa enseña «Destino 1 de 2» y «Destino 2 de 2», una línea por cada uno en el desglose del total, y el registro dice «Segundo Destino, de la carta X: +1. Valen los dos.» (escena `#/escena/dosDestinos`). Las cartas que cambian el modificador sobre la marcha («Vendaval», «Giro de la muerte», «Las baterías del castillo», «Dados cargados») ahora lo suman al de la Prueba en vez de sustituirlo, para que el otro Destino también cuente.
+
+### Arenga del capitán (240)
+
+Evento, coste 1, Neutral, un icono de COM: «Todos tus Tripulantes quedan **Inspirados**.» Ambiente: «"Hoy nadie vuelve con las manos vacías. ¿Quién viene conmigo?"». Ilustración pendiente. Está en la colección (224 cartas, 30 Eventos) pero no en el mazo de inicio de Diego. Se juega en la Fase de Reclutamiento (ver P76). El jugador automático la juega si va a zarpar con 2 o más Tripulantes preparados, después de reclutar y adquirir.
+
+### Pendiente de Albert (opciones por defecto aplicadas y marcadas `TODO(regla)`)
+
+- **P71 · Dos Destinos:** la lectura de arriba (se suman, se aplican los dos, los dos Sin oposición, una carta que cancela elige uno). Con «Mal agüero» a la vez, el primero sale de sus 2 y el segundo es otro.
+- **P72 · Bruma en la selva, fallo:** empate en EXP, elige el jugador; sin nadie asignado, no se descarta a nadie; el Tripulante se descarta como cualquier otro (sus Mejoras con él; sus Tesoros pasan a otro).
+- **P73 · Otear con un mazo propio mezclado:** mira ese mazo, el del que revelas.
+- **P74 · «Cobrar la deuda»:** el texto sin «Otea».
+- **P75 · «La barra del puerto», fallo «Daña 1»:** es un encuentro de Ciudad; por defecto daña el Barco aunque estés en tierra, como «Te roban el barco» (P19).
+- **P76 · Arenga del capitán:** por defecto solo en la Fase de Reclutamiento, como dijo Albert; pero el reglamento deja jugar un Evento sin momento propio en cualquier momento (N2).
+- **P77 · «−1 [avance] (mín. 0)» en la Prueba de una Acción** (no es de un encuentro): no hace nada.
+- **P78 · Heridas de los Sin ayuda** (la fiera, el duelo, la última mano, la cacería del jaguar): siguen yendo al Tripulante que hizo la Prueba.
+- **P79 · «Cada Tripulante asignado sufre 1 herida»** (161, 175, 180, 190, 203 y 208): sin cambiar.
+- **P80 · Abordaje con solo el Capitán asignado y 3 o más puntos de falta:** el motor elige al azar el rehén entre los demás Tripulantes (el Capitán no puede serlo). Escrito así en la entrada «Abordaje» y en la ayuda de la mesa.
+
+### Equilibrio de la fase 13 (solo como información; 1000 partidas por modo, semillas 1–1000, el mismo jugador automático)
+
+| Modo | Fase 12 publicada | Fase 13 | Fase 13 con la Arenga en lugar de «Ron para los valientes» |
+| --- | --- | --- | --- |
+| Corta | 43,8 % | 43,0 % | 43,0 % |
+| Normal | 37,9 % | 35,4 % | 35,1 % |
+| Larga | 34,0 % | 33,0 % | 32,5 % |
+
+- Panamá terminada: 0,3 / 0,3 / 1,5 % (con la Arenga, 0,2 / 0,3 / 1,6 %): por debajo del 10 %.
+- La diferencia con la fase 12 es la suma de todo lo de esta fase (cartas 154–159, heridas libres, dos Destinos). La normal baja 2,5 puntos, algo más que el ruido (±1,5).
+- La Arenga (mazo de prueba, `MEDIR_VARIANTE=MAZO:ron_valientes=arenga`) se juega en una de cada cuatro partidas, más o menos (26 veces en 100 partidas): no mueve las victorias.

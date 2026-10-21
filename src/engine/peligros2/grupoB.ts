@@ -65,8 +65,8 @@ registrarPeligro('p2_sol', {
     // Elige: volver al último arroyo (pierdes 1 Avance) o buscar agua por delante (Prueba de EXP 3).
     nat: {
       elige: [
-        { texto: 'Volver al último arroyo: pierdes 1 Avance', efectos: [pierdesAvance(1)] },
-        { texto: 'Buscar agua por delante: Prueba de EXP 3', prueba: true },
+        { texto: 'Volver al último arroyo: −1 de Avance', efectos: [pierdesAvance(1)] },
+        { texto: 'Buscar agua por delante: EXP 3', prueba: true },
       ],
       exito: [{ tipo: 'curar', n: 1, modo: 'cadaComprometido' }],
       // Fase 10b: fuera Aturdido: 1 herida a cada asignado.
@@ -100,7 +100,7 @@ registrarPeligro('p2_hambre', {
     ciu: {
       elige: [
         { texto: 'Pagar lo que piden: descarta 2 cartas', efectos: [descartar(2)] },
-        { texto: 'Regatear: Prueba de EXP 3', prueba: true },
+        { texto: 'Regatear: EXP 3', prueba: true },
       ],
       exito: [robar(1), { tipo: 'curar', n: 1 }],
       // P29 (confirmada): «−1 Mando en tu próximo turno»: robas una carta menos al final de tu próximo turno (no
@@ -443,7 +443,8 @@ registrarEspecial('p2_caiman.giro', (s, _t, e) => {
   const c = fuertes.find((x) => x === clave)
   if (!c) return 'hecha'
   p.falla = false
-  p.modDestino = 1
+  // Se suma (fase 13: con dos Destinos, el otro también cuenta). Un ✕ no aportaba nada al modificador.
+  p.modDestino += 1
   anotar(s, 'jugada', `${nombre(s, c)} se suelta de las fauces: el Destino es +1.`)
   encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 2 }, fase: 'antes', cancelado: false, usadas: [] })
   return 'hecha'
