@@ -54,18 +54,20 @@ describe('123 · Trampa de dardos', () => {
     expect(k.copia('capitan').estados).toContain('envenenado')
   })
 
-  it('Destino «Dardos desde el techo»: inflige 1 herida a un Tripulante asignado, el que elijas (fase 13, I1: antes, al de la habilidad más baja); Sin oposición, 1 herida más', () => {
+  it('Destino «Dardos desde el techo»: inflige 1 herida a un Tripulante asignado, el que elijas (fase 13, I1: antes, al de la habilidad más baja); sin nadie asignado, solo su Sin oposición (P83)', () => {
     const j = en('nat', ['chubasco', 'dardos', 'calma'], { tripulacion: ['carpintero'] })
     j.comprometer('EXP', ['capitan', 'carpintero'])
     expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 1 })
     j.repartir({ carpintero: 1 }) // el Carpintero, aunque el Capitán tenga menos EXP
     expect([j.copia('capitan').heridas, j.copia('carpintero').heridas]).toEqual([0, 1])
-    // Sin nadie asignado, la herida del Destino y la de Sin oposición van a quien elijas.
+    // P83: sin nadie asignado, la herida «a un Tripulante asignado» no se aplica; solo la del Sin oposición, a quien elijas.
     const k = en('nat', ['chubasco', 'dardos', 'calma'], { tripulacion: ['carpintero'] })
     k.comprometer('EXP', [])
+    expect(k.registro).toContain('No hay nadie asignado: lo que el Destino le hace a un Tripulante asignado no se aplica.')
     expect(k.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir', n: 1 } })
-    k.elegir('carpintero').elegir('capitan')
-    expect([k.copia('capitan').heridas, k.copia('carpintero').heridas]).toEqual([1, 1])
+    k.elegir('carpintero')
+    expect(k.estado.pendiente?.tipo === 'elegirCartas' && k.decision.motivo.clave === 'herir').toBe(false)
+    expect([k.copia('capitan').heridas, k.copia('carpintero').heridas]).toEqual([0, 1])
   })
 })
 

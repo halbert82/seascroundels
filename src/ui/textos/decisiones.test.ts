@@ -32,8 +32,11 @@ describe('Textos de las decisiones', () => {
 
   it('el texto de una carta se lee sin marcado', () => {
     expect(textoPlano('reparacion')).toBe('Repara 2 daño.')
-    expect(textoPlano('vela')).toBe('Al zarpar hacia una misión de Mar: Gana 1 Avance.')
-    expect(textoPlano('chalupa')).toBe('Al zarpar hacia una misión de Naturaleza o de Ciudad: Gana 1 Avance.')
-    expect(textoPlano('bandera')).toBe('Tus Pruebas de NAV en el Mar reciben +1.'.replace('NAV', 'COM'))
+    // Fase 13 (P82): el Entorno delante del efecto se lee sin artículo.
+    expect(textoPlano('vela')).toBe('Al zarpar: Mar: Gana 1 Avance.')
+    expect(textoPlano('chalupa')).toBe('Al zarpar: Naturaleza / Ciudad: Gana 1 Avance.')
+    expect(textoPlano('bandera')).toBe('Mar: Tus Pruebas de COM reciben +1.')
+    expect(textoPlano('bronce')).toBe('Mar, agotar: Una Prueba de COM recibe +2.')
+    expect(textoPlano('viento')).toBe('Respuesta: Mar: Después de que reveles una carta de Peligro, gana 2 Avance.')
   })
 })

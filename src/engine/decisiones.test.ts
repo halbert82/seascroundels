@@ -633,3 +633,43 @@ describe('P61 y fase 10 · La dificultad suma sus modificadores y el Destino va 
     ])
   })
 })
+
+describe('P83 · Un Destino sin nadie asignado: lo que le hace a «un Tripulante asignado» no se aplica; solo su Sin oposición', () => {
+  const mision = (destino: string, tripulacion: string[], op: Parameters<typeof Jugador.enMision>[0] = {}) =>
+    Jugador.enMision({ misiones: ['pruebas-nat3'], mazoPeligros: ['chubasco', destino, 'calma'], tripulacion, ...op })
+
+  it('ejemplo del reglamento, «Los holandeses de Curazao»: solo la herida del Sin oposición, no la del asignado', () => {
+    const j = mision('p2_curazao', ['bucanero']).comprometer('EXP', [])
+    j.elegir('bucanero')
+    expect(j.copia('bucanero').heridas + j.copia('capitan').heridas).toBe(1)
+  })
+
+  it('«Oro de los muertos»: sin nadie asignado, el Rastreador (el de más EXP de la tripulación) no queda Maldito; solo el Capitán', () => {
+    const j = mision('p2_oro', ['baqueano']).comprometer('EXP', [])
+    expect(j.estados('baqueano')).toEqual([])
+    expect(j.estados('capitan')).toEqual(['maldito'])
+  })
+
+  it('«La Compaña»: sin nadie asignado no queda Asustado nadie por «uno de los asignados»; solo el más herido, por su Sin oposición', () => {
+    const j = mision('p2_compana', ['bucanero'], { capitan: { heridas: 1 } }).comprometer('EXP', [])
+    expect(j.estados('bucanero')).toEqual([])
+    expect(j.estados('capitan')).toEqual(['asustado'])
+    expect(j.copia('capitan').heridas).toBe(2)
+  })
+
+  it('en un encuentro no cambia: «el asignado con más EXP» sin nadie asignado sigue mirando a toda la tripulación (P72)', () => {
+    // «Noche de niebla» (Ciudad), fallo: el asignado con más EXP queda Buscado.
+    const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], mazoPeligros: ['p2_niebla', 'chubasco', 'calma'], tripulacion: ['baqueano'] })
+    j.comprometer('EXP', []).seguir()
+    expect(j.estados('baqueano')).toEqual(['buscado'])
+  })
+})
+
+describe('P84 · Dos Destinos que persiguen a la vez: vuelven los dos encima del mazo y el segundo queda arriba', () => {
+  it('«Bruma en la selva» con los Destinos de «La Armada de Barlovento» y «La sombra de Bastián»', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-nat3'], mazoPeligros: ['p2_niebla', 'p2_armada', 'p2_bastian', 'calma', 'calma'] })
+    j.comprometer('EXP', ['capitan']).pasarOfertas().seguir()
+    expect(j.zona('mazoPeligros').slice(0, 2)).toEqual(['p2_bastian', 'p2_armada'])
+    expect(j.registro).toContain('«La sombra de Bastián» te persigue: será el siguiente encuentro.')
+  })
+})

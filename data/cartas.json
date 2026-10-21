@@ -50,7 +50,7 @@
   "capacidad": 4,
   "danoMaximo": 5,
   "espacio": 5,
-  "texto": "Tus Pruebas de [NAV] en [mar] reciben {+1}.\n**Al zarpar hacia una misión lejana:** Distancia {−1 g}.",
+  "texto": "[mar]: Tus Pruebas de [NAV] reciben {+1}.\n**Al zarpar hacia una misión lejana:** Distancia {−1 g}.",
   "ambientacion": "«Sale con la última sombra y llega con la primera luz.»",
   "num": 3
  },
@@ -486,7 +486,7 @@
    "senda": "Neutral",
    "coste": 1,
    "unico": false,
-   "texto": "**Al zarpar hacia una misión [mar]:** Gana {1 avance}.",
+   "texto": "**Al zarpar:** [mar]: Gana {1 avance}.",
    "ambientacion": "«Con buen trapo, el viento trabaja para ti.»",
    "espacio": 1,
    "canon": false
@@ -513,7 +513,7 @@
    "senda": "Piratería",
    "coste": 2,
    "unico": false,
-   "texto": "Tus Pruebas de [COM] en [mar] reciben {+1}.",
+   "texto": "[mar]: Tus Pruebas de [COM] reciben {+1}.",
    "ambientacion": "«Al verla, la mitad se rinde. La otra mitad reza.»",
    "espacio": 0,
    "canon": false
@@ -526,7 +526,7 @@
    "senda": "Neutral",
    "coste": 1,
    "unico": false,
-   "texto": "**Al zarpar hacia una misión [nat] o [ciu]:** Gana {1 avance}.",
+   "texto": "**Al zarpar:** [nat]/[ciu]: Gana {1 avance}.",
    "ambientacion": "«Hasta la orilla a remo, y en silencio.»",
    "espacio": 2,
    "canon": false
@@ -831,7 +831,7 @@
    "iconos": [
     "NAV"
    ],
-   "texto": "**Respuesta:** Después de que reveles una carta de Peligro en [mar], gana {2 avance}.",
+   "texto": "**Respuesta:** [mar]: Después de que reveles una carta de Peligro, gana {2 avance}.",
    "ambientacion": "«¡Largad todo el trapo, que el viento es nuestro!»"
   },
   {
@@ -896,7 +896,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "**Respuesta:** Después de que reveles una carta de Peligro en [ciu], gana su [avance] y descártala sin resolverla.",
+   "texto": "**Respuesta:** [ciu]: Después de que reveles una carta de Peligro, gana su [avance] y descártala sin resolverla.",
    "ambientacion": "«Ni un músculo, ni un ruido. Y pasaron de largo.»"
   },
   {
@@ -909,7 +909,7 @@
    "iconos": [
     "NAV"
    ],
-   "texto": "**Respuesta:** Después de que reveles una carta de Peligro en [mar], ponla al fondo del mazo de Peligros y revela otra.",
+   "texto": "**Respuesta:** [mar]: Después de que reveles una carta de Peligro, ponla al fondo del mazo de Peligros y revela otra.",
    "ambientacion": "«¡Vira a estribor! Ese no es asunto nuestro.»"
   },
   {
@@ -922,7 +922,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "**Respuesta:** Después de que reveles una carta de Peligro con Prueba en [ciu], supera automáticamente esa Prueba, sin revelar Destino.",
+   "texto": "**Respuesta:** [ciu]: Después de que reveles una carta de Peligro con Prueba, supera automáticamente esa Prueba, sin revelar Destino.",
    "ambientacion": "«En Tortuga todo tiene precio. Hasta mirar hacia otro lado.»"
   },
   {
@@ -987,7 +987,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "**Respuesta:** Después de zarpar hacia una misión [nat], gana {2 avance}.",
+   "texto": "**Respuesta:** [nat]: Después de zarpar, gana {2 avance}.",
    "ambientacion": "«Los cimarrones conocen caminos que no salen en ningún mapa.»"
   },
   {
@@ -1000,7 +1000,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "**Interrupción:** Cuando vayas a aplicar los efectos de fallo de una Prueba en [nat], ignóralos.",
+   "texto": "**Interrupción:** [nat]: Cuando vayas a aplicar los efectos de fallo de una Prueba, ignóralos.",
    "ambientacion": "«Si no los vemos, ellos tampoco nos ven.»"
   },
   {
@@ -9727,7 +9727,7 @@
    "num": 222,
    "nombre": "El guía del istmo",
    "mision": "panama",
-   "texto": "Las Pruebas de [EXP] en [nat] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: descártalo.",
+   "texto": "[nat]: Las Pruebas de [EXP] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: descártalo.",
    "ambientacion": "«Un cimarrón que conoce el camino.»"
   }
  ],

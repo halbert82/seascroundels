@@ -3,7 +3,7 @@
 import { esCanon, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada } from '../estado.ts'
 import { agotar, quitarEstadoAnotado, quitarEstadoBarco } from '../estados.ts'
-import { definicionActual, destinosDeLaPrueba } from '../prueba.ts'
+import { definicionActual, destinosDeLaPrueba, efectosDeDestino } from '../prueba.ts'
 import { reglasDe } from '../definiciones.ts'
 import { mazoActivo, ponerAPerseguir } from '../peligros.ts'
 import type { Estado, Evento, NuevaTarea, TareaDe } from '../tipos.ts'
@@ -20,8 +20,10 @@ function efectosDelDestino(s: Estado, cuando: 'siSuperas' | 'siFallas'): NuevaTa
   return destinosDeLaPrueba(p)
     .filter((d) => !d.cancelado)
     .flatMap((d): NuevaTarea[] => {
-      const efectos = reglasDe(copia(s, d.carta).id)?.destino?.[cuando]
-      return efectos && efectos.length > 0 ? [{ tipo: 'aplicarEfectos', efectos, contexto: cuando === 'siSuperas' ? 'exito' : 'fallo', fuente: d.carta }] : []
+      const impresos = reglasDe(copia(s, d.carta).id)?.destino?.[cuando]
+      // Fase 13 (P83): sin nadie asignado, lo que le pasa a «un Tripulante asignado» no se aplica.
+      const efectos = impresos ? efectosDeDestino(s, p, impresos) : []
+      return efectos.length > 0 ? [{ tipo: 'aplicarEfectos', efectos, contexto: cuando === 'siSuperas' ? 'exito' : 'fallo', fuente: d.carta }] : []
     })
 }
 

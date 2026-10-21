@@ -159,7 +159,7 @@ describe('36 · Sangre caliente', () => {
     expect(k.zona('descartesCapitan')).toContain('ojo')
   })
 
-  it('Destino «Echarse la culpa» (fase 13, I1): −1 e inflige 1 herida a un Tripulante asignado; Sin oposición: herida libre y agota a 1', () => {
+  it('Destino «Echarse la culpa» (fase 13, I1): −1 e inflige 1 herida a un Tripulante asignado; sin nadie asignado, solo su Sin oposición: agota a 1 (P83)', () => {
     // «Pasos a tu espalda» (EXP 3): con dos asignados, el jugador elige cuál de ellos sufre la herida (Diego no está).
     const j = en('ciu', ['p2_bastian', 'p2_sangre', 'calma'], { tripulacion: ['bucanero', 'filibustero'] })
     j.comprometer('EXP', ['bucanero', 'filibustero'])
@@ -169,10 +169,10 @@ describe('36 · Sangre caliente', () => {
     j.repartir({ filibustero: 1 })
     expect(j.copia('filibustero').heridas).toBe(1)
     expect(j.copia('bucanero').heridas).toBe(0)
-    // Sin nadie asignado, la herida es libre (aquí solo está Diego) y además se agota a 1 Tripulante.
+    // P83: sin nadie asignado, no hay herida; solo se agota a 1 Tripulante (aquí, Diego).
     const k = en('ciu', ['p2_bastian', 'p2_sangre', 'calma'])
     k.comprometer('EXP', [])
-    expect(k.copia('capitan').heridas).toBe(1)
+    expect(k.copia('capitan').heridas).toBe(0)
     expect(k.copia('capitan').agotada).toBe(true)
   })
 })
@@ -437,7 +437,7 @@ describe('41 · Los holandeses de Curazao', () => {
     expect(j.zona('mano')).toEqual([])
   })
 
-  it('Destino «Cuerpo a cuerpo» (fase 13, I1): −1 e inflige 1 herida a un Tripulante asignado, en cualquier Prueba; Sin oposición: 1 herida más', () => {
+  it('Destino «Cuerpo a cuerpo» (fase 13, I1): −1 e inflige 1 herida a un Tripulante asignado, en cualquier Prueba; sin nadie asignado, solo su Sin oposición (P83, ejemplo del reglamento)', () => {
     // Con dos asignados, el jugador elige cuál sufre la herida (ya no es por fuerza el de más COM).
     const j = en('ciu', ['p2_hermanos', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['capitan', 'bucanero'])
@@ -450,13 +450,16 @@ describe('41 · Los holandeses de Curazao', () => {
     const k = en('ciu', ['p2_bastian', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('EXP', ['bucanero'])
     expect(k.copia('bucanero').heridas).toBe(1)
-    // Sin nadie asignado, la herida del Destino es libre y Sin oposición inflige otra.
+    // P83: sin nadie asignado, «Inflige 1 herida a un Tripulante asignado» no hace nada; el Sin oposición («Inflige 1
+    // herida») da una sola herida, a quien elijas.
     const l = en('ciu', ['p2_hermanos', 'p2_curazao', 'calma'], { tripulacion: ['bucanero'] })
-    l.comprometer('COM', []).elegir('bucanero')
+    l.comprometer('COM', [])
+    expect(l.registro).toContain('No hay nadie asignado: lo que el Destino le hace a un Tripulante asignado no se aplica.')
     expect(l.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir' } })
-    l.elegir('capitan')
+    l.elegir('bucanero')
+    expect(l.estado.pendiente?.tipo === 'elegirCartas' && l.decision.motivo.clave === 'herir').toBe(false)
     expect(l.copia('bucanero').heridas).toBe(1)
-    expect(l.copia('capitan').heridas).toBe(1)
+    expect(l.copia('capitan').heridas).toBe(0)
   })
 })
 

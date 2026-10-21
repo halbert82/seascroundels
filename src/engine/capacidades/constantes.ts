@@ -73,7 +73,7 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
         : 0,
   },
   {
-    // «Tus Pruebas de NAV en el Mar reciben +1». Con «Velas rotas», no.
+    // «[Mar]: Tus Pruebas de NAV reciben +1» (fase 13, P82). Con «Velas rotas», no.
     clave: 'barco.nav',
     carta: 'barco',
     ventana: 'constante',

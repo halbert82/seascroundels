@@ -415,7 +415,7 @@ describe('51 · La maldición del bokor', () => {
     expect(j.zona('mano')).toEqual([])
   })
 
-  it('Destino «Alfiler en el muñeco»: Inflige 1 herida a un asignado, aunque superes (fase 13, I1); sin nadie, una libre y otra al Capitán', () => {
+  it('Destino «Alfiler en el muñeco»: Inflige 1 herida a un asignado, aunque superes (fase 13, I1); sin nadie asignado, solo su Sin oposición: 1 herida al Capitán (P83)', () => {
     // Navío a la deriva (NAV 3): Viejo lobo 4 + Bucanero 2 + Barco 1 − 1 supera.
     const j = en('mar', ['oportunidad', 'p2_bokor', 'calma'], { tripulacion: ['viejo_lobo', 'bucanero'] })
     j.comprometer('NAV', ['viejo_lobo', 'bucanero']).pasarOfertas()
@@ -426,12 +426,10 @@ describe('51 · La maldición del bokor', () => {
     expect(j.registro.some((r) => r.includes('superas la Prueba'))).toBe(true)
     expect(j.copia('bucanero').heridas).toBe(1)
     expect(j.copia('capitan').heridas).toBe(0)
-    // Sin nadie asignado, la herida es libre y, además, la del Sin oposición va al Capitán.
+    // P83: sin nadie asignado, solo el Sin oposición: la herida va al Capitán.
     const k = en('nat', ['oportunidad', 'p2_bokor', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('EXP', [])
-    expect(k.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir' } })
-    k.elegir('bucanero')
-    expect(k.copia('bucanero').heridas).toBe(1)
+    expect(k.copia('bucanero').heridas).toBe(0)
     expect(k.copia('capitan').heridas).toBe(1)
   })
 })
@@ -521,7 +519,7 @@ describe('53 · La serpiente marina', () => {
     expect(j.estado.reputacion).toBe(2)
   })
 
-  it('Destino «Coletazo»: Inflige 1 herida a un asignado en cualquier Prueba (fase 13, I1); sin nadie, una libre y 2 al preparado con menos Vida', () => {
+  it('Destino «Coletazo»: Inflige 1 herida a un asignado en cualquier Prueba (fase 13, I1); sin nadie asignado, solo su Sin oposición: 2 al preparado con menos Vida (P83)', () => {
     const j = en('mar', ['civiles', 'p2_serpiente_marina', 'calma'], { tripulacion: ['isabela', 'bucanero'] })
     j.comprometer('COM', ['capitan', 'isabela'])
     expect(dificultadConDestino(j.estado)).toBe(4)
@@ -536,9 +534,7 @@ describe('53 · La serpiente marina', () => {
     expect(k.copia('capitan').heridas).toBe(1)
     const sin = en('mar', ['oportunidad', 'p2_serpiente_marina', 'calma'], { tripulacion: ['vigia', 'bucanero'] })
     sin.comprometer('NAV', [])
-    expect(sin.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir' } })
-    sin.elegir('bucanero')
-    expect(sin.copia('bucanero').heridas).toBe(1)
+    expect(sin.copia('bucanero').heridas).toBe(0)
     expect(sin.zona('descartesMuelle')).toContain('vigia') // el preparado con menos Vida sufre 2 heridas
   })
 })

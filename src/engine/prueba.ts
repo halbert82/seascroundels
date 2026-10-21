@@ -3,13 +3,26 @@
 import { iconosDe, nombreDe, porId, rasgosDe, tipoDe } from './catalogo.ts'
 import type { Habilidad } from './datos.ts'
 import { definicionEncuentro, reglasDe, type DefinicionPrueba, type Restriccion } from './definiciones.ts'
-import type { ModSiguiente } from './efectos.ts'
+import { sinLosDeAsignados, type Efecto, type ModSiguiente } from './efectos.ts'
 import { destinoDe } from './destinos.ts'
-import { copia } from './estado.ts'
+import { anotar, copia } from './estado.ts'
 import { tieneEstado } from './estados.ts'
 import { entornoActual } from './peligros.ts'
 import type { Bono, Estado, InstId, PruebaEnCurso } from './tipos.ts'
 import { aportaciones, modificadores, valor, valorSinMinimo } from './valores.ts'
+
+/**
+ * Fase 13 (P83): el efecto de un Destino (también su «Si superas» y su «Si fallas») sin nadie asignado: lo que le pasa a
+ * «un Tripulante asignado» no hace nada y solo cuenta su Sin oposición.
+ */
+export function efectosDeDestino(s: Estado, p: PruebaEnCurso, efectos: readonly Efecto[]): Efecto[] {
+  if (p.comprometidos.length > 0) return [...efectos]
+  const quedan = sinLosDeAsignados(efectos)
+  if (JSON.stringify(quedan) !== JSON.stringify(efectos)) {
+    anotar(s, 'efecto', 'No hay nadie asignado: lo que el Destino le hace a un Tripulante asignado no se aplica.')
+  }
+  return quedan
+}
 
 export function pruebaEnCurso(s: Estado): PruebaEnCurso {
   if (!s.prueba) throw new Error('No hay ninguna Prueba en curso')

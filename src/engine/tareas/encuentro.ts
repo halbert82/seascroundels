@@ -15,6 +15,7 @@ import { vetadoAlComprometer } from './peligros2.ts'
 import {
   definicionActual,
   dificultadDeOpcion,
+  efectosDeDestino,
   gastarModsSiguientes,
   destinosDeLaPrueba,
   dificultadPrueba,
@@ -371,7 +372,10 @@ function aplicarUnDestino(s: Estado, p: PruebaEnCurso, carta: InstId, segundo: b
   // Reglas nuevas del Destino: lo que cambia en la Prueba, efectos añadidos y «persigue» (vuelve encima del mazo).
   const reglas = reglasDe(copia(s, carta).id)?.destino
   if (reglas?.prueba) Object.assign(p, reglas.prueba)
-  if (reglas?.efectos && reglas.efectos.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: reglas.efectos, contexto: 'efecto', fuente: carta })
+  if (reglas?.efectos && reglas.efectos.length > 0) {
+    const efectos = efectosDeDestino(s, p, reglas.efectos)
+    if (efectos.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos, contexto: 'efecto', fuente: carta })
+  }
   if (p.sinOposicion) tareas.push({ tipo: 'aplicarEfectos', efectos: d.sinOposicion, contexto: 'sinOposicion', fuente: carta })
   if (reglas?.persigue || d.persigue) {
     if (segundo) p.segundoPersigue = true

@@ -35,7 +35,7 @@ registrarCapacidades(
 )
 
 // ---------------------------------------------------------------------------
-// El guía del istmo: las Pruebas de EXP en Naturaleza reciben −1. Si fallas una Prueba de EXP, se marcha.
+// El guía del istmo: «[Naturaleza]: Las Pruebas de EXP reciben −1 de dificultad.» Si fallas una Prueba de EXP, se marcha.
 
 registrarCapacidades(
   ...enSuZona('pasajero', 'pasajeros', 'guia', [

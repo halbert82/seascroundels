@@ -37,7 +37,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
   // ---------------------------------------------------------------------------
   // Mejoras de barco
 
-  // Vela mayor: «Al zarpar hacia una misión de Mar: Gana 1 de Avance.» Se aplica sola.
+  // Vela mayor: «Al zarpar: [Mar]: Gana 1 de Avance.» Se aplica sola.
   {
     clave: 'vela.alZarpar',
     carta: 'vela',
@@ -46,7 +46,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     requisito: (s) => enEntorno(s, 'mar'),
     efecto: () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('vela'), 'avance'), motivo: 'Vela mayor' }],
   },
-  // Chalupa: «Al zarpar hacia una misión de Naturaleza o Ciudad: Gana 1 de Avance.»
+  // Chalupa: «Al zarpar: [Naturaleza]/[Ciudad]: Gana 1 de Avance.»
   {
     clave: 'chalupa.alZarpar',
     carta: 'chalupa',
@@ -55,7 +55,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     requisito: (s) => enEntorno(s, 'nat', 'ciu'),
     efecto: () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('chalupa'), 'avance'), motivo: 'Chalupa' }],
   },
-  // Bandera negra: «Tus Pruebas de COM en el Mar reciben +1.»
+  // Bandera negra: «[Mar]: Tus Pruebas de COM reciben +1.»
   {
     clave: 'bandera.com',
     carta: 'bandera',

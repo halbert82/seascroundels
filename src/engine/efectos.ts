@@ -250,6 +250,45 @@ function numero(texto: string): number {
   return Number(texto.replace('−', '-').replace('+', ''))
 }
 
+/**
+ * Fase 13 (P83, regla general de Albert): ¿le pasa a un Tripulante asignado? «Inflige 1 herida a un Tripulante asignado»,
+ * «el asignado con la habilidad más alta queda Maldito», «uno de los asignados queda Asustado»…
+ */
+export function afectaAAsignados(e: Efecto): boolean {
+  switch (e.tipo) {
+    case 'heridas':
+      return e.asignados === true
+    case 'estado':
+      return e.a === 'comprometido'
+    case 'aQuien':
+      return e.quien.de === 'comprometidos'
+    case 'perderMejora':
+      return e.deComprometidos === true
+    case 'preparar':
+      return e.n === 'comprometidos'
+    case 'curar':
+      return e.modo === 'cadaComprometido'
+    default:
+      return false
+  }
+}
+
+/**
+ * Fase 13 (P83): en un Destino, sin nadie asignado, lo que le pasa a «un Tripulante asignado» no hace nada; solo se aplica
+ * su Sin oposición, que ya es el castigo por no asignar a nadie. (En los encuentros no: allí «el asignado con más X» mira
+ * a toda la tripulación y «uno de los asignados» da heridas libres.)
+ */
+export function sinLosDeAsignados(efectos: readonly Efecto[]): Efecto[] {
+  return efectos.flatMap((e): Efecto[] => {
+    if (afectaAAsignados(e)) return []
+    if (e.tipo === 'si') {
+      const sino = e.sino ? sinLosDeAsignados(e.sino) : undefined
+      return [{ ...e, entonces: sinLosDeAsignados(e.entonces), ...(sino ? { sino } : {}) }]
+    }
+    return [e]
+  })
+}
+
 /** «La Armada» → «armada»: las cartas de Peligro que entran en el mazo durante la partida. */
 function cartaQueEntra(nombre: string): CartaId {
   const carta = DATOS.peligros.find((p) => p.entraDuranteLaPartida && p.nombre.includes(nombre))

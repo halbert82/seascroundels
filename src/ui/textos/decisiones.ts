@@ -47,6 +47,8 @@ export function textoPlano(id: string): string {
   const entorno: Record<string, string> = { mar: 'Mar', nat: 'Naturaleza', ciu: 'Ciudad' }
   return textoDe(id)
     .replace(/misión \[(mar|nat|ciu)\](?: o \[(mar|nat|ciu)\])?/g, (_m, a: string, b?: string) => `misión de ${entorno[a]}${b ? ` o de ${entorno[b]}` : ''}`)
+    // Fase 13 (P82): el Entorno delante del efecto, como condición («[mar]: …», «[nat]/[ciu]: …», «[mar], [agotar]: …»).
+    .replace(/\[(mar|nat|ciu)\](?:\/\[(mar|nat|ciu)\])?(?=[:,])/g, (_m, a: string, b?: string) => `${entorno[a]}${b ? ` / ${entorno[b]}` : ''}`)
     .replace(/\{([+−-]?\d+)(?: ([a-zA-Z]+))?(?: [grk])?\}/g, (_m, n: string, ic?: string) => (ic ? `${n} ${iconos[ic] ?? ic}` : n))
     .replace(/\[([a-zA-Z]+)\]/g, (_m, ic: string) => iconos[ic] ?? ic)
     .replace(/\*\*(.+?)\*\*/g, '$1')

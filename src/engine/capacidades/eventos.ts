@@ -81,23 +81,23 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
 
   // Respuestas al revelar una carta de Peligro (revelar un Destino no cuenta, D3).
   evento('viento', 'respuesta', {
-    // «Respuesta: Después de que reveles una carta de Peligro en el Mar, gana 2 de Avance.»
+    // «Respuesta: [Mar]: Después de que reveles una carta de Peligro, gana 2 de Avance.» (Fase 13, P82: el Entorno delante.)
     disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'revelarPeligro' && enEntorno(s, 'mar'),
     efecto: () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('viento'), 'avance'), motivo: '¡A toda vela!' }],
   }),
   evento('sangre_fria', 'respuesta', {
-    // «Respuesta: Después de que reveles una carta de Peligro en Ciudad, gana su Avance y descártala sin resolverla.»
+    // «Respuesta: [Ciudad]: Después de que reveles una carta de Peligro, gana su Avance y descártala sin resolverla.»
     disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'ciu') && peligroRevelado(s, ev),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: true }],
   }),
   evento('cambio_rumbo', 'respuesta', {
-    // «Respuesta: Después de que reveles una carta de Peligro en el Mar, ponla al fondo del mazo de Peligros y revela otra.»
+    // «Respuesta: [Mar]: Después de que reveles una carta de Peligro, ponla al fondo del mazo de Peligros y revela otra.»
     disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'mar') && peligroRevelado(s, ev),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'fondo', avance: false }],
   }),
   evento('soborno', 'respuesta', {
-    // «Respuesta: Después de que reveles una carta de Peligro con Prueba en Ciudad, supera automáticamente esa
-    // Prueba, sin revelar Destino.» (N17)
+    // «Respuesta: [Ciudad]: Después de que reveles una carta de Peligro con Prueba, supera automáticamente esa Prueba,
+    // sin revelar Destino.» (N17)
     disparo: (s, _yo, ev, fase) =>
       fase === 'despues' && enEntorno(s, 'ciu') && peligroRevelado(s, ev) && encuentroDe(s, ev.carta).prueba.length > 0 && s.mision?.automatica !== ev.carta,
     efecto: (s, _yo, suceso) => {
@@ -119,7 +119,7 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     ],
   }),
   evento('senda', 'respuesta', {
-    // «Respuesta: Después de zarpar hacia una misión de Naturaleza, gana 2 de Avance.» (Fase 13: antes, «Al zarpar…:».)
+    // «Respuesta: [Naturaleza]: Después de zarpar, gana 2 de Avance.» (Fase 13: antes, «Al zarpar…:».)
     disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'zarpar' && enEntorno(s, 'nat'),
     efecto: () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('senda'), 'avance'), motivo: 'Senda escondida' }],
   }),
@@ -182,7 +182,7 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     efecto: (s, _yo, suceso) => (suceso ? [{ tipo: 'desviarHeridas', suceso: suceso.id, entre: participantes(s) }] : []),
   }),
   evento('espesura', 'interrupcion', {
-    // «Interrupción: Cuando vayas a aplicar los efectos de fallo de una Prueba en Naturaleza, ignóralos.» (N15)
+    // «Interrupción: [Naturaleza]: Cuando vayas a aplicar los efectos de fallo de una Prueba, ignóralos.» (N15)
     disparo: (s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'fallarPrueba' && enEntorno(s, 'nat') && s.prueba !== null && !s.prueba.sinFallo && !s.prueba.ignorarFallo,
     efecto: (s) => {
       if (s.prueba) s.prueba.ignorarFallo = true

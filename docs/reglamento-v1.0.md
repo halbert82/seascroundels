@@ -227,7 +227,7 @@ El texto de juego de una carta se compone de capacidades. Cada capacidad empieza
 > [!tema]
 > Un buen tripulante sabe cuándo actuar: antes del golpe, después del golpe o cuando el capitán lo ordena.
 
-- **Sin etiqueta:** se trata de una capacidad constante, que se aplica mientras la carta esté en juego («Tus Pruebas de COM en el Mar reciben +1»). En un Evento, significa que puede jugarse en cualquier momento.
+- **Sin etiqueta:** se trata de una capacidad constante, que se aplica mientras la carta esté en juego («Mar: Tus Pruebas de COM reciben +1»). En un Evento, significa que puede jugarse en cualquier momento.
 - **Un coste y dos puntos:** lo que va antes de los dos puntos es el coste, y lo que va después, el efecto. «Agotar: Repara 1 daño» significa que se agota la carta para reparar 1 daño. Si el jugador no puede pagar el coste completo, no puede usar la capacidad.
 - **Destina X [habilidad]:** es un coste. El jugador agota Tripulantes preparados cuya habilidad sume al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano.
 - **Acción:** esta capacidad puede usarse en una ventana de acción, es decir, durante la Fase de Reclutamiento, después de resolver una carta de Peligro o durante una Prueba, después de revelar el Destino.
@@ -741,7 +741,7 @@ Las cartas de la mano no se asignan: se añaden a la Prueba por sus iconos (ver 
 «El Tripulante asignado con más EXP» y «el Tripulante asignado con menos COM» designan al Tripulante asignado que tiene el número impreso más alto (o más bajo) en esa habilidad. No cuentan las bonificaciones de Mejoras, las fichas de Entrenamiento ni las de otras cartas.
 
 - Si hay un empate, el jugador elige entre los Tripulantes empatados.
-- Si no hay nadie asignado, el efecto se aplica al Tripulante con más (o menos) de esa habilidad de toda la tripulación del jugador.
+- Si no hay nadie asignado, el efecto de un encuentro se aplica al Tripulante con más (o menos) de esa habilidad de toda la tripulación del jugador. El de un Destino, en cambio, no se aplica (ver Destino).
 - En un Destino, «el Tripulante asignado con la habilidad más alta (o más baja)» se refiere a la habilidad de esa Prueba.
 
 > [!ejemplo]
@@ -895,7 +895,7 @@ El Destino es la franja inferior de cada carta de Peligro. Se revela en cada Pru
 
 - El modificador del Destino, en el círculo, se suma al total del jugador, no a la dificultad. Un «+N» (en verde) le favorece y un «−N» (en rojo) le perjudica. Si con el Destino el total queda por debajo de 0, se considera 0.
 - Al modificador lo acompaña a veces un efecto, que se aplica tal como está escrito. Algunos empiezan por una condición seguida de dos puntos («Si fallas la Prueba:», o el icono de un Entorno): el efecto solo se aplica si se cumple. «−2 en su lugar» sustituye al modificador del círculo.
-- Si no se ha asignado a ningún Tripulante, se aplica también su efecto Sin oposición, el de la línea del escudo.
+- Si no se ha asignado a ningún Tripulante, se aplica también su efecto Sin oposición, el de la línea del escudo. En cambio, lo que el Destino le hace a un Tripulante asignado («Inflige 1 herida a un Tripulante asignado», «el Tripulante asignado con la habilidad más alta queda Maldito») no se aplica: el Sin oposición ya es el castigo por no asignar a nadie.
 - Un Destino se lee en cualquier Entorno, tal como está escrito: si daña el Barco, lo daña también en tierra. Si una parte empieza por el icono de un Entorno, esa parte solo se aplica en él.
 - Cada carta de Peligro sale una sola vez por vuelta del mazo, ya sea como encuentro o como Destino.
 - **Fallas la Prueba:** si el Destino lo indica, el jugador falla la Prueba sea cual sea su total. En ese caso, aplica el efecto de fallo y gana el segundo número del Avance (Y).
@@ -904,6 +904,9 @@ El Destino es la franja inferior de cada carta de Peligro. Se revela en cada Pru
 
 > [!ejemplo]
 > En Naturaleza, el jugador revela «Bruma en la selva» (EXP 3), que dice «Resuelve 2 cartas de Destino en esta Prueba». Asigna a Diego (EXP 1) y añade «Ojo avizor» (dos iconos de EXP): suma 3. Sale el Destino de la carta «Calma chicha» (−1) y el Destino de la carta «La corriente del Golfo» (+1): se suman y el total se queda en 3, así que supera la Prueba. Si el jugador hubiera jugado «Reflejos de gato», habría cancelado el primero, y su total habría sido 4.
+
+> [!ejemplo]
+> En Ciudad, el jugador revela «La hora de la siesta» (EXP 2) y no asigna a nadie. Sale el Destino de la carta «Los holandeses de Curazao»: «Inflige 1 herida a un Tripulante asignado» y, en la línea del escudo, «Inflige 1 herida». Como no hay nadie asignado, la primera frase no hace nada y solo se aplica el Sin oposición: el jugador elige qué Tripulante sufre 1 herida. Si hubiera asignado al Bucanero veterano, el Bucanero sufriría la herida del Destino y el Sin oposición no se aplicaría.
 
 *Véase también:* Persigue, Prueba, Sin oposición.
 

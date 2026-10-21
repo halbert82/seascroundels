@@ -83,8 +83,8 @@ export function cerrarPrueba(s: Estado): void {
   const p = s.prueba
   for (const d of [...s.zonas.destino]) {
     // «Persigue»: pasa por su suceso (una Interrupción puede mandarla al fondo del mazo).
-    // Fase 13: con dos Destinos, el segundo también puede perseguir. TODO(regla): si persiguen los dos, los dos vuelven
-    // encima del mazo, pero solo el último cuenta como «el que persigue».
+    // Fase 13: con dos Destinos, el segundo también puede perseguir. P84 (Albert): si persiguen los dos, vuelven los dos
+    // encima del mazo y el segundo queda arriba (solo el último cuenta como «el que persigue»).
     const persigue = p?.persigue && p.destino === d && !p.destinoCancelado
     const persigueSegundo = p?.segundoPersigue && p.segundoDestino === d && !p.segundoCancelado
     if (persigue || persigueSegundo) {

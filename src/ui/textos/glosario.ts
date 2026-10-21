@@ -253,7 +253,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   sinOposicion: regla(
     'sinOposicion',
     'Sin oposición',
-    'Línea de algunos Destinos que solo se aplica cuando no asignas a nadie a la Prueba. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
+    'Línea de algunos Destinos que solo se aplica cuando no asignas a nadie a la Prueba. Lo que el Destino le hace a un Tripulante asignado, en cambio, no se aplica: el Sin oposición ya es el castigo. En los Destinos favorables suele decir «Sin fallo»: no se aplica el efecto de fallo.',
     {
       rotulo: 'Avance',
       texto:
@@ -279,7 +279,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     {
       rotulo: 'Detalles',
       texto:
-        'En un Destino, «la habilidad más alta (o más baja)» es la de esa Prueba. «El Tripulante con menos Vida» mira la Vida impresa, y en «el Tripulante de menor coste» el Capitán no cuenta.',
+        'Sin nadie asignado, en un encuentro es el de más (o menos) de toda tu tripulación; en un Destino, no se aplica. En un Destino, «la habilidad más alta (o más baja)» es la de esa Prueba. «El Tripulante con menos Vida» mira la Vida impresa, y en «el Tripulante de menor coste» el Capitán no cuenta.',
     },
   ),
   seRetira: regla(

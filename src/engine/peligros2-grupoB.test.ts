@@ -325,7 +325,7 @@ describe('17 · Fiebre amarilla', () => {
     expect(j.copia('bucanero').heridas).toBe(0)
   })
 
-  it('Destino «Vómito negro»: −1 e inflige 1 herida a un asignado (fase 13, I1: antes, solo al fallar y a los ya heridos); Sin oposición, la herida es libre y el Capitán queda Envenenado', () => {
+  it('Destino «Vómito negro»: −1 e inflige 1 herida a un asignado (fase 13, I1: antes, solo al fallar y a los ya heridos); sin nadie asignado, solo su Sin oposición: el Capitán queda Envenenado (P83)', () => {
     const j = en('mar', ['chubasco', 'p2_fiebre', 'calma'])
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3) // Chubasco repentino, NAV 2, +1
@@ -337,10 +337,11 @@ describe('17 · Fiebre amarilla', () => {
     expect(() => k.repartir({ capitan: 1 })).toThrow(/No se puede repartir/)
     k.repartir({ viejo_lobo: 1 })
     expect([k.copia('capitan').heridas, k.copia('bucanero').heridas, k.copia('viejo_lobo').heridas]).toEqual([0, 0, 1])
-    // Sin nadie asignado: la herida va a quien elijas, y el Capitán queda Envenenado.
+    // P83: sin nadie asignado, no hay herida; solo el Sin oposición (el Capitán queda Envenenado).
     const m = en('mar', ['chubasco', 'p2_fiebre', 'calma'], { tripulacion: ['viejo_lobo'] })
-    m.comprometer('NAV', []).elegir('viejo_lobo')
-    expect(m.copia('viejo_lobo').heridas).toBe(1)
+    m.comprometer('NAV', [])
+    expect(m.registro).toContain('No hay nadie asignado: lo que el Destino le hace a un Tripulante asignado no se aplica.')
+    expect(m.copia('viejo_lobo').heridas).toBe(0)
     expect(m.copia('capitan').heridas).toBe(0)
     expect(m.estados('capitan')).toEqual(['envenenado'])
   })
