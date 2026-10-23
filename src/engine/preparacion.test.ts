@@ -47,7 +47,7 @@ describe('Preparación de la partida', () => {
     expect(historia.filter((id) => ['anselmo', 'guia', 'guardia'].includes(id)).sort()).toEqual(['anselmo', 'guardia', 'guia'])
     // 6. Muelle de Tortuga: 4 cartas.
     expect(j.zona('muelle')).toHaveLength(4)
-    expect(j.zona('mazoMuelle')).toHaveLength(20 - 4)
+    expect(j.zona('mazoMuelle')).toHaveLength(26 - 4) // TODO(regla): excepción temporal de la fase 14 (muelle de 26)
     // 7. Mano inicial: tantas cartas como el Mando (5).
     expect(j.zona('mano')).toHaveLength(5)
     expect(j.zona('mazoCapitan')).toHaveLength(40 - 5)

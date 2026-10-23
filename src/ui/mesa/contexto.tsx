@@ -33,6 +33,7 @@ export function fichasDe(s: Estado, inst: InstId): FichasCarta {
   if (tipo === 'capitan' || tipo === 'tripulante') {
     const f: FichasCarta = { heridas: c.heridas, vida: valor(s, { tipo: 'vida', carta: inst }) }
     if (c.entrenamiento.length > 0) f.entrenamiento = c.entrenamiento
+    if (c.enrolado !== undefined) f.enrolado = c.enrolado
     return f
   }
   if (tipo === 'capitulo') return { avance: c.avance }

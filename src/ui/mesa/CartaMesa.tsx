@@ -20,6 +20,8 @@ export interface FichasCarta {
   /** Fichas del contador de una carta de Peligro en juego. */
   contador?: number
   entrenamiento?: string[]
+  /** Fase 14: fichas de Enrolado que le quedan a un Tripulante (se va cuando no le queda ninguna). */
+  enrolado?: number
 }
 
 export interface PropsCartaMesa {
@@ -157,7 +159,7 @@ export function CartaMesa(p: PropsCartaMesa) {
 
 function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | undefined }) {
   if (!fichas) return null
-  const { heridas = 0, vida, avance, contador, entrenamiento = [] } = fichas
+  const { heridas = 0, vida, avance, contador, entrenamiento = [], enrolado } = fichas
   return (
     <div className="fichas" style={abajo !== undefined ? { bottom: abajo } : undefined}>
       {heridas > 0 && (
@@ -180,6 +182,15 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
         <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha de misión' : 'fichas de misión'} en esta carta`}>
           <b>{contador}</b>
           <small>{contador === 1 ? 'ficha' : 'fichas'}</small>
+        </span>
+      )}
+      {enrolado !== undefined && (
+        <span
+          className="ficha ficha-contador ficha-enrolado"
+          title={`Enrolado: ${enrolado} ${enrolado === 1 ? 'ficha' : 'fichas'}. Pierde 1 al terminar cada misión y se va cuando no le queda ninguna.`}
+        >
+          <b>{enrolado}</b>
+          <small>Enrolado</small>
         </span>
       )}
       {entrenamiento.map((h, i) => (

@@ -95,10 +95,17 @@ function usoDe(p: Partida, carta: CartaId): UsoDeCarta {
   return p.cartas[carta]
 }
 
-/** Un mazo de muelle legal al azar: 20 cartas de las de la caja (con sus copias). */
-export function mazoDeMuelleAlAzar(semilla: number): CartaId[] {
+/** Los seis Tripulantes de la fase 14 (241–246), que de momento solo van en el muelle de inicio de prueba. */
+export const TRIPULANTES_FASE14: readonly CartaId[] = ['soldado_fortuna', 'piloto_sueldo', 'guia_alquiler', 'carne_canon', 'galeote', 'tuerto']
+
+/**
+ * Un mazo de muelle legal al azar: 20 cartas de las de la caja (con sus copias). `sinFase14`: sin los seis Tripulantes
+ * de la fase 14 (la caja de antes).
+ */
+export function mazoDeMuelleAlAzar(semilla: number, { sinFase14 = false }: { sinFase14?: boolean } = {}): CartaId[] {
   const caja: CartaId[] = []
   for (const c of [...DATOS.tripulantes, ...DATOS.mejorasBarco, ...DATOS.mejorasTripulante]) {
+    if (sinFase14 && TRIPULANTES_FASE14.includes(c.id)) continue
     for (let i = 0; i < c.copias; i++) caja.push(c.id)
   }
   const azar = { azar: sembrar(`muelle-${semilla}`) }

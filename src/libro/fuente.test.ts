@@ -29,7 +29,7 @@ describe('Los dos libros salen de las dos partes del reglamento', () => {
 
   it('la referencia rápida de la contraportada trae el turno, la Prueba, los iconos y los Estados', () => {
     expect(r.rapida.turno).toHaveLength(4)
-    expect(r.rapida.prueba).toHaveLength(5)
+    expect(r.rapida.prueba).toHaveLength(6) // fase 14: el paso 6, Desgaste
     expect(r.rapida.iconos.length).toBeGreaterThan(10)
     expect(r.rapida.estados.map((f) => f.ficha)).toContain('Envenenado')
   })

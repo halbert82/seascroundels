@@ -6,7 +6,7 @@ import { anotar, encolar, estadoVacio } from './estado.ts'
 import { ejecutar } from './motor.ts'
 import { robarCartas, revelarAlMuelle, tamanoMuelle } from './tareas/cartas.ts'
 import { sembrar } from './azar.ts'
-import { erroresDeMazos } from './mazos.ts'
+import { erroresDeMazos, MUELLE_TEMPORAL_FASE14 } from './mazos.ts'
 import type { CartaId, Estado, Modo } from './tipos.ts'
 import { valor } from './valores.ts'
 import { barajar, crearCopia, mover } from './zonas.ts'
@@ -35,7 +35,11 @@ export interface OpcionesPartida {
 export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, variante, sinEscenario }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
-  const errores = erroresDeMazos({ capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle })
+  // TODO(regla): excepción temporal de la fase 14 (muelle de inicio de 26 cartas); quitar cuando se rehagan los mazos de inicio.
+  const errores = erroresDeMazos(
+    { capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle },
+    mazoDeMuelle ? {} : { muelleMaximo: MUELLE_TEMPORAL_FASE14 },
+  )
   if (errores.length > 0) throw new Error(`Mazos no válidos: ${errores.join(' ')}`)
   const s = estadoVacio(sembrar(semilla))
   s.modo = modo ?? m.modo

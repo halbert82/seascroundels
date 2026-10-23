@@ -461,6 +461,121 @@
    "mejoras": 0,
    "texto": "**Interrupción:** Cuando otro Tripulante vaya a quedar rehén, Fiador de la Hermandad queda rehén en su lugar. Si lo rescatas, roba {2 robar}.",
    "ambientacion": "«Mi palabra vale lo que yo. Que no es mucho, pero vale.»"
+  },
+  {
+   "id": "soldado_fortuna",
+   "num": 241,
+   "nombre": "Soldado de fortuna",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Bucanero"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 3,
+   "EXP": 1,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "Enrolado 2.",
+   "ambientacion": "«Mi espada es vuestra hasta el día de paga. Después, ya veremos.»"
+  },
+  {
+   "id": "piloto_sueldo",
+   "num": 242,
+   "nombre": "Piloto a sueldo",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Marinero",
+    "Piloto"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 3,
+   "COM": 0,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "Enrolado 2.",
+   "ambientacion": "«Conozco cada bajío de aquí a Maracaibo. Lo que no conozco es la lealtad.»"
+  },
+  {
+   "id": "guia_alquiler",
+   "num": 243,
+   "nombre": "Guía de alquiler",
+   "copias": 1,
+   "senda": "Neutral",
+   "rasgos": [
+    "Explorador"
+   ],
+   "unico": false,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 0,
+   "EXP": 3,
+   "vida": 2,
+   "mejoras": 1,
+   "texto": "Enrolado 2.",
+   "ambientacion": "«Os llevo hasta el río y os traigo de vuelta. Lo demás se cobra aparte.»"
+  },
+  {
+   "id": "carne_canon",
+   "num": 244,
+   "nombre": "Carne de cañón",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 0,
+   "COM": 3,
+   "EXP": 0,
+   "vida": 2,
+   "mejoras": 0,
+   "texto": "Desgaste.",
+   "ambientacion": "«El primero en saltar al abordaje. El primero en sangrar.»"
+  },
+  {
+   "id": "galeote",
+   "num": 245,
+   "nombre": "Galeote fugado",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Marinero"
+   ],
+   "unico": false,
+   "coste": 1,
+   "NAV": 2,
+   "COM": 1,
+   "EXP": 0,
+   "vida": 3,
+   "mejoras": 0,
+   "texto": "Desgaste.",
+   "ambientacion": "«Veinte años remando encadenado. Ahora rema suelto, hasta que se le abren las manos.»"
+  },
+  {
+   "id": "tuerto",
+   "num": 246,
+   "nombre": "El Tuerto",
+   "copias": 1,
+   "senda": "Piratería",
+   "rasgos": [
+    "Bucanero"
+   ],
+   "unico": true,
+   "coste": 2,
+   "NAV": 0,
+   "COM": 1,
+   "EXP": 0,
+   "vida": 3,
+   "mejoras": 1,
+   "texto": "El Tuerto recibe {+1 COM} por cada herida que tenga.",
+   "ambientacion": "«Cada cicatriz le enseñó algo. La del ojo, a no perdonar.»"
   }
  ],
  "mejorasBarco": [
@@ -9647,7 +9762,13 @@
    "herbolaria",
    "practico",
    "lengua",
-   "fiador"
+   "fiador",
+   "soldado_fortuna",
+   "piloto_sueldo",
+   "guia_alquiler",
+   "carne_canon",
+   "galeote",
+   "tuerto"
   ],
   "mazoDePeligros": [
    "p2_corriente",

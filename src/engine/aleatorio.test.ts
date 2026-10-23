@@ -66,7 +66,9 @@ describe('Prueba masiva: mazos de muelle variados', () => {
     // Algunas capacidades son muy raras (el Mascarón, «Ni un hombre atrás»: ~1 de cada 200 partidas): hacen falta muchas.
     for (let i = 0; i < 900; i++) {
       const semilla = 5000 + i
-      const mazoDeMuelle = mazoDeMuelleAlAzar(semilla)
+      // Fase 14: con la caja de antes. Las seis cartas nuevas solo van en el muelle de inicio de prueba y tienen sus propias
+      // pruebas; con ellas en la caja, el Cañonero y los Cañones coinciden tan poco que su capacidad no llega a salir.
+      const mazoDeMuelle = mazoDeMuelleAlAzar(semilla, { sinFase14: true })
       const jugador = i % 2 === 0 ? jugadorAlAzar(semilla) : criterio
       const p = jugarPartida(semilla, jugador, { invariantes: i < 40, mazoDeMuelle })
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)

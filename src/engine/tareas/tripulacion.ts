@@ -3,7 +3,7 @@
 
 import { costeImpreso, esIndestructible, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
-import type { InstId, NuevaTarea } from '../tipos.ts'
+import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { plazasOcupadas, valor } from '../valores.ts'
 import { estaEn, mover, vinculadas } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
@@ -18,6 +18,27 @@ const MOTIVOS: Record<string, string> = {
   muelle: 'vuelve al muelle',
   naufrago: 'se descarta a',
   incautado: 'pierdes a',
+  enrolado: 'se va',
+}
+
+/**
+ * Fase 14, «Enrolado N»: al terminar cada misión (superada, retirada, fallada o con el Barco hundido) cada Tripulante
+ * Enrolado de la tripulación pierde 1 ficha; el que se queda sin ninguna se va a la pila de descartes del muelle con sus
+ * Mejoras, como al despedirlo (no cuenta como derrotado). Se hace nada más terminar, antes de la recompensa y de rescatar
+ * o perder a los rehenes.
+ * TODO(regla): por defecto, antes de la recompensa (deja la plaza libre para «Recluta sin coste…») y solo los de la
+ * tripulación: un rehén o un Tripulante incautado no pierde ficha mientras esté fuera (P86 y P87, pendientes de Albert).
+ */
+export function quitarFichasDeEnrolado(s: Estado): NuevaTarea[] {
+  const tareas: NuevaTarea[] = []
+  for (const c of s.zonas.tripulacion) {
+    const t = copia(s, c)
+    if (c === s.capitan || t.enrolado === undefined || t.enrolado <= 0) continue
+    t.enrolado--
+    if (t.enrolado > 0) anotar(s, 'efecto', `${nombre(s, c)} pierde 1 ficha de Enrolado: le ${t.enrolado === 1 ? 'queda 1' : `quedan ${t.enrolado}`}.`)
+    else tareas.push({ tipo: 'sacarTripulante', carta: c, destino: 'descartesMuelle', motivo: 'enrolado' })
+  }
+  return tareas
 }
 
 /** Saca a un Tripulante del juego con sus Mejoras. Sus Tesoros pasan a otro Tripulante (N1). */
@@ -35,6 +56,7 @@ export const sacarTripulante: Manejador<'sacarTripulante'> = (s, t) => {
   const conMejoras = mejoras.length === 0 ? '' : t.mejorasA ? ` (se descartan ${nombres(s, mejoras)})` : ` junto con ${nombres(s, mejoras)}`
   const dato = { tipo: 'sale' as const, inst: t.carta, motivo: t.motivo }
   if (t.motivo === 'desercion') anotar(s, 'efecto', `${nombre(s, t.carta)} deserta y vuelve al muelle${conMejoras}.`, dato)
+  else if (t.motivo === 'enrolado') anotar(s, 'efecto', `${nombre(s, t.carta)} cumple su contrato y se va${conMejoras}.`, dato)
   else anotar(s, 'efecto', `${accion.charAt(0).toUpperCase()}${accion.slice(1)} ${nombre(s, t.carta)}${conMejoras}.`, dato)
   encolar(s, ...tesoros.map((tesoro): NuevaTarea => ({ tipo: 'reasignarTesoro', tesoro })))
   return 'hecha'

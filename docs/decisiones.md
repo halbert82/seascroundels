@@ -833,3 +833,60 @@ Evento, coste 1, Neutral, un icono de COM. Texto (segunda ronda, P76): «**Respu
 
 - Lo único que cambia el juego en esta ronda es P83 (P82 solo cambia textos): sin nadie asignado, los Destinos ya no hieren ni marcan a nadie además de su Sin oposición. Se recupera la mitad de lo que subieron las heridas en la segunda ronda (1,13 en la primera).
 - Panamá terminada: 0,0 / 0,5 / 1,5 %, por debajo del 10 %. Con la Arenga en lugar de «Ron para los valientes»: 43,0 / 35,2 / 30,2 %, dentro del ruido (±1,5).
+
+## Fase 14: rotación de la tripulación (Enrolado, Desgaste y seis Tripulantes nuevos, 23 de octubre de 2026)
+
+Objetivo de Albert: los Tripulantes tienen que rotar y el muelle tiene que tentar cada turno (la medida de rotación mostró que se rota por muertes y que el barco se llena hacia el turno 5). Esta fase añade dos palabras clave y seis Tripulantes para liberar plazas sin que muera nadie. Despedir no cambia: sigue sin dar nada a cambio (es solo para hacer sitio).
+
+### Palabras clave nuevas
+
+- **Enrolado N.** Al reclutarlo, recibe N fichas de Enrolado. Al terminar cada misión (superada, retirada, fallada o con el Barco hundido) pierde 1; sin ninguna, cumple su contrato y se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo. No cuenta como derrotado. No se renueva ni se le añaden fichas. Si el jugador se queda en puerto, no pierde ninguna. El Capitán nunca es Enrolado. El motor quita las fichas nada más terminar la misión, antes de rescatar o perder rehenes y antes de la recompensa (P86), y solo a los de la tripulación (P87). El registro lo dice: «Piloto a sueldo se enrola por 2 misiones: 2 fichas de Enrolado», «Piloto a sueldo pierde 1 ficha de Enrolado: le queda 1» y «Piloto a sueldo cumple su contrato y se va». En la mesa, las fichas salen sobre la carta («1 Enrolado»).
+- **Desgaste.** Después de resolver una Prueba a la que esté asignado, sufre 1 herida (suya, no libre). Suma con normalidad y la herida llega al final, después del efecto de éxito o de fallo. Vale también en Sin ayuda y en la Prueba de una Acción. Si la Prueba no llega a resolverse, no hay herida (P88). Registro: «Desgaste: Carne de cañón paga el esfuerzo», y después la herida.
+- Reglamento: entradas «Desgaste» y «Enrolado» en la Referencia, con los ejemplos de Albert (la Carne de cañón herida que cae tras sumar en «Pelea de taberna»; el Piloto a sueldo que se va al terminar la segunda misión, con un turno en puerto en medio), en el índice (salen solas) y en la referencia rápida (paso 6 de «Resolver una Prueba» y la Fase de Rumbo). «Palabras clave» nombra Enrolado y Desgaste. Glosario de la mesa con las dos.
+
+### Seis Tripulantes nuevos (241–246, ilustración pendiente; cifras provisionales)
+
+| Carta | Coste | NAV / COM / EXP | Vida | Rasgos | Texto | Clase | Mejoras |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 241 Soldado de fortuna | 2 | 0 / 3 / 1 | 2 | Bucanero | Enrolado 2. | Neutral | 1 |
+| 242 Piloto a sueldo | 2 | 3 / 0 / 0 | 2 | Marinero, Piloto | Enrolado 2. | Neutral | 1 |
+| 243 Guía de alquiler | 2 | 0 / 0 / 3 | 2 | Explorador | Enrolado 2. | Neutral | 1 |
+| 244 Carne de cañón | 1 | 0 / 3 / 0 | 2 | Bucanero | Desgaste. | Piratería | 0 |
+| 245 Galeote fugado | 1 | 2 / 1 / 0 | 3 | Marinero | Desgaste. | Piratería | 0 |
+| 246 El Tuerto (único) | 2 | 0 / 1 / 0 | 3 | Bucanero | El Tuerto recibe {+1 COM} por cada herida que tenga. | Piratería | 1 |
+
+- Huecos de Mejora como los demás de su coste: los de coste 2 tienen 1 (como casi todos); los de coste 1, 0 (como 4 de los 6 de coste 1).
+- Ambientaciones (de Claude, para que Albert las revise): Soldado «Mi espada es vuestra hasta el día de paga. Después, ya veremos.»; Piloto «Conozco cada bajío de aquí a Maracaibo. Lo que no conozco es la lealtad.»; Guía «Os llevo hasta el río y os traigo de vuelta. Lo demás se cobra aparte.»; Carne de cañón «El primero en saltar al abordaje. El primero en sangrar.»; Galeote «Veinte años remando encadenado. Ahora rema suelto, hasta que se le abren las manos.»; El Tuerto «Cada cicatriz le enseñó algo. La del ojo, a no perdonar.»
+- **Excepción temporal: mazo de muelle de 26 cartas para probar la fase 14; se quita al rehacer los mazos de inicio.** Los seis van en el muelle de inicio sin quitar ninguno. El reglamento sigue diciendo de 15 a 20; la comprobación de mazos admite 26 solo para el muelle de inicio, marcado con `TODO(regla)` (mazos.ts, preparacion.ts y sus pruebas). Los mazos de muelle al azar de las medidas siguen siendo de 20, sacados de la caja con las cartas nuevas; la prueba de cobertura de capacidades usa la caja de antes (con las nuevas, el Cañonero y los Cañones coinciden tan poco que su capacidad no sale en 900 partidas).
+
+### Jugador automático
+
+- **Enrolado:** vale medio punto menos por cada misión que le falte para llegar a 3 (Enrolado 2: −0,5; con 1 ficha: −1).
+- **Desgaste:** asignarlo cuesta una herida (+0,6 al elegir a quién asignar). Si la herida lo mataría, cuesta mucho (+4): solo lo asigna si no hay otro grupo que llegue y fallar duele (si fallar es suave, no asigna a nadie).
+- **Despedir para hacer sitio** (nuevo): con el barco lleno, despide al Tripulante que menos vale si en el muelle hay uno que vale 2 puntos o más que él y que puede pagar dejándose 2 cartas en la mano; después lo recluta. La valoración es la misma para los dos (habilidades, Vida y su capacidad); al que se queda le cuenta la Vida que le queda y +1,5 por cada Mejora que perdería. Nunca despide al Capitán ni a un Enrolado (se va solo). Se puede apagar para medir (`jugadorConCriterio({ despide: false })`).
+
+### Pendiente de Albert (opción por defecto aplicada y marcada `TODO(regla)`)
+
+- **P86 · Cuándo pierde la ficha un Enrolado:** por defecto, nada más terminar la misión, antes de la recompensa. *Ejemplo:* superas «Agua y leña» con el barco lleno y el Piloto a sueldo con 1 ficha: el Piloto se va y la recompensa («Recluta sin coste un Tripulante de coste 2 o menos») tiene plaza. Si fuera después de la recompensa, no la tendría.
+- **P87 · Un Enrolado rehén o incautado:** por defecto no pierde ficha mientras está fuera de la tripulación. *Ejemplo:* el Soldado de fortuna (1 ficha) queda rehén y superas la misión: vuelve con su ficha y la pierde al terminar la siguiente misión.
+- **P88 · Desgaste si la Prueba no se resuelve:** por defecto no hay herida. *Ejemplo:* asignas al Galeote fugado, sale el Destino y juegas «Retirada a tiempo», que quita el encuentro sin resolverlo: el Galeote no sufre la herida de Desgaste.
+
+### Medición de la fase 14 (solo informativa; 1000 partidas por modo, semillas 1–1000, mazos de inicio)
+
+Tres filas por modo: **A**, como antes (muelle de 20 sin las cartas nuevas, sin despedir; reproduce el informe de rotación); **B**, solo el jugador que despide; **C**, todo (muelle de 26 con las seis cartas y el jugador que despide).
+
+| Modo | Fila | Victorias | Reclutados por turno | Barco lleno por 1.ª vez (mediana) | Turnos que zarpa lleno | Turnos sin reclutar (por barco lleno) | Salidas por partida | … por Enrolado | … despidos | Heridas de Tripulantes por partida |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Corta | A | 43,7 % | 1,03 | turno 5 | 30,5 % | 21,7 % (12,5 %) | 4,96 | — | — | 5,7 |
+| Corta | B | 43,9 % | 1,06 | turno 5 | 30,5 % | 18,5 % (9,3 %) | 5,18 | — | 0,27 | 5,7 |
+| Corta | C | 43,6 % | 1,11 | turno 4 | 35,3 % | 18,4 % (10,6 %) | 5,63 | 0,65 | 0,23 | 7,8 |
+| Normal | A | 35,7 % | 1,00 | turno 5 | 32,2 % | 23,5 % (13,9 %) | 6,16 | — | — | 7,0 |
+| Normal | B | 34,8 % | 1,03 | turno 5 | 32,4 % | 20,2 % (10,6 %) | 6,45 | — | 0,33 | 7,0 |
+| Normal | C | 35,6 % | 1,07 | turno 4 | 37,0 % | 20,6 % (12,0 %) | 6,72 | 0,73 | 0,26 | 9,3 |
+| Larga | A | 31,2 % | 0,96 | turno 5 | 35,7 % | 26,7 % (16,3 %) | 7,58 | — | — | 8,5 |
+| Larga | B | 31,0 % | 0,99 | turno 5 | 36,3 % | 23,3 % (13,0 %) | 7,91 | — | 0,42 | 8,4 |
+| Larga | C | 33,5 % | 1,02 | turno 4 | 39,0 % | 23,3 % (13,6 %) | 8,36 | 0,84 | 0,34 | 11,5 |
+
+- Con todo (C), el muelle tienta algo más: hay 3 puntos menos de turnos sin reclutar y 0,06–0,08 reclutados más por turno. Pero el barco se llena antes (mediana del turno 4 en vez del 5, en el 75–76 % de las partidas) y zarpa lleno más turnos, porque las cartas nuevas son baratas y el jugador las recluta en cuanto puede. A la vez se vacía más: los Enrolados liberan 0,7–0,8 plazas por partida y se despide a 0,2–0,3 Tripulantes. Las muertes por heridas bajan (4,2 → 3,8 en la normal), aunque las heridas de los Tripulantes suben unas 2 por partida por el Desgaste.
+- Despedir solo (B) quita unos 3 puntos de turnos con el barco lleno sin reclutar y no mueve las victorias.
+- Victorias: sin cambio en la corta y la normal (dentro del ruido, ±1,5); la larga sube 2,3 puntos. Permanencia media, sin cambio (2,7–3,1 turnos).

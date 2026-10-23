@@ -873,6 +873,16 @@ Un Tripulante con tantas heridas como su Vida queda derrotado y se descarta junt
 
 **Descartas N:** el jugador elige N cartas de su mano y las descarta. **Descartar un encuentro sin resolverlo:** el encuentro no da Avance ni aplica ninguno de sus efectos, y se revela otra carta.
 
+### Desgaste
+
+Desgaste es una palabra clave de algunos Tripulantes. Después de resolver una Prueba a la que esté asignado, el Tripulante con Desgaste sufre 1 herida. Esa herida es suya: el jugador no puede dársela a otro.
+
+- El Tripulante suma a la Prueba con normalidad. La herida llega al final, después del efecto de éxito o de fallo.
+- Vale también en las Pruebas Sin ayuda y en las Pruebas de una Acción.
+
+> [!ejemplo]
+> En Ciudad, el jugador revela «Pelea de taberna» (COM 3). La Carne de cañón (COM 3, Vida 2, Desgaste) ya tiene 1 herida, y el jugador la asigna: sus 3 de COM suman con normalidad, más 1 de Diego, que sigue preparado. Sale el Destino de la carta «Calma chicha» (−1): el total queda en 3 y el jugador supera la Prueba. Después, por el Desgaste, la Carne de cañón sufre 1 herida: con 2 heridas y 2 de Vida, queda derrotada.
+
 ### Despedir
 
 Durante la Fase de Reclutamiento, el jugador puede despedir a un Tripulante. Para ello, lo pone en la pila de descartes del mazo de muelle junto con sus Mejoras.
@@ -947,6 +957,17 @@ Cada carta de Peligro tiene tres encuentros, uno por Entorno. Durante una misió
 - Un encuentro sin Prueba (el que no tiene recuadro de Prueba) da su Avance y aplica su efecto. No se revela ningún Destino.
 - Un encuentro con Prueba se resuelve como indica la entrada Prueba.
 - Un encuentro con Prueba da Avance aunque el jugador no la supere, pero en menor cantidad: con «Avance 3 / 2», da 3 si la supera y 2 si no la supera (ver Avance).
+
+### Enrolado
+
+Enrolado N es una palabra clave de algunos Tripulantes que solo se quedan unas misiones. Al reclutar a un Tripulante con Enrolado N, el jugador pone N fichas de Enrolado sobre él.
+
+- Al terminar cada misión (superada, retirada, fallada o con el Barco hundido), nada más terminarla y antes de la recompensa, el jugador quita 1 ficha de Enrolado a cada uno de sus Tripulantes Enrolados. El que se queda sin fichas cumple su contrato y se va: pasa a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. No cuenta como derrotado.
+- Si el jugador se queda en puerto, no quita ninguna ficha.
+- Las fichas de Enrolado no se renuevan ni se añaden.
+
+> [!ejemplo]
+> El jugador recluta al Piloto a sueldo («Enrolado 2») y pone 2 fichas de Enrolado sobre él. Zarpa con él a una misión y, al terminarla, le quita 1. El turno siguiente se queda en puerto, y el Piloto conserva su ficha. Después vuelve a zarpar con él: al terminar esa segunda misión le quita la última, y el Piloto a sueldo cumple su contrato y se va a la pila de descartes del muelle.
 
 ### Entorno
 
@@ -1155,7 +1176,7 @@ Ocupar el muelle es una palabra clave que aparece en el texto de algunos fallos:
 
 ### Palabras clave
 
-Las palabras clave son términos con una regla propia que aparecen en el texto de las cartas. Las de los encuentros de Peligro son Abordaje, Al revelarse, Elige, Incautado, Ocupar el muelle, Persigue y Sin ayuda; las de las cartas del jugador, como Indestructible, figuran en la primera línea de su texto. Cada una tiene su propia entrada en esta Referencia.
+Las palabras clave son términos con una regla propia que aparecen en el texto de las cartas. Las de los encuentros de Peligro son Abordaje, Al revelarse, Elige, Incautado, Ocupar el muelle, Persigue y Sin ayuda; las de las cartas del jugador, como Indestructible, Enrolado o Desgaste, figuran en la primera línea de su texto. Cada una tiene su propia entrada en esta Referencia.
 
 *Véase también:* Tipos de encuentro.
 
@@ -1383,7 +1404,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 
 1. **Fase de Inicio:** revela una carta de Escenario y aplícala · prepara las cartas · efectos de «al empezar el turno».
 2. **Fase de Reclutamiento:** recluta, adquiere Mejoras, juega Eventos y despide, en cualquier orden · al terminar, descarta y repón el muelle.
-3. **Fase de Rumbo:** quédate en puerto (dos opciones distintas del puerto) o zarpa a una misión disponible.
+3. **Fase de Rumbo:** quédate en puerto (dos opciones distintas del puerto) o zarpa a una misión disponible · al terminar la misión, cada Enrolado pierde 1 ficha (sin ninguna, se va).
 4. **Fase de Final de turno:** descarta las cartas que quieras · roba hasta tu Mando (si el mazo del capitán se acaba, se pierde un día) · efectos de «al final de cada turno».
 
 ### Resolver una Prueba
@@ -1393,6 +1414,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 3. Ventana de acción: capacidades de las cartas en juego y Eventos con su propio momento.
 4. Resuelve la Prueba: superada si tu total es igual o mayor que la dificultad.
 5. Gana el Avance: X si se supera, Y si no («Avance X / Y»).
+6. Desgaste: cada Tripulante asignado con Desgaste sufre 1 herida.
 
 ### Iconos de efecto
 

@@ -1,6 +1,6 @@
 // Paso de Jugar cartas: reclutar, adquirir, jugar Eventos, usar capacidades de Acción y sin etiqueta, despedir.
 
-import { esUnica, porId } from '../catalogo.ts'
+import { enroladoDe, esUnica, porId } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import type { Accion, Estado, InstId } from '../tipos.ts'
 import { encolarUso, usosDisponibles } from '../usos.ts'
@@ -74,10 +74,17 @@ export const reclutar: Manejador<'reclutar'> = (s, t) => {
     return 'sigue'
   }
   mover(s, t.carta, 'tripulacion', 'abajo')
-  copia(s, t.carta).agotada = false
+  const recluta = copia(s, t.carta)
+  recluta.agotada = false
   // Catalina: el descuento se gasta con el siguiente Tripulante que reclutes, aunque sea gratis (N19).
   s.temporales = s.temporales.filter((x) => x.clave !== 'capitan2.descuento')
-  anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}${t.gratis ? ' sin pagar su coste' : ''}.`, { tipo: 'reclutar', carta: copia(s, t.carta).id })
+  anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}${t.gratis ? ' sin pagar su coste' : ''}.`, { tipo: 'reclutar', carta: recluta.id })
+  // Fase 14, «Enrolado N»: entra con N fichas de Enrolado (no se renuevan ni se añaden más).
+  const fichas = enroladoDe(recluta.id)
+  if (fichas !== null) {
+    recluta.enrolado = fichas
+    anotar(s, 'efecto', `${nombre(s, t.carta)} se enrola por ${fichas} ${fichas === 1 ? 'misión' : 'misiones'}: ${fichas} ${fichas === 1 ? 'ficha' : 'fichas'} de Enrolado.`)
+  }
   encolar(s, { tipo: 'evento', ev: { tipo: 'reclutar', carta: t.carta }, fase: 'antes', cancelado: false, usadas: [] })
   return 'hecha'
 }

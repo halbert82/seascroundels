@@ -3,7 +3,7 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { costeImpreso, esIndestructible, iconosDe, porId, rasgosDe } from '../catalogo.ts'
+import { costeImpreso, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tieneDesgaste, tipoDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
@@ -99,18 +99,76 @@ function vidaRestante(s: Estado, c: InstId): number {
   return valor(s, { tipo: 'vida', carta: c }) - copia(s, c).heridas
 }
 
+/**
+ * Fase 14: lo que vale de menos un Tripulante por sus palabras clave. Un Enrolado se va pronto (medio punto menos por
+ * cada misión que le falte para llegar a 3); uno con Desgaste paga una herida en cada Prueba.
+ */
+function ajustePalabrasClave(id: string, enrolado?: number): number {
+  const fichas = enrolado ?? enroladoDe(id)
+  let n = 0
+  if (fichas !== null) n -= Math.max(0, 3 - fichas) * 0.5
+  if (tieneDesgaste(id)) n -= 0.6
+  return n
+}
+
 /** Valor de un Tripulante en juego: sus habilidades (el Capitán vale mucho más: si cae, se pierde). */
 function valorTripulante(s: Estado, c: InstId): number {
   if (c === s.capitan) return 100
-  const e = porId(copia(s, c).id)
-  return e.tipo === 'tripulante' ? e.carta.NAV + e.carta.COM + e.carta.EXP + e.carta.vida * 0.5 : 0
+  const t = copia(s, c)
+  const e = porId(t.id)
+  return e.tipo === 'tripulante' ? e.carta.NAV + e.carta.COM + e.carta.EXP + e.carta.vida * 0.5 + ajustePalabrasClave(t.id, t.enrolado) : 0
+}
+
+/** Lo que vale un Tripulante por sí mismo (sin contar lo que cuesta reclutarlo). */
+function valorDeTripulante(id: string): number {
+  const e = porId(id)
+  if (e.tipo !== 'tripulante') return -99
+  return e.carta.NAV + e.carta.COM + e.carta.EXP + e.carta.vida * 0.4 + (CAPACIDAD_TRIPULANTE[id] ?? 0) + ajustePalabrasClave(id)
 }
 
 function puntuacionTripulanteEnMuelle(id: string): number {
   const e = porId(id)
   if (e.tipo !== 'tripulante') return -99
-  return e.carta.NAV + e.carta.COM + e.carta.EXP + e.carta.vida * 0.4 - e.carta.coste * 0.6 + (CAPACIDAD_TRIPULANTE[id] ?? 0)
+  return valorDeTripulante(id) - e.carta.coste * 0.6
 }
+
+/**
+ * Fase 14 · Despedir para hacer sitio. Con el barco lleno, despide al Tripulante que menos vale si en el muelle hay
+ * uno claramente mejor (2 puntos más o más, con la misma valoración: habilidades, Vida y su capacidad) que puede pagar
+ * dejándose 2 cartas en la mano. El que se queda vale también por la Vida que le queda y por sus Mejoras, que se irían
+ * con él. Nunca despide al Capitán ni a un Enrolado (se va solo).
+ */
+function despidoQueConviene(s: Estado): InstId | null {
+  if (plazasLibres(s) > 0) return null
+  const mano = s.zonas.mano.length
+  const enJuego = new Set([...s.zonas.tripulacion, ...s.zonas.rehenes].map((c) => copia(s, c).id))
+  const nuevos = s.zonas.muelle
+    .filter((c) => {
+      const id = copia(s, c).id
+      return porId(id).tipo === 'tripulante' && !(esUnica(id) && enJuego.has(id)) && mano - valor(s, { tipo: 'coste', carta: c }) >= 2
+    })
+    .map((c) => valorDeTripulante(copia(s, c).id))
+  if (nuevos.length === 0) return null
+  const quedarse = (c: InstId): number => {
+    const t = copia(s, c)
+    const e = porId(t.id)
+    const vida = e.tipo === 'tripulante' ? e.carta.vida : 0
+    const mejoras = s.zonas.mejoras.filter((m) => copia(s, m).vinculadaA === c && tipoDe(copia(s, m).id) !== 'tesoro').length
+    return valorDeTripulante(t.id) - vida * 0.4 + vidaRestante(s, c) * 0.4 + mejoras * 1.5
+  }
+  const despedibles = s.zonas.tripulacion.filter((c) => c !== s.capitan && copia(s, c).enrolado === undefined && porId(copia(s, c).id).tipo === 'tripulante')
+  if (despedibles.length === 0) return null
+  const peor = despedibles.reduce((a, b) => (quedarse(b) < quedarse(a) ? b : a))
+  return Math.max(...nuevos) - quedarse(peor) >= 2 ? peor : null
+}
+
+/** Fase 14 · Desgaste: lo que cuesta asignarlo (una herida; si lo mata, mucho más). */
+function costeDesgaste(s: Estado, c: InstId): number {
+  if (!tieneDesgaste(copia(s, c).id)) return 0
+  return vidaRestante(s, c) <= 1 ? 4 : 0.6
+}
+
+const desgasteLetal = (s: Estado, c: InstId): boolean => tieneDesgaste(copia(s, c).id) && vidaRestante(s, c) <= 1
 
 const MEJORAS_PREFERIDAS: Record<string, number> = {
   vela: 5,
@@ -250,16 +308,18 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
       }
       if (total < sinCartas.dificultad) continue
       const coste =
-        grupo.reduce((n, c) => n + (c === s.capitan ? 2.5 : 1 + valorTripulante(s, c) / 8), 0) + usadas.length * 0.8 - (total >= objetivo ? 0.5 : 0)
+        grupo.reduce((n, c) => n + (c === s.capitan ? 2.5 : 1 + valorTripulante(s, c) / 8) + costeDesgaste(s, c), 0) + usadas.length * 0.8 - (total >= objetivo ? 0.5 : 0)
       if (!mejor || coste < mejor.coste) mejor = { coste, eleccion: { tipo: 'compromiso', opcion, tripulantes: grupo, cartas: usadas } }
     }
   }
-  if (mejor) return mejor.eleccion
+  // Fase 14: a un Tripulante con Desgaste al que la herida mataría solo lo asigna si la Prueba lo merece (fallar duele).
+  const conLetal = mejor?.eleccion.tipo === 'compromiso' && mejor.eleccion.tripulantes.some((c) => desgasteLetal(s, c))
+  if (mejor && !(conLetal && peligroDeFallo(s, encuentro) < 2)) return mejor.eleccion
   // No llega: si el fallo es suave, no compromete a nadie; si duele, lo intenta con todo.
   if (peligroDeFallo(s, encuentro) < 2) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   const hab = d.opciones[0]!.hab
   const def = definicionActual(s)
-  let todos = [...tripulantes]
+  let todos = tripulantes.filter((c) => !desgasteLetal(s, c))
   // Con todo lo que valga: si no se puede con todos (Sin ayuda, «como mucho 2»…), con el mejor que se pueda.
   if (problemaCompromiso(s, def, hab, todos, []) !== null) {
     const mejores = [...tripulantes].sort((a, b) => valor(s, { tipo: 'habilidad', carta: b, hab }) - valor(s, { tipo: 'habilidad', carta: a, hab }))
@@ -352,7 +412,10 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
   }
 }
 
-function elegirEnJugarCartas(s: Estado, acciones: readonly Accion[]): Eleccion {
+function elegirEnJugarCartas(s: Estado, acciones: readonly Accion[], opciones: OpcionesJugador): Eleccion {
+  // Fase 14: con el barco lleno, despide al peor si en el muelle hay uno claramente mejor (después lo recluta).
+  const despedir = opciones.despide ? despidoQueConviene(s) : null
+  if (despedir && acciones.some((a) => a.tipo === 'despedir' && a.carta === despedir)) return { tipo: 'accion', accion: { tipo: 'despedir', carta: despedir } }
   const mano = s.zonas.mano.length
   let mejor: { puntos: number; accion: Accion } | null = null
   for (const a of acciones) {
@@ -595,11 +658,11 @@ function cubrirDistancia(s: Estado, d: Extract<Decision, { tipo: 'cubrirDistanci
   return { tipo: 'cartas', ids: mejor?.ids ?? [...d.tripulantes, ...d.cartas] }
 }
 
-function ventana(s: Estado, d: Extract<Decision, { tipo: 'ventanaAccion' }>): Eleccion {
+function ventana(s: Estado, d: Extract<Decision, { tipo: 'ventanaAccion' }>, opciones: OpcionesJugador): Eleccion {
   const terminar: Eleccion = { tipo: 'accion', accion: { tipo: 'terminarPaso' } }
   switch (d.motivo.clave) {
     case 'jugarCartas':
-      return elegirEnJugarCartas(s, d.acciones)
+      return elegirEnJugarCartas(s, d.acciones, opciones)
     case 'ventanaPrueba': {
       // Sin refuerzo: las cartas de la mano ya se añadieron al comprometer.
       return terminar
@@ -969,7 +1032,13 @@ export function tieneNavegante(s: Estado, minimo: number): boolean {
   return t.zonas.tripulacion.some((c) => !copia(t, c).agotada && valor(t, { tipo: 'habilidad', carta: c, hab: 'NAV' }) >= minimo)
 }
 
-export function jugadorConCriterio(): JugadorAutomatico {
+/** Opciones del jugador con criterio. `despide` (fase 14, por defecto sí): despide para hacer sitio a uno mejor. */
+export interface OpcionesJugador {
+  despide?: boolean
+}
+
+export function jugadorConCriterio(opciones: OpcionesJugador = {}): JugadorAutomatico {
+  const conOpciones: OpcionesJugador = { despide: true, ...opciones }
   return (s, d) => {
     // En las pausas, las capacidades sin etiqueta que le convengan.
     const libre = d.libres ? mejorUso(s, d.libres, d) : null
@@ -979,7 +1048,7 @@ export function jugadorConCriterio(): JugadorAutomatico {
         const usos = d.acciones.filter((a): a is Extract<Accion, { tipo: 'usar' }> => a.tipo === 'usar').map((a) => a.uso)
         const uso = mejorUso(s, usos, d)
         if (uso) return { tipo: 'accion', accion: { tipo: 'usar', uso } }
-        return ventana(s, d)
+        return ventana(s, d, conOpciones)
       }
       case 'elegirCartas':
         return elegirCartas(s, d)

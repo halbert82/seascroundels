@@ -1,8 +1,8 @@
 // Mazo de Peligros activo (el normal o el mezclado de una misión), encuentros y descartes.
 
-import { costeImpreso, porId, tipoDe } from './catalogo.ts'
+import { costeImpreso, porId, tieneDesgaste, tipoDe } from './catalogo.ts'
 import type { EncuentroDatos, Entorno } from './datos.ts'
-import { anotar, copia, encolar } from './estado.ts'
+import { anotar, copia, encolar, nombre } from './estado.ts'
 import type { Estado, InstId, Zona } from './tipos.ts'
 import { mover, moverA, rebarajar } from './zonas.ts'
 
@@ -90,6 +90,17 @@ export function cerrarPrueba(s: Estado): void {
     if (persigue || persigueSegundo) {
       encolar(s, { tipo: 'evento', ev: { tipo: 'persigue', carta: d }, fase: 'antes', cancelado: false, usadas: [] })
     } else descartarPeligro(s, d)
+  }
+  // Fase 14, «Desgaste»: después de resolver una Prueba a la que esté asignado (también Sin ayuda y la Prueba de una
+  // Acción), el Tripulante sufre 1 herida. Sumó con normalidad; la herida llega al final y es suya (no es libre).
+  // TODO(regla): si la Prueba no llega a resolverse (el encuentro se quita antes, como con «Retirada a tiempo»), no hay
+  // herida (P88, pendiente de Albert).
+  if (p?.resultado) {
+    for (const c of p.comprometidos) {
+      if (!s.zonas.tripulacion.includes(c) || !tieneDesgaste(copia(s, c).id)) continue
+      anotar(s, 'efecto', `Desgaste: ${nombre(s, c)} paga el esfuerzo.`)
+      encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })
+    }
   }
   s.temporales = s.temporales.filter((x) => x.hasta !== 'finPrueba')
   s.prueba = null

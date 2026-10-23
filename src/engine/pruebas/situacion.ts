@@ -37,6 +37,8 @@ export interface CopiaInicial {
   mejoras?: CartaId[]
   entrenamiento?: Habilidad[]
   estados?: FichaTripulante[]
+  /** Fase 14: fichas de Enrolado que le quedan (un Enrolado puesto en la situación, sin reclutarlo). */
+  enrolado?: number
 }
 
 export interface MejoraInicial {
@@ -184,6 +186,7 @@ function ponerCopia(s: Estado, entrada: CartaId | CopiaInicial, zona: Zona): Ins
   c.heridas = datos.heridas ?? 0
   c.agotada = datos.agotada ?? false
   c.entrenamiento = [...(datos.entrenamiento ?? [])]
+  if (datos.enrolado !== undefined) c.enrolado = datos.enrolado
   if (datos.estados && datos.estados.length > 0) c.estados = [...datos.estados]
   for (const m of datos.mejoras ?? []) copiaDe(s, crearCopia(s, m, 'mejoras')).vinculadaA = inst
   return inst

@@ -77,5 +77,11 @@
  "a_por_ellos": "**Acción:** Haz una Prueba de [COM] N. Si la superas, rescata a todos los rehenes de esta misión: vuelven preparados.",
  "ron_valientes": "**Acción:** Un Tripulante queda **Borracho** y **Aguerrido**.",
  "virar": "**Interrupción:** Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar.",
- "arenga": "**Respuesta:** Después de zarpar, agota a tu Capitán: todos tus Tripulantes quedan **Inspirados**."
+ "arenga": "**Respuesta:** Después de zarpar, agota a tu Capitán: todos tus Tripulantes quedan **Inspirados**.",
+ "soldado_fortuna": "Enrolado N.",
+ "piloto_sueldo": "Enrolado N.",
+ "guia_alquiler": "Enrolado N.",
+ "carne_canon": "Desgaste.",
+ "galeote": "Desgaste.",
+ "tuerto": "El Tuerto recibe {N COM} por cada herida que tenga."
 }

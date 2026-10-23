@@ -21,6 +21,7 @@ export const ESCENAS = [
   'permanentes',
   'capituloNuevo',
   'dosDestinos',
+  'tripulacionDePaso',
 ] as const
 export type Escena = (typeof ESCENAS)[number]
 
@@ -39,7 +40,7 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
 }
 
 const CONDICION: Record<
-  Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo' | 'dosDestinos'>,
+  Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo' | 'dosDestinos' | 'tripulacionDePaso'>,
   (s: Estado, desde: number) => boolean
 > = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
@@ -223,6 +224,21 @@ function dosDestinos(): PartidaEnMesa {
 }
 
 /**
+ * Fase 14, en puerto: dos Enrolados con sus fichas (al Piloto le queda 1), la Carne de cañón herida y El Tuerto con 2
+ * heridas (COM 3); en el muelle, la Guía de alquiler y el Galeote fugado.
+ */
+function tripulacionDePaso(): PartidaEnMesa {
+  const j = Jugador.en({
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje', 'abordaje', 'vendas'],
+    tripulacion: [{ id: 'piloto_sueldo', enrolado: 1 }, { id: 'soldado_fortuna', enrolado: 2 }, { id: 'carne_canon', heridas: 1 }, { id: 'tuerto', heridas: 2 }],
+    muelle: ['guia_alquiler', 'galeote', 'vela', 'sable'],
+    reputacion: 4,
+  })
+  return { ...empezar(j.estado), desde: j.estado.registro.length }
+}
+
+/**
  * En puerto, en Jugar cartas, con la mano llena: 5 cartas (el Mando del Capitán) o, robando 3 más del mazo del capitán,
  * 8 (una mano muy llena). Para ver que la mano se ve entera en una tableta.
  */
@@ -247,6 +263,7 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'finalMision') return finalMision()
   if (nombre === 'capituloNuevo') return capituloNuevo()
   if (nombre === 'dosDestinos') return dosDestinos()
+  if (nombre === 'tripulacionDePaso') return tripulacionDePaso()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

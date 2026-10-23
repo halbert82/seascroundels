@@ -8,6 +8,7 @@ import { CAPACIDADES_ESTADOS } from './estados.ts'
 import { CAPACIDADES_EVENTOS } from './eventos.ts'
 import { CAPACIDADES_JUGADOR2 } from './jugador2.ts'
 import { CAPACIDADES_MEJORAS } from './mejoras.ts'
+import { CAPACIDADES_ROTACION } from './rotacion.ts'
 import { CAPACIDADES_TRIPULANTES } from './tripulantes.ts'
 
 const POR_CARTA = new Map<CartaId, Capacidad[]>()
@@ -27,6 +28,7 @@ for (const cap of [
   ...CAPACIDADES_EVENTOS,
   ...CAPACIDADES_ESTADOS,
   ...CAPACIDADES_JUGADOR2,
+  ...CAPACIDADES_ROTACION,
 ]) {
   registrar(cap)
 }

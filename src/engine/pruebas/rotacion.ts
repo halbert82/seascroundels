@@ -6,7 +6,7 @@ import { esUnica, porId } from '../catalogo.ts'
 import { copia } from '../estado.ts'
 import { responder } from '../motor.ts'
 import { nuevaPartida } from '../preparacion.ts'
-import type { Accion, Decision, Eleccion, Estado, InstId, Modo } from '../tipos.ts'
+import type { Accion, CartaId, Decision, Eleccion, Estado, InstId, Modo } from '../tipos.ts'
 import { plazasLibres, valor } from '../valores.ts'
 import type { JugadorAutomatico } from './jugadores.ts'
 
@@ -30,8 +30,10 @@ export type CausaSalida =
   | 'exceso'
   /** Lo reclutó «Náufrago en la playa»: se va al final del turno. */
   | 'naufrago'
+  /** Fase 14: un Enrolado sin fichas cumple su contrato y se va. */
+  | 'enrolado'
 
-export const CAUSAS: readonly CausaSalida[] = ['heridas', 'carta', 'muelle', 'rehen', 'incautado', 'despedido', 'exceso', 'naufrago']
+export const CAUSAS: readonly CausaSalida[] = ['heridas', 'carta', 'muelle', 'rehen', 'incautado', 'despedido', 'exceso', 'naufrago', 'enrolado']
 
 /** Por qué no se recluta a nadie en la Fase de Reclutamiento de un turno. */
 export type SinReclutar =
@@ -144,12 +146,17 @@ const CAUSA_DE_MOTIVO: Record<string, CausaSalida> = {
   despedido: 'despedido',
   exceso: 'exceso',
   naufrago: 'naufrago',
+  enrolado: 'enrolado',
   incautado: 'incautado',
 }
 
 /** Juega una partida con un jugador automático y mide la rotación de su tripulación. */
-export function medirRotacion(semilla: number, jugador: JugadorAutomatico, { modo }: { modo?: Modo } = {}): RotacionPartida {
-  let s = nuevaPartida({ semilla, ...(modo ? { modo } : {}) })
+export function medirRotacion(
+  semilla: number,
+  jugador: JugadorAutomatico,
+  { modo, mazoDeMuelle }: { modo?: Modo; mazoDeMuelle?: CartaId[] } = {},
+): RotacionPartida {
+  let s = nuevaPartida({ semilla, ...(modo ? { modo } : {}), ...(mazoDeMuelle ? { mazoDeMuelle } : {}) })
   const r: RotacionPartida = {
     semilla,
     gana: false,

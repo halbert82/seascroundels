@@ -174,6 +174,8 @@ export const CLAVES_REGLA = [
   'salidaDoble',
   'pasajero',
   'indestructible',
+  'enrolado',
+  'desgaste',
   'otear',
   'entrenamiento',
   'tesoro',
@@ -339,6 +341,18 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     { rotulo: 'Cuándo se va', texto: 'Se queda en juego entre misiones hasta que su carta diga que se va.' },
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
+  enrolado: regla(
+    'enrolado',
+    'Enrolado',
+    'Enrolado N: al reclutarlo, recibe N fichas de Enrolado. Al terminar cada misión (superada, retirada, fallada o con el Barco hundido) pierde 1. Cuando no le queda ninguna, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
+    { rotulo: 'Detalles', texto: 'No cuenta como derrotado. Las fichas no se renuevan ni se añaden. Si te quedas en puerto, no pierde ninguna.' },
+  ),
+  desgaste: regla(
+    'desgaste',
+    'Desgaste',
+    'Después de resolver una Prueba a la que esté asignado, este Tripulante sufre 1 herida. Suma a la Prueba con normalidad: la herida llega al final.',
+    { rotulo: 'Detalles', texto: 'La herida es suya, no la repartes. Vale también en las Pruebas Sin ayuda y en las de una Acción.' },
+  ),
   otear: regla(
     'otear',
     'Otear',
@@ -539,6 +553,8 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   salidaDoble: /\bSalida doble\b/,
   pasajero: /\bPasajeros?\b/,
   indestructible: /\bIndestructible\b/,
+  enrolado: /\bEnrolado \d/,
+  desgaste: /^Desgaste\b/,
   otear: /\b[Oo]tea\b|\bOtear\b/,
   entrenamiento: /\bEntrenamiento\b/,
   // Por el tipo de carta (ver ayudasDeCarta).

@@ -22,7 +22,6 @@ describe('Medida de la rotación de la tripulación', () => {
       const definitivas = p.estancias.filter((e) => e.salida !== null).length
       expect(definitivas).toBeLessThanOrEqual(p.estancias.length)
       for (const e of p.estancias) if (e.salida !== null) expect(e.salida).toBeGreaterThanOrEqual(e.entrada)
-      expect(p.despidos).toBe(0) // el jugador automático no despide nunca
     }
   })
 

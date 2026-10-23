@@ -1,20 +1,25 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO } from './catalogo.ts'
 import { DATOS } from './datos.ts'
-import { claseDe, erroresDeMazos } from './mazos.ts'
+import { claseDe, erroresDeMazos, MUELLE_TEMPORAL_FASE14 } from './mazos.ts'
 
+// Las reglas se prueban con el muelle de inicio de siempre (20 cartas, sin los seis Tripulantes de la fase 14).
 const predefinidos = () => ({
   capitan: DATOS.mazosPredefinidos.capitanInicial,
   mazoDelCapitan: [...DATOS.mazosPredefinidos.mazoDelCapitan],
-  mazoDeMuelle: [...DATOS.mazosPredefinidos.mazoDeMuelle],
+  mazoDeMuelle: DATOS.mazosPredefinidos.mazoDeMuelle.slice(0, 20),
 })
 
 describe('Construir tu mazo', () => {
-  it('los mazos de inicio de Diego cumplen las reglas: muelle de 20, capitán de 40', () => {
-    const m = predefinidos()
-    expect(m.mazoDeMuelle).toHaveLength(20)
+  it('los mazos de inicio de Diego cumplen las reglas: muelle de 26 (excepción temporal de la fase 14), capitán de 40', () => {
+    // TODO(regla): excepción temporal de la fase 14; quitar cuando se rehagan los mazos de inicio (el reglamento dice de
+    // 15 a 20 cartas de muelle; el de inicio lleva 26 para probar los seis Tripulantes nuevos).
+    const m = { ...predefinidos(), mazoDeMuelle: [...DATOS.mazosPredefinidos.mazoDeMuelle] }
+    expect(m.mazoDeMuelle).toHaveLength(MUELLE_TEMPORAL_FASE14)
     expect(m.mazoDelCapitan).toHaveLength(40)
-    expect(erroresDeMazos(m)).toEqual([])
+    expect(erroresDeMazos(m, { muelleMaximo: MUELLE_TEMPORAL_FASE14 })).toEqual([])
+    // Sin la excepción, 26 cartas no valen: la regla sigue siendo de 15 a 20.
+    expect(erroresDeMazos(m)).toEqual(['El mazo de muelle tiene 26 cartas; debe tener de 15 a 20.'])
   })
 
   it('el mazo de muelle debe tener de 15 a 20 cartas y el del capitán de 30 a 40', () => {

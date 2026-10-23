@@ -224,6 +224,31 @@ export function esIndestructible(id: string): boolean {
   return 'texto' in e.carta && typeof e.carta.texto === 'string' && e.carta.texto.startsWith('Indestructible')
 }
 
+/** Las palabras clave de la primera línea del texto de una carta del jugador («Enrolado 2. Desgaste.»). */
+function palabrasClaveDe(id: string): string[] {
+  const e = porId(id)
+  const texto = 'texto' in e.carta && typeof e.carta.texto === 'string' ? e.carta.texto : ''
+  const primera = texto.split('\n')[0] ?? ''
+  return primera
+    .split('.')
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0)
+}
+
+/** Fase 14, «Enrolado N»: cuántas fichas de Enrolado recibe al reclutarlo (null si no es Enrolado). */
+export function enroladoDe(id: string): number | null {
+  for (const p of palabrasClaveDe(id)) {
+    const m = /^Enrolado (\d+)$/.exec(p)
+    if (m) return Number(m[1])
+  }
+  return null
+}
+
+/** Fase 14, «Desgaste»: después de resolver una Prueba a la que esté asignado, sufre 1 herida. */
+export function tieneDesgaste(id: string): boolean {
+  return palabrasClaveDe(id).includes('Desgaste')
+}
+
 export function esUnica(id: string): boolean {
   const e = porId(id)
   if (e.tipo === 'capitan' || e.tipo === 'tesoro') return true

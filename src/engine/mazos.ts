@@ -33,10 +33,21 @@ export function claseDe(id: CartaId): string {
   }
 }
 
-/** Lista de incumplimientos de las reglas de construcción (vacía si los mazos son legales). */
-export function erroresDeMazos(m: MazosJugador): string[] {
+/**
+ * Fase 14: el mazo de muelle de inicio lleva 26 cartas para probar los seis Tripulantes nuevos (Enrolado y Desgaste).
+ * El reglamento sigue diciendo de 15 a 20.
+ * TODO(regla): excepción temporal de la fase 14; quitar cuando se rehagan los mazos de inicio.
+ */
+export const MUELLE_TEMPORAL_FASE14 = 26
+
+/**
+ * Lista de incumplimientos de las reglas de construcción (vacía si los mazos son legales). `muelleMaximo`: solo para la
+ * excepción temporal de la fase 14 (el mazo de muelle de inicio).
+ */
+export function erroresDeMazos(m: MazosJugador, { muelleMaximo }: { muelleMaximo?: number } = {}): string[] {
   const errores: string[] = []
-  const { muelle, capitan } = LIMITES
+  const { capitan } = LIMITES
+  const muelle = { min: LIMITES.muelle.min, max: muelleMaximo ?? LIMITES.muelle.max }
   if (m.mazoDeMuelle.length < muelle.min || m.mazoDeMuelle.length > muelle.max) {
     errores.push(`El mazo de muelle tiene ${m.mazoDeMuelle.length} cartas; debe tener de ${muelle.min} a ${muelle.max}.`)
   }

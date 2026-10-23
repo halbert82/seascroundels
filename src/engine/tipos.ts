@@ -76,6 +76,8 @@ export interface Copia {
   junto?: InstId
   /** Permanente: la carta del encuentro que la puso en juego (su «Al revelarse» señala a quién afecta). */
   origen?: InstId
+  /** Fase 14: fichas de Enrolado que le quedan a un Tripulante «Enrolado N» (se quita 1 al terminar cada misión). */
+  enrolado?: number
 }
 
 export type Paso = 'preparacion' | 'inicio' | 'jugarCartas' | 'quedarseOZarpar' | 'mision' | 'final' | 'terminada'
