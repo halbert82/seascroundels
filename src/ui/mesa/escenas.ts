@@ -24,6 +24,10 @@ export const ESCENAS = [
   'tripulacionDePaso',
   'aPorEllos',
   'aPorEllosOfrecida',
+  'protegido',
+  'rival',
+  'bucear',
+  'asedio',
 ] as const
 export type Escena = (typeof ESCENAS)[number]
 
@@ -44,7 +48,22 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
 const CONDICION: Record<
   Exclude<
     Escena,
-    'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo' | 'dosDestinos' | 'tripulacionDePaso' | 'aPorEllos' | 'aPorEllosOfrecida'
+    | 'enJuego'
+    | 'muelleOcupado'
+    | 'alarma'
+    | 'finalMision'
+    | 'mano5'
+    | 'mano8'
+    | 'permanentes'
+    | 'capituloNuevo'
+    | 'dosDestinos'
+    | 'tripulacionDePaso'
+    | 'aPorEllos'
+    | 'aPorEllosOfrecida'
+    | 'protegido'
+    | 'rival'
+    | 'bucear'
+    | 'asedio'
   >,
   (s: Estado, desde: number) => boolean
 > = {
@@ -263,6 +282,84 @@ function aPorEllos(ofrecida: boolean): PartidaEnMesa {
 }
 
 /**
+ * Fase 15, «Escolta del San Telmo»: el galeón ya ha sufrido 1 daño; «Piratas rivales» se falla y el Barco va a sufrir 1
+ * daño: se ofrece que lo sufra el galeón en su lugar (Interrupción).
+ */
+function protegido(): PartidaEnMesa {
+  const j = Jugador.en({
+    empezarEn: 'quedarseOZarpar',
+    escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma'],
+    misiones: ['escolta-I', 'prueba-I', 'aguada-I'],
+    mazoPeligros: ['calma', 'rivales', 'chubasco', 'calma', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje'],
+    tripulacion: ['bucanero', 'vigia'],
+    barco: { mejoras: ['vela'] },
+    reputacion: 4,
+  })
+  j.zarpar('escolta-I').seguir()
+  j.copia('pm_galeon').heridas = 1
+  j.comprometer('COM', []).seguir()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 8) }
+}
+
+/** Fase 15, «La regata de San Juan»: dos Peligros revelados (4 de Rival) y la Prueba de NAV del tercero, a medias. */
+function rival(): PartidaEnMesa {
+  const j = Jugador.en({
+    empezarEn: 'quedarseOZarpar',
+    escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma'],
+    misiones: ['regata-I', 'prueba-I', 'aguada-I'],
+    mazoPeligros: ['calma', 'chubasco', 'calma', 'oportunidad', 'calma', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje'],
+    tripulacion: ['viejo_lobo', 'bucanero'],
+    reputacion: 4,
+  })
+  j.zarpar('regata-I').seguir()
+  j.comprometer('NAV', ['bucanero']).pasarOfertas().seguir()
+  if (j.decision.tipo === 'elegirCartas') j.elegir('bucanero')
+  j.seguir().comprometer('NAV', ['viejo_lobo']).pasarOfertas()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 10) }
+}
+
+/** Fase 15, «El pecio del San José»: superada la misión, ya con 2 fichas de Profundidad; ¿se baja otra vez? */
+function bucear(): PartidaEnMesa {
+  const j = Jugador.en({
+    empezarEn: 'quedarseOZarpar',
+    escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma'],
+    misiones: ['pecio-I', 'prueba-I', 'aguada-I'],
+    mazoPeligros: ['calma', 'calma', 'chubasco', 'chubasco', 'chubasco', 'chubasco'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje'],
+    tripulacion: ['vigia', 'guia_alquiler', 'baqueano'],
+    reputacion: 4,
+  })
+  j.zarpar('pecio-I').seguir()
+  j.opcion('bucear').comprometer('EXP', ['vigia']).seguir().pasarOfertas()
+  j.opcion('bucear').comprometer('EXP', ['guia_alquiler']).seguir().pasarOfertas()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 10) }
+}
+
+/**
+ * Fase 15, en puerto: «El asedio de Port Royal» está disponible y sus Murallas, en juego, han sufrido 2 daños; «Mala
+ * fama» sigue en juego de una misión anterior (los Tripulantes cuestan 1 carta más).
+ */
+function asedio(): PartidaEnMesa {
+  const j = Jugador.en({
+    mazoCapitan: [...MAZO],
+    escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma', 'pruebas-calma'],
+    mano: ['ojo', 'timon', 'coraje', 'abordaje'],
+    misiones: ['asedio-I', 'prueba-I', 'aguada-I'],
+    tripulacion: ['bucanero', 'vigia'],
+    muelle: ['contrabandista', 'galeote', 'vela', 'matasanos'],
+    permanentes: ['pm_malafama'],
+    reputacion: 4,
+  })
+  j.copia('pm_murallas').heridas = 2
+  return { ...empezar(j.estado), desde: j.estado.registro.length }
+}
+
+/**
  * En puerto, en Jugar cartas, con la mano llena: 5 cartas (el Mando del Capitán) o, robando 3 más del mazo del capitán,
  * 8 (una mano muy llena). Para ver que la mano se ve entera en una tableta.
  */
@@ -290,6 +387,10 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'tripulacionDePaso') return tripulacionDePaso()
   if (nombre === 'aPorEllos') return aPorEllos(false)
   if (nombre === 'aPorEllosOfrecida') return aPorEllos(true)
+  if (nombre === 'protegido') return protegido()
+  if (nombre === 'rival') return rival()
+  if (nombre === 'bucear') return bucear()
+  if (nombre === 'asedio') return asedio()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

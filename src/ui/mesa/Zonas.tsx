@@ -444,6 +444,21 @@ export function ZonaPuerto() {
             <Rotulo>Puerto</Rotulo>
             <CartaMesa inst="puerto" id={s.puerto} escala={0.2} />
           </div>
+          {/* Fase 15: las permanentes que siguen en juego en puerto («Mala fama», las Murallas de Port Royal). */}
+          {s.zonas.permanentes.length > 0 && (
+            <div className="bloque puerto-permanentes">
+              <Explicable ayuda={AYUDA_REGLA.permanente}>
+                <Rotulo>En juego</Rotulo>
+              </Explicable>
+              <div className="en-juego-cartas">
+                {s.zonas.permanentes.map((c) => (
+                  <div key={c} className="permanente">
+                    <CartaDe inst={c} escala={0.2} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <EsteTurno />
         </div>
       )}

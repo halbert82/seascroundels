@@ -1040,3 +1040,107 @@ En el informe de la tercera ronda: los 12 Rasgos (11 de personas y el Cañón), 
 - **P93 · Balandra de la Hermandad (196, Mar):** el texto pasa a «Prepara un Cañón y repara 1 daño. Si tienes un Bucanero preparado, prepara otro Cañón.» (fuera «(es de su cofradía)»). Diego es Bucanero: cuenta si no está agotado. *Ejemplos (con sus pruebas):* con Diego agotado y el Bucanero veterano preparado, llega el segundo Cañón; con los dos agotados, solo llega uno.
 - **P94 · Sangre caliente (Bronca en el sollado):** se queda «sin contar al Capitán». «El Capitán cuenta siempre» vale para las tres fórmulas de Rasgo («si tienes un X», «si tienes un X preparado», «X asignado») y para las rebajas como «Vigía −2». En las demás elecciones («tus dos Tripulantes con más COM») manda lo que diga la carta. Reglamento: entrada Rasgo, con el ejemplo de Diego, el Bucanero veterano y el Grumete leal. *Ejemplo (con su prueba):* con los tres, se pelean el Bucanero y el Grumete; solo Diego puede ser asignado, y como es Oficial, suma +1.
 - **Oficios:** confirmada la lectura. Un oficio puede tener un solo portador en la caja, pero no hay límite en la tripulación: puedes llevar a los tres Pilotos a la vez. Solo limita que una carta sea única. Reglamento: entrada Rasgo.
+
+## Fase 15: misiones nuevas y Peligros nuevos (23 de octubre de 2026)
+
+Decisiones de Albert en la sesión de diseño del 23 de octubre. Cada una con su ejemplo y su prueba (`src/engine/fase15-peligros.test.ts` y `src/engine/fase15-misiones.test.ts`, salvo donde se indique). Reglas de redacción para todo lo nuevo: registro de LCG comercial con las reglas de estilo de los Peligros; las cartas del mazo de historia se nombran por su número; nada de cartas con muchos efectos ni de cosas que haya que recordar; todas las cartas nuevas llevan «Ilustración pendiente».
+
+### Reglas generales
+
+- **Habilidades con texto:** fuera del reglamento la frase que decía que las Habilidades no tienen texto. Una Habilidad puede tener texto si su carta lo dice. No hay ninguna carta así todavía (sin prueba de motor).
+- **Pasajero:** deja de ser regla general (fuera su entrada del reglamento). **Un Pasajero no ocupa Capacidad.** Don Anselmo (221) y El guía del istmo (222) dicen en su carta todo lo necesario: «Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas», sus reglas y cuándo se va («se baja asustado: devuélvelo al mazo de historia», «Se va al terminar la carta 141»). *Ejemplo (con su prueba en misiones2.test):* con el Barco lleno (4 Tripulantes), Don Anselmo sube a bordo al zarpar a «Los muelles de Maracaibo» y nadie vuelve al muelle.
+- **Descomunal N** (palabra clave de encuentro): asigna al menos N Tripulantes a esta Prueba; si no puedes, la fallas. *Ejemplo:* «El cachalote» (Mar, NAV 5, Descomunal 2): asignar solo al Bucanero veterano no vale; con el Bucanero y el Grumete leal (1 + 1 cada uno, más 1 por Diego, que sigue preparado) y el Barco suman 5.
+- **Alerta** (palabra clave de encuentro): este encuentro se resuelve siempre; ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Frena a «Sangre fría», «Soborno», las Velas de tormenta, Íñigo «Lince» Quintero, «Cambio de rumbo», «Retirada a tiempo» y el Pedrero de borda (no se ofrecen). *Ejemplo:* revelas «La resaca» (Mar, Alerta) con «Cambio de rumbo» en la mano: no puedes mandarla al fondo del mazo.
+- **Abordaje:** no cambia. Es la misma regla cuando te abordan y cuando abordas tú (los barcos rivales 262 y 266). *Ejemplo:* contra «El barco de van Hoorn» (COM 4, Abordaje) no puedes disparar los Cañones de bronce, aunque sí agotar uno antes de asignar para que la Prueba reciba −1.
+
+### La Isla del Tesoro (255–258): el capítulo II, al azar
+
+| Carta | Capítulo | Entorno · Avance · Distancia | Reglas | Recompensa |
+| --- | --- | --- | --- | --- |
+| 255 El mapa del ahorcado | I | Ciudad · 5 · 2 | Al zarpar: puedes descartar 2 cartas para ganar 2 de Avance | 1 y uno de los tres capítulos II, al azar |
+| 256 …tomada por los ingleses | II | Mar · 6 · — | Al zarpar: la carta 95 entra en el mazo de Peligros; los encuentros de tipo Armada, +1 | 3 (final) |
+| 257 …sacudida por un temblor | II | Naturaleza · 5 · 2 | Sin retirada; cada Prueba que falles, 1 de Derrumbe; con 3, la misión falla | Elige: 3 y cada Tripulante sufre 1 herida, o 2 y robas 2 (final) |
+| 258 El mapa era falso | II | Naturaleza · 4 · 2 | Cada Prueba de EXP superada, 1 de Avance adicional | 1, robas 2 y uno de los otros dos capítulos II, al azar |
+
+- Sin Tesoro. Los tres capítulos II no llevan letra (su sello dice «II de II»). Al superar el I, «Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve las otras al mazo de historia». «El mapa era falso» hace lo mismo con la 256 y la 257. *Ejemplo (con su prueba, con semilla):* con la misma semilla sale siempre el mismo capítulo; en 30 partidas salen los tres.
+- «Rumores del tesoro» da 2 también en estos capítulos II (es capítulo II aunque no lleve letra).
+
+### Misiones sueltas nuevas (aventuras)
+
+- **268 El pecio del San José** (Mar 3): cuando la misión vaya a superarse, puedes bucear las veces que quieras: una Prueba de EXP con un solo Tripulante asignado, de dificultad 2 más tus fichas de Profundidad (máximo 4). Si la superas, 1 ficha de Profundidad; si la fallas, retiras todas y dejas de bucear. Cada inmersión revela Destino y admite cartas de la mano; el buzo se agota al asignarlo. Recompensa: 1 y después miras la carta 269, «El fondo del San José» (una **carta de consulta** del mazo de historia, tipo nuevo), y aplicas sus recompensas hasta tu Profundidad, que se suman: 1, robas 2; 2, 1 de reputación más; 3, el Tesoro 270 «Cadena de oro del San José» («Acción: Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes o adquieras cuesta 3 menos»); 4, el Tesoro 271 «La custodia de esmeraldas» («Indestructible. Al entrar en juego, gana 2 de reputación»). La misión no muestra la tabla. *Ejemplo:* con la Vigía inexperta (EXP 2, más 1 por Diego) bajas a 1; con Diego solo (EXP 1) contra 3 fallas, pierdes la ficha y la misión se supera con su 1 de reputación.
+- **272 Escolta del San Telmo** (Mar 6): al zarpar, pon en juego la carta 273, «Galeón San Telmo» (Vida 4): cada Prueba de COM que falles le inflige 1 daño; puede sufrir parte del daño del Barco, o todo, en su lugar (Interrupción); sin Vida restante, la misión falla. Recompensa: 2; si el galeón tiene 3 o más de Vida restante, 1 más y robas 2.
+- **274 El asedio de Port Royal** (Ciudad 7): cuando pasa a estar disponible, pon en juego la carta 275, «Murallas de Port Royal» (Vida 6): al final de cada turno en que no hayas zarpado a esa misión, 1 daño; cada Prueba que falles en ella, 1 daño; pueden sufrir el daño del Barco durante esa misión; sin Vida restante, −2 de reputación, la misión va al fondo del mazo de Misiones y la carta vuelve al mazo de historia. Recompensa: 2; con 4 o más de Vida restante, 1 más. Sin mazo de Encargos.
+- **276 La regata de San Juan** (Mar 6): después de revelar cada carta de Peligro, 2 fichas de Rival; cada Prueba de NAV superada, 1 de Avance adicional; con 8 o más fichas de Rival, el rival gana la regata y al superarla ganas 1 de reputación en lugar de su recompensa. Recompensa: 2 y el Tesoro 148, «Gallardete de San Juan» (+1 Mando).
+
+### Travesías de dos capítulos
+
+- **La carrera de van Hoorn** (259–263). I «La ruta de los alisios» (Mar 6): las dos reglas del Rival de la regata; «Acción: Destina 3 NAV: quita 2 fichas de Rival (una vez por misión)» (el primer Destina en una carta); con 8 fichas de Rival, la misión termina; si no la superas, se aparta y la carta 261 (II-b) va encima del mazo de Misiones. Recompensa: 1 y la carta 260 (II-a). II-a «La isla de Aves» (Naturaleza 5, Distancia 2, sin reglas): 3 y el Tesoro 263. II-b «Recuperar lo robado» (Mar 5): al zarpar, la carta 262, «El barco de van Hoorn» (Mar · Abordaje · COM 4 · 3 / 2; antes de asignar, puedes agotar un Cañón: −1; si la superas, robas 1; Destino −1, Sin oposición: daña 1), va encima del mazo de Peligros y vuelve al mazo de historia al terminar. Recompensa: 2 y el Tesoro 263, «Carta de marear de van Hoorn» (Indestructible; tus misiones de Mar necesitan 1 de Avance menos). «Van Hoorn» para no confundirlo con el 217, «El Holandés errante».
+- **El fugitivo** (264–267, nombre provisional). I «Tras la pista» (Ciudad 5, Distancia 2, sin reglas): 1 y la carta 265. II «Vivo, no muerto» (Mar 6): al zarpar, la carta 266, «El barco del fugitivo» (Mar · Abordaje · COM 4 · 3 / 2; si la superas, pon en juego la carta 267; si la fallas, Abordaje y el fugitivo escapa: la misión falla; Destino −1, Sin oposición: daña 1), encima del mazo de Peligros. Recompensa: 3. La carta 267, «El prisionero» (Vida 3): puede sufrir las heridas de un Tripulante en su lugar (Interrupción); sin Vida restante, la misión falla; vuelve al mazo de historia al terminar la misión.
+- Protegido y Rival no son reglas generales: lo dice el texto de cada carta.
+
+### Ocho cartas de Peligro nuevas (247–254)
+
+El mazo de Peligros pasa de 56 cartas a 64 (63 en el mazo y «La Armada te persigue» en el mazo de historia). Cada encuentro lleva su ambientación corta en cursiva.
+
+| Carta | Destino | Mar | Naturaleza | Ciudad |
+| --- | --- | --- | --- | --- |
+| 247 Fuerza bruta | −1; SO: agota a 1 | El cachalote (Bestia, NAV 5, 3/2, Descomunal 2; daña 2) | El árbol caído (Terreno, COM 4, 3/2, Descomunal 2; 2 heridas) | Una carreta en el barro (Civil, COM 3, 1/1, Descomunal 2; descarta 1) |
+| 248 Arrimar el hombro | 0; SO: descarta 1 | El ancla enganchada (Terreno, NAV 3, Descomunal 2; agota a 1) | Arrastrar la chalupa (Terreno, COM 3, Descomunal 2; −1 Avance) | Descargar de noche (Civil, NAV 3, Descomunal 2; éxito roba 2; fallo descarta 2 al azar) |
+| 249 La ronda de noche | −1; SO: agota a 1 | El bergantín de ronda (Armada, Barco, NAV 4, 3/2, Alerta; Perseguido) | El centinela de la loma (Militar, EXP 4, 3/2, Alerta; el asignado con más EXP, Buscado) | Los vigías del fuerte (Guardia, EXP 3, Alerta; 2 heridas) |
+| 250 Sin escapatoria | −2; SO: 1 herida | La resaca (Terreno, NAV 3, Alerta; daña 1) | Los perros cimarrones (Bestia, COM 4, 3/2, Alerta; 2 heridas) | La cuenta del tabernero (Civil, EXP 2, Alerta; descarta 2) |
+| 251 Un respiro | +1; SO: −1 Avance (mín. 0) | Al abrigo de la isla de Pinos (descansar: −2 Avance, prepara a todos y cura 1 a cada uno; o seguir: +1) | Campamento en el claro (descansar: −2, prepara a todos; o +1) | Una noche en tierra (descansar: −2, quita todos los Estados; o +1) |
+| 252 Provisiones perdidas | −1; SO: descarta la carta superior del mazo del capitán | El remolino (NAV 4, 3/2; las 2 superiores) | El barranco (EXP 3; la superior) | Ratas en el almacén (Bestia, Civil, EXP 3; las 2 superiores) |
+| 253 Malas lenguas | 0; SO: descarta 1 | Una presa que escapa (Barco, Civil, COM 2; pon en juego la carta 136; si ya está, descarta 1) | Los cimarrones no os fían (Civil, EXP 3; descarta 2) | Tu nombre corre por las tabernas (Civil, COM 3; como el Mar) |
+| 254 Mar de fondo | −1; SO: Mar daña 1, tierra 1 herida | Mar de fondo (Tormenta, NAV 3; por 1, daña 1; por 2 o más, daña 2 y Vía de agua) | La ladera suelta (EXP 3; por 1, 1 herida; por 2 o más, 3) | Pleito en la Audiencia (Guardia, EXP 4, 3/2; por 1, descarta 1; por 2 o más, −1 reputación) |
+
+- La permanente 136, «Mala fama» (Civil): «Los Tripulantes te cuestan 1 carta más. Acción: Descarta 2 cartas de tu mano: devuelve esta carta al mazo de historia.» Cuenta en el inventario de permanentes del reglamento.
+- «Un respiro»: los tres encuentros son sin Prueba, con Avance 0 y «Elige»; perder 2 de Avance es el precio de Descansar: si no puedes pagarlo, esa opción no se ofrece y se aplica Seguir sin preguntar.
+
+### Numeración
+
+Las 32 cartas nuevas: 247–254 (Peligros), 255–258 (la isla), 259–263 (van Hoorn), 264–267 (el fugitivo), 268–271 (el pecio), 272–273 (la escolta), 274–275 (el asedio) y 276 (la regata), más los dos números libres: 136, «Mala fama», y 148, «Gallardete de San Juan». La caja pasa de 224 a 256 cartas y ya no tiene huecos.
+
+### Mazo de Misiones
+
+Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cuatro misiones sueltas. Pasa de 9 a 16 cartas (diez capítulos I y seis aventuras).
+
+### Jugador automático
+
+- **Bucear:** baja si su mejor buzo preparado, con las cartas de EXP de la mano, llega a la dificultad; desde la primera ficha, con 1 de margen para el Destino (si falla, lo pierde todo).
+- **Descansar o seguir:** descansa si casi toda la tripulación está agotada (o, en el Mar, si hay 3 o más heridas; en Ciudad, si dos o más tienen Estados) y aún le faltan 2 o más de Avance; si no, sigue.
+- **Destina de van Hoorn:** lo usa tras resolver un encuentro cuando el Rival llega a 6 (el siguiente Peligro lo pondría a 8) y aún le falta Avance.
+- **Desviar al Protegido:** nunca lo deja a 0. Si el Barco se hundiría (o el Tripulante quedaría derrotado), desvía todo lo que puede; si no, solo lo que le sobra por encima de la Vida que da la recompensa de más (3 el galeón, 4 las murallas; el prisionero, por encima de 1).
+- **Cadena de oro:** la gasta en la Fase de Reclutamiento si en el muelle hay un Tripulante o una Mejora que quiera de coste 3 o más. **Mala fama:** la quita (2 cartas) si tiene 4 o más en la mano, sitio en el Barco y Tripulantes en el muelle.
+
+### Textos que se han ajustado para que quepan o se entiendan (sin cambiar lo que hacen)
+
+- 259 «La ruta de los alisios» no cabía con las cinco reglas a 10,8 px: las dos del Rival van en un solo párrafo («Cada vez que superes una Prueba de NAV, gana 1 de Avance adicional»), el Destina dice «quita 2 fichas de Rival» y la última une «Con 8 fichas de Rival, la misión termina. Si no la superas, apártala y pon la carta 261 encima del mazo de Misiones». Ambientación más corta. 276, la regata, con las dos reglas del Rival en un párrafo, como la 259.
+- 255 y 258: «Baraja boca abajo las cartas…» va en el texto de la recompensa (no cabía en la pastilla).
+- Las cuatro permanentes nuevas, como las de la fase 11, sin frase de ambiente. Las Murallas, con mucho texto, tienen menos ilustración y la caja de texto más alta (maqueta automática para las permanentes que no caben).
+- La pastilla «Pon la carta N encima del mazo de Misiones» se ajusta con la letra de la carta (a 16 px, igual que antes): algunas cartas antiguas (135, 139, 143, 147) ganan medio punto de letra.
+- Los capítulos sin ilustración dicen ahora «Ilustración pendiente» (antes, «Ilustración del capítulo»).
+
+### Lecturas (no son preguntas)
+
+- **Descomunal:** se puede no asignar a nadie (Sin oposición: se falla); si asignas, tienen que ser N o más. Se mira al asignar: si el Loro se une después del Destino, uno solo no basta y se falla.
+- **Alerta:** si reúnes el Avance a mitad de un encuentro con Alerta (por ejemplo, con «¡A toda vela!» al revelarlo), el encuentro se resuelve igual y la misión se supera después.
+- **Bucear:** la misión ya está superada; si una inmersión hunde el Barco o hiere, se aplica, pero la misión sigue superada. Sin Tripulantes preparados no se puede bucear. No asignar a nadie es fallar la inmersión.
+- **La ruta de los alisios:** con 8 fichas, la misión termina en el momento de revelar ese Peligro, sin resolverlo, y no se pregunta si la dejas disponible: sale de la partida.
+- **La regata:** «en lugar de su recompensa» incluye el Gallardete (no se gana).
+- **…tomada por los ingleses:** la carta 95 se baraja en el mazo de Peligros (como «Entra en el mazo de Peligros»); si ya estaba, no pasa nada.
+- **…sacudida por un temblor:** «cada Tripulante sufre 1 herida» incluye al Capitán.
+- **Provisiones perdidas:** con el mazo del capitán vacío, no se descarta nada ni se baraja la pila de descartes (como «Dados cargados», P40).
+- **Mala fama** también encarece lo que se paga «pagando la mitad de su coste» (Pulso en el muelle: la mitad y 1 más), pero no lo que se recluta sin coste.
+- **La Cadena de oro**, como Tesoro, al descartarse vuelve al mazo de historia (sale de la partida). El descuento se gasta con el siguiente Tripulante o Mejora, aunque salga gratis.
+- **El prisionero** puede sufrir también las heridas que un Tripulante paga como coste (el Galeote fugado); usarlo es decisión del jugador.
+- **Avance adicional** de la regata, van Hoorn I y «El mapa era falso»: en la Prueba de un encuentro se suma al Avance del encuentro (la mesa lo enseña en «Si la superas: +N»); en la de una Acción, se gana al superarla.
+
+### Preguntas para Albert (P95–P101), con la opción por defecto aplicada (TODO(regla) en el código)
+
+- **P95 · Mala fama se queda al terminar la misión.** Por la regla general, las permanentes vuelven al mazo de historia al terminar la misión, y entonces Mala fama no encarecería nunca nada (se recluta en puerto). Por defecto, su carta dice en la primera línea «No vuelve al mazo de historia al terminar la misión» y solo se quita con su Acción. *Ejemplo:* fallas «Una presa que escapa», vuelves a puerto y el Bucanero veterano te cuesta 3 hasta que descartes 2 cartas para quitarla.
+- **P96 · Las Murallas siguen en juego mientras su misión esté disponible.** Por defecto, su carta lo dice en la primera línea («Sigue en juego mientras “El asedio de Port Royal” esté disponible»): si fallas la misión y la dejas disponible, siguen (con su daño); si la mandas al fondo (o con el Tablón de encargos), vuelven al mazo de historia, y si la misión vuelve a salir, entran otra vez con toda su Vida.
+- **P97 · El turno en que aparece el asedio.** «Al final de cada turno en que no hayas zarpado a esta misión» se aplica al pie de la letra: también el turno en que sale (aunque ya no pudieras zarpar). *Ejemplo:* superas una misión en el turno 4 y al reponer sale el asedio: al final del turno 4, las Murallas sufren 1 daño (5 de Vida). La otra opción: el turno en que aparece no cuenta.
+- **P98 · El barco del fugitivo (y el de van Hoorn) encima del mazo.** Se pone encima, al pie de la letra: un Otear (los Despachos del Rey, la Vigía inexperta…) puede mandarlo al fondo, y entonces no sale; y no hace falta haber capturado al prisionero para superar «Vivo, no muerto». *Ejemplo:* con los Despachos del Rey («Al zarpar: Otea 2») mandas el barco del fugitivo al fondo y superas la misión con otros encuentros: ganas tus 3 de reputación. La otra opción: que el barco «persiga» (sea siempre el siguiente encuentro, como «La Armada te persigue» en la Flota IV) y que sin el prisionero no se pueda superar.
+- **P99 · Desviar más de lo que le queda.** Por defecto, el Galeón, las Murallas o el prisionero pueden sufrir todo el daño (o todas las heridas), aunque pase de su Vida restante (y entonces se aplica su «sin Vida restante»). La otra opción: como mucho, lo que les queda.
+- **P100 · Tipos de las cartas nuevas que no los traían.** Los dos barcos rivales, «Barco»; el Galeón San Telmo, «Barco»; las Murallas, «Militar»; el prisionero, «Civil» (Mala fama ya lo traía: Civil).
+- **P101 · Nombre del tipo de la carta 269.** Por defecto, «Carta de consulta»: una carta del mazo de historia que no entra en juego (se mira y se aplica). Dorso de misión.

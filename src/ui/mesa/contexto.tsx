@@ -37,8 +37,14 @@ export function fichasDe(s: Estado, inst: InstId): FichasCarta {
     return f
   }
   if (tipo === 'capitulo') return { avance: c.avance }
-  if ((s.zonas.permanentes.includes(inst) || tipo === 'tesoro') && c.fichas !== undefined) return { contador: c.fichas }
-  return {}
+  const f: FichasCarta = {}
+  // Fase 15: una permanente que se puede dañar (Galeón San Telmo, Murallas de Port Royal, El prisionero): su Vida restante.
+  const e = porId(c.id)
+  if (e.tipo === 'permanente' && e.carta.vida !== undefined && s.zonas.permanentes.includes(inst)) {
+    f.vidaCarta = { restante: Math.max(0, e.carta.vida - c.heridas), total: e.carta.vida, icono: c.id === 'pm_prisionero' ? 'herida' : 'dano' }
+  }
+  if ((s.zonas.permanentes.includes(inst) || tipo === 'tesoro') && c.fichas !== undefined) f.contador = c.fichas
+  return f
 }
 
 /** Una carta de la mesa enlazada al estado: fichas, agotada, marca y qué pasa al pulsarla. */

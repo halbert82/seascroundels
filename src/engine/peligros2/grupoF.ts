@@ -115,7 +115,7 @@ registrarPeligro('p2_lenguas', {
 
 // Permanente 136 «Mala fama» (Civil): los Tripulantes te cuestan 1 carta más. Acción: descarta 2 cartas de tu mano para
 // devolverla al mazo de historia.
-// TODO(regla): se queda en juego al terminar la misión (opción por defecto: si volviera al mazo de historia con las
+// TODO(regla) P95: se queda en juego al terminar la misión (opción por defecto: si volviera al mazo de historia con las
 // demás permanentes, nunca encarecería nada, porque se recluta en puerto). La carta lo dice en su primera línea.
 registrarPermanente('pm_malafama', {
   seQueda: true,

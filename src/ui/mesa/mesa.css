@@ -3048,3 +3048,51 @@
 .ayuda-libro a:hover {
   background: rgba(232, 200, 119, 0.14);
 }
+
+/* Fase 15: la Vida que le queda a una permanente que se protege (Galeón San Telmo, Murallas de Port Royal, El prisionero). */
+.ficha-vida-carta {
+  background: linear-gradient(180deg, #7e2a20, #4a130c);
+  border-color: #e2c783;
+  font-size: 13.5px;
+  height: 22px;
+}
+.ficha-vida-carta .ic {
+  color: #f0c2a8;
+}
+.ficha-vida-carta.poca {
+  box-shadow: 0 0 0 2px #f0d48a, 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Fase 15: el rival con su barra (La regata de San Juan, La ruta de los alisios), bajo la del Avance. */
+.avance.rival {
+  margin-top: 2px;
+}
+.avance.rival .avance-cabecera .ic,
+.avance.rival .avance-cabecera {
+  color: #e39a7f;
+}
+.avance.rival .avance-n {
+  font-size: 22px;
+  color: #f2b49c;
+}
+.avance.rival .avance-barra {
+  height: 11px;
+  box-shadow: inset 0 0 0 1px rgba(227, 154, 127, 0.45);
+}
+.avance.rival .avance-lleno {
+  background: linear-gradient(90deg, #7e2a20, #d9604a);
+  box-shadow: 0 0 10px rgba(217, 96, 74, 0.55);
+}
+.avance.rival.cerca .avance-n {
+  color: #ffd0bf;
+}
+
+/* Fase 15: permanentes que siguen en juego en puerto («Mala fama», las Murallas de Port Royal). */
+.puerto-permanentes {
+  flex: none;
+}
+.puerto-permanentes .en-juego-cartas {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+}

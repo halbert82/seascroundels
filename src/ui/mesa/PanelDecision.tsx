@@ -5,6 +5,7 @@ import { iconosDe, nombreDe } from '../../engine/catalogo.ts'
 import { copia } from '../../engine/estado.ts'
 import type { Decision, Eleccion, Estado, InstId } from '../../engine/tipos.ts'
 import { navParaDistancia } from '../../engine/valores.ts'
+import { definicionActual, problemaCompromiso } from '../../engine/prueba.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { porId } from '../../engine/catalogo.ts'
 import { textoDecision, textoUso } from '../textos/decisiones.ts'
@@ -168,7 +169,7 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
       )
       botones.push(
         <Boton key="confirmar" principal desactivado={!vale} onClick={() => confirmada && elegir(confirmada)}>
-          Zarpar
+          {d.motivo.clave === 'destina' ? 'Destinar' : 'Zarpar'}
         </Boton>,
       )
       break
@@ -197,8 +198,21 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
         )
       }
       const alguien = sel.cartas.some((c) => d.tripulantes.includes(c))
+      // Fase 15: si la asignación no vale (Descomunal, Sin ayuda, «como mucho uno»…), se dice por qué y no se confirma.
+      const problema =
+        confirmada?.tipo === 'compromiso' && alguien && s.prueba
+          ? problemaCompromiso(s, definicionActual(s), d.opciones[confirmada.opcion]?.hab ?? 'COM', confirmada.tripulantes, confirmada.cartas)
+          : null
+      if (problema) {
+        centro = (
+          <>
+            {centro}
+            <span className="pd-contador mal">{problema}</span>
+          </>
+        )
+      }
       botones.push(
-        <Boton key="confirmar" principal onClick={() => confirmada && elegir(confirmada)}>
+        <Boton key="confirmar" principal desactivado={problema !== null} onClick={() => confirmada && !problema && elegir(confirmada)}>
           {alguien ? 'Asignar' : 'No asignar a nadie'}
         </Boton>,
       )

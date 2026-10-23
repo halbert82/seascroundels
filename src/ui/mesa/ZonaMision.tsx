@@ -55,6 +55,38 @@ function BarraAvance({ actual, necesario }: { actual: number; necesario: number 
   )
 }
 
+/**
+ * Fase 15, el rival con su barra («La regata de San Juan», «La ruta de los alisios»): sus fichas de Rival, bajo el Avance,
+ * hasta las 8 con las que gana (o llega antes).
+ */
+function BarraRival({ n, umbral, nota }: { n: number; umbral: number; nota: string }) {
+  const velocidad = useVelocidad()
+  return (
+    <div className={`avance rival${n >= umbral - 2 ? ' cerca' : ''}`} title={`Rival: ${n} de ${umbral}. ${nota}`}>
+      <div className="avance-cabecera">
+        <Explicable ayuda={AYUDA_FICHA_MISION.rival} className="rival-rotulo" etiqueta={`Rival: ${n} de ${umbral}. ${nota}`}>
+          Rival
+        </Explicable>
+        <span className="avance-n">
+          <Numero valor={n} />
+          <small>/ {umbral}</small>
+        </span>
+      </div>
+      <div className="avance-barra">
+        <motion.div
+          className="avance-lleno"
+          initial={false}
+          animate={{ width: `${Math.min(100, (100 * n) / Math.max(1, umbral))}%` }}
+          transition={{ duration: duracion(velocidad, 0.35) }}
+        />
+        {Array.from({ length: Math.max(0, umbral - 1) }, (_, i) => (
+          <span key={i} className="avance-corte" style={{ left: `${(100 * (i + 1)) / umbral}%` }} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 /** La última carta de Peligro revelada, aunque ya se haya resuelto (para que no pase sin verse). */
 function ultimaRevelada(s: Estado, desde: number): InstId | null {
   for (let i = s.registro.length - 1; i >= Math.max(0, desde - 40); i--) {
@@ -124,9 +156,14 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
         <CartaDe inst={m.carta} escala={ESCALA_MISION} />
         <div className="mision-estado">
           <BarraAvance actual={copia(s, m.carta).avance} necesario={necesario} />
-          {fichasVisibles(s).length > 0 && (
+          {fichasVisibles(s)
+            .filter((f) => f.ficha === 'rival')
+            .map((f) => (
+              <BarraRival key={f.ficha} n={f.n} umbral={f.umbral} nota={f.nota} />
+            ))}
+          {fichasVisibles(s).some((f) => f.ficha !== 'rival') && (
             <div className="mision-fichas">
-              {fichasVisibles(s).map((f) => (
+              {fichasVisibles(s).filter((f) => f.ficha !== 'rival').map((f) => (
                 <Explicable
                   key={f.ficha}
                   ayuda={AYUDA_FICHA_MISION[f.ficha]}

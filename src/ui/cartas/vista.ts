@@ -611,9 +611,10 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         pestanasIzqTop: 74,
         rasgos: [],
         ...(c.palabrasClave.length > 0 ? { tipos: c.palabrasClave.join(' · ') } : {}),
-        // Fase 15: las permanentes que se pueden dañar (Galeón San Telmo, Murallas, El prisionero) llevan su Vida.
+        // Fase 15: las permanentes que se pueden dañar (Galeón San Telmo, Murallas, El prisionero) llevan su Vida. Como en
+        // las cartas de Peligro, el número no se separa de su verbo ni la puntuación de su icono.
         ...(c.vida !== undefined ? { vida: c.vida } : {}),
-        texto: parsearTexto(c.texto),
+        texto: parsearTexto(c.texto, UNIR),
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),
       }

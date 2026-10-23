@@ -9005,7 +9005,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~No sopla viento, pero la mar llega gruesa de una tormenta lejana.~",
-     "textoFallo": "Si fallas por 1, Daña {1 dano}. Si fallas por 2 o más, Daña {2 dano} y el Barco queda con **Vía de agua**."
+     "textoFallo": "Si fallas por 1, daña {1 dano}. Si fallas por 2 o más, daña {2 dano} y el Barco queda con **Vía de agua**."
     },
     "nat": {
      "nombre": "La ladera suelta",
@@ -9025,7 +9025,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~La lluvia de anoche ha dejado la ladera como jabón.~",
-     "textoFallo": "Si fallas por 1, Inflige {1 herida}. Si fallas por 2 o más, Inflige {3 herida}."
+     "textoFallo": "Si fallas por 1, inflige {1 herida}. Si fallas por 2 o más, inflige {3 herida}."
     },
     "ciu": {
      "nombre": "Pleito en la Audiencia",
@@ -10328,14 +10328,15 @@
      ],
      "ambientacion": "«Lo colgaron por no decir dónde. Su viuda lo dirá por diez reales.»",
      "recompensa": {
-      "rep": 1
+      "rep": 1,
+      "texto": "{+1 rep}. Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve las otras al mazo de historia."
      },
      "siguiente": [
       256,
       257,
       258
      ],
-     "textoSiguiente": "Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve las otras al mazo de historia"
+     "textoSiguiente": ""
     },
     {
      "capitulo": "II",
@@ -10383,7 +10384,7 @@
         "efecto": "robas 2"
        }
       ],
-      "texto": "**Elige:**\n**Cargar con todo el oro:** {+3 rep} y cada Tripulante sufre {1 herida}.\n**Salir a tiempo:** {+2 rep} y roba {2 robar}."
+      "texto": "**Elige:** cargar con todo el oro, {+3 rep} y cada Tripulante sufre {1 herida}; o salir a tiempo, {+2 rep} y roba {2 robar}."
      },
      "siguiente": [],
      "textoSiguiente": "",
@@ -10402,13 +10403,14 @@
      "ambientacion": "«La cruz marcaba un pozo seco. Pero alguien grabó otra cruz en la piedra.»",
      "recompensa": {
       "rep": 1,
-      "draw": 2
+      "draw": 2,
+      "texto": "{+1 rep} y roba {2 robar}. Baraja boca abajo las cartas 256 y 257 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve la otra al mazo de historia."
      },
      "siguiente": [
       256,
       257
      ],
-     "textoSiguiente": "Baraja boca abajo las cartas 256 y 257 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve la otra al mazo de historia",
+     "textoSiguiente": "",
      "clave": "falso"
     }
    ]
@@ -10429,13 +10431,11 @@
      "avanceNecesario": 6,
      "distancia": 0,
      "reglas": [
-      "**Obligado:** Después de que reveles una carta de Peligro, pon 2 fichas de Rival aquí.",
-      "**Obligado:** Después de que superes una Prueba de [NAV] en esta misión, gana {1 avance} adicional.",
-      "**Acción:** Destina 3 [NAV]: quita 2 fichas de Rival de esta misión. (Límite de una vez por misión.)",
-      "**Obligado:** Cuando esta misión tenga 8 fichas de Rival, la misión termina: apártala y pon la carta 261 encima del mazo de Misiones.",
-      "Si no superas esta misión, apártala y pon la carta 261 encima del mazo de Misiones."
+      "**Obligado:** Después de que reveles una carta de Peligro, pon 2 fichas de Rival aquí. Cada vez que superes una Prueba de [NAV], gana {1 avance} adicional.",
+      "**Acción:** Destina 3 [NAV]: quita 2 fichas de Rival. (Límite de una vez por misión.)",
+      "**Obligado:** Con 8 fichas de Rival, la misión termina. Si no la superas, apártala y pon la carta 261 encima del mazo de Misiones."
      ],
-     "ambientacion": "«A la isla de Aves y vuelta. El que pierda, paga la carta de marear.»",
+     "ambientacion": "«El que llegue último paga la carta de marear.»",
      "recompensa": {
       "rep": 1
      },
@@ -10629,9 +10629,8 @@
      "avanceNecesario": 6,
      "distancia": 0,
      "reglas": [
-      "**Obligado:** Después de que reveles una carta de Peligro, pon 2 fichas de Rival aquí.",
-      "**Obligado:** Después de que superes una Prueba de [NAV] en esta misión, gana {1 avance} adicional.",
-      "Si esta misión tiene 8 o más fichas de Rival, el rival gana la regata: al superar esta misión, gana {1 rep} en lugar de su recompensa."
+      "**Obligado:** Después de que reveles una carta de Peligro, pon 2 fichas de Rival aquí. Cada vez que superes una Prueba de [NAV], gana {1 avance} adicional.",
+      "Con 8 o más fichas de Rival, el rival gana la regata: al superar esta misión, gana {1 rep} en lugar de su recompensa."
      ],
      "ambientacion": "«Una vuelta a la isla y un gallardete de seda. Y el honor, que no se vende.»",
      "recompensa": {
@@ -11147,7 +11146,7 @@
     "Civil"
    ],
    "texto": "No vuelve al mazo de historia al terminar la misión.\nLos Tripulantes te cuestan 1 carta más.\n**Acción:** Descarta 2 cartas de tu mano: devuelve esta carta al mazo de historia.",
-   "ambientacion": "«Dicen que no pagáis lo que prometéis. Y lo dicen en voz alta.»",
+   "ambientacion": "",
    "origen": "p2_lenguas",
    "entorno": "mar",
    "junto": false
@@ -11161,7 +11160,7 @@
    ],
    "vida": 3,
    "texto": "**Interrupción:** Cuando un Tripulante vaya a sufrir heridas, esta carta puede sufrir parte de esas heridas o todas, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
-   "ambientacion": "«Atado al palo mayor, jura que es inocente. Todos lo juran.»",
+   "ambientacion": "",
    "origen": "barco_fugitivo",
    "entorno": "unico",
    "junto": false
@@ -11175,7 +11174,7 @@
    ],
    "vida": 4,
    "texto": "**Obligado:** Después de que falles una Prueba de [COM], inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
-   "ambientacion": "«Lleva la paga de tres guarniciones y doce cañones mal servidos.»",
+   "ambientacion": "",
    "misiones": [
     "escolta-I"
    ],
@@ -11190,7 +11189,7 @@
    ],
    "vida": 6,
    "texto": "Sigue en juego mientras «El asedio de Port Royal» esté disponible.\n**Obligado:** Al final de cada turno en que no hayas zarpado a esa misión, inflige {1 dano} a esta carta.\n**Obligado:** Después de que falles una Prueba en esa misión, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño durante esa misión, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante: −2 reputación, pon la misión al fondo del mazo de Misiones y devuelve esta carta al mazo de historia.",
-   "ambientacion": "«Piedra de Jamaica y argamasa de ron. Aguantarán. Un tiempo.»",
+   "ambientacion": "",
    "misiones": [
     "asedio-I"
    ],

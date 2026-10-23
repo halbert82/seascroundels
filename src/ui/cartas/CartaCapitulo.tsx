@@ -59,7 +59,7 @@ export function CartaCapitulo({ v }: { v: VistaCapitulo & { historia?: HistoriaD
           <span>
             Ilustración
             <br />
-            del capítulo
+            pendiente
           </span>
         </div>
       )}
@@ -81,7 +81,7 @@ export function CartaCapitulo({ v }: { v: VistaCapitulo & { historia?: HistoriaD
           <b>{v.avance}</b>
         </span>
       </div>
-      <div className="chapr" ref={ref}>
+      <div className={v.reglas.length === 0 ? 'chapr sinreglas' : 'chapr'} ref={ref}>
         {v.reglas.map((regla, i) => (
           <Fragment key={i}>
             {i > 0 && <div className="rule" />}

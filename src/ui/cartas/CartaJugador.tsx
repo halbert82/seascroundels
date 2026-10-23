@@ -21,11 +21,35 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
   useLayoutEffect(() => {
     const el = caja.current
     if (!v.permanente || !el) return
-    for (const t of TAMANOS_PERMANENTE) {
-      el.style.setProperty('--fsp', `${t}px`)
-      if (el.scrollHeight <= el.clientHeight + 0.5) break
+    const carta = el.closest('.card')
+    const probar = () => {
+      for (const t of TAMANOS_PERMANENTE) {
+        el.style.setProperty('--fsp', `${t}px`)
+        if (el.scrollHeight <= el.clientHeight + 0.5) return true
+      }
+      return false
     }
-    el.dataset.letra = el.style.getPropertyValue('--fsp')
+    // Fase 15: si ni con la letra más pequeña cabe (las Murallas de Port Royal), la ilustración se acorta y la caja de
+    // texto sube.
+    const ajustar = () => {
+      carta?.classList.remove('largo')
+      if (!probar() && carta) {
+        carta.classList.add('largo')
+        probar()
+      }
+      el.dataset.letra = el.style.getPropertyValue('--fsp')
+    }
+    ajustar()
+    // Se repite cuando terminan de cargar las fuentes (con la de reserva, el texto mide distinto).
+    let vivo = true
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.status !== 'loaded') {
+      void document.fonts.ready.then(() => {
+        if (vivo) ajustar()
+      })
+    }
+    return () => {
+      vivo = false
+    }
   })
   return (
     <div

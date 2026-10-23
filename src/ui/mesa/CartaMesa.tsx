@@ -22,6 +22,8 @@ export interface FichasCarta {
   entrenamiento?: string[]
   /** Fase 14: fichas de Enrolado que le quedan a un Tripulante (se va cuando no le queda ninguna). */
   enrolado?: number
+  /** Fase 15: Vida que le queda a una permanente que se puede dañar (o herir, el prisionero). */
+  vidaCarta?: { restante: number; total: number; icono: 'dano' | 'herida' }
 }
 
 export interface PropsCartaMesa {
@@ -159,9 +161,21 @@ export function CartaMesa(p: PropsCartaMesa) {
 
 function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | undefined }) {
   if (!fichas) return null
-  const { heridas = 0, vida, avance, contador, entrenamiento = [], enrolado } = fichas
+  const { heridas = 0, vida, avance, contador, entrenamiento = [], enrolado, vidaCarta } = fichas
   return (
     <div className="fichas" style={abajo !== undefined ? { bottom: abajo } : undefined}>
+      {vidaCarta && (
+        <span
+          className={`ficha ficha-vida-carta${vidaCarta.restante <= 1 ? ' poca' : ''}`}
+          title={`Le ${vidaCarta.restante === 1 ? 'queda' : 'quedan'} ${vidaCarta.restante} de ${vidaCarta.total} de Vida (${vidaCarta.total - vidaCarta.restante} ${vidaCarta.icono === 'dano' ? 'de daño' : vidaCarta.total - vidaCarta.restante === 1 ? 'herida' : 'heridas'})`}
+        >
+          <span className={claseIcono('vida')} />
+          <b>
+            {vidaCarta.restante}
+            <small>/{vidaCarta.total}</small>
+          </b>
+        </span>
+      )}
       {heridas > 0 && (
         <span className="ficha ficha-herida" title={`${heridas} ${heridas === 1 ? 'herida' : 'heridas'}${vida ? ` de ${vida}` : ''}`}>
           <span className={claseIcono('herida')} />

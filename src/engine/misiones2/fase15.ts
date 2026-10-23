@@ -124,6 +124,17 @@ function desviar(clave: string, de: 'danoBarco' | 'heridas', si: (s: Estado) => 
   }
 }
 
+/**
+ * «Después de que superes una Prueba de [HAB] (en esta misión), gana 1 de Avance adicional.» En la Prueba de un encuentro
+ * se suma a su Avance (así se ve antes, en «Si la superas: +N»); en la de una Acción, se gana al superarla.
+ */
+function avanceAdicional(clave: string, hab: 'NAV' | 'EXP', motivo: string): CapacidadDeCarta[] {
+  return [
+    { clave, ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'avanceExtraPrueba' && c.hab === hab ? 1 : 0) },
+    alSuperarPrueba(`${clave}.accion`, (_s, p) => (p.hab === hab && !p.encuentro ? [{ tipo: 'ganarAvance', n: 1, motivo }] : [])),
+  ]
+}
+
 /** Pon en juego una permanente del mazo de historia (como efecto de una misión). */
 const ponerEnJuego = (id: CartaId): NuevaTarea => aplicar([{ tipo: 'ponerEnJuego', carta: id }])
 
@@ -187,7 +198,7 @@ registrarMision('isla-II-temblor', {
 // «El mapa era falso»: cada Prueba de EXP que superes, 1 de Avance adicional. Al superarla, uno de los otros dos capítulos
 // II al azar.
 registrarMision('isla-II-falso', {
-  capacidades: [alSuperarPrueba('pista', (_s, p) => (p.hab === 'EXP' ? [{ tipo: 'ganarAvance', n: 1, motivo: 'La pista buena' }] : []))],
+  capacidades: avanceAdicional('pista', 'EXP', 'La pista buena'),
   siguiente: (s) => alAzarDeHistoria(s, [256, 257]) ?? 256,
   conservarOtros: true,
 })
@@ -197,10 +208,7 @@ registrarMision('isla-II-falso', {
 // una Prueba de NAV en esta misión, gana 1 de Avance adicional».
 
 const FICHA_RIVAL = (nota: string) => ({ ficha: 'rival' as const, nombre: 'Rival', umbral: 8, inicial: 0, nota })
-const reglasDeRival = (): CapacidadDeCarta[] => [
-  alRevelarPeligro('rival', () => [ponerFichas('rival', 2)]),
-  alSuperarPrueba('ceñir', (_s, p) => (p.hab === 'NAV' ? [{ tipo: 'ganarAvance', n: 1, motivo: 'Ceñís el viento' }] : [])),
-]
+const reglasDeRival = (): CapacidadDeCarta[] => [alRevelarPeligro('rival', () => [ponerFichas('rival', 2)]), ...avanceAdicional('ceñir', 'NAV', 'Ceñís el viento')]
 
 // La regata de San Juan (276): con 8 o más fichas de Rival, el rival gana la regata y, al superarla, ganas 1 de reputación
 // en lugar de su recompensa (sin el Gallardete).
@@ -285,7 +293,8 @@ registrarPeligro('barco_fugitivo', {
 
 // Permanente 267, «El prisionero» (Vida 3): puede sufrir las heridas de un Tripulante en su lugar; sin Vida, la misión
 // falla. (Vuelve al mazo de historia al terminar la misión, como todas.)
-// TODO(regla): no hace falta tener al prisionero para superar «Vivo, no muerto» (opción por defecto; la carta no lo dice).
+// TODO(regla) P98: no hace falta tener al prisionero para superar «Vivo, no muerto» (opción por defecto; la carta no lo
+// dice), y el barco va encima del mazo sin perseguir: un Otear puede mandarlo al fondo.
 registrarPermanente('pm_prisionero', { quitar: [], capacidades: [desviar('heridas', 'heridas')] })
 SIN_VIDA.set('pm_prisionero', (s) => fallaPor(s, 'el prisionero muere'))
 
@@ -439,7 +448,7 @@ registrarMision(ASEDIO, {
 // «Obligado: Cuando esta misión pase a estar disponible, pon en juego la carta 275.» Las Murallas están en juego mientras
 // la misión esté disponible (también durante ella); si deja de estarlo (superada o al fondo del mazo de Misiones), vuelven
 // al mazo de historia.
-// TODO(regla): «Sigue en juego mientras “El asedio de Port Royal” esté disponible» (línea añadida por defecto): si la
+// TODO(regla) P96: «Sigue en juego mientras “El asedio de Port Royal” esté disponible» (línea añadida por defecto): si la
 // misión deja las disponibles sin superarse (al fondo, o con el Tablón de encargos), las Murallas vuelven al mazo de
 // historia; si vuelve a salir, entran otra vez con toda su Vida.
 registrarVigilante((s) => {
@@ -463,7 +472,7 @@ registrarVigilante((s) => {
   return false
 })
 
-// Permanente 275, «Murallas de Port Royal» (Vida 6). TODO(regla): «al final de cada turno en que no hayas zarpado a
+// Permanente 275, «Murallas de Port Royal» (Vida 6). TODO(regla) P97: «al final de cada turno en que no hayas zarpado a
 // esta misión» cuenta también el turno en que aparece (al pie de la letra; opción por defecto).
 registrarPermanente(MURALLAS, {
   quitar: [],

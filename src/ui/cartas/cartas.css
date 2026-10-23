@@ -80,6 +80,11 @@
    sola si el texto no cabe (--fsp, desde CartaJugador). */
 .perm .rules{font-size:var(--fsp,16.5px);line-height:1.3}
 .perm .tbox{gap:5px}
+/* Fase 15: permanente con mucho texto (las Murallas de Port Royal): menos ilustración y la caja de texto más alta. */
+.perm.largo .art{height:140px}
+.perm.largo .tbox{top:196px}
+.perm.largo .ribbon{top:181px}
+.perm.largo .vida{top:130px}
 /* Fase 14: el tipo de una permanente, con la letra del tipo de un encuentro (.enck). */
 .ptipo{text-align:center;font-family:'Alegreya Sans SC','Alegreya Sans',sans-serif;font-weight:800;font-size:14px;letter-spacing:.1em;line-height:1.2;color:#7A6248}
 .traits{text-align:center;word-spacing:.18em;font-weight:800;font-style:italic;font-size:16px;line-height:1.2;color:#33261B}
@@ -477,6 +482,10 @@
 .chapr{overflow:hidden}
 .chapr .rules{font-size:var(--fsr,16px)}
 .chapr .flavor{font-size:max(12px,calc(var(--fsr,16px) * .9))}
+/* Fase 15: un capítulo sin reglas («La isla de Aves», «Tras la pista»): su frase de ambiente, centrada en la caja. */
+.chapr.sinreglas .flavor{margin:auto 0;font-size:17px;padding:0 24px}
+/* Fase 15: la pastilla «Pon la carta N encima del mazo de Misiones» también se ajusta (a 16 px de reglas, sus 15 px). */
+.chapr .reward .next{font-size:max(12px,calc(var(--fsr,16px) * .9375))}
 .seal.rama b{font-size:19px;letter-spacing:-.02em}
 .seal.rama b i{font-style:normal;font-family:'Alegreya Sans',sans-serif;font-weight:800;font-size:13px;margin-left:1px}
 .reward.marcada{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:3px;padding:5px 12px 7px;flex-wrap:nowrap;flex:none}

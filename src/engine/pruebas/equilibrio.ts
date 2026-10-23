@@ -48,6 +48,8 @@ export interface DanoDePeligro {
 export interface Partida {
   semilla: number
   final: Estado
+  /** Fase 15: los textos del registro, si se piden (`textos: true`). */
+  textos?: string[]
   gana: boolean
   turnoFinal: number
   reputacion: number
@@ -123,7 +125,8 @@ export function jugarPartida(
     variante,
     modo,
     sinEscenario,
-  }: { invariantes?: boolean; mazoDeMuelle?: CartaId[]; variante?: Estado['variante']; modo?: Modo; sinEscenario?: boolean } = {},
+    textos = false,
+  }: { invariantes?: boolean; mazoDeMuelle?: CartaId[]; variante?: Estado['variante']; modo?: Modo; sinEscenario?: boolean; textos?: boolean } = {},
 ): Partida {
   let s = nuevaPartida({
     semilla,
@@ -277,6 +280,8 @@ export function jugarPartida(
           break
       }
     }
+    // Fase 15: para medir lo que solo dice el registro (Profundidad del pecio, regatas perdidas…), se guardan sus textos.
+    if (textos) p.textos = [...(p.textos ?? []), ...s.registro.map((r) => r.texto)]
     s.registro = [] // Para simular basta con los sucesos; así no crece en cada paso.
   }
   if (invariantes) comprobarInvariantes(s)

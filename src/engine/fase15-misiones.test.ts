@@ -110,7 +110,7 @@ describe('258 · El mapa era falso', () => {
     j.zarpar('isla-II-falso').cubrir('viejo_lobo')
     // «Serpientes» (EXP 2): la Vigía inexperta (2, +1 por Diego) la supera: 2 del encuentro + 1 de la pista.
     j.comprometer('EXP', ['vigia']).seguir()
-    expect(j.registro).toContain('La pista buena: +1 de Avance (1/4).')
+    expect(j.registro).toContain('Ganas 3 de Avance (3/4).')
     j.seguir()
     expect(j.estado.reputacion).toBe(1)
     expect(j.registro.some((r) => r.startsWith('Robas 2'))).toBe(true)
@@ -306,7 +306,7 @@ describe('276 · La regata de San Juan y el Tesoro 148 «Gallardete de San Juan�
     // «Navío a la deriva» (NAV 3): Diego 2 + Barco 1; Destino de «Mar en calma»: 0.
     j.comprometer('NAV', ['capitan']).pasarOfertas().seguir()
     if (j.decision.tipo === 'elegirCartas') j.elegir('capitan')
-    expect(j.registro).toContain('Ceñís el viento: +1 de Avance (1/6).')
+    expect(j.registro).toContain('Ganas 3 de Avance (3/6).')
     j.seguir().seguir()
     expect(j.estado.reputacion).toBe(2)
     expect(j.copia('gallardete').vinculadaA).toBe('barco')
