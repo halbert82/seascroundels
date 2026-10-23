@@ -127,6 +127,8 @@ export type Suceso =
   | { tipo: 'superadaAMitad' }
   // Para el informe por carta.
   | { tipo: 'reclutar'; carta: CartaId }
+  /** Un Tripulante sale de la tripulación (o de los rehenes), con el motivo de la tarea que lo saca (para medir la rotación). */
+  | { tipo: 'sale'; inst: InstId; motivo: string }
   | { tipo: 'adquirir'; carta: CartaId }
   /** Capacidad usada o Evento jugado por su efecto. */
   | { tipo: 'usar'; carta: CartaId; clave: string }

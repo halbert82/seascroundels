@@ -33,8 +33,9 @@ export const sacarTripulante: Manejador<'sacarTripulante'> = (s, t) => {
   if (destinoMejoras === 'descartesMuelle') encolar(s, ...mejoras.map(sucesoDescartada))
   const accion = MOTIVOS[t.motivo] ?? 'sale'
   const conMejoras = mejoras.length === 0 ? '' : t.mejorasA ? ` (se descartan ${nombres(s, mejoras)})` : ` junto con ${nombres(s, mejoras)}`
-  if (t.motivo === 'desercion') anotar(s, 'efecto', `${nombre(s, t.carta)} deserta y vuelve al muelle${conMejoras}.`)
-  else anotar(s, 'efecto', `${accion.charAt(0).toUpperCase()}${accion.slice(1)} ${nombre(s, t.carta)}${conMejoras}.`)
+  const dato = { tipo: 'sale' as const, inst: t.carta, motivo: t.motivo }
+  if (t.motivo === 'desercion') anotar(s, 'efecto', `${nombre(s, t.carta)} deserta y vuelve al muelle${conMejoras}.`, dato)
+  else anotar(s, 'efecto', `${accion.charAt(0).toUpperCase()}${accion.slice(1)} ${nombre(s, t.carta)}${conMejoras}.`, dato)
   encolar(s, ...tesoros.map((tesoro): NuevaTarea => ({ tipo: 'reasignarTesoro', tesoro })))
   return 'hecha'
 }
