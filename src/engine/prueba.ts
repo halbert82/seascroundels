@@ -74,6 +74,14 @@ export function definicionActual(s: Estado): DefinicionPrueba & { restriccion?: 
   return definicionDe(s, p.encuentro)
 }
 
+/**
+ * Fase 14, Abordaje (regla de Albert): «El enemigo salta a tu cubierta: en esta Prueba no se pueden usar Cañones (ni
+ * suman ni se pueden agotar sus capacidades).» ¿Es la Prueba en curso la de un encuentro con Abordaje?
+ */
+export function esAbordaje(s: Estado): boolean {
+  return s.prueba !== null && (definicionDe(s, s.prueba.encuentro).abordaje ?? false)
+}
+
 /** ¿Hay un Tripulante preparado con ese Rasgo? */
 export function hayRasgoPreparado(s: Estado, rasgo: string): boolean {
   return s.zonas.tripulacion.some((c) => !copia(s, c).agotada && rasgosDe(copia(s, c).id).includes(rasgo))
@@ -135,8 +143,9 @@ export function noSuma(s: Estado, c: InstId): boolean {
   return (s.prueba?.sinSumar?.includes(c) ?? false) || modificadores(s, { tipo: 'noSuma', carta: c }) > 0
 }
 
-function sinCanones(s: Estado, p: PruebaEnCurso): boolean {
-  return p.sinCanones || valor(s, { tipo: 'sinCanones' }) > 0
+/** «Los Cañones no suman» (por el encuentro, una permanente o la misión), o un Abordaje (fase 14). */
+export function sinCanones(s: Estado, p: PruebaEnCurso): boolean {
+  return p.sinCanones || valor(s, { tipo: 'sinCanones' }) > 0 || esAbordaje(s)
 }
 
 /** Un bono no cuenta si es de un Cañón y los Cañones no suman, o si es de una Mejora y las Mejoras no suman. */

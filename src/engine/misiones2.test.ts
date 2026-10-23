@@ -322,7 +322,7 @@ describe('238 · Al abordaje del galeón (fase 12, capítulo III nuevo)', () => 
 })
 
 describe('128 · La huida con la plata (capítulo IV desde la fase 12)', () => {
-  it('Persecución: con 3, La Armada te persigue es el siguiente encuentro (Navío de línea, NAV 5, Abordaje) y después vuelve a apartarse', () => {
+  it('Persecución: con 3, La Armada te persigue es el siguiente encuentro (Navío de línea, NAV 4, Abordaje) y después vuelve a apartarse', () => {
     // Cofre a la deriva (sin Prueba): 2. Chubasco repentino fallado sin nadie (NAV): 3.
     const j = enPuerto({ misiones: ['flota-IV'], mazoPeligros: ['hallazgo', 'chubasco', 'calma', 'calma', 'calma'] })
     j.zarpar('flota-IV')
@@ -333,8 +333,8 @@ describe('128 · La huida con la plata (capítulo IV desde la fase 12)', () => {
     j.seguir()
     expect(j.zona('encuentro')).toEqual(['armada'])
     expect(j.registro).toContain('Revelas «La Armada te persigue»: Navío de línea de la Armada (Mar). Te ha alcanzado.')
-    j.comprometer('NAV').seguir() // Abordaje sin nadie: te faltan 5 → 3 heridas
-    expect(j.copia('capitan').heridas).toBe(3)
+    j.comprometer('NAV', ['capitan']).seguir() // Abordaje: Diego 2 + 1 del Barco contra 4 (fase 14): falta 1, 1 herida
+    expect(j.copia('capitan').heridas).toBe(1)
     expect(j.zona('mazoHistoria')).toContain('armada')
     expect(j.registro).toContain('«La Armada te persigue» vuelve al mazo de historia.')
   })

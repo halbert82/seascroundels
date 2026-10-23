@@ -34,7 +34,6 @@ export type Efecto =
   /** Pierdes N Mejoras (`deComprometidos`: de un Tripulante comprometido; `mayorCoste`: la de mayor coste, si empatan eliges). */
   | { tipo: 'perderMejora'; n: number; deComprometidos?: boolean; mayorCoste?: boolean }
   | { tipo: 'agotarMejora' }
-  | { tipo: 'rehen' }
   | { tipo: 'reputacion'; n: number }
   /** −1 Mando: este turno, o en tu próximo turno (`proximo`). */
   | { tipo: 'menosMando'; proximo?: boolean }
@@ -50,7 +49,7 @@ export type Efecto =
   /** Quita un Estado: al Tripulante de la carta que lo dice, a uno que elijas o a todos. */
   | { tipo: 'quitarEstado'; estado: FichaTripulante; a: 'fuente' | 'uno' | 'todos' }
   | { tipo: 'quitarEstadoBarco'; estado: EstadoBarco }
-  /** Cartas de la mano, una Mejora o un Tripulante van debajo de la carta de misión. */
+  /** Cartas de la mano o una Mejora van debajo de la carta de misión (fase 14: ya no se incautan Tripulantes). */
   | ({ tipo: 'incautar' } & Incautar)
   /** La carta del encuentro ocupa el muelle; en Jugar cartas se descarta pagando `coste` cartas. */
   | { tipo: 'ocuparMuelle'; coste: number }
@@ -89,10 +88,14 @@ export type Efecto =
   | { tipo: 'alFondo' }
   /** El jugador elige una de las opciones (las que se pueden pagar enteras). */
   | { tipo: 'elegir'; opciones: OpcionEfectos[] }
-  /** Recluta o adquiere gratis una carta del muelle de coste N o menos (si no hay ninguna, `siNo`). */
-  | { tipo: 'gratisDelMuelle'; maxCoste: number; que: 'tripulante' | 'mejora' | 'cualquiera'; rasgo?: string; siNo?: Efecto[] }
-  /** Rescata a todos los rehenes de esta misión (si no hay ninguno, `siNo`). `preparados`: vuelven preparados. */
-  | { tipo: 'rescatarRehenes'; siNo?: Efecto[]; preparados?: boolean }
+  /**
+   * Recluta o adquiere gratis una carta del muelle de coste N o menos (si no hay ninguna, `siNo`). El coste que se mira
+   * es el impreso (fase 14, regla general de Albert). `mitad`: no es gratis, se paga la mitad de su coste, redondeando
+   * hacia arriba.
+   */
+  | { tipo: 'gratisDelMuelle'; maxCoste: number; que: 'tripulante' | 'mejora' | 'cualquiera'; rasgo?: string; siNo?: Efecto[]; mitad?: boolean }
+  /** Fase 14: mira las N de arriba del mazo de muelle, puedes reclutar sin coste uno de coste N o menos y el resto al fondo. */
+  | { tipo: 'reclutarDelMazoMuelle'; n: number; maxCoste: number }
   /** Lo incautado vuelve ya. */
   | { tipo: 'recuperarIncautadas' }
   /** Recupera N cartas de tu pila de descartes a la mano (eliges). */
@@ -114,7 +117,7 @@ export type Efecto =
 
 /** Cómo se incauta: qué, cuántas, cómo se eligen y qué pasa al recuperarlo o perderlo. */
 export interface Incautar {
-  que: 'mano' | 'mejora' | 'tripulante'
+  que: 'mano' | 'mejora'
   n: number
   /** Cómo se eligen: tú (por defecto), al azar, o las de mayor coste (si empatan, eliges). */
   criterio?: 'azar' | 'mayorCoste'
@@ -174,7 +177,11 @@ export type AccionSobre =
   | { tipo: 'heridas'; n: number }
   | { tipo: 'estado'; estado: FichaTripulante }
   | { tipo: 'quitarEstado'; estado: FichaTripulante }
-  | { tipo: 'rehen' }
+  /**
+   * Fase 14 (fuera el rehén): se descarta, con sus Mejoras, a la pila de descartes del muelle (como al despedirlo). Si
+   * es el Capitán, sufre 1 herida en su lugar (regla general de Albert).
+   */
+  | { tipo: 'descartar' }
   | { tipo: 'preparar' }
   | { tipo: 'agotar' }
   | { tipo: 'curar'; n: number }
@@ -184,7 +191,7 @@ export type AccionSobre =
   | { tipo: 'noPrepara'; hasta: 'inicio' | 'finMision' | 'carta' }
   /** Queda señalado por esta carta (para lo que diga después: «ese Tripulante…»), hasta el final de la misión. */
   | { tipo: 'marcar'; clave: string }
-  /** El jugador elige qué le pasa («sufre 2 heridas o queda rehén»). */
+  /** El jugador elige qué le pasa («sufre 2 heridas o se descarta»). */
   | { tipo: 'elegir'; opciones: { texto: string; accion: AccionSobre }[] }
   /** No puede comprometerse: en esta Prueba o mientras esta carta siga en juego. */
   | { tipo: 'noCompromete'; hasta: 'finPrueba' | 'carta' }
@@ -337,9 +344,6 @@ export function interpretarEfectos(texto: string): Efecto[] {
         case 'mejora':
           // «−1 [mejora]»: pierdes una Mejora. «1 [mejora]» (tachada): agota una Mejora.
           efectos.push(n !== null && n < 0 ? { tipo: 'perderMejora', n: -n } : { tipo: 'agotarMejora' })
-          continue
-        case 'rehen':
-          for (let i = 0; i < (n ?? 1); i++) efectos.push({ tipo: 'rehen' })
           continue
         case 'rep':
           efectos.push({ tipo: 'reputacion', n: n ?? 0 })

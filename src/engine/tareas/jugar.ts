@@ -4,7 +4,7 @@ import { enroladoDe, esUnica, porId } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import type { Accion, Estado, InstId } from '../tipos.ts'
 import { encolarUso, usosDisponibles } from '../usos.ts'
-import { espacioLibre, huecosLibres, plazasLibres, valor } from '../valores.ts'
+import { costeAPagar, espacioLibre, huecosLibres, plazasLibres, valor } from '../valores.ts'
 import { mover } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
@@ -12,7 +12,7 @@ import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 function unicaEnJuego(s: Estado, inst: InstId): boolean {
   const id = copia(s, inst).id
   if (!esUnica(id)) return false
-  return [...s.zonas.tripulacion, ...s.zonas.mejoras, ...s.zonas.rehenes].some((c) => copia(s, c).id === id)
+  return [...s.zonas.tripulacion, ...s.zonas.mejoras].some((c) => copia(s, c).id === id)
 }
 
 function puedePagarCoste(s: Estado, inst: InstId): boolean {
@@ -65,11 +65,11 @@ export const ventanaJugar: Manejador<'ventanaJugar'> = (s, _t, e) => {
   }
 }
 
-/** Reclutar: paga su coste (salvo si es gratis) y el Tripulante entra en juego preparado. */
+/** Reclutar: paga su coste (salvo si es gratis; o la mitad, fase 14) y el Tripulante entra en juego preparado. */
 export const reclutar: Manejador<'reclutar'> = (s, t) => {
   if (t.paso === 'pagar') {
     t.paso = 'entrar'
-    const coste = t.gratis ? 0 : valor(s, { tipo: 'coste', carta: t.carta })
+    const coste = costeAPagar(s, t.carta, t.gratis ? 'gratis' : t.mitad ? 'mitad' : 'normal')
     if (coste > 0) encolar(s, { tipo: 'pagar', cantidad: coste, motivo: copia(s, t.carta).id })
     return 'sigue'
   }
@@ -78,7 +78,7 @@ export const reclutar: Manejador<'reclutar'> = (s, t) => {
   recluta.agotada = false
   // Catalina: el descuento se gasta con el siguiente Tripulante que reclutes, aunque sea gratis (N19).
   s.temporales = s.temporales.filter((x) => x.clave !== 'capitan2.descuento')
-  anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}${t.gratis ? ' sin pagar su coste' : ''}.`, { tipo: 'reclutar', carta: recluta.id })
+  anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}${t.gratis ? ' sin pagar su coste' : t.mitad ? ' pagando la mitad de su coste' : ''}.`, { tipo: 'reclutar', carta: recluta.id })
   // Fase 14, «Enrolado N»: entra con N fichas de Enrolado (no se renuevan ni se añaden más).
   const fichas = enroladoDe(recluta.id)
   if (fichas !== null) {
@@ -89,11 +89,11 @@ export const reclutar: Manejador<'reclutar'> = (s, t) => {
   return 'hecha'
 }
 
-/** Adquirir: paga su coste y vincula la Mejora al Barco o a un Tripulante. */
+/** Adquirir: paga su coste (o la mitad, fase 14) y vincula la Mejora al Barco o a un Tripulante. */
 export const adquirir: Manejador<'adquirir'> = (s, t) => {
   if (t.paso === 'pagar') {
     t.paso = 'vincular'
-    const coste = valor(s, { tipo: 'coste', carta: t.carta })
+    const coste = costeAPagar(s, t.carta, t.gratis ? 'gratis' : t.mitad ? 'mitad' : 'normal')
     if (coste > 0) encolar(s, { tipo: 'pagar', cantidad: coste, motivo: copia(s, t.carta).id })
     return 'sigue'
   }
@@ -101,7 +101,7 @@ export const adquirir: Manejador<'adquirir'> = (s, t) => {
   const c = copia(s, t.carta)
   c.vinculadaA = t.destino
   const destino = t.destino === 'barco' ? 'el Barco' : nombre(s, t.destino)
-  anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}.`, { tipo: 'adquirir', carta: c.id })
+  anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}${t.mitad ? ' pagando la mitad de su coste' : ''}.`, { tipo: 'adquirir', carta: c.id })
   return 'hecha'
 }
 

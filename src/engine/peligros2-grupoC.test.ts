@@ -217,16 +217,22 @@ describe('26 · Ojos del gobernador', () => {
 })
 
 describe('27 · Los grilletes del rey', () => {
-  it('Mar: si superas y tienes Capacidad, reclutas gratis un Marinero del muelle; si no, robas 1', () => {
-    const j = en('mar', ['p2_grilletes', 'chubasco', 'calma'], { tripulacion: ['bucanero'], muelle: ['marinero_p', 'sable', 'vigia', 'matasanos'] })
+  it('Mar (fase 14): si superas, miras 3 del mazo de muelle, puedes reclutar sin coste uno de coste 2 o menos y el resto va al fondo', () => {
+    const j = en('mar', ['p2_grilletes', 'chubasco', 'calma'], { tripulacion: ['bucanero'], mazoMuelle: ['contrabandista', 'sable', 'marinero_p', 'vigia'] })
     j.comprometer('COM', ['capitan', 'bucanero']).seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'reclutarDelMazoMuelle', n: 2 } })
+    // Ni el Contrabandista del bajo Caribe (coste 3) ni el Sable (una Mejora); ya no pide Marinero.
+    expect((j.decision as { candidatas: string[] }).candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id)).toEqual(['marinero_p'])
     j.elegir('marinero_p')
     expect(j.zona('tripulacion')).toContain('marinero_p')
-    const k = en('mar', ['p2_grilletes', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia', 'carpintero', 'matasanos'], muelle: ['marinero_p'] })
+    expect(j.zona('mazoMuelle')).toEqual(['vigia', 'contrabandista', 'sable'])
+    expect(j.registro.some((r) => r.startsWith('Pagas'))).toBe(false)
+    // Sin Capacidad no recluta a nadie: las 3 van al fondo, y ya no roba 1.
+    const k = en('mar', ['p2_grilletes', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia', 'carpintero', 'matasanos'], mazoMuelle: ['marinero_p', 'sable', 'grumete', 'loro'] })
     k.comprometer('COM', ['capitan', 'bucanero']).seguir()
     expect(k.zona('tripulacion')).not.toContain('marinero_p')
-    expect(k.registro.some((r) => r.startsWith('Robas 1'))).toBe(true)
+    expect(k.zona('mazoMuelle')).toEqual(['loro', 'marinero_p', 'sable', 'grumete'])
+    expect(k.registro.some((r) => r.startsWith('Robas 1'))).toBe(false)
   })
 
   it('Mar: si fallas, 2 daños al Barco', () => {
@@ -241,14 +247,14 @@ describe('27 · Los grilletes del rey', () => {
     expect(j.estado.temporales.some((t) => t.clave === 'noPrepara' && t.inst === j.inst('capitan') && t.hasta === 'inicio')).toBe(true)
   })
 
-  it('Ciudad: si superas, preparas a 2; si fallas, el comprometido con menos Vida queda rehén', () => {
+  it('Ciudad: si superas, preparas a 2; si fallas, descarta al asignado con menos Vida (fase 14)', () => {
     const j = en('ciu', ['p2_grilletes', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     j.comprometer('COM', ['capitan', 'bucanero']).seguir()
     expect(j.copia('capitan').agotada).toBe(false)
     expect(j.copia('bucanero').agotada).toBe(false)
     const k = en('ciu', ['p2_grilletes', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
-    k.comprometer('COM', ['bucanero']).seguir() // 2 + 1 de Diego contra 4
-    expect(k.zona('rehenes')).toEqual(['bucanero'])
+    k.comprometer('COM', ['bucanero']).seguir().pasarOfertas() // 2 + 1 de Diego contra 4
+    expect(k.zona('descartesMuelle')).toContain('bucanero')
   })
 
   it('Destino «Grilletes en los tobillos»: −1 y ya se pueden usar capacidades de Tripulantes (fase 13, I1); sin oposición, agota a 1 Tripulante', () => {
@@ -340,18 +346,21 @@ describe('29 · Toque a rebato', () => {
     expect(k.estadosBarco).toEqual(['perseguido'])
   })
 
-  it('Ciudad: pone en juego la permanente 230; con 3 fichas, el agotado con menos Vida queda rehén', () => {
+  it('Ciudad: pone en juego la permanente 230; con 3 fichas, descarta al agotado con menos Vida (fase 14); el Fiador no responde: no es una carta de Peligro', () => {
     // En una misión larga (Ciudad 9), con «Tarde de lluvia» (sin Prueba, 1 de Avance) no se acaba antes.
     const j = Jugador.enMision({
       misiones: ['pruebas-ciu9'],
       mazoPeligros: ['p2_rebato', 'chubasco', 'chubasco', 'chubasco', 'calma'],
-      tripulacion: [{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }],
+      tripulacion: [{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }, 'fiador'],
     })
     expect(j.zona('permanentes')).toEqual(['pm_campanas'])
     j.seguir().seguir()
     expect(j.copia('pm_campanas').fichas).toBe(2)
     j.seguir()
-    expect(j.zona('rehenes')).toEqual(['vigia'])
+    expect(j.ofreceCapacidad('fiador.descarte')).toBe(false)
+    j.pasarOfertas()
+    expect(j.zona('descartesMuelle')).toContain('vigia')
+    expect(j.zona('tripulacion')).toContain('fiador')
     expect(j.zona('permanentes')).toEqual([])
   })
 
@@ -470,20 +479,15 @@ describe('31 · Bajo los cañones del Morro', () => {
     expect(k.copia('bucanero').heridas).toBe(0)
   })
 
-  it('Ciudad: si superas, rescatas a los rehenes (si no hay, +1 Avance); si fallas, el de más NAV sufre 1 herida y queda rehén (fase 10b)', () => {
-    const j = en('ciu', ['p2_grilletes', 'chubasco', 'p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'viejo_lobo'] })
-    j.comprometer('COM', ['bucanero']).seguir()
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
-    j.seguir().comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
-    expect(j.zona('rehenes')).toEqual([])
-    expect(j.zona('tripulacion')).toContain('bucanero')
+  it('Ciudad (fase 14): si superas, +1 Avance (un preso os cuenta el camino); si fallas, el de más NAV queda Buscado y sufre 1 herida', () => {
     const k = Jugador.enMision({ misiones: ['pruebas-ciu9'], mazoPeligros: ['p2_morro', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
     k.comprometer('NAV', ['capitan', 'viejo_lobo']).pasarOfertas().seguir()
-    expect(k.avance('pruebas-ciu9')).toBe(4) // 3 + 1 (no había rehenes)
+    expect(k.avance('pruebas-ciu9')).toBe(4) // 3 + 1
     const m = en('ciu', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
-    m.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir()
-    expect(m.zona('rehenes')).toEqual(['viejo_lobo'])
+    m.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir().pasarOfertas()
+    expect(m.estados('viejo_lobo')).toEqual(['buscado'])
     expect(m.copia('viejo_lobo').heridas).toBe(1)
+    expect(m.zona('tripulacion')).toContain('viejo_lobo')
   })
 
   it('Destino «Las baterías del castillo»: −2, sin elegir descartar (fase 13, I1: fuera «−4 salvo que descartes 2 cartas»); sin oposición en el Mar, 1 daño', () => {
@@ -517,38 +521,27 @@ describe('32 · La horca', () => {
     expect(j.copia('bronce').agotada).toBe(true)
   })
 
-  it('Naturaleza: +2 si algún Tripulante está Buscado; si fallas, el comprometido con menos Vida queda rehén', () => {
-    const j = en('nat', ['p2_horca', 'chubasco', 'calma'], { tripulacion: [{ id: 'vigia', estados: ['buscado'] }, 'bucanero'] })
-    j.comprometer('EXP', ['vigia', 'bucanero'])
+  it('Naturaleza: +2 si algún Tripulante está Buscado; si fallas, el asignado con menos Vida queda Buscado y sufre 1 herida (fase 14)', () => {
+    const j = en('nat', ['p2_horca', 'chubasco', 'calma'], { tripulacion: [{ id: 'tuerto', estados: ['buscado'] }, 'bucanero'] })
+    j.comprometer('EXP', ['tuerto', 'bucanero'])
     expect(dificultadConDestino(j.estado)).toBe(7)
-    j.seguir()
-    expect(j.zona('rehenes')).toEqual(['vigia'])
+    j.seguir().pasarOfertas()
+    // El Bucanero veterano (Vida 2) tiene menos Vida que el Tuerto (3).
+    expect(j.estados('bucanero')).toEqual(['buscado'])
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.copia('tuerto').heridas).toBe(0)
   })
 
-  it('Ciudad: al revelarse, el preparado de menor coste está en el patíbulo (no puede comprometerse); si fallas, queda rehén y, si no superas la misión, lo ahorcan', () => {
+  it('Ciudad: al revelarse, el preparado de menor coste está en el patíbulo (no puede comprometerse); si fallas, lo ahorcan: se descarta (fase 14)', () => {
     const j = en('ciu', ['p2_horca', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'marinero_p'], reputacion: 3 })
     const d = j.decision as { tripulantes: `i${number}`[] }
     expect(d.tripulantes).not.toContain(j.inst('marinero_p'))
     expect(d.tripulantes).toContain(j.inst('bucanero'))
-    j.comprometer('COM', []).seguir()
-    // Lo suben al patíbulo: queda rehén, sin heridas (ya no sufre 3).
-    expect(j.zona('rehenes')).toEqual(['marinero_p'])
+    j.comprometer('COM', []).seguir().pasarOfertas()
+    expect(j.zona('descartesMuelle')).toContain('marinero_p')
     expect(j.copia('marinero_p').heridas).toBe(0)
-    // Te retiras sin superar la misión: lo pierdes y −1 de reputación (regla normal de rehén).
-    j.retirarse()
-    expect(j.zona('rehenes')).toEqual([])
-    expect(j.registro).toContain('Pierdes a Rufián de cubierta, que era rehén.')
-    expect(j.estado.reputacion).toBe(2)
-  })
-
-  it('Ciudad: si fallas pero superas la misión, rescatas al del patíbulo', () => {
-    // «Calma» da el Avance que falta para superar la misión con el rehén aún en el patíbulo.
-    const j = en('ciu', ['p2_horca', 'chubasco', 'calma', 'calma', 'calma'], { tripulacion: ['bucanero', 'marinero_p'] })
-    j.comprometer('COM', []).seguir()
-    expect(j.zona('rehenes')).toEqual(['marinero_p'])
-    while (j.estado.mision && j.decision.tipo === 'ventanaAccion') j.seguir()
-    expect(j.registro).toContain('Rescatas a Rufián de cubierta.')
-    expect(j.zona('tripulacion')).toContain('marinero_p')
+    // Ya no cuesta reputación (antes, el rehén perdido: −1).
+    expect(j.estado.reputacion).toBe(3)
   })
 
   it('Ciudad: −2 con 8 o más de reputación (fase 11, P66); si superas, +1 reputación', () => {
@@ -562,14 +555,13 @@ describe('32 · La horca', () => {
     expect(dificultadConDestino(siete.estado)).toBe(6)
   })
 
-  it('Destino «La soga»: −2 y, si fallas por 3 o más, ya nadie queda rehén (fase 13, I1); sin oposición, el Capitán queda Buscado', () => {
+  it('Destino «La soga»: −2 y, si fallas por 3 o más, no le pasa nada más a nadie (fase 13, I1); sin oposición, el Capitán queda Buscado', () => {
     const j = conDestino('p2_horca')
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(4)
     const k = en('nat', ['p2_ojos', 'p2_horca', 'calma', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('NAV', ['vigia']).seguir() // 0 + 1 de Diego − 2 del Destino (mín. 0) contra 3: falla por 3
     expect(k.registro).toContain('Total 0 contra 3: fallas la Prueba.')
-    expect(k.zona('rehenes')).toEqual([])
     expect(k.zona('tripulacion')).toContain('vigia')
     const m = conDestino('p2_horca')
     m.comprometer('NAV', [])
@@ -581,19 +573,19 @@ describe('33 · La Armada de Barlovento', () => {
   it('Mar: +2 con Velas rotas; tipo Armada: +1 si estás Perseguido y, si la superas, se quita (fase 10b); si fallas, Abordaje', () => {
     const j = en('mar', ['p2_armada', 'chubasco', 'calma'], { barco: { estados: ['velasRotas'] } })
     j.comprometer('NAV', ['capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(8)
+    expect(dificultadConDestino(j.estado)).toBe(6) // NAV 4 (fase 14, antes 6) + 2
     // Perseguido durante la misión (fallas «El guardacostas os reconoce») y luego le ganas el barlovento a la fragata.
     const k = en('mar', ['p2_sebusca', 'chubasco', 'p2_armada', 'chubasco', 'calma'], { tripulacion: [{ id: 'viejo_lobo', mejoras: ['brujula'] }] })
     k.comprometer('NAV', []).seguir()
     expect(k.estadosBarco).toEqual(['perseguido'])
     k.seguir().comprometer('NAV', ['capitan', 'viejo_lobo'])
-    expect(dificultadConDestino(k.estado)).toBe(7)
+    expect(dificultadConDestino(k.estado)).toBe(5)
     k.pasarOfertas().seguir()
     expect(k.estadosBarco).toEqual([])
-    // Abordaje: Diego (2 + 1 del Barco) contra 6: faltan 3, 3 heridas.
+    // Abordaje: Diego (2 + 1 del Barco) contra 4: falta 1, 1 herida.
     const m = en('mar', ['p2_armada', 'chubasco', 'calma'])
     m.comprometer('NAV', ['capitan']).seguir()
-    expect(m.copia('capitan').heridas).toBe(3)
+    expect(m.copia('capitan').heridas).toBe(1)
   })
 
   it('Naturaleza: si superas, preparas a los asignados; si fallas, Inflige 2 heridas (libres, fase 13) y −1 [avance]', () => {

@@ -140,10 +140,8 @@ export function textoSuceso(s: Estado, ev: Evento, fase: 'antes' | 'despues'): s
     }
     case 'cartaResuelta':
       return `Has terminado con «${nombre(s, ev.carta)}».`
-    case 'rehen':
-      return `${nombre(s, ev.carta)} ${antes ? 'va a quedar' : 'ha quedado'} rehén.`
-    case 'rescatado':
-      return `Has rescatado a ${nombre(s, ev.carta)}.`
+    case 'descartarTripulante':
+      return `${nombre(s, ev.carta)} ${antes ? 'va a descartarse' : 'se ha descartado'}.`
     case 'persigue':
       return `«${nombre(s, ev.carta)}» ${antes ? 'va a ponerse' : 'se ha puesto'} encima del mazo de Peligros.`
     case 'canonAgotado':
@@ -239,8 +237,6 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: 'Pierdes una Mejora', ayuda: m.texto ?? 'Elige cuál se descarta.' }
     case 'agotarMejora':
       return { titulo: 'Agota una Mejora', ayuda: 'Sigue aplicando su texto, pero no podrá usar una capacidad «Agotar:» hasta que se prepare.' }
-    case 'rehen':
-      return { titulo: '¿A quién capturan como rehén?', ayuda: 'Si superas la misión, lo rescatas.' }
     case 'tablon':
       return { titulo: 'Tablón de encargos', ayuda: 'Elige las misiones disponibles que mandas al fondo del mazo de Misiones (o ninguna).' }
     case 'soplos':
@@ -294,6 +290,11 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return {
         titulo: 'Del muelle, sin coste',
         ayuda: n >= 99 ? 'Puedes poner en juego sin pagar su coste una carta del muelle, sea cual sea su coste (o ninguna).' : `Puedes poner en juego sin pagar su coste una carta del muelle de coste ${n} o menos (o ninguna).`,
+      }
+    case 'mitadDelMuelle':
+      return {
+        titulo: 'Del muelle, a mitad de coste',
+        ayuda: `Puedes poner en juego una carta del muelle de coste ${n} o menos pagando la mitad de su coste, redondeando hacia arriba (o ninguna).`,
       }
     case 'portadorGratis':
       return { titulo: `¿Quién lleva «${nombreCarta(m.carta)}»?` }
@@ -365,6 +366,11 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: 'Puedes reclutar a un Tripulante', ayuda: 'Del muelle, pagando su coste (o ninguno).' }
     case 'reclutarGratis':
       return { titulo: 'Recluta sin coste', ayuda: `Un Tripulante del muelle de coste ${n} o menos, sin pagar su coste (o ninguno).` }
+    case 'reclutarDelMazoMuelle':
+      return {
+        titulo: 'Del mazo de muelle, sin coste',
+        ayuda: `Puedes reclutar sin coste a uno de estos Tripulantes de coste ${n} o menos (o a ninguno). Los demás van al fondo del mazo de muelle.`,
+      }
     case 'naufrago':
       return { titulo: 'Náufrago en la playa', ayuda: 'Puedes reclutar sin coste a uno de estos Tripulantes. Al final del turno se descarta.' }
     case 'desviarHeridas':
@@ -423,8 +429,6 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       return e.n === 1 ? 'pierdes una Mejora' : `pierdes ${e.n} Mejoras`
     case 'agotarMejora':
       return 'agotas una Mejora'
-    case 'rehen':
-      return 'te capturan un rehén'
     case 'reputacion':
       return e.n < 0 ? `pierdes ${-e.n} de reputación` : `ganas ${e.n} de reputación`
     case 'menosMando':
@@ -497,9 +501,10 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
     case 'elegir':
       return `eliges: ${e.opciones.map((o) => o.texto).join(' o ')}`
     case 'gratisDelMuelle':
+      if (e.mitad) return `pones en juego una carta del muelle de coste ${e.maxCoste} o menos pagando la mitad de su coste`
       return e.maxCoste >= 99 ? 'pones en juego sin coste una carta del muelle' : `pones en juego sin coste una carta del muelle de coste ${e.maxCoste} o menos`
-    case 'rescatarRehenes':
-      return 'rescatas a los rehenes'
+    case 'reclutarDelMazoMuelle':
+      return `miras ${e.n} del mazo de muelle y puedes reclutar sin coste a uno de coste ${e.maxCoste} o menos`
     case 'recuperarIncautadas':
       return 'recuperas lo incautado'
     case 'recuperarDescarte':
@@ -539,7 +544,7 @@ function describirAQuien(q: Selector, a: AccionSobre): string {
     heridas: 'heridas' in a || a.tipo === 'heridas' ? `sufre ${'n' in a ? n2(a.n, 'herida', 'heridas') : ''}` : '',
     estado: a.tipo === 'estado' ? `queda ${INFO_ESTADO[a.estado].nombre}` : '',
     quitarEstado: a.tipo === 'quitarEstado' ? `pierde ${INFO_ESTADO[a.estado].nombre}` : '',
-    rehen: 'queda rehén',
+    descartar: 'se descarta',
     preparar: 'se prepara',
     agotar: 'se agota',
     curar: 'n' in a ? `se cura ${a.n}` : '',

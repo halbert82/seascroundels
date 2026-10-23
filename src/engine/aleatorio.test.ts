@@ -8,15 +8,15 @@ import { jugadorAlAzar, jugadorConCriterio } from './pruebas/jugadores.ts'
 
 describe('Prueba masiva: jugador al azar', () => {
   it('200 partidas: cumplen los invariantes y terminan como muy tarde en el turno 12', { timeout: 180_000 }, () => {
-    let rehenesPerdidos = 0
+    let descartados = 0
     for (let semilla = 1; semilla <= 200; semilla++) {
       const p = jugarPartida(semilla, jugadorAlAzar(semilla), { invariantes: true })
       expect(p.final.resultado, `semilla ${semilla}`).not.toBeNull()
       expect(p.turnoFinal, `semilla ${semilla}`).toBeLessThanOrEqual(12)
-      rehenesPerdidos += p.rehenesPerdidos
+      descartados += p.descartados
     }
-    // El jugador con criterio casi nunca se retira con un rehén; el que juega al azar, sí.
-    expect(rehenesPerdidos).toBeGreaterThan(0)
+    // Fase 14 (fuera el rehén): alguna carta de Peligro llega a descartar a un Tripulante.
+    expect(descartados).toBeGreaterThan(0)
   })
 
   it('la misma semilla da exactamente la misma partida', { timeout: 60_000 }, () => {

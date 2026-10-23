@@ -1,4 +1,4 @@
-// Explicaciones de la mesa: al pasar el ratón por una ficha (un Estado, una Ventaja, una ficha de misión, «Rehén»…)
+// Explicaciones de la mesa: al pasar el ratón por una ficha (un Estado, una Ventaja, una ficha de misión, «Pasajero»…)
 // o al pulsarla, sale una ventanita con su texto completo: qué hace y cómo se quita o cuándo termina.
 // Con el ratón se cierra al salir; pulsada, se queda hasta que pulses fuera o Escape. No bloquea la partida: lo que
 // pulses fuera sigue haciendo lo suyo.

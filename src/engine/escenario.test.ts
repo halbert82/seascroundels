@@ -348,7 +348,7 @@ describe('Escenario 2.0: malas', () => {
     expect(j.zona('mano')).toHaveLength(3)
     j.zarpar(MISIONES_DE_PRUEBA.mar5)
     expect(j.zona('encuentro')).toEqual(['armada'])
-    j.comprometer('NAV').seguir() // Navío de línea, NAV 5 sin nadie: Abordaje
+    j.comprometer('NAV', ['capitan']).seguir() // Navío de línea, NAV 4 (fase 14): Diego 2 + 1 del Barco, Abordaje, 1 herida
     expect(j.zona('descartesPeligros')).toContain('armada')
     expect(j.zona('apartados')).toEqual([])
   })

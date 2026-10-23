@@ -12,25 +12,23 @@ const MOTIVOS: Record<string, string> = {
   despedido: 'despides a',
   derrotado: 'se descarta a',
   descartado: 'se descarta a',
+  carta: 'se descarta a',
   desercion: 'deserta',
-  rehen: 'pierdes a',
   exceso: 'despides a',
   muelle: 'vuelve al muelle',
   naufrago: 'se descarta a',
-  incautado: 'pierdes a',
   enrolado: 'se va',
 }
 
 /**
- * Fase 14, «Enrolado N» (Albert): al final de cada turno, en la Fase de Final de turno, cada Tripulante Enrolado pierde
- * 1 ficha, esté donde esté (en la tripulación, rehén o incautado). Cuenta turnos, no misiones: también el turno en que
- * se recluta y los turnos en que el jugador se queda en puerto. El que se queda sin ninguna se va a la pila de descartes
- * del muelle con sus Mejoras, como al despedirlo (si era rehén o estaba incautado, sale de ahí); no cuenta como
- * derrotado.
+ * Fase 14, «Enrolado N» (Albert): al final de cada turno, en la Fase de Final de turno, cada Tripulante Enrolado de tu
+ * tripulación pierde 1 ficha (tercera ronda: ya no hay rehenes ni Tripulantes incautados). Cuenta turnos, no misiones:
+ * también el turno en que se recluta y los turnos en que el jugador se queda en puerto. El que se queda sin ninguna se
+ * va a la pila de descartes del muelle con sus Mejoras, como al despedirlo; no cuenta como derrotado.
  */
 export function quitarFichasDeEnrolado(s: Estado): NuevaTarea[] {
   const tareas: NuevaTarea[] = []
-  for (const c of [...s.zonas.tripulacion, ...s.zonas.rehenes, ...s.zonas.incautadas]) {
+  for (const c of [...s.zonas.tripulacion]) {
     const t = copia(s, c)
     if (c === s.capitan || t.enrolado === undefined || t.enrolado <= 0) continue
     t.enrolado--
@@ -42,7 +40,7 @@ export function quitarFichasDeEnrolado(s: Estado): NuevaTarea[] {
 
 /** Saca a un Tripulante del juego con sus Mejoras. Sus Tesoros pasan a otro Tripulante (N1). */
 export const sacarTripulante: Manejador<'sacarTripulante'> = (s, t) => {
-  if (!estaEn(s, t.carta, 'tripulacion') && !estaEn(s, t.carta, 'rehenes') && !estaEn(s, t.carta, 'incautadas')) return 'hecha'
+  if (!estaEn(s, t.carta, 'tripulacion')) return 'hecha'
   if (t.carta === s.capitan) throw new Error('El Capitán no puede salir del juego así')
   const suyas = vinculadas(s, t.carta)
   const tesoros = suyas.filter((m) => tipoDe(copia(s, m).id) === 'tesoro')

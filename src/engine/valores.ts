@@ -2,7 +2,7 @@
 // constantes activos (Mejoras preparadas, Tripulantes en juego, efectos temporales y el Barco).
 
 import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
-import { porId } from './catalogo.ts'
+import { costeImpreso, porId } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 import { copia } from './estado.ts'
 import { cartaDeEstado } from './infoEstados.ts'
@@ -17,7 +17,7 @@ export function contexto(s: Estado, supuestasAgotadas?: ReadonlySet<InstId>, par
 }
 
 /**
- * Una Mejora aplica su texto si su portador está en juego (el Barco o un Tripulante; las de un rehén, no). Fase 10:
+ * Una Mejora aplica su texto si su portador está en juego (el Barco o un Tripulante). Fase 10:
  * también agotada; agotada solo quiere decir que no puede pagar otra vez una capacidad «Agotar:» hasta prepararse.
  */
 export function mejoraActiva(s: Estado, inst: InstId): boolean {
@@ -226,14 +226,24 @@ export function huecosLibres(s: Estado, tripulante: InstId): number {
   return valor(s, { tipo: 'huecos', carta: tripulante }) - huecosOcupados(s, tripulante)
 }
 
-/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los rehenes, los incautados y los Pasajeros. */
+/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los Pasajeros (fase 14: ya no hay rehenes). */
 export function plazasOcupadas(s: Estado): number {
-  // Un Tripulante incautado sigue ocupando su plaza (P9).
-  const incautados = s.zonas.incautadas.filter((c) => porId(copia(s, c).id).tipo === 'tripulante').length
-  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.rehenes.length + incautados + s.zonas.pasajeros.length
+  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.pasajeros.length
 }
 
 export function plazasLibres(s: Estado): number {
   return valor(s, { tipo: 'capacidad' }) - plazasOcupadas(s)
 }
 
+
+/**
+ * Fase 14 (regla general de Albert): cuando una carta habla del coste de otra («de coste 2 o menos»), mira siempre el
+ * coste impreso; los descuentos (Catalina, Marineros sin barco…) solo rebajan lo que se paga. «Pagando la mitad de su
+ * coste, redondeando hacia arriba»: la mitad del coste impreso, y a eso se le aplican los descuentos (nunca menos de 0).
+ * TODO(regla): P92, lectura de las dos reglas de Albert juntas; pendiente de que la confirme.
+ */
+export function costeAPagar(s: Estado, carta: InstId, modo: 'normal' | 'mitad' | 'gratis' = 'normal'): number {
+  if (modo === 'gratis') return 0
+  if (modo === 'normal') return valor(s, { tipo: 'coste', carta })
+  return Math.max(0, Math.ceil(costeImpreso(copia(s, carta).id) / 2) + modificadores(s, { tipo: 'coste', carta }))
+}

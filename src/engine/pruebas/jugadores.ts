@@ -12,6 +12,7 @@ import { entornoActual } from '../peligros.ts'
 import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { esVentaja } from '../infoEstados.ts'
+import { primerNumero, textoDe } from '../textos.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valores.ts'
@@ -139,7 +140,7 @@ function puntuacionTripulanteEnMuelle(id: string): number {
 function despidoQueConviene(s: Estado): InstId | null {
   if (plazasLibres(s) > 0) return null
   const mano = s.zonas.mano.length
-  const enJuego = new Set([...s.zonas.tripulacion, ...s.zonas.rehenes].map((c) => copia(s, c).id))
+  const enJuego = new Set(s.zonas.tripulacion.map((c) => copia(s, c).id))
   const nuevos = s.zonas.muelle
     .filter((c) => {
       const id = copia(s, c).id
@@ -336,7 +337,6 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'agotar':
     case 'exceso':
     case 'desercion':
-    case 'rehen':
     case 'pasajeroSinSitio':
       return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
     case 'perderMejora':
@@ -370,6 +370,7 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
       return { tipo: 'cartas', ids: por((c) => -riesgoDelEncuentro(s, c)).slice(0, n) }
     case 'naufrago':
     case 'reclutarGratis':
+    case 'reclutarDelMazoMuelle':
       return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id)).slice(0, 1) }
     case 'desviarHeridas':
       return { tipo: 'cartas', ids: por((c) => (c === s.capitan ? 50 : 0) - vidaRestante(s, c)).slice(0, 1) }
@@ -383,6 +384,9 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
       // Lo malo, a quien más vida le quede (sin el Capitán); lo bueno, al mejor.
       if (d.motivo.texto?.startsWith('sufre')) return { tipo: 'cartas', ids: por((c) => (c === s.capitan ? 50 : 0) - vidaRestante(s, c)).slice(0, n) }
       if (/prepara|cura/.test(d.motivo.texto ?? '')) return { tipo: 'cartas', ids: por((c) => -valorTripulante(s, c)).slice(0, n) }
+      // Fase 14: si el Capitán está entre los empatados para «se descarta», sufre 1 herida en su lugar (si la aguanta).
+      if (d.motivo.texto === 'se descarta' && d.candidatas.includes(s.capitan) && vidaRestante(s, s.capitan) >= 2) return { tipo: 'cartas', ids: [s.capitan] }
+      if (d.motivo.texto === 'se descarta') return { tipo: 'cartas', ids: por((c) => (c === s.capitan ? 200 : valorTripulante(s, c))).slice(0, n) }
       return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
     case 'ponerEstado':
     case 'agotarParaPagar':
@@ -392,6 +396,7 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'descartarMayorCoste':
       return { tipo: 'cartas', ids: por((c) => (porId(copia(s, c).id).tipo === 'tripulante' ? valorTripulante(s, c) : iconosTotales(s, c))).slice(0, n) }
     case 'gratisDelMuelle':
+    case 'mitadDelMuelle':
       return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id) - (MEJORAS_PREFERIDAS[copia(s, c).id] ?? 0)).slice(0, 1) }
     case 'recuperarDescarte':
       return { tipo: 'cartas', ids: por((c) => -iconosTotales(s, c)).slice(0, n) }
@@ -700,14 +705,13 @@ function peligroDe(efectos: readonly Efecto[]): number {
   for (const e of efectos) {
     if (e.tipo === 'heridas') peligro += e.n * 1.5
     else if (e.tipo === 'dano') peligro += e.n * 1.2
-    else if (e.tipo === 'rehen') peligro += 3
     else if (e.tipo === 'perderAvance') peligro += e.n === 'todo' ? 3 : e.n
-    else if (e.tipo === 'aQuien') peligro += e.hacer.tipo === 'heridas' ? e.hacer.n * 1.5 : e.hacer.tipo === 'rehen' || e.hacer.tipo === 'alMuelle' ? 3 : e.hacer.tipo === 'estado' ? 1 : 0.5
+    else if (e.tipo === 'aQuien') peligro += e.hacer.tipo === 'heridas' ? e.hacer.n * 1.5 : e.hacer.tipo === 'descartar' || e.hacer.tipo === 'alMuelle' ? 3 : e.hacer.tipo === 'estado' ? 1 : 0.5
     else if (e.tipo === 'estado' || e.tipo === 'estadoBarco' || e.tipo === 'incautar' || e.tipo === 'ocuparMuelle' || e.tipo === 'retirarse') peligro += 1.5
     else if (e.tipo === 'si' || e.tipo === 'porCada') peligro += peligroDe(e.tipo === 'si' ? e.entonces : e.efectos) * (e.tipo === 'porCada' ? 1.5 : 1)
     else if (e.tipo === 'elegir') peligro += Math.min(...e.opciones.map((o) => peligroDe(o.efectos)), 3)
     else if (
-      ['robar', 'curar', 'reparar', 'recluta', 'sinFallo', 'seRetira', 'ganarAvance', 'prepararCanones', 'preparar', 'gratisDelMuelle', 'rescatarRehenes', 'recuperarIncautadas', 'recuperarDescarte', 'mirarOrdenar', 'quitarEstado', 'quitarEstadoBarco', 'alFondo'].includes(e.tipo)
+      ['robar', 'curar', 'reparar', 'recluta', 'sinFallo', 'seRetira', 'ganarAvance', 'prepararCanones', 'preparar', 'gratisDelMuelle', 'reclutarDelMazoMuelle', 'recuperarIncautadas', 'recuperarDescarte', 'mirarOrdenar', 'quitarEstado', 'quitarEstadoBarco', 'alFondo'].includes(e.tipo)
     )
       peligro += 0
     else peligro += 0.5
@@ -938,15 +942,21 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     // Cartas de jugador 2.0
     case 'herbolaria.quitar':
     case 'practico.barco':
-    case 'fiador.rehen':
     case 'virar.jugar':
       return 3
+    case 'fiador.descarte': {
+      // Fase 14: se descarta él (y robas 2) en lugar de otro que valga más.
+      if (ev?.tipo !== 'descartarTripulante' || !fuente) return 0
+      return valorTripulante(s, ev.carta) > valorTripulante(s, fuente) ? 3 : 0
+    }
     case 'cataplasma.jugar':
       return 2
     case 'cortar.jugar':
       return trasEncuentro && mano >= 4 ? 2 : 0
     case 'a_por_ellos.jugar':
-      return trasEncuentro && s.zonas.rehenes.length > 0 && s.zonas.tripulacion.some((c) => !copia(s, c).agotada) ? 3 : 0
+      // Fase 14: Prueba de COM 3 para que no se descarte: si vale la pena y los preparados llegan.
+      if (ev?.tipo !== 'descartarTripulante' || mano < 2) return 0
+      return valorTripulante(s, ev.carta) >= 3 && alcanza(s, [{ hab: 'COM', dificultad: primerNumero(textoDe('a_por_ellos')) }]) ? 3 : 0
     case 'arenga.jugar':
       return convieneArenga(s) ? 2 : 0
     case 'ron_valientes.jugar':

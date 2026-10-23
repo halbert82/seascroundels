@@ -240,21 +240,16 @@ function restricciones(s: Estado, inst: InstId): { texto: string; ayuda: Ayuda }
 }
 
 /** Hueco fijo de un Tripulante: cabe la carta derecha y la carta girada, así nada se mueve al agotar o preparar. */
-function Tripulante({ inst, m, rehen, pasajero }: { inst: InstId; m: MedidasTripulacion; rehen?: boolean; pasajero?: boolean }) {
+function Tripulante({ inst, m, pasajero }: { inst: InstId; m: MedidasTripulacion; pasajero?: boolean }) {
   const { s } = useMesa()
   const mejoras = vinculadas(s, inst)
   return (
-    <div className={`tripulante${rehen ? ' rehen' : ''}${pasajero ? ' pasajero' : ''}`} style={{ width: m.anchoHueco }}>
+    <div className={`tripulante${pasajero ? ' pasajero' : ''}`} style={{ width: m.anchoHueco }}>
       <div className="hueco" style={{ width: m.anchoHueco, height: m.altoHueco }}>
         <CartaDe inst={inst} escala={m.escala} encogeAgotada={m.encogeAgotada} />
         {!pasajero && <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />}
-        {rehen && (
-          <Explicable ayuda={AYUDA_REGLA.rehen} className="rehen-marca">
-            <Icono id="rehen" /> Rehén
-          </Explicable>
-        )}
         {pasajero && (
-          <Explicable ayuda={AYUDA_REGLA.pasajero} className="rehen-marca pasajero-marca">
+          <Explicable ayuda={AYUDA_REGLA.pasajero} className="marca-tripulante pasajero-marca">
             <Icono id="capacidad" /> Pasajero
           </Explicable>
         )}
@@ -270,7 +265,7 @@ function Tripulante({ inst, m, rehen, pasajero }: { inst: InstId; m: MedidasTrip
 
 export function ZonaTripulacion() {
   const { s } = useMesa()
-  const total = s.zonas.tripulacion.length + s.zonas.rehenes.length + s.zonas.pasajeros.length
+  const total = s.zonas.tripulacion.length + s.zonas.pasajeros.length
   // Tres huecos por fila; si hay más de seis, se achican para que quepan tres filas. En una tableta, más grandes.
   const { alto } = useLienzo()
   const m = medidasTripulacion(total, repartirAltoDeMas(alto).zonas)
@@ -280,9 +275,6 @@ export function ZonaTripulacion() {
       <div className="tripulacion">
         {s.zonas.tripulacion.map((c) => (
           <Tripulante key={c} inst={c} m={m} />
-        ))}
-        {s.zonas.rehenes.map((c) => (
-          <Tripulante key={c} inst={c} m={m} rehen />
         ))}
         {s.zonas.pasajeros.map((c) => (
           <Tripulante key={c} inst={c} m={m} pasajero />

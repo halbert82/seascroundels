@@ -160,7 +160,7 @@ export const CLAVES_REGLA = [
   'persigue',
   'ocuparMuelle',
   'sinOposicion',
-  'rehen',
+  'descartaTripulante',
   'recluta',
   'comprometidoCon',
   'seRetira',
@@ -194,11 +194,11 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   abordaje: regla(
     'abordaje',
     'Abordaje',
-    'Si fallas la Prueba, sufres 1 herida por cada punto que te falte, como máximo 3. Si te faltan 3 o más, además uno de los Tripulantes asignados queda rehén.',
+    'El enemigo salta a tu cubierta: en esta Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades). Si fallas, sufres 1 herida por cada punto que te falte para llegar a la dificultad, sin máximo.',
     {
       rotulo: 'Detalles',
       texto:
-        'Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». Las heridas las repartes como quieras entre tus Tripulantes, preparados o agotados, como cualquier otra herida. Si no asignaste a nadie, o solo al Capitán, el rehén se elige al azar (nunca el Capitán).',
+        'Las heridas las repartes como quieras entre tus Tripulantes, preparados o agotados, Capitán incluido. Si fallas, te falta al menos 1 punto, aunque fallaras por un Destino que dice «Fallas la Prueba». La Pólvora del Rey, que es fuego de Cañón, tampoco vale.',
     },
   ),
   permanente: regla(
@@ -261,11 +261,11 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
         'Sin nadie asignado, fallas la Prueba: ganas el segundo número del Avance del encuentro («Avance 3 / 2»: 2), aunque la línea diga que no se aplica el efecto de fallo. «−1 de Avance (mín. 0)»: ese encuentro da 1 de Avance menos, sin bajar de 0; no quita el Avance que ya tenía la misión.',
     },
   ),
-  rehen: regla(
-    'rehen',
-    'Rehén',
-    'Uno de tus Tripulantes es capturado. Si había Tripulantes asignados a la Prueba, eliges a uno de ellos; si no, uno de tus Tripulantes al azar (nunca el Capitán). Apártalo: sigue ocupando Capacidad.',
-    { rotulo: 'Cómo se recupera', texto: 'Si superas la misión, lo rescatas y vuelve a tu mesa. Si no la superas, se retira del juego con sus Mejoras y pierdes 1 de reputación.' },
+  descartaTripulante: regla(
+    'descartaTripulante',
+    'Descartar a un Tripulante',
+    'El Tripulante va a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. Sus Tesoros pasan a otro Tripulante.',
+    { rotulo: 'El Capitán', texto: 'Si un efecto descartaría al Capitán, el Capitán no se descarta: sufre 1 herida en su lugar.' },
   ),
   recluta: regla(
     'recluta',
@@ -309,7 +309,8 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Es una Prueba normal: asignas a tus Tripulantes y añades cartas de tu mano, revelas el Destino y, si no asignaste a nadie, aplicas su línea Sin oposición.',
     {
       rotulo: 'Detalles',
-      texto: 'No tiene Avance propio: solo ganas lo que diga su texto. No puedes hacerla durante otra Prueba: se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro.',
+      texto:
+        'No tiene Avance propio: solo ganas lo que diga su texto. No puedes hacerla durante otra Prueba: se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro. La de una Interrupción («¡A por ellos!») se hace en el momento, aunque haya otra Prueba a medio resolver; al terminarla, se sigue con la otra.',
     },
   ),
   misionFalla: regla(
@@ -336,7 +337,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   pasajero: regla(
     'pasajero',
     'Pasajero',
-    'Carta que viaja contigo. Ocupa 1 de Capacidad; si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle. No es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados, Ventajas ni quedar rehén, salvo que su carta lo diga.',
+    'Carta que viaja contigo. Ocupa 1 de Capacidad; si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle. No es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, salvo que su carta lo diga.',
     { rotulo: 'Cuándo se va', texto: 'Se queda en juego entre misiones hasta que su carta diga que se va.' },
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
@@ -344,7 +345,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'enrolado',
     'Enrolado',
     'Enrolado N: al reclutarlo, recibe N fichas de Enrolado. Al final de cada turno pierde 1, hayas zarpado o no. Cuando no le queda ninguna, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
-    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas. Pierde la ficha esté donde esté: en la tripulación, rehén o incautado. No cuenta como derrotado. Las fichas no se renuevan ni se añaden.' },
+    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas, y los turnos en que te quedas en puerto. No cuenta como derrotado. Las fichas no se renuevan ni se añaden.' },
   ),
   otear: regla(
     'otear',
@@ -447,7 +448,6 @@ export function sinMarcado(texto: string): string {
     agotar: 'agotar',
     descartar: 'descartar',
     mejora: 'Mejora',
-    rehen: 'rehén',
     sinop: 'Sin oposición',
     MAN: 'Mando',
     espacio: 'Espacio',
@@ -532,13 +532,13 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   persigue: /\bPersigue\b|vaya a poner su carta encima del mazo de Peligros/,
   ocuparMuelle: /Ocupa el muelle|pon esta carta en el muelle/,
   sinOposicion: /\bSin oposición\b/,
-  rehen: /\breh[eé]n(es)?\b/i,
+  descartaTripulante: /\b[Dd]escarta (al|a ese|a un|a otro) Tripulante\b|\bdescarta a (Fiador|Grumete)\b|\bse descarta \(lo pescan|\bdescarta a ese Tripulante\b/,
   recluta: /\bRecluta\b/,
   comprometidoCon: /asignad[oa]s? con (más|menos)|con (más|menos) (NAV|COM|EXP|Vida)\b|con la (NAV|COM|EXP) más (alta|baja)|habilidad más (alta|baja)|de menor coste/,
   seRetira: /\bSe retira\b/,
   entraEnMazo: /\+ «|\+ La Armada|[Ee]ntra en el mazo de Peligros|(?<!esta carta |su carta )encima del mazo de Peligros/,
   volverMuelle: /\b[Vv]uelven? al muelle\b|↩/,
-  pruebaDeAccion: /Acción: [Hh]az una Prueba/,
+  pruebaDeAccion: /(Acción|Interrupción):.* [Hh]az una Prueba/,
   misionFalla: /\bla misión falla\b/i,
   alZarpar: /\bAl zarpar\b|\b[Dd]espués de zarpar\b/,
   gesta: /\bGesta\b/,

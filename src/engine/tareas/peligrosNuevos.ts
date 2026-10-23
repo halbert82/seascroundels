@@ -65,8 +65,14 @@ export const elegirEncuentro: Manejador<'elegirEncuentro'> = (s, t, e) => {
  */
 export const pruebaSuelta: Manejador<'pruebaSuelta'> = (s, t) => {
   if (t.paso === 'empezar') {
-    // No se puede empezar una Prueba de una Acción durante otra Prueba (P2).
-    if (s.prueba) return 'hecha'
+    // No se puede empezar una Prueba de una Acción durante otra Prueba (P2). Fase 14: la de una Interrupción que lo
+    // dice («¡A por ellos!») sí: la de fuera se aparta, con sus efectos «para esta Prueba», y vuelve al cerrar esta.
+    if (s.prueba && !t.anidada) return 'hecha'
+    if (s.prueba) {
+      t.exterior = { prueba: s.prueba, temporales: s.temporales.filter((x) => x.hasta === 'finPrueba') }
+      s.temporales = s.temporales.filter((x) => x.hasta !== 'finPrueba')
+      s.prueba = null
+    }
     const p = empezarPrueba(s, t.fuente, 0, 'accion')
     p.definicion = t.definicion
     if (t.definicion.sinAyuda) p.sinAyuda = true
@@ -75,7 +81,24 @@ export const pruebaSuelta: Manejador<'pruebaSuelta'> = (s, t) => {
     t.paso = 'cerrar'
     return 'sigue'
   }
-  if (s.prueba?.origen === 'accion' && s.prueba.encuentro === t.fuente) cerrarPrueba(s)
+  if (s.prueba?.origen === 'accion' && s.prueba.encuentro === t.fuente) {
+    // «Si la superas, no se descarta» («¡A por ellos!»): el suceso que interrumpía no ocurre.
+    if (t.cancelaSuceso !== undefined && s.prueba.resultado === 'superada') {
+      const suceso = s.pila.find((x) => x.id === t.cancelaSuceso)
+      if (suceso?.tipo === 'evento') {
+        suceso.cancelado = true
+        if (suceso.ev.tipo === 'descartarTripulante') anotar(s, 'efecto', `${nombre(s, suceso.ev.carta)} no se descarta.`)
+      }
+    }
+    // Los Destinos de la Prueba de fuera se quedan donde están: solo se descartan los de esta.
+    const deFuera = t.exterior ? [t.exterior.prueba.destino, t.exterior.prueba.segundoDestino].filter((c): c is InstId => c !== null && c !== undefined) : []
+    cerrarPrueba(s, deFuera)
+  }
+  if (t.exterior) {
+    s.prueba = t.exterior.prueba
+    s.temporales.push(...t.exterior.temporales)
+    delete t.exterior
+  }
   return 'hecha'
 }
 
@@ -196,7 +219,7 @@ export const quitarEstado_: Manejador<'quitarEstado'> = (s, t, e) => {
     for (const c of conEstado(s, t.estado)) quitarEstadoAnotado(s, c, t.estado)
     return 'hecha'
   }
-  const candidatos = t.de.filter((c) => (s.zonas.tripulacion.includes(c) || s.zonas.rehenes.includes(c)) && tieneEstado(s, c, t.estado))
+  const candidatos = t.de.filter((c) => s.zonas.tripulacion.includes(c) && tieneEstado(s, c, t.estado))
   if (candidatos.length === 0) return 'hecha'
   if (candidatos.length > 1 && !e) {
     return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'quitarEstado', carta: `estado:${t.estado}` }, candidatas: candidatos, min: 1, max: 1 })
@@ -234,7 +257,7 @@ export const estadosFinTurno: Manejador<'estadosFinTurno'> = (s, t) => {
 // ---------------------------------------------------------------------------
 // Incautado y el muelle
 
-const NOMBRE_INCAUTAR = { mano: 'cartas de tu mano', mejora: 'una Mejora', tripulante: 'un Tripulante' } as const
+const NOMBRE_INCAUTAR = { mano: 'cartas de tu mano', mejora: 'una Mejora' } as const
 
 /**
  * Cartas de la mano, una Mejora o un Tripulante van debajo de la carta de misión hasta saber si la superas. Las eliges
@@ -242,15 +265,14 @@ const NOMBRE_INCAUTAR = { mano: 'cartas de tu mano', mejora: 'una Mejora', tripu
  */
 export const incautar: Manejador<'incautar'> = (s, t, e) => {
   if (!s.mision) return 'hecha'
+  // Fase 14: ya no se incautan Tripulantes (fuera el rehén); solo cartas de la mano o una Mejora.
   let candidatas =
     t.que === 'mano'
       ? [...s.zonas.mano]
-      : t.que === 'mejora'
-        ? s.zonas.mejoras.filter((m) => {
-            const v = copia(s, m).vinculadaA
-            return !esIndestructible(copia(s, m).id) && (!t.deTripulantes || (v !== null && v !== 'barco' && s.zonas.tripulacion.includes(v)))
-          })
-        : s.zonas.tripulacion.filter((c) => c !== s.capitan)
+      : s.zonas.mejoras.filter((m) => {
+          const v = copia(s, m).vinculadaA
+          return !esIndestructible(copia(s, m).id) && (!t.deTripulantes || (v !== null && v !== 'barco' && s.zonas.tripulacion.includes(v)))
+        })
   if (t.obligadas) {
     const obligadas = candidatas.filter((c) => t.obligadas?.includes(copia(s, c).id))
     if (obligadas.length > 0) candidatas = obligadas
@@ -283,7 +305,7 @@ export const incautar: Manejador<'incautar'> = (s, t, e) => {
       elegidas = eleccionDe(e, 'cartas').ids
     }
   }
-  const zona = t.que === 'mano' ? 'mano' : t.que === 'mejora' ? 'mejoras' : 'tripulacion'
+  const zona = t.que === 'mano' ? 'mano' : 'mejoras'
   for (const c of elegidas) {
     const portador = copia(s, c).vinculadaA
     s.incautadas = {

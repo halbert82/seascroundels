@@ -56,8 +56,6 @@ function delPrototipo(op: OperacionPrototipo): string {
       return `perderMejora:${n}`
     case 'breakUp':
       return 'agotarMejora'
-    case 'hostage':
-      return 'rehen'
     case 'rep':
       return `reputacion:${n}`
     case 'flood':

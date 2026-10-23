@@ -115,6 +115,7 @@ registrarPeligro('guardian', {
 // Mazo de la Escolta (solo Mar)
 
 // Galeón de la plata · Antes de asignar, puedes agotar un Cañón: −2. Abordaje. (Fase 10b.)
+// TODO(regla): P89, como en «Al abordaje del filibote»: por defecto, la opción de la carta sigue valiendo en el Abordaje.
 registrarPeligro('galeon', {
   encuentros: {
     unico: {
@@ -160,7 +161,9 @@ registrarPeligro('cobertura', {
 registrarPeligro('naufragos_g', {
   encuentros: {
     unico: {
-      exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante', siNo: [robar(1)] }],
+      // Fase 14 (Albert): pagando la mitad de su coste, redondeando hacia arriba (antes, sin coste).
+      // TODO(regla): P91. Con «de coste 2 o menos», la mitad siempre es 1 carta; por defecto se queda el tope de coste.
+      exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante', mitad: true, siNo: [robar(1)] }],
       fallo: [agotar(1)],
     },
   },
@@ -196,12 +199,13 @@ registrarPeligro('cofres', {
 
 registrarPeligro('armada', {
   encuentros: {
-    // Los Cañones no suman. Éxito: +1 Avance. Fallo: Abordaje.
-    mar: { prueba: { sinCanones: true }, abordaje: true, exito: [avance(1)] },
+    // NAV 4 (fase 14, antes 5). Éxito: +1 Avance. Fallo: Abordaje (los Cañones no se usan: lo dice la regla, y la carta ya
+    // no repite «Los Cañones no suman»).
+    mar: { abordaje: true, exito: [avance(1)] },
     // Éxito: +1 munición. Fallo: 2 heridas repartidas y el Barco queda Perseguido.
     nat: { exito: [preparaCanon()], fallo: [heridas(2), { tipo: 'estadoBarco', estado: 'perseguido' }] },
-    // Éxito: +1 Avance. Fallo: el comprometido con más EXP queda rehén.
-    ciu: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'rehen' })] },
+    // Éxito: +1 Avance. Fallo (fase 14, fuera el rehén): descarta al asignado con más EXP.
+    ciu: { exito: [avance(1)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'descartar' })] },
   },
   // +1; +2 en su lugar si el encuentro es #Militar# o #Guardia#. Sin oposición: el Barco queda Perseguido.
   // −1. Sin oposición: el Barco queda Perseguido. (Fase 13, I1: fuera «Armada, Militar o Guardia: −2 en su lugar».)

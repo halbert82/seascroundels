@@ -4,7 +4,7 @@ import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.t
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { participantes as comprometidosDe } from '../capacidades/comun.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
-import { habilidadImpresa, registrarEspecial } from '../tareas/peligros2.ts'
+import { descartarTripulante, habilidadImpresa, registrarEspecial } from '../tareas/peligros2.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { agotar as agotarCarta } from '../estados.ts'
 import {
@@ -42,15 +42,16 @@ registrarPeligro('p2_corriente', {
     // Éxito: prepara 1 Tripulante. Fallo: Inflige 1 herida (fase 13: heridas libres, también las que antes iban a un
     // Tripulante asignado).
     nat: { exito: [preparar(1)], fallo: [heridas(1)] },
-    // Puedes agotar a 1 Tripulante para reclutar o adquirir sin coste 1 carta del muelle de coste 2 o menos.
+    // Fase 14 (Albert): «Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle de coste 2 o menos pagando la
+    // mitad de su coste (redondeando hacia arriba).» Solo Mejoras (antes, también reclutar sin coste).
     ciu: {
       efecto: [
         {
           tipo: 'elegir',
           opciones: [
             {
-              texto: 'Agotar a 1 Tripulante: reclutar o adquirir sin coste una carta del muelle de coste 2 o menos',
-              efectos: [{ tipo: 'agotarPago', n: 1 }, { tipo: 'gratisDelMuelle', maxCoste: 2, que: 'cualquiera' }],
+              texto: 'Agotar a 1 Tripulante: adquirir una Mejora del muelle de coste 2 o menos pagando la mitad de su coste',
+              efectos: [{ tipo: 'agotarPago', n: 1 }, { tipo: 'gratisDelMuelle', maxCoste: 2, que: 'mejora', mitad: true }],
             },
             { texto: 'No', efectos: [] },
           ],
@@ -126,8 +127,9 @@ registrarPeligro('p2_niebla', {
 // «Bruma en la selva», fallo: «Descarta al Tripulante asignado con menos [EXP]. Si es el Capitán, sufre 1 herida en su
 // lugar.» P72 (Albert): si hay empate, elige el jugador; el Tripulante se descarta con las reglas normales (sus Mejoras con
 // él y sus Tesoros pasan a otro). Sin nadie asignado se aplica igual, al de menos EXP de toda la tripulación (regla
-// general de la fase 13 para «el Tripulante asignado con más / menos X»).
-registrarEspecial('p2_niebla.separados', (s, _t, e) => {
+// general de la fase 13 para «el Tripulante asignado con más / menos X»). Fase 14: lo del Capitán es ya regla general, y
+// el Fiador y «¡A por ellos!» pueden responder (es una carta de Peligro la que lo descarta).
+registrarEspecial('p2_niebla.separados', (s, t, e) => {
   const asignados = comprometidosDe(s).filter((c) => s.zonas.tripulacion.includes(c))
   const entre = asignados.length > 0 ? asignados : [...s.zonas.tripulacion]
   if (entre.length === 0) return 'hecha'
@@ -139,13 +141,8 @@ registrarEspecial('p2_niebla.separados', (s, _t, e) => {
     c = eleccionDe(e, 'cartas').ids[0]
   }
   if (!c) return 'hecha'
-  if (c === s.capitan) {
-    anotar(s, 'efecto', `${nombre(s, c)} se pierde en la bruma, pero el Capitán no se descarta: sufre 1 herida en su lugar.`)
-    encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })
-    return 'hecha'
-  }
-  anotar(s, 'efecto', `${nombre(s, c)} se pierde en la bruma.`)
-  encolar(s, { tipo: 'sacarTripulante', carta: c, destino: 'descartesMuelle', motivo: 'descartado' })
+  if (c !== s.capitan) anotar(s, 'efecto', `${nombre(s, c)} se pierde en la bruma.`)
+  descartarTripulante(s, c, t.fuente, `${nombre(s, c)} se pierde en la bruma`)
   return 'hecha'
 })
 registrarCodigo('p2_niebla.separados', (_s, fuente) => [{ tipo: 'especial', clave: 'p2_niebla.separados', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
@@ -392,7 +389,12 @@ registrarPeligro('p2_maremoto', {
   encuentros: {
     mar: { exito: [avance(2)], fallo: [dano(2), codigo('p2_maremoto.ola')] },
     nat: { exito: [robar(2), avance(1)], fallo: [pierdesAvance(2), comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 })] },
-    ciu: { exito: [reputacion(1)], fallo: [{ tipo: 'rehen' }] },
+    // Fase 14 (fuera el rehén): «Un Tripulante asignado queda sepultado: sufre 1 herida y no se prepara en tu próxima
+    // Fase de Inicio.» Lo eliges tú; sin nadie asignado, a quien elijas (como las heridas).
+    ciu: {
+      exito: [reputacion(1)],
+      fallo: [comprometidoCon('eleccion', { tipo: 'varios', acciones: [{ tipo: 'heridas', n: 1 }, { tipo: 'noPrepara', hasta: 'inicio' }] })],
+    },
   },
   // −2. Sin oposición: el Capitán sufre 1 herida. (Fase 13, I1: fuera «si fallas, la siguiente Prueba recibe +1».)
   destino: { sinOposicion: [{ tipo: 'heridas', n: 1, capitan: true }] },

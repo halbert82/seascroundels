@@ -309,20 +309,16 @@ describe('17 · Fiebre amarilla', () => {
     expect(avance(k, 'ciu')).toBe(antes + 1 + 1) // fase 11: EXP 3, Avance 1 / 1, y +1 por superarla
   })
 
-  it('Ciudad: si fallas, el comprometido con más EXP queda rehén en el lazareto; si lo rescatas, vuelve sin heridas', () => {
+  it('Ciudad (fase 14): si fallas, descarta al asignado con más EXP (antes, rehén en el lazareto)', () => {
     const j = en('ciu', ['p2_fiebre', 'chubasco', 'calma', 'calma', 'calma'], {
       tripulacion: [{ id: 'bucanero', heridas: 1 }, 'marinero_p'],
     })
     // EXP 3 + 1 (el Bucanero está herido); el Bucanero y el Rufián no llegan. Empatan a EXP: eliges al Bucanero.
     j.comprometer('EXP', ['bucanero', 'marinero_p']).seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'queda rehén' } })
-    j.elegir('bucanero')
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
-    // Superas la misión con los «Calma»: lo rescatas y vuelve sin su herida.
-    while (j.estado.mision && j.decision.tipo === 'ventanaAccion') j.seguir()
-    expect(j.registro).toContain('Rescatas a Bucanero veterano.')
-    expect(j.registro).toContain('Bucanero veterano vuelve del lazareto sin heridas.')
-    expect(j.copia('bucanero').heridas).toBe(0)
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien', texto: 'se descarta' } })
+    j.elegir('bucanero').pasarOfertas()
+    expect(j.zona('descartesMuelle')).toContain('bucanero')
+    expect(j.zona('tripulacion')).toContain('marinero_p')
   })
 
   it('Destino «Vómito negro»: −1 e inflige 1 herida a un asignado (fase 13, I1: antes, solo al fallar y a los ya heridos); sin nadie asignado, solo su Sin oposición: el Capitán queda Envenenado (P83)', () => {
@@ -554,12 +550,17 @@ describe('22 · El caimán', () => {
     expect(j.registro).toContain('Ganas 3 de Avance (4/4).') // con los 3 del encuentro, supera la misión
   })
 
-  it('Ciudad: si fallas, el comprometido con más NAV elige entre 2 heridas o quedar rehén', () => {
+  it('Ciudad: si fallas, el asignado con más NAV elige entre 2 heridas o descartarse (fase 14: antes, rehén)', () => {
     const j = en('ciu', ['p2_caiman', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir()
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion' })
-    j.opcion('1')
-    expect(j.zona('rehenes')).toEqual(['viejo_lobo'])
+    j.opcion('1').pasarOfertas()
+    expect(j.zona('descartesMuelle')).toContain('viejo_lobo')
+    // El Tuerto (Vida 3) aguanta las 2 heridas.
+    const k = en('ciu', ['p2_caiman', 'chubasco', 'calma'], { tripulacion: ['tuerto'] })
+    k.comprometer('NAV', ['tuerto']).pasarOfertas().seguir().opcion('0').pasarOfertas()
+    expect(k.copia('tuerto').heridas).toBe(2)
+    expect(k.zona('tripulacion')).toContain('tuerto')
   })
 
   it('Destino «Giro de la muerte»: fallas, salvo que el comprometido con la habilidad más alta sufra 2 heridas: entonces +1', () => {

@@ -22,6 +22,8 @@ export const ESCENAS = [
   'capituloNuevo',
   'dosDestinos',
   'tripulacionDePaso',
+  'aPorEllos',
+  'aPorEllosOfrecida',
 ] as const
 export type Escena = (typeof ESCENAS)[number]
 
@@ -40,7 +42,10 @@ function buscar(semilla: number, hasta: (s: Estado, desde: number) => boolean): 
 }
 
 const CONDICION: Record<
-  Exclude<Escena, 'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo' | 'dosDestinos' | 'tripulacionDePaso'>,
+  Exclude<
+    Escena,
+    'enJuego' | 'muelleOcupado' | 'alarma' | 'finalMision' | 'mano5' | 'mano8' | 'permanentes' | 'capituloNuevo' | 'dosDestinos' | 'tripulacionDePaso' | 'aPorEllos' | 'aPorEllosOfrecida'
+  >,
   (s: Estado, desde: number) => boolean
 > = {
   // En puerto, en Jugar cartas, con algo de partida ya jugada.
@@ -239,6 +244,25 @@ function tripulacionDePaso(): PartidaEnMesa {
 }
 
 /**
+ * Fase 14, en Ciudad: «Leva forzosa» fallada va a descartar a la Vigía inexperta. `ofrecida`: se ofrece «¡A por ellos!»
+ * (Interrupción). Si no, ya jugada: su Prueba de COM 3 con el Bucanero veterano asignado y su Destino revelado, mientras
+ * la de la leva (y su Destino) espera en la mesa.
+ */
+function aPorEllos(ofrecida: boolean): PartidaEnMesa {
+  const j = Jugador.enMision({
+    misiones: ['pruebas-ciu4'],
+    mazoPeligros: ['p2_grilletes', 'chubasco', 'calma', 'calma', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['a_por_ellos', 'ojo', 'timon'],
+    tripulacion: ['vigia', 'bucanero', 'matasanos'],
+    reputacion: 3,
+  })
+  j.comprometer('COM', ['vigia', 'matasanos']).seguir()
+  if (!ofrecida) j.usar('a_por_ellos.jugar').elegir('ojo').comprometer('COM', ['bucanero']).pasarOfertas()
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 8) }
+}
+
+/**
  * En puerto, en Jugar cartas, con la mano llena: 5 cartas (el Mando del Capitán) o, robando 3 más del mazo del capitán,
  * 8 (una mano muy llena). Para ver que la mano se ve entera en una tableta.
  */
@@ -264,6 +288,8 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'capituloNuevo') return capituloNuevo()
   if (nombre === 'dosDestinos') return dosDestinos()
   if (nombre === 'tripulacionDePaso') return tripulacionDePaso()
+  if (nombre === 'aPorEllos') return aPorEllos(false)
+  if (nombre === 'aPorEllosOfrecida') return aPorEllos(true)
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

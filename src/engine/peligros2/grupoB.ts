@@ -199,47 +199,23 @@ registrarPeligro('p2_serpientes', {
 })
 
 // 17. Fiebre amarilla · Duro
-const LAZARETO = 'p2_fiebre.lazareto'
 registrarPeligro('p2_fiebre', {
   encuentros: {
     // NAV 4. Éxito: cura 1 herida a cada Tripulante. Fallo: no puedes retirarte de esta misión.
     mar: { exito: [{ tipo: 'curar', n: 1, modo: 'cadaUno' }], fallo: [{ tipo: 'noRetirarse' }] },
     // EXP 4 (2 con un Cirujano). Éxito: cura 2 heridas. Fallo: cada Tripulante asignado queda Envenenado (fase 10b).
     nat: { exito: [{ tipo: 'curar', n: 2 }], fallo: [cadaComprometido({ tipo: 'estado', estado: 'envenenado' })] },
-    // EXP 3, +1 por cada Tripulante herido (máx. 5). Éxito: +1 Avance. Fallo: el comprometido con más EXP queda rehén
-    // en el lazareto; si lo rescatas, vuelve sin heridas.
+    // EXP 3, +1 por cada Tripulante herido (máx. 5). Éxito: +1 Avance. Fallo (fase 14, fuera el rehén): descarta al
+    // asignado con más EXP (antes, rehén en el lazareto, y volvía sin heridas).
     ciu: {
       capacidades: [dificultad('heridos', (ctx) => Math.min(5, 3 + tripulantesHeridos(ctx.s)) - 3)],
       exito: [avance(1)],
-      fallo: [
-        comprometidoCon(mas('EXP'), {
-          tipo: 'varios',
-          acciones: [
-            { tipo: 'marcar', clave: LAZARETO },
-            { tipo: 'rehen' },
-          ],
-        }),
-      ],
+      fallo: [comprometidoCon(mas('EXP'), { tipo: 'descartar' })],
     },
   },
   // −1. Fase 13 (I1): «Inflige 1 herida a un Tripulante asignado» (antes, «si fallas, cada asignado herido sufre 1 más»).
   // Sin oposición: el Capitán queda Envenenado.
   destino: { efectos: [heridasAsignados(1)], sinOposicion: [{ tipo: 'estado', estado: 'envenenado', a: 'capitan' }] },
-})
-// «Si lo rescatas, vuelve sin heridas (allí lo curan).»
-registrarCapacidades({
-  clave: LAZARETO,
-  carta: 'p2_fiebre',
-  ventana: 'obligada',
-  desde: 'marca',
-  texto: 'Vuelve del lazareto sin heridas.',
-  disparo: (s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'rescatado' && ev.carta === yo && yo !== null && copia(s, yo).heridas > 0,
-  efecto: (s, yo) => {
-    if (!yo) return []
-    copia(s, yo).heridas = 0
-    anotar(s, 'efecto', `${nombre(s, yo)} vuelve del lazareto sin heridas.`)
-    return []
-  },
 })
 
 // 18. Tiburones · Duro
@@ -474,7 +450,7 @@ registrarPeligro('p2_caiman', {
       ],
     },
     // Éxito (fase 13, I2): +1 [avance] (antes, «la siguiente Prueba #Guardia# o #Militar# −2»). Fallo: el asignado con
-    // más NAV sufre 2 heridas o queda rehén (tú eliges).
+    // más NAV sufre 2 heridas o se descarta (tú eliges; fase 14: antes, rehén).
     ciu: {
       exito: [avance(1)],
       fallo: [
@@ -482,7 +458,7 @@ registrarPeligro('p2_caiman', {
           tipo: 'elegir',
           opciones: [
             { texto: 'sufre 2 heridas (escapa mordido)', accion: { tipo: 'heridas', n: 2 } },
-            { texto: 'queda rehén (lo pescan los guardias)', accion: { tipo: 'rehen' } },
+            { texto: 'se descarta (lo pescan los guardias)', accion: { tipo: 'descartar' } },
           ],
         }),
       ],

@@ -184,7 +184,6 @@ describe('Índice de términos de la Referencia de reglas', () => {
       'Misión lejana': 'Distancia',
       'Misiones disponibles': 'Misión',
       Muelle: null,
-      Rehén: null,
       Reputación: null,
       'Fallas la Prueba': 'Destino',
     }

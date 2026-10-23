@@ -459,7 +459,7 @@
    "EXP": 0,
    "vida": 1,
    "mejoras": 0,
-   "texto": "**Interrupción:** Cuando otro Tripulante vaya a quedar rehén, Fiador de la Hermandad queda rehén en su lugar. Si lo rescatas, roba {2 robar}.",
+   "texto": "**Interrupción:** Cuando una carta de Peligro vaya a descartar a otro Tripulante, descarta a Fiador de la Hermandad en su lugar y roba {2 robar}.",
    "ambientacion": "«Mi palabra vale lo que yo. Que no es mucho, pero vale.»"
   },
   {
@@ -550,8 +550,8 @@
    ],
    "unico": false,
    "coste": 1,
-   "NAV": 2,
-   "COM": 1,
+   "NAV": 1,
+   "COM": 0,
    "EXP": 0,
    "vida": 3,
    "mejoras": 0,
@@ -760,7 +760,7 @@
    "senda": "Neutral",
    "coste": 1,
    "unico": false,
-   "texto": "{+1 COM}",
+   "texto": "{+1 COM}. En una Prueba con **Abordaje**, {+2 COM} en su lugar.",
    "ambientacion": "«Corto, pesado y sin miramientos.»",
    "bonificacion_COM": 1
   },
@@ -1089,7 +1089,7 @@
    "iconos": [
     "COM"
    ],
-   "texto": "**Respuesta:** Después de que superes una Prueba de [COM], recluta del muelle un Tripulante de coste 2 o menos sin pagar su coste.",
+   "texto": "**Respuesta:** Después de que superes una Prueba de [COM], mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo de muelle.",
    "ambientacion": "«Sacadme de aquí y soy vuestro.»"
   },
   {
@@ -1194,7 +1194,7 @@
     "COM",
     "COM"
    ],
-   "texto": "**Acción:** Haz una Prueba de [COM] 3. Si la superas, rescata a todos los rehenes de esta misión: vuelven preparados.",
+   "texto": "**Interrupción:** Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba de [COM] 3. Si la superas, no se descarta.",
    "ambientacion": "«¡Nadie se queda atrás! Salvo el que se quede.»"
   },
   {
@@ -2474,14 +2474,14 @@
      ],
      "fallo": [
       [
-       "hostage",
+       "wound",
        1
       ]
      ],
      "exito": [],
      "siempre": [],
-     "nota": "Si te ganan, se llevan a uno de los tuyos.",
-     "textoFallo": "1 [rehen]",
+     "nota": "Si te ganan, os muelen a palos.",
+     "textoFallo": "1 [herida]",
      "textoExito": ""
     },
     "ciu": {
@@ -3712,14 +3712,13 @@
      "prueba": [
       {
        "hab": "NAV",
-       "dificultad": 5
+       "dificultad": 4
       }
      ],
      "fallo": [],
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Los Cañones no suman ~(contra un navío de línea solo se puede correr)~.",
      "textoExito": "~Le dais esquinazo entre los cayos:~ {+1 avance}.",
      "textoFallo": "**Abordaje**"
     },
@@ -3761,7 +3760,7 @@
      "siempre": [],
      "nota": "",
      "textoExito": "~Os escondéis en la trastienda de un amigo:~ {+1 avance}.",
-     "textoFallo": "El Tripulante asignado con más [EXP] queda rehén."
+     "textoFallo": "~Se lo llevan preso.~ Descarta al Tripulante asignado con más [EXP]."
     }
    },
    "destino": {
@@ -3922,7 +3921,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Tiene que zarpar antes de tiempo y vende la carga a precio de derribo.~ Puedes agotar a 1 Tripulante para reclutar o adquirir sin coste 1 carta del muelle de coste 2 o menos."
+     "textoEfecto": "~Tiene que zarpar antes de tiempo y vende la carga a precio de derribo.~ Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba)."
     }
    },
    "destino": {
@@ -4735,7 +4734,7 @@
      "nota": "",
      "textoEfecto": "~Las calles de arena se escurren al mar con las casas encima.~",
      "textoExito": "~Sacáis a los vecinos de los escombros.~ +1 reputación.",
-     "textoFallo": "~Un Tripulante asignado queda sepultado:~ queda rehén (lo desenterráis si superas la misión)."
+     "textoFallo": "~Un Tripulante asignado queda sepultado:~ sufre {1 herida} y no se prepara en tu próxima Fase de Inicio."
     }
    },
    "destino": {
@@ -5251,7 +5250,7 @@
      "nota": "",
      "textoEfecto": "~La ciudad ha cerrado las calles; el cordón de guardias busca caras amarillas.~",
      "textoExito": "~Cruzáis el cordón por los patios.~ {+1 avance}.",
-     "textoFallo": "~El cordón se lleva a uno.~ El Tripulante asignado con más [EXP] queda rehén en el lazareto; si lo rescatas, vuelve sin heridas (allí lo curan).",
+     "textoFallo": "~El cordón se lleva a uno.~ Descarta al Tripulante asignado con más [EXP].",
      "notaPrueba": "+1 por cada Tripulante herido (máx. 5)."
     }
    },
@@ -5667,7 +5666,7 @@
      "nota": "",
      "textoEfecto": "~El gobernador echa caimanes al foso. Hay que cruzarlo a nado de noche.~",
      "textoExito": "~Entráis por donde nadie vigila.~ {+1 avance}.",
-     "textoFallo": "El Tripulante asignado con más [NAV] sale del agua a medias. **Elige:** sufre {2 herida} (escapa mordido) o queda rehén (lo pescan los guardias)."
+     "textoFallo": "El Tripulante asignado con más [NAV] sale del agua a medias. **Elige:** sufre {2 herida} (escapa mordido) o se descarta (lo pescan los guardias)."
     }
    },
    "destino": {
@@ -6043,7 +6042,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Abordáis y rompéis las cadenas de los remeros.~ Si tienes Capacidad, recluta sin coste un _Marinero_ del muelle; si no, roba 1.",
+     "textoExito": "~Abordáis y rompéis las cadenas de los remeros.~ Mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo de muelle.",
      "textoFallo": "~Os embiste con el espolón.~ Daña {2 dano}."
     },
     "nat": {
@@ -6085,7 +6084,7 @@
      "siempre": [],
      "nota": "",
      "textoExito": "~Echáis a la leva de la taberna y los marineros del puerto os invitan a una ronda.~ Prepara 2 Tripulantes.",
-     "textoFallo": "La leva se lleva al Tripulante asignado con menos Vida. Queda rehén."
+     "textoFallo": "~La leva se lleva a uno.~ Descarta al Tripulante asignado con menos Vida."
     }
    },
    "destino": {
@@ -6411,8 +6410,8 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Entráis en bote por la galería que da al mar.~",
-     "textoExito": "Rescata a todos los rehenes de esta misión. Si no había ninguno, un preso agradecido os cuenta el camino: {+1 avance}.",
-     "textoFallo": "~El carcelero os coge en la ronda.~ El Tripulante asignado con más [NAV] queda rehén y sufre {1 herida}."
+     "textoExito": "~Un preso agradecido os cuenta el camino.~ {+1 avance}.",
+     "textoFallo": "~El carcelero os coge en la ronda.~ El Tripulante asignado con más [NAV] queda **Buscado** y sufre {1 herida}."
     }
    },
    "destino": {
@@ -6473,7 +6472,7 @@
      "nota": "",
      "textoEfecto": "+2 de dificultad si algún Tripulante está **Buscado** (su nombre está en la lista de la patrulla).",
      "textoExito": "~Cortáis las sogas y un colgado aún respira; os guía por el monte.~ {+1 avance}.",
-     "textoFallo": "~La patrulla vuelve a por más.~ El Tripulante asignado con menos Vida queda rehén."
+     "textoFallo": "~La patrulla vuelve a por más.~ El Tripulante asignado con menos Vida queda **Buscado** y sufre {1 herida}."
     },
     "ciu": {
      "nombre": "Ahorcan a uno de los vuestros",
@@ -6494,7 +6493,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** el Tripulante preparado de menor coste está en el patíbulo y no puede ser asignado. −2 de dificultad si tienes 8 o más de reputación (el gentío está de tu parte).",
      "textoExito": "~Cortáis la soga a tiempo y el gentío os vitorea.~ +1 reputación.",
-     "textoFallo": "~Lo suben al patíbulo.~ Ese Tripulante queda rehén. Si no superas la misión, lo ahorcan."
+     "textoFallo": "~Lo suben al patíbulo y lo ahorcan.~ Descarta a ese Tripulante."
     }
    },
    "destino": {
@@ -6526,7 +6525,7 @@
      "prueba": [
       {
        "hab": "NAV",
-       "dificultad": 6
+       "dificultad": 4
       }
      ],
      "fallo": [],
@@ -6644,7 +6643,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Un bucanero sin barco reta a los tuyos a un pulso. Si pierde, se enrola.~",
-     "textoExito": "Recluta sin coste un Tripulante de coste 2 o menos del muelle (si tienes Capacidad).",
+     "textoExito": "Si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba).",
      "textoFallo": "~Pagas la ronda.~ Descarta 1 carta."
     }
    },
@@ -7160,7 +7159,7 @@
      "prueba": [
       {
        "hab": "COM",
-       "dificultad": 5
+       "dificultad": 4
       }
      ],
      "fallo": [],
@@ -7406,10 +7405,10 @@
      "prueba": [
       {
        "hab": "EXP",
-       "dificultad": 5,
+       "dificultad": 4,
        "alternativa": {
         "rasgo": "Vigía",
-        "dificultad": 4,
+        "dificultad": 3,
         "comprometido": true
        }
       }
@@ -7442,7 +7441,7 @@
      "nota": "",
      "textoEfecto": "~Un pirata atado a una palmera pide auxilio a gritos. Los mosquetes esperan en la espesura.~",
      "textoExito": "~Lo desatáis bajo el fuego y se une a vosotros.~ Recluta sin coste un Tripulante de coste 2 o menos del muelle (si tienes Capacidad); si no, robas 2.",
-     "textoFallo": "~La red cae sobre el que fue a desatarlo.~ El Tripulante asignado con más [COM] queda rehén."
+     "textoFallo": "~La red cae sobre el que fue a desatarlo.~ Descarta al Tripulante asignado con más [COM]."
     },
     "ciu": {
      "nombre": "Pasquines del cazador",
@@ -7463,7 +7462,7 @@
      "nota": "",
      "textoEfecto": "~Ha pegado tu cara en cada esquina y paga bien a quien hable.~",
      "textoExito": "~Le vendes un soplo falso y cobras tú la recompensa.~ Robas 2.",
-     "textoFallo": "~Te venden.~ El Tripulante asignado con más [EXP] queda rehén. Añade la carta 95 al mazo de Peligros."
+     "textoFallo": "~Te venden.~ El Tripulante asignado con más [EXP] queda **Buscado**. Añade la carta 95 al mazo de Peligros."
     }
    },
    "destino": {
@@ -7756,7 +7755,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Los mareantes del santo solo ayudan a gente de mar.~ Si tienes un _Marinero_ preparado, superas sin Prueba.",
-     "textoExito": "~Os echan una mano.~ Recluta sin coste un _Marinero_ del muelle de coste 3 o menos. Si no hay ninguno o no tienes Capacidad, robas 2.",
+     "textoExito": "~Os echan una mano.~ Roba {2 robar}.",
      "textoFallo": "~Os toman por gente de tierra.~ Descarta 1 carta (la limosna para el santo)."
     }
    },
@@ -8264,7 +8263,7 @@
      "nota": "",
      "textoEfecto": "~Llena la calle a medianoche. Nadie debe cruzarse con ella: hay que rodearla por los tejados, como quien sube a la jarcia.~",
      "textoExito": "~La veis pasar por debajo y nadie os mira.~ El Tripulante asignado con más [NAV] queda **Aguerrido**: ya ha visto lo peor.",
-     "textoFallo": "El Tripulante asignado con más [NAV] se cruza con el que lleva la cruz y tiene que cogerla: queda rehén de la procesión (lo recuperas si superas la misión)."
+     "textoFallo": "El Tripulante asignado con más [NAV] se cruza con el que lleva la cruz y tiene que cogerla: queda **Maldito**."
     }
    },
    "destino": {
@@ -8296,16 +8295,16 @@
      "prueba": [
       {
        "hab": "COM",
-       "dificultad": 6
+       "dificultad": 4
       }
      ],
      "fallo": [],
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Las balas lo atraviesan.~ Los Cañones no suman. Si un Tripulante asignado lleva un _Escapulario_, −2 de dificultad.",
+     "textoEfecto": "~Las balas lo atraviesan.~ Si un Tripulante asignado lleva un _Escapulario_, −2 de dificultad.",
      "textoExito": "~Lo mandáis al fondo otros siete años.~ +1 reputación y esta carta Se retira.",
-     "textoFallo": "**Abordaje** (el rehén pasa a su tripulación de muertos)."
+     "textoFallo": "**Abordaje**"
     },
     "nat": {
      "nombre": "Sus ahogados en la playa",
@@ -8588,7 +8587,7 @@
     "prueba": [
      {
       "hab": "COM",
-      "dificultad": 5
+      "dificultad": 4
      }
     ],
     "fallo": [],
@@ -8697,7 +8696,7 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoExito": "~Uno se enrola.~ Recluta sin coste un Tripulante de coste 2 o menos del muelle (si tienes Capacidad); si no, robas 1.",
+    "textoExito": "~Uno se enrola.~ Si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba); si no, robas 1.",
     "textoFallo": "~Remáis en balde.~ Agota a 1 Tripulante."
    },
    "destino": {
@@ -9925,7 +9924,7 @@
    "rasgos": [
     "Guardia"
    ],
-   "texto": "Al terminar cada encuentro, pon 1 ficha aquí. Con 3, el Tripulante agotado con menos Vida queda rehén; descarta esta carta. **Acción:** agota a un _Oficial_ o supera una Prueba de [COM] 3: descarta esta carta.",
+   "texto": "Al terminar cada encuentro, pon 1 ficha aquí. Con 3, descarta al Tripulante agotado con menos Vida y descarta esta carta. **Acción:** agota a un _Oficial_ o supera una Prueba de [COM] 3: descarta esta carta.",
    "ambientacion": "",
    "origen": "p2_rebato",
    "entorno": "ciu",

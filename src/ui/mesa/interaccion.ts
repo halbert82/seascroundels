@@ -50,7 +50,6 @@ export interface Interaccion {
 const ZONAS_A_LA_VISTA: ReadonlySet<Zona> = new Set<Zona>([
   'tripulacion',
   'mejoras',
-  'rehenes',
   'muelle',
   'misionesDisponibles',
   'mano',
@@ -71,10 +70,10 @@ function aLaVista(s: Estado, inst: InstId): boolean {
   // Durante una misión, la mesa no enseña el muelle ni las misiones disponibles (la misión ocupa su sitio);
   // en puerto, no hay cartas en juego junto a la misión ni incautadas.
   if (s.mision && (z === 'muelle' || (z === 'misionesDisponibles' && inst !== s.mision.carta))) return false
-  // Las Mejoras de un Tripulante incautado no se ven (van con él debajo de la misión).
+  // Las Mejoras sin portador en la tripulación no se ven.
   if (z === 'mejoras') {
     const v = s.cartas[inst]?.vinculadaA
-    if (v && v !== 'barco' && !s.zonas.tripulacion.includes(v) && !s.zonas.rehenes.includes(v)) return false
+    if (v && v !== 'barco' && !s.zonas.tripulacion.includes(v)) return false
   }
   return z !== null && ZONAS_A_LA_VISTA.has(z)
 }

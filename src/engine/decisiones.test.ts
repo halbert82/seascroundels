@@ -273,13 +273,15 @@ describe('N5 · Agotar sin preparados suficientes', () => {
   })
 })
 
-describe('N7 · Si ya no queda ningún comprometido, heridas y rehén como sin comprometidos', () => {
-  it('el Grumete muere por el Destino; el rehén de Bandoleros se elige al azar entre los demás', () => {
-    const j = enMision({ misiones: ['aguada-I'], tripulacion: ['grumete', 'bucanero'], mazoPeligros: ['rivales', 'rivales', 'calma'] })
+describe('N7 · Si ya no queda ningún comprometido, heridas y descarte como sin comprometidos', () => {
+  it('el Grumete muere por el Destino; «Leva forzosa» descarta al de menos Vida de toda la tripulación (fase 14: antes, un rehén al azar)', () => {
+    const j = enMision({ misiones: ['ladron-I'], tripulacion: ['grumete', 'bucanero'], mazoPeligros: ['p2_grilletes', 'rivales', 'calma'] })
     j.comprometer('COM', ['grumete']) // «Puñal escondido»: el Grumete (Vida 1) sufre 1 herida y queda derrotado
     expect(j.zona('descartesMuelle')).toContain('grumete')
-    j.seguir()
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
+    j.seguir().pasarOfertas()
+    // Diego (Vida 4) y el Bucanero veterano (Vida 2): se descarta el Bucanero.
+    expect(j.zona('descartesMuelle')).toContain('bucanero')
+    expect(j.zona('tripulacion')).toEqual(['capitan'])
   })
 })
 
@@ -326,12 +328,13 @@ describe('N10 · La Armada entra en el mazo de Peligros normal aunque la misión
   })
 })
 
-describe('N11 · Rehén con solo el Capitán en juego: no pasa nada', () => {
-  it('fallas Bandoleros con Diego solo: nadie es capturado', () => {
-    const j = enMision({ misiones: ['aguada-I'], mazoPeligros: ['rivales', 'leyenda', 'calma'] })
+describe('Fase 14 · Si un efecto descartaría al Capitán, sufre 1 herida en su lugar (antes, N11: el Capitán no podía ser rehén)', () => {
+  it('fallas «Leva forzosa» con Diego solo: no se descarta y sufre 1 herida', () => {
+    const j = enMision({ misiones: ['ladron-I'], mazoPeligros: ['p2_grilletes', 'chubasco', 'calma'] })
     j.comprometer('COM', ['capitan']).seguir()
-    expect(j.zona('rehenes')).toEqual([])
-    expect(j.registro).toContain('No hay nadie a quien capturar.')
+    expect(j.zona('tripulacion')).toContain('capitan')
+    expect(j.copia('capitan').heridas).toBe(1)
+    expect(j.registro.some((r) => r.includes('el Capitán no se descarta'))).toBe(true)
   })
 })
 
@@ -368,11 +371,11 @@ describe('D10 · Si se acaba el mazo mezclado de una misión, se barajan los des
   })
 })
 
-describe('N1 · Tesoro de un rehén perdido', () => {
-  it('pasa a otro Tripulante', () => {
-    const j = enMision({ misiones: ['aguada-I'], tripulacion: [{ id: 'grumete', mejoras: ['espada'] }], mazoPeligros: ['rivales', 'leyenda', 'calma'] })
-    j.comprometer('COM', ['grumete']).pasar().seguir().retirarse().opcion('dejar') // no cancela el «Fallo» con la Espada
-    expect(j.zona('fueraDeJuego')).toContain('grumete')
+describe('N1 · El Tesoro de un Tripulante que sale del juego pasa a otro (fase 14: antes, el de un rehén perdido)', () => {
+  it('«Leva forzosa» descarta al Grumete, que llevaba la Espada: la Espada pasa a Diego', () => {
+    const j = enMision({ misiones: ['ladron-I'], tripulacion: [{ id: 'grumete', mejoras: ['espada'] }], mazoPeligros: ['p2_grilletes', 'leyenda', 'calma'] })
+    j.comprometer('COM', ['grumete']).pasar().seguir().pasarOfertas() // no cancela el «Fallo» con la Espada
+    expect(j.zona('descartesMuelle')).toContain('grumete')
     expect(j.copia('espada').vinculadaA).toBe(j.estado.capitan)
   })
 })
@@ -529,7 +532,7 @@ describe('N17 · Una Prueba superada automáticamente cuenta como superada, sin 
     const j = Jugador.enMision({
       mano: ['soborno', 'prisionero', 'ojo', 'timon', 'coraje'],
       tripulacion: ['saqueador'],
-      muelle: ['grumete'],
+      mazoMuelle: ['grumete', 'sable', 'vigia'],
       mazoPeligros: ['bestias', 'leyenda', 'calma'],
     })
     j.usar('soborno.jugar').elegir('ojo', 'timon')
@@ -537,6 +540,7 @@ describe('N17 · Una Prueba superada automáticamente cuenta como superada, sin 
     j.opcion('0')
     expect(j.ofreceCapacidad('prisionero.jugar')).toBe(true)
     expect(j.ofreceCapacidad('saqueador.superar')).toBe(false)
+    // Fase 14: el Prisionero liberado mira las 3 de arriba del mazo de muelle.
     j.usar('prisionero.jugar').elegir('coraje').elegir('grumete')
     expect(j.zona('tripulacion')).toContain('grumete')
   })

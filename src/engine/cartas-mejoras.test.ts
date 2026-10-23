@@ -221,3 +221,35 @@ describe('Tesoros', () => {
     expect(j.ofreceCapacidad('farol.destino')).toBe(false)
   })
 })
+
+describe('Fase 14 · Abordaje: los Cañones no se usan; el Sable de abordaje da +2', () => {
+  // «Proa en la niebla» (Mar, COM 3, Abordaje) y «Piratas rivales» (Mar, COM 4, sin Abordaje).
+  it('Sable de abordaje: +1 COM; en una Prueba con Abordaje, +2 COM en su lugar', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['sable'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    j.comprometer('COM', ['capitan'])
+    expect(totalSinDestinoPrueba(j.estado)).toBe(3 + 1)
+    const k = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['sable'] }, mazoPeligros: ['p2_niebla', 'chubasco', 'calma'] })
+    k.comprometer('COM', ['capitan'])
+    expect(totalSinDestinoPrueba(k.estado)).toBe(3 + 2)
+  })
+
+  it('en una Prueba con Abordaje no se ofrecen los Cañones de bronce ni las Carronadas', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['bronce', 'carronadas'] }, mazoPeligros: ['p2_niebla', 'chubasco', 'calma'] })
+    expect(j.ofreceCapacidad('carronadas.disparar')).toBe(false)
+    j.comprometer('COM', ['capitan'])
+    expect(j.ofreceCapacidad('bronce.disparar')).toBe(false)
+    const k = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['bronce'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    k.comprometer('COM', ['capitan'])
+    expect(k.ofreceCapacidad('bronce.disparar')).toBe(true)
+  })
+
+  it('la Pólvora del Rey (fuego de Cañón) tampoco vale: agotar el Cañón del filibote no la dispara', () => {
+    // «Al abordaje del filibote» (COM 4, Abordaje): antes de asignar, puedes agotar un Cañón (−1).
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: [{ id: 'polvora_rey', fichas: 3 }, 'bronce'] }, mazoPeligros: ['p2_curazao', 'chubasco', 'calma'] })
+    j.opcion('1')
+    expect(j.ofreceCapacidad('polvora_rey.disparo')).toBe(false)
+    j.pasarOfertas().comprometer('COM', ['capitan'])
+    expect(j.ofreceCapacidad('polvora_rey.disparo')).toBe(false)
+    expect(j.copia('polvora_rey').fichas).toBe(3)
+  })
+})

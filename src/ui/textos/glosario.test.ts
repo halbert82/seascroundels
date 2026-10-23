@@ -94,7 +94,7 @@ describe('Glosario de la mesa', () => {
   })
 
   it('cada palabra de regla tiene su explicación', () => {
-    const pedidas = ['Abordaje', 'Zona de permanentes', 'Elige', 'Sin ayuda', 'Incautado', 'Persigue', 'Ocupa el muelle', 'Sin oposición', 'Rehén', 'Recluta']
+    const pedidas = ['Abordaje', 'Zona de permanentes', 'Elige', 'Sin ayuda', 'Incautado', 'Persigue', 'Ocupa el muelle', 'Sin oposición', 'Descartar a un Tripulante', 'Recluta']
     const todas = CLAVES_REGLA.map((c) => AYUDA_REGLA[c])
     for (const a of todas) completa(a)
     for (const n of pedidas) expect(todas.map((a) => a.nombre)).toContain(n)
@@ -135,9 +135,9 @@ describe('Lo que se explica junto a una carta ampliada', () => {
     )
   })
 
-  it('«La Armada te persigue» (Navío de línea): Abordaje, Perseguido, rehén…', () => {
+  it('«La Armada te persigue» (Navío de línea): Abordaje, Perseguido, descartar a un Tripulante…', () => {
     const n = nombres('armada')
-    for (const x of ['Abordaje', 'Perseguido', 'Rehén', 'El Tripulante asignado con más (o menos)', 'Sin oposición']) expect(n).toContain(x)
+    for (const x of ['Abordaje', 'Perseguido', 'Descartar a un Tripulante', 'El Tripulante asignado con más (o menos)', 'Sin oposición']) expect(n).toContain(x)
     // Las expresiones de casi todas las cartas de Peligro van al final.
     expect(n.slice(-2)).toEqual(['El Tripulante asignado con más (o menos)', 'Sin oposición'])
   })

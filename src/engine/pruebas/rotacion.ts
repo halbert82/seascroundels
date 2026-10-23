@@ -20,10 +20,6 @@ export type CausaSalida =
   | 'carta'
   /** Vuelve al muelle (un caimán, una deserción…). */
   | 'muelle'
-  /** Queda rehén (lo rescate después o no). */
-  | 'rehen'
-  /** Queda incautado bajo la carta de misión. */
-  | 'incautado'
   /** Lo despide el jugador. */
   | 'despedido'
   /** Sobra al bajar la Capacidad: se despide a la fuerza. */
@@ -33,7 +29,7 @@ export type CausaSalida =
   /** Fase 14: un Enrolado sin fichas cumple su contrato y se va. */
   | 'enrolado'
 
-export const CAUSAS: readonly CausaSalida[] = ['heridas', 'carta', 'muelle', 'rehen', 'incautado', 'despedido', 'exceso', 'naufrago', 'enrolado']
+export const CAUSAS: readonly CausaSalida[] = ['heridas', 'carta', 'muelle', 'despedido', 'exceso', 'naufrago', 'enrolado']
 
 /** Por qué no se recluta a nadie en la Fase de Reclutamiento de un turno. */
 export type SinReclutar =
@@ -58,7 +54,7 @@ export interface TurnoRotacion {
   capacidad: number
   /** Tripulantes (sin el Capitán) al empezar la Fase de Reclutamiento. */
   tripulantes: number
-  /** Plazas libres al empezar la Fase de Reclutamiento (los rehenes, los incautados y los Pasajeros ocupan plaza). */
+  /** Plazas libres al empezar la Fase de Reclutamiento (los Pasajeros ocupan plaza). */
   libresAlEmpezar: number
   /** Plazas libres al terminarla (con lo que zarpa). */
   libresAlZarpar: number
@@ -83,8 +79,6 @@ export interface RotacionPartida {
   turnoFinal: number
   turnos: TurnoRotacion[]
   salidas: Record<CausaSalida, number>
-  rehenesRescatados: number
-  rehenesPerdidos: number
   estancias: Estancia[]
   /** Tripulantes en la tripulación al terminar la Fase de Reclutamiento del turno 1, y cuántos siguen al final. */
   primerTurno: number
@@ -103,7 +97,7 @@ function tripulantesSinCapitan(s: Estado): InstId[] {
 
 /** ¿Hay en el muelle algún Tripulante que podría entrar (sin contar el coste)? */
 function hayTripulanteEnMuelle(s: Estado): boolean {
-  const enJuego = new Set([...s.zonas.tripulacion, ...s.zonas.rehenes].map((c) => copia(s, c).id))
+  const enJuego = new Set(s.zonas.tripulacion.map((c) => copia(s, c).id))
   return s.zonas.muelle.some((c) => {
     const id = copia(s, c).id
     return porId(id).tipo === 'tripulante' && !(esUnica(id) && enJuego.has(id))
@@ -141,13 +135,13 @@ function motivoSinReclutar(a: Arranque, adquirio: boolean): SinReclutar {
 const CAUSA_DE_MOTIVO: Record<string, CausaSalida> = {
   derrotado: 'heridas',
   descartado: 'carta',
+  carta: 'carta',
   muelle: 'muelle',
   desercion: 'muelle',
   despedido: 'despedido',
   exceso: 'exceso',
   naufrago: 'naufrago',
   enrolado: 'enrolado',
-  incautado: 'incautado',
 }
 
 /** Juega una partida con un jugador automático y mide la rotación de su tripulación. */
@@ -163,8 +157,6 @@ export function medirRotacion(
     turnoFinal: 0,
     turnos: [],
     salidas: Object.fromEntries(CAUSAS.map((c) => [c, 0])) as Record<CausaSalida, number>,
-    rehenesRescatados: 0,
-    rehenesPerdidos: 0,
     estancias: [],
     primerTurno: 0,
     primerTurnoSiguen: 0,
@@ -226,7 +218,7 @@ export function medirRotacion(
       taberna = { paso: s.paso }
     }
 
-    const antes = { tripulacion: new Set(s.zonas.tripulacion), rehenes: new Set(s.zonas.rehenes), incautadas: new Set(s.zonas.incautadas) }
+    const antes = { tripulacion: new Set(s.zonas.tripulacion) }
     const heridasAntes = new Map(s.zonas.tripulacion.map((c) => [c, copia(s, c).heridas]))
     const capitan = s.capitan
     s = responder(s, eleccion)
@@ -263,11 +255,6 @@ export function medirRotacion(
     const ahora = new Set(s.zonas.tripulacion)
     for (const c of ahora) {
       if (c === s.capitan || antes.tripulacion.has(c)) continue
-      if (antes.rehenes.has(c)) {
-        r.rehenesRescatados++
-        continue
-      }
-      if (antes.incautadas.has(c)) continue
       const e: Estancia = { carta: copia(s, c).id, entrada: s.turno, salida: null, causa: null }
       estancias.set(c, e)
       r.estancias.push(e)
@@ -284,32 +271,12 @@ export function medirRotacion(
     }
     for (const c of antes.tripulacion) {
       if (c === capitan || ahora.has(c)) continue
-      if (s.zonas.rehenes.includes(c)) salir(c, 'rehen', false)
-      else if (s.zonas.incautadas.includes(c)) salir(c, 'incautado', false)
-      else salir(c, CAUSA_DE_MOTIVO[motivosSalida.get(c) ?? ''] ?? 'carta', true)
-    }
-    // Rehenes perdidos (y los incautados que no vuelven): se cierra su estancia.
-    for (const c of [...antes.rehenes, ...antes.incautadas]) {
-      if (ahora.has(c) || s.zonas.rehenes.includes(c) || s.zonas.incautadas.includes(c)) continue
-      const e = estancias.get(c)
-      if (antes.rehenes.has(c)) r.rehenesPerdidos++
-      if (e && e.salida === null) {
-        e.salida = s.turno
-        e.causa = antes.rehenes.has(c) ? 'rehen' : 'incautado'
-      }
+      salir(c, CAUSA_DE_MOTIVO[motivosSalida.get(c) ?? ''] ?? 'carta', true)
     }
   }
   cerrarFase(s)
   r.gana = s.resultado?.gana ?? false
   r.turnoFinal = s.turno
-  // Los rehenes que siguen cautivos al final no están en la tripulación.
-  for (const c of [...s.zonas.rehenes, ...s.zonas.incautadas]) {
-    const e = estancias.get(c)
-    if (e && e.salida === null) {
-      e.salida = s.turno
-      e.causa = s.zonas.rehenes.includes(c) ? 'rehen' : 'incautado'
-    }
-  }
   const primeros: InstId[] = primerTurno.tripulantes ?? []
   r.primerTurno = primeros.length
   r.primerTurnoSiguen = primeros.filter((c) => s.zonas.tripulacion.includes(c)).length
@@ -389,8 +356,6 @@ export function resumenRotacion(partidas: readonly RotacionPartida[]) {
     salidas: {
       porPartida: porPartida((p) => CAUSAS.reduce((n, c) => n + p.salidas[c], 0)),
       causas: Object.fromEntries(CAUSAS.map((c) => [c, porPartida((p) => p.salidas[c])])),
-      rehenesRescatados: porPartida((p) => p.rehenesRescatados),
-      rehenesPerdidos: porPartida((p) => p.rehenesPerdidos),
     },
     // 5. Cuánto dura un Tripulante
     duracion: {

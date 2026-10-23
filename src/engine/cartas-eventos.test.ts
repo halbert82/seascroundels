@@ -145,14 +145,32 @@ describe('Otras Respuestas', () => {
     expect(totalSinDestinoPrueba(j.estado)).toBe(3 + 2 + 2)
   })
 
-  it('060 · Prisionero liberado: tras superar una Prueba de COM, reclutas gratis del muelle a uno de coste 2 o menos', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['prisionero', 'ojo'], muelle: ['grumete', 'contrabandista'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+  it('060 · Prisionero liberado (fase 14): tras superar una Prueba de COM, miras 3 del mazo de muelle, puedes reclutar sin coste uno de coste 2 o menos y el resto va al fondo', () => {
+    const j = Jugador.enMision({
+      misiones: ['pruebas-mar3'],
+      mano: ['prisionero', 'ojo'],
+      muelle: ['bucanero'],
+      mazoMuelle: ['contrabandista', 'grumete', 'sable', 'vigia'],
+      mazoPeligros: ['fauna', 'chubasco', 'calma'],
+    })
     j.comprometer('COM', ['capitan']).seguir()
     j.usar('prisionero.jugar').elegir('ojo')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'reclutarGratis' } })
-    expect((j.decision as { candidatas: string[] }).candidatas.length).toBe(1) // el Contrabandista cuesta 3
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'reclutarDelMazoMuelle', n: 2 } })
+    // Del mazo, no del muelle visible: el Bucanero no sale; el Contrabandista cuesta 3 y el Sable es una Mejora.
+    expect((j.decision as { candidatas: string[] }).candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id)).toEqual(['grumete'])
     j.elegir('grumete')
     expect(j.zona('tripulacion')).toContain('grumete')
+    expect(j.zona('mazoMuelle')).toEqual(['vigia', 'contrabandista', 'sable'])
+    expect(j.zona('muelle')).toEqual(['bucanero'])
+  })
+
+  it('060 · «De coste 2 o menos» mira el coste impreso: con el descuento de Catalina, el Contrabandista (3) sigue sin valer', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['prisionero', 'ojo'], mazoMuelle: ['contrabandista', 'sable', 'vigia'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+    j.estado.temporales.push({ clave: 'capitan2.descuento', fuente: 'capitan2', hasta: 'finTurno' })
+    expect(j.valor({ tipo: 'coste', carta: j.inst('contrabandista') })).toBe(1)
+    j.comprometer('COM', ['capitan']).seguir()
+    j.usar('prisionero.jugar').elegir('ojo')
+    expect((j.decision as { candidatas: string[] }).candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id)).toEqual(['vigia'])
   })
 
   it('061 · Senda escondida: después de zarpar hacia una misión de Naturaleza, +2 de Avance', () => {

@@ -79,7 +79,7 @@ describe('vista de las cartas', () => {
     expect(armada.entraDuranteLaPartida).toBe(true)
     expect(armada.v2).toBe(true)
     expect(armada.encuentros[0]?.nombre).toBe('Navío de línea de la Armada')
-    expect(armada.encuentros[0]?.opciones.map((o) => `${o.hab} ${o.dificultad}`)).toEqual(['NAV 5'])
+    expect(armada.encuentros[0]?.opciones.map((o) => `${o.hab} ${o.dificultad}`)).toEqual(['NAV 4']) // fase 14: antes, 5
   })
 
   it('fase 11 · permanente: cinta «Permanente», los tipos de su encuentro, hueco de ilustración y su número del mazo de historia', () => {

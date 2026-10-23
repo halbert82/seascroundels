@@ -1,7 +1,7 @@
 // Ayudas que comparten las capacidades de las cartas. Ojo: estos módulos se cargan a la vez que el registro
 // de capacidades, así que nada de aquí se puede llamar al cargar un módulo (solo dentro de funciones).
 
-import { esCanon, esUnica, porId } from '../catalogo.ts'
+import { costeImpreso, esCanon, esUnica, porId } from '../catalogo.ts'
 import type { Entorno, Habilidad } from '../datos.ts'
 import { copia } from '../estado.ts'
 import { curable } from '../estados.ts'
@@ -31,12 +31,15 @@ export function canonesPreparados(s: Estado): InstId[] {
 export function reclutable(s: Estado, inst: InstId): boolean {
   const id = copia(s, inst).id
   if (porId(id).tipo !== 'tripulante' || plazasLibres(s) < 1) return false
-  return !(esUnica(id) && [...s.zonas.tripulacion, ...s.zonas.rehenes].some((x) => copia(s, x).id === id))
+  return !(esUnica(id) && s.zonas.tripulacion.some((x) => copia(s, x).id === id))
 }
 
-/** Tripulantes del muelle que se pueden reclutar gratis con coste N o menos («Prisionero liberado»). */
+/**
+ * Tripulantes del muelle que se pueden reclutar gratis con coste N o menos. Fase 14: «de coste N o menos» mira el coste
+ * impreso (los descuentos solo rebajan lo que se paga).
+ */
 export function reclutablesGratis(s: Estado, maxCoste: number): InstId[] {
-  return s.zonas.muelle.filter((c) => reclutable(s, c) && valor(s, { tipo: 'coste', carta: c }) <= maxCoste)
+  return s.zonas.muelle.filter((c) => reclutable(s, c) && costeImpreso(copia(s, c).id) <= maxCoste)
 }
 
 /** ¿Participa este Tripulante en la Prueba en curso? (comprometido y en juego) */

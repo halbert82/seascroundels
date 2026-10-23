@@ -6,7 +6,6 @@ import { porId } from './catalogo.ts'
 import { Jugador, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import type { Eleccion } from './tipos.ts'
 import { valor } from './valores.ts'
-import { mover } from './zonas.ts'
 
 const nuevas = ['soldado_fortuna', 'piloto_sueldo', 'guia_alquiler', 'carne_canon', 'galeote', 'tuerto']
 const DIAS = ['pruebas-calma', 'pruebas-calma', 'pruebas-calma', 'pruebas-calma']
@@ -72,13 +71,6 @@ describe('Enrolado N', () => {
     expect(j.estado.registro.some((r) => r.dato?.tipo === 'derrota')).toBe(false)
   })
 
-  it('esté donde esté: también pierde la ficha si está rehén, y sale de ahí', () => {
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: [{ id: 'soldado_fortuna', enrolado: 1 }], mazoCapitan: [...MAZO], escenario: [...DIAS] })
-    mover(j.estado, j.inst('soldado_fortuna'), 'rehenes')
-    j.pasarTurnoEnPuerto()
-    expect(j.zona('rehenes')).not.toContain('soldado_fortuna')
-    expect(j.zona('descartesMuelle')).toContain('soldado_fortuna')
-  })
 })
 
 describe('Carne de cañón', () => {
@@ -112,14 +104,19 @@ describe('Carne de cañón', () => {
 })
 
 describe('Galeote fugado', () => {
+  it('coste 1, NAV 1 / COM 0 / EXP 0 y Vida 3 (fase 14, tercera ronda)', () => {
+    const e = porId('galeote')
+    expect(e.tipo === 'tripulante' && [e.carta.coste, e.carta.NAV, e.carta.COM, e.carta.EXP, e.carta.vida]).toEqual([1, 1, 0, 0, 3])
+  })
+
   it('sufre 1 herida: recibe +2 NAV para esta Prueba; una vez por turno; en una Prueba de COM no se ofrece', () => {
-    // «Chubasco repentino» (NAV 2): Galeote 2 + 1 de Diego + 1 del Barco = 4; con el esfuerzo, 6.
+    // «Chubasco repentino» (NAV 2): Galeote 1 + 1 de Diego + 1 del Barco = 3; con el esfuerzo, 5.
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: ['galeote'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
     j.comprometer('NAV', ['galeote'])
-    expect(totalSinDestinoPrueba(j.estado)).toBe(4)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(3)
     j.usar('galeote.esfuerzo')
     expect(j.copia('galeote').heridas).toBe(1)
-    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(5)
     expect(j.ofreceCapacidad('galeote.esfuerzo')).toBe(false)
     const k = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: ['galeote'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     k.comprometer('COM', ['galeote'])
@@ -192,9 +189,9 @@ describe('Fase 14 · El jugador automático', () => {
   it('usa el esfuerzo de la Carne de cañón si el +1 de los demás asignados basta', async () => {
     const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
     const { dificultadPrueba, totalPrueba } = await import('./prueba.ts')
-    // «Al abordaje del filibote» (COM 5), con Diego agotado: Carne de cañón 2 + Bucanero veterano 2 = 4; con el +1, 5.
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { agotada: true }, tripulacion: ['carne_canon', 'bucanero'], mazoPeligros: ['p2_curazao', 'chubasco', 'calma'] })
-    j.comprometer('COM', ['carne_canon', 'bucanero'])
+    // «Al abordaje del filibote» (COM 4, fase 14), con Diego agotado: Carne de cañón 2 + Grumete leal 1 = 3; con el +1, 4.
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { agotada: true }, tripulacion: ['carne_canon', 'grumete'], mazoPeligros: ['p2_curazao', 'chubasco', 'calma'] })
+    j.comprometer('COM', ['carne_canon', 'grumete'])
     const falta = dificultadPrueba(j.estado) - totalPrueba(j.estado)
     expect(falta).toBeGreaterThan(0)
     expect(falta).toBeLessThanOrEqual(2)

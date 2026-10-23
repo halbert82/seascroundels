@@ -91,3 +91,28 @@ describe('Fase 12 · partidas guardadas con las travesías de antes', () => {
     expect(deserializar(serializar(s))).toEqual(s)
   })
 })
+
+describe('Fase 14 · partidas guardadas con rehenes', () => {
+  it('los rehenes y los Tripulantes incautados vuelven a la tripulación', () => {
+    const s = nuevaPartida({ semilla: 5 })
+    const a = s.zonas.mazoMuelle.find((c) => s.cartas[c]?.id === 'bucanero') ?? s.zonas.mazoMuelle[0]!
+    const b = s.zonas.mazoMuelle.find((c) => c !== a && s.cartas[c]?.id !== 'bucanero')!
+    const viejo = JSON.parse(serializar(s)) as Estado & { zonas: Record<string, InstId[]> }
+    viejo.zonas.mazoMuelle = viejo.zonas.mazoMuelle.filter((c) => c !== a && c !== b)
+    viejo.zonas.rehenes = [a]
+    viejo.zonas.incautadas = [b]
+    viejo.incautadas = { [b]: { zona: 'tripulacion' as never } }
+    const t = deserializar(JSON.stringify(viejo))
+    expect('rehenes' in t.zonas).toBe(false)
+    expect(t.zonas.tripulacion).toEqual(expect.arrayContaining([a, b]))
+    expect(t.zonas.incautadas).toEqual([])
+  })
+
+  it('una partida guardada a mitad de una captura no se puede continuar', () => {
+    const s = nuevaPartida({ semilla: 5 })
+    const viejo = JSON.parse(serializar(s)) as Estado & { zonas: Record<string, InstId[]> }
+    viejo.zonas.rehenes = []
+    ;(viejo.pila as unknown[]).push({ id: 9999, tipo: 'rehen', entre: [] })
+    expect(() => deserializar(JSON.stringify(viejo))).toThrow()
+  })
+})

@@ -3,6 +3,7 @@
 // «Náufrago en la playa», fichas de Entrenamiento y volver al muelle.
 
 import { canonesAgotados, reclutable, reclutablesGratis } from '../capacidades/comun.ts'
+import { costeImpreso } from '../catalogo.ts'
 import type { Habilidad } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
@@ -256,6 +257,39 @@ export const naufrago: Manejador<'naufrago'> = (s, t, e) => {
       { tipo: 'anadirTemporal', temporal: { clave: 'naufrago.turno', fuente: 'naufrago', hasta: 'finTurno', inst: elegido } },
     )
   }
+  return 'hecha'
+}
+
+/**
+ * Fase 14 («Prisionero liberado», «Galera de forzados»): «Mira las 3 cartas superiores del mazo de muelle. Puedes
+ * reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo de muelle.» Las
+ * cartas se apartan mientras eliges; el coste que se mira es el impreso. Sin Capacidad no puedes reclutar a ninguno, y
+ * las 3 van al fondo, en el orden en que estaban.
+ */
+export const reclutarDelMazoMuelle: Manejador<'reclutarDelMazoMuelle'> = (s, t, e) => {
+  if (t.cartas.length === 0) {
+    for (let i = 0; i < t.n; i++) {
+      if (s.zonas.mazoMuelle.length === 0 && s.zonas.descartesMuelle.length > 0) rebarajar(s, 'descartesMuelle', 'mazoMuelle')
+      const c = arriba(s, 'mazoMuelle')
+      if (!c) break
+      mover(s, c, 'resolviendo', 'abajo')
+      t.cartas.push(c)
+    }
+    if (t.cartas.length === 0) return 'hecha'
+    s.infoRevelada++
+    anotar(s, 'revelar', `Miras el mazo de muelle: ${nombres(s, t.cartas)}.`)
+    return 'sigue'
+  }
+  const candidatos = t.cartas.filter((c) => reclutable(s, c) && costeImpreso(copia(s, c).id) <= t.maxCoste)
+  let elegido: InstId | undefined
+  if (candidatos.length > 0) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'reclutarDelMazoMuelle', n: t.maxCoste }, candidatas: candidatos, min: 0, max: 1 })
+    elegido = eleccionDe(e, 'cartas').ids[0]
+  }
+  const resto = t.cartas.filter((c) => c !== elegido)
+  for (const c of resto) mover(s, c, 'mazoMuelle', 'abajo')
+  if (resto.length > 0) anotar(s, 'efecto', `${nombres(s, resto)} ${resto.length === 1 ? 'va' : 'van'} al fondo del mazo de muelle.`)
+  if (elegido) encolar(s, { tipo: 'reclutar', carta: elegido, paso: 'pagar', gratis: true })
   return 'hecha'
 }
 

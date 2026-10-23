@@ -26,12 +26,13 @@ registrarPeligro('percances', {
   },
 })
 
-// «Encrucijada»: Incautado al revelarse (2 de la mano en el Mar, una Mejora en Naturaleza, un Tripulante en Ciudad).
+// «Encrucijada»: Incautado al revelarse (2 de la mano en el Mar, una Mejora en Naturaleza; en Ciudad, fase 14: ya no se
+// incautan Tripulantes, así que es la de mayor coste de la mano).
 registrarPeligro('encrucijada', {
   encuentros: {
     mar: { alRevelarse: [{ tipo: 'incautar', que: 'mano', n: 2 }], exito: [{ tipo: 'recuperarIncautadas' }] },
     nat: { alRevelarse: [{ tipo: 'incautar', que: 'mejora', n: 1 }] },
-    ciu: { alRevelarse: [{ tipo: 'incautar', que: 'tripulante', n: 1 }, { tipo: 'noRetirarse' }] },
+    ciu: { alRevelarse: [{ tipo: 'incautar', que: 'mano', n: 1, criterio: 'mayorCoste' }, { tipo: 'noRetirarse' }] },
   },
 })
 
@@ -158,10 +159,12 @@ describe('Incautado', () => {
     expect(k.zona('fueraDeJuego')).toContain('sable')
   })
 
-  it('un Tripulante incautado sigue ocupando su plaza y se pierde si no superas la misión', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], mazoPeligros: ['encrucijada', 'calma', 'calma'], tripulacion: ['bucanero', 'vigia'] })
-    j.elegir('bucanero')
-    expect(j.zona('incautadas')).toEqual(['bucanero'])
+  it('«las de más coste»: se incauta la carta de mayor coste de la mano; ya no se incautan Tripulantes (fase 14)', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-ciu4'], mazoPeligros: ['encrucijada', 'calma', 'calma'], tripulacion: ['bucanero', 'vigia'], mano: ['ojo', 'coraje'] })
+    // Si empatan en coste, eliges tú cuál.
+    if (j.decision.tipo === 'elegirCartas' && j.decision.motivo.clave === 'incautar') j.responder({ tipo: 'cartas', ids: j.decision.candidatas.slice(0, 1) })
+    expect(j.zona('incautadas')).toHaveLength(1)
+    expect(j.zona('tripulacion')).toEqual(['capitan', 'bucanero', 'vigia'])
     expect(j.ofrece('retirarse')).toBe(false) // «No puedes retirarte de esta misión»
   })
 })

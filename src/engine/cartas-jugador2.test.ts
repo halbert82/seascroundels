@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import { registrarPeligro, registrarPermanente } from './capacidades/peligros.ts'
 import { DATOS } from './datos.ts'
+import type { CartaId } from './tipos.ts'
 
 import { Jugador, PERMANENTE_DE_PRUEBA, dificultadConDestino } from './pruebas/situacion.ts'
 
@@ -54,18 +55,36 @@ describe('La Lengua', () => {
 })
 
 describe('Fiador de la Hermandad', () => {
-  it('Interrupción: queda rehén en lugar de otro; si lo rescatas, robas 2', () => {
-    // Empieza con 1 de Avance: el Maremoto fallado da 1 (Avance 2 / 1) y la «calma» siguiente, 2: 4 de 4.
-    const j = Jugador.enMision({ misiones: ['ladron-I'], avance: { 'ladron-I': 1 }, mazoPeligros: ['p2_maremoto', 'chubasco', 'calma', 'calma', 'calma'], tripulacion: ['isabela', 'fiador'] })
-    j.comprometer('COM', ['isabela']).seguir()
-    expect(j.ofreceCapacidad('fiador.rehen')).toBe(true)
-    j.usar('fiador.rehen')
-    expect(j.zona('rehenes')).toEqual(['fiador'])
-    expect(j.zona('tripulacion')).toContain('isabela')
-    // Superas la misión: lo rescatas y robas 2.
-    j.seguir()
-    expect(j.zona('tripulacion')).toContain('fiador')
-    expect(j.registro.filter((r) => r.startsWith('Robas 2')).length).toBeGreaterThan(0)
+  // Fase 14 (fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a otro Tripulante, descarta a
+  // Fiador de la Hermandad en su lugar y roba 2.» «Leva forzosa» (COM 4) fallada: «Descarta al Tripulante asignado con
+  // menos Vida».
+  const leva = (tripulacion: CartaId[]) => Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['p2_grilletes', 'chubasco', 'calma', 'calma'], tripulacion })
+
+  it('Interrupción: una carta de Peligro va a descartar a otro: se descarta él y robas 2', () => {
+    const j = leva(['vigia', 'fiador'])
+    j.comprometer('COM', ['vigia']).seguir()
+    expect(j.ofreceCapacidad('fiador.descarte')).toBe(true)
+    const mano = j.zona('mano').length
+    j.usar('fiador.descarte')
+    expect(j.zona('descartesMuelle')).toContain('fiador')
+    expect(j.zona('tripulacion')).toContain('vigia')
+    expect(j.zona('mano').length).toBe(mano + 2)
+  })
+
+  it('si pasas, se descarta el otro; no se ofrece para salvarse a sí mismo ni al Capitán (que sufre 1 herida)', () => {
+    const j = leva(['vigia', 'fiador'])
+    j.comprometer('COM', ['vigia']).seguir().pasarOfertas()
+    expect(j.zona('descartesMuelle')).toContain('vigia')
+    const k = leva(['fiador'])
+    k.comprometer('COM', ['fiador']).seguir()
+    expect(k.ofreceCapacidad('fiador.descarte')).toBe(false)
+    expect(k.zona('descartesMuelle')).toContain('fiador')
+    // Solo Diego asignado: el Capitán no se descarta, sufre 1 herida en su lugar, y no hay Interrupción.
+    const m = leva(['fiador'])
+    m.comprometer('COM', ['capitan']).seguir()
+    expect(m.ofreceCapacidad('fiador.descarte')).toBe(false)
+    expect(m.copia('capitan').heridas).toBe(1)
+    expect(m.zona('tripulacion')).toEqual(expect.arrayContaining(['capitan', 'fiador']))
   })
 })
 
@@ -113,18 +132,40 @@ describe('Cortar por lo sano', () => {
 })
 
 describe('¡A por ellos!', () => {
-  it('Acción: Prueba de COM 3; si la superas, rescatas a todos los rehenes y vuelven preparados', () => {
-    const j = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['p2_maremoto', 'chubasco', 'chubasco', 'calma'], tripulacion: ['bucanero', 'isabela'], mano: ['a_por_ellos', 'ojo'] })
-    j.pasarOfertas().comprometer('COM', ['bucanero']).seguir()
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
+  // Fase 14 (fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba
+  // de COM 3. Si la superas, no se descarta.» «Leva forzosa» (COM 4) con la Vigía sola (1): falla y la va a descartar.
+  // La Prueba de la leva queda en suspenso (su Destino, en la mesa) mientras se hace la de «¡A por ellos!».
+  const leva = (destino: CartaId) =>
+    Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['p2_grilletes', 'chubasco', destino, 'calma', 'calma'], tripulacion: ['vigia', 'bucanero'], mano: ['a_por_ellos', 'ojo'] })
+
+  it('Interrupción: Prueba de COM 3 en mitad de la otra; si la superas, no se descarta y se sigue con la leva', () => {
+    const j = leva('calma')
+    j.comprometer('COM', ['vigia']).seguir()
+    expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(true)
     j.usar('a_por_ellos.jugar').elegir('ojo')
     expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
-    j.comprometer('COM', ['isabela']).pasarOfertas().seguir()
-    expect(j.zona('rehenes')).toEqual([])
-    expect(j.copia('bucanero').agotada).toBe(false)
+    expect(j.zona('destino')).toEqual(['chubasco'])
+    // El Bucanero veterano, que se quedó a bordo: 2 + 1 de Diego = 3 contra 3 (Destino de «calma»: +0).
+    j.comprometer('COM', ['bucanero']).pasarOfertas()
+    expect([...j.zona('destino')].sort()).toEqual(['calma', 'chubasco'])
+    j.seguir().pasarOfertas()
+    expect(j.zona('tripulacion')).toContain('vigia')
+    expect(j.registro).toContain('Vigía inexperta no se descarta.')
+    expect(j.zona('descartesCapitan')).toEqual(expect.arrayContaining(['a_por_ellos', 'ojo']))
+    // Se sigue con la leva: su Prueba se cierra y su Destino también va a los descartes.
+    expect(j.estado.prueba).toBeNull()
+    expect(j.zona('destino')).toEqual([])
+    expect(j.zona('descartesPeligros')).toEqual(expect.arrayContaining(['p2_grilletes', 'chubasco', 'calma']))
   })
 
-  it('solo se juega durante una misión', () => {
+  it('si no la superas, se descarta igual', () => {
+    const j = leva('fauna') // Destino −1: el Bucanero suma 2 contra 3.
+    j.comprometer('COM', ['vigia']).seguir().usar('a_por_ellos.jugar').elegir('ojo')
+    j.comprometer('COM', ['bucanero']).pasarOfertas().seguir().pasarOfertas()
+    expect(j.zona('descartesMuelle')).toContain('vigia')
+  })
+
+  it('no se ofrece fuera de un descarte (en puerto no hay ninguno)', () => {
     const j = Jugador.en({ mano: ['a_por_ellos', 'ojo'] })
     expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(false)
   })

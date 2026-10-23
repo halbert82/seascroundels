@@ -38,13 +38,12 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'revelarDestino':
     case 'descartada':
     case 'cartaResuelta':
-    case 'rescatado':
     case 'estadoPuesto':
       return // Solo marcan el momento para las Interrupciones y Respuestas.
-    case 'rehen': {
+    case 'descartarTripulante': {
+      // Fase 14: se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo (sus Tesoros pasan a otro).
       if (ev.carta === s.capitan || !estaEn(s, ev.carta, 'tripulacion')) return
-      mover(s, ev.carta, 'rehenes', 'abajo')
-      anotar(s, 'aviso', `${nombre(s, ev.carta)} es capturado como rehén.`, { tipo: 'capturado', carta: copia(s, ev.carta).id })
+      encolar(s, { tipo: 'sacarTripulante', carta: ev.carta, destino: 'descartesMuelle', motivo: 'carta' })
       return
     }
     case 'persigue': {

@@ -3,7 +3,8 @@
 
 import { DATOS } from '../datos.ts'
 import { copia } from '../estado.ts'
-import { numeroConIcono, textoDe } from '../textos.ts'
+import { numeroConIcono, numerosEntreLlaves, textoDe } from '../textos.ts'
+import { esAbordaje } from '../prueba.ts'
 import type { Capacidad, Contexto, Consulta, InstId } from '../tipos.ts'
 import { estaEn } from '../zonas.ts'
 import { modificadores } from '../valores.ts'
@@ -98,7 +99,18 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
   alBarco('casco', 'danoMaximo', 'dano'),
   alBarco('hamacas', 'capacidad', 'capacidad'),
   alBarco('mascaron', 'danoMaximo', 'dano'),
-  alPortador('sable', 'COM'),
+  // Sable de abordaje (fase 14): «+1 COM. En una Prueba con Abordaje, +2 COM en su lugar.»
+  {
+    clave: 'sable.COM',
+    carta: 'sable',
+    ventana: 'constante',
+    desde: 'juego',
+    modifica: (ctx, yo, c) => {
+      if (c.tipo !== 'habilidad' || c.hab !== 'COM' || c.carta !== portador(ctx, yo)) return 0
+      const [normal = 0, enAbordaje = 0] = numerosEntreLlaves(textoDe('sable'))
+      return esAbordaje(ctx.s) ? enAbordaje : normal
+    },
+  },
   alPortador('brujula', 'NAV'),
   alPortador('catalejo', 'EXP'),
   alPortador('coleto', 'vida'),

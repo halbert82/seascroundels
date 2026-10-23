@@ -10,7 +10,7 @@ import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { agotar, curarTripulante, ponerEstado, quitarEstadoAnotado, tieneEstado } from '../estados.ts'
 import { INFO_ESTADO } from '../infoEstados.ts'
 import type { Estado, InstId, NuevaTarea, TareaDe } from '../tipos.ts'
-import { espacioLibre, huecosLibres, plazasLibres, valor } from '../valores.ts'
+import { costeAPagar, espacioLibre, huecosLibres, plazasLibres } from '../valores.ts'
 import { mover } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador, type Resultado } from './comun.ts'
 import { sePuedePagarEntero, cumple } from './efectos.ts'
@@ -62,12 +62,12 @@ export function baseDelSelector(s: Estado, q: Selector, hacer?: AccionSobre): In
   let base: InstId[]
   switch (q.de) {
     case 'comprometidos': {
-      // Sin comprometidos en juego, las heridas y el rehén van a cualquiera (D2a, N7).
+      // Sin comprometidos en juego, las heridas y el descarte van a cualquiera (D2a, N7; fase 14: antes, el rehén).
       // (Solo cuando es «uno de los comprometidos»: «cada comprometido» sin comprometidos no le toca a nadie.)
       // Fase 13 (P72, regla general de Albert): «el Tripulante asignado con más (o menos) X» sin nadie asignado es el que
       // tiene más (o menos) X de toda la tripulación.
       const conCriterio = q.por !== undefined && q.por !== 'eleccion' && q.por !== 'azar'
-      base = comp.length > 0 || q.cada || !(conCriterio || hacer?.tipo === 'heridas' || hacer?.tipo === 'rehen') ? comp : [...enJuego]
+      base = comp.length > 0 || q.cada || !(conCriterio || (hacer !== undefined && hiereODescarta(hacer))) ? comp : [...enJuego]
       break
     }
     case 'tripulacion':
@@ -93,7 +93,8 @@ export function baseDelSelector(s: Estado, q: Selector, hacer?: AccionSobre): In
       break
   }
   if (q.inst) base = base.filter((c) => c === q.inst)
-  const sinCapitan = q.sinCapitan || hacer?.tipo === 'rehen' || hacer?.tipo === 'alMuelle'
+  // Fase 14: el Capitán sí puede salir elegido para «se descarta» (sufre 1 herida en su lugar); no para volver al muelle.
+  const sinCapitan = q.sinCapitan || hacer?.tipo === 'alMuelle'
   return base.filter(
     (c) =>
       !(sinCapitan && c === s.capitan) &&
@@ -102,6 +103,14 @@ export function baseDelSelector(s: Estado, q: Selector, hacer?: AccionSobre): In
       (!q.conEstado || tieneEstado(s, c, q.conEstado)) &&
       (!q.herido || copia(s, c).heridas > 0),
   )
+}
+
+/** ¿Hiere o descarta? («Un Tripulante asignado sufre 1 herida…»: sin nadie asignado, a quien elijas, como las heridas.) */
+function hiereODescarta(a: AccionSobre): boolean {
+  if (a.tipo === 'heridas' || a.tipo === 'descartar') return true
+  if (a.tipo === 'varios') return a.acciones.some(hiereODescarta)
+  if (a.tipo === 'elegir') return a.opciones.some((o) => hiereODescarta(o.accion))
+  return false
 }
 
 /** Aplica el criterio («con más EXP», «con menos Vida»…): devuelve los empatados en cabeza. */
@@ -130,8 +139,8 @@ function textoAccion(a: AccionSobre): string {
       return `queda ${INFO_ESTADO[a.estado].nombre}`
     case 'quitarEstado':
       return `pierde ${INFO_ESTADO[a.estado].nombre}`
-    case 'rehen':
-      return 'queda rehén'
+    case 'descartar':
+      return 'se descarta'
     case 'preparar':
       return 'se prepara'
     case 'agotar':
@@ -158,18 +167,29 @@ function textoAccion(a: AccionSobre): string {
   }
 }
 
-/** Un rehén vuelve a tu tripulación (preparado, si lo dice la carta). */
-export function rescatarRehen(s: Estado, h: InstId, preparado = false): void {
-  if (!s.zonas.rehenes.includes(h)) return
-  mover(s, h, 'tripulacion', 'abajo')
-  if (preparado) copia(s, h).agotada = false
-  anotar(s, 'efecto', `Rescatas a ${nombre(s, h)}.`)
-  encolar(s, { tipo: 'evento', ev: { tipo: 'rescatado', carta: h }, fase: 'despues', cancelado: false, usadas: [] })
+/** ¿Es una carta de Peligro (de las de tres encuentros, de un mazo propio o «La Armada te persigue»)? */
+// TODO(regla): P90. Las permanentes (cartas del mazo de historia, como «Campanas a rebato») no son cartas de Peligro: por
+// defecto, el Fiador y «¡A por ellos!» no responden a lo que descartan.
+export function esCartaDePeligro(s: Estado, carta: InstId | undefined): boolean {
+  if (!carta) return false
+  const tipo = porId(copia(s, carta).id).tipo
+  return tipo === 'peligro' || tipo === 'mazoPropio'
 }
 
-/** Va a quedar rehén: pasa por su suceso (una Interrupción puede cambiar quién). */
-export function sucesoRehen(c: InstId): NuevaTarea {
-  return { tipo: 'evento', ev: { tipo: 'rehen', carta: c }, fase: 'antes', cancelado: false, usadas: [] }
+/**
+ * Fase 14 (fuera el rehén; regla general de Albert): un efecto descarta a un Tripulante. Se va a la pila de descartes del
+ * muelle con sus Mejoras, como al despedirlo (sus Tesoros pasan a otro). Si es el Capitán, no se descarta: sufre 1 herida
+ * en su lugar. Antes pasa por su suceso, para las Interrupciones (el Fiador, «¡A por ellos!»), que solo responden si lo
+ * descarta una carta de Peligro (`fuente`).
+ */
+export function descartarTripulante(s: Estado, c: InstId, fuente: InstId | undefined, motivo?: string): void {
+  if (!s.zonas.tripulacion.includes(c)) return
+  if (c === s.capitan) {
+    anotar(s, 'efecto', `${motivo ? `${motivo}: ` : ''}el Capitán no se descarta: ${nombre(s, c)} sufre 1 herida en su lugar.`)
+    encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })
+    return
+  }
+  encolar(s, { tipo: 'evento', ev: { tipo: 'descartarTripulante', carta: c, dePeligro: esCartaDePeligro(s, fuente) }, fase: 'antes', cancelado: false, usadas: [] })
 }
 
 /** Le pasa la acción a este Tripulante. */
@@ -187,8 +207,8 @@ export function aplicarAccion(s: Estado, c: InstId, a: AccionSobre, fuente?: Ins
     case 'quitarEstado':
       quitarEstadoAnotado(s, c, a.estado)
       return
-    case 'rehen':
-      if (c !== s.capitan) encolar(s, sucesoRehen(c))
+    case 'descartar':
+      descartarTripulante(s, c, fuente)
       return
     case 'preparar':
       if (preparar(s, c)) anotar(s, 'efecto', `${nombre(s, c)} se prepara.`)
@@ -222,7 +242,7 @@ export function aplicarAccion(s: Estado, c: InstId, a: AccionSobre, fuente?: Ins
       }
       return
     case 'varios':
-      // En orden, una tras otra (las heridas se resuelven antes de que «quede rehén»): cada acción, su tarea.
+      // En orden, una tras otra (las heridas se resuelven antes que lo que venga después): cada acción, su tarea.
       encolar(
         s,
         ...a.acciones.map((x): NuevaTarea => ({ tipo: 'aplicarEfectos', efectos: [{ tipo: 'sobre', carta: c, hacer: x }], contexto: 'efecto', ...(fuente ? { fuente } : {}) })),
@@ -405,10 +425,14 @@ function portadores(s: Estado, carta: InstId): (InstId | 'barco')[] {
 
 function unicaEnJuego(s: Estado, carta: InstId): boolean {
   const id = copia(s, carta).id
-  return esUnica(id) && [...s.zonas.tripulacion, ...s.zonas.mejoras, ...s.zonas.rehenes].some((c) => copia(s, c).id === id)
+  return esUnica(id) && [...s.zonas.tripulacion, ...s.zonas.mejoras].some((c) => copia(s, c).id === id)
 }
 
-/** Recluta o adquiere gratis una carta del muelle de coste N o menos. */
+/**
+ * Recluta o adquiere gratis una carta del muelle de coste N o menos. Fase 14: «de coste N o menos» mira el coste impreso
+ * (los descuentos solo rebajan lo que se paga). `mitad`: no es gratis, se paga la mitad del coste, redondeando hacia
+ * arriba (y solo se ofrecen las que puedes pagar).
+ */
 export const gratisDelMuelle: Manejador<'gratisDelMuelle'> = (s, t, e) => {
   if (t.carta) {
     // Segundo paso: a quién va la Mejora.
@@ -418,12 +442,13 @@ export const gratisDelMuelle: Manejador<'gratisDelMuelle'> = (s, t, e) => {
     if (!destino) {
       return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'portadorGratis', carta: copia(s, t.carta).id }, candidatas: lista.filter((x): x is InstId => x !== 'barco'), min: 1, max: 1 })
     }
-    encolar(s, { tipo: 'adquirir', carta: t.carta, destino, paso: 'vincular' })
+    encolar(s, t.mitad ? { tipo: 'adquirir', carta: t.carta, destino, paso: 'pagar', mitad: true } : { tipo: 'adquirir', carta: t.carta, destino, paso: 'vincular' })
     return 'hecha'
   }
   const candidatas = s.zonas.muelle.filter((c) => {
     if (s.peligrosEnMuelle?.[c] !== undefined || unicaEnJuego(s, c)) return false
-    if (valor(s, { tipo: 'coste', carta: c }) > t.maxCoste) return false
+    if (costeImpreso(copia(s, c).id) > t.maxCoste) return false
+    if (t.mitad && s.zonas.mano.length < costeAPagar(s, c, 'mitad')) return false
     const tipo = tipoDe(copia(s, c).id)
     if (t.rasgo && !rasgosDe(copia(s, c).id).includes(t.rasgo)) return false
     if (tipo === 'tripulante') return t.que !== 'mejora' && plazasLibres(s) >= 1
@@ -434,11 +459,11 @@ export const gratisDelMuelle: Manejador<'gratisDelMuelle'> = (s, t, e) => {
     if (t.siNo && t.siNo.length > 0) encolar(s, { tipo: 'aplicarEfectos', efectos: t.siNo, contexto: 'efecto' })
     return 'hecha'
   }
-  if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle', n: t.maxCoste }, candidatas, min: 0, max: 1 })
+  if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: t.mitad ? 'mitadDelMuelle' : 'gratisDelMuelle', n: t.maxCoste }, candidatas, min: 0, max: 1 })
   const [c] = eleccionDe(e, 'cartas').ids
   if (!c) return 'hecha'
   if (tipoDe(copia(s, c).id) === 'tripulante') {
-    encolar(s, { tipo: 'reclutar', carta: c, paso: 'pagar', gratis: true })
+    encolar(s, t.mitad ? { tipo: 'reclutar', carta: c, paso: 'pagar', mitad: true } : { tipo: 'reclutar', carta: c, paso: 'pagar', gratis: true })
     return 'hecha'
   }
   t.carta = c

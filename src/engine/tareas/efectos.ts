@@ -1,7 +1,6 @@
 // Efectos de los recuadros de Peligro y de las líneas Sin oposición, convertidos en tareas.
 
 import { esIndestructible, esUnica, porId, rasgosDe } from '../catalogo.ts'
-import { entero } from '../azar.ts'
 import type { Condicion, Efecto, Medida, ModSiguiente } from '../efectos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { agotar, tieneEstado, tieneEstadoBarco } from '../estados.ts'
@@ -13,7 +12,7 @@ import { barajar, mover, vinculadas } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 import { recuperarIncautadas } from './mision.ts'
 import { canonesPreparados } from '../capacidades/comun.ts'
-import { puedePrepararse, rescatarRehen, sucesoRehen } from './peligros2.ts'
+import { puedePrepararse } from './peligros2.ts'
 
 /** Tripulantes comprometidos que siguen en juego (N7: si no queda ninguno, como sin comprometidos). */
 function comprometidosEnJuego(s: Estado): InstId[] {
@@ -165,7 +164,6 @@ export function sePuedePagarEntero(s: Estado, efectos: readonly Efecto[]): boole
       case 'incautar':
         if (e.que === 'mano') mano += e.n
         else if (e.que === 'mejora' && s.zonas.mejoras.filter((m) => !esIndestructible(copia(s, m).id)).length < e.n) return false
-        else if (e.que === 'tripulante' && s.zonas.tripulacion.filter((c) => c !== s.capitan).length < e.n) return false
         break
       case 'agotar':
         if (e.n !== 'todos' && preparados < e.n) return false
@@ -194,9 +192,6 @@ export function sePuedePagarEntero(s: Estado, efectos: readonly Efecto[]): boole
       }
       case 'si':
         if (!sePuedePagarEntero(s, cumple(s, e.condicion) ? e.entonces : (e.sino ?? []))) return false
-        break
-      case 'rehen':
-        if (!s.zonas.tripulacion.some((c) => c !== s.capitan)) return false
         break
       case 'agotarPago': {
         const conRasgo = e.oRasgo ? s.zonas.tripulacion.some((c) => !copia(s, c).agotada && rasgosDe(copia(s, c).id).includes(e.oRasgo ?? '')) : false
@@ -281,9 +276,6 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         break
       case 'agotarMejora':
         tareas.push({ tipo: 'agotarMejora' })
-        break
-      case 'rehen':
-        tareas.push({ tipo: 'rehen', entre: comprometidosEnJuego(s) })
         break
       case 'reputacion':
         tareas.push({ tipo: 'cambiarReputacion', n: e.n })
@@ -429,12 +421,12 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         const t: NuevaTarea = { tipo: 'gratisDelMuelle', maxCoste: e.maxCoste, que: e.que }
         if (e.rasgo) t.rasgo = e.rasgo
         if (e.siNo) t.siNo = e.siNo
+        if (e.mitad) t.mitad = true
         tareas.push(t)
         break
       }
-      case 'rescatarRehenes':
-        if (s.zonas.rehenes.length > 0) for (const h of [...s.zonas.rehenes]) rescatarRehen(s, h, e.preparados)
-        else tareas.push(...tareasDe(s, e.siNo ?? [], fuente))
+      case 'reclutarDelMazoMuelle':
+        tareas.push({ tipo: 'reclutarDelMazoMuelle', n: e.n, maxCoste: e.maxCoste, cartas: [] })
         break
       case 'recuperarIncautadas':
         recuperarIncautadas(s)
@@ -548,15 +540,13 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
       tareas.push(...tareasDe(s, [e], p.encuentro))
     }
   }
-  // Abordaje: 1 herida por cada punto que falte (máximo 3); si faltan 3 o más, además un comprometido queda rehén.
-  // Faltan max(1, dificultad − total) puntos; sin comprometidos, las heridas van a quien elijas y el rehén es al azar (P8).
-  let rehenAbordaje = false
+  // Abordaje (fase 14, regla de Albert): 1 herida por cada punto que falte para llegar a la dificultad, sin máximo y sin
+  // rehén, repartidas como quiera el jugador entre sus Tripulantes. Sin nadie asignado, el total es 0; si fallas por un
+  // Destino que dice «Fallas la Prueba», falta al menos 1 (P8).
   if (def.abordaje && !p.ignorarFallo) {
-    const faltan = Math.max(1, dificultadPrueba(s) - totalPrueba(s))
-    const heridas = Math.min(3, faltan)
-    anotar(s, 'efecto', `Abordaje: te faltan ${faltan} ${faltan === 1 ? 'punto' : 'puntos'}: ${heridas} ${heridas === 1 ? 'herida' : 'heridas'}${faltan >= 3 ? ' y un rehén' : ''}.`)
-    monton += heridas
-    rehenAbordaje = faltan >= 3
+    const falta = faltan(s)
+    anotar(s, 'efecto', `Abordaje: te ${falta === 1 ? 'falta 1 punto' : `faltan ${falta} puntos`}: ${falta} ${falta === 1 ? 'herida' : 'heridas'}.`)
+    monton += falta
   }
   monton += extras.reduce((a, b) => a + b, 0)
   const libres: NuevaTarea | null = monton > 0 ? { tipo: 'repartirHeridas', n: monton, entre: [...s.zonas.tripulacion] } : null
@@ -567,7 +557,6 @@ export const aplicarFallo: Manejador<'aplicarFallo'> = (s) => {
     ...(asignadas ? [{ en: posicionAsignados, t: asignadas }] : []),
   ].sort((a, b) => b.en - a.en)
   for (const x of inserciones) tareas.splice(x.en, 0, x.t)
-  if (rehenAbordaje) tareas.push({ tipo: 'rehen', entre: comprometidos })
   encolar(s, ...tareas)
   return 'hecha'
 }
@@ -690,35 +679,6 @@ export const agotarCanones: Manejador<'agotarCanones'> = (s, t, e) => {
   return 'hecha'
 }
 
-/**
- * Rehén: uno de los comprometidos (si los hay en juego) o uno al azar. El Capitán no puede ser rehén
- * (opción por defecto de CLAUDE.md); con solo el Capitán, no pasa nada (N11).
- */
-export const rehen: Manejador<'rehen'> = (s, t, e) => {
-  const capturar = (c: InstId) => encolar(s, sucesoRehen(c))
-  const comprometidos = t.entre.filter((c) => c !== s.capitan && s.zonas.tripulacion.includes(c))
-  if (comprometidos.length > 0) {
-    if (comprometidos.length === 1 && comprometidos[0]) {
-      capturar(comprometidos[0])
-      return 'hecha'
-    }
-    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'rehen' }, candidatas: comprometidos, min: 1, max: 1 })
-    const [c] = eleccionDe(e, 'cartas').ids
-    if (c) capturar(c)
-    return 'hecha'
-  }
-  const posibles = s.zonas.tripulacion.filter((c) => c !== s.capitan)
-  if (posibles.length === 0) {
-    anotar(s, 'efecto', 'No hay nadie a quien capturar.')
-    return 'hecha'
-  }
-  const elegido = posibles[entero(s, posibles.length)]
-  s.infoRevelada++
-  if (elegido) capturar(elegido)
-  void anotar
-  return 'hecha'
-}
-
 export const cambiarReputacion: Manejador<'cambiarReputacion'> = (s, t) => {
   const antes = s.reputacion
   s.reputacion = Math.max(0, s.reputacion + t.n)
@@ -749,7 +709,7 @@ export const reclutaEncuentro: Manejador<'reclutaEncuentro'> = (s, _t, e) => {
     if (porId(id).tipo !== 'tripulante') return false
     if (plazasLibres(s) < 1) return false
     if (s.zonas.mano.length < valor(s, { tipo: 'coste', carta: c })) return false
-    return !(esUnica(id) && [...s.zonas.tripulacion, ...s.zonas.rehenes].some((x) => copia(s, x).id === id))
+    return !(esUnica(id) && s.zonas.tripulacion.some((x) => copia(s, x).id === id))
   })
   if (candidatos.length === 0) return 'hecha'
   if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'reclutaEncuentro' }, candidatas: candidatos, min: 0, max: 1 })

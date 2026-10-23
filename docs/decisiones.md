@@ -843,12 +843,11 @@ Objetivo de Albert: los Tripulantes tienen que rotar y el muelle tiene que tenta
 ### Enrolado N (palabra clave de Tripulante)
 
 - Al reclutarlo, recibe N fichas de Enrolado. No se renuevan ni se le añaden. El Capitán nunca es Enrolado.
-- **Al final de cada turno**, en la Fase de Final de turno, pierde 1 ficha, esté donde esté: en la tripulación, rehén o incautado. **Cuenta turnos, no misiones:** también el turno en que se recluta y los turnos en que el jugador se queda en puerto (segunda ronda; sustituye a «al terminar cada misión, antes de la recompensa», P86, y a «un rehén no pierde ficha», P87).
-- Sin fichas, cumple su contrato y se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo (si era rehén o estaba incautado, sale de ahí). No cuenta como derrotado.
+- **Al final de cada turno**, en la Fase de Final de turno, pierde 1 ficha (tercera ronda: «en la tripulación», porque ya no hay rehenes ni Tripulantes incautados; antes, «esté donde esté»). **Cuenta turnos, no misiones:** también el turno en que se recluta y los turnos en que el jugador se queda en puerto (segunda ronda; sustituye a «al terminar cada misión, antes de la recompensa», P86, y a «un rehén no pierde ficha», P87).
+- Sin fichas, cumple su contrato y se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo. No cuenta como derrotado.
 - *Ejemplo de Albert (en el reglamento):* reclutas al Piloto a sueldo (Enrolado 2) en el turno 3. Al final del turno 3 le queda 1 ficha; al final del turno 4 se va, hayas zarpado o no.
 - Lecturas (no son preguntas):
   - El motor quita las fichas como **último paso del Final de turno**, después de robar y de los efectos «al final de cada turno» (Envenenado, Borracho, el Tripulante del «Náufrago en la playa»). El reglamento lo pone como paso 4 de la Fase de Final de turno y en la referencia rápida.
-  - Hoy ningún rehén ni incautado llega al Final de turno: todos se rescatan o se pierden al terminar la misión. La cláusula «esté donde esté» queda escrita (y probada) por si una carta futura lo permite.
 - Registro: «Piloto a sueldo se enrola por 2 turnos: 2 fichas de Enrolado», «Piloto a sueldo pierde 1 ficha de Enrolado: le queda 1» y «Piloto a sueldo cumple su contrato y se va». En la mesa, las fichas salen sobre la carta («1 Enrolado»), y su ayuda dice que pierde 1 al final de cada turno.
 
 ### Desgaste: quitada (segunda ronda)
@@ -867,7 +866,7 @@ Albert quita la palabra clave Desgaste porque se parecía demasiado a Enrolado. 
 | 242 Piloto a sueldo | 2 | 3 / 0 / 0 | 2 | Marinero, Piloto | Enrolado 2. | Neutral | 1 |
 | 243 Guía de alquiler | 2 | 0 / 0 / 3 | 2 | Explorador | Enrolado 2. | Neutral | 1 |
 | 244 Carne de cañón | 1 | 0 / 2 / 0 | 2 | Bucanero | Sufre {1 herida}: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.) | Piratería | 0 |
-| 245 Galeote fugado | 1 | 2 / 1 / 0 | 3 | Marinero | Sufre {1 herida}: Galeote fugado recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.) | Piratería | 0 |
+| 245 Galeote fugado | 1 | 1 / 0 / 0 (tercera ronda; antes 2 / 1 / 0) | 3 | Marinero | Sufre {1 herida}: Galeote fugado recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.) | Piratería | 0 |
 | 246 El Tuerto (único) | 2 | 0 / 1 / 0 | 3 | Bucanero | El Tuerto recibe {+1 COM} por cada herida que tenga. | Piratería | 1 |
 
 - Segunda ronda: la Carne de cañón baja de COM 3 a COM 2 y cambia Desgaste por su habilidad; el Galeote cambia Desgaste por la suya.
@@ -920,3 +919,80 @@ Tres filas por modo: **A**, como antes (muelle de 20 sin las cartas nuevas, sin 
 - Con todo (C), el muelle tienta algo más: hay 3 puntos menos de turnos sin reclutar y 0,06–0,08 reclutados más por turno. Pero el barco se llena antes (mediana del turno 4 en vez del 5, en el 75–76 % de las partidas) y zarpa lleno más turnos, porque las cartas nuevas son baratas y el jugador las recluta en cuanto puede. A la vez se vacía más: los Enrolados liberan 0,7–0,8 plazas por partida y se despide a 0,2–0,3 Tripulantes. Las muertes por heridas bajan (4,2 → 3,8 en la normal), aunque las heridas de los Tripulantes suben unas 2 por partida por el Desgaste.
 - Despedir solo (B) quita unos 3 puntos de turnos con el barco lleno sin reclutar y no mueve las victorias.
 - Victorias: sin cambio en la corta y la normal (dentro del ruido, ±1,5); la larga sube 2,3 puntos. Permanencia media, sin cambio (2,7–3,1 turnos).
+
+## Fase 14, tercera ronda: Galeote, reclutar sin coste, fuera el rehén, Abordaje e inventario de Rasgos (23 de octubre de 2026)
+
+Principios de Albert: que el muelle importe (pagar por un Tripulante) y que el jugador no tenga que recordar nada.
+
+### Galeote fugado (equilibrio)
+
+Coste 1, **NAV 1 / COM 0 / EXP 0**, Vida 3; la misma habilidad («Sufre 1 herida: recibe +2 NAV para esta Prueba») y la misma ambientación.
+
+### Reclutar sin coste, carta por carta
+
+| Carta | Queda así |
+| --- | --- |
+| 115 Agua y leña | Igual (recluta sin coste uno de coste 2 o menos y el Barco sufre 1 daño). |
+| 59 Náufrago en la playa, 163 Puerto cerrado, 206 El cebo (éxito) | Igual. |
+| 154 Mercante de La Habana | «Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba).» Solo Mejoras. |
+| 196 Pulso en el muelle, 133 Marineros del galeón hundido | Reclutan un Tripulante de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba). |
+| 210 La cofradía de San Telmo | Éxito: «Roba 2» y nada más. Con un Marinero preparado se sigue superando sin Prueba. |
+| 60 Prisionero liberado, 189 Galera de forzados | «Mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo de muelle.» Del mazo de muelle, no del muelle visible. La Galera ya no pide Marinero y su fallo no cambia. |
+
+- **Regla general (en el reglamento, entrada Coste, con ejemplo):** cuando una carta habla del coste de otra («de coste 2 o menos»), mira siempre el coste impreso; los descuentos (Catalina, Marineros sin barco…) solo rebajan lo que se paga. *Ejemplo:* «Marineros sin barco» pone al Contrabandista del bajo Caribe (coste 3) en el muelle y ese turno cuesta 1 menos; «Pulso en el muelle» no lo puede reclutar, porque su coste impreso es 3. (Resuelve la observación de la segunda ronda: con Catalina, el motor miraba el coste rebajado.)
+- **Pagando la mitad de su coste, redondeando hacia arriba:** se paga la mitad del coste impreso, y media carta cuenta como una entera: coste 1 o 2, 1 carta; 3 o 4, 2. Solo se ofrecen las cartas que puedes pagar.
+- Catalina (−2) y las Mejoras gratis (Rumbo a mar abierto, Raqueros, El almacén se hunde, Subasta del naufragio) no se tocan ahora.
+- Lecturas (no son preguntas):
+  - La Galera de forzados ya no dice «si no, roba 1»: sin Capacidad, miras las 3 y las pones al fondo. El Prisionero liberado no se ofrece sin Capacidad (no podrías reclutar a ninguno).
+  - Las cartas que se miran se ponen al fondo del mazo de muelle en el orden en que estaban.
+
+### Fuera el rehén de la caja básica (queda para una posible expansión)
+
+Sale del motor (la zona de rehenes, la captura, el rescate y el −1 de reputación por rehén perdido), del reglamento (entrada Rehén, viñeta de «Otras penalizaciones», ejemplos, Barco, Pasajero, Enrolado, Incautado y la fila del icono en la Referencia rápida) y de la mesa (la marca, la pregunta «¿A quién capturan?», el icono, el glosario y el recuento de rehenes perdidos al final). El dibujo del icono se queda en `assets/iconos/rehen.svg` para la expansión, sin usarse. Lo que antes capturaba, ahora **descarta**: el Tripulante va a la pila de descartes del muelle con sus Mejoras, como al despedirlo, y sus Tesoros pasan a otro.
+
+- **Regla general:** si un efecto descartaría al Capitán, el Capitán sufre 1 herida en su lugar (como ya decía «Bruma en la selva»). En el reglamento, entradas Descartar y «Otras penalizaciones». *Ejemplo:* fallas «Registro casa por casa» con Diego (EXP 1) y el Bucanero veterano (EXP 0) asignados: el de más EXP es Diego, que sufre 1 herida en vez de descartarse.
+
+| Carta | Ahora |
+| --- | --- |
+| 95 Registro casa por casa, 179 El lazareto, 189 Leva forzosa, 206 El cebo, 230 Campanas a rebato | Descarta al Tripulante que decía (antes, rehén). El lazareto ya no cura. |
+| 194 Ahorcan a uno de los vuestros | Si fallas, el del patíbulo se descarta (lo ahorcan). |
+| 184 El foso de la muralla | Elige: 2 heridas o se descarta. |
+| 194 El árbol de los ahorcados | El asignado con menos Vida queda Buscado y sufre 1 herida. |
+| 206 Pasquines del cazador | El de más EXP queda Buscado y entra la carta 95. |
+| 216 Procesión de ánimas | El de más NAV queda Maldito. |
+| 164 La ciudad se hunde | Un asignado sufre 1 herida y no se prepara en tu próxima Fase de Inicio. |
+| 193 Los calabozos del Morro | Éxito: +1 Avance. Fallo: el de más NAV queda Buscado y sufre 1 herida. |
+| 217 El barco fantasma | Solo «Abordaje». |
+| 168 Fiador de la Hermandad | «Interrupción: Cuando una carta de Peligro vaya a descartar a otro Tripulante, descarta a Fiador de la Hermandad en su lugar y roba 2.» |
+| 171 ¡A por ellos! | «Interrupción: Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba de COM 3. Si la superas, no se descarta.» |
+
+- El Fiador y «¡A por ellos!» no valen para los que caen por heridas (derrotados): eso no es descartar.
+- **Incautado:** ya no se incauta un Tripulante, solo cartas de la mano o una Mejora. **Enrolado:** «esté donde esté» pasa a «en la tripulación».
+- Partidas guardadas: los rehenes y los Tripulantes incautados vuelven a la tripulación al cargarlas. Una partida guardada justo en el momento de una captura no se puede continuar (la portada lo avisa, como en la fase 12).
+- Lecturas (no son preguntas):
+  - **La Prueba de «¡A por ellos!» se hace en el momento**, aunque haya otra Prueba a medio resolver (la del encuentro que descarta): esa queda en suspenso, con su Destino en la mesa, y al terminar la nueva se sigue con ella. Es una Prueba normal (se asigna a los preparados, Destino, Sin oposición) y no da Avance. En el reglamento, «Pruebas que nacen de una Acción» (con un ejemplo con «Leva forzosa») y la entrada «Prueba de una Acción». La regla P2 (una Acción no puede empezar una Prueba durante otra) no cambia: esto es una Interrupción.
+  - El Capitán no pasa por el Fiador ni por «¡A por ellos!»: como no se descarta (sufre 1 herida), no hay nada que interrumpir.
+  - «El asignado con más (o menos) X» sigue la regla general (P72): sin nadie asignado, toda la tripulación; con empate, eliges tú. El Capitán entra en la elección: si sale él, sufre 1 herida.
+  - Un Tripulante que se descarta no cuesta reputación (el −1 era del rehén perdido).
+
+### Abordaje: regla nueva
+
+«**Abordaje.** El enemigo salta a tu cubierta: en esta Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades). Si fallas, sufres 1 herida por cada punto que te falte para llegar a la dificultad; las repartes como quieras entre tus Tripulantes.» Sin máximo y sin rehén. Las cartas solo dicen «Abordaje»: el Navío de línea (95) y el Barco fantasma (217) pierden «Los Cañones no suman», que ya lo dice la regla. La Pólvora del Rey (fuego de Cañón) tampoco vale. El jugador automático no cuenta con los Cañones en estas Pruebas (el motor no se los ofrece).
+
+- **Ninguna Prueba con Abordaje pasa de dificultad 4:** 95 Navío de línea NAV 5 → 4; 195 Fragata a popa NAV 6 → 4 (+2 con Velas rotas, sin cambios); 203 Al abordaje del filibote COM 5 → 4; 206 El falso mercante EXP 5 → 4 (Vigía asignado −1: 3); 217 El barco fantasma COM 6 → 4 (Escapulario −2: 2); 130 Galeón de la plata COM 5 → 4; 157 Proa en la niebla, igual (COM 3). No hay más Abordajes. El Avance ya era el de la guía (3 / 2 en las de 4; 1 / 1 en Proa en la niebla).
+- **34 Sable de abordaje:** «+1 COM. En una Prueba con Abordaje, +2 COM en su lugar.» La Pistola de chispa no cambia.
+- Reglamento: entradas Abordaje (con el ejemplo del Navío de línea) y Cañón, el resumen de Aprende a jugar (con «Proa en la niebla») y la Referencia rápida («Resolver una Prueba»).
+- Lecturas (no son preguntas):
+  - **Sin nadie asignado, el total es 0** también para contar lo que falta (como dice el reglamento en «Proa en la niebla»). Antes, el motor contaba el +1 del Barco en las Pruebas de NAV aunque no hubiera nadie: con el Navío de línea sin nadie, ahora son 4 heridas.
+  - El Pedrero de borda se usa al revelar el Peligro, antes de que empiece la Prueba: sigue pudiendo descartar un encuentro con Abordaje.
+
+### Preguntas para Albert (P89–P92)
+
+- **P89 · Agotar un Cañón como pago en un Abordaje.** «Al abordaje del filibote» y el Galeón de la plata dicen «Antes de asignar, puedes agotar un Cañón: −1 (−2)», y son Abordajes. Por defecto, la opción de la carta sigue valiendo: es un pago del encuentro antes de asignar, no una capacidad del Cañón (y la regla de oro 1: manda la carta). Igual con «Virar y dar la cara», cuyo coste es agotar un Cañón. *Ejemplo:* contra el filibote (COM 4) agotas los Cañones de bronce antes de asignar y la Prueba pide 3; durante la Prueba ya no puedes dispararlos. La otra opción es que en un Abordaje no se pueda, y quitar esa línea de las dos cartas.
+- **P90 · El Fiador y «¡A por ellos!» con una permanente.** Dicen «una carta de Peligro». Por defecto, las permanentes (cartas del mazo de historia) no lo son: no responden a «Campanas a rebato». *Ejemplo:* con 3 fichas, las campanas descartan a la Vigía agotada; el Fiador no puede ir en su lugar. La otra opción: que valga también para lo que descarta una permanente que ha puesto en juego un Peligro.
+- **P91 · Pulso en el muelle y Marineros del galeón hundido.** Con «de coste 2 o menos», la mitad siempre es 1 carta (coste 1 o 2). Por defecto se queda el tope. *Ejemplo:* con el tope, el Bucanero veterano te cuesta 1 en vez de 2; sin tope, también podrías reclutar al Contrabandista del bajo Caribe (3) por 2.
+- **P92 · La mitad y un descuento a la vez.** Por defecto, primero la mitad del coste impreso y después el descuento sobre lo que queda. *Ejemplo:* con Catalina activa (2 menos), «Pulso en el muelle» recluta al Bucanero veterano sin pagar nada (la mitad de 2 es 1; con 2 menos, 0).
+
+### Inventario de Rasgos (sin cambiar nada)
+
+En el informe de la tercera ronda: los 12 Rasgos (11 de personas y el Cañón), quién los tiene, qué cartas los nombran y una propuesta de cuáles fusionar o quitar. Albert lo decidirá.

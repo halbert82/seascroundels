@@ -155,7 +155,7 @@ registrarEspecial('p2_restos.subasta', (s, t, e) => {
     const candidatas = s.zonas.muelle.filter((c) => {
       const id = copia(s, c).id
       if (s.peligrosEnMuelle?.[c] !== undefined || !['mejoraBarco', 'mejoraTripulante'].includes(tipoDe(id))) return false
-      if (esUnica(id) && [...s.zonas.tripulacion, ...s.zonas.mejoras, ...s.zonas.rehenes].some((x) => copia(s, x).id === id)) return false
+      if (esUnica(id) && [...s.zonas.tripulacion, ...s.zonas.mejoras].some((x) => copia(s, x).id === id)) return false
       return portadores(s, c).length > 0 && s.zonas.mano.length >= costeRebajado(s, c)
     })
     if (candidatas.length === 0) return 'hecha'
@@ -265,11 +265,11 @@ registrarPeligro('p2_santelmo', {
       exito: [codigo('p2_santelmo.buscar')],
       fallo: [pierdesAvance(2)],
     },
-    // Si tienes un Marinero preparado, superas sin Prueba. Éxito: recluta gratis un Marinero de coste 3 o menos; si no
-    // hay o no tienes Capacidad, robas 2. Fallo: descartas 1.
+    // Si tienes un Marinero preparado, superas sin Prueba. Éxito (fase 14, Albert): roba 2 y nada más (antes, reclutar
+    // sin coste un Marinero). Fallo: descartas 1.
     ciu: {
       superaSi: { tipo: 'rasgoPreparado', rasgo: 'Marinero' },
-      exito: [{ tipo: 'gratisDelMuelle', maxCoste: 3, que: 'tripulante', rasgo: 'Marinero', siNo: [robar(2)] }],
+      exito: [robar(2)],
       fallo: [descartar(1)],
     },
   },
@@ -504,8 +504,9 @@ registrarPeligro('p2_compana', {
       exito: [robar(2)],
       fallo: [alComprometido(menos('EXP'), varios(estado('asustado'), { tipo: 'heridas', n: 1 }))],
     },
-    // Éxito: el comprometido con más NAV queda Aguerrido. Fallo: el comprometido con más NAV queda rehén.
-    ciu: { exito: [comprometidoCon(mas('NAV'), estado('aguerrido'))], fallo: [comprometidoCon(mas('NAV'), { tipo: 'rehen' })] },
+    // Éxito: el comprometido con más NAV queda Aguerrido. Fallo (fase 14, fuera el rehén): el asignado con más NAV coge
+    // la cruz y queda Maldito.
+    ciu: { exito: [comprometidoCon(mas('NAV'), estado('aguerrido'))], fallo: [comprometidoCon(mas('NAV'), estado('maldito'))] },
   },
   // +2. Si fallas, uno de los comprometidos queda Asustado. Sin oposición: el Tripulante con más heridas sufre 1 herida
   // y queda Asustado.
@@ -527,11 +528,10 @@ const rezagados: CapacidadDeCarta = {
 
 registrarPeligro('p2_holandes', {
   encuentros: {
-    // Abordaje. Los Cañones y la munición no suman. −2 si un comprometido lleva un Escapulario. Éxito: +1 reputación
-    // y esta carta Se retira.
+    // COM 4 (fase 14, antes 6). Abordaje (los Cañones no se usan: ya lo dice la regla, y la carta ya no lo repite). −2 si
+    // un comprometido lleva un Escapulario. Éxito: +1 reputación y esta carta Se retira.
     mar: {
       abordaje: true,
-      prueba: { sinCanones: true },
       capacidades: [dificultad('escapulario', (ctx) => (participantesCtx(ctx).some((c) => lleva(ctx.s, c, 'escapulario')) ? -2 : 0))],
       exito: [reputacion(1), { tipo: 'seRetira' }],
     },

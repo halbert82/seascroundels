@@ -24,6 +24,7 @@ import {
   ponerEntrenamiento,
   prepararTripulantes,
   quitarEncuentro,
+  reclutarDelMazoMuelle,
   reclutarGratis,
   volverAlMuelle,
 } from './capacidades.ts'
@@ -41,7 +42,6 @@ import {
   agotarCanones,
   prepararUno,
   reclutaEncuentro,
-  rehen,
   repartirHeridas,
 } from './efectos.ts'
 import { encuentro, prueba } from './encuentro.ts'
@@ -146,7 +146,6 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   descartarMano,
   perderAvance,
   agotarCanones,
-  rehen,
   cambiarReputacion,
   entrarEnMazo,
   reclutaEncuentro,
@@ -168,6 +167,7 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   prepararCanon,
   reclutarGratis,
   naufrago,
+  reclutarDelMazoMuelle,
   ponerEntrenamiento,
   volverAlMuelle,
   elegirEncuentro,

@@ -3,7 +3,7 @@
 
 import { anotar, copia, nombre } from '../estado.ts'
 import { encuentroDe, mazoActivo } from '../peligros.ts'
-import { clavesDelEncuentro, dificultadDeOpcion } from '../prueba.ts'
+import { clavesDelEncuentro, dificultadDeOpcion, esAbordaje } from '../prueba.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Habilidad } from '../datos.ts'
 import type { Capacidad, CartaId, Estado, InstId, NuevaTarea } from '../tipos.ts'
@@ -271,13 +271,15 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
   },
   // Pólvora del Rey (Tesoro, fase 10b): «Al entrar en juego, pon 3 fichas sobre esta carta. Respuesta: Después de agotar
   // un Cañón en una Prueba de COM, quita 1 ficha de esta carta: esa Prueba recibe +2 más. Si no quedan fichas, descarta
-  // esta carta.» Las 3 fichas las pone ponerTesoro. El +2 es fuego de Cañón: «Los Cañones no suman» también lo anula.
+  // esta carta.» Las 3 fichas las pone ponerTesoro. El +2 es fuego de Cañón: «Los Cañones no suman» también lo anula, y
+  // en un Abordaje no se usa (fase 14, Albert).
   {
     clave: 'polvora_rey.disparo',
     carta: 'polvora_rey',
     ventana: 'respuesta',
     desde: 'juego',
-    disparo: (s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'canonAgotado' && yo !== null && (copia(s, yo).fichas ?? 0) > 0 && pruebaDe(s, 'COM'),
+    disparo: (s, yo, ev, fase) =>
+      fase === 'despues' && ev.tipo === 'canonAgotado' && yo !== null && (copia(s, yo).fichas ?? 0) > 0 && pruebaDe(s, 'COM') && !esAbordaje(s),
     efecto: (s, yo) => {
       if (!yo) return []
       const c = copia(s, yo)

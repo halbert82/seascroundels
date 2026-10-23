@@ -25,7 +25,6 @@ export const ZONAS = [
   'pasajeros',
   /** Mejoras y Tesoros vinculados al Barco o a un Tripulante. */
   'mejoras',
-  'rehenes',
   'mazoEscenario',
   /** La carta de Escenario revelada este turno. */
   'escenarioEnCurso',
@@ -46,7 +45,7 @@ export const ZONAS = [
    * a un Tripulante), con su texto activo, hasta que se descartan (vuelven al mazo de historia) o termina la misión.
    */
   'permanentes',
-  /** Cartas y Tripulantes incautados: debajo de la misión hasta superarla (se recuperan) o no (se pierden). */
+  /** Cartas y Mejoras incautadas: debajo de la misión hasta superarla (se recuperan) o no (se pierden). */
   'incautadas',
   'misionesDisponibles',
   'mazoMisiones',
@@ -122,14 +121,13 @@ export type Suceso =
   | { tipo: 'gesta'; mision: CartaId }
   | { tipo: 'hundimiento' }
   | { tipo: 'derrota'; carta: CartaId }
-  | { tipo: 'rehenPerdido'; carta: CartaId }
   | { tipo: 'seRetira'; carta: CartaId }
   | { tipo: 'entraEnMazo'; carta: CartaId }
   | { tipo: 'mazoMisionBarajado' }
   | { tipo: 'superadaAMitad' }
   // Para el informe por carta.
   | { tipo: 'reclutar'; carta: CartaId }
-  /** Un Tripulante sale de la tripulación (o de los rehenes), con el motivo de la tarea que lo saca (para medir la rotación). */
+  /** Un Tripulante sale de la tripulación, con el motivo de la tarea que lo saca (para medir la rotación). */
   | { tipo: 'sale'; inst: InstId; motivo: string }
   | { tipo: 'adquirir'; carta: CartaId }
   /** Capacidad usada o Evento jugado por su efecto. */
@@ -142,8 +140,6 @@ export type Suceso =
   | { tipo: 'heridas'; inst: InstId; n: number }
   | { tipo: 'dano'; n: number }
   | { tipo: 'reputacion'; n: number }
-  /** Un Tripulante queda rehén. */
-  | { tipo: 'capturado'; carta: CartaId }
   /** Se pierde Avance de la misión. */
   | { tipo: 'avancePerdido'; n: number }
   /** Cartas de la mano descartadas para pagar un coste. */
@@ -347,7 +343,7 @@ export interface Estado {
   /** Cartas de Peligro que ocupan el muelle y lo que cuesta descartarlas. */
   peligrosEnMuelle?: Partial<Record<InstId, number>>
   /** De dónde salió cada carta incautada, para devolverla si superas la misión. */
-  incautadas?: Partial<Record<InstId, { zona: 'mano' | 'mejoras' | 'tripulacion'; portador?: InstId | 'barco'; siPierdes?: 'descartar' }>>
+  incautadas?: Partial<Record<InstId, { zona: 'mano' | 'mejoras'; portador?: InstId | 'barco'; siPierdes?: 'descartar' }>>
   /** Usos de capacidades con límite: «iN/clave» → veces este turno o misión. */
   usos: Record<string, number>
   /** Pila de tareas: la última es la que se está resolviendo. */
@@ -381,10 +377,11 @@ export type Evento =
   /** Acaba de resolverse (o quitarse) una carta de Peligro de la misión. */
   /** `permanente`: la que ha puesto en juego este encuentro (no cuenta su propio final). */
   | { tipo: 'cartaResuelta'; carta: InstId; permanente?: InstId }
-  /** Un Tripulante va a quedar rehén (el Fiador puede ir en su lugar). */
-  | { tipo: 'rehen'; carta: InstId }
-  /** Un rehén vuelve a tu tripulación. */
-  | { tipo: 'rescatado'; carta: InstId }
+  /**
+   * Fase 14 (fuera el rehén): un efecto va a descartar a este Tripulante (nunca el Capitán). `dePeligro`: lo descarta una
+   * carta de Peligro (el Fiador y «¡A por ellos!» solo responden a esas; no a las heridas ni a las permanentes).
+   */
+  | { tipo: 'descartarTripulante'; carta: InstId; dePeligro: boolean }
   /** Un Destino va a ponerse encima del mazo de Peligros («Persigue»). */
   | { tipo: 'persigue'; carta: InstId; alFondo?: boolean }
   /** El jugador acaba de agotar un Cañón para pagar una capacidad (la Pólvora del Rey lo mira). */
@@ -405,8 +402,9 @@ export type Tarea = { id: number } & (
   | { tipo: 'ventanaJugar' }
   /** Pausa en la que solo se pueden usar capacidades sin etiqueta (N2). Se salta si no hay ninguna. */
   | { tipo: 'ventanaLibre'; momento: 'inicio' }
-  | { tipo: 'reclutar'; carta: InstId; paso: 'pagar' | 'entrar'; gratis?: boolean }
-  | { tipo: 'adquirir'; carta: InstId; destino: InstId | 'barco'; paso: 'pagar' | 'vincular' }
+  /** `gratis`: sin pagar su coste. `mitad`: pagando la mitad de su coste impreso, redondeando hacia arriba (fase 14). */
+  | { tipo: 'reclutar'; carta: InstId; paso: 'pagar' | 'entrar'; gratis?: boolean; mitad?: boolean }
+  | { tipo: 'adquirir'; carta: InstId; destino: InstId | 'barco'; paso: 'pagar' | 'vincular'; gratis?: boolean; mitad?: boolean }
   | { tipo: 'despedir'; carta: InstId }
   | { tipo: 'jugarEvento'; carta: InstId; clave: string; evento: number | null; paso: 'pagar' | 'efecto' | 'descartar' }
   /** `descartarAlFinal`: una Mejora que se descarta como coste lo hace tras calcular su efecto (para saber su portador). */
@@ -467,7 +465,6 @@ export type Tarea = { id: number } & (
   | { tipo: 'perderAvance'; n: number | 'todo' }
   /** Agota N Cañones preparados, o todos (los eliges tú). */
   | { tipo: 'agotarCanones'; n: number | 'todos'; coste?: boolean }
-  | { tipo: 'rehen'; entre: InstId[] }
   | { tipo: 'cambiarReputacion'; n: number }
   | { tipo: 'entrarEnMazo'; carta: CartaId }
   | { tipo: 'reclutaEncuentro' }
@@ -482,7 +479,7 @@ export type Tarea = { id: number } & (
   | { tipo: 'ponerPasajero'; carta: CartaId }
   /** Un Pasajero se va: vuelve a apartarse. */
   | { tipo: 'bajarPasajero'; carta: CartaId; motivo: string }
-  | { tipo: 'fallarMision'; paso: 'rehenes' | 'conservar' }
+  | { tipo: 'fallarMision'; paso: 'anotar' | 'conservar' }
   | { tipo: 'ponerTesoro'; carta: InstId }
   | { tipo: 'cerrarMision' }
   // Capacidades de las cartas del jugador (fase 4)
@@ -504,10 +501,15 @@ export type Tarea = { id: number } & (
   | { tipo: 'prepararTripulantes' }
   /** Prepara un Cañón agotado (lo eliges tú), o todos. */
   | { tipo: 'prepararCanon'; todos?: boolean }
-  /** Recluta sin pagar un Tripulante del muelle de coste N o menos («Prisionero liberado»). */
+  /** Recluta sin pagar un Tripulante del muelle de coste N o menos (el «Prisionero liberado» de antes de la fase 14). */
   | { tipo: 'reclutarGratis'; maxCoste: number }
   /** «Náufrago en la playa»: mira las 3 primeras del mazo de muelle y recluta gratis a uno. */
   | { tipo: 'naufrago'; n: number; cartas: InstId[] }
+  /**
+   * Fase 14: «Mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos
+   * de entre ellas. Pon las demás al fondo del mazo de muelle.» (Prisionero liberado, Galera de forzados.)
+   */
+  | { tipo: 'reclutarDelMazoMuelle'; n: number; maxCoste: number; cartas: InstId[] }
   /** Ficha de Entrenamiento en uno de esos Tripulantes; si `hab` es null, eliges la habilidad. */
   | { tipo: 'ponerEntrenamiento'; entre: InstId[]; hab: Habilidad | null; carta: InstId | null }
   /** Volver al muelle: el Tripulante (no el Capitán) vuelve al muelle con sus Mejoras. */
@@ -516,7 +518,20 @@ export type Tarea = { id: number } & (
   /** «Elige»: antes de comprometer, una Prueba o pagar algo (o entre dos o tres pagos). */
   | { tipo: 'elegirEncuentro'; carta: InstId; extra?: number }
   /** Una Prueba que no sale de un encuentro (Acción de una carta, liberar a un Encadenado…). */
-  | { tipo: 'pruebaSuelta'; definicion: DefinicionPrueba; fuente: InstId; paso: 'empezar' | 'cerrar' }
+  /**
+   * `anidada` (fase 14, «¡A por ellos!»): una Interrupción que hace una Prueba mientras otra está a medio resolver. La de
+   * fuera se aparta aquí (con sus efectos «para esta Prueba») y vuelve al cerrar esta. `cancelaSuceso`: si se supera, ese
+   * suceso no ocurre.
+   */
+  | {
+      tipo: 'pruebaSuelta'
+      definicion: DefinicionPrueba
+      fuente: InstId
+      paso: 'empezar' | 'cerrar'
+      anidada?: boolean
+      exterior?: { prueba: PruebaEnCurso; temporales: Temporal[] }
+      cancelaSuceso?: number
+    }
   /** La carta de Peligro revelada se queda en juego junto a la misión. */
   /** Pone en juego la permanente `permanente` desde el mazo de historia (si no está, descarta el encuentro sin Avance). */
   | { tipo: 'ponerPermanente'; carta: InstId; permanente: CartaId; junto?: Selector; fichas?: number }
@@ -550,7 +565,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'descartarAzar'; n: number }
   | { tipo: 'descartarMayorCoste' }
   | { tipo: 'agotarPago'; n: number; oRasgo?: string }
-  | { tipo: 'gratisDelMuelle'; maxCoste: number; que: 'tripulante' | 'mejora' | 'cualquiera'; rasgo?: string; siNo?: Efecto[]; carta?: InstId }
+  /** `mitad` (fase 14): no es gratis, se paga la mitad de su coste impreso, redondeando hacia arriba. */
+  | { tipo: 'gratisDelMuelle'; maxCoste: number; que: 'tripulante' | 'mejora' | 'cualquiera'; rasgo?: string; siNo?: Efecto[]; carta?: InstId; mitad?: boolean }
   | { tipo: 'recuperarDescarte'; n: number }
   /** Quita uno de estos Estados a un Tripulante (eliges a quién y, si tiene varios, cuál); luego, si lo dice, cúrale N. */
   | { tipo: 'quitarUnEstado'; estados: FichaTripulante[]; carta?: InstId; curar?: number }

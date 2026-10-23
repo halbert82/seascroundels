@@ -673,12 +673,7 @@
   font-size: 10.5px;
 }
 
-.tripulante.rehen {
-  width: 76px;
-  position: relative;
-}
-
-.rehen-marca {
+.marca-tripulante {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -2167,11 +2162,7 @@
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.18), transparent 70%);
 }
 
-.tripulante.rehen .hueco {
-  opacity: 0.85;
-}
-
-.tripulante .rehen-marca {
+.tripulante .marca-tripulante {
   position: absolute;
   bottom: 2px;
   left: 50%;
@@ -2671,7 +2662,7 @@
 
 /* ------------------------------------------------------------------ Misiones 2.0 */
 
-.tripulante.pasajero .rehen-marca {
+.tripulante.pasajero .marca-tripulante {
   background: #22283f;
   border-color: #9fb0e0;
   color: #dfe6ff;
@@ -2780,7 +2771,7 @@
   outline-offset: 2px;
 }
 
-.rehen-marca.explicable,
+.marca-tripulante.explicable,
 .incautadas-rotulo.explicable,
 .en-juego-rotulo.explicable {
   border-radius: 6px;

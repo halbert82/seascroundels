@@ -6,7 +6,7 @@ import type { Condicion } from '../efectos.ts'
 import { anotar, copia } from '../estado.ts'
 import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
-import { marcado, sucesoRehen } from '../tareas/peligros2.ts'
+import { marcado } from '../tareas/peligros2.ts'
 import type { CartaId } from '../tipos.ts'
 import {
   agotar,
@@ -142,20 +142,15 @@ registrarPeligro('p2_ojos', {
 // 27. Los grilletes del rey · Duro
 registrarPeligro('p2_grilletes', {
   encuentros: {
-    // Éxito: si tienes Capacidad, recluta gratis un Marinero del muelle; si no, roba 1.
+    // Fase 14 (Albert): éxito, «Mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante
+    // de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo de muelle.» (Ya no pide Marinero ni roba 1.)
     mar: {
-      exito: [
-        {
-          tipo: 'si',
-          condicion: { tipo: 'plazasLibres', minimo: 1 },
-          entonces: [{ tipo: 'gratisDelMuelle', maxCoste: 99, que: 'tripulante', rasgo: 'Marinero' }],
-          sino: [robar(1)],
-        },
-      ],
+      exito: [{ tipo: 'reclutarDelMazoMuelle', n: 3, maxCoste: 2 }],
       fallo: [dano(2)],
     },
     nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true }, hacer: { tipo: 'noPrepara', hasta: 'inicio' } }] },
-    ciu: { exito: [preparar(2)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'rehen' } }] },
+    // Fallo (fase 14, fuera el rehén): descarta al asignado con menos Vida.
+    ciu: { exito: [preparar(2)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'descartar' } }] },
   },
   // +1. En esta Prueba no se pueden usar capacidades de Tripulantes. Sin oposición: agota a 1 Tripulante (fase 10b).
   // −1. Sin oposición: agota a 1 Tripulante. (Fase 13, I1: fuera «no se pueden usar capacidades de Tripulantes».)
@@ -201,8 +196,8 @@ registrarCapacidades({
 })
 
 // 29. Toque a rebato · Duro
-// Permanente 230 «Campanas a rebato»: al terminar cada encuentro, 1 ficha; con 3, el agotado con menos Vida queda rehén
-// y se descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
+// Permanente 230 «Campanas a rebato»: al terminar cada encuentro, 1 ficha; con 3, descarta al agotado con menos Vida
+// (fase 14: antes, rehén) y se descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
 registrarPermanente('pm_campanas', {
   quitar: [
     { tipo: 'agotarRasgo', rasgo: 'Oficial' },
@@ -211,7 +206,7 @@ registrarPermanente('pm_campanas', {
   contador: {
     cuando: 'cartaResuelta',
     umbral: 3,
-    efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'rehen' } }],
+    efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'descartar' } }],
     despues: 'descartar',
   },
 })
@@ -283,18 +278,11 @@ registrarPeligro('p2_morro', {
     // COM 6 (4 con un Artillero). Fallo: 3 heridas repartidas entre los comprometidos.
     // Fase 13: heridas libres («Inflige 3 heridas»; antes, repartidas entre los asignados).
     nat: { exito: [preparaCanon()], fallo: [heridas(3)] },
+    // Fase 14 (fuera el rehén): éxito, +1 [avance] (un preso agradecido os cuenta el camino); fallo, el asignado con más
+    // NAV queda Buscado y sufre 1 herida.
     ciu: {
-      exito: [{ tipo: 'rescatarRehenes', siNo: [avance(1)] }],
-      fallo: [
-        comprometidoCon(mas('NAV'), {
-          tipo: 'varios',
-          // Fase 10b: fuera Encadenado: queda rehén y sufre 1 herida (la herida antes, mientras sigue en tu tripulación).
-          acciones: [
-            { tipo: 'heridas', n: 1 },
-            { tipo: 'rehen' },
-          ],
-        }),
-      ],
+      exito: [avance(1)],
+      fallo: [comprometidoCon(mas('NAV'), { tipo: 'varios', acciones: [{ tipo: 'estado', estado: 'buscado' }, { tipo: 'heridas', n: 1 }] })],
     },
   },
   // +2; +4 en su lugar salvo que descartes 2 cartas. Sin oposición: en el Mar, el Barco sufre 1 daño; en Naturaleza o
@@ -306,11 +294,10 @@ registrarPeligro('p2_morro', {
 
 // 32. La horca · Terrible
 const PATIBULO = 'p2_horca.patibulo'
-// Fallo: lo suben al patíbulo. Ese Tripulante queda rehén (regla normal: si superas la misión lo rescatas; si no, lo
-// pierdes y −1 de reputación).
+// Fallo (fase 14, fuera el rehén): lo suben al patíbulo y lo ahorcan: ese Tripulante se descarta.
 registrarCodigo('p2_horca.verdugo', (s, fuente) => {
   const c = marcado(s, PATIBULO, fuente)
-  return c ? [sucesoRehen(c)] : []
+  return c ? [{ tipo: 'aQuien', quien: { de: 'tripulacion', inst: c }, hacer: { tipo: 'descartar' }, ...(fuente ? { fuente } : {}) }] : []
 })
 registrarPeligro('p2_horca', {
   encuentros: {
@@ -324,7 +311,8 @@ registrarPeligro('p2_horca', {
     nat: {
       capacidades: [dificultad('lista', (ctx) => (ctx.s.zonas.tripulacion.some((c) => tieneEstado(ctx.s, c, 'buscado')) ? 2 : 0))],
       exito: [avance(1)],
-      fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'rehen' } }],
+      // Fase 14 (fuera el rehén): el asignado con menos Vida queda Buscado y sufre 1 herida.
+      fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'varios', acciones: [{ tipo: 'estado', estado: 'buscado' }, { tipo: 'heridas', n: 1 }] } }],
     },
     // Al revelarse: el Tripulante preparado de menor coste está en el patíbulo y no puede comprometerse.
     // −2 si tienes 8 o más de reputación. Fallo: ese Tripulante queda rehén.

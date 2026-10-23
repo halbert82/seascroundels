@@ -236,13 +236,11 @@ describe('48 · Fuego de San Telmo', () => {
     expect(j.zona('muelle')).toContain('sable')
   })
 
-  it('Ciudad: con un Marinero preparado superas sin Prueba y reclutas gratis un Marinero; si no hay, robas 2', () => {
+  it('Ciudad: con un Marinero preparado superas sin Prueba; si superas, robas 2 y nada más (fase 14: ya no recluta)', () => {
     const j = en('ciu', ['p2_santelmo', 'chubasco', 'calma'], { tripulacion: ['marinero_p'], muelle: ['bucanero'] })
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })
-    j.elegir('bucanero')
-    expect(j.zona('tripulacion')).toContain('bucanero')
-    const k = en('ciu', ['p2_santelmo', 'chubasco', 'calma'], { tripulacion: ['marinero_p'] })
-    expect(robas(k, 2)).toBe(true)
+    expect(robas(j, 2)).toBe(true)
+    expect(j.zona('tripulacion')).not.toContain('bucanero')
+    expect(j.zona('muelle')).toContain('bucanero')
   })
 
   it('Destino «Fuego del santo»: −1 a la dificultad y ya se pueden usar capacidades (fase 13, I1); sin oposición, +1', () => {
@@ -555,13 +553,14 @@ describe('54 · La Santa Compaña', () => {
     expect(j.copia('bucanero').heridas).toBe(1)
   })
 
-  it('Ciudad: si superas, el comprometido con más NAV queda Aguerrido; si fallas, queda rehén', () => {
+  it('Ciudad: si superas, el asignado con más NAV queda Aguerrido; si fallas, coge la cruz y queda Maldito (fase 14)', () => {
     const j = en('ciu', ['p2_compana', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo'] })
     j.comprometer('NAV', ['viejo_lobo']).pasarOfertas().seguir()
     expect(j.estados('viejo_lobo')).toEqual(['aguerrido'])
     const k = en('ciu', ['p2_compana', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     k.comprometer('NAV', ['bucanero']).seguir()
-    expect(k.zona('rehenes')).toEqual(['bucanero'])
+    expect(k.estados('bucanero')).toEqual(['maldito'])
+    expect(k.zona('tripulacion')).toContain('bucanero')
   })
 
   it('Destino «La Compaña»: si fallas, un comprometido queda Asustado; sin oposición, el más herido sufre 1 herida y queda Asustado', () => {
@@ -578,21 +577,22 @@ describe('54 · La Santa Compaña', () => {
 })
 
 describe('55 · El Holandés errante', () => {
-  it('Mar: −2 si un comprometido lleva un Escapulario; los Cañones no suman; si superas, +1 reputación y Se retira', () => {
-    const j = en('mar', ['p2_holandes', 'chubasco', 'calma'], { tripulacion: [{ id: 'isabela', mejoras: ['escapulario'] }], reputacion: 2 })
+  it('Mar: COM 4 (fase 14); −2 si un asignado lleva un Escapulario; Abordaje: sin Cañones; si superas, +1 reputación y Se retira', () => {
+    const j = en('mar', ['p2_holandes', 'chubasco', 'calma'], { tripulacion: [{ id: 'isabela', mejoras: ['escapulario'] }], reputacion: 2, barco: { mejoras: ['bronce'] } })
     j.comprometer('COM', ['capitan', 'isabela'])
-    expect(dificultadConDestino(j.estado)).toBe(4)
-    expect(j.estado.prueba?.sinCanones).toBe(true)
+    expect(dificultadConDestino(j.estado)).toBe(2)
+    expect(j.ofreceCapacidad('bronce.disparar')).toBe(false)
     j.pasarOfertas().seguir()
     expect(j.estado.reputacion).toBe(3)
     expect(j.zona('descartesPeligros')).not.toContain('p2_holandes')
   })
 
-  it('Mar: Abordaje: sin nadie comprometido, 3 heridas y un rehén', () => {
+  it('Mar: Abordaje: sin nadie asignado, 4 heridas (fase 14: sin máximo y sin rehén)', () => {
     const j = en('mar', ['p2_holandes', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
-    j.comprometer('COM', []).seguir().repartir({ capitan: 3 })
+    j.comprometer('COM', []).seguir().repartir({ capitan: 3, bucanero: 1 })
     expect(j.copia('capitan').heridas).toBe(3)
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.zona('tripulacion')).toEqual(['capitan', 'bucanero'])
   })
 
   it('Naturaleza: cada preparado que no asignes sufre 1 herida; si fallas, Inflige 3 heridas, libres (fase 13)', () => {

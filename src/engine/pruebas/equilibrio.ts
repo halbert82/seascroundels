@@ -34,7 +34,8 @@ export interface DanoDePeligro {
   heridas: number
   dano: number
   avancePerdido: number
-  rehenes: number
+  /** Fase 14: Tripulantes descartados por la carta (antes, rehenes). */
+  descartes: number
   muertes: number
   /** La misión terminó retirada o hundida mientras era la carta en curso. */
   retiradas: number
@@ -67,9 +68,8 @@ export interface Partida {
   resultados: { mision: CartaId; resultado: 'superada' | 'retirada' | 'hundida' }[]
   /** Reputación ganada (o perdida) en cada zarpe: durante la misión y con su recompensa. */
   repPorZarpe: { mision: CartaId; rep: number }[]
-  rehenesPerdidos: number
-  /** Tripulantes que quedaron rehenes (los rescatara o no). */
-  capturados: number
+  /** Fase 14: Tripulantes descartados por una carta (lo que antes eran rehenes). */
+  descartados: number
   entradasEnMazo: number
   retiradasDelJuego: number
   mazoMisionBarajado: number
@@ -86,7 +86,7 @@ export interface Partida {
 }
 
 function danoDe(p: Partida, carta: CartaId): DanoDePeligro {
-  p.peligros[carta] ??= { reveladas: 0, pruebas: 0, fallos: 0, heridas: 0, dano: 0, avancePerdido: 0, rehenes: 0, muertes: 0, retiradas: 0, hundidas: 0, destinos: 0, destinosFallados: 0 }
+  p.peligros[carta] ??= { reveladas: 0, pruebas: 0, fallos: 0, heridas: 0, dano: 0, avancePerdido: 0, descartes: 0, muertes: 0, retiradas: 0, hundidas: 0, destinos: 0, destinosFallados: 0 }
   return p.peligros[carta]
 }
 
@@ -151,8 +151,7 @@ export function jugarPartida(
     zarpes: [],
     resultados: [],
     repPorZarpe: [],
-    rehenesPerdidos: 0,
-    capturados: 0,
+    descartados: 0,
     entradasEnMazo: 0,
     retiradasDelJuego: 0,
     mazoMisionBarajado: 0,
@@ -225,9 +224,11 @@ export function jugarPartida(
         case 'avancePerdido':
           if (enCurso) danoDe(p, enCurso).avancePerdido += dato.n
           break
-        case 'capturado':
-          p.capturados++
-          if (enCurso) danoDe(p, enCurso).rehenes++
+        case 'sale':
+          if (dato.motivo === 'carta') {
+            p.descartados++
+            if (enCurso) danoDe(p, enCurso).descartes++
+          }
           break
         case 'zarpar':
           p.zarpes.push(dato.mision)
@@ -247,9 +248,6 @@ export function jugarPartida(
         case 'derrota':
           if (dato.carta !== capitan) p.muertes++
           if (enCurso && s.mision) danoDe(p, enCurso).muertes++
-          break
-        case 'rehenPerdido':
-          p.rehenesPerdidos++
           break
         case 'entraEnMazo':
           p.entradasEnMazo++
@@ -425,16 +423,16 @@ function tablaDePeligros(partidas: readonly Partida[]): string[] {
   const suma = new Map<CartaId, DanoDePeligro>()
   for (const p of partidas) {
     for (const [c, d] of Object.entries(p.peligros)) {
-      const t = suma.get(c) ?? { reveladas: 0, pruebas: 0, fallos: 0, heridas: 0, dano: 0, avancePerdido: 0, rehenes: 0, muertes: 0, retiradas: 0, hundidas: 0, destinos: 0, destinosFallados: 0 }
+      const t = suma.get(c) ?? { reveladas: 0, pruebas: 0, fallos: 0, heridas: 0, dano: 0, avancePerdido: 0, descartes: 0, muertes: 0, retiradas: 0, hundidas: 0, destinos: 0, destinosFallados: 0 }
       for (const k of Object.keys(t) as (keyof DanoDePeligro)[]) t[k] += d[k]
       suma.set(c, t)
     }
   }
   const enMazo = DATOS.mazosPredefinidos.mazoDePeligros
-  // Índice de daño por vez que sale como encuentro: heridas 1, daño al Barco 1, Avance perdido 1, rehén 3,
+  // Índice de daño por vez que sale como encuentro: heridas 1, daño al Barco 1, Avance perdido 1, Tripulante descartado 3,
   // Tripulante muerto 4, misión retirada o hundida 3.
   const indice = (d: DanoDePeligro) =>
-    d.reveladas === 0 ? 0 : (d.heridas + d.dano + d.avancePerdido + 3 * d.rehenes + 4 * d.muertes + 3 * (d.retiradas + d.hundidas)) / d.reveladas
+    d.reveladas === 0 ? 0 : (d.heridas + d.dano + d.avancePerdido + 3 * d.descartes + 4 * d.muertes + 3 * (d.retiradas + d.hundidas)) / d.reveladas
   const filas = enMazo.map((c) => ({ c, d: suma.get(c) ?? null })).sort((a, b) => (b.d ? indice(b.d) : 0) - (a.d ? indice(a.d) : 0))
   const f1 = (n: number, d: number) => (d === 0 ? '—' : (n / d).toFixed(2))
   const lineas = [
@@ -442,7 +440,7 @@ function tablaDePeligros(partidas: readonly Partida[]): string[] {
     '',
     'Cada carta del mazo de Peligros, de la que más daño hace a la que menos, contando lo que pasa desde que se revela como encuentro hasta que sale la siguiente (su Prueba, su Destino y lo que haga si se queda en juego mientras es la carta en curso). «Índice»: heridas + daño al Barco + Avance perdido + 3 por rehén + 4 por Tripulante muerto + 3 si la misión acaba retirada o hundida, por cada vez que sale. «Como Destino»: veces que salió como Destino y % de esas Pruebas que se fallaron.',
     '',
-    '| Carta | Sale | Pruebas | % fallo | Heridas / vez | Daño / vez | Avance perdido / vez | Rehenes | Muertes | Retiradas / hundidas | Índice | Como Destino | % fallo con su Destino |',
+    '| Carta | Sale | Pruebas | % fallo | Heridas / vez | Daño / vez | Avance perdido / vez | Descartados | Muertes | Retiradas / hundidas | Índice | Como Destino | % fallo con su Destino |',
     '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ]
   for (const { c, d } of filas) {
@@ -451,7 +449,7 @@ function tablaDePeligros(partidas: readonly Partida[]): string[] {
       continue
     }
     lineas.push(
-      `| ${nombreDe(c)} | ${d.reveladas} | ${d.pruebas} | ${porcentaje(d.fallos, d.pruebas)} | ${f1(d.heridas, d.reveladas)} | ${f1(d.dano, d.reveladas)} | ${f1(d.avancePerdido, d.reveladas)} | ${d.rehenes} | ${d.muertes} | ${d.retiradas} / ${d.hundidas} | ${indice(d).toFixed(2)} | ${d.destinos} | ${porcentaje(d.destinosFallados, d.destinos)} |`,
+      `| ${nombreDe(c)} | ${d.reveladas} | ${d.pruebas} | ${porcentaje(d.fallos, d.pruebas)} | ${f1(d.heridas, d.reveladas)} | ${f1(d.dano, d.reveladas)} | ${f1(d.avancePerdido, d.reveladas)} | ${d.descartes} | ${d.muertes} | ${d.retiradas} / ${d.hundidas} | ${indice(d).toFixed(2)} | ${d.destinos} | ${porcentaje(d.destinosFallados, d.destinos)} |`,
     )
   }
   lineas.push('')
@@ -519,7 +517,7 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   lineas.push(`| Reputación media por zarpe | ${media(zarpes.map((z) => z.rep), 2)} |`)
   lineas.push(`| Hundimientos por partida | ${media(partidas.map((p) => p.hundimientos), 2)} |`)
   lineas.push(`| Tripulantes muertos por partida | ${media(partidas.map((p) => p.muertes), 2)} |`)
-  lineas.push(`| Rehenes capturados / perdidos por partida | ${media(partidas.map((p) => p.capturados), 2)} / ${media(partidas.map((p) => p.rehenesPerdidos), 2)} |`)
+  lineas.push(`| Tripulantes descartados por una carta, por partida | ${media(partidas.map((p) => p.descartados), 2)} |`)
   lineas.push(`| Misiones retiradas por partida | ${media(partidas.map((p) => p.resultados.filter((r) => r.resultado === 'retirada').length), 2)} |`)
   // Fase 10b: misiones que no se superan (retiradas, falladas o hundidas) y heridas que se sufren en cada misión.
   lineas.push(`| Misiones falladas por partida (retiradas, falladas o hundidas) | ${media(partidas.map((p) => p.resultados.filter((r) => r.resultado !== 'superada').length), 2)} |`)

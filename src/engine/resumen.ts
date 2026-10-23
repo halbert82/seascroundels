@@ -13,7 +13,6 @@ export interface ResumenPartida {
   misiones: { superadas: CartaId[]; retiradas: CartaId[]; hundidas: CartaId[] }
   pruebas: { superadas: number; falladas: number }
   tripulantesPerdidos: number
-  rehenesPerdidos: number
   hundimientos: number
   reclutados: number
   adquiridas: number
@@ -32,7 +31,6 @@ export function resumenDePartida(s: Estado): ResumenPartida {
     misiones: { superadas: [], retiradas: [], hundidas: [] },
     pruebas: { superadas: 0, falladas: 0 },
     tripulantesPerdidos: 0,
-    rehenesPerdidos: 0,
     hundimientos: 0,
     reclutados: 0,
     adquiridas: 0,
@@ -53,9 +51,6 @@ export function resumenDePartida(s: Estado): ResumenPartida {
         break
       case 'derrota':
         if (dato.carta !== capitan) r.tripulantesPerdidos++
-        break
-      case 'rehenPerdido':
-        r.rehenesPerdidos++
         break
       case 'hundimiento':
         r.hundimientos++

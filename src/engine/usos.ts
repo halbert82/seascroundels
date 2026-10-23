@@ -1,7 +1,7 @@
 // Qué capacidades se pueden usar ahora mismo, y cómo se empiezan a usar.
 
 import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
-import { rasgosDe, tipoDe } from './catalogo.ts'
+import { esCanon, rasgosDe, tipoDe } from './catalogo.ts'
 import { claveUso, copia, encolar } from './estado.ts'
 import { estadosDe } from './estados.ts'
 import { cartaDeEstado } from './infoEstados.ts'
@@ -9,6 +9,7 @@ import type { Capacidad, Coste, Estado, Evento, InstId, Uso, Ventana } from './t
 import { destinosVigentes, mejoraActiva, valor } from './valores.ts'
 import { estaEn } from './zonas.ts'
 import { canonesPreparados } from './capacidades/comun.ts'
+import { esAbordaje } from './prueba.ts'
 
 /** Cada capacidad con la carta que la da, según desde dónde funciona. */
 /** Ventanas de las capacidades que «se usan»: un Tripulante Encadenado no puede usarlas. */
@@ -18,6 +19,8 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
   // Destinos como «Grilletes en los tobillos» o «Carcoma»: en esta Prueba no se usan capacidades de Tripulantes o de Mejoras.
   const sinTripulantes = s.prueba?.sinCapTripulantes ?? false
   const sinMejoras = (s.prueba?.sinCapMejoras || s.prueba?.sinMejoras) ?? false
+  // Fase 14, Abordaje: en esa Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades).
+  const abordaje = esAbordaje(s)
   for (const inst of s.zonas.tripulacion) {
     const bloqueada = sinTripulantes
     for (const cap of capacidadesDe(copia(s, inst).id)) {
@@ -25,8 +28,9 @@ export function* candidatas(s: Estado): Generator<[Capacidad, InstId | null]> {
     }
   }
   for (const inst of s.zonas.mejoras) {
-    if (!mejoraActiva(s, inst)) continue // De un rehén: no aplica su texto. Agotada, sí (solo no puede volver a agotarse).
-    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'juego' && !(sinMejoras && SE_USAN.has(cap.ventana))) yield [cap, inst]
+    if (!mejoraActiva(s, inst)) continue // Sin portador en juego, no aplica su texto. Agotada, sí (solo no puede volver a agotarse).
+    const canonBloqueado = abordaje && esCanon(copia(s, inst).id)
+    for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'juego' && !((sinMejoras || canonBloqueado) && SE_USAN.has(cap.ventana))) yield [cap, inst]
   }
   for (const inst of s.zonas.mano) for (const cap of capacidadesDe(copia(s, inst).id)) if (cap.desde === 'mano') yield [cap, inst]
   for (const cap of capacidadesDe('barco')) if (cap.desde === 'barco') yield [cap, null]

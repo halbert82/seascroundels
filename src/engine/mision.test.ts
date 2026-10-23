@@ -201,37 +201,16 @@ describe('Destinos', () => {
   })
 })
 
-describe('Rehenes', () => {
-  it('el rehén sale de entre los comprometidos, sigue ocupando Capacidad y se rescata si superas la misión', () => {
-    // La misión empieza con 1 de Avance: los Bandoleros fallados solo dan 1 (Avance 2 / 1).
-    const j = enPuerto({ misiones: ['aguada-I'], avance: { 'aguada-I': 1 }, tripulacion: ['marinero_p', 'grumete', 'bucanero', 'carpintero'], mazoPeligros: ['rivales', 'chubasco', 'racha'] })
-    j.zarpar('aguada-I')
-    // Bandoleros (COM 3): el Grumete suma 1 + 1 = 2; Destino «Sin novedad». Fallas: el Grumete es capturado.
-    j.comprometer('COM', ['grumete']).seguir()
-    expect(j.zona('rehenes')).toEqual(['grumete'])
-    // Capacidad 4 llena: 3 Tripulantes y el rehén, que sigue ocupando su plaza.
-    expect(j.zona('tripulacion').filter((c) => c !== 'capitan').length + j.zona('rehenes').length).toBe(4)
-    expect(j.valor({ tipo: 'capacidad' })).toBe(4)
-    j.seguir() // Manantial: +1 → 3/3
-    expect(j.zona('misionesSuperadas')).toEqual(['aguada-I'])
-    expect(j.zona('tripulacion')).toContain('grumete')
-    expect(j.zona('rehenes')).toEqual([])
-  })
-
-  it('si no la superas, pierdes al rehén con sus Mejoras y 1 de reputación; su Tesoro pasa a otro (N1)', () => {
-    const j = enPuerto({
-      misiones: ['aguada-I'],
-      reputacion: 2,
-      tripulacion: [{ id: 'grumete', mejoras: ['espada'] }],
-      mazoPeligros: ['rivales', 'leyenda', 'calma'],
-    })
-    j.zarpar('aguada-I')
-    j.comprometer('COM', ['grumete']).pasar().seguir() // Destino «Fallo» (no lo cancela con la Espada): fallas; el Grumete es capturado
-    expect(j.zona('rehenes')).toEqual(['grumete'])
-    j.retirarse().opcion('dejar')
-    expect(j.estado.reputacion).toBe(1)
-    expect(j.zona('fueraDeJuego')).toContain('grumete')
-    expect(j.copia('espada').vinculadaA).toBe(j.estado.capitan)
+describe('Descartar a un Tripulante (fase 14: fuera el rehén)', () => {
+  it('se va a la pila de descartes del muelle con sus Mejoras, deja libre su plaza y no cuesta reputación', () => {
+    // «Leva forzosa» (COM 4) con la Vigía sola: falla y «Descarta al Tripulante asignado con menos Vida».
+    const j = Jugador.enMision({ misiones: ['ladron-I'], reputacion: 2, tripulacion: [{ id: 'vigia', mejoras: ['catalejo'] }, 'bucanero'], mazoPeligros: ['p2_grilletes', 'chubasco', 'calma'] })
+    const libres = j.valor({ tipo: 'capacidad' }) - 2
+    j.comprometer('COM', ['vigia']).seguir().pasarOfertas()
+    expect(j.zona('descartesMuelle')).toEqual(expect.arrayContaining(['vigia', 'catalejo']))
+    expect(j.zona('tripulacion')).toEqual(['capitan', 'bucanero'])
+    expect(j.valor({ tipo: 'capacidad' }) - (j.zona('tripulacion').length - 1)).toBe(libres + 1)
+    expect(j.estado.reputacion).toBe(2)
   })
 })
 

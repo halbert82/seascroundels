@@ -48,8 +48,10 @@ registrarPeligro('p2_hermanos', {
     mar: { efecto: [preparaCanon(), reparar(1), siTienes('Bucanero', [preparaCanon()])] },
     // Cura 2 heridas, repartidas como quieras. Si no tenías heridas, prepara 1 Tripulante (se mira antes de curar).
     nat: { efecto: [{ tipo: 'si', condicion: { tipo: 'no', condicion: { tipo: 'heridas', minimo: 1 } }, entonces: [preparar(1)] }, { tipo: 'curar', n: 2 }] },
-    // Éxito: recluta gratis un Tripulante de coste 2 o menos del muelle (si tienes Capacidad). Fallo: descarta 1.
-    ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante' }], fallo: [descartar(1)] },
+    // Éxito (fase 14, Albert): si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de
+    // su coste, redondeando hacia arriba (antes, sin coste). Fallo: descarta 1.
+    // TODO(regla): P91. Con «de coste 2 o menos», la mitad siempre es 1 carta; por defecto se queda el tope de coste.
+    ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante', mitad: true }], fallo: [descartar(1)] },
   },
   // −1; −2 en su lugar si el encuentro es Pirata y comprometiste a un Bucanero. Sin oposición: pierdes 1 munición.
   // −1. Sin oposición: agota 1 Cañón. (Fase 13, I1: fuera «Pirata con un Bucanero asignado: +2».)
@@ -338,10 +340,12 @@ registrarCodigo('p2_curazao.metralla', (s, fuente) => {
 registrarPeligro('p2_curazao', {
   encuentros: {
     // Antes de asignar, puedes agotar un Cañón: −1, o −2 si asignas a un Artillero. Abordaje. (Fase 10b.)
+    // TODO(regla): P89. Abordaje dice que en esta Prueba no se pueden usar Cañones; por defecto, esta opción de la propia
+    // carta sigue valiendo (se paga antes de asignar y no es una capacidad del Cañón; regla de oro 1: manda la carta).
     mar: {
       alRevelarse: [codigo('p2_curazao.reset')],
       elige: [
-        { texto: 'Sin agotar ningún Cañón: Prueba de COM 5', prueba: true },
+        { texto: 'Sin agotar ningún Cañón: Prueba de COM 4', prueba: true },
         { texto: 'Agotar un Cañón: −1, o −2 si asignas a un Artillero', prueba: true, efectos: [agotaCanones(1), codigo('p2_curazao.metralla')] },
       ],
       capacidades: [
@@ -472,14 +476,16 @@ registrarPeligro('p2_motin', {
 // 44. El cazador de piratas · Terrible
 registrarPeligro('p2_cazador', {
   encuentros: {
-    // EXP 5 (4 si comprometes a un Vigía: está en los datos). Abordaje.
+    // EXP 4 (3 si comprometes a un Vigía: está en los datos; fase 14, antes 5 y 4). Abordaje.
     mar: { abordaje: true, exito: [preparaCanon()] },
     // Éxito: recluta gratis un Tripulante de coste 2 o menos (si tienes Capacidad); si no, robas 2.
     nat: {
       exito: [{ tipo: 'si', condicion: { tipo: 'plazasLibres', minimo: 1 }, entonces: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante' }], sino: [robar(2)] }],
-      fallo: [comprometidoCon(mas('COM'), { tipo: 'rehen' })],
+      // Fallo (fase 14, fuera el rehén): descarta al asignado con más COM.
+      fallo: [comprometidoCon(mas('COM'), { tipo: 'descartar' })],
     },
-    ciu: { exito: [robar(2)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'rehen' }), { tipo: 'entraEnMazo', carta: 'armada' }] },
+    // Fallo (fase 14, fuera el rehén): el asignado con más EXP queda Buscado y entra la carta 95.
+    ciu: { exito: [robar(2)], fallo: [comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'buscado' }), { tipo: 'entraEnMazo', carta: 'armada' }] },
   },
   // +2. Si fallas por 3 o más, el comprometido con la habilidad más alta queda rehén. Sin oposición: + La Armada.
   // −2. Sin oposición: añade la carta 95 al mazo de Peligros. (Fase 13, I1: fuera «si fallas por 3 o más, rehén».)

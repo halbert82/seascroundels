@@ -448,7 +448,6 @@ export function FinDePartida({ s, otra, portada }: { s: Estado; otra: () => void
               <li>{r.reclutados} Tripulantes reclutados</li>
               <li>{r.adquiridas} Mejoras adquiridas</li>
               <li>{r.tripulantesPerdidos} Tripulantes perdidos</li>
-              {r.rehenesPerdidos > 0 && <li>{r.rehenesPerdidos} rehenes perdidos</li>}
               <li>{r.hundimientos === 0 ? 'El Barco nunca se hundió' : `El Barco se hundió ${r.hundimientos} ${r.hundimientos === 1 ? 'vez' : 'veces'}`}</li>
             </ul>
           </section>

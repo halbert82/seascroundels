@@ -105,11 +105,37 @@ export function deserializar(texto: string): Estado {
     s.zonas.permanentes = [...(s.zonas.permanentes ?? []), ...zonas.cartasMision]
     delete zonas.cartasMision
   }
+  // Fase 14 (fuera el rehén): los rehenes y los Tripulantes incautados vuelven a la tripulación. Una partida guardada justo
+  // cuando se capturaba o se rescataba a alguien no se puede continuar.
+  if (!migrarRehenes(s)) throw anterior()
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()
   return s
+}
+
+/** Fase 14: fuera el rehén y el Tripulante incautado. Devuelve false si la partida estaba a mitad de una captura. */
+function migrarRehenes(s: Estado): boolean {
+  const zonas = s.zonas as Record<string, InstId[] | undefined>
+  const rehenes = zonas.rehenes
+  if (Array.isArray(rehenes)) {
+    s.zonas.tripulacion = [...(s.zonas.tripulacion ?? []), ...rehenes]
+    delete zonas.rehenes
+  }
+  const incautados = (s.zonas.incautadas ?? []).filter((c) => (s.incautadas?.[c]?.zona as string | undefined) === 'tripulacion')
+  for (const c of incautados) {
+    s.zonas.incautadas = s.zonas.incautadas.filter((x) => x !== c)
+    s.zonas.tripulacion.push(c)
+    if (s.incautadas) delete s.incautadas[c]
+  }
+  s.temporales = (s.temporales ?? []).filter((t) => t.clave !== 'p2_fiebre.lazareto')
+  for (const t of s.pila ?? []) {
+    const tarea = t as { tipo: string; paso?: string; ev?: { tipo: string } }
+    if (tarea.tipo === 'rehen' || (tarea.tipo === 'evento' && (tarea.ev?.tipo === 'rehen' || tarea.ev?.tipo === 'rescatado'))) return false
+    if (tarea.tipo === 'fallarMision' && tarea.paso === 'rehenes') tarea.paso = 'anotar'
+  }
+  return true
 }
 
 /** Quita una copia de la partida (de su zona y de las cartas). */

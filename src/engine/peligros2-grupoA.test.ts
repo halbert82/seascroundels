@@ -48,16 +48,18 @@ describe('1 · La corriente del Golfo', () => {
     expect(j.copia('bucanero').heridas).toBe(0)
   })
 
-  it('Ciudad: puedes agotar a un Tripulante para reclutar sin coste una carta del muelle de coste 2 o menos', () => {
-    const j = en('ciu', ['p2_corriente', 'calma'], { tripulacion: ['vigia'], muelle: ['marinero_p', 'bucanero', 'reinaldo'] })
+  it('Ciudad (fase 14): puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle de coste 2 o menos pagando la mitad de su coste', () => {
+    const j = en('ciu', ['p2_corriente', 'calma'], { tripulacion: ['vigia'], muelle: ['marinero_p', 'bronce', 'cruz'], mano: ['ojo', 'timon'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion' })
     j.opcion('0').elegir('vigia')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })
-    expect((j.decision as { candidatas: string[] }).candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id)).toEqual(['marinero_p', 'bucanero'])
-    j.elegir('bucanero')
-    expect(j.zona('tripulacion')).toContain('bucanero')
+    // Solo Mejoras: ni el Rufián de cubierta (Tripulante) ni la Cruz de Santa Bárbara (coste 3).
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'mitadDelMuelle' } })
+    expect((j.decision as { candidatas: string[] }).candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id)).toEqual(['bronce'])
+    // Los Cañones de bronce cuestan 2: la mitad, 1 carta.
+    j.elegir('bronce').elegir('ojo')
+    expect(j.copia('bronce').vinculadaA).toBe('barco')
+    expect(j.zona('mano')).toEqual(['timon'])
     expect(j.copia('vigia').agotada).toBe(true)
-    expect(j.registro.some((r) => r.startsWith('Pagas'))).toBe(false)
   })
 
   it('Destino «Chorro»: +1 en cualquier Prueba (fase 13: fuera «Prueba de NAV: +2 en su lugar»)', () => {
@@ -173,15 +175,15 @@ describe('3 · Calma chicha', () => {
 })
 
 describe('4 · Niebla', () => {
-  it('Mar: Abordaje sin asignados: heridas por lo que falta (máx. 3) y un rehén al azar', () => {
+  it('Mar: Abordaje sin asignados: 1 herida por cada punto que falta, repartidas como quieras, y nada más (fase 14)', () => {
     const j = en('mar', ['p2_niebla', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'carpintero'] })
     j.comprometer('COM', [])
     j.seguir()
-    // Faltan 3 (COM 3 contra nadie): 3 heridas repartidas como quieras (fase 10) y un rehén.
+    // Faltan 3 (COM 3 contra nadie): 3 heridas repartidas como quieras (fase 10); ya no hay rehén.
     expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 3, motivo: { clave: 'heridas', n: 3 } })
     j.repartir({ capitan: 3 })
     expect(j.copia('capitan').heridas).toBe(3)
-    expect(j.zona('rehenes')).toHaveLength(1)
+    expect(j.zona('tripulacion')).toEqual(['capitan', 'bucanero', 'carpintero'])
   })
 
   it('Mar: con un Vigía la dificultad baja 1 (Vigía −1); si superas, nada más (fase 13: ya no prepara un Cañón)', () => {
@@ -235,6 +237,15 @@ describe('4 · Niebla', () => {
     k.comprometer('EXP', ['capitan']).seguir()
     expect(k.copia('capitan').heridas).toBe(1)
     expect(k.zona('tripulacion')).toContain('capitan')
+  })
+
+  it('Naturaleza «Bruma en la selva» (fase 14): es una carta de Peligro la que descarta, así que el Fiador puede ir en su lugar', () => {
+    const j = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['bucanero', 'fiador'] })
+    j.comprometer('EXP', ['capitan', 'bucanero']).seguir()
+    expect(j.ofreceCapacidad('fiador.descarte')).toBe(true)
+    j.usar('fiador.descarte').pasarOfertas()
+    expect(j.zona('tripulacion')).toContain('bucanero')
+    expect(j.zona('descartesMuelle')).toContain('fiador')
   })
 
   it('Ciudad: si fallas, el asignado con más EXP queda Buscado', () => {
@@ -647,10 +658,14 @@ describe('11 · Maremoto', () => {
     expect(j.estado.danoBarco).toBe(3)
   })
 
-  it('Ciudad: si fallas, un comprometido queda rehén', () => {
-    const j = en('ciu', ['p2_maremoto', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
-    j.comprometer('COM', ['bucanero']).seguir()
-    expect(j.zona('rehenes')).toEqual(['bucanero'])
+  it('Ciudad (fase 14): si fallas, un asignado queda sepultado: sufre 1 herida y no se prepara en tu próxima Fase de Inicio', () => {
+    const j = en('ciu', ['p2_maremoto', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
+    j.comprometer('COM', ['bucanero', 'vigia']).seguir() // COM 5: 2 + 0
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } })
+    j.elegir('bucanero')
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.estado.temporales.some((t) => t.clave === 'noPrepara' && t.inst === j.inst('bucanero') && t.hasta === 'inicio')).toBe(true)
+    expect(j.zona('tripulacion')).toContain('bucanero')
   })
 
   it('Destino «Réplica»: −2 y nada más (fase 13, I1: fuera «la siguiente Prueba +1»); Sin oposición: el Capitán sufre 1 herida', () => {

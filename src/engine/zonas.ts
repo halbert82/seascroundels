@@ -6,7 +6,7 @@ import { ZONAS, type CartaId, type Estado, type InstId, type Zona } from './tipo
 
 /** Zonas en las que una carta está «en juego»: al salir de ellas pierde fichas y estado. */
 /** Lo incautado (debajo de la misión) conserva su estado por si se recupera. */
-const EN_JUEGO: ReadonlySet<Zona> = new Set<Zona>(['tripulacion', 'mejoras', 'rehenes', 'incautadas'])
+const EN_JUEGO: ReadonlySet<Zona> = new Set<Zona>(['tripulacion', 'mejoras', 'incautadas'])
 
 /** Crea una copia física de una carta en una zona. */
 export function crearCopia(s: Estado, id: CartaId, zona: Zona, donde: 'arriba' | 'abajo' = 'abajo'): InstId {

@@ -424,19 +424,19 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 **El Tripulante asignado con más (o menos) habilidad.** Esta expresión se refiere al número impreso en la carta, sin bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. En caso de empate, elige el jugador. Si no hay nadie asignado, se aplica al Tripulante con más (o menos) de esa habilidad de toda la tripulación. En un Destino, «la habilidad más alta» o «más baja» se refiere a la habilidad de esa Prueba. Del mismo modo, «el Tripulante con menos Vida» se refiere a la Vida impresa, y «el de menor coste» no tiene en cuenta al Capitán.
 
 > [!ejemplo]
-> En «Registro casa por casa» (EXP 4), el jugador asigna a la Vigía inexperta, que lleva el Catalejo de latón (EXP 2 + 1), y al Rastreador de la selva (EXP 3). El jugador falla la Prueba: «el Tripulante asignado con más EXP queda rehén». Con el Catalejo, la Vigía suma tanto como el Rastreador, pero su EXP impresa es 2 y la de él, 3. Por tanto, el rehén es el Rastreador.
+> En «Registro casa por casa» (EXP 4), el jugador asigna a la Vigía inexperta, que lleva el Catalejo de latón (EXP 2 + 1), y al Rastreador de la selva (EXP 3). El jugador falla la Prueba: «Descarta al Tripulante asignado con más EXP». Con el Catalejo, la Vigía suma tanto como el Rastreador, pero su EXP impresa es 2 y la de él, 3. Por tanto, se descarta el Rastreador. Si el jugador hubiera asignado a Diego (EXP 1) solo con la Vigía, se descartaría la Vigía; y si el de más EXP fuera el Capitán, no se descartaría: sufriría 1 herida en su lugar.
 
-**Abordaje.** Esta palabra clave indica que el enemigo salta a la cubierta del jugador. Si el jugador falla la Prueba, sufre 1 herida por cada punto que le falte para superarla (como máximo 3), que reparte como quiera entre sus Tripulantes. Si le faltan 3 o más puntos, además uno de los Tripulantes asignados queda rehén. Si el jugador falla, se considera que le falta al menos 1 punto, aunque haya fallado por un Destino que dice «Fallas la Prueba». Si no ha asignado a nadie, el rehén se elige al azar.
+**Abordaje.** Esta palabra clave indica que el enemigo salta a la cubierta del jugador: en esa Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades). Si el jugador falla la Prueba, sufre 1 herida por cada punto que le falte para llegar a la dificultad, sin máximo, y las reparte como quiera entre sus Tripulantes. Si el jugador falla, se considera que le falta al menos 1 punto, aunque haya fallado por un Destino que dice «Fallas la Prueba».
 
 > [!ejemplo]
-> En el Mar, el jugador revela «Proa en la niebla» (COM 3, Abordaje). No asigna a nadie, así que falla la Prueba con un total de 0: le faltan 3 puntos. Sufre 3 heridas, el máximo, que reparte como quiere entre sus Tripulantes, y un Tripulante al azar queda rehén. Sale el Destino de la carta «Arrecife» y, como no ha asignado a nadie, se aplica también su efecto Sin oposición, la parte del Mar: «Daña 1». Si hubiera asignado al Bucanero veterano (COM 2, más 1 por Diego), con el −1 del Destino su total habría sido 2: le habría faltado 1 punto, para 1 herida y ningún rehén.
+> En el Mar, el jugador revela «Proa en la niebla» (COM 3, Abordaje). Lleva los Cañones de bronce, pero en un Abordaje no puede usarlos. No asigna a nadie, así que falla la Prueba con un total de 0: le faltan 3 puntos y sufre 3 heridas, que reparte como quiere entre sus Tripulantes. Sale el Destino de la carta «Arrecife» y, como no ha asignado a nadie, se aplica también su efecto Sin oposición, la parte del Mar: «Daña 1». Si hubiera asignado al Bucanero veterano (COM 2, más 1 por Diego), con el −1 del Destino su total habría sido 2: le habría faltado 1 punto, para 1 herida.
 
 **Persigue.** Algunos Destinos dicen «después de aplicar este Destino, pon esta carta encima del mazo de Peligros». Esa carta será el siguiente encuentro del jugador. Si la misión termina antes, la carta permanece encima del mazo y sale en la próxima misión, con el encuentro del Entorno que corresponda. No debe confundirse con el Estado Perseguido del Barco.
 
 > [!ejemplo]
 > En «El Paso de los Vientos» sale el Destino de la carta «Turbonada» (−1), que dice «Persigue». Después de aplicarlo, la Turbonada se coloca encima del mazo: el siguiente Peligro que revele el jugador será «Turbonada a popa». Si el jugador se retira antes, será el primer encuentro de su próxima misión; si esa misión es de Ciudad, el encuentro será «La riada». «Virar y dar la cara» puede enviarla al fondo del mazo.
 
-**Incautado.** Este efecto coloca cartas de la mano del jugador, una Mejora o un Tripulante debajo de la carta de misión. Si el jugador supera la misión, recupera lo incautado: las cartas vuelven a su mano, la Mejora vuelve a su portador (si este ya no está en juego, la Mejora se descarta) y el Tripulante vuelve a su tripulación. Si no supera la misión, pierde lo incautado, que se retira del juego, salvo que la carta indique que se descarta. El jugador elige las cartas incautadas, salvo que la carta diga «al azar» o «las de más coste». Un Tripulante incautado sigue ocupando su plaza en el Barco.
+**Incautado.** Este efecto coloca cartas de la mano del jugador o una Mejora debajo de la carta de misión. Si el jugador supera la misión, recupera lo incautado: las cartas vuelven a su mano y la Mejora vuelve a su portador (si este ya no está en juego, la Mejora se descarta). Si no supera la misión, pierde lo incautado, que se retira del juego, salvo que la carta indique que se descarta. El jugador elige las cartas incautadas, salvo que la carta diga «al azar» o «las de más coste».
 
 > [!ejemplo]
 > En el Mar, el jugador revela «Registro del guardacostas»: «Incautado: pon 2 cartas de tu mano debajo de la carta de misión; con la Patente de corso, solo 1». Diego lleva la Patente, así que el jugador pone solo «Coraje de ron». Si supera la Prueba, la recupera de inmediato y roba 1. Si la falla, la recuperará al superar la misión. Si se retira, la pierde.
@@ -460,14 +460,19 @@ Algunos encuentros y algunas misiones dicen «**Pon en juego la carta N del mazo
 - Al terminar la misión (superada, retirada o con el Barco hundido), todas vuelven al mazo de historia.
 
 > [!ejemplo]
-> En «Seguirle por Port Royal» (Ciudad 6), el jugador revela una carta de Peligro cuyo encuentro de Ciudad pone en juego la carta 230, «Campanas a rebato»: el jugador gana 2 de Avance, coloca las campanas junto a la misión y descarta la carta de Peligro. Cada vez que termina un encuentro posterior, pone 1 ficha sobre las campanas; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador queda rehén. Para quitarlas antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas vuelven al mazo de historia.
+> En «Seguirle por Port Royal» (Ciudad 6), el jugador revela una carta de Peligro cuyo encuentro de Ciudad pone en juego la carta 230, «Campanas a rebato»: el jugador gana 2 de Avance, coloca las campanas junto a la misión y descarta la carta de Peligro. Cada vez que termina un encuentro posterior, pone 1 ficha sobre las campanas; con 3 fichas llega la guarnición, y el Tripulante agotado con menos Vida del jugador se descarta. Para quitarlas antes, su texto ofrece una Acción: agotar a un Oficial (Diego lo es) o superar una Prueba de COM 3. El jugador también podría jugar «Cortar por lo sano». Si supera la misión antes de las 3 fichas, las campanas vuelven al mazo de historia.
 
 #### Pruebas que nacen de una Acción
 
-Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de la bocana», la de «¡A por ellos!», la de «Campanas a rebato»… Esta Prueba se resuelve como cualquier otra: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición. Existen dos diferencias:
+Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de la bocana», la de «Campanas a rebato», la de «¡La guardia!»… Esta Prueba se resuelve como cualquier otra: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición. Existen dos diferencias:
 
 - No tiene Avance propio: el jugador solo gana lo que indique su texto.
 - No puede empezarse durante otra Prueba. Se hace en una ventana de acción fuera de una Prueba, es decir, en la Fase de Reclutamiento o después de resolver una carta de Peligro.
+
+Una **Interrupción** que pide una Prueba, como la de «¡A por ellos!», se hace en el momento en que ocurre lo que indica, aunque haya otra Prueba a medio resolver: esa Prueba queda en suspenso y, al terminar la nueva, se sigue con ella.
+
+> [!ejemplo]
+> El jugador asigna a la Vigía inexperta (Vida 1) y al Matasanos (Vida 2) a «Leva forzosa» (COM 4) y falla: «Descarta al Tripulante asignado con menos Vida», que es la Vigía. Antes de que se descarte, juega «¡A por ellos!» («Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba de COM 3. Si la superas, no se descarta»). La Prueba de «Leva forzosa» queda en suspenso. Asigna al Bucanero veterano, que se había quedado a bordo (COM 2, más 1 por Diego, que sigue preparado): suma 3. Sale el Destino de la carta «Arrecife» (−1): el total baja a 2, no supera la Prueba y la Vigía se descarta. Con un Destino de +0 o mejor, la habría salvado. Después se sigue con «Leva forzosa»: el jugador gana su Avance de Prueba no superada.
 
 > [!ejemplo]
 > En el Mar, el jugador revela una carta de Peligro cuyo encuentro pone en juego la carta 231, «La cadena de la bocana»: mientras siga en juego, no puede superar la misión. Tras resolver el encuentro, usa la Acción de la cadena: «Prueba de COM 5 (4 con un Carpintero)». El jugador tiene preparado al Carpintero de a bordo, así que la Prueba pide 4. Asigna al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añade «¡Al abordaje!»: suma 5. Sale el Destino de la carta «Arrecife» (−1): el total baja a 4 y el jugador supera la Prueba. La cadena vuelve al mazo de historia y el jugador gana 1 de Avance, como indica su texto. Si hubiera fallado la Prueba, el Barco habría sufrido 2 daños.
@@ -486,7 +491,7 @@ Algunas misiones indican que **la misión falla** («Con 3, el espía te descubr
 Un **Pasajero** es una carta que viaja con el jugador, como Don Anselmo, el comerciante, o El guía del istmo. La misión que lo pone en juego lo indica.
 
 - Un Pasajero ocupa 1 de Capacidad. Si al jugador no le queda Capacidad cuando el Pasajero entra en juego, debe devolver un Tripulante al muelle (con sus Mejoras).
-- Un Pasajero no es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, ni quedar rehén, salvo que su carta lo indique.
+- Un Pasajero no es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, salvo que su carta lo indique.
 - Un Pasajero permanece en juego entre misiones hasta que su carta indique que se va. Cuando se va, vuelve al mazo de historia.
 
 #### Retirarte
@@ -566,9 +571,7 @@ Si el daño del Barco llega a su Daño máximo, **el Barco se hunde** y se aplic
 Las cartas de Peligro y de Escenario usan iconos para sus penalizaciones más comunes. La lista completa se encuentra en la Referencia rápida, al final de este reglamento, y cada penalización se explica en la Referencia de reglas. Las más importantes son las siguientes:
 
 - **Pierdes una Mejora:** el jugador elige una Mejora del Barco o de un Tripulante y la descarta.
-- **Rehén:** uno de los Tripulantes del jugador es capturado. Si el jugador supera la misión, lo rescata; si no, el Tripulante se retira del juego y el jugador pierde 1 de reputación.
-  > [!tema]
-  > En el Caribe todo se cambia por algo, también un hombre. Mientras sigas en la misión, aún puedes ir a buscarlo.
+- **Descartar a un Tripulante:** el Tripulante va a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. Si el efecto descartaría al Capitán, el Capitán no se descarta: sufre 1 herida en su lugar.
 - **Pierdes un día:** se descarta la carta superior del mazo de Escenario sin aplicarla.
 
 > [!ejemplo]
@@ -675,16 +678,16 @@ Al construir sus mazos, el jugador debe seguir estas reglas:
 
 ### Abordaje
 
-Abordaje es una palabra clave que aparece en algunos encuentros con Prueba, a veces sola en su efecto de Fallo («**Abordaje**»). Si el jugador falla la Prueba, sufre 1 herida por cada punto que le falte para superarla, hasta un máximo de 3. Si le faltan 3 puntos o más, además uno de los Tripulantes asignados queda rehén.
+Abordaje es una palabra clave que aparece en algunos encuentros con Prueba, sola en su efecto de Fallo («**Abordaje**»). El enemigo salta a la cubierta del jugador: en esa Prueba no se pueden usar Cañones, ni suman ni se pueden agotar sus capacidades. Si el jugador falla la Prueba, sufre 1 herida por cada punto que le falte para llegar a la dificultad, sin máximo.
 
 - Si el jugador falla la Prueba, se considera que le falta al menos 1 punto, aunque la haya fallado por un Destino que dice «Fallas la Prueba».
-- Las heridas las reparte el jugador como quiera entre sus Tripulantes, preparados o agotados, como cualquier otra herida.
-- Si el jugador no ha asignado a ningún Tripulante, o solo al Capitán, el rehén se elige al azar entre sus Tripulantes (nunca el Capitán).
+- Las heridas las reparte el jugador como quiera entre sus Tripulantes, preparados o agotados, Capitán incluido, como cualquier otra herida.
+- La Pólvora del Rey, que es fuego de Cañón, tampoco vale en un Abordaje.
 
 > [!ejemplo]
-> Contra el «Navío de línea de la Armada» (NAV 5, Abordaje), el jugador asigna a Diego (NAV 2) y al Bucanero veterano (NAV 1). Con el +1 del Barco en las Pruebas de NAV en el Mar, suma 4. Sale el Destino de la carta «Arrecife» (−1): el total baja a 3 y le faltan 2 puntos. El jugador sufre 2 heridas, que reparte como quiere entre sus Tripulantes, y ningún Tripulante queda rehén.
+> Contra el «Navío de línea de la Armada» (NAV 4, Abordaje), el jugador asigna a Diego (NAV 2) y al Bucanero veterano (NAV 1); con el +1 del Barco en las Pruebas de NAV en el Mar, suma 4. Lleva la Culebrina de proa, pero en un Abordaje no puede dispararla. Sale el Destino de la carta «Arrecife» (−1): el total baja a 3 y le falta 1 punto. El jugador sufre 1 herida, que le da a quien quiera. Si no hubiera asignado a nadie, le habrían faltado 4 puntos: 4 heridas.
 
-*Véase también:* Rehén.
+*Véase también:* Cañón, Destino.
 
 ### Acción
 
@@ -782,7 +785,7 @@ Una Aventura es una misión suelta de un solo capítulo.
 El Barco del jugador tiene tres valores:
 
 - **Daño máximo:** cuando el daño del Barco llega a este número, el Barco se hunde.
-- **Capacidad:** indica cuántos Tripulantes puede llevar el Barco. El Capitán no cuenta para este límite; los rehenes y los Pasajeros, sí.
+- **Capacidad:** indica cuántos Tripulantes puede llevar el Barco. El Capitán no cuenta para este límite; los Pasajeros, sí.
 - **Espacio:** indica cuánto pueden ocupar en total las Mejoras de barco del jugador.
 
 El Barco recibe daño cuando una carta lo indica, en cualquier Entorno. Ver Daño.
@@ -807,6 +810,7 @@ Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carr
 - **Agota N Cañones:** el jugador elige N de sus Cañones preparados y los agota. Si tiene menos, agota los que tenga. Como pago de un «Elige», solo se ofrece si tiene N Cañones preparados.
 - **Prepara un Cañón:** el jugador elige uno de sus Cañones agotados y lo prepara.
 - **Los Cañones no suman:** lo que un Cañón añade a esa Prueba no cuenta.
+- **Abordaje:** en una Prueba con Abordaje no se pueden usar Cañones: ni suman ni se pueden agotar sus capacidades.
 - Con **Pólvora mojada**, o con «Escasez de pertrechos», los Cañones no se preparan en la Fase de Inicio.
 
 > [!ejemplo]
@@ -838,6 +842,12 @@ El coste de una carta es el número que aparece en el timón. Para pagarlo, el j
 
 - Las cartas descartadas para pagar van a la pila de descartes del mazo del capitán.
 - El Capitán y los Tesoros no tienen coste.
+- Cuando una carta habla del coste de otra («un Tripulante de coste 2 o menos»), se mira siempre el coste impreso en el timón. Los descuentos («cuesta 1 menos») solo rebajan lo que se paga.
+- **Sin coste:** la carta entra en juego sin que el jugador pague nada.
+- **Mitad del coste:** «pagando la mitad de su coste, redondeando hacia arriba» quiere decir que el jugador paga la mitad del coste impreso y, si sale media carta, paga una entera. Un coste de 1 o de 2 se paga con 1 carta; uno de 3 o de 4, con 2. Un descuento rebaja esa cantidad.
+
+> [!ejemplo]
+> El Escenario «Marineros sin barco» pone en el muelle al Contrabandista del bajo Caribe (coste 3): este turno, reclutarlo cuesta 1 menos. Más tarde, en la misión, el jugador supera «Pulso en el muelle»: puede reclutar un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste. El Contrabandista no vale: aunque ese turno le costaría 2, su coste impreso es 3. El Bucanero veterano (coste 2) sí: la mitad de 2 es 1, así que lo recluta descartando 1 carta.
 
 ### Coste de una capacidad (los dos puntos)
 
@@ -873,6 +883,10 @@ Un Tripulante con tantas heridas como su Vida queda derrotado y se descarta junt
 ### Descartar
 
 **Descartas N:** el jugador elige N cartas de su mano y las descarta. **Descartar un encuentro sin resolverlo:** el encuentro no da Avance ni aplica ninguno de sus efectos, y se revela otra carta.
+
+**Descartar a un Tripulante** («Descarta al Tripulante asignado con más EXP»): el Tripulante va a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. Sus Tesoros pasan a otro de los Tripulantes del jugador.
+
+- Si un efecto descartaría al Capitán, el Capitán no se descarta: sufre 1 herida en su lugar.
 
 ### Despedir
 
@@ -953,8 +967,8 @@ Cada carta de Peligro tiene tres encuentros, uno por Entorno. Durante una misió
 
 Enrolado N es una palabra clave de algunos Tripulantes que solo se quedan unos turnos. Al reclutar a un Tripulante con Enrolado N, el jugador pone N fichas de Enrolado sobre él.
 
-- Al final de cada turno, en la Fase de Final de turno, el jugador quita 1 ficha de Enrolado a cada uno de sus Tripulantes Enrolados, estén donde estén: en la tripulación, rehenes o incautados. Cuenta turnos, no misiones: también el turno en que lo recluta y los turnos en que se queda en puerto.
-- El que se queda sin fichas cumple su contrato y se va: pasa a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. Si era rehén o estaba incautado, sale de ahí. No cuenta como derrotado.
+- Al final de cada turno, en la Fase de Final de turno, el jugador quita 1 ficha de Enrolado a cada uno de los Tripulantes Enrolados de su tripulación. Cuenta turnos, no misiones: también el turno en que lo recluta y los turnos en que se queda en puerto.
+- El que se queda sin fichas cumple su contrato y se va: pasa a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. No cuenta como derrotado.
 - Las fichas de Enrolado no se renuevan ni se añaden.
 
 > [!ejemplo]
@@ -1057,12 +1071,11 @@ Si el daño del Barco alcanza su Daño máximo, el Barco se hunde. Cada uno de l
 
 ### Incautado
 
-Incautado es una palabra clave que aparece en el texto de algunos encuentros: cartas de la mano del jugador, una Mejora o un Tripulante se colocan debajo de la carta de misión hasta que se sabe si el jugador supera la misión.
+Incautado es una palabra clave que aparece en el texto de algunos encuentros: cartas de la mano del jugador o una Mejora se colocan debajo de la carta de misión hasta que se sabe si el jugador supera la misión.
 
 - El jugador elige lo que se incauta, salvo que la carta indique «al azar» o «las de más coste». Si la carta indica que debe ser una carta concreta («si llevas el Amuleto, tiene que ser él»), se incauta esa carta.
-- Si el jugador supera la misión, recupera lo incautado: las cartas vuelven a su mano, la Mejora vuelve a su portador (si su portador ya no está en juego, se descarta) y el Tripulante vuelve a su tripulación. Algunas cartas devuelven lo incautado antes («Recupera ya las cartas incautadas»).
-- Si el jugador no supera la misión, pierde lo incautado: sale del juego, salvo que la carta indique que se descarta. Un Tripulante incautado se pierde junto con sus Mejoras.
-- Un Tripulante incautado sigue ocupando su plaza en el Barco.
+- Si el jugador supera la misión, recupera lo incautado: las cartas vuelven a su mano y la Mejora vuelve a su portador (si su portador ya no está en juego, se descarta). Algunas cartas devuelven lo incautado antes («Recupera ya las cartas incautadas»).
+- Si el jugador no supera la misión, pierde lo incautado: sale del juego, salvo que la carta indique que se descarta.
 
 > [!ejemplo]
 > En Ciudad, el jugador revela «Requisa del Santo Oficio»: «Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto, tiene que ser él». El Bucanero lleva el Amuleto vudú, de modo que el Amuleto va debajo de la misión. Si el jugador se retira, pierde el Amuleto y este sale del juego; si supera la misión, el Amuleto vuelve al Bucanero.
@@ -1186,7 +1199,7 @@ La partida de aprendizaje es una forma de jugar sin mazo de Escenario, pensada p
 
 ### Pasajero
 
-Un Pasajero es una carta que viaja con el jugador. Ocupa 1 de Capacidad; si no queda Capacidad cuando entra, el jugador debe devolver un Tripulante al muelle. Un Pasajero no es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, ni quedar rehén, salvo que su carta lo indique. Permanece en juego entre misiones hasta que su carta indique que se va.
+Un Pasajero es una carta que viaja con el jugador. Ocupa 1 de Capacidad; si no queda Capacidad cuando entra, el jugador debe devolver un Tripulante al muelle. Un Pasajero no es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, salvo que su carta lo indique. Permanece en juego entre misiones hasta que su carta indique que se va.
 
 ### Permanente
 
@@ -1239,6 +1252,7 @@ Una Prueba de una Acción es la Prueba que exigen algunas capacidades de Acción
 
 - Esta Prueba no tiene Avance propio: el jugador solo gana lo que indique su texto.
 - No puede hacerse durante otra Prueba; se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro.
+- La Prueba de una Interrupción («¡A por ellos!») se hace en el momento, aunque haya otra Prueba a medio resolver: esa queda en suspenso y, al terminar la nueva, se sigue con ella.
 
 > [!ejemplo]
 > En «La casa del gobernador», la Alarma llega a 3 y la permanente «¡La guardia!» entra en juego junto a la misión. Tras resolver una carta de Peligro, el jugador usa su Acción: Prueba de COM 5, que con el +1 de dificultad de la propia guardia pide 6. Asigna a Diego (COM 3) y al Bucanero veterano (COM 2; no recibe el +1 de Diego, que se agota a la vez) y añade «¡Al abordaje!» (dos iconos de COM): 7. Sale el Destino de la carta «Arrecife» (−1): el total baja a 6 y el jugador supera la Prueba, de modo que ¡La guardia! vuelve al mazo de historia. El jugador no gana Avance por esta Prueba.
@@ -1270,13 +1284,6 @@ Reclutar consiste en pagar el coste de un Tripulante del muelle para que entre e
 
 - El Barco no puede llevar más Tripulantes que su Capacidad. El Capitán no cuenta para este límite.
 - Si un efecto permite reclutar durante una misión, el Tripulante entra preparado y ocupa Capacidad (si no cabe, no puede reclutarse). Este reclutamiento cuenta como reclutar.
-
-### Rehén
-
-Rehén es un efecto por el que uno de los Tripulantes del jugador es capturado. Si había Tripulantes asignados a la Prueba, el jugador elige a uno de ellos; si no, se elige al azar uno de sus Tripulantes. El Tripulante capturado se aparta, pero sigue ocupando Capacidad.
-
-- Si el jugador supera la misión, rescata al Tripulante, que vuelve a su mesa.
-- Si no la supera, el Tripulante se retira del juego junto con sus Mejoras y el jugador pierde 1 de reputación.
 
 ### Reputación
 
@@ -1406,6 +1413,8 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 4. Resuelve la Prueba: superada si tu total es igual o mayor que la dificultad.
 5. Gana el Avance: X si se supera, Y si no («Avance X / Y»).
 
+**Abordaje:** en esa Prueba no se usan Cañones; si fallas, 1 herida por cada punto que te falte (las repartes tú).
+
 ### Iconos de efecto
 
 | Icono | Significa |
@@ -1421,7 +1430,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 | −1 y mapa (mín. 0), en Sin oposición | El encuentro da 1 de Avance menos (sin bajar de 0) |
 | −N y Mejora | Se pierden N Mejoras |
 | −1 día · −1 Mando | Se pierde un día · este turno se roba una carta menos |
-| Rehén · ↩ al muelle · Recluta | Ver sus entradas en la Referencia de reglas |
+| ↩ al muelle · Recluta | Ver sus entradas en la Referencia de reglas |
 | «Añade la carta N» · «Pon la carta N encima» · «Se retira» | Busca esa carta por su número en el mazo de historia (encima: sin barajar) · esta carta sale del juego |
 | Sin fallo (en un Destino) | No se aplica el efecto de fallo |
 | Calavera | Reputación |

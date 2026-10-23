@@ -1,7 +1,8 @@
 // Cartas de jugador 2.0 (fase 6): responden a las reglas nuevas de Peligro (Estados, cartas que se quedan en
-// juego, rehenes, Persigue). 4 Tripulantes y 5 Eventos.
+// juego, Persigue y, desde la fase 14, los descartes de Tripulantes). 4 Tripulantes y 5 Eventos.
 
 import { anotar, nombre } from '../estado.ts'
+import { numeroConIcono, primerNumero, textoDe } from '../textos.ts'
 import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
 import type { FichaTripulante } from '../infoEstados.ts'
 import type { Capacidad, CartaId, Estado, NuevaTarea, Ventana } from '../tipos.ts'
@@ -70,29 +71,22 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
       c.tipo === 'dificultad' && yo !== null && c.claves.includes('Civil') && (ctx.participantes ?? participantes(ctx.s)).includes(yo) ? -1 : 0,
   },
 
-  // Fiador de la Hermandad: «Interrupción: Cuando otro Tripulante vaya a quedar rehén, Fiador de la Hermandad queda
-  // rehén en su lugar. Si lo rescatas, roba 2.»
+  // Fiador de la Hermandad (fase 14, fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a otro
+  // Tripulante, descarta a Fiador de la Hermandad en su lugar y roba 2.» No vale para los que caen por heridas ni para lo
+  // que descarta una permanente (no es una carta de Peligro).
   {
-    clave: 'fiador.rehen',
+    clave: 'fiador.descarte',
     carta: 'fiador',
     ventana: 'interrupcion',
     desde: 'juego',
-    disparo: (s, yo, ev, fase) => fase === 'antes' && ev.tipo === 'rehen' && yo !== null && ev.carta !== yo && s.zonas.tripulacion.includes(yo),
+    disparo: (s, yo, ev, fase) =>
+      fase === 'antes' && ev.tipo === 'descartarTripulante' && ev.dePeligro && yo !== null && ev.carta !== yo && s.zonas.tripulacion.includes(yo),
     efecto: (s, yo, suceso) => {
-      if (yo && suceso?.ev.tipo === 'rehen') {
-        anotar(s, 'efecto', `${nombre(s, yo)} queda rehén en lugar de ${nombre(s, suceso.ev.carta)}.`)
-        suceso.ev.carta = yo
-      }
-      return []
+      if (!yo || suceso?.ev.tipo !== 'descartarTripulante') return []
+      anotar(s, 'efecto', `${nombre(s, yo)} se descarta en lugar de ${nombre(s, suceso.ev.carta)}.`)
+      suceso.ev.carta = yo
+      return [{ tipo: 'robar', n: numeroConIcono(textoDe('fiador'), 'robar') }]
     },
-  },
-  {
-    clave: 'fiador.rescate',
-    carta: 'fiador',
-    ventana: 'obligada',
-    desde: 'juego',
-    disparo: (_s, yo, ev, fase) => fase === 'despues' && ev.tipo === 'rescatado' && ev.carta === yo,
-    efecto: () => [{ tipo: 'robar', n: 2 }],
   },
 
   // Cataplasma: «Quita Envenenado o Sangrando a un Tripulante y cúrale 1 herida.»
@@ -111,22 +105,26 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     efecto: (s) => [{ tipo: 'quitarPermanente', candidatas: cortables(s) }],
   }),
 
-  // ¡A por ellos!: «Acción: Haz una Prueba de COM 3. Si la superas, rescata a todos los rehenes de esta misión:
-  // vuelven preparados.» Es una Prueba normal y solo se juega durante una misión (y no durante otra Prueba, P2).
-  evento('a_por_ellos', 'accion', {
-    requisito: (s) => s.mision !== null && s.mision.fin === null && s.prueba === null,
-    efecto: (_s, yo) =>
-      yo
+  // ¡A por ellos! (fase 14, fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a un
+  // Tripulante, haz una Prueba de COM 3. Si la superas, no se descarta.» No vale para los que caen por heridas. La Prueba
+  // es normal (se asigna, Destino, Sin oposición) y se hace en el momento, aunque haya otra a medio resolver (la del
+  // encuentro que lo descarta): esa se aparta mientras tanto y después se sigue con ella.
+  evento('a_por_ellos', 'interrupcion', {
+    disparo: (_s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'descartarTripulante' && ev.dePeligro,
+    efecto: (_s, yo, suceso) =>
+      yo && suceso
         ? [
             {
               tipo: 'pruebaSuelta',
               fuente: yo,
               paso: 'empezar',
+              anidada: true,
+              cancelaSuceso: suceso.id,
               definicion: {
                 nombre: '¡A por ellos!',
                 palabrasClave: [],
-                opciones: [{ hab: 'COM', dificultad: 3 }],
-                exito: [{ tipo: 'rescatarRehenes', preparados: true }],
+                opciones: [{ hab: 'COM', dificultad: primerNumero(textoDe('a_por_ellos')) }],
+                exito: [],
                 fallo: [],
               },
             },

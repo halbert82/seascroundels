@@ -146,7 +146,7 @@ describe('Tipografía del texto', () => {
   it('en la Referencia, los términos en negrita remiten a su página y cada entrada acaba con «Véase también»', () => {
     const abordaje = r.referencia.entradas.find((e) => e.titulo === 'Abordaje')
     expect(htmlDe(abordaje?.bloques ?? [])).toContain('<a class="pagref" href="#r-prueba"></a>')
-    expect(abordaje?.vease.map((v) => v.titulo)).toEqual(['Rehén', 'Destino'])
+    expect(abordaje?.vease.map((v) => v.titulo)).toEqual(['Cañón', 'Destino'])
     const accion = r.referencia.entradas.find((e) => e.titulo === 'Acción')
     expect(accion?.vease[0]).toEqual({ titulo: 'Capacidades de las cartas', id: 'a-capacidades-de-las-cartas', libro: 'aprende' })
   })

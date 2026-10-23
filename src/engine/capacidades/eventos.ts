@@ -8,7 +8,7 @@ import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
 import { huecosLibres, plazasLibres } from '../valores.ts'
-import { canonesAgotados, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroRevelado, reclutablesGratis } from './comun.ts'
+import { canonesAgotados, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroRevelado } from './comun.ts'
 
 const texto = (id: CartaId) => textoDe(id)
 
@@ -143,11 +143,12 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     },
   }),
   evento('prisionero', 'respuesta', {
-    // «Respuesta: Después de que superes una Prueba de COM, recluta del muelle un Tripulante de coste 2 o menos sin
-    // pagar su coste.» (también si se superó automáticamente, N17)
+    // Fase 14 (Albert): «Respuesta: Después de que superes una Prueba de COM, mira las 3 cartas superiores del mazo de
+    // muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo
+    // de muelle.» (También si se superó automáticamente, N17.) Sin Capacidad no se ofrece: no podrías reclutar a nadie.
     disparo: (s, _yo, ev, fase) =>
-      fase === 'despues' && ev.tipo === 'superarPrueba' && s.prueba?.hab === 'COM' && reclutablesGratis(s, numeroTras(texto('prisionero'), 'coste')).length > 0,
-    efecto: () => [{ tipo: 'reclutarGratis', maxCoste: numeroTras(texto('prisionero'), 'coste') }],
+      fase === 'despues' && ev.tipo === 'superarPrueba' && s.prueba?.hab === 'COM' && plazasLibres(s) >= 1 && s.zonas.mazoMuelle.length + s.zonas.descartesMuelle.length > 0,
+    efecto: () => [{ tipo: 'reclutarDelMazoMuelle', n: numeroTras(texto('prisionero'), 'mira las'), maxCoste: numeroTras(texto('prisionero'), 'coste'), cartas: [] }],
   }),
   evento('animo', 'respuesta', {
     // «Respuesta: Después de que falles una Prueba, roba 2.»

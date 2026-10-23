@@ -135,21 +135,23 @@ describe('224 · El guardián de jade', () => {
 })
 
 describe('130 · Galeón de la plata', () => {
-  it('antes de comprometer puedes agotar un Cañón: −2; si superas, robas 2 y preparas un Cañón', () => {
+  it('COM 4 (fase 14); antes de comprometer puedes agotar un Cañón: −2; si superas, robas 2 y preparas un Cañón', () => {
     const j = en('mar', ['galeon', 'calma', 'calma'], { barco: { mejoras: ['bronce'] } })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elige', carta: 'galeon' } })
     j.opcion('0').comprometer('COM', ['capitan'])
-    expect(dificultadConDestino(j.estado)).toBe(3)
+    expect(dificultadConDestino(j.estado)).toBe(2)
     j.seguir()
     expect(robas(j, 2)).toBe(true)
     expect(j.copia('bronce').agotada).toBe(false)
   })
 
-  it('sin Cañones preparados no se pregunta; Abordaje: sin nadie, te faltan 5 → 3 heridas', () => {
-    const j = en('mar', ['galeon', 'calma', 'calma'])
+  it('sin Cañones preparados no se pregunta; Abordaje: sin nadie, te faltan 4 → 4 heridas, sin máximo (fase 14)', () => {
+    const j = en('mar', ['galeon', 'calma', 'calma'], { tripulacion: ['isabela', 'bucanero'] })
     expect(j.decision.tipo).toBe('comprometer')
     j.comprometer('COM').seguir()
-    expect(j.copia('capitan').heridas).toBe(3)
+    expect(j.registro).toContain('Abordaje: te faltan 4 puntos: 4 heridas.')
+    j.repartir({ capitan: 2, isabela: 1, bucanero: 1 })
+    expect([j.copia('capitan').heridas, j.copia('isabela').heridas, j.copia('bucanero').heridas]).toEqual([2, 1, 1])
   })
 })
 
@@ -188,10 +190,16 @@ describe('132 · Fuego de cobertura', () => {
 })
 
 describe('133 · Marineros del galeón hundido', () => {
-  it('NAV 2: si superas, reclutas gratis un Tripulante de coste 2 o menos (sin Capacidad, robas 1); si fallas, agotas 1', () => {
-    const j = en('mar', ['naufragos_g', 'calma', 'calma'], { muelle: ['bucanero'] })
-    j.comprometer('NAV', ['capitan']).seguir().elegir('bucanero')
+  it('NAV 2: si superas, reclutas uno de coste 2 o menos pagando la mitad de su coste (fase 14; sin Capacidad, robas 1)', () => {
+    const j = en('mar', ['naufragos_g', 'calma', 'calma'], { muelle: ['bucanero', 'contrabandista'], mano: ['ojo', 'timon'] })
+    j.comprometer('NAV', ['capitan']).seguir()
+    // El Contrabandista (coste 3) no vale; el Bucanero veterano (coste 2) cuesta la mitad: 1 carta.
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'mitadDelMuelle' } })
+    expect(j.decision.tipo === 'elegirCartas' && j.decision.candidatas.map((c) => j.estado.cartas[c]?.id)).toEqual(['bucanero'])
+    j.elegir('bucanero').elegir('ojo')
     expect(j.zona('tripulacion')).toContain('bucanero')
+    expect(j.zona('mano')).toEqual(['timon'])
+    expect(j.registro).toContain('Reclutas a Bucanero veterano pagando la mitad de su coste.')
     const lleno = en('mar', ['naufragos_g', 'calma', 'calma'], { muelle: ['bucanero'], tripulacion: ['grumete', 'marinero_p', 'saqueador', 'canonero'] })
     lleno.comprometer('NAV', ['capitan']).seguir()
     expect(robas(lleno, 1)).toBe(true)
@@ -236,18 +244,23 @@ describe('225 · Cofres por la borda', () => {
 })
 
 describe('095 · La Armada te persigue (rehecha, P51)', () => {
-  it('Mar · Navío de línea: NAV 5 y los Cañones no suman; si superas, +1 Avance y la carta se queda en el mazo', () => {
-    const j = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: ['bronce'] } })
+  it('Mar · Navío de línea: NAV 4 (fase 14) y, con Abordaje, sin Cañones; si superas, +1 Avance y la carta se queda en el mazo', () => {
+    const j = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['viejo_lobo'], barco: { mejoras: ['culebrina'] } })
     expect(j.registro).toContain('Revelas «La Armada te persigue»: Navío de línea de la Armada (Mar).')
-    resolver(j.comprometer('NAV', ['capitan', 'viejo_lobo']))
+    j.comprometer('NAV', ['capitan', 'viejo_lobo'])
+    expect(dificultadConDestino(j.estado)).toBe(4)
+    expect(j.ofreceCapacidad('culebrina.disparar')).toBe(false)
+    resolver(j)
     expect(j.registro).toContain('La Armada te persigue: +1 de Avance (1/5).')
     expect(j.zona('descartesPeligros')).toContain('armada')
     expect(j.zona('fueraDeJuego')).not.toContain('armada')
   })
 
-  it('Mar · Abordaje: sin nadie comprometido, te faltan 5 → 3 heridas', () => {
-    const k = en('mar', ['armada', 'calma', 'calma'])
+  it('Mar · Abordaje: sin nadie asignado (total 0), te faltan 4 → 4 heridas, sin máximo (fase 14)', () => {
+    const k = en('mar', ['armada', 'calma', 'calma'], { tripulacion: ['isabela'] })
     k.comprometer('NAV').seguir()
+    expect(k.registro).toContain('Abordaje: te faltan 4 puntos: 4 heridas.')
+    k.repartir({ capitan: 3, isabela: 1 })
     expect(k.copia('capitan').heridas).toBe(3)
     expect(k.zona('descartesPeligros')).toContain('armada')
   })
@@ -262,13 +275,13 @@ describe('095 · La Armada te persigue (rehecha, P51)', () => {
     expect(k.estadosBarco).toContain('perseguido')
   })
 
-  it('Ciudad · Registro casa por casa: EXP 4; si superas, +1 Avance; si fallas, el comprometido con más EXP queda rehén', () => {
+  it('Ciudad · Registro casa por casa: EXP 4; si superas, +1 Avance; si fallas, descarta al asignado con más EXP (fase 14)', () => {
     const j = en('ciu', ['armada', 'calma', 'calma'], { tripulacion: ['baqueano', 'herbolaria'] })
     resolver(j.comprometer('EXP', ['baqueano', 'herbolaria']))
     expect(j.registro).toContain('La Armada te persigue: +1 de Avance (1/4).')
     const k = en('ciu', ['armada', 'calma', 'calma'], { tripulacion: ['vigia'] })
-    k.comprometer('EXP', ['capitan', 'vigia']).seguir()
-    expect(k.zona('rehenes')).toEqual(['vigia'])
+    k.comprometer('EXP', ['capitan', 'vigia']).seguir().pasarOfertas()
+    expect(k.zona('descartesMuelle')).toContain('vigia') // EXP 2 contra la 1 de Diego
   })
 
   it('Destino «Velas en el horizonte»: −1 en cualquier encuentro (fase 13, I1: fuera el −2 con #Armada#, #Militar# o #Guardia#); Sin oposición, el Barco queda Perseguido', () => {

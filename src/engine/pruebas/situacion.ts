@@ -325,11 +325,11 @@ export function comprobarInvariantes(s: Estado, { json = true }: { json?: boolea
     if (arriba?.id !== s.pendiente.tarea) throw new Error('La decisión pendiente no es de la tarea de arriba')
   }
 
-  const enJuego = [...s.zonas.tripulacion, ...s.zonas.mejoras, ...s.zonas.rehenes]
+  const enJuego = [...s.zonas.tripulacion, ...s.zonas.mejoras]
   for (const m of s.zonas.mejoras) {
     const v = s.cartas[m]?.vinculadaA
     const reasignando = s.pila.some((t) => t.tipo === 'reasignarTesoro' && t.tesoro === m)
-    const portadorEnJuego = v && v !== 'barco' && (s.zonas.tripulacion.includes(v) || s.zonas.rehenes.includes(v) || s.zonas.incautadas.includes(v))
+    const portadorEnJuego = v && v !== 'barco' && s.zonas.tripulacion.includes(v)
     if (v !== 'barco' && !portadorEnJuego && !reasignando) {
       throw new Error(`La Mejora ${m} no está vinculada a nada`)
     }
@@ -600,7 +600,7 @@ export class Jugador {
 
   /** La primera copia de una carta (en juego si la hay). */
   copia(id: CartaId): Copia {
-    return copiaDe(this.estado, this.inst(id, ['tripulacion', 'mejoras', 'rehenes', ...ZONAS]))
+    return copiaDe(this.estado, this.inst(id, ['tripulacion', 'mejoras', ...ZONAS]))
   }
 
   zonaDe(id: CartaId): Zona {

@@ -28,7 +28,6 @@ export const ICONOS = [
   'mejora',
   'capacidad',
   'MAN',
-  'rehen',
   'sinop',
   'espacio',
   'saco',
