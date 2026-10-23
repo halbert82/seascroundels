@@ -73,6 +73,11 @@ describe('Prueba masiva: mazos de muelle variados', () => {
       const p = jugarPartida(semilla, jugador, { invariantes: i < 40, mazoDeMuelle })
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }
+    // Las seis cartas de la fase 14, con el muelle de inicio (que las lleva todas) y el jugador con criterio.
+    for (let i = 0; i < 100; i++) {
+      const p = jugarPartida(9000 + i, criterio)
+      for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
+    }
     // El Mascarón del galeón solo llega como Tesoro de «La huida con la plata» (Flota IV): desde la fase 8 se usa en
     // ~1 de cada 2400 partidas. La Espada del sacerdote, Tesoro de «El templo» (Templo IV), desde el Avance 1 / 1 y
     // 3 / 2 (19 de octubre de 2026) se usa en ~1 de cada 900. Las dos tienen su propia prueba (cartas-mejoras).

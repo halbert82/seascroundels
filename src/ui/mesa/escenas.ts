@@ -224,8 +224,8 @@ function dosDestinos(): PartidaEnMesa {
 }
 
 /**
- * Fase 14, en puerto: dos Enrolados con sus fichas (al Piloto le queda 1), la Carne de cañón herida y El Tuerto con 2
- * heridas (COM 3); en el muelle, la Guía de alquiler y el Galeote fugado.
+ * Fase 14, en puerto: dos Enrolados con sus fichas (al Piloto le queda 1: se va al final de este turno), la Carne de
+ * cañón herida y El Tuerto con 2 heridas (COM 3); en el muelle, la Guía de alquiler y el Galeote fugado.
  */
 function tripulacionDePaso(): PartidaEnMesa {
   const j = Jugador.en({

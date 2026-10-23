@@ -76,7 +76,7 @@ export interface Copia {
   junto?: InstId
   /** Permanente: la carta del encuentro que la puso en juego (su «Al revelarse» señala a quién afecta). */
   origen?: InstId
-  /** Fase 14: fichas de Enrolado que le quedan a un Tripulante «Enrolado N» (se quita 1 al terminar cada misión). */
+  /** Fase 14: fichas de Enrolado que le quedan a un Tripulante «Enrolado N» (se quita 1 al final de cada turno). */
   enrolado?: number
 }
 
@@ -395,7 +395,7 @@ export type Evento =
 // ---------------------------------------------------------------------------
 // Tareas: pasos de reglas pendientes. Son datos, para que la partida se pueda guardar en cualquier momento.
 
-export type PasoTurno = 'inicio' | 'jugar' | 'quedarseOZarpar' | 'final' | 'robar' | 'cierre'
+export type PasoTurno = 'inicio' | 'jugar' | 'quedarseOZarpar' | 'final' | 'robar' | 'enrolado' | 'cierre'
 
 export type Tarea = { id: number } & (
   | { tipo: 'cambioMano' }

@@ -34,7 +34,7 @@ export function claseDe(id: CartaId): string {
 }
 
 /**
- * Fase 14: el mazo de muelle de inicio lleva 26 cartas para probar los seis Tripulantes nuevos (Enrolado y Desgaste).
+ * Fase 14: el mazo de muelle de inicio lleva 26 cartas para probar los seis Tripulantes nuevos (241–246).
  * El reglamento sigue diciendo de 15 a 20.
  * TODO(regla): excepción temporal de la fase 14; quitar cuando se rehagan los mazos de inicio.
  */

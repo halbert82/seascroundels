@@ -175,7 +175,6 @@ export const CLAVES_REGLA = [
   'pasajero',
   'indestructible',
   'enrolado',
-  'desgaste',
   'otear',
   'entrenamiento',
   'tesoro',
@@ -344,14 +343,8 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   enrolado: regla(
     'enrolado',
     'Enrolado',
-    'Enrolado N: al reclutarlo, recibe N fichas de Enrolado. Al terminar cada misión (superada, retirada, fallada o con el Barco hundido) pierde 1. Cuando no le queda ninguna, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
-    { rotulo: 'Detalles', texto: 'No cuenta como derrotado. Las fichas no se renuevan ni se añaden. Si te quedas en puerto, no pierde ninguna.' },
-  ),
-  desgaste: regla(
-    'desgaste',
-    'Desgaste',
-    'Después de resolver una Prueba a la que esté asignado, este Tripulante sufre 1 herida. Suma a la Prueba con normalidad: la herida llega al final.',
-    { rotulo: 'Detalles', texto: 'La herida es suya, no la repartes. Vale también en las Pruebas Sin ayuda y en las de una Acción.' },
+    'Enrolado N: al reclutarlo, recibe N fichas de Enrolado. Al final de cada turno pierde 1, hayas zarpado o no. Cuando no le queda ninguna, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
+    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas. Pierde la ficha esté donde esté: en la tripulación, rehén o incautado. No cuenta como derrotado. Las fichas no se renuevan ni se añaden.' },
   ),
   otear: regla(
     'otear',
@@ -554,7 +547,6 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   pasajero: /\bPasajeros?\b/,
   indestructible: /\bIndestructible\b/,
   enrolado: /\bEnrolado \d/,
-  desgaste: /^Desgaste\b/,
   otear: /\b[Oo]tea\b|\bOtear\b/,
   entrenamiento: /\bEntrenamiento\b/,
   // Por el tipo de carta (ver ayudasDeCarta).

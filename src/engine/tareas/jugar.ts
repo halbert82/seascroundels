@@ -83,7 +83,7 @@ export const reclutar: Manejador<'reclutar'> = (s, t) => {
   const fichas = enroladoDe(recluta.id)
   if (fichas !== null) {
     recluta.enrolado = fichas
-    anotar(s, 'efecto', `${nombre(s, t.carta)} se enrola por ${fichas} ${fichas === 1 ? 'misión' : 'misiones'}: ${fichas} ${fichas === 1 ? 'ficha' : 'fichas'} de Enrolado.`)
+    anotar(s, 'efecto', `${nombre(s, t.carta)} se enrola por ${fichas} ${fichas === 1 ? 'turno' : 'turnos'}: ${fichas} ${fichas === 1 ? 'ficha' : 'fichas'} de Enrolado.`)
   }
   encolar(s, { tipo: 'evento', ev: { tipo: 'reclutar', carta: t.carta }, fase: 'antes', cancelado: false, usadas: [] })
   return 'hecha'

@@ -8,7 +8,6 @@ import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { devolverPeligros, persigueVigente } from '../peligros.ts'
 import { agotar } from '../estados.ts'
 import { rescatarRehen } from './peligros2.ts'
-import { quitarFichasDeEnrolado } from './tripulacion.ts'
 import { numeroConIcono, textoDe } from '../textos.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { navParaDistancia, valor } from '../valores.ts'
@@ -248,13 +247,11 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   const gesta = reglas?.gesta?.(s) ?? false
   const conTesoro = reglas?.conTesoro?.(s) ?? true
   const elegido = reglas?.siguiente?.(s)
-  // Fase 14: los Enrolados pierden su ficha nada más terminar (antes de rescatar a los rehenes y de la recompensa).
-  const contratos = quitarFichasDeEnrolado(s)
   for (const h of [...s.zonas.rehenes]) rescatarRehen(s, h)
   const habiaIncautadas = s.zonas.incautadas.length > 0
   recuperarIncautadas(s)
   const r = e.carta.recompensa
-  const tareas: NuevaTarea[] = [...contratos]
+  const tareas: NuevaTarea[] = []
   // «Si superas la misión, las recuperas y robas 2».
   if (habiaIncautadas && m.alRecuperar && m.alRecuperar.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: m.alRecuperar, contexto: 'efecto' })
   if (r.elige && r.elige.length > 0) tareas.push({ tipo: 'elegirFinal', mision: m.carta })
@@ -353,8 +350,7 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
       necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
       ...(m.motivoFallo ? { motivo: m.motivoFallo } : {}),
     })
-    // Fase 14: los Enrolados pierden su ficha nada más terminar (antes de perder a los rehenes).
-    const tareas: NuevaTarea[] = [...quitarFichasDeEnrolado(s)]
+    const tareas: NuevaTarea[] = []
     // Saqueo (La casa del gobernador): si te retiras por tu cuenta entre dos Peligros, cobras según tu Avance.
     if (m.fin === 'retirada' && m.retiradaVoluntaria && reglas?.alRetirarte) tareas.push(...reglas.alRetirarte(s, avance))
     copia(s, m.carta).avance = 0

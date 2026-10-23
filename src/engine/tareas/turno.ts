@@ -9,6 +9,7 @@ import type { InstId, NuevaTarea } from '../tipos.ts'
 import { puedeZarpar } from './mision.ts'
 import { arriba, mover } from '../zonas.ts'
 import { robarCartas } from './cartas.ts'
+import { quitarFichasDeEnrolado } from './tripulacion.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
 /** Cambio de mano antes del primer turno: descarta las que quieras y roba otras tantas. */
@@ -117,9 +118,14 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
         { tipo: 'estadosFinTurno', paso: 'veneno', pendientes: [] },
         ...naufragos,
       )
-      t.paso = 'cierre'
+      t.paso = 'enrolado'
       return 'sigue'
     }
+    case 'enrolado':
+      // Fase 14, «Enrolado N»: lo último del Final de turno, después de los efectos «al final de cada turno».
+      encolar(s, ...quitarFichasDeEnrolado(s))
+      t.paso = 'cierre'
+      return 'sigue'
     case 'cierre': {
       // Lo que dura «este turno» se acaba; lo de «tu próximo turno» empieza a contar ahora.
       s.temporales = s.temporales.filter((x) => x.hasta !== 'finTurno' || (x.desdeTurno ?? 0) > s.turno)

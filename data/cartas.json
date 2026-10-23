@@ -479,7 +479,7 @@
    "vida": 2,
    "mejoras": 1,
    "texto": "Enrolado 2.",
-   "ambientacion": "«Mi espada es vuestra hasta el día de paga. Después, ya veremos.»"
+   "ambientacion": "«Mi espada es vuestra hasta el día de paga.»"
   },
   {
    "id": "piloto_sueldo",
@@ -499,7 +499,7 @@
    "vida": 2,
    "mejoras": 1,
    "texto": "Enrolado 2.",
-   "ambientacion": "«Conozco cada bajío de aquí a Maracaibo. Lo que no conozco es la lealtad.»"
+   "ambientacion": "«Conozco cada bajío de aquí a Maracaibo.»"
   },
   {
    "id": "guia_alquiler",
@@ -532,11 +532,11 @@
    "unico": false,
    "coste": 1,
    "NAV": 0,
-   "COM": 3,
+   "COM": 2,
    "EXP": 0,
    "vida": 2,
    "mejoras": 0,
-   "texto": "Desgaste.",
+   "texto": "Sufre {1 herida}: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.)",
    "ambientacion": "«El primero en saltar al abordaje. El primero en sangrar.»"
   },
   {
@@ -555,8 +555,8 @@
    "EXP": 0,
    "vida": 3,
    "mejoras": 0,
-   "texto": "Desgaste.",
-   "ambientacion": "«Veinte años remando encadenado. Ahora rema suelto, hasta que se le abren las manos.»"
+   "texto": "Sufre {1 herida}: Galeote fugado recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.)",
+   "ambientacion": "«Veinte años remando encadenado.»"
   },
   {
    "id": "tuerto",
@@ -575,7 +575,7 @@
    "vida": 3,
    "mejoras": 1,
    "texto": "El Tuerto recibe {+1 COM} por cada herida que tenga.",
-   "ambientacion": "«Cada cicatriz le enseñó algo. La del ojo, a no perdonar.»"
+   "ambientacion": "«Cada cicatriz le enseñó algo.»"
   }
  ],
  "mejorasBarco": [

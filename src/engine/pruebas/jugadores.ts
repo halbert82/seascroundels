@@ -3,7 +3,7 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { costeImpreso, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tieneDesgaste, tipoDe } from '../catalogo.ts'
+import { costeImpreso, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
@@ -100,15 +100,13 @@ function vidaRestante(s: Estado, c: InstId): number {
 }
 
 /**
- * Fase 14: lo que vale de menos un Tripulante por sus palabras clave. Un Enrolado se va pronto (medio punto menos por
- * cada misión que le falte para llegar a 3); uno con Desgaste paga una herida en cada Prueba.
+ * Fase 14: lo que vale de menos un Enrolado, que se va pronto: 0,6 puntos menos por cada turno que le falte para llegar
+ * a 3. Sus fichas cuentan turnos (se quita una al final de cada turno, también si se queda en puerto): con 1 ficha está
+ * en su último turno.
  */
 function ajustePalabrasClave(id: string, enrolado?: number): number {
   const fichas = enrolado ?? enroladoDe(id)
-  let n = 0
-  if (fichas !== null) n -= Math.max(0, 3 - fichas) * 0.5
-  if (tieneDesgaste(id)) n -= 0.6
-  return n
+  return fichas === null ? 0 : -Math.max(0, 3 - fichas) * 0.6
 }
 
 /** Valor de un Tripulante en juego: sus habilidades (el Capitán vale mucho más: si cae, se pierde). */
@@ -162,14 +160,6 @@ function despidoQueConviene(s: Estado): InstId | null {
   return Math.max(...nuevos) - quedarse(peor) >= 2 ? peor : null
 }
 
-/** Fase 14 · Desgaste: lo que cuesta asignarlo (una herida; si lo mata, mucho más). */
-function costeDesgaste(s: Estado, c: InstId): number {
-  if (!tieneDesgaste(copia(s, c).id)) return 0
-  return vidaRestante(s, c) <= 1 ? 4 : 0.6
-}
-
-const desgasteLetal = (s: Estado, c: InstId): boolean => tieneDesgaste(copia(s, c).id) && vidaRestante(s, c) <= 1
-
 const MEJORAS_PREFERIDAS: Record<string, number> = {
   vela: 5,
   chalupa: 4,
@@ -213,6 +203,8 @@ const CAPACIDAD_TRIPULANTE: Record<string, number> = {
   grumete: 1,
   saqueador: 0.5,
   filibustero: 0.5,
+  carne_canon: 0.5,
+  galeote: 0.5,
   canonero: 0.5,
   vigia: 0.5,
   loro: 0.5,
@@ -308,18 +300,16 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
       }
       if (total < sinCartas.dificultad) continue
       const coste =
-        grupo.reduce((n, c) => n + (c === s.capitan ? 2.5 : 1 + valorTripulante(s, c) / 8) + costeDesgaste(s, c), 0) + usadas.length * 0.8 - (total >= objetivo ? 0.5 : 0)
+        grupo.reduce((n, c) => n + (c === s.capitan ? 2.5 : 1 + valorTripulante(s, c) / 8), 0) + usadas.length * 0.8 - (total >= objetivo ? 0.5 : 0)
       if (!mejor || coste < mejor.coste) mejor = { coste, eleccion: { tipo: 'compromiso', opcion, tripulantes: grupo, cartas: usadas } }
     }
   }
-  // Fase 14: a un Tripulante con Desgaste al que la herida mataría solo lo asigna si la Prueba lo merece (fallar duele).
-  const conLetal = mejor?.eleccion.tipo === 'compromiso' && mejor.eleccion.tripulantes.some((c) => desgasteLetal(s, c))
-  if (mejor && !(conLetal && peligroDeFallo(s, encuentro) < 2)) return mejor.eleccion
+  if (mejor) return mejor.eleccion
   // No llega: si el fallo es suave, no compromete a nadie; si duele, lo intenta con todo.
   if (peligroDeFallo(s, encuentro) < 2) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   const hab = d.opciones[0]!.hab
   const def = definicionActual(s)
-  let todos = tripulantes.filter((c) => !desgasteLetal(s, c))
+  let todos = [...tripulantes]
   // Con todo lo que valga: si no se puede con todos (Sin ayuda, «como mucho 2»…), con el mejor que se pueda.
   if (problemaCompromiso(s, def, hab, todos, []) !== null) {
     const mejores = [...tripulantes].sort((a, b) => valor(s, { tipo: 'habilidad', carta: b, hab }) - valor(s, { tipo: 'habilidad', carta: a, hab }))
@@ -850,11 +840,17 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'capitan2.agotar':
       return d.motivo.clave === 'jugarCartas' && plazasLibres(s) >= 1 && s.zonas.muelle.some((c) => porId(copia(s, c).id).tipo === 'tripulante') ? 1 : 0
     // Sumar en la Prueba (solo si hace falta)
-    case 'filibustero.furia': {
-      if (!enPruebaAbierta || p?.hab !== 'COM' || !fuente || !participantesDe(s).includes(fuente) || p.falla) return 0
+    case 'filibustero.furia':
+    case 'galeote.esfuerzo':
+    case 'carne_canon.esfuerzo': {
+      // Fase 14: solo si le falta poco para superarla y la herida no lo derrota. La Carne de cañón da +1 a cada uno de
+      // los demás asignados; el Filibustero (COM) y el Galeote (NAV), +2 a sí mismos.
+      const hab = uso.clave === 'galeote.esfuerzo' ? 'NAV' : 'COM'
+      if (!enPruebaAbierta || p?.hab !== hab || !fuente || !participantesDe(s).includes(fuente) || p.falla) return 0
+      const suma = uso.clave === 'carne_canon.esfuerzo' ? participantesDe(s).filter((c) => c !== fuente).length : 2
       const total = totalPrueba(s)
       const dificultad = dificultadPrueba(s)
-      return total < dificultad && total + 2 >= dificultad && vidaRestante(s, fuente) >= 2 ? 3 : 0
+      return suma > 0 && total < dificultad && total + suma >= dificultad && vidaRestante(s, fuente) >= 2 ? 3 : 0
     }
     case 'bronce.disparar':
     case 'culebrina.disparar':

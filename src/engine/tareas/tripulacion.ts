@@ -22,16 +22,15 @@ const MOTIVOS: Record<string, string> = {
 }
 
 /**
- * Fase 14, «Enrolado N»: al terminar cada misión (superada, retirada, fallada o con el Barco hundido) cada Tripulante
- * Enrolado de la tripulación pierde 1 ficha; el que se queda sin ninguna se va a la pila de descartes del muelle con sus
- * Mejoras, como al despedirlo (no cuenta como derrotado). Se hace nada más terminar, antes de la recompensa y de rescatar
- * o perder a los rehenes.
- * TODO(regla): por defecto, antes de la recompensa (deja la plaza libre para «Recluta sin coste…») y solo los de la
- * tripulación: un rehén o un Tripulante incautado no pierde ficha mientras esté fuera (P86 y P87, pendientes de Albert).
+ * Fase 14, «Enrolado N» (Albert): al final de cada turno, en la Fase de Final de turno, cada Tripulante Enrolado pierde
+ * 1 ficha, esté donde esté (en la tripulación, rehén o incautado). Cuenta turnos, no misiones: también el turno en que
+ * se recluta y los turnos en que el jugador se queda en puerto. El que se queda sin ninguna se va a la pila de descartes
+ * del muelle con sus Mejoras, como al despedirlo (si era rehén o estaba incautado, sale de ahí); no cuenta como
+ * derrotado.
  */
 export function quitarFichasDeEnrolado(s: Estado): NuevaTarea[] {
   const tareas: NuevaTarea[] = []
-  for (const c of s.zonas.tripulacion) {
+  for (const c of [...s.zonas.tripulacion, ...s.zonas.rehenes, ...s.zonas.incautadas]) {
     const t = copia(s, c)
     if (c === s.capitan || t.enrolado === undefined || t.enrolado <= 0) continue
     t.enrolado--

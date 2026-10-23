@@ -1,12 +1,19 @@
-// Fase 14 · Rotación de la tripulación: las palabras clave Enrolado y Desgaste y los seis Tripulantes nuevos (241–246).
+// Fase 14 · Rotación de la tripulación: la palabra clave Enrolado y los seis Tripulantes nuevos (241–246).
 
 import { describe, expect, it } from 'vitest'
 
 import { porId } from './catalogo.ts'
 import { Jugador, totalSinDestinoPrueba } from './pruebas/situacion.ts'
+import type { Eleccion } from './tipos.ts'
 import { valor } from './valores.ts'
+import { mover } from './zonas.ts'
 
 const nuevas = ['soldado_fortuna', 'piloto_sueldo', 'guia_alquiler', 'carne_canon', 'galeote', 'tuerto']
+const DIAS = ['pruebas-calma', 'pruebas-calma', 'pruebas-calma', 'pruebas-calma']
+const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'ojo', 'timon', 'coraje', 'ojo']
+
+/** La capacidad que usa el jugador automático con esta elección (null si no usa ninguna). */
+const usada = (e: Eleccion): string | null => (e.tipo === 'usar' ? e.uso.clave : e.tipo === 'accion' && e.accion.tipo === 'usar' ? e.accion.uso.clave : null)
 
 describe('Fase 14 · Los seis Tripulantes nuevos', () => {
   it('están en la colección (241–246) con sus números, y en el mazo de muelle de inicio', async () => {
@@ -19,103 +26,104 @@ describe('Fase 14 · Los seis Tripulantes nuevos', () => {
 })
 
 describe('Enrolado N', () => {
-  it('ejemplo del reglamento: el Piloto a sueldo entra con 2 fichas al reclutarlo', () => {
-    const j = Jugador.en({ muelle: ['piloto_sueldo'], mano: ['ojo', 'ojo', 'timon'] })
+  it('al reclutarlo entra con N fichas; los demás Tripulantes no llevan', () => {
+    const j = Jugador.en({ muelle: ['piloto_sueldo', 'bucanero'], mano: ['ojo', 'ojo', 'timon', 'timon'] })
     j.reclutar('piloto_sueldo').elegir('ojo', 'ojo')
     expect(j.zona('tripulacion')).toContain('piloto_sueldo')
     expect(j.copia('piloto_sueldo').enrolado).toBe(2)
-    expect(j.registro).toContain('Piloto a sueldo se enrola por 2 misiones: 2 fichas de Enrolado.')
-  })
-
-  it('al terminar una misión superada pierde 1 ficha; al terminar la segunda, cumple su contrato y se va con sus Mejoras (no queda derrotado)', () => {
-    // «Chubasco repentino» (NAV 2, Avance 2): con 1 de Avance, la misión de 3 se supera.
-    const mision = (enrolado: number) =>
-      Jugador.enMision({
-        misiones: ['pruebas-mar3'],
-        avance: { 'pruebas-mar3': 1 },
-        tripulacion: [{ id: 'piloto_sueldo', enrolado, mejoras: ['brujula'] }],
-        mazoPeligros: ['chubasco', 'chubasco', 'calma'],
-      })
-        .comprometer('NAV', ['capitan'])
-        .pasarOfertas()
-        .seguir()
-    const primera = mision(2)
-    expect(primera.registro.some((r) => r.startsWith('¡Superas'))).toBe(true)
-    expect(primera.copia('piloto_sueldo').enrolado).toBe(1)
-    expect(primera.registro).toContain('Piloto a sueldo pierde 1 ficha de Enrolado: le queda 1.')
-    const segunda = mision(1)
-    expect(segunda.zona('tripulacion')).not.toContain('piloto_sueldo')
-    expect(segunda.zona('descartesMuelle')).toEqual(expect.arrayContaining(['piloto_sueldo', 'brujula']))
-    expect(segunda.registro.some((r) => r.startsWith('Piloto a sueldo cumple su contrato y se va'))).toBe(true)
-    expect(segunda.estado.registro.some((r) => r.dato?.tipo === 'derrota')).toBe(false)
-  })
-
-  it('también al retirarse de la misión (o al fallarla): pierde 1 ficha', () => {
-    const j = Jugador.enMision({
-      misiones: ['pruebas-mar5'],
-      tripulacion: [{ id: 'soldado_fortuna', enrolado: 1 }],
-      mazoPeligros: ['chubasco', 'chubasco', 'calma'],
-    })
-    j.comprometer('NAV', ['capitan']).pasarOfertas().seguir().retirarse().opcion('dejar')
-    expect(j.zona('tripulacion')).not.toContain('soldado_fortuna')
-    expect(j.zona('descartesMuelle')).toContain('soldado_fortuna')
-  })
-
-  it('si te quedas en puerto ese turno, no pierde ninguna ficha', () => {
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: [{ id: 'guia_alquiler', enrolado: 1 }] })
-    j.opcion('quedarse').opcion('taberna').opcion('astillero')
-    expect(j.zona('tripulacion')).toContain('guia_alquiler')
-    expect(j.copia('guia_alquiler').enrolado).toBe(1)
-  })
-
-  it('los demás Tripulantes no llevan fichas de Enrolado', () => {
-    const j = Jugador.en({ muelle: ['bucanero'], mano: ['ojo', 'ojo', 'timon'] })
-    j.reclutar('bucanero').elegir('ojo', 'ojo')
+    expect(j.registro).toContain('Piloto a sueldo se enrola por 2 turnos: 2 fichas de Enrolado.')
+    j.reclutar('bucanero').elegir('timon', 'timon')
     expect(j.copia('bucanero').enrolado).toBeUndefined()
+  })
+
+  it('ejemplo del reglamento: reclutado en el turno 3, al final del turno 3 le queda 1 ficha y al final del turno 4 se va (sin zarpar)', () => {
+    const j = Jugador.en({ turno: 3, muelle: ['piloto_sueldo'], mano: ['ojo', 'ojo', 'timon'], mazoCapitan: [...MAZO], escenario: [...DIAS] })
+    j.reclutar('piloto_sueldo').elegir('ojo', 'ojo')
+    j.pasarTurnoEnPuerto()
+    expect(j.estado.turno).toBe(4)
+    expect(j.copia('piloto_sueldo').enrolado).toBe(1)
+    expect(j.registro).toContain('Piloto a sueldo pierde 1 ficha de Enrolado: le queda 1.')
+    j.pasarTurnoEnPuerto()
+    expect(j.zona('tripulacion')).not.toContain('piloto_sueldo')
+    expect(j.zona('descartesMuelle')).toContain('piloto_sueldo')
+    expect(j.registro).toContain('Piloto a sueldo cumple su contrato y se va.')
+  })
+
+  it('zarpando: la ficha no se quita al terminar la misión, sino al final del turno; se va con sus Mejoras y no queda derrotado', () => {
+    // «Chubasco repentino» (NAV 2, Avance 2): con 1 de Avance, la misión de 3 se supera.
+    const j = Jugador.enMision({
+      misiones: ['pruebas-mar3'],
+      avance: { 'pruebas-mar3': 1 },
+      tripulacion: [{ id: 'piloto_sueldo', enrolado: 1, mejoras: ['brujula'] }],
+      mazoPeligros: ['chubasco', 'chubasco', 'calma'],
+      mazoCapitan: [...MAZO],
+      escenario: [...DIAS],
+    })
+    j.comprometer('NAV', ['capitan']).pasarOfertas().seguir()
+    expect(j.registro.some((r) => r.startsWith('¡Superas'))).toBe(true)
+    // Ya en el Final de turno: sigue en la tripulación con su ficha.
+    expect(j.zona('tripulacion')).toContain('piloto_sueldo')
+    expect(j.copia('piloto_sueldo').enrolado).toBe(1)
+    if (j.decision.motivo.clave === 'descartarFinal') j.ninguna()
+    j.pasarOfertas()
+    expect(j.zona('tripulacion')).not.toContain('piloto_sueldo')
+    expect(j.zona('descartesMuelle')).toEqual(expect.arrayContaining(['piloto_sueldo', 'brujula']))
+    expect(j.registro.some((r) => r.startsWith('Piloto a sueldo cumple su contrato y se va junto con'))).toBe(true)
+    expect(j.estado.registro.some((r) => r.dato?.tipo === 'derrota')).toBe(false)
+  })
+
+  it('esté donde esté: también pierde la ficha si está rehén, y sale de ahí', () => {
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', tripulacion: [{ id: 'soldado_fortuna', enrolado: 1 }], mazoCapitan: [...MAZO], escenario: [...DIAS] })
+    mover(j.estado, j.inst('soldado_fortuna'), 'rehenes')
+    j.pasarTurnoEnPuerto()
+    expect(j.zona('rehenes')).not.toContain('soldado_fortuna')
+    expect(j.zona('descartesMuelle')).toContain('soldado_fortuna')
   })
 })
 
-describe('Desgaste', () => {
-  it('ejemplo del reglamento: la Carne de cañón (Vida 2) ya tiene 1 herida; asignada, sus 3 de COM suman y después cae', () => {
-    // «Tiburones» (COM 2): Carne de cañón 3 + 1 de Diego.
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: [{ id: 'carne_canon', heridas: 1 }], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
-    j.comprometer('COM', ['carne_canon'])
-    expect(totalSinDestinoPrueba(j.estado)).toBe(4)
-    j.pasarOfertas().seguir()
-    const registro = j.registro
-    const prueba = registro.findIndex((r) => r.startsWith('Total 4 contra 2: superas la Prueba'))
-    const desgaste = registro.indexOf('Desgaste: Carne de cañón paga el esfuerzo.')
-    expect(prueba).toBeGreaterThanOrEqual(0)
-    expect(desgaste).toBeGreaterThan(prueba)
-    expect(j.zona('tripulacion')).not.toContain('carne_canon')
-    expect(j.zona('descartesMuelle')).toContain('carne_canon')
+describe('Carne de cañón', () => {
+  it('sufre 1 herida: los demás asignados a la Prueba de COM (el Capitán también) reciben +1 COM; una vez por turno', () => {
+    // «Piratas rivales» (COM 4): Diego 2, Carne de cañón 2 y Bucanero veterano 2 (Diego, asignado, ya no da su +1).
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['carne_canon', 'bucanero'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
+    j.comprometer('COM', ['capitan', 'carne_canon', 'bucanero'])
+    const antes = totalSinDestinoPrueba(j.estado)
+    expect(j.ofreceCapacidad('carne_canon.esfuerzo')).toBe(true)
+    j.usar('carne_canon.esfuerzo')
+    expect(j.copia('carne_canon').heridas).toBe(1)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(antes + 2)
+    expect(j.ofreceCapacidad('carne_canon.esfuerzo')).toBe(false)
   })
 
-  it('el Galeote fugado suma a una Prueba de NAV y después sufre 1 herida; si no lo asignas, nada', () => {
+  it('si la herida del coste la derrota, los demás conservan su +1 (el coste se da por pagado)', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: [{ id: 'carne_canon', heridas: 1 }, 'bucanero'], mazoPeligros: ['rivales', 'fauna', 'calma'] })
+    j.comprometer('COM', ['carne_canon', 'bucanero'])
+    const bucanero = () => valor(j.estado, { tipo: 'habilidad', carta: j.inst('bucanero'), hab: 'COM' })
+    const antes = bucanero()
+    j.usar('carne_canon.esfuerzo').pasarOfertas()
+    expect(j.zona('tripulacion')).not.toContain('carne_canon')
+    expect(bucanero()).toBe(antes + 1)
+  })
+
+  it('no se ofrece en una Prueba de NAV', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['carne_canon'], mazoPeligros: ['chubasco', 'fauna', 'calma'] })
+    j.comprometer('NAV', ['carne_canon'])
+    expect(j.ofreceCapacidad('carne_canon.esfuerzo')).toBe(false)
+  })
+})
+
+describe('Galeote fugado', () => {
+  it('sufre 1 herida: recibe +2 NAV para esta Prueba; una vez por turno; en una Prueba de COM no se ofrece', () => {
+    // «Chubasco repentino» (NAV 2): Galeote 2 + 1 de Diego + 1 del Barco = 4; con el esfuerzo, 6.
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: ['galeote'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
     j.comprometer('NAV', ['galeote'])
-    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // 2 + 1 de Diego + 1 del Barco
-    j.pasarOfertas().seguir()
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4)
+    j.usar('galeote.esfuerzo')
     expect(j.copia('galeote').heridas).toBe(1)
-    const k = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: ['galeote'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
-    k.comprometer('NAV', ['capitan']).pasarOfertas().seguir()
-    expect(k.copia('galeote').heridas).toBe(0)
-  })
-
-  it('también en una Prueba Sin ayuda: la herida llega después del fallo («La fiera en la bodega»)', () => {
-    // COM 5 Sin ayuda: el Galeote (COM 1 + 1) falla, sufre 2 heridas del fallo y después 1 de Desgaste: cae (Vida 3).
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: ['galeote'], mazoPeligros: ['p2_jaguar', 'chubasco', 'calma'] })
-    j.comprometer('COM', ['galeote']).pasarOfertas().seguir()
-    expect(j.zona('tripulacion')).not.toContain('galeote')
-    expect(j.registro).toContain('Desgaste: Galeote fugado paga el esfuerzo.')
-  })
-
-  it('también en la Prueba de una Acción (la cacería del jaguar, permanente 229)', () => {
-    // COM 5 solo con él: el Galeote falla; «el Tripulante asignado sufre 1 herida» y después 1 de Desgaste.
-    const j = Jugador.enMision({ misiones: ['pruebas-nat3'], tripulacion: ['galeote'], mazoPeligros: ['p2_jaguar', 'chubasco', 'calma'] })
-    j.usar('pm_ojos.accion0').elegir('galeote')
-    j.comprometer('COM', ['galeote']).pasarOfertas().seguir()
-    expect(j.copia('galeote').heridas).toBe(2)
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6)
+    expect(j.ofreceCapacidad('galeote.esfuerzo')).toBe(false)
+    const k = Jugador.enMision({ misiones: ['pruebas-mar5'], tripulacion: ['galeote'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    k.comprometer('COM', ['galeote'])
+    expect(k.ofreceCapacidad('galeote.esfuerzo')).toBe(false)
   })
 })
 
@@ -163,14 +171,33 @@ describe('Fase 14 · El jugador automático', () => {
     expect(despedido === null || despedido === j.inst('galeote')).toBe(true)
   })
 
-  it('no asigna a uno con Desgaste si la herida lo mata y fallar no duele; si sobrevive, sí', async () => {
+  it('usa el esfuerzo del Galeote si le faltan 2 o menos para superar la Prueba y la herida no lo derrota', async () => {
     const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
-    // «Tiburones» (COM 2), con Diego agotado: solo queda la Carne de cañón (COM 3).
-    const conHeridas = (heridas: number) =>
-      Jugador.enMision({ misiones: ['pruebas-mar5'], capitan: { agotada: true }, tripulacion: [{ id: 'carne_canon', heridas }], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
-    const herida = conHeridas(1)
-    expect(jugadorConCriterio()(herida.estado, herida.decision)).toMatchObject({ tipo: 'compromiso', tripulantes: [] })
-    const sana = conHeridas(0)
-    expect(jugadorConCriterio()(sana.estado, sana.decision)).toMatchObject({ tipo: 'compromiso', tripulantes: [sana.inst('carne_canon')] })
+    const { dificultadPrueba, totalPrueba } = await import('./prueba.ts')
+    // «Turbonada a popa» (NAV 4), con Diego agotado: Galeote 2 + 1 del Barco = 3.
+    const con = (heridas: number) => {
+      const j = Jugador.enMision({ misiones: ['pruebas-mar5'], capitan: { agotada: true }, tripulacion: [{ id: 'galeote', heridas }], mazoPeligros: ['p2_turbonada', 'chubasco', 'calma'] })
+      return j.comprometer('NAV', ['galeote'])
+    }
+    const sano = con(0)
+    const falta = dificultadPrueba(sano.estado) - totalPrueba(sano.estado)
+    expect(falta).toBeGreaterThan(0)
+    expect(falta).toBeLessThanOrEqual(2)
+    expect(usada(jugadorConCriterio()(sano.estado, sano.decision))).toBe('galeote.esfuerzo')
+    // Con 2 heridas (Vida 3), la herida lo derrotaría: no lo usa.
+    const herido = con(2)
+    expect(usada(jugadorConCriterio()(herido.estado, herido.decision))).toBeNull()
+  })
+
+  it('usa el esfuerzo de la Carne de cañón si el +1 de los demás asignados basta', async () => {
+    const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
+    const { dificultadPrueba, totalPrueba } = await import('./prueba.ts')
+    // «Al abordaje del filibote» (COM 5), con Diego agotado: Carne de cañón 2 + Bucanero veterano 2 = 4; con el +1, 5.
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { agotada: true }, tripulacion: ['carne_canon', 'bucanero'], mazoPeligros: ['p2_curazao', 'chubasco', 'calma'] })
+    j.comprometer('COM', ['carne_canon', 'bucanero'])
+    const falta = dificultadPrueba(j.estado) - totalPrueba(j.estado)
+    expect(falta).toBeGreaterThan(0)
+    expect(falta).toBeLessThanOrEqual(2)
+    expect(usada(jugadorConCriterio()(j.estado, j.decision))).toBe('carne_canon.esfuerzo')
   })
 })

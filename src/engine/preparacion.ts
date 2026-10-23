@@ -36,9 +36,11 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
   // TODO(regla): excepción temporal de la fase 14 (muelle de inicio de 26 cartas); quitar cuando se rehagan los mazos de inicio.
+  // Vale también para el muelle de inicio sin alguna de sus cartas (las medidas que quitan una para ver lo que pesa).
+  const delInicio = muelle.every((id) => m.mazoDeMuelle.includes(id))
   const errores = erroresDeMazos(
     { capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle },
-    mazoDeMuelle ? {} : { muelleMaximo: MUELLE_TEMPORAL_FASE14 },
+    delInicio ? { muelleMaximo: MUELLE_TEMPORAL_FASE14 } : {},
   )
   if (errores.length > 0) throw new Error(`Mazos no válidos: ${errores.join(' ')}`)
   const s = estadoVacio(sembrar(semilla))

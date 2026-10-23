@@ -81,7 +81,7 @@
  "soldado_fortuna": "Enrolado N.",
  "piloto_sueldo": "Enrolado N.",
  "guia_alquiler": "Enrolado N.",
- "carne_canon": "Desgaste.",
- "galeote": "Desgaste.",
+ "carne_canon": "Sufre {N herida}: los demás Tripulantes asignados a esta Prueba reciben {N COM}. (Límite de una vez por turno.)",
+ "galeote": "Sufre {N herida}: Galeote fugado recibe {N NAV} para esta Prueba. (Límite de una vez por turno.)",
  "tuerto": "El Tuerto recibe {N COM} por cada herida que tenga."
 }

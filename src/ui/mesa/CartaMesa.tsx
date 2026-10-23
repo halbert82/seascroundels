@@ -187,7 +187,7 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
       {enrolado !== undefined && (
         <span
           className="ficha ficha-contador ficha-enrolado"
-          title={`Enrolado: ${enrolado} ${enrolado === 1 ? 'ficha' : 'fichas'}. Pierde 1 al terminar cada misión y se va cuando no le queda ninguna.`}
+          title={`Enrolado: ${enrolado} ${enrolado === 1 ? 'ficha' : 'fichas'}. Pierde 1 al final de cada turno y se va cuando no le queda ninguna.`}
         >
           <b>{enrolado}</b>
           <small>Enrolado</small>

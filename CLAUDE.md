@@ -107,7 +107,7 @@ Recursos visuales:
 
 13. **Revisión de las cartas de Peligro (tandas 1 y 2):** cartas 154 a 159, reglas de estilo de los Peligros y mazos propios (sin «Sin Prueba», Avance y daño con icono, «superior», «Elige» por líneas, «Vigía −2» bajo la Prueba, Otear siempre del mazo de Peligros), heridas libres en los encuentros, dos Destinos («Bruma en la selva») y la carta nueva 240 «Arenga del capitán» (en la colección, no en el mazo de inicio). Segunda ronda: Destinos simplificados (41 solo con modificador y Sin oposición; 6 con «Inflige 1 herida a un Tripulante asignado»), «Otea N», «Prepara a 1 Tripulante asignado», heridas libres por asignado (P79) y Cañones con «[mar], [agotar]:». Detalle en la sección «Fase 13» de `docs/decisiones.md`.
 
-14. **Rotación de la tripulación:** palabras clave Enrolado N (se va al terminar N misiones) y Desgaste (1 herida después de cada Prueba a la que esté asignado), seis Tripulantes nuevos (241–246) y el jugador automático que despide para hacer sitio. Excepción temporal: mazo de muelle de 26 cartas para probar la fase 14; se quita al rehacer los mazos de inicio. Detalle en la sección «Fase 14» de `docs/decisiones.md`.
+14. **Rotación de la tripulación:** palabra clave Enrolado N (pierde 1 ficha al final de cada turno, esté donde esté, y se va sin ninguna; Desgaste se quitó en la segunda ronda), seis Tripulantes nuevos (241–246; la Carne de cañón y el Galeote fugado pagan una herida para sumar, como el Filibustero borracho) y el jugador automático que despide para hacer sitio. Excepción temporal: mazo de muelle de 26 cartas para probar la fase 14; se quita al rehacer los mazos de inicio. Detalle en la sección «Fase 14» de `docs/decisiones.md`.
 
 Al final de cada fase: pruebas verdes, despliegue y un resumen para Albert con conclusiones y lo pendiente.
 
@@ -132,4 +132,6 @@ Todas las decisiones de Albert están en `docs/decisiones.md`, con su ejemplo y 
   - **«El Tripulante asignado con más (o menos) X» sin nadie asignado**, en un encuentro, es el de más (o menos) X de toda la tripulación.
   - **Las Mejoras de barco se usan en cualquier ventana** si la carta no dice otra cosa (fuera N18). Lo que dependa del Entorno lo dice la carta con el icono del Entorno delante del efecto: «[mar], [agotar]: efecto», «**Respuesta:** [ciu]: Después de…», «**Al zarpar:** [mar]: …». Los cuatro Cañones, solo en el Mar (P81).
   - **Un Destino sin nadie asignado** (P83): lo que le hace a «un Tripulante asignado» o a «el asignado con…» no se aplica; solo su Sin oposición. La regla de los encuentros (toda la tripulación, heridas libres) no vale para los Destinos.
-- **Fase 14:** Enrolado y Desgaste son palabras clave de Tripulante (reglas en `docs/decisiones.md`, sección «Fase 14»); despedir sigue sin dar nada a cambio. Pendientes P86–P88.
+- **Fase 14:** Enrolado es una palabra clave de Tripulante: pierde 1 ficha al final de cada turno, esté donde esté (cuenta turnos, no misiones). Desgaste se quitó. Despedir sigue sin dar nada a cambio. Reglas en `docs/decisiones.md`, sección «Fase 14».
+  - **Principio de diseño de Albert:** que el jugador no tenga que recordar nada. Nada de efectos que esperan a «después» si se pueden aplicar en el momento.
+  - Pendientes: los inventarios de reclutar sin coste y del rehén, que Albert decidirá carta por carta.
