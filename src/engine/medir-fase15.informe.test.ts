@@ -7,6 +7,7 @@ import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'
 import { jugarPartida, ultimoCapitulo } from './pruebas/equilibrio.ts'
 import { jugadorConCriterio } from './pruebas/jugadores.ts'
+import { DATOS } from './datos.ts'
 
 const PARTIDAS = Number(process.env.INFORME_PARTIDAS ?? 1000)
 
@@ -27,6 +28,17 @@ const NUEVAS = [
 ]
 
 it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTIDAS} partidas normales)`, { timeout: 3_600_000 }, () => {
+  // Para ver de dónde sale la diferencia: MEDIR_F15_SIN=misiones (el mazo de Misiones de antes) o =peligros (el mazo de
+  // Peligros de antes). Cambia los datos solo en este proceso.
+  const sin = process.env.MEDIR_F15_SIN
+  if (sin === 'misiones') {
+    DATOS.ordenMisiones.travesias = DATOS.ordenMisiones.travesias.filter((t) => !['isla', 'vanhoorn', 'fugitivo'].includes(t))
+    DATOS.ordenMisiones.aventuras = DATOS.ordenMisiones.aventuras.filter((t) => !['pecio', 'escolta', 'asedio', 'regata'].includes(t))
+  }
+  if (sin === 'peligros') {
+    const nuevos = ['p2_fuerza', 'p2_hombro', 'p2_ronda', 'p2_escapatoria', 'p2_respiro', 'p2_provisiones', 'p2_lenguas', 'p2_fondo']
+    DATOS.mazosPredefinidos.mazoDePeligros = DATOS.mazosPredefinidos.mazoDePeligros.filter((id) => !nuevos.includes(id))
+  }
   const jugador = jugadorConCriterio()
   const partidas = Array.from({ length: PARTIDAS }, (_, i) => jugarPartida(i + 1, jugador, { textos: true }))
   const textos = (p: (typeof partidas)[number]) => p.textos ?? []
@@ -75,6 +87,7 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
 
   const contar = (frase: string) => cuenta((p) => textos(p).filter((x) => x.includes(frase)).length)
   const resumen = {
+    sin: sin ?? '',
     partidas: PARTIDAS,
     victorias: (100 * partidas.filter((p) => p.gana).length) / PARTIDAS,
     panama: (100 * partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo('panama') && r.resultado === 'superada')).length) / PARTIDAS,

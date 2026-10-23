@@ -1144,3 +1144,22 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - **P99 · Desviar más de lo que le queda.** Por defecto, el Galeón, las Murallas o el prisionero pueden sufrir todo el daño (o todas las heridas), aunque pase de su Vida restante (y entonces se aplica su «sin Vida restante»). La otra opción: como mucho, lo que les queda.
 - **P100 · Tipos de las cartas nuevas que no los traían.** Los dos barcos rivales, «Barco»; el Galeón San Telmo, «Barco»; las Murallas, «Militar»; el prisionero, «Civil» (Mala fama ya lo traía: Civil).
 - **P101 · Nombre del tipo de la carta 269.** Por defecto, «Carta de consulta»: una carta del mazo de historia que no entra en juego (se mira y se aplica). Dorso de misión.
+
+### Medición de la fase 15 (solo informativa; partida normal, 1000 partidas, semillas 1–1000, el mismo jugador automático)
+
+`MEDIR_F15=1 npx vitest run src/engine/medir-fase15.informe.test.ts` (con `MEDIR_F15_SIN=misiones` o `=peligros`, con el mazo de antes).
+
+| Fila | Victorias | Victorias de Panamá |
+| --- | --- | --- |
+| Fase 14, cuarta ronda (antes) | 39,9 % | — |
+| Fase 15, sin las misiones nuevas (solo los Peligros nuevos) | 42,9 % | 1,2 % |
+| Fase 15, sin los Peligros nuevos (solo las misiones nuevas) | 46,9 % | 0,5 % |
+| **Fase 15 completa** | **48,4 %** | **0,4 %** |
+
+- Panamá, muy por debajo del 10 %: se publica. Las victorias suben 8,5 puntos: unos 5–7 por las misiones nuevas (hay 16 en el mazo de Misiones en vez de 9, y varias se superan casi siempre) y unos 2–3 por los Peligros nuevos (muchos encuentros 1 / 1 fáciles y «Un respiro»).
+- **Cada misión nueva** (% de partidas en que llega a estar disponible; zarpes y veces superada en las 1000 partidas): «El mapa del ahorcado» 20 % (191 zarpes, 146 superadas); «…tomada por los ingleses» 7 % (100, 65); «…sacudida por un temblor» 7 % (131, 60); «El mapa era falso» 4 % (46, 40); «La ruta de los alisios» 20 % (161, 96); «La isla de Aves» 9 % (113, 84); «Recuperar lo robado» 6 % (72, 58); «Tras la pista» 19 % (170, 138); «Vivo, no muerto» 14 % (223, 130); «El pecio del San José» 21 % (214, 197); «Escolta del San Telmo» 24 % (354, 228); «El asedio de Port Royal» 21 % (239, 131); «La regata de San Juan» 21 % (299, 192).
+- **Los capítulos II de la isla:** tras «El mapa del ahorcado», 52 veces los ingleses, 50 el temblor y 42 el mapa falso; tras el mapa falso, 19 y 21.
+- **El pecio:** 171 inmersiones (49 falladas). Al superar la misión: Profundidad 0, 101 veces; 1, 77; 2, 19; 3 y 4, ninguna (el jugador automático es prudente).
+- **La regata:** de 192 superadas, 44 las gana el rival (23 %). **Van Hoorn** llega antes 16 veces; el Destina se usa 6.
+- **La escolta:** el galeón no se hunde nunca; 192 de 228 llegan con 3 o más de Vida. **El asedio:** las Murallas caen 57 veces; 51 de 131 superadas con 4 o más de Vida.
+- **El fugitivo:** el barco del fugitivo escapa 145 veces (COM 4, Abordaje); el prisionero se captura 136 y no muere nunca. **Mala fama** entra en juego 83 veces. **Un respiro:** 17 veces descansar y 178 seguir.
