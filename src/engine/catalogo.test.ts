@@ -7,8 +7,8 @@ import './motor.ts'
 describe('catálogo de la Caja básica', () => {
   it('tiene una carta por cada número de colección, sin huecos ni repetidos (los Peligros 2.0 siguen desde el 154)', () => {
     // Fase 12: el 136 («Seguirle por los muelles») y el 148 (el antiguo «A bordo del fantasma») se unieron al capítulo
-    // anterior de su travesía. Sus números quedan libres: son los dos únicos huecos.
-    const HUECOS = [136, 148]
+    // anterior de su travesía. Fase 15: los ocupan «Mala fama» (136) y el «Gallardete de San Juan» (148). Sin huecos.
+    const HUECOS: number[] = []
     const nums = CATALOGO.map((c) => c.num)
     const maximo = Math.max(...nums)
     expect(nums).toEqual(Array.from({ length: maximo }, (_, i) => i + 1).filter((n) => !HUECOS.includes(n)))
@@ -19,6 +19,12 @@ describe('catálogo de la Caja básica', () => {
     const escolta = CATALOGO.filter((c) => c.tipo === 'mazoPropio' && c.mazo === 'mazo de la Escolta')
     expect(templo.reduce((n, c) => n + c.copias, 0)).toBe(6)
     expect(escolta.reduce((n, c) => n + c.copias, 0)).toBe(6)
+    // Fase 15: los dos barcos rivales son cartas de Peligro de un solo encuentro de su travesía, sin mazo propio.
+    const barcos = CATALOGO.flatMap((c) => (c.tipo === 'mazoPropio' && c.carta.mision ? [[c.num, c.mazo]] : []))
+    expect(barcos).toEqual([
+      [262, 'La carrera de van Hoorn'],
+      [266, 'El fugitivo'],
+    ])
   })
 
   it('cumple con los mazos predefinidos de la versión 0', () => {
@@ -36,8 +42,8 @@ describe('catálogo de la Caja básica', () => {
 
   it('el mazo de Peligros son los Peligros 2.0 (sin los antiguos), uno de cada y todos con sus reglas', () => {
     const mazo = DATOS.mazosPredefinidos.mazoDePeligros
-    // Las 55 cartas, «Fiebre amarilla» (rehecha sin Fiebre) incluida.
-    expect(mazo).toHaveLength(55)
+    // Las 55 cartas, «Fiebre amarilla» (rehecha sin Fiebre) incluida, y las 8 de la fase 15 (247–254).
+    expect(mazo).toHaveLength(63)
     expect(mazo).toContain('p2_fiebre')
     expect(new Set(mazo).size).toBe(mazo.length)
     for (const id of mazo) {

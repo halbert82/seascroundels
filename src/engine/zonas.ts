@@ -40,6 +40,8 @@ export function mover(s: Estado, inst: InstId, destino: Zona, donde: 'arriba' | 
   }
   // Una permanente que deja la zona de permanentes pierde sus fichas y ya no va junto a nadie.
   if (origen === 'permanentes' && destino !== 'permanentes') {
+    // Fase 15: el daño de una permanente con Vida (Galeón San Telmo, Murallas, El prisionero) también se quita.
+    c.heridas = 0
     delete c.fichas
     delete c.junto
     delete c.origen

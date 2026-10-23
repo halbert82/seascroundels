@@ -84,7 +84,8 @@ function terminada(s: Estado): boolean {
  * puede seguir (la de una Acción, sí).
  */
 function pruebaCortada(s: Estado): boolean {
-  if (s.mision) return s.mision.fin !== null
+  // Fase 15: una Prueba que se hace con la misión ya superada (bucear en el pecio) no se corta.
+  if (s.mision) return s.mision.fin !== null && !(s.prueba?.definicion?.trasSuperar && s.mision.fin === 'superada')
   return s.prueba?.origen !== 'accion'
 }
 
@@ -528,7 +529,9 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
       const total = totalPrueba(s)
       const dificultad = dificultadPrueba(s)
       p.final = { total, dificultad }
-      const superada = p.automatica || (!p.falla && p.comprometidos.length > 0 && total >= dificultad)
+      // Fase 15, «Descomunal N»: con menos de N asignados, la Prueba se falla (también si el Loro se une solo).
+      const pocos = def.minimo !== undefined && p.comprometidos.length < def.minimo
+      const superada = p.automatica || (!p.falla && !pocos && p.comprometidos.length > 0 && total >= dificultad)
       p.resultado = superada ? 'superada' : 'fallada'
       // Se apunta en la misión (las reglas de misión miran qué Pruebas has superado o fallado, y por cuánto).
       if (s.mision && p.hab) {
@@ -542,7 +545,13 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         }
         s.mision.pruebas = [...(s.mision.pruebas ?? []), hecha]
       }
-      const motivo = p.falla ? ' (el Destino la hace fallar)' : p.comprometidos.length === 0 ? ' (nadie asignado)' : ''
+      const motivo = p.falla
+        ? ' (el Destino la hace fallar)'
+        : p.comprometidos.length === 0
+          ? ' (nadie asignado)'
+          : pocos
+            ? ` (Descomunal ${def.minimo}: no llegas a ${def.minimo} asignados)`
+            : ''
       const texto = p.automatica ? 'Prueba superada automáticamente.' : `Total ${total} contra ${dificultad}: ${superada ? 'superas' : 'fallas'} la Prueba${motivo}.`
       anotar(s, 'jugada', texto, {
         tipo: 'prueba',

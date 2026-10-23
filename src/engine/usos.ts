@@ -6,7 +6,7 @@ import { claveUso, copia, encolar } from './estado.ts'
 import { estadosDe } from './estados.ts'
 import { cartaDeEstado } from './infoEstados.ts'
 import type { Capacidad, Coste, Estado, Evento, InstId, Uso, Ventana } from './tipos.ts'
-import { destinosVigentes, mejoraActiva, valor } from './valores.ts'
+import { destinosVigentes, maximoParaDestina, mejoraActiva, valor } from './valores.ts'
 import { estaEn } from './zonas.ts'
 import { canonesPreparados } from './capacidades/comun.ts'
 import { esAbordaje } from './prueba.ts'
@@ -81,6 +81,8 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
       const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
       return preparados.length >= coste.n || (coste.oRasgo !== undefined && preparados.some((c) => rasgosDe(copia(s, c).id).includes(coste.oRasgo ?? '')))
     }
+    case 'destina':
+      return maximoParaDestina(s, coste.hab) >= coste.n
   }
 }
 

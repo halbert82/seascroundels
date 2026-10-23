@@ -89,6 +89,8 @@ export interface OpcionesSituacion {
   avance?: Record<CartaId, number>
   /** Pasajeros que ya viajan contigo (se quitan del mazo de historia). */
   pasajeros?: CartaId[]
+  /** Fase 15: permanentes ya en juego (se quitan del mazo de historia), como «Mala fama» de una misión anterior. */
+  permanentes?: CartaId[]
 }
 
 // ---------------------------------------------------------------------------
@@ -174,7 +176,7 @@ function historiaCompleta(): CartaId[] {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
     if (e.tipo === 'tesoro') ids.push(e.id)
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
-    if (e.tipo === 'pasajero' || e.tipo === 'permanente') ids.push(e.id)
+    if (e.tipo === 'pasajero' || e.tipo === 'permanente' || e.tipo === 'consulta') ids.push(e.id)
   }
   return ids
 }
@@ -241,8 +243,9 @@ export function montar(op: OpcionesSituacion = {}): Estado {
     ['mazoPeligros', op.mazoPeligros],
     ['descartesPeligros', op.descartesPeligros],
     ['apartados', op.apartados ?? DATOS.mazosPredefinidos.apartadosDePeligros],
-    ['mazoHistoria', op.mazoHistoria ?? historiaCompleta().filter((id) => !(op.pasajeros ?? []).includes(id))],
+    ['mazoHistoria', op.mazoHistoria ?? historiaCompleta().filter((id) => ![...(op.pasajeros ?? []), ...(op.permanentes ?? [])].includes(id))],
     ['pasajeros', op.pasajeros],
+    ['permanentes', op.permanentes],
   ]
   for (const [zona, ids] of zonas) for (const id of ids ?? []) crearCopia(s, id, zona)
   for (const [id, n] of Object.entries(op.avance ?? {})) {

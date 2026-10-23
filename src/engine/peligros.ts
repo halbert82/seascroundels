@@ -2,6 +2,7 @@
 
 import { costeImpreso, porId, tipoDe } from './catalogo.ts'
 import type { EncuentroDatos, Entorno } from './datos.ts'
+import { quedaDe } from './definiciones.ts'
 import { anotar, copia, encolar } from './estado.ts'
 import type { Estado, InstId, Zona } from './tipos.ts'
 import { mover, moverA, rebarajar } from './zonas.ts'
@@ -142,7 +143,8 @@ export function devolverPeligros(s: Estado): void {
   }
   const persigue = persigueVigente(s)
   if (persigue && s.zonas.mazoMision.includes(persigue)) mover(s, persigue, 'mazoPeligros', 'arriba')
-  for (const carta of [...s.zonas.permanentes]) mover(s, carta, 'mazoHistoria', 'abajo')
+  // Fase 15: las que dicen que se quedan («Mala fama», las Murallas de Port Royal) siguen en juego.
+  for (const carta of [...s.zonas.permanentes]) if (!quedaDe(s, carta)?.seQueda) mover(s, carta, 'mazoHistoria', 'abajo')
   const zonas: Zona[] = ['encuentro', 'destino', 'mazoMision', 'descartesMision']
   for (const zona of zonas) {
     for (const carta of [...s.zonas[zona]]) {

@@ -267,6 +267,10 @@ export function problemaCompromiso(
   }
   const maximo = def.maximo ?? def.restriccion?.maximo
   if (maximo !== undefined && tripulantes.length > maximo) return `No puedes asignar a más de ${maximo}`
+  // Fase 15, «Descomunal N»: a nadie (Sin oposición, se falla) o a N o más.
+  if (def.minimo !== undefined && tripulantes.length > 0 && tripulantes.length < def.minimo) {
+    return `Descomunal ${def.minimo}: asigna al menos a ${def.minimo} Tripulantes (o a nadie, y la fallas)`
+  }
   const unico = tripulantes.length === 1 ? tripulantes[0] : undefined
   if (unico && tieneEstado(s, unico, 'asustado')) return `${nombreDe(copia(s, unico).id)} está Asustado: no puede ser asignado él solo`
   if (def.sinAyuda) {

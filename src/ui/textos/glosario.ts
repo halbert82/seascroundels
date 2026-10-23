@@ -130,9 +130,21 @@ export const AYUDA_FICHA_MISION: Record<FichaMision, Ayuda> = {
   derrumbe: fichaMision(
     'derrumbe',
     'Derrumbe',
-    'Cada Prueba de EXP que falles: 1 ficha de Derrumbe. Cada Prueba de EXP que superes por 2 o más quita 1.',
-    'Con 3, la escalera cede: la misión falla.',
+    'Lo dice la misión. En «La escalinata de los sacerdotes», cada Prueba de EXP que falles pone 1 y cada una que superes por 2 o más quita 1. En «…sacudida por un temblor», cada Prueba que falles pone 1.',
+    'Con 3, la misión falla.',
     MISION_FALLA,
+  ),
+  rival: fichaMision(
+    'rival',
+    'Rival',
+    'Después de que reveles una carta de Peligro: 2 fichas de Rival. En «La ruta de los alisios», su Acción (Destina 3 NAV, una vez por misión) quita 2.',
+    'En «La regata de San Juan», con 8 o más el rival gana la regata: al superarla, ganas 1 de reputación en lugar de su recompensa. En «La ruta de los alisios», con 8 van Hoorn llega antes: la misión termina y llega el capítulo II-b.',
+  ),
+  profundidad: fichaMision(
+    'profundidad',
+    'Profundidad',
+    'Cuando la misión vaya a superarse, puedes bucear: una Prueba de EXP con un solo Tripulante, de dificultad 2 más tus fichas de Profundidad (máximo 4). Si la superas, 1 ficha más; si la fallas, pierdes todas y dejas de bucear.',
+    'Al superar la misión, miras la carta 269 del mazo de historia y ganas sus recompensas hasta tu Profundidad (se suman).',
   ),
   mecha: fichaMision(
     'mecha',
@@ -173,6 +185,10 @@ export const CLAVES_REGLA = [
   'finalConEleccion',
   'salidaDoble',
   'pasajero',
+  'descomunal',
+  'alerta',
+  'destina',
+  'capituloAlAzar',
   'indestructible',
   'enrolado',
   'otear',
@@ -183,7 +199,7 @@ export const CLAVES_REGLA = [
 export type ClaveRegla = (typeof CLAVES_REGLA)[number]
 
 /** Palabras que nombran una cosa (no un efecto): su primer apartado es «Qué es» en vez de «Qué hace». */
-const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
+const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'capituloAlAzar', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
 
 function regla(clave: ClaveRegla, nombre: string, hace: string, mas?: ParteAyuda): Ayuda {
   const rotulo = SON_COSAS.includes(clave) ? 'Qué es' : 'Qué hace'
@@ -207,7 +223,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Algunos encuentros y misiones dicen «Pon en juego la carta N del mazo de historia»: esa carta, una permanente, se pone junto a la misión (o junto a un Tripulante, si lo dice) con su texto activo. El encuentro da su Avance y su carta se descarta como cualquier otra. Si la permanente no está en el mazo de historia, la carta del encuentro se descarta sin dar su Avance y se revela otra.',
     {
       rotulo: 'Cómo se quita',
-      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia con sus fichas fuera.',
+      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia con sus fichas fuera, salvo las que digan otra cosa («Mala fama», las Murallas de Port Royal).',
     },
   ),
   elige: regla(
@@ -337,8 +353,34 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   pasajero: regla(
     'pasajero',
     'Pasajero',
-    'Carta que viaja contigo. Ocupa 1 de Capacidad; si no te queda Capacidad cuando entra, devuelve un Tripulante al muelle. No es un Tripulante: no puede ser asignado, no se agota y no puede recibir heridas, Estados ni Ventajas, salvo que su carta lo diga.',
+    'Carta que viaja contigo. Su carta dice todo lo que hace: no es un Tripulante (no ocupa Capacidad, no puede ser asignado y no recibe heridas, Estados ni Ventajas).',
     { rotulo: 'Cuándo se va', texto: 'Se queda en juego entre misiones hasta que su carta diga que se va.' },
+  ),
+  descomunal: regla(
+    'descomunal',
+    'Descomunal',
+    'Descomunal N: asigna al menos N Tripulantes a esta Prueba; si no puedes, la fallas.',
+    { rotulo: 'Detalles', texto: 'Puedes no asignar a nadie (Sin oposición): entonces la fallas. Si asignas, tienen que ser N o más; con menos, no se puede.' },
+  ),
+  alerta: regla(
+    'alerta',
+    'Alerta',
+    'Este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva.',
+    {
+      rotulo: 'Detalles',
+      texto: 'No valen contra él «Sangre fría», «Soborno», las Velas de tormenta, Íñigo «Lince» Quintero, «Cambio de rumbo», «Retirada a tiempo» ni el Pedrero de borda. Si reúnes el Avance a mitad de él, se resuelve igualmente antes de superar la misión.',
+    },
+  ),
+  destina: regla(
+    'destina',
+    'Destina',
+    'Destina X y una habilidad: para pagarlo, agota Tripulantes preparados cuya habilidad sume al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano.',
+    { rotulo: 'Detalles', texto: 'Cada Tripulante cuenta con sus bonificaciones, como al cubrir una Distancia.' },
+  ),
+  capituloAlAzar: regla(
+    'capituloAlAzar',
+    'Capítulo al azar',
+    'Al superar el capítulo I de «La Isla del Tesoro», barajas boca abajo sus tres capítulos II y pones uno encima del mazo de Misiones sin mirarlo; los otros vuelven al mazo de historia. No sabes cuál te espera hasta que sale.',
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
   enrolado: regla(
@@ -545,6 +587,10 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   finalConEleccion: /\bElige\b/,
   salidaDoble: /\bSalida doble\b/,
   pasajero: /\bPasajeros?\b/,
+  descomunal: /\bDescomunal \d/,
+  alerta: /\bAlerta\b/,
+  destina: /\bDestina \d/,
+  capituloAlAzar: /\bBaraja boca abajo las cartas \d+/,
   indestructible: /\bIndestructible\b/,
   enrolado: /\bEnrolado \d/,
   otear: /\b[Oo]tea\b|\bOtear\b/,

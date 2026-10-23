@@ -39,6 +39,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
     case 'descartada':
     case 'cartaResuelta':
     case 'estadoPuesto':
+    case 'entraEnJuego':
       return // Solo marcan el momento para las Interrupciones y Respuestas.
     case 'descartarTripulante': {
       // Fase 14: se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo (sus Tesoros pasan a otro).
@@ -177,6 +178,10 @@ export const usar: Manejador<'usar'> = (s, t) => {
       }
       if (coste.tipo === 'agotarCanon') {
         encolar(s, { tipo: 'agotarCanones', n: 1, coste: true })
+        continue
+      }
+      if (coste.tipo === 'destina') {
+        encolar(s, { tipo: 'destina', n: coste.n, hab: coste.hab })
         continue
       }
       if (coste.tipo === 'agotarVarios') {

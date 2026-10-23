@@ -141,9 +141,9 @@ describe('Textos de las cartas que lee el motor', () => {
     }
   })
 
-  it('las 28 cartas de misión (misiones 2.0) tienen sus reglas escritas', () => {
+  it('las 41 cartas de misión (misiones 2.0 y las 13 de la fase 15) tienen sus reglas escritas', () => {
     const misiones = CATALOGO.filter((e) => e.tipo === 'capitulo').map((e) => e.id)
-    expect(misiones).toHaveLength(28)
+    expect(misiones).toHaveLength(41)
     expect([...misionesConReglas()].sort()).toEqual([...misiones].sort())
     expect(reputacionMinima('panama-III')).toBe(6) // fase 11 (P66)
     expect(reputacionMinima('deuda-I')).toBe(0)

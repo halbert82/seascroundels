@@ -4,6 +4,7 @@
 
 import { canonesAgotados, reclutable, reclutablesGratis } from '../capacidades/comun.ts'
 import { costeImpreso } from '../catalogo.ts'
+import { esAlerta } from '../definiciones.ts'
 import type { Habilidad } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
@@ -84,6 +85,11 @@ export const otear: Manejador<'otear'> = (s, t, e) => {
 export const quitarEncuentro: Manejador<'quitarEncuentro'> = (s, t) => {
   const carta = s.zonas.encuentro[0]
   if (!carta || !s.mision) return 'hecha'
+  // Fase 15, «Alerta»: este encuentro se resuelve siempre (las cartas que lo quitarían ya no se ofrecen).
+  if (esAlerta(s, carta)) {
+    anotar(s, 'aviso', `«${nombre(s, carta)}» tiene Alerta: se resuelve igual.`)
+    return 'hecha'
+  }
   if (t.avance) ganarAvanceMision(s, encuentroDe(s, carta).avance, `«${encuentroDe(s, carta).nombre}»`)
   if (t.modo === 'fondo') {
     mover(s, carta, mazoActivo(s).mazo, 'abajo')

@@ -315,7 +315,12 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
   if (problemaCompromiso(s, def, hab, todos, []) !== null) {
     const mejores = [...tripulantes].sort((a, b) => valor(s, { tipo: 'habilidad', carta: b, hab }) - valor(s, { tipo: 'habilidad', carta: a, hab }))
     todos = []
-    for (const c of mejores) if (problemaCompromiso(s, def, hab, [...todos, c], []) === null) todos.push(c)
+    // Fase 15, «Descomunal N»: con menos de N no vale, pero se sigue sumando gente hasta llegar.
+    for (const c of mejores) {
+      const problema = problemaCompromiso(s, def, hab, [...todos, c], [])
+      if (problema === null || problema.startsWith('Descomunal')) todos.push(c)
+    }
+    if (problemaCompromiso(s, def, hab, todos, []) !== null) todos = []
   }
   if (todos.length === 0) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   return { tipo: 'compromiso', opcion: 0, tripulantes: todos, cartas: d.cartas.filter((c) => iconos(s, c, hab) > 0) }
@@ -337,7 +342,6 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'agotar':
     case 'exceso':
     case 'desercion':
-    case 'pasajeroSinSitio':
       return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
     case 'perderMejora':
     case 'agotarMejora':
@@ -525,6 +529,11 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     }
     case 'conservarMision':
       return elegir('dejar')
+    // Fase 15
+    case 'bucear':
+      return elegir(convieneBucear(s) ? 'bucear' : 'subir')
+    case 'desviarAProtegido':
+      return elegir(String(cuantoDesviar(s, d) ?? 1))
     case 'elegirEfectos': {
       // Fase 8: los «Elige» de las cartas de Escenario. Las opciones se numeran como en la carta («0», «1»); si solo
       // queda una, el motor no pregunta.
@@ -552,6 +561,10 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           return elegir(tieneNavegante(s, 3) ? '1' : '0')
         case 'ribera':
           return elegir(s.danoBarco >= 2 ? '0' : '1')
+        case 'p2_respiro':
+          // Fase 15, «Un respiro»: descansa (pierde 2 de Avance) si la tripulación está agotada o tocada y aún le queda
+          // camino; si no, sigue (+1 de Avance). La opción «0» es Descansar, la «1», Seguir.
+          return elegir(claves.includes('0') && convieneDescansar(s) ? '0' : (claves.find((c) => c !== '0') ?? claves[0]!))
         default:
           // Vía de agua (fase 10b): achica (agota a uno) si el Barco está cerca de hundirse o sobra gente preparada.
           // Carpintero (fase 10b): tapa la Vía de agua salvo que el Barco esté a punto de hundirse.
@@ -966,6 +979,21 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return trasEncuentro && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && cazaElJaguar(s, c)) ? 2 : 0
     case 'peligroEnMuelle.descartar':
       return fuente && mano >= (s.peligrosEnMuelle?.[fuente] ?? 0) + 2 ? 1 : 0
+    // Fase 15. «La ruta de los alisios»: Destina 3 NAV para quitar 2 fichas de Rival justo antes de que el siguiente
+    // Peligro las lleve a 8 (con 6), si aún le falta Avance.
+    case 'vanhoorn-I.alisio':
+      return trasEncuentro && (s.mision?.fichas?.rival ?? 0) >= 6 && faltaAvance(s) > 0 ? 2 : 0
+    // Proteger: desviar daño del Barco al Galeón o a las Murallas, o heridas al prisionero, sin dejarlos nunca a 0.
+    case 'pm_galeon.cap.cubrir':
+    case 'pm_murallas.cap.cubrir':
+    case 'pm_prisionero.cap.heridas':
+      return cuantoDesviar(s, d, uso) !== null ? 3 : 0
+    // La Cadena de oro del San José: en la Fase de Reclutamiento, si hay en el muelle algo de coste 3 o más que quiera.
+    case 'cadena_oro.gastar':
+      return d.motivo.clave === 'jugarCartas' && hayAlgoCaro(s) ? 2 : 0
+    // «Mala fama»: la quita (2 cartas) en la Fase de Reclutamiento si le sobra mano y quiere reclutar.
+    case 'pm_malafama.quitar0':
+      return d.motivo.clave === 'jugarCartas' && mano >= 4 && plazasLibres(s) >= 1 && s.zonas.muelle.some((c) => tipoDe(copia(s, c).id) === 'tripulante') ? 2 : 0
     // Misiones 2.0: «Rumbo a la isla»: si ya tiene el Avance y solo falta avistar la isla, agota al Vigía o al Piloto.
     case 'templo-I.isla':
       return trasEncuentro && faltaAvance(s) <= 0 ? 3 : 0
@@ -1011,6 +1039,70 @@ function cazaElJaguar(s: Estado, c: InstId): boolean {
   const explorador = rasgosDe(copia(s, c).id).includes('Explorador')
   const hab = explorador ? 'EXP' : 'COM'
   return valor(s, { tipo: 'habilidad', carta: c, hab }) + s.zonas.mano.reduce((n, x) => n + iconos(s, x, hab), 0) >= (explorador ? 3 : 5) + 1
+}
+
+// ---------------------------------------------------------------------------
+// Fase 15
+
+/**
+ * «El pecio del San José»: bucea si su mejor buzo preparado (con las cartas de EXP de la mano) llega a la dificultad; a
+ * partir de la primera ficha, con 1 de margen para el Destino (si falla, las pierde todas).
+ */
+function convieneBucear(s: Estado): boolean {
+  const prof = s.mision?.fichas?.profundidad ?? 0
+  const dificultad = 2 + prof
+  const mano = s.zonas.mano.reduce((n, c) => n + iconos(s, c, 'EXP'), 0)
+  const mejor = Math.max(0, ...s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).map((c) => valor(s, { tipo: 'habilidad', carta: c, hab: 'EXP' })))
+  return mejor + mano >= dificultad + (prof > 0 ? 1 : 0)
+}
+
+/** «Un respiro»: descansa si casi todos están agotados, o hay muchas heridas o Estados, y aún le queda camino. */
+function convieneDescansar(s: Estado): boolean {
+  const tripulacion = s.zonas.tripulacion
+  const agotados = tripulacion.filter((c) => copia(s, c).agotada).length
+  const conEstados = tripulacion.filter((c) => (copia(s, c).estados ?? []).some((e) => !esVentaja(e))).length
+  const entorno = entornoActual(s)
+  const tocados = entorno === 'ciu' ? conEstados >= 2 : entorno === 'mar' ? agotados >= 2 || heridosTotales(s) >= 3 : agotados >= 2
+  return tocados && agotados >= tripulacion.length - 1 && faltaAvance(s) >= 2
+}
+
+/** Lo que una permanente con Vida tiene que conservar: el umbral de la recompensa de más de su misión (o 1). */
+const UMBRAL_PROTEGIDO: Record<string, number> = { pm_galeon: 3, pm_murallas: 4, pm_prisionero: 1 }
+
+/**
+ * Cuánto daño (o cuántas heridas) desvía a la permanente que protege: nunca la deja a 0. Si el Barco se hundiría (o el
+ * Tripulante quedaría derrotado), todo lo que pueda; si no, solo lo que le sobre por encima del umbral de su recompensa.
+ * Null si no le conviene.
+ */
+function cuantoDesviar(s: Estado, d: Decision, uso?: Uso): number | null {
+  let carta: InstId | null = uso?.fuente ?? null
+  let ev = sucesoPendiente(s, d)
+  if (!uso) {
+    const t = tareaDe(s, d)
+    if (t?.tipo !== 'especial') return null
+    carta = t.datos.carta as InstId
+    const suceso = s.pila.find((x) => x.id === t.datos.suceso)
+    ev = suceso?.tipo === 'evento' ? suceso.ev : null
+  }
+  if (!carta || !ev || (ev.tipo !== 'danoBarco' && ev.tipo !== 'heridas')) return null
+  const e = porId(copia(s, carta).id)
+  const restante = (e.tipo === 'permanente' ? (e.carta.vida ?? 0) : 0) - copia(s, carta).heridas
+  const umbral = UMBRAL_PROTEGIDO[copia(s, carta).id] ?? 1
+  const peligro =
+    ev.tipo === 'danoBarco' ? s.danoBarco + ev.cantidad >= valor(s, { tipo: 'danoMaximo' }) : copia(s, ev.objetivo).heridas + ev.cantidad >= valor(s, { tipo: 'vida', carta: ev.objetivo })
+  const necesario = ev.tipo === 'danoBarco' ? s.danoBarco + ev.cantidad - valor(s, { tipo: 'danoMaximo' }) + 1 : copia(s, ev.objetivo).heridas + ev.cantidad - valor(s, { tipo: 'vida', carta: ev.objetivo }) + 1
+  const k = peligro ? Math.min(ev.cantidad, restante - 1, Math.max(necesario, restante - umbral)) : Math.min(ev.cantidad, restante - umbral)
+  return k >= 1 ? k : null
+}
+
+/** ¿Hay en el muelle un Tripulante o una Mejora que le interese de coste 3 o más? (para la Cadena de oro) */
+function hayAlgoCaro(s: Estado): boolean {
+  return s.zonas.muelle.some((c) => {
+    const id = copia(s, c).id
+    if (costeImpreso(id) < 3 || s.peligrosEnMuelle?.[c] !== undefined) return false
+    const tipo = tipoDe(id)
+    return (tipo === 'tripulante' && plazasLibres(s) >= 1 && puntuacionTripulanteEnMuelle(id) > 0) || ((MEJORAS_PREFERIDAS[id] ?? 0) > 0 && tipo !== 'tripulante')
+  })
 }
 
 /** La capacidad que más le conviene usar ahora, si alguna le conviene. */

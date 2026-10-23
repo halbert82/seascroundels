@@ -26,6 +26,8 @@ export const COLOR_TIPO = {
   pasajero: '#4A4F6B',
   /** Fase 11: las permanentes (cartas del mazo de historia que pone en juego un encuentro). */
   permanente: '#3F4B45',
+  /** Fase 15: las cartas de consulta del mazo de historia («El fondo del San José»). */
+  consulta: '#5A4A2E',
 } as const
 
 /** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
@@ -565,6 +567,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       }
     }
     case 'pasajero': {
+      // Fase 15: un Pasajero ya no ocupa Capacidad (fuera la pestaña de Capacidad); su carta dice todo lo necesario.
       const c = entrada.carta
       return {
         ...base(entrada),
@@ -573,8 +576,22 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         color: COLOR_TIPO.pasajero,
         tipoTexto: `Pasajero · ${entrada.mision.nombre}`,
         pestanasIzqTop: 74,
-        pestanasDer: [{ icono: 'capacidad', valor: 1, color: '#2E5E63' }],
-        pestanasDerTop: 96,
+        permanente: true,
+        texto: parsearTexto(c.texto),
+        ambientacion: c.ambientacion,
+        ...conArte(entrada.id),
+      }
+    }
+    case 'consulta': {
+      // Fase 15: carta de consulta del mazo de historia (se mira al superar su misión; no entra en juego).
+      const c = entrada.carta
+      return {
+        ...base(entrada),
+        nombre: c.nombre,
+        color: COLOR_TIPO.consulta,
+        tipoTexto: `Carta de consulta · ${entrada.mision.nombre}`,
+        permanente: true,
+        pestanasIzqTop: 74,
         texto: parsearTexto(c.texto),
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),
@@ -594,6 +611,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         pestanasIzqTop: 74,
         rasgos: [],
         ...(c.palabrasClave.length > 0 ? { tipos: c.palabrasClave.join(' · ') } : {}),
+        // Fase 15: las permanentes que se pueden dañar (Galeón San Telmo, Murallas, El prisionero) llevan su Vida.
+        ...(c.vida !== undefined ? { vida: c.vida } : {}),
         texto: parsearTexto(c.texto),
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),
@@ -690,6 +709,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'tesoro':
     case 'pasajero':
     case 'permanente':
+    case 'consulta':
       return [entrada.carta.texto]
     case 'habilidad':
       return []

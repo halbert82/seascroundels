@@ -104,7 +104,9 @@ export function avanceInicialDelEscenario(s: Estado, mision: InstId): { n: numbe
   if (hay('rumores.turno')) {
     const [uno = 1, dos = 2] = [...textoDe('rumores').matchAll(/\{(\d+) avance\}/g)].map((x) => Number(x[1]))
     // Fase 12 (P68, Albert): el capítulo IV también da 2; la carta dice «II, III o IV».
-    lista.push({ n: /-(II|III|IV)(-[ab])?$/.test(copia(s, mision).id) ? dos : uno, motivo: 'Rumores del tesoro' })
+    // Fase 15: se mira el número del capítulo (los capítulos II de «La Isla del Tesoro» no llevan letra, sino clave).
+    const e = porId(copia(s, mision).id)
+    lista.push({ n: e.tipo === 'capitulo' && e.carta.capitulo !== 'I' ? dos : uno, motivo: 'Rumores del tesoro' })
   }
   if (hay('sanjuan.turno')) lista.push({ n: numeroConIcono(textoDe('sanjuan'), 'avance'), motivo: 'Fiesta de San Juan' })
   return lista
@@ -140,9 +142,17 @@ export const mision: Manejador<'mision'> = (s, t) => {
       }
       encolar(s, { tipo: 'encuentro', carta: null, paso: 'revelar' })
       return 'sigue'
-    case 'terminar':
+    case 'terminar': {
+      // Fase 15: «Cuando esta misión vaya a superarse, …» (bucear en el pecio): con la misión ya superada, antes de cobrarla.
+      const antes = m.fin === 'superada' && !m.antesDeSuperarHecho ? reglasMision(copia(s, m.carta).id)?.antesDeSuperar : undefined
+      if (antes) {
+        m.antesDeSuperarHecho = true
+        encolar(s, ...antes(s), { tipo: 'superarMision' }, { tipo: 'cerrarMision' })
+        return 'hecha'
+      }
       encolar(s, m.fin === 'superada' ? { tipo: 'superarMision' } : { tipo: 'fallarMision', paso: 'anotar' }, { tipo: 'cerrarMision' })
       return 'hecha'
+    }
   }
 }
 
@@ -252,6 +262,12 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   const tareas: NuevaTarea[] = []
   // «Si superas la misión, las recuperas y robas 2».
   if (habiaIncautadas && m.alRecuperar && m.alRecuperar.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: m.alRecuperar, contexto: 'efecto' })
+  // Fase 15: «… gana 1 de reputación en lugar de su recompensa» (La regata de San Juan, si el rival gana).
+  const enLugar = reglas?.recompensaEnLugar?.(s) ?? null
+  if (enLugar) {
+    encolar(s, ...tareas, ...enLugar)
+    return 'hecha'
+  }
   if (r.elige && r.elige.length > 0) tareas.push({ tipo: 'elegirFinal', mision: m.carta })
   else if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
   if (gesta) {
@@ -271,7 +287,8 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda y el otro sale de la partida.
   const posibles = e.carta.siguiente
   const num = elegido ?? posibles[0]
-  for (const otro of posibles.filter((n) => n !== num)) {
+  // Fase 15: con un capítulo al azar («La Isla del Tesoro»), los demás se quedan en el mazo de historia.
+  for (const otro of reglas?.conservarOtros ? [] : posibles.filter((n) => n !== num)) {
     const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === otro)
     if (carta) {
       mover(s, carta, 'fueraDeJuego')
@@ -289,7 +306,10 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
         // Fase 12 (Albert): el capítulo siguiente va siempre encima del mazo de Misiones, sin barajar. Las misiones
         // disponibles se reponen al volver a puerto (después), así que sale enseguida entre ellas.
         mover(s, carta, 'mazoMisiones', 'arriba')
-        anotar(s, 'efecto', `«${nombre(s, carta)}» se pone encima del mazo de Misiones.`)
+        if (reglas?.conservarOtros) {
+          const cartas = posibles.filter((n) => n === num || s.zonas.mazoHistoria.some((c) => porId(copia(s, c).id).num === n))
+          anotar(s, 'efecto', `Barajas boca abajo las cartas ${listaDeNumeros(cartas)} del mazo de historia y pones una encima del mazo de Misiones sin mirarla.`)
+        } else anotar(s, 'efecto', `«${nombre(s, carta)}» se pone encima del mazo de Misiones.`)
       }
     }
   }
@@ -300,6 +320,11 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   }
   encolar(s, ...tareas)
   return 'hecha'
+}
+
+/** «256, 257 y 258». */
+function listaDeNumeros(nums: readonly number[]): string {
+  return nums.length <= 1 ? nums.join('') : `${nums.slice(0, -1).join(', ')} y ${nums[nums.length - 1]}`
 }
 
 /** Un Tesoro entra en juego sin coste: los de barco, en el Barco; los de tripulante, en quien elijas. */
@@ -313,6 +338,8 @@ export const ponerTesoro: Manejador<'ponerTesoro'> = (s, t, e) => {
     const fichas = /Al entrar en juego, pon (\d+) fichas/.exec(e2.carta.texto)?.[1]
     if (fichas) copia(s, t.carta).fichas = Number(fichas)
     anotar(s, 'efecto', `Ganas el Tesoro «${e2.carta.nombre}» (${destino === 'barco' ? 'en el Barco' : `lo lleva ${nombre(s, destino)}`}).`)
+    // Fase 15: lo que hace al entrar en juego («Al entrar en juego, gana 2 de reputación»: La custodia de esmeraldas).
+    encolar(s, { tipo: 'evento', ev: { tipo: 'entraEnJuego', carta: t.carta }, fase: 'despues', cancelado: false, usadas: [] })
   }
   if (e2.carta.tipo === 'Mejora de barco') {
     vincular('barco')
@@ -358,6 +385,19 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
     encolar(s, ...tareas)
     t.paso = 'conservar'
     return 'sigue'
+  }
+  // Fase 15: lo dice la misión, sin preguntar: al fondo del mazo de Misiones (caen las Murallas de Port Royal) o fuera de
+  // la partida («apártala»: La ruta de los alisios).
+  const forzado = m.destinoForzado ?? (reglasMision(copia(s, m.carta).id)?.apartarSiNoSuperas ? 'fuera' : undefined)
+  if (forzado === 'fondo') {
+    mover(s, m.carta, 'mazoMisiones', 'abajo')
+    anotar(s, 'efecto', `«${nombre(s, m.carta)}» va al fondo del mazo de Misiones.`)
+    return 'hecha'
+  }
+  if (forzado === 'fuera') {
+    mover(s, m.carta, 'fueraDeJuego')
+    anotar(s, 'efecto', `«${nombre(s, m.carta)}» se aparta: sale de la partida.`)
+    return 'hecha'
   }
   if (!e) {
     return preguntar({
@@ -416,7 +456,9 @@ export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   if (m.fin === 'superada' && s.zonas.misionesDisponibles.includes(m.carta)) mover(s, m.carta, 'misionesSuperadas', 'abajo')
   // «La Armada te persigue» de la Flota IV vuelve a apartarse aunque no haya llegado a salir.
   const apartar = m.alApartar
-  if (apartar && (s.zonas.mazoPeligros.includes(apartar) || s.zonas.mazoMision.includes(apartar))) {
+  // Fase 15: también si se descartó sin resolverse (los barcos rivales vuelven al mazo de historia al terminar).
+  const enPeligros = (c: InstId) => (['mazoPeligros', 'mazoMision', 'descartesPeligros', 'descartesMision'] as const).some((z) => s.zonas[z].includes(c))
+  if (apartar && enPeligros(apartar)) {
     if (s.persigue === apartar) s.persigue = null
     mover(s, apartar, 'mazoHistoria')
     anotar(s, 'efecto', `«${nombre(s, apartar)}» vuelve a apartarse.`)

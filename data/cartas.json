@@ -1361,6 +1361,38 @@
    "tipo": "Mejora de barco",
    "texto": "Indestructible.\n**Respuesta:** Después de que se revele un Destino, descártalo y revela otro. (Límite de una vez por misión.)",
    "ambientacion": "«No alumbra el camino. Alumbra los que no debes tomar.»"
+  },
+  {
+   "id": "gallardete",
+   "num": 148,
+   "nombre": "Gallardete de San Juan",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\n{+1 MAN}.",
+   "ambientacion": "«Seda roja con la cruz de San Juan. Todo el puerto sabe quién lo ganó.»"
+  },
+  {
+   "id": "carta_marear",
+   "num": 263,
+   "nombre": "Carta de marear de van Hoorn",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\nTus misiones [mar] necesitan {−1 avance g}.",
+   "ambientacion": "«Cada corriente del Caribe, anotada en holandés.»"
+  },
+  {
+   "id": "cadena_oro",
+   "num": 270,
+   "nombre": "Cadena de oro del San José",
+   "tipo": "Mejora de barco",
+   "texto": "**Acción:** Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes o adquieras cuesta {3} menos.",
+   "ambientacion": "«Cada eslabón paga a un marinero. Y hay muchos eslabones.»"
+  },
+  {
+   "id": "custodia",
+   "num": 271,
+   "nombre": "La custodia de esmeraldas",
+   "tipo": "Mejora de barco",
+   "texto": "Indestructible.\nAl entrar en juego, gana {2 rep}.",
+   "ambientacion": "«Iba para la catedral de Sevilla. Ahora va donde tú digas.»"
   }
  ],
  "peligros": [
@@ -8365,6 +8397,666 @@
     "ambientacion": "",
     "textoSinOposicion": "El Barco queda **Perseguido**."
    }
+  },
+  {
+   "id": "p2_fuerza",
+   "num": 247,
+   "nombre": "Fuerza bruta",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El cachalote",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 5
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Descomunal 2"
+     ],
+     "textoEfecto": "~Un macho viejo, más largo que el Barco, os toma por un rival.~ **Descomunal 2** (asigna al menos 2 Tripulantes a esta Prueba; si no puedes, la fallas).",
+     "textoFallo": "Daña {2 dano}."
+    },
+    "nat": {
+     "nombre": "El árbol caído",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Descomunal 2"
+     ],
+     "textoEfecto": "~Una ceiba entera cierra la trocha. Hay que moverla a pulso.~ **Descomunal 2** (asigna al menos 2 Tripulantes a esta Prueba; si no puedes, la fallas).",
+     "textoFallo": "Inflige {2 herida}."
+    },
+    "ciu": {
+     "nombre": "Una carreta en el barro",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Descomunal 2"
+     ],
+     "textoEfecto": "~El carretero jura en tres lenguas; la mula no se mueve en ninguna.~ **Descomunal 2** (asigna al menos 2 Tripulantes a esta Prueba; si no puedes, la fallas).",
+     "textoFallo": "Descarta 1 carta."
+    }
+   },
+   "destino": {
+    "nombre": "Espaldas molidas",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Agota a 1 Tripulante."
+   }
+  },
+  {
+   "id": "p2_hombro",
+   "num": 248,
+   "nombre": "Arrimar el hombro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El ancla enganchada",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Descomunal 2"
+     ],
+     "textoEfecto": "~El ancla se ha trabado en una roca del fondo y el cabrestante no gira.~ **Descomunal 2** (asigna al menos 2 Tripulantes a esta Prueba; si no puedes, la fallas).",
+     "textoFallo": "Agota a 1 Tripulante."
+    },
+    "nat": {
+     "nombre": "Arrastrar la chalupa",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Descomunal 2"
+     ],
+     "textoEfecto": "~Media legua de arena hasta el río, con la chalupa a cuestas.~ **Descomunal 2** (asigna al menos 2 Tripulantes a esta Prueba; si no puedes, la fallas).",
+     "textoFallo": "{−1 avance}."
+    },
+    "ciu": {
+     "nombre": "Descargar de noche",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Descomunal 2"
+     ],
+     "textoEfecto": "~Sin grúa y sin faroles: la carga baja a pulso antes de que pase la ronda.~ **Descomunal 2** (asigna al menos 2 Tripulantes a esta Prueba; si no puedes, la fallas).",
+     "textoExito": "Roba 2.",
+     "textoFallo": "Descarta 2 cartas al azar."
+    }
+   },
+   "destino": {
+    "nombre": "Todos a una",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "0",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta 1 carta."
+   }
+  },
+  {
+   "id": "p2_ronda",
+   "num": 249,
+   "nombre": "La ronda de noche",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El bergantín de ronda",
+     "palabrasClave": [
+      "Armada",
+      "Barco"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Alerta"
+     ],
+     "textoEfecto": "~Un bergantín del Rey cruza la bocana con los faroles apagados.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoFallo": "El Barco queda **Perseguido**."
+    },
+    "nat": {
+     "nombre": "El centinela de la loma",
+     "palabrasClave": [
+      "Militar"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Alerta"
+     ],
+     "textoEfecto": "~Desde la loma se ve toda la cala, y el centinela no duerme.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoFallo": "El Tripulante asignado con más [EXP] queda **Buscado**."
+    },
+    "ciu": {
+     "nombre": "Los vigías del fuerte",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Alerta"
+     ],
+     "textoEfecto": "~Desde las almenas se ve cada callejón del puerto.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoFallo": "Inflige {2 herida}."
+    }
+   },
+   "destino": {
+    "nombre": "¿Quién vive?",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Agota a 1 Tripulante."
+   }
+  },
+  {
+   "id": "p2_escapatoria",
+   "num": 250,
+   "nombre": "Sin escapatoria",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "La resaca",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Alerta"
+     ],
+     "textoEfecto": "~Las olas rompen hacia atrás y tiran del Barco hacia los bajos.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoFallo": "Daña {1 dano}."
+    },
+    "nat": {
+     "nombre": "Los perros cimarrones",
+     "palabrasClave": [
+      "Bestia"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Alerta"
+     ],
+     "textoEfecto": "~Una jauría asilvestrada os ha olido desde el cañaveral.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoFallo": "Inflige {2 herida}."
+    },
+    "ciu": {
+     "nombre": "La cuenta del tabernero",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Alerta"
+     ],
+     "textoEfecto": "~El tabernero ha cerrado la puerta con llave. Y tiene buena memoria.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoFallo": "Descarta 2 cartas."
+    }
+   },
+   "destino": {
+    "nombre": "Acorralados",
+    "modificador": -2,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−2",
+    "ambientacion": "",
+    "textoSinOposicion": "Inflige {1 herida}."
+   }
+  },
+  {
+   "id": "p2_respiro",
+   "num": 251,
+   "nombre": "Un respiro",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Al abrigo de la isla de Pinos",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 0,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Elige"
+     ],
+     "textoEfecto": "~Una ensenada tranquila, con agua dulce y sombra.~\n**Descansar:** pierde {2 avance} de esta misión: prepara a todos tus Tripulantes y cura {1 herida g} a cada uno.\n**Seguir:** {+1 avance}."
+    },
+    "nat": {
+     "nombre": "Campamento en el claro",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 0,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Elige"
+     ],
+     "textoEfecto": "~Un arroyo, un claro y una noche sin mosquitos. Casi.~\n**Descansar:** pierde {2 avance} de esta misión: prepara a todos tus Tripulantes.\n**Seguir:** {+1 avance}."
+    },
+    "ciu": {
+     "nombre": "Una noche en tierra",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 0,
+     "prueba": [],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "etiquetas": [
+      "Elige"
+     ],
+     "textoEfecto": "~Cama de verdad, comida caliente y nadie que os busque.~\n**Descansar:** pierde {2 avance} de esta misión: quita todos los Estados de tus Tripulantes.\n**Seguir:** {+1 avance}."
+    }
+   },
+   "destino": {
+    "nombre": "Agua fresca",
+    "modificador": 1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "+1",
+    "ambientacion": "",
+    "textoSinOposicion": "{−1 avance} (mín. 0)."
+   }
+  },
+  {
+   "id": "p2_provisiones",
+   "num": 252,
+   "nombre": "Provisiones perdidas",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "El remolino",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~El agua gira como en un embudo y se lleva todo lo que no va trincado.~",
+     "textoFallo": "Descarta las 2 cartas superiores de tu mazo del capitán."
+    },
+    "nat": {
+     "nombre": "El barranco",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un mal paso, y la mula rueda barranco abajo con los víveres.~",
+     "textoFallo": "Descarta la carta superior de tu mazo del capitán."
+    },
+    "ciu": {
+     "nombre": "Ratas en el almacén",
+     "palabrasClave": [
+      "Bestia",
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~En el almacén del puerto, las ratas comen mejor que vosotros.~",
+     "textoFallo": "Descarta las 2 cartas superiores de tu mazo del capitán."
+    }
+   },
+   "destino": {
+    "nombre": "Galleta con gusanos",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta la carta superior de tu mazo del capitán."
+   }
+  },
+  {
+   "id": "p2_lenguas",
+   "num": 253,
+   "nombre": "Malas lenguas",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Una presa que escapa",
+     "palabrasClave": [
+      "Barco",
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 2
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un balandro mercante se os escapa, y lo contará en cada puerto.~",
+     "textoFallo": "Pon en juego la carta 136 del mazo de historia; si ya está en juego, descarta 1 carta."
+    },
+    "nat": {
+     "nombre": "Los cimarrones no os fían",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~En el palenque nadie os mira a los ojos.~",
+     "textoFallo": "Descarta 2 cartas."
+    },
+    "ciu": {
+     "nombre": "Tu nombre corre por las tabernas",
+     "palabrasClave": [
+      "Civil"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "COM",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Alguien canta coplas sobre vosotros, y no son halagos.~",
+     "textoFallo": "Pon en juego la carta 136 del mazo de historia; si ya está en juego, descarta 1 carta."
+    }
+   },
+   "destino": {
+    "nombre": "Habladurías",
+    "modificador": 0,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "0",
+    "ambientacion": "",
+    "textoSinOposicion": "Descarta 1 carta."
+   }
+  },
+  {
+   "id": "p2_fondo",
+   "num": 254,
+   "nombre": "Mar de fondo",
+   "copias": 1,
+   "entraDuranteLaPartida": false,
+   "version": 2,
+   "encuentros": {
+    "mar": {
+     "nombre": "Mar de fondo",
+     "palabrasClave": [
+      "Tormenta"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "NAV",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~No sopla viento, pero la mar llega gruesa de una tormenta lejana.~",
+     "textoFallo": "Si fallas por 1, Daña {1 dano}. Si fallas por 2 o más, Daña {2 dano} y el Barco queda con **Vía de agua**."
+    },
+    "nat": {
+     "nombre": "La ladera suelta",
+     "palabrasClave": [
+      "Terreno"
+     ],
+     "avance": 1,
+     "avanceSinSuperar": 1,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 3
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~La lluvia de anoche ha dejado la ladera como jabón.~",
+     "textoFallo": "Si fallas por 1, Inflige {1 herida}. Si fallas por 2 o más, Inflige {3 herida}."
+    },
+    "ciu": {
+     "nombre": "Pleito en la Audiencia",
+     "palabrasClave": [
+      "Guardia"
+     ],
+     "avance": 3,
+     "avanceSinSuperar": 2,
+     "prueba": [
+      {
+       "hab": "EXP",
+       "dificultad": 4
+      }
+     ],
+     "fallo": [],
+     "exito": [],
+     "siempre": [],
+     "nota": "",
+     "textoEfecto": "~Un oidor de la Audiencia quiere saber de dónde sale vuestro dinero.~",
+     "textoFallo": "Si fallas por 1, descarta 1 carta. Si fallas por 2 o más, −1 reputación."
+    }
+   },
+   "destino": {
+    "nombre": "Mar de leva",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "[mar]: Daña {1 dano}. [nat]/[ciu]: Inflige {1 herida}."
+   }
   }
  ],
  "cartasDeMazoPropio": [
@@ -8782,6 +9474,80 @@
     "mod": "−1",
     "ambientacion": "",
     "textoSinOposicion": "Descarta 1 carta."
+   }
+  },
+  {
+   "id": "barco_vanhoorn",
+   "num": 262,
+   "nombre": "El barco de van Hoorn",
+   "version": 2,
+   "mision": "vanhoorn",
+   "encuentro": {
+    "nombre": "El barco de van Hoorn",
+    "palabrasClave": [
+     "Barco"
+    ],
+    "avance": 3,
+    "avanceSinSuperar": 2,
+    "prueba": [
+     {
+      "hab": "COM",
+      "dificultad": 4
+     }
+    ],
+    "fallo": [],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": "~El Vrouw Maria, con vuestra carta de marear en el camarote de popa.~ Antes de asignar, puedes agotar un Cañón: esta Prueba recibe −1 de dificultad.",
+    "textoExito": "~Recuperáis lo vuestro y algo más.~ Roba 1.",
+    "textoFallo": "**Abordaje**"
+   },
+   "destino": {
+    "nombre": "Andanada holandesa",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Daña {1 dano}."
+   }
+  },
+  {
+   "id": "barco_fugitivo",
+   "num": 266,
+   "nombre": "El barco del fugitivo",
+   "version": 2,
+   "mision": "fugitivo",
+   "encuentro": {
+    "nombre": "El barco del fugitivo",
+    "palabrasClave": [
+     "Barco"
+    ],
+    "avance": 3,
+    "avanceSinSuperar": 2,
+    "prueba": [
+     {
+      "hab": "COM",
+      "dificultad": 4
+     }
+    ],
+    "fallo": [],
+    "exito": [],
+    "siempre": [],
+    "nota": "",
+    "textoEfecto": "~Os ha visto, y no piensa rendirse.~",
+    "textoExito": "~Lo sacáis de la bodega a rastras.~ Pon en juego la carta 267 del mazo de historia.",
+    "textoFallo": "**Abordaje**. El fugitivo escapa: la misión falla."
+   },
+   "destino": {
+    "nombre": "Disparo a la desesperada",
+    "modificador": -1,
+    "textoPrototipo": "",
+    "texto": "",
+    "mod": "−1",
+    "ambientacion": "",
+    "textoSinOposicion": "Daña {1 dano}."
    }
   }
  ],
@@ -9541,6 +10307,342 @@
      "textoSiguiente": ""
     }
    ]
+  },
+  {
+   "id": "isla",
+   "nombre": "La Isla del Tesoro",
+   "reto": "Medio",
+   "inicial": false,
+   "aventura": false,
+   "intro": "Un ahorcado de Port Royal llevaba cosido en el forro el mapa de una isla. Nadie sabe qué encontraréis al llegar: ni siquiera si la cruz es de verdad.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 255,
+     "nombre": "El mapa del ahorcado",
+     "entorno": "ciu",
+     "avanceNecesario": 5,
+     "distancia": 2,
+     "reglas": [
+      "**Al zarpar:** Puedes descartar 2 cartas. Si lo haces, gana {2 avance} ~(compras el mapa a la viuda)~."
+     ],
+     "ambientacion": "«Lo colgaron por no decir dónde. Su viuda lo dirá por diez reales.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "siguiente": [
+      256,
+      257,
+      258
+     ],
+     "textoSiguiente": "Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve las otras al mazo de historia"
+    },
+    {
+     "capitulo": "II",
+     "num": 256,
+     "nombre": "…tomada por los ingleses",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Añade la carta 95 al mazo de Peligros.",
+      "Los encuentros de tipo #Armada# reciben {+1 r} de dificultad."
+     ],
+     "ambientacion": "«La cruz del mapa está bajo un fuerte con bandera inglesa.»",
+     "recompensa": {
+      "rep": 3
+     },
+     "siguiente": [],
+     "textoSiguiente": "",
+     "clave": "ingleses"
+    },
+    {
+     "capitulo": "II",
+     "num": 257,
+     "nombre": "…sacudida por un temblor",
+     "entorno": "nat",
+     "avanceNecesario": 5,
+     "distancia": 2,
+     "reglas": [
+      "No puedes retirarte de esta misión.",
+      "Después de que falles una Prueba, pon 1 ficha de Derrumbe aquí. Con 3, la misión falla ~(la cueva se viene abajo)~."
+     ],
+     "ambientacion": "«La tierra tiembla cada hora. El oro no se va a mover; vosotros, sí.»",
+     "recompensa": {
+      "elige": [
+       {
+        "clave": "oro",
+        "texto": "Cargas con todo el oro",
+        "rep": 3,
+        "efecto": "cada Tripulante sufre 1 herida"
+       },
+       {
+        "clave": "salir",
+        "texto": "Sales a tiempo",
+        "rep": 2,
+        "efecto": "robas 2"
+       }
+      ],
+      "texto": "**Elige:**\n**Cargar con todo el oro:** {+3 rep} y cada Tripulante sufre {1 herida}.\n**Salir a tiempo:** {+2 rep} y roba {2 robar}."
+     },
+     "siguiente": [],
+     "textoSiguiente": "",
+     "clave": "temblor"
+    },
+    {
+     "capitulo": "II",
+     "num": 258,
+     "nombre": "El mapa era falso",
+     "entorno": "nat",
+     "avanceNecesario": 4,
+     "distancia": 2,
+     "reglas": [
+      "Después de que superes una Prueba de [EXP], gana {1 avance} adicional ~(la pista buena estaba grabada en la roca)~."
+     ],
+     "ambientacion": "«La cruz marcaba un pozo seco. Pero alguien grabó otra cruz en la piedra.»",
+     "recompensa": {
+      "rep": 1,
+      "draw": 2
+     },
+     "siguiente": [
+      256,
+      257
+     ],
+     "textoSiguiente": "Baraja boca abajo las cartas 256 y 257 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve la otra al mazo de historia",
+     "clave": "falso"
+    }
+   ]
+  },
+  {
+   "id": "vanhoorn",
+   "nombre": "La carrera de van Hoorn",
+   "reto": "Medio",
+   "inicial": false,
+   "aventura": false,
+   "intro": "Joris van Hoorn, capitán holandés y fanfarrón, apuesta su carta de marear a que llega antes que tú a la isla de Aves. Pero van Hoorn no apuesta por deporte.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 259,
+     "nombre": "La ruta de los alisios",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "**Obligado:** Después de que reveles una carta de Peligro, pon 2 fichas de Rival aquí.",
+      "**Obligado:** Después de que superes una Prueba de [NAV] en esta misión, gana {1 avance} adicional.",
+      "**Acción:** Destina 3 [NAV]: quita 2 fichas de Rival de esta misión. (Límite de una vez por misión.)",
+      "**Obligado:** Cuando esta misión tenga 8 fichas de Rival, la misión termina: apártala y pon la carta 261 encima del mazo de Misiones.",
+      "Si no superas esta misión, apártala y pon la carta 261 encima del mazo de Misiones."
+     ],
+     "ambientacion": "«A la isla de Aves y vuelta. El que pierda, paga la carta de marear.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "siguiente": [
+      260,
+      261
+     ],
+     "textoSiguiente": "Pon la carta 260 encima del mazo de Misiones"
+    },
+    {
+     "capitulo": "II",
+     "num": 260,
+     "nombre": "La isla de Aves",
+     "entorno": "nat",
+     "avanceNecesario": 5,
+     "distancia": 2,
+     "reglas": [],
+     "ambientacion": "«Llegasteis primero. El guano huele igual, pero sabe a victoria.»",
+     "recompensa": {
+      "rep": 3
+     },
+     "siguiente": [
+      263
+     ],
+     "textoSiguiente": "Pon en juego el Tesoro 263",
+     "rama": "a"
+    },
+    {
+     "capitulo": "II",
+     "num": 261,
+     "nombre": "Recuperar lo robado",
+     "entorno": "mar",
+     "avanceNecesario": 5,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Pon la carta 262 del mazo de historia encima del mazo de Peligros."
+     ],
+     "ambientacion": "«Llegó antes y se llevó la carta de marear. Vamos a pedírsela.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "siguiente": [
+      263
+     ],
+     "textoSiguiente": "Pon en juego el Tesoro 263",
+     "rama": "b"
+    }
+   ]
+  },
+  {
+   "id": "fugitivo",
+   "nombre": "El fugitivo",
+   "reto": "Fácil",
+   "inicial": false,
+   "aventura": false,
+   "intro": "Un contador de la Casa de Contratación ha huido con los libros que comprometen al gobernador. El gobernador paga el doble si se lo llevas vivo.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 264,
+     "nombre": "Tras la pista",
+     "entorno": "ciu",
+     "avanceNecesario": 5,
+     "distancia": 2,
+     "reglas": [],
+     "ambientacion": "«Lo vieron en la taberna del Ancla, con una bolsa que no era suya.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "siguiente": [
+      265
+     ],
+     "textoSiguiente": "Pon la carta 265 encima del mazo de Misiones"
+    },
+    {
+     "capitulo": "II",
+     "num": 265,
+     "nombre": "Vivo, no muerto",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Pon la carta 266 del mazo de historia encima del mazo de Peligros."
+     ],
+     "ambientacion": "«Su balandra es rápida, pero la vuestra tiene más hambre.»",
+     "recompensa": {
+      "rep": 3
+     },
+     "siguiente": [],
+     "textoSiguiente": ""
+    }
+   ]
+  },
+  {
+   "id": "pecio",
+   "nombre": "El pecio del San José",
+   "reto": "Aventura",
+   "inicial": false,
+   "aventura": true,
+   "intro": "Un galeón de la plata se hundió en un bajo con todo su cargamento. Está a poca profundidad, y cuanto más se baja, más se encuentra.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 268,
+     "nombre": "El pecio del San José",
+     "entorno": "mar",
+     "avanceNecesario": 3,
+     "distancia": 0,
+     "reglas": [
+      "Cuando esta misión vaya a superarse, puedes bucear las veces que quieras. Para bucear, haz una Prueba de [EXP] con un solo Tripulante asignado. Su dificultad es 2 más las fichas de Profundidad de esta misión (máximo 4 fichas).",
+      "Si la superas, pon 1 ficha de Profundidad. Si la fallas, retira todas las fichas de Profundidad y deja de bucear."
+     ],
+     "ambientacion": "«El galeón se hundió con la plata del virrey. Nadie ha bajado hasta el fondo.»",
+     "recompensa": {
+      "rep": 1
+     },
+     "siguiente": [],
+     "textoSiguiente": "Mira la carta 269 del mazo de historia y aplica sus recompensas hasta tu Profundidad"
+    }
+   ]
+  },
+  {
+   "id": "escolta",
+   "nombre": "Escolta del San Telmo",
+   "reto": "Aventura",
+   "inicial": false,
+   "aventura": true,
+   "intro": "Un galeón pesado y lento necesita escolta hasta Cartagena. Paga bien, si llega entero.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 272,
+     "nombre": "Escolta del San Telmo",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "**Al zarpar:** Pon en juego la carta 273 del mazo de historia ~(el galeón que escoltas)~."
+     ],
+     "ambientacion": "«Un galeón cargado y lento, y vosotros a su lado. Que nadie se acerque.»",
+     "recompensa": {
+      "rep": 2,
+      "texto": "{+2 rep}. Si la carta 273 tiene 3 o más Vida restante, {+1 rep} adicional y roba {2 robar}."
+     },
+     "siguiente": [],
+     "textoSiguiente": ""
+    }
+   ]
+  },
+  {
+   "id": "asedio",
+   "nombre": "El asedio de Port Royal",
+   "reto": "Aventura",
+   "inicial": false,
+   "aventura": true,
+   "intro": "Una escuadra española ha puesto cerco a Port Royal. Los ingleses pagarán bien a quien rompa el bloqueo antes de que caigan las murallas.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 274,
+     "nombre": "El asedio de Port Royal",
+     "entorno": "ciu",
+     "avanceNecesario": 7,
+     "distancia": 0,
+     "reglas": [
+      "**Obligado:** Cuando esta misión pase a estar disponible, pon en juego la carta 275 del mazo de historia."
+     ],
+     "ambientacion": "«Cada día que pasa, una brecha más en la muralla.»",
+     "recompensa": {
+      "rep": 2,
+      "texto": "{+2 rep}. Si la carta 275 tiene 4 o más Vida restante, {+1 rep} adicional."
+     },
+     "siguiente": [],
+     "textoSiguiente": ""
+    }
+   ]
+  },
+  {
+   "id": "regata",
+   "nombre": "La regata de San Juan",
+   "reto": "Aventura",
+   "inicial": false,
+   "aventura": true,
+   "intro": "En la fiesta de San Juan, los capitanes del puerto dan la vuelta a la isla. El ganador se lleva el gallardete y la fama.",
+   "capitulos": [
+    {
+     "capitulo": "I",
+     "num": 276,
+     "nombre": "La regata de San Juan",
+     "entorno": "mar",
+     "avanceNecesario": 6,
+     "distancia": 0,
+     "reglas": [
+      "**Obligado:** Después de que reveles una carta de Peligro, pon 2 fichas de Rival aquí.",
+      "**Obligado:** Después de que superes una Prueba de [NAV] en esta misión, gana {1 avance} adicional.",
+      "Si esta misión tiene 8 o más fichas de Rival, el rival gana la regata: al superar esta misión, gana {1 rep} en lugar de su recompensa."
+     ],
+     "ambientacion": "«Una vuelta a la isla y un gallardete de seda. Y el honor, que no se vende.»",
+     "recompensa": {
+      "rep": 2
+     },
+     "siguiente": [
+      148
+     ],
+     "textoSiguiente": "Pon en juego el Tesoro 148"
+    }
+   ]
   }
  ],
  "ordenMisiones": {
@@ -9551,7 +10653,11 @@
   ],
   "aventuras": [
    "ladron",
-   "gobernador"
+   "gobernador",
+   "pecio",
+   "escolta",
+   "asedio",
+   "regata"
   ],
   "travesias": [
    "templo",
@@ -9560,7 +10666,10 @@
    "maracaibo",
    "sanfelipe",
    "fantasma",
-   "panama"
+   "panama",
+   "isla",
+   "vanhoorn",
+   "fugitivo"
   ]
  },
  "escenario": [
@@ -9825,7 +10934,15 @@
    "p2_oro",
    "p2_serpiente_marina",
    "p2_compana",
-   "p2_holandes"
+   "p2_holandes",
+   "p2_fuerza",
+   "p2_hombro",
+   "p2_ronda",
+   "p2_escapatoria",
+   "p2_respiro",
+   "p2_provisiones",
+   "p2_lenguas",
+   "p2_fondo"
   ],
   "apartadosDePeligros": [
    "armada"
@@ -9840,7 +10957,7 @@
    "num": 221,
    "nombre": "Don Anselmo, el comerciante",
    "mision": "maracaibo",
-   "texto": "Los encuentros de tipo #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía (o el Barco se hunde), Don Anselmo se baja asustado: descártalo. Sin él, el capítulo III no da el Tesoro.\nSe va al terminar «La cala de los contrabandistas».",
+   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas.\nLos encuentros de tipo #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía o el Barco se hunde, se baja asustado: devuélvelo al mazo de historia. Sin él, la carta 141 no da el Tesoro.\nSe va al terminar la carta 141.",
    "ambientacion": "«Mis papeles y mi bolsa abren puertas.»"
   },
   {
@@ -9848,7 +10965,7 @@
    "num": 222,
    "nombre": "El guía del istmo",
    "mision": "panama",
-   "texto": "[nat]: Las Pruebas de [EXP] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: descártalo.",
+   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas.\n[nat]: Las Pruebas de [EXP] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: devuélvelo al mazo de historia.",
    "ambientacion": "«Un cimarrón que conoce el camino.»"
   }
  ],
@@ -10021,6 +11138,73 @@
    "origen": "cobertura",
    "entorno": "unico",
    "junto": false
+  },
+  {
+   "id": "pm_malafama",
+   "num": 136,
+   "nombre": "Mala fama",
+   "palabrasClave": [
+    "Civil"
+   ],
+   "texto": "No vuelve al mazo de historia al terminar la misión.\nLos Tripulantes te cuestan 1 carta más.\n**Acción:** Descarta 2 cartas de tu mano: devuelve esta carta al mazo de historia.",
+   "ambientacion": "«Dicen que no pagáis lo que prometéis. Y lo dicen en voz alta.»",
+   "origen": "p2_lenguas",
+   "entorno": "mar",
+   "junto": false
+  },
+  {
+   "id": "pm_prisionero",
+   "num": 267,
+   "nombre": "El prisionero",
+   "palabrasClave": [
+    "Civil"
+   ],
+   "vida": 3,
+   "texto": "**Interrupción:** Cuando un Tripulante vaya a sufrir heridas, esta carta puede sufrir parte de esas heridas o todas, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
+   "ambientacion": "«Atado al palo mayor, jura que es inocente. Todos lo juran.»",
+   "origen": "barco_fugitivo",
+   "entorno": "unico",
+   "junto": false
+  },
+  {
+   "id": "pm_galeon",
+   "num": 273,
+   "nombre": "Galeón San Telmo",
+   "palabrasClave": [
+    "Barco"
+   ],
+   "vida": 4,
+   "texto": "**Obligado:** Después de que falles una Prueba de [COM], inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
+   "ambientacion": "«Lleva la paga de tres guarniciones y doce cañones mal servidos.»",
+   "misiones": [
+    "escolta-I"
+   ],
+   "junto": false
+  },
+  {
+   "id": "pm_murallas",
+   "num": 275,
+   "nombre": "Murallas de Port Royal",
+   "palabrasClave": [
+    "Militar"
+   ],
+   "vida": 6,
+   "texto": "Sigue en juego mientras «El asedio de Port Royal» esté disponible.\n**Obligado:** Al final de cada turno en que no hayas zarpado a esa misión, inflige {1 dano} a esta carta.\n**Obligado:** Después de que falles una Prueba en esa misión, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño durante esa misión, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante: −2 reputación, pon la misión al fondo del mazo de Misiones y devuelve esta carta al mazo de historia.",
+   "ambientacion": "«Piedra de Jamaica y argamasa de ron. Aguantarán. Un tiempo.»",
+   "misiones": [
+    "asedio-I"
+   ],
+   "junto": false
+  }
+ ],
+ "consultas": [
+  {
+   "id": "fondo_sanjose",
+   "num": 269,
+   "nombre": "El fondo del San José",
+   "mision": "pecio",
+   "texto": "Aplica las recompensas hasta tu Profundidad. Se suman.\n**1:** Roba {2 robar}.\n**2:** {+1 rep} adicional.\n**3:** Pon en juego el Tesoro 270.\n**4:** Pon en juego el Tesoro 271.",
+   "ambientacion": "«Más abajo, la plata. Más abajo aún, lo que el virrey no declaró.»"
   }
  ]
 }

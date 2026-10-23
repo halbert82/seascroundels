@@ -168,6 +168,8 @@ export function textoSuceso(s: Estado, ev: Evento, fase: 'antes' | 'despues'): s
       return 'Empieza el turno.'
     case 'finTurno':
       return 'Termina el turno.'
+    case 'entraEnJuego':
+      return `«${nombre(s, ev.carta)}» entra en juego.`
   }
 }
 
@@ -352,8 +354,22 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: m.carta ? `Al zarpar a «${nombreCarta(m.carta)}»` : 'Al zarpar', ayuda: `¿${m.texto ?? `Descartas ${plural(n, 'carta', 'cartas')}`}?` }
     case 'finalMision':
       return { titulo: `«${nombreCarta(m.carta)}»: elige el final`, ayuda: 'La misión está superada. Elige una de las dos recompensas.' }
-    case 'pasajeroSinSitio':
-      return { titulo: `«${nombreCarta(m.carta)}» sube a bordo`, ayuda: 'No te queda Capacidad: elige el Tripulante que vuelve al muelle (con sus Mejoras).' }
+    // Fase 15
+    case 'bucear':
+      return {
+        titulo: '«El pecio del San José»: ¿buceas?',
+        ayuda: `La misión está superada. Para bajar más, una Prueba de EXP ${n} con un solo Tripulante. Si la superas, 1 ficha de Profundidad más; si la fallas, pierdes todas y dejas de bucear.`,
+      }
+    case 'desviarAProtegido':
+      return {
+        titulo: `¿Cuánto recibe «${nombreCarta(m.carta)}» en su lugar?`,
+        ayuda: 'Puede llevarse parte o todo. Si se queda sin Vida, se aplica lo que dice su carta.',
+      }
+    case 'destina':
+      return {
+        titulo: `Destina ${n} ${m.texto ?? ''}`.trim(),
+        ayuda: `Agota a Tripulantes preparados cuya ${m.texto ?? 'habilidad'} sume al menos ${n}, con sus bonificaciones (como al cubrir una Distancia). No es una Prueba: no hay Destino ni cartas de la mano.`,
+      }
     case 'conservarMision':
       return { titulo: `No has superado «${nombreCarta(m.carta)}»`, ayuda: '¿La dejas disponible para otro turno o la mandas al fondo del mazo de Misiones?' }
     case 'portadorTesoro':
@@ -515,6 +531,12 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       return 'superas sin Prueba'
     case 'codigo':
       return null
+    case 'descartarMazoCapitan':
+      return `descartas ${e.n === 1 ? 'la carta superior' : `las ${e.n} cartas superiores`} de tu mazo del capitán`
+    case 'quitarTodosLosEstados':
+      return 'quitas todos los Estados de tus Tripulantes'
+    case 'ponerEnJuego':
+      return `pones en juego «${nombreDe(e.carta)}»${e.siYa ? `; si ya está en juego, ${describirEfectos(e.siYa)}` : ''}`
     case 'quitarUnEstado':
       return `quitas ${e.estados.map((x) => INFO_ESTADO[x].nombre).join(', ')} a un Tripulante${e.curar ? ` y le curas ${e.curar}` : ''}`
     case 'descartarMuelle':

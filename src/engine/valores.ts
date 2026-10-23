@@ -3,7 +3,7 @@
 
 import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
 import { costeImpreso, porId } from './catalogo.ts'
-import { DATOS } from './datos.ts'
+import { DATOS, type Habilidad } from './datos.ts'
 import { copia } from './estado.ts'
 import { cartaDeEstado } from './infoEstados.ts'
 import { reglasMision } from './misiones2/registro.ts'
@@ -204,6 +204,22 @@ export function navParaDistancia(s: Estado, agotados: readonly InstId[]): number
   return agotados.reduce((suma, inst) => suma + valor(s, { tipo: 'habilidad', carta: inst, hab: 'NAV' }, supuestas), 0)
 }
 
+/** Fase 15, «Destina X»: lo que suman unos Tripulantes de esa habilidad al agotarse juntos (como al cubrir una Distancia). */
+export function habilidadAlAgotarse(s: Estado, agotados: readonly InstId[], hab: Habilidad): number {
+  const supuestas = new Set(agotados)
+  return agotados.reduce((suma, inst) => suma + valor(s, { tipo: 'habilidad', carta: inst, hab }, supuestas), 0)
+}
+
+/** Lo más que suma el mejor grupo de Tripulantes preparados al agotarse juntos (para saber si se puede pagar «Destina X»). */
+export function maximoParaDestina(s: Estado, hab: Habilidad): number {
+  const lista = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
+  let mejor = 0
+  for (let mascara = 1; mascara < 1 << lista.length; mascara++) {
+    mejor = Math.max(mejor, habilidadAlAgotarse(s, lista.filter((_, i) => mascara & (1 << i)), hab))
+  }
+  return mejor
+}
+
 /** Espacio que ocupan las Mejoras de barco (los Tesoros no ocupan). */
 export function espacioOcupado(s: Estado): number {
   return vinculadas(s, 'barco').reduce((suma, m) => {
@@ -226,9 +242,12 @@ export function huecosLibres(s: Estado, tripulante: InstId): number {
   return valor(s, { tipo: 'huecos', carta: tripulante }) - huecosOcupados(s, tripulante)
 }
 
-/** Plazas del Barco ocupadas: Tripulantes sin contar al Capitán, más los Pasajeros (fase 14: ya no hay rehenes). */
+/**
+ * Plazas del Barco ocupadas: los Tripulantes sin contar al Capitán (fase 14: ya no hay rehenes; fase 15: los Pasajeros
+ * ya no ocupan Capacidad, porque no son Tripulantes).
+ */
 export function plazasOcupadas(s: Estado): number {
-  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length + s.zonas.pasajeros.length
+  return s.zonas.tripulacion.filter((t) => t !== s.capitan).length
 }
 
 export function plazasLibres(s: Estado): number {

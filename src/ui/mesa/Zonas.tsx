@@ -271,7 +271,7 @@ export function ZonaTripulacion() {
   const m = medidasTripulacion(total, repartirAltoDeMas(alto).zonas)
   return (
     <section className="zona zona-tripulacion">
-      <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{valor(s, { tipo: 'capacidad' })} · el Capitán no cuenta{s.zonas.pasajeros.length > 0 ? ', los Pasajeros sí' : ''}</span>}>Tripulación</Rotulo>
+      <Rotulo extra={<span className="dato">Capacidad {plazasOcupadas(s)}/{valor(s, { tipo: 'capacidad' })} · el Capitán no cuenta{s.zonas.pasajeros.length > 0 ? ' ni los Pasajeros' : ''}</span>}>Tripulación</Rotulo>
       <div className="tripulacion">
         {s.zonas.tripulacion.map((c) => (
           <Tripulante key={c} inst={c} m={m} />

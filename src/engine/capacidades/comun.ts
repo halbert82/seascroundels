@@ -3,6 +3,7 @@
 
 import { costeImpreso, esCanon, esUnica, porId } from '../catalogo.ts'
 import type { Entorno, Habilidad } from '../datos.ts'
+import { esAlerta } from '../definiciones.ts'
 import { copia } from '../estado.ts'
 import { curable } from '../estados.ts'
 import { mejoraActiva } from '../valores.ts'
@@ -67,6 +68,15 @@ export function enEntorno(s: Estado, ...entornos: Entorno[]): boolean {
 /** Acaba de revelarse esta carta de Peligro y sigue ahí, sin resolver. */
 export function peligroRevelado(s: Estado, ev: Evento): ev is Extract<Evento, { tipo: 'revelarPeligro' }> {
   return ev.tipo === 'revelarPeligro' && s.zonas.encuentro.includes(ev.carta)
+}
+
+/**
+ * Fase 15, «Alerta»: la carta de Peligro revelada se puede quitar sin resolverla (descartarla, devolverla al mazo o
+ * superarla sin Prueba). Con Alerta, no: Sangre fría, Soborno, Velas de tormenta, Íñigo, Cambio de rumbo y el Pedrero de
+ * borda no se ofrecen.
+ */
+export function peligroQueSePuedeQuitar(s: Estado, ev: Evento): ev is Extract<Evento, { tipo: 'revelarPeligro' }> {
+  return peligroRevelado(s, ev) && !esAlerta(s, ev.carta)
 }
 
 /** Una carta «con Prueba de X» lo es si alguna de sus opciones es de esa habilidad (D4). */

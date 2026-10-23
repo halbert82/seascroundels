@@ -91,7 +91,8 @@ describe('Avance X / Y: los datos de las cartas', () => {
         expect([0, 1, 2], `${id} (${e})`).toContain(enc.avance)
       }
     }
-    expect(conDos).toBe(154)
+    // Fase 15: 21 encuentros con Prueba de las cartas 247–254 (los de «Un respiro» no tienen) y los dos barcos rivales.
+    expect(conDos).toBe(177)
   })
 })
 

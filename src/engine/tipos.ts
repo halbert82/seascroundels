@@ -148,7 +148,7 @@ export type Suceso =
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
 /** Fichas que se ponen sobre la carta de misión. Se descartan al terminarla. */
-export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa' | 'derrumbe'
+export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa' | 'derrumbe' | 'rival' | 'profundidad'
 
 /** Una Prueba ya resuelta en la misión en curso. */
 export interface PruebaHecha {
@@ -211,6 +211,13 @@ export interface MisionEnCurso {
   hecho?: string[]
   /** La permanente que acaba de poner en juego el encuentro en curso (su propio final de encuentro no le cuenta). */
   permanenteNueva?: InstId
+  /**
+   * Fase 15: adónde va la misión si no se supera, sin preguntar: al fondo del mazo de Misiones (las Murallas de Port Royal
+   * caen) o fuera de la partida («apártala»: La ruta de los alisios).
+   */
+  destinoForzado?: 'fondo' | 'fuera'
+  /** Fase 15: ya se ha hecho lo de «cuando esta misión vaya a superarse» (bucear). */
+  antesDeSuperarHecho?: boolean
 }
 
 export interface Bono {
@@ -388,6 +395,8 @@ export type Evento =
   | { tipo: 'canonAgotado'; carta: InstId }
   /** Un Tripulante acaba de quedar con un Estado que no tenía. */
   | { tipo: 'estadoPuesto'; carta: InstId; estado: FichaTripulante }
+  /** Fase 15: un Tesoro acaba de entrar en juego («Al entrar en juego, gana 2 de reputación»: La custodia de esmeraldas). */
+  | { tipo: 'entraEnJuego'; carta: InstId }
 
 // ---------------------------------------------------------------------------
 // Tareas: pasos de reglas pendientes. Son datos, para que la partida se pueda guardar en cualquier momento.
@@ -572,6 +581,12 @@ export type Tarea = { id: number } & (
   | { tipo: 'quitarUnEstado'; estados: FichaTripulante[]; carta?: InstId; curar?: number }
   /** Descarta una de estas cartas de Peligro en juego (eliges cuál). */
   | { tipo: 'quitarPermanente'; candidatas: InstId[] }
+  /** Fase 15: paga «Destina X [habilidad]» (eliges a quién agotas). */
+  | { tipo: 'destina'; n: number; hab: Habilidad }
+  /** Fase 15: descarta las N cartas superiores del mazo del capitán (si está vacío, nada). */
+  | { tipo: 'descartarMazoCapitan'; n: number }
+  /** Fase 15: pone en juego una permanente desde el mazo de historia (si no está allí, aplica `siYa`). */
+  | { tipo: 'ponerEnJuego'; carta: CartaId; siYa?: Efecto[] }
   /** Descarta una carta del muelle (la de más a la izquierda, o la Mejora más cara) y, si lo dice, repón el hueco. */
   | { tipo: 'descartarMuelle'; cual: 'izquierda' | 'mejoraMasCara'; reponer?: boolean }
   | {
@@ -719,6 +734,11 @@ export type Coste =
   | { tipo: 'agotarVarios'; n: number; oRasgo?: string }
   /** Agota uno de tus Cañones preparados (eliges cuál). */
   | { tipo: 'agotarCanon' }
+  /**
+   * Fase 15, «Destina X [habilidad]»: agota Tripulantes preparados cuya habilidad sume al menos X (con sus bonificaciones,
+   * como al cubrir una Distancia). No es una Prueba.
+   */
+  | { tipo: 'destina'; n: number; hab: Habilidad }
 
 export type Ventana =
   | 'constante'

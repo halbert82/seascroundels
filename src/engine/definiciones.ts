@@ -26,8 +26,15 @@ export interface DefinicionPrueba {
   abordaje?: boolean
   /** Como mucho, tantos Tripulantes comprometidos. */
   maximo?: number
+  /**
+   * Fase 15, «Descomunal N»: asigna al menos N Tripulantes a esta Prueba; si no puedes, la fallas. Se puede asignar a
+   * nadie (Sin oposición) o a N o más; con menos de N asignados, la Prueba se falla.
+   */
+  minimo?: number
   /** Solo puede hacerla este Tripulante (ya agotado como coste, se compromete solo). */
   soloCon?: InstId
+  /** Fase 15: se hace con la misión ya superada («cuando esta misión vaya a superarse, puedes bucear»): no se corta. */
+  trasSuperar?: boolean
 }
 
 /**
@@ -90,6 +97,11 @@ export interface ReglasPermanente {
   bloqueaSuperar?: boolean
   /** Lo que pasa además cuando la quitas con una de sus formas de quitarla (no al llegar a su contador). */
   alQuitar?: Efecto[]
+  /**
+   * Fase 15: no vuelve al mazo de historia al terminar la misión («Mala fama»; las Murallas de Port Royal, que están en
+   * juego mientras su misión esté disponible). Se quita con su Acción o cuando su texto lo dice.
+   */
+  seQueda?: boolean
 }
 
 /**
@@ -150,6 +162,13 @@ export interface ReglasEncuentro {
   sinPruebaSi?: Condicion
   /** Lo que cambia en su Prueba. */
   prueba?: CambiosDePrueba
+  /** Fase 15, «Descomunal N»: asigna al menos N Tripulantes a esta Prueba; si no puedes, la fallas. */
+  descomunal?: number
+  /**
+   * Fase 15, «Alerta»: este encuentro se resuelve siempre. Ninguna carta puede descartarlo, devolverlo al mazo ni evitar
+   * que se resuelva (Sangre fría, Soborno, Velas de tormenta, Íñigo, Cambio de rumbo, Retirada a tiempo, Pedrero de borda).
+   */
+  alerta?: boolean
 }
 
 export interface ReglasDestino {
@@ -208,6 +227,17 @@ export function reglasEncuentro(s: Estado, carta: InstId): ReglasEncuentro | und
   return entorno ? r.encuentros[entorno] : undefined
 }
 
+/**
+ * Fase 15, «Alerta»: el encuentro de esta carta se resuelve siempre (ninguna carta puede descartarlo, devolverlo al mazo
+ * ni evitar que se resuelva).
+ */
+export function esAlerta(s: Estado, carta: InstId): boolean {
+  if (!s.mision || !s.cartas[carta]) return false
+  const tipo = porId(copia(s, carta).id).tipo
+  if (tipo !== 'peligro' && tipo !== 'mazoPropio') return false
+  return reglasEncuentro(s, carta)?.alerta === true
+}
+
 /** Todo lo que hace falta para resolver el encuentro de esta carta en la misión en curso. */
 export function definicionEncuentro(s: Estado, carta: InstId): DefinicionEncuentro {
   const enc = encuentroDe(s, carta)
@@ -218,6 +248,7 @@ export function definicionEncuentro(s: Estado, carta: InstId): DefinicionEncuent
     return {
       ...resto,
       ...(r.restriccion?.maximo ? { maximo: r.restriccion.maximo } : {}),
+      ...(r.descomunal ? { minimo: r.descomunal } : {}),
       nombre: enc.nombre,
       palabrasClave: enc.palabrasClave,
       avance: enc.avance,

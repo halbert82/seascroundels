@@ -6,6 +6,7 @@ import {
   type CapitanDatos,
   type CapituloDatos,
   type CartaMazoPropioDatos,
+  type ConsultaDatos,
   type DatosCartas,
   type EscenarioDatos,
   type EventoDatos,
@@ -45,6 +46,8 @@ export type EntradaCatalogo =
   | { tipo: 'pasajero'; num: number; id: string; copias: number; carta: PasajeroDatos; mision: MisionDatos }
   /** Fase 11: carta del mazo de historia que un encuentro pone en la zona de permanentes. */
   | { tipo: 'permanente'; num: number; id: string; copias: number; carta: PermanenteDatos }
+  /** Fase 15: carta de consulta del mazo de historia (se mira, no entra en juego). */
+  | { tipo: 'consulta'; num: number; id: string; copias: number; carta: ConsultaDatos; mision: MisionDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
@@ -72,6 +75,7 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   mazoPropio: 'Mazo propio',
   pasajero: 'Pasajero',
   permanente: 'Permanente',
+  consulta: 'Carta de consulta',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -110,8 +114,15 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     }
   }
 
-  // Cada carta de mazo propio pertenece al capítulo que la baraja al zarpar.
+  // Cada carta de mazo propio pertenece al capítulo que la baraja al zarpar. Fase 15: las de un solo encuentro que no son
+  // de ningún mazo propio (los barcos rivales) dicen de qué travesía son; su «mazo» es el nombre de la travesía.
   for (const carta of datos.cartasDeMazoPropio) {
+    if (carta.mision) {
+      const mision = datos.misiones.find((m) => m.id === carta.mision)
+      if (!mision) throw new Error(`La carta «${carta.id}» no pertenece a ninguna travesía`)
+      lista.push({ tipo: 'mazoPropio', num: carta.num, id: carta.id, copias: 1, carta, mazo: mision.nombre, mision })
+      continue
+    }
     let encontrada = false
     for (const mision of datos.misiones) {
       for (const capitulo of mision.capitulos) {
@@ -132,13 +143,22 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     lista.push({ tipo: 'pasajero', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
   for (const carta of datos.permanentes ?? []) lista.push({ tipo: 'permanente', num: carta.num, id: carta.id, copias: 1, carta })
+  for (const carta of datos.consultas ?? []) {
+    const mision = datos.misiones.find((m) => m.id === carta.mision)
+    if (!mision) throw new Error(`La carta de consulta «${carta.id}» no pertenece a ninguna misión`)
+    lista.push({ tipo: 'consulta', num: carta.num, id: carta.id, copias: 1, carta, mision })
+  }
 
   return lista.sort((a, b) => a.num - b.num)
 }
 
-/** Identificador de un capítulo: «templo-I», o «maracaibo-II-a» si tiene salida doble. */
-export function idCapitulo(mision: string, capitulo: Pick<CapituloDatos, 'capitulo' | 'rama'>): string {
-  return `${mision}-${capitulo.capitulo}${capitulo.rama ? `-${capitulo.rama}` : ''}`
+/**
+ * Identificador de un capítulo: «templo-I», o «maracaibo-II-a» si tiene salida doble. Fase 15: con varios capítulos del
+ * mismo número sin salida doble, su clave («isla-II-ingleses»).
+ */
+export function idCapitulo(mision: string, capitulo: Pick<CapituloDatos, 'capitulo' | 'rama' | 'clave'>): string {
+  const sufijo = capitulo.rama ?? capitulo.clave
+  return `${mision}-${capitulo.capitulo}${sufijo ? `-${sufijo}` : ''}`
 }
 
 export const CATALOGO: EntradaCatalogo[] = construirCatalogo()

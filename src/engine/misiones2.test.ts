@@ -442,12 +442,11 @@ describe('139 · Los muelles de Maracaibo', () => {
     expect(enMisiones(j)).toContain('maracaibo-II-b')
   })
 
-  it('Don Anselmo ocupa 1 de Capacidad: si no cabe, un Tripulante vuelve al muelle', () => {
+  it('fase 15: Don Anselmo no ocupa Capacidad (no es un Tripulante): sube a bordo aunque el Barco vaya lleno', () => {
     const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo', 'bucanero', 'grumete', 'marinero_p'], mazoPeligros: ['calma', 'calma'] })
     j.zarpar('maracaibo-I').cubrir('viejo_lobo')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'pasajeroSinSitio', carta: 'anselmo' } })
-    j.elegir('marinero_p')
-    expect(j.zona('muelle')).toContain('marinero_p')
+    expect(j.zona('pasajeros')).toEqual(['anselmo'])
+    expect(j.zona('tripulacion')).toContain('marinero_p')
     expect(plazasOcupadas(j.estado)).toBe(4)
   })
 })

@@ -339,6 +339,15 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
       case 'mirarPeligros':
         tareas.push({ tipo: 'mirarPeligros', n: e.n })
         break
+      case 'descartarMazoCapitan':
+        tareas.push({ tipo: 'descartarMazoCapitan', n: e.n })
+        break
+      case 'quitarTodosLosEstados':
+        tareas.push({ tipo: 'quitarTodosLosEstados', de: 'tripulacion' })
+        break
+      case 'ponerEnJuego':
+        tareas.push(e.siYa ? { tipo: 'ponerEnJuego', carta: e.carta, siYa: e.siYa } : { tipo: 'ponerEnJuego', carta: e.carta })
+        break
       case 'descartarArriba':
         tareas.push({ tipo: 'descartarArriba', n: e.n })
         break

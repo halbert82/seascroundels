@@ -9,7 +9,7 @@ import type { Habilidad } from '../datos.ts'
 import type { Capacidad, CartaId, Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { mover } from '../zonas.ts'
-import { conPruebaDe, destinoVigente, enEntorno, hayAgotados, hayHeridos, participa, participantes, peligroRevelado, portadorDe } from './comun.ts'
+import { conPruebaDe, destinoVigente, enEntorno, hayAgotados, hayHeridos, participa, participantes, peligroQueSePuedeQuitar, portadorDe } from './comun.ts'
 
 const texto = (id: CartaId) => textoDe(id)
 
@@ -146,7 +146,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     ventana: 'respuesta',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'mar') && peligroRevelado(s, ev) && conPruebaDe(s, ev.carta, 'COM'),
+    disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'mar') && peligroQueSePuedeQuitar(s, ev) && conPruebaDe(s, ev.carta, 'COM'),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
   },
   // Velas de tormenta: «Respuesta: Agotar: Después de que reveles una carta de Peligro con Prueba de NAV, descártala…»
@@ -156,7 +156,7 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     ventana: 'respuesta',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && peligroRevelado(s, ev) && conPruebaDe(s, ev.carta, 'NAV'),
+    disparo: (s, _yo, ev, fase) => fase === 'despues' && peligroQueSePuedeQuitar(s, ev) && conPruebaDe(s, ev.carta, 'NAV'),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
   },
 

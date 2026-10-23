@@ -92,6 +92,7 @@ import {
   recuperarDescarte,
 } from './peligros2.ts'
 import { evento, jugarEvento, usar, ventanaLibre } from './sucesos.ts'
+import { descartarMazoCapitan, destina, ponerEnJuego } from './fase15.ts'
 import { desercion, exceso, hundirse, reasignarTesoro, sacarTripulante } from './tripulacion.ts'
 import { aplicarEscenario, cambioMano, descartarFinal, prepararTodo, turno } from './turno.ts'
 
@@ -198,6 +199,9 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   recuperarDescarte,
   quitarUnEstado,
   quitarPermanente,
+  descartarMazoCapitan,
+  ponerEnJuego,
+  destina,
 }
 
 /**

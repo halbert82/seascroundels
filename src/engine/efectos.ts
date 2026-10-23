@@ -112,6 +112,18 @@ export type Efecto =
   | { tipo: 'sobre'; carta: InstId; hacer: AccionSobre }
   /** «Uno de los comprometidos sufre N heridas» desde un Destino: si hay un Maldito comprometido, tiene que ser él. */
   | { tipo: 'herirComprometido'; n: number }
+  /**
+   * Fase 15: «Descarta la carta superior (las N cartas superiores) de tu mazo del capitán». Si el mazo está vacío, no se
+   * descarta nada ni se baraja la pila de descartes (como «Dados cargados», P40).
+   */
+  | { tipo: 'descartarMazoCapitan'; n: number }
+  /** Fase 15: «Quita todos los Estados de tus Tripulantes» (como la Taberna; las Ventajas se quedan). */
+  | { tipo: 'quitarTodosLosEstados' }
+  /**
+   * Fase 15: «Pon en juego la carta N del mazo de historia; si ya está en juego, …» (desde un recuadro, no al leer el
+   * encuentro). `siYa`: lo que pasa si no está en el mazo de historia.
+   */
+  | { tipo: 'ponerEnJuego'; carta: CartaId; siYa?: Efecto[] }
   /** Lo que no cabe en lo anterior: una función registrada por carta. */
   | { tipo: 'codigo'; clave: string }
 

@@ -76,8 +76,9 @@ export const reclutar: Manejador<'reclutar'> = (s, t) => {
   mover(s, t.carta, 'tripulacion', 'abajo')
   const recluta = copia(s, t.carta)
   recluta.agotada = false
-  // Catalina: el descuento se gasta con el siguiente Tripulante que reclutes, aunque sea gratis (N19).
-  s.temporales = s.temporales.filter((x) => x.clave !== 'capitan2.descuento')
+  // Catalina: el descuento se gasta con el siguiente Tripulante que reclutes, aunque sea gratis (N19). Fase 15: el de la
+  // Cadena de oro del San José, con el siguiente Tripulante o Mejora.
+  s.temporales = s.temporales.filter((x) => x.clave !== 'capitan2.descuento' && x.clave !== 'cadena_oro.descuento')
   anotar(s, 'jugada', `Reclutas a ${nombre(s, t.carta)}${t.gratis ? ' sin pagar su coste' : t.mitad ? ' pagando la mitad de su coste' : ''}.`, { tipo: 'reclutar', carta: recluta.id })
   // Fase 14, «Enrolado N»: entra con N fichas de Enrolado (no se renuevan ni se añaden más).
   const fichas = enroladoDe(recluta.id)
@@ -100,6 +101,8 @@ export const adquirir: Manejador<'adquirir'> = (s, t) => {
   mover(s, t.carta, 'mejoras', 'abajo')
   const c = copia(s, t.carta)
   c.vinculadaA = t.destino
+  // Fase 15: el descuento de la Cadena de oro del San José se gasta con la siguiente Mejora (o Tripulante).
+  s.temporales = s.temporales.filter((x) => x.clave !== 'cadena_oro.descuento')
   const destino = t.destino === 'barco' ? 'el Barco' : nombre(s, t.destino)
   anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}${t.mitad ? ' pagando la mitad de su coste' : ''}.`, { tipo: 'adquirir', carta: c.id })
   return 'hecha'

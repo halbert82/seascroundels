@@ -20,8 +20,12 @@ function encuentroDe(p: (typeof DATOS.permanentes)[number]) {
   if (p.entorno === 'unico') return DATOS.cartasDeMazoPropio.find((c) => c.id === p.origen)?.encuentro
   return DATOS.peligros.find((c) => c.id === p.origen)?.encuentros[p.entorno]
 }
-/** Las que pone en juego un encuentro (todas menos «¡La guardia!», que la ponen misiones). */
-const DE_ENCUENTRO = DATOS.permanentes.filter((p) => p.origen)
+/**
+ * Las que pone en juego un encuentro al leerlo (fase 11: 226–237; «¡La guardia!» la ponen misiones). Fase 15: «Mala
+ * fama» y «El prisionero» las pone en juego el recuadro de fallo o de éxito de su encuentro; las del San Telmo y Port
+ * Royal, sus misiones (fase15.test.ts).
+ */
+const DE_ENCUENTRO = DATOS.permanentes.filter((p) => p.origen && p.num >= 226 && p.num <= 237)
 
 const junto = (j: Jugador, permanente: CartaId): CartaId | undefined => {
   const c = j.copia(permanente).junto
@@ -30,7 +34,8 @@ const junto = (j: Jugador, permanente: CartaId): CartaId | undefined => {
 
 describe('Las 12 permanentes en los datos', () => {
   it('son las cartas 220 («¡La guardia!») y 226–237, de tamaño normal, del mazo de historia, con el tipo de su encuentro', () => {
-    expect(DATOS.permanentes.map((p) => p.num)).toEqual([220, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237])
+    // Fase 15: 136 «Mala fama», 267 «El prisionero», 273 «Galeón San Telmo» y 275 «Murallas de Port Royal».
+    expect(DATOS.permanentes.map((p) => p.num)).toEqual([220, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 136, 267, 273, 275])
     for (const p of DATOS.permanentes) expect(reglasPermanente(p.id), p.id).toBeDefined()
     for (const p of DE_ENCUENTRO) {
       const enc = encuentroDe(p)
@@ -76,7 +81,7 @@ describe('Las 12 permanentes en los datos', () => {
     }
   })
 
-  it('al preparar la partida, las 13 esperan en el mazo de historia; la zona de permanentes está vacía', () => {
+  it('al preparar la partida, las 17 esperan en el mazo de historia; la zona de permanentes está vacía', () => {
     const s = nuevaPartida({ semilla: 3 })
     const enHistoria = s.zonas.mazoHistoria.map((c) => s.cartas[c]?.id)
     for (const p of DATOS.permanentes) expect(enHistoria, p.id).toContain(p.id)

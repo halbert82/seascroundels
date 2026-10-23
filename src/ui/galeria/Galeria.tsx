@@ -35,7 +35,7 @@ const GRUPOS: Grupo[] = [
   { id: 'mejoras', nombre: 'Mejoras', tipos: ['mejoraBarco', 'mejoraTripulante'] },
   { id: 'mano', nombre: 'Eventos y Habilidades', tipos: ['evento', 'habilidad'] },
   { id: 'peligros', nombre: 'Peligros', tipos: ['peligro', 'mazoPropio'] },
-  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero'] },
+  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'consulta'] },
   { id: 'permanentes', nombre: 'Permanentes', tipos: ['permanente'] },
   { id: 'tesoros', nombre: 'Tesoros', tipos: ['tesoro'] },
   { id: 'escenario', nombre: 'Escenario y Puertos', tipos: ['escenario', 'puerto'] },
@@ -67,10 +67,14 @@ function descripcion(e: EntradaCatalogo): string {
       if (e.mision.inicial) return 'Misión inicial'
       if (e.mision.aventura) return 'Aventura'
       const capitulos = new Set(e.mision.capitulos.map((c) => c.capitulo)).size
-      return `Capítulo ${e.carta.capitulo}${e.carta.rama ? `-${e.carta.rama}` : ''} de ${['', 'I', 'II', 'III', 'IV'][capitulos] ?? total}`
+      // Fase 15: los tres capítulos II de «La Isla del Tesoro» (uno al azar) no llevan letra.
+      const azar = e.carta.clave ? ' (uno de tres, al azar)' : ''
+      return `Capítulo ${e.carta.capitulo}${e.carta.rama ? `-${e.carta.rama}` : ''} de ${['', 'I', 'II', 'III', 'IV'][capitulos] ?? total}${azar}`
     }
     case 'pasajero':
       return `Pasajero · ${e.mision.nombre}`
+    case 'consulta':
+      return `Carta de consulta · ${e.mision.nombre}`
     case 'permanente':
       return e.carta.origen ? `Permanente · la pone en juego la carta ${porId(e.carta.origen).num}` : 'Permanente · la ponen en juego misiones'
     case 'peligro':

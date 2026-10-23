@@ -83,5 +83,9 @@
  "guia_alquiler": "Enrolado N.",
  "carne_canon": "Sufre {N herida}: los demás Tripulantes asignados a esta Prueba reciben {N COM}. (Límite de una vez por turno.)",
  "galeote": "Sufre {N herida}: Galeote fugado recibe {N NAV} para esta Prueba. (Límite de una vez por turno.)",
- "tuerto": "El Tuerto recibe {N COM} por cada herida que tenga."
+ "tuerto": "El Tuerto recibe {N COM} por cada herida que tenga.",
+ "gallardete": "Indestructible.\n{N MAN}.",
+ "carta_marear": "Indestructible.\nTus misiones [mar] necesitan {N avance g}.",
+ "cadena_oro": "**Acción:** Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes o adquieras cuesta {N} menos.",
+ "custodia": "Indestructible.\nAl entrar en juego, gana {N rep}."
 }

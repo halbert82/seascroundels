@@ -4,7 +4,6 @@ import { porId } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { reglasMision } from '../misiones2/registro.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
-import { plazasLibres } from '../valores.ts'
 import { mover } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
@@ -25,21 +24,13 @@ export const fichasMision: Manejador<'fichasMision'> = (s, t) => {
 }
 
 /**
- * Un Pasajero entra en juego: ocupa 1 de Capacidad. Si no queda sitio, devuelves un Tripulante al muelle.
+ * Un Pasajero entra en juego. Fase 15: ya no ocupa Capacidad (no es un Tripulante; su carta dice todo lo necesario).
  * La carta estaba apartada (en el mazo de historia); si ya viaja contigo, no pasa nada.
  */
-export const ponerPasajero: Manejador<'ponerPasajero'> = (s, t, e) => {
+export const ponerPasajero: Manejador<'ponerPasajero'> = (s, t) => {
   if (s.zonas.pasajeros.some((c) => copia(s, c).id === t.carta)) return 'hecha'
   const carta = (Object.keys(s.cartas) as InstId[]).find((i) => copia(s, i).id === t.carta)
   if (!carta) return 'hecha'
-  if (plazasLibres(s) < 1) {
-    const candidatos = s.zonas.tripulacion.filter((c) => c !== s.capitan)
-    if (candidatos.length > 0) {
-      if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'pasajeroSinSitio', carta: t.carta }, candidatas: candidatos, min: 1, max: 1 })
-      const [c] = eleccionDe(e, 'cartas').ids
-      if (c) encolar(s, { tipo: 'sacarTripulante', carta: c, destino: 'muelle', motivo: 'muelle' })
-    }
-  }
   mover(s, carta, 'pasajeros', 'abajo')
   anotar(s, 'aviso', `${nombre(s, carta)} sube a bordo como Pasajero.`)
   return 'hecha'

@@ -8,7 +8,8 @@ import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
 import { huecosLibres, plazasLibres } from '../valores.ts'
-import { canonesAgotados, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroRevelado } from './comun.ts'
+import { canonesAgotados, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroQueSePuedeQuitar } from './comun.ts'
+import { esAlerta } from '../definiciones.ts'
 
 const texto = (id: CartaId) => textoDe(id)
 
@@ -87,19 +88,20 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
   }),
   evento('sangre_fria', 'respuesta', {
     // «Respuesta: [Ciudad]: Después de que reveles una carta de Peligro, gana su Avance y descártala sin resolverla.»
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'ciu') && peligroRevelado(s, ev),
+    // Fase 15: no con un encuentro con Alerta.
+    disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'ciu') && peligroQueSePuedeQuitar(s, ev),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: true }],
   }),
   evento('cambio_rumbo', 'respuesta', {
     // «Respuesta: [Mar]: Después de que reveles una carta de Peligro, ponla al fondo del mazo de Peligros y revela otra.»
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'mar') && peligroRevelado(s, ev),
+    disparo: (s, _yo, ev, fase) => fase === 'despues' && enEntorno(s, 'mar') && peligroQueSePuedeQuitar(s, ev),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'fondo', avance: false }],
   }),
   evento('soborno', 'respuesta', {
     // «Respuesta: [Ciudad]: Después de que reveles una carta de Peligro con Prueba, supera automáticamente esa Prueba,
     // sin revelar Destino.» (N17)
     disparo: (s, _yo, ev, fase) =>
-      fase === 'despues' && enEntorno(s, 'ciu') && peligroRevelado(s, ev) && encuentroDe(s, ev.carta).prueba.length > 0 && s.mision?.automatica !== ev.carta,
+      fase === 'despues' && enEntorno(s, 'ciu') && peligroQueSePuedeQuitar(s, ev) && encuentroDe(s, ev.carta).prueba.length > 0 && s.mision?.automatica !== ev.carta,
     efecto: (s, _yo, suceso) => {
       if (s.mision && suceso?.ev.tipo === 'revelarPeligro') {
         s.mision.automatica = suceso.ev.carta
@@ -165,7 +167,9 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
   evento('retirada', 'respuesta', {
     // «Respuesta: Después de que se revele el Destino de una Prueba, descarta la carta de Peligro sin resolverla.»
     // El Destino ya revelado se aplica igual (N16).
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'revelarDestino' && s.prueba?.destino === ev.carta && s.zonas.encuentro.includes(s.prueba.encuentro),
+    // Fase 15: no si el encuentro de la Prueba tiene Alerta.
+    disparo: (s, _yo, ev, fase) =>
+      fase === 'despues' && ev.tipo === 'revelarDestino' && s.prueba?.destino === ev.carta && s.zonas.encuentro.includes(s.prueba.encuentro) && !esAlerta(s, s.prueba.encuentro),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
   }),
 

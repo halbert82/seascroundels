@@ -9,7 +9,7 @@ import type { Efecto } from '../efectos.ts'
 import { numeroConIcono, numerosEntreLlaves, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { valor } from '../valores.ts'
-import { canonesAgotados, destinoVigente, hayHeridos, hayQueReparar, participa, participantes, peligroRevelado } from './comun.ts'
+import { canonesAgotados, destinoVigente, hayHeridos, hayQueReparar, participa, participantes, peligroQueSePuedeQuitar } from './comun.ts'
 import { definicionActual, problemaCompromiso } from '../prueba.ts'
 
 const texto = (id: CartaId) => textoDe(id)
@@ -133,7 +133,7 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
     ventana: 'respuesta',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    disparo: (s, _yo, ev, fase) => fase === 'despues' && peligroRevelado(s, ev),
+    disparo: (s, _yo, ev, fase) => fase === 'despues' && peligroQueSePuedeQuitar(s, ev),
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
   },
 

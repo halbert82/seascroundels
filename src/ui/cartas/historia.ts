@@ -23,6 +23,8 @@ export function dorsoDeHistoria(e: EntradaCatalogo): DorsoHistoria | null {
     case 'peligro':
       return e.carta.entraDuranteLaPartida && !e.carta.retirada ? 'peligros' : null
     case 'pasajero':
+    // Fase 15: la carta de consulta («El fondo del San José») se mira al superar su misión: dorso de misión.
+    case 'consulta':
     // Fase 11: las permanentes (también «¡La guardia!») no van a ningún mazo (van a la zona de permanentes): dorso de
     // misión, pila normal.
     case 'permanente':

@@ -203,11 +203,19 @@ export interface CartaMazoPropioDatos {
   nombre: string
   /** 2: formato de los Peligros 2.0 (textos completos; lo que hacen está en sus reglas). */
   version?: 2
+  /**
+   * Fase 15: carta de Peligro de un solo encuentro que no es de ningún mazo propio (el barco de van Hoorn, el del
+   * fugitivo): la travesía que la pone encima del mazo de Peligros. Las de un mazo propio no lo llevan.
+   */
+  mision?: string
   encuentro: EncuentroDatos
   destino: DestinoDatos
 }
 
-/** Pasajero: viaja contigo y ocupa Capacidad, pero no es Tripulante. */
+/**
+ * Pasajero: viaja contigo, pero no es un Tripulante. Fase 15: ya no es una regla general y no ocupa Capacidad; su carta
+ * dice todo lo necesario (que no puede ser asignado ni recibir heridas, Estados ni Ventajas, y cuándo se va).
+ */
 export interface PasajeroDatos {
   id: string
   num: number
@@ -242,6 +250,22 @@ export interface PermanenteDatos {
   misiones?: string[]
   /** Va junto a un Tripulante («Pon en juego la carta N … junto a él»). */
   junto: boolean
+  /** Fase 15: una permanente que se puede dañar (Galeón San Telmo, Murallas de Port Royal, El prisionero): su Vida. */
+  vida?: number
+}
+
+/**
+ * Fase 15: carta de consulta del mazo de historia. No entra en juego: una misión dice que la mires y apliques lo que
+ * pone («El fondo del San José»).
+ */
+export interface ConsultaDatos {
+  id: string
+  num: number
+  nombre: string
+  /** La misión que la consulta. */
+  mision: string
+  texto: string
+  ambientacion: string
 }
 
 
@@ -284,6 +308,11 @@ export interface CapituloDatos {
   capitulo: 'I' | 'II' | 'III' | 'IV'
   /** Capítulo con salida doble: «a» o «b» (II-a, II-b). */
   rama?: 'a' | 'b'
+  /**
+   * Fase 15: varios capítulos del mismo número que no son una salida doble (los tres capítulos II de «La Isla del
+   * Tesoro», uno al azar). Solo distingue su identificador («isla-II-ingleses»): en la carta se ve «II», sin letra.
+   */
+  clave?: string
   num: number
   nombre: string
   entorno: Entorno
@@ -353,6 +382,8 @@ export interface DatosCartas {
   cartasDeMazoPropio: CartaMazoPropioDatos[]
   pasajeros: PasajeroDatos[]
   permanentes: PermanenteDatos[]
+  /** Fase 15: cartas de consulta del mazo de historia. */
+  consultas: ConsultaDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

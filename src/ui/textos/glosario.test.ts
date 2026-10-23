@@ -106,7 +106,8 @@ describe('Glosario de la mesa', () => {
     for (const c of DATOS.cartasDeMazoPropio) for (const t of c.encuentro.etiquetas ?? []) etiquetas.add(t)
     expect(etiquetas.size).toBeGreaterThanOrEqual(3) // Elige, Sin ayuda e Incautado (fase 11: ya no hay «Se queda en juego»)
     const conAyuda = CLAVES_REGLA.map((c) => AYUDA_REGLA[c].nombre)
-    for (const t of etiquetas) expect(conAyuda, t).toContain(t)
+    // Fase 15: «Descomunal 2» se explica con «Descomunal».
+    for (const t of etiquetas) expect(conAyuda, t).toContain(t.replace(/ \d+$/, ''))
   })
 
   it('un «no se prepara» o «no puede comprometerse» dice qué carta lo causa y cuándo termina', () => {
@@ -173,7 +174,8 @@ describe('Lo que se explica junto a una carta ampliada', () => {
   })
 
   it('Pasajeros, Tesoros y cartas sin palabras de regla', () => {
-    expect(nombres('anselmo')).toEqual(['Pasajero'])
+    // Fase 15: su carta dice que no recibe Estados ni Ventajas.
+    expect(nombres('anselmo')).toEqual(['Pasajero', 'Estados y Ventajas'])
     expect(nombres('farol')).toEqual(expect.arrayContaining(['Tesoro', 'Indestructible']))
     expect(nombres('ojo')).toEqual([])
   })

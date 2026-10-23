@@ -87,7 +87,9 @@ describe('Prueba masiva: mazos de muelle variados', () => {
     // sus pruebas propias (cartas-eventos y decisiones).
     // «Arenga del capitán» (fase 13) está en la colección pero no en el mazo de inicio de Diego: aquí no sale nunca. Tiene
     // su prueba propia (cartas-eventos) y su medida con un mazo de prueba (medir.informe).
-    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo', 'ni_hombre.jugar', 'arenga.jugar'])
+    // Fase 15: la Cadena de oro y La custodia de esmeraldas solo llegan buceando en «El pecio del San José» hasta la
+    // Profundidad 3 o 4. Tienen su prueba propia (fase15.test).
+    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo', 'ni_hombre.jugar', 'arenga.jugar', 'cadena_oro.gastar', 'custodia.entrar'])
     expect(capacidadesDelJugador().filter((c) => !usadas.has(c) && !rarisimas.has(c))).toEqual([])
   })
 })
