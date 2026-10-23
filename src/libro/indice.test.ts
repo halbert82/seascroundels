@@ -100,6 +100,8 @@ function negritasDeCartas(): Map<string, string> {
           continue
         }
         if (NOMBRES_DE_CARTAS.has(normal(termino))) continue
+        // Fase 15: los rótulos numéricos de una tabla («**1:** Roba 2», «El fondo del San José») no son términos.
+        if (/^\d+$/.test(termino)) continue
         if (trasElige && crudo.endsWith(':') && !enElIndice(termino)) continue
         if (!encontradas.has(termino)) encontradas.set(termino, id)
       }
@@ -147,11 +149,16 @@ describe('Índice de términos de la Referencia de reglas', () => {
     expect(new Set(lista)).toEqual(PALABRAS_CLAVE)
   })
 
-  it('fase 10b · «Destina» tiene su entrada y su línea aunque todavía no la use ninguna carta', () => {
+  it('fase 10b · «Destina» tiene su entrada y su línea; fase 15: la usa «La ruta de los alisios»', () => {
     expect(r.referencia.entradas.map((e) => e.titulo)).toContain('Destina')
     expect(enElIndice('Destina')).toBe(true)
-    // Ninguna carta la usa aún: la prueba de los términos de las cartas no la exige, pero tampoco la rechaza.
-    expect(cartas.some((c) => textos(c.carta).some((t) => /Destina\b/.test(t)))).toBe(false)
+    expect(cartas.filter((c) => textos(c.carta).some((t) => /Destina\b/.test(t))).map((c) => c.id)).toEqual(['vanhoorn'])
+  })
+
+  it('fase 15 · «Descomunal» y «Alerta» tienen su entrada y su línea («Descomunal 2» de las cartas cuenta como «Descomunal»)', () => {
+    for (const t of ['Descomunal', 'Alerta', 'Carta de consulta']) expect(r.referencia.entradas.map((e) => e.titulo)).toContain(t)
+    expect(enElIndice('Descomunal 2')).toBe(true)
+    expect(enElIndice('Alerta')).toBe(true)
   })
 
   it('cada Rasgo de las cartas tiene su línea', () => {
@@ -169,7 +176,7 @@ describe('Índice de términos de la Referencia de reglas', () => {
 
   it('cada ficha de misión que usan las misiones tiene su línea', () => {
     const fichas = new Set(CATALOGO.filter((e) => e.tipo === 'capitulo').flatMap((e) => (reglasMision(e.id)?.fichas ?? []).map((f) => f.nombre)))
-    expect(fichas.size).toBe(7) // fase 12: Derrumbe
+    expect(fichas.size).toBe(9) // fase 12: Derrumbe; fase 15: Rival y Profundidad
     for (const f of fichas) expect(indice).toContainEqual(expect.objectContaining({ termino: f, en: 'Fichas de misión' }))
   })
 

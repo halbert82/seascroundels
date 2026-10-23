@@ -54,12 +54,15 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
       return capitulos((e) => !e.mision.inicial && !e.mision.aventura)
     case 'Tesoros':
       return deTipo('tesoro')
-    case 'Mazos propios':
+    // Fase 15: los dos barcos rivales son cartas de Peligro de un solo encuentro, como las de los mazos propios.
+    case 'Mazos propios y barcos rivales':
       return deTipo('mazoPropio')
     case 'Pasajeros':
       return deTipo('pasajero')
     case 'Permanentes':
       return deTipo('permanente')
+    case 'Cartas de consulta':
+      return deTipo('consulta')
     default:
       return []
   }

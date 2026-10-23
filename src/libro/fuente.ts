@@ -8,6 +8,7 @@
 import MarkdownIt from 'markdown-it'
 import type { Token } from 'markdown-it'
 import { cartasYPartes, type CartaNombrada } from './cartasNombradas.ts'
+import { CATALOGO } from '../engine/catalogo.ts'
 
 export type LibroId = 'aprende' | 'referencia'
 
@@ -271,10 +272,37 @@ function expresionDe(lista: Termino[]): RegExp {
   return re
 }
 
+/**
+ * Fase 15: nombres de cartas, encuentros y travesías. Entre comillas («La Isla del Tesoro») son nombres, no términos de
+ * juego: no se marcan («Tesoro» no remite a su entrada).
+ */
+let NOMBRES: Set<string> | null = null
+function nombresDeCartas(): Set<string> {
+  if (NOMBRES) return NOMBRES
+  NOMBRES = new Set<string>()
+  for (const e of CATALOGO) {
+    if ('nombre' in e.carta && typeof e.carta.nombre === 'string') NOMBRES.add(e.carta.nombre)
+    if (e.tipo === 'capitulo') NOMBRES.add(e.mision.nombre)
+    if (e.tipo === 'peligro') for (const x of Object.values(e.carta.encuentros)) NOMBRES.add(x.nombre)
+    if (e.tipo === 'mazoPropio') NOMBRES.add(e.carta.encuentro.nombre)
+  }
+  return NOMBRES
+}
+
+/** Aparta los nombres de cartas entre comillas para que no se busquen términos dentro. */
+function sinNombres(trozos: Trozo[]): Trozo[] {
+  return trozos.flatMap((t): Trozo[] => {
+    if (!('t' in t)) return [t]
+    const partes = t.t.split(/(«[^»]+»)/)
+    if (partes.length === 1) return [t]
+    return partes.filter((x) => x !== '').map((x) => (/^«[^»]+»$/.test(x) && nombresDeCartas().has(x.slice(1, -1)) ? { h: escapar(x) } : { t: x }))
+  })
+}
+
 function terminos(trozos: Trozo[], e: Entorno): Trozo[] {
   if (e.enNegrita > 0 || e.enEnlace > 0 || e.terminos.length === 0) return trozos
   const re = expresionDe(e.terminos)
-  return aplicar(trozos, re, (m) => {
+  return aplicar(sinNombres(trozos), re, (m) => {
     const t = e.terminos.find((x) => x.forma === m[1])
     if (!t || e.vistos.has(t.id) || t.id === e.entrada) return null
     e.vistos.add(t.id)

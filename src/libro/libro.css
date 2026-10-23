@@ -2569,8 +2569,8 @@ body {
 }
 
 .indice-terminos-letra + .indice-terminos-letra {
-  margin-top: 1.4mm;
-  padding-top: 1.2mm;
+  margin-top: 1.1mm;
+  padding-top: 1mm;
   border-top: 0.3pt solid var(--papel-3);
 }
 
@@ -2591,8 +2591,9 @@ body {
 .indice-terminos .indice-linea {
   font-family: 'Alegreya Sans', sans-serif;
   font-size: 8pt;
-  line-height: 1.15;
-  margin: 0 0 0.42mm;
+  line-height: 1.1;
+  /* Fase 15: algo más apretado para que el índice siga cabiendo en una página con los términos nuevos. */
+  margin: 0 0 0.3mm;
 }
 
 .indice-terminos .indice-linea .num-pag {
