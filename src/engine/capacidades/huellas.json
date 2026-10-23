@@ -87,5 +87,5 @@
  "gallardete": "Indestructible.\n{N MAN}.",
  "carta_marear": "Indestructible.\nTus misiones [mar] necesitan {N avance g}.",
  "cadena_oro": "**Acción:** Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes o adquieras cuesta {N} menos.",
- "custodia": "Indestructible.\nAl entrar en juego, gana {N rep}."
+ "doblon": "Indestructible.\nNo puedes descartar esta carta.\nAl entrar en juego, gana {N rep}.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {N vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar."
 }

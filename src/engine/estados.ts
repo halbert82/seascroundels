@@ -28,9 +28,17 @@ export function ponerEstado(s: Estado, inst: InstId, e: FichaTripulante): boolea
   return true
 }
 
+/**
+ * Fase 15, «El doblón de la calavera»: «Tu Capitán queda Maldito, y este Estado no se le puede quitar» (ni al superar una
+ * Prueba, ni en la Taberna, ni con ninguna carta), mientras el doblón esté en juego.
+ */
+export function sePuedeQuitar(s: Estado, inst: InstId, e: FichaTripulante): boolean {
+  return !(e === 'maldito' && inst === s.capitan && s.zonas.mejoras.some((m) => s.cartas[m]?.id === 'doblon'))
+}
+
 export function quitarEstado(s: Estado, inst: InstId, e: FichaTripulante): boolean {
   const c = copia(s, inst)
-  if (!c.estados?.includes(e)) return false
+  if (!c.estados?.includes(e) || !sePuedeQuitar(s, inst, e)) return false
   c.estados = c.estados.filter((x) => x !== e)
   if (c.estados.length === 0) delete c.estados
   return true
@@ -66,7 +74,7 @@ export function quitarEstadoBarco(s: Estado, e: EstadoBarco): boolean {
 export function quitarEstadosTripulacion(s: Estado): string[] {
   const partes: string[] = []
   for (const c of s.zonas.tripulacion) {
-    const quitados = estadosDe(s, c).filter((e) => !esVentaja(e))
+    const quitados = estadosDe(s, c).filter((e) => !esVentaja(e) && sePuedeQuitar(s, c, e))
     for (const e of quitados) quitarEstado(s, c, e)
     if (quitados.length > 0) partes.push(`${nombre(s, c)} ya no está ${quitados.map((e) => INFO_ESTADO[e].nombre).join(' ni ')}`)
   }

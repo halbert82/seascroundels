@@ -38,7 +38,7 @@ export function tamanoNombre(num: number): TamanoNombre {
  *  La 011 no lo lleva en la referencia (su frase se salía de la caja); se aprieta por decisión de Albert.
  *  La 221 (Don Anselmo, Pasajero) es nueva y no tiene referencia.
  *  La 168 (Fiador de la Hermandad) se aprieta desde la fase 14: «por una carta de Peligro o una permanente» no cabía. */
-const TEXTO_APRETADO = new Set<number>([11, 18, 59, 168, 221])
+const TEXTO_APRETADO = new Set<number>([11, 18, 59, 168, 221, 271])
 
 /** Cartas cuyo texto corto va grande y centrado, aunque no sea una cifra sola. */
 const TEXTO_GRANDE = new Set<number>([45, 46])

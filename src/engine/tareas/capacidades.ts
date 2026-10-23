@@ -4,7 +4,7 @@
 
 import { canonesAgotados, reclutable, reclutablesGratis } from '../capacidades/comun.ts'
 import { costeImpreso } from '../catalogo.ts'
-import { esAlerta } from '../definiciones.ts'
+import { alertaAlOtear, esAlerta } from '../definiciones.ts'
 import type { Habilidad } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
@@ -40,11 +40,14 @@ export const otear: Manejador<'otear'> = (s, t, e) => {
     anotar(s, 'revelar', `${deDonde}: ${nombres(s, t.cartas)}.`)
     return 'sigue'
   }
+  // P98 (Albert), «Alerta»: si ves esta carta al otear, debe quedarse encima del mazo (no se ofrece ponerla al fondo).
+  const conAlerta = (c: InstId) => t.mazo !== 'misiones' && alertaAlOtear(s, c)
   // «Ordénalas como quieras» (ninguna al fondo) o «pon N al fondo»: se decide de una vez.
   if (t.cartas.length > 0 && t.fondoMax !== undefined && (t.fondoMax === 0 || t.fondoMax === t.fondoMin)) {
-    const n = Math.min(t.fondoMax, t.cartas.length)
+    const posibles = t.cartas.filter((c) => !conAlerta(c))
+    const n = Math.min(t.fondoMax, posibles.length)
     if (n > 0) {
-      if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'alFondo', n }, candidatas: [...t.cartas], min: n, max: n })
+      if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'alFondo', n }, candidatas: posibles, min: n, max: n })
       const fondo = eleccionDe(e, 'cartas').ids
       t.fondo.push(...fondo)
       t.arriba.push(...t.cartas.filter((c) => !fondo.includes(c)))
@@ -53,6 +56,12 @@ export const otear: Manejador<'otear'> = (s, t, e) => {
     return 'sigue'
   }
   const siguiente = t.cartas[0]
+  if (siguiente && conAlerta(siguiente)) {
+    t.cartas.shift()
+    t.arriba.push(siguiente)
+    anotar(s, 'efecto', `«${nombre(s, siguiente)}» tiene Alerta: se queda encima del mazo.`)
+    return 'sigue'
+  }
   if (siguiente) {
     if (!e) {
       return preguntar({

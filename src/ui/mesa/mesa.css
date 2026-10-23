@@ -3096,3 +3096,129 @@
   gap: 6px;
   align-items: flex-end;
 }
+
+/* ------------------------------------------------------------------ Fase 15: el mazo del pecio */
+
+.pecio {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 22px;
+  align-items: flex-start;
+}
+
+.pecio-columna {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.pecio-lado {
+  flex: 1;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.pecio-rotulo {
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  font-size: 13px;
+  color: var(--oro-viejo);
+}
+
+.pecio-mazo {
+  position: relative;
+  filter: drop-shadow(3px 4px 0 rgba(0, 0, 0, 0.35)) drop-shadow(6px 8px 0 rgba(0, 0, 0, 0.25));
+}
+
+.pecio-cuantas {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  font-family: 'Alegreya', serif;
+  font-weight: 900;
+  font-size: 17px;
+  color: var(--oro-claro);
+  background: rgba(20, 14, 9, 0.9);
+  border: 1.5px solid rgba(232, 200, 119, 0.8);
+}
+
+.pecio-cuenta {
+  display: flex;
+  gap: 8px;
+}
+
+.pecio-cuenta span {
+  padding: 2px 10px 3px;
+  border-radius: 999px;
+  background: rgba(20, 14, 9, 0.72);
+  font-size: 14px;
+  color: #f3e3bf;
+}
+
+.pecio-cuenta b {
+  font-family: 'Alegreya', serif;
+  font-size: 18px;
+}
+
+.pecio-buenas {
+  border: 1px solid rgba(159, 209, 138, 0.8);
+}
+
+.pecio-buenas b {
+  color: var(--verde);
+}
+
+.pecio-malas {
+  border: 1px solid rgba(240, 138, 117, 0.8);
+}
+
+.pecio-malas b {
+  color: var(--rojo);
+}
+
+.pecio-vacio {
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1.5px dashed rgba(232, 200, 119, 0.35);
+  color: var(--texto-tenue);
+  font-size: 13px;
+}
+
+.pecio-ultima {
+  font-size: 13px;
+  color: var(--verde);
+}
+
+.pecio-ultima.mala {
+  color: var(--rojo);
+}
+
+.pecio-sello {
+  font-size: 18px;
+  white-space: nowrap;
+  border-color: rgba(240, 138, 117, 0.9);
+  color: var(--rojo);
+}
+
+.pecio-sacadas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pecio-nada {
+  font-size: 13px;
+  color: var(--texto-tenue);
+  font-style: italic;
+}

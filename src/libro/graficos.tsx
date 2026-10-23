@@ -61,8 +61,9 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
       return deTipo('pasajero')
     case 'Permanentes':
       return deTipo('permanente')
-    case 'Cartas de consulta':
-      return deTipo('consulta')
+    // Fase 15: el mazo del pecio (sin sus dos Tesoros, que cuentan como Tesoros).
+    case 'Mazo del pecio':
+      return deTipo('pecio')
     default:
       return []
   }

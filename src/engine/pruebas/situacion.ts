@@ -176,7 +176,7 @@ function historiaCompleta(): CartaId[] {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
     if (e.tipo === 'tesoro') ids.push(e.id)
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
-    if (e.tipo === 'pasajero' || e.tipo === 'permanente' || e.tipo === 'consulta') ids.push(e.id)
+    if (e.tipo === 'pasajero' || e.tipo === 'permanente' || e.tipo === 'pecio') ids.push(e.id)
   }
   return ids
 }
@@ -594,6 +594,17 @@ export class Jugador {
     if (this.estado.pendiente && this.decision.motivo.clave === 'descartarFinal') this.ninguna()
     // Al final del turno puede haber Interrupciones que ofrecer (Envenenado hiere, el Grumete puede evitarlo).
     return this.pasarOfertas()
+  }
+
+  /**
+   * Fase 15: pone estas cartas encima del mazo del pecio, en este orden (el mazo se baraja al empezar a bucear y cada vez
+   * que vuelve una mala; así las pruebas saben qué sale).
+   */
+  encimaDelPecio(...ids: CartaId[]): this {
+    const s = this.estado
+    const arriba = ids.map((id) => this.inst(id, ['mazoPecio']))
+    s.zonas.mazoPecio = [...arriba, ...s.zonas.mazoPecio.filter((c) => !arriba.includes(c))]
+    return this
   }
 
   /** Identificadores de las cartas de una zona, de arriba abajo. */

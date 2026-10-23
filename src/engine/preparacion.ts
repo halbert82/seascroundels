@@ -91,8 +91,8 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
     // Fase 11: las permanentes (también «¡La guardia!») esperan apartadas en el mazo de historia hasta que un encuentro o
     // una misión las pone en juego.
     if (e.tipo === 'permanente') crearCopia(s, e.id, 'mazoHistoria')
-    // Fase 15: las cartas de consulta («El fondo del San José») también esperan en el mazo de historia.
-    if (e.tipo === 'consulta') crearCopia(s, e.id, 'mazoHistoria')
+    // Fase 15: las cartas del mazo del pecio también esperan en el mazo de historia.
+    if (e.tipo === 'pecio') crearCopia(s, e.id, 'mazoHistoria')
   }
 
   // 6. Muelle.

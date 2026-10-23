@@ -255,15 +255,17 @@ export interface PermanenteDatos {
 }
 
 /**
- * Fase 15: carta de consulta del mazo de historia. No entra en juego: una misión dice que la mires y apliques lo que
- * pone («El fondo del San José»).
+ * Fase 15 (rehecho): una carta del mazo del pecio («El pecio del San José»). Al bucear se roba una: si es buena, te la
+ * quedas; si es mala, se aplica y vuelve barajada al mazo del pecio. Los Tesoros 270 y 271 también son del mazo del pecio
+ * (son buenas), pero siguen siendo Tesoros.
  */
-export interface ConsultaDatos {
+export interface PecioDatos {
   id: string
   num: number
   nombre: string
-  /** La misión que la consulta. */
+  /** La misión de su mazo. */
   mision: string
+  clase: 'buena' | 'mala'
   texto: string
   ambientacion: string
 }
@@ -327,6 +329,8 @@ export interface CapituloDatos {
   textoSiguiente: string
   /** Mazo propio que baraja al zarpar. */
   mazoPropio?: { nombre: string; cartas: string[] }
+  /** Fase 15: el mazo del pecio («El pecio del San José»), por número de colección (sus cartas y los Tesoros 270 y 271). */
+  mazoPecio?: number[]
 }
 
 export interface MisionDatos {
@@ -382,8 +386,8 @@ export interface DatosCartas {
   cartasDeMazoPropio: CartaMazoPropioDatos[]
   pasajeros: PasajeroDatos[]
   permanentes: PermanenteDatos[]
-  /** Fase 15: cartas de consulta del mazo de historia. */
-  consultas: ConsultaDatos[]
+  /** Fase 15: las cartas del mazo del pecio que no son Tesoros. */
+  pecio: PecioDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 256 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica de Sea Scoundrels contiene 263 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -99,9 +99,9 @@ La Caja básica de Sea Scoundrels contiene 256 cartas, que se dividen en cartas 
 | Mazos propios y barcos rivales | 14 |
 | Pasajeros | 2 |
 | Permanentes | 17 |
-| Cartas de consulta | 1 |
+| Mazo del pecio | 8 |
 
-Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, la carta de consulta y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
+Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del pecio y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
 Las cartas de Peligro, las de los mazos propios, los barcos rivales y las de puerto tienen tamaño tarot (70 × 120 mm), más grande que el del resto de cartas (63 × 88 mm), para que su texto se lea bien. Por eso el mazo de historia se guarda en dos montones, uno por tamaño: las cartas que van al mazo de Peligros (los mazos propios, los barcos rivales y «La Armada te persigue») están en el montón grande.
 
@@ -198,7 +198,7 @@ Las cartas de Escenario tienen nombre, texto y frase de ambientación. Su efecto
 
 #### Cartas del mazo de historia
 
-Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros, las permanentes y la carta de consulta no van a ningún mazo y llevan el dorso de misión. Cuando una carta dice «Pon la carta 137 encima del mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
+Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes no van a ningún mazo y llevan el dorso de misión. Las diez cartas del mazo del pecio también llevan el dorso de misión, sus dos Tesoros incluidos, para que no se distingan al barajarlas. Cuando una carta dice «Pon la carta 137 encima del mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
 
 > [!grafico] anatomia historia
 
@@ -240,7 +240,7 @@ El texto de juego de una carta se compone de capacidades. Cada capacidad empieza
 Una capacidad con **(Límite de una vez por turno.)** solo puede usarse una vez en cada turno. Las palabras clave, como Indestructible, figuran en la primera línea del texto, cada una seguida de un punto.
 
 > [!ejemplo]
-> El Grumete leal dice «**Interrupción:** Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para reducirlas a 0». Un Tiburón va a causar 1 herida a Diego. Antes de que Diego la sufra, el jugador descarta al Grumete y Diego no sufre ninguna herida.
+> El Grumete leal dice «**Interrupción:** Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para reducirlas a 0». Un tiburón va a causar 1 herida a Diego. Antes de que Diego la sufra, el jugador descarta al Grumete y Diego no sufre ninguna herida.
 
 ### Preparación de la partida
 
@@ -264,7 +264,7 @@ La partida se prepara siguiendo estos pasos:
 2. **Pon en juego a tu Capitán y tu Barco.** El Capitán empieza en juego preparado.
 3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa.
 4. **Prepara el mazo de Peligros.** Baraja todas las cartas de Peligro y deja el mazo boca abajo junto a la carta de puerto.
-5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los diez capítulos I y las seis aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, la carta de consulta y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
+5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los diez capítulos I y las seis aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del pecio y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique el puerto. Esas cartas, boca arriba junto al puerto, forman el **muelle**, que es el único lugar desde el que se pueden reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a la mano del jugador.
    > [!tema]
    > El muelle es donde se busca gente: marineros sin barco, artilleros sin cañón y cirujanos sin título. Lo que no contratas hoy se lo lleva otro capitán.
@@ -447,7 +447,7 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 > [!ejemplo]
 > En el Mar, el jugador revela «Registro del guardacostas»: «Incautado: pon 2 cartas de tu mano debajo de la carta de misión; con la Patente de corso, solo 1». Diego lleva la Patente, así que el jugador pone solo «Coraje de ron». Si supera la Prueba, la recupera de inmediato y roba 1. Si la falla, la recuperará al superar la misión. Si se retira, la pierde.
 
-**Alerta.** El encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Contra él no valen cartas como «Sangre fría», «Cambio de rumbo» o el Pedrero de borda. Si el jugador reúne el Avance de la misión a mitad de un encuentro con Alerta, el encuentro se resuelve igualmente y, después, se supera la misión.
+**Alerta.** El encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Contra él no valen cartas como «Sangre fría», «Cambio de rumbo» o el Pedrero de borda. Si el jugador ve una carta con Alerta al otear, debe dejarla encima del mazo. Si el jugador reúne el Avance de la misión a mitad de un encuentro con Alerta, el encuentro se resuelve igualmente y, después, se supera la misión.
 
 **Ocupar el muelle.** Algunos fallos dicen «pon esta carta en el muelle». Cuando termina el encuentro, la carta de Peligro ocupa el sitio de la carta de coste más alto del muelle (en caso de empate, la de más a la izquierda), que se descarta. La carta de Peligro permanece en el muelle de un turno a otro y ocupa un hueco: al reponer el muelle, se revela una carta menos. No se puede reclutar ni adquirir, y no cuenta para los efectos que hacen referencia al muelle, como «la carta de más a la izquierda». En la Fase de Reclutamiento, el jugador puede pagar las cartas que indica para descartarla.
 
@@ -741,10 +741,14 @@ Al zarpar es una etiqueta de capacidad. Una capacidad **Al zarpar:** se aplica s
 
 Alerta es una palabra clave de algunos encuentros: el encuentro se resuelve siempre. Ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva, así que contra él no valen «Sangre fría», «Soborno», las Velas de tormenta, Íñigo «Lince» Quintero, «Cambio de rumbo», «Retirada a tiempo» ni el Pedrero de borda.
 
+- Si el jugador ve una carta con Alerta al otear, debe dejarla encima del mazo: no puede ponerla al fondo, aunque sí puede ordenarla con las demás cartas que deja encima.
 - Si el jugador reúne el Avance de la misión a mitad de un encuentro con Alerta, el encuentro se resuelve igualmente y, después, se supera la misión.
 
 > [!ejemplo]
 > En Ciudad, el jugador revela «Los vigías del fuerte» (EXP 3, Alerta). Tiene «Sangre fría» en la mano, pero no puede jugarla para descartar el encuentro: tiene que resolverlo. Asigna a la Vigía inexperta (EXP 2, más 1 por Diego, que sigue preparado): suma 3. Si falla la Prueba, sufre 2 heridas.
+
+> [!ejemplo]
+> El jugador zarpa a «Vivo, no muerto» con los Despachos del Rey («Al zarpar: Otea 2»). La misión pone «El barco del fugitivo» encima del mazo de Peligros y los Despachos lo ven al otear: como tiene Alerta, se queda encima. Solo la otra carta que mira puede ir al fondo.
 
 *Véase también:* Palabras clave.
 
@@ -818,6 +822,7 @@ El Barco puede tener los siguientes Estados: Vía de agua, Velas rotas, Persegui
 Un barco rival es una carta de Peligro del mazo de historia con un solo encuentro, como las de los mazos propios: «El barco de van Hoorn» (262) y «El barco del fugitivo» (266). Una misión indica que el jugador lo ponga encima del mazo de Peligros, sin barajar. Después de resolverlo, vuelve al mazo de historia; si la misión termina antes de que salga, también.
 
 - Los dos de la Caja básica son un Abordaje en el que es el jugador quien aborda: la regla es la misma.
+- Los dos tienen Alerta: se resuelven siempre y, si el jugador los ve al otear, deben quedarse encima del mazo.
 
 *Véase también:* Abordaje, Mazo propio.
 
@@ -859,15 +864,6 @@ Un capítulo es cada una de las cartas de misión de una travesía. Su sello ind
 El Capitán es el Tripulante principal del jugador. Empieza en juego preparado y no cuenta para la Capacidad del Barco. Su carta indica el Mando del jugador. El jugador no puede despedirlo ni devolverlo al muelle.
 
 - Si el Capitán queda derrotado, el jugador pierde la partida.
-
-### Carta de consulta
-
-Una carta de consulta es una carta del mazo de historia que no entra en juego: una misión indica que el jugador la mire y aplique lo que dice. Después vuelve al mazo de historia. La Caja básica tiene una, «El fondo del San José» (269), que se consulta al superar «El pecio del San José».
-
-> [!ejemplo]
-> En «El pecio del San José» (Mar 3), el jugador reúne 3 de Avance. Antes de superar la misión, puede bucear: una Prueba de EXP 2 con un solo Tripulante asignado. Asigna a la Vigía inexperta (EXP 2, más 1 por Diego, que sigue preparado) y la supera: pone 1 ficha de Profundidad. Bucea otra vez, ahora EXP 3, con el Rastreador de la selva (EXP 3, más 1): segunda ficha. La tercera inmersión pediría EXP 4 y, si la fallara, perdería las dos fichas, así que sube. Supera la misión (1 de reputación), mira la carta 269 y, con Profundidad 2, roba 2 cartas y gana 1 de reputación más.
-
-*Véase también:* Mazo de historia.
 
 ### Clase
 
@@ -1056,6 +1052,9 @@ Un Estado es una ficha que perjudica o limita a un Tripulante o al Barco. Esta f
 
 En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Cualquier carta que así lo indique también puede quitar un Estado; a continuación se incluye un ejemplo para cada uno, aunque no son las únicas cartas que pueden hacerlo. Curar no quita Estados, ni reparar quita la Vía de agua. Además, algunos Estados se quitan por sí solos cuando se cumple una condición:
 
+- Si una carta dice que un Estado no se le puede quitar a un Tripulante, como el Maldito que «El doblón de la calavera» pone al Capitán, no se quita de ninguna forma: ni con la Taberna, ni al cumplirse su condición, ni con ninguna carta.
+
+
 **Estados de los Tripulantes**
 
 - **Envenenado:** al final de cada turno, el Tripulante sufre 1 herida. Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).
@@ -1083,7 +1082,7 @@ Un Evento es una carta del mazo del capitán con un efecto propio. Para jugarlo,
 
 ### Fichas de misión
 
-Las fichas de misión son fichas genéricas con las que una misión, o una permanente, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha, Defensa, Derrumbe, Rival y Profundidad. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
+Las fichas de misión son fichas genéricas con las que una misión, o una permanente, lleva la cuenta de algo sobre su carta. La carta indica qué representan («1 ficha de Alarma»), cuándo se colocan, cuándo se quitan y qué ocurre al alcanzar cierto número. Las misiones de la Caja básica las usan para llevar la cuenta de lo siguiente: Ladrón, Alarma, Sospecha, Persecución, Mecha, Defensa, Derrumbe y Rival. Estas fichas se descartan al terminar la misión. La Pólvora del Rey, un Tesoro, también usa estas fichas, pero las suyas no se descartan al terminar la misión: se quedan sobre su carta hasta que se gastan.
 
 ### Final con elección
 
@@ -1146,7 +1145,7 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 ### Mazo de historia
 
-El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, la carta de consulta y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Pon la carta 137 encima del mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros, las permanentes y la carta de consulta llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia.
+El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del pecio y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Pon la carta 137 encima del mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia. Las diez cartas del mazo del pecio también llevan el dorso de misión, sus dos Tesoros incluidos (véase Mazo del pecio).
 
 - El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
 
@@ -1164,6 +1163,23 @@ El mazo de muelle contiene los Tripulantes y las Mejoras del jugador, de 15 a 20
 ### Mazo del capitán
 
 El mazo del capitán contiene los Eventos y las Habilidades del jugador, de 30 a 40 cartas. El jugador roba de él las cartas de su mano. Si debe robar y el mazo está vacío, baraja su pila de descartes para formar un mazo nuevo y pierde un día.
+
+### Mazo del pecio
+
+El mazo del pecio son diez cartas del mazo de historia que se usan en «El pecio del San José»: las cartas 269 y 277 a 283, y los Tesoros 270 y 271. Seis son buenas (cuatro cartas que lo dicen y los dos Tesoros) y cuatro, malas. Cuando la misión vaya a superarse, el jugador baraja el mazo del pecio y puede **bucear** las veces que quiera: agota a un Tripulante preparado, el **buzo**, y roba 1 carta del mazo del pecio.
+
+- **Si es buena,** el jugador la aplica y se la queda, a un lado; un Tesoro se pone en juego. Las buenas no vuelven al mazo, así que cada inmersión es más arriesgada que la anterior.
+- **Si es mala,** se aplica (lo que dice del buzo, al Tripulante que ha bajado) y vuelve al mazo del pecio, que se baraja.
+- No hay Prueba ni Destino. El jugador puede bucear mientras tenga Tripulantes preparados, hasta que decida parar o salga «Sin aire».
+- Al terminar la misión, el mazo del pecio y las cartas sacadas vuelven al mazo de historia, salvo los Tesoros que se hayan puesto en juego.
+
+> [!ejemplo]
+> En «El pecio del San José», el jugador reúne 4 de Avance y baraja el mazo del pecio: 6 buenas y 4 malas. Agota a la Vigía inexperta y roba «Doblones sueltos», una buena: roba 2 cartas y la deja a un lado. Quedan 5 buenas y 4 malas.
+
+> [!ejemplo]
+> Baja otra vez: agota a Diego y roba «Tiburón», una mala. Diego sufre 2 heridas y la carta vuelve al mazo del pecio, que se baraja: siguen quedando 5 buenas y 4 malas. Al jugador solo le queda preparado un Tripulante con 2 de Vida, y otro «Tiburón» lo derrotaría, así que deja de bucear. La misión no da reputación: su recompensa es lo que ha sacado del pecio.
+
+*Véase también:* Mazo de historia, Tesoro.
 
 ### Mazo de Peligros
 
@@ -1206,6 +1222,7 @@ Obligado es una etiqueta de capacidad. Una capacidad **Obligado:** se aplica sie
 Otear consiste en mirar las cartas superiores del mazo de Peligros y devolver cada una encima o al fondo de ese mismo mazo, en el orden que el jugador elija. La carta indica cuántas: «Otea 2» («Rumores de taberna») mira las 2 cartas superiores. Otear siempre se refiere al mazo de Peligros.
 
 - Las cartas oteadas no se revelan ni se resuelven: solo se miran.
+- Una carta con Alerta, como los barcos rivales, debe quedarse encima del mazo: el jugador no puede ponerla al fondo.
 - Si la misión revela sus cartas de un mazo propio mezclado con el de Peligros («El templo», «El galeón rezagado»), Otear mira ese mazo, el mismo del que se revelan los encuentros.
 
 Otras cartas miran cartas sin decir Otear y explican qué hacer con ellas. «Cobrar la deuda» dice: «Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles».
@@ -1400,6 +1417,7 @@ Un Tesoro es una carta única que otorgan algunas misiones («Pon en juego el Te
 - Un Tesoro no ocupa Espacio ni hueco de Mejora.
 - Si su portador queda derrotado, el jugador vincula el Tesoro a otro de sus Tripulantes.
 - Un Tesoro que se descarta no va a ningún mazo de descartes: vuelve al mazo de historia y sale de la partida.
+- Los Tesoros 270 y 271 no los da ninguna misión: forman parte del mazo del pecio y salen al bucear.
 
 ### Tipos de encuentro
 

@@ -6,7 +6,7 @@ import { entero } from '../azar.ts'
 import { costeImpreso, esIndestructible, nombreDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
 import { definicionEncuentro, quedaDe, reglasPermanente } from '../definiciones.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
-import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, tieneEstado } from '../estados.ts'
+import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, sePuedeQuitar, tieneEstado } from '../estados.ts'
 import { INFO_ESTADO } from '../infoEstados.ts'
 import { cerrarPrueba, descartarPeligro, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
@@ -219,7 +219,7 @@ export const quitarEstado_: Manejador<'quitarEstado'> = (s, t, e) => {
     for (const c of conEstado(s, t.estado)) quitarEstadoAnotado(s, c, t.estado)
     return 'hecha'
   }
-  const candidatos = t.de.filter((c) => s.zonas.tripulacion.includes(c) && tieneEstado(s, c, t.estado))
+  const candidatos = t.de.filter((c) => s.zonas.tripulacion.includes(c) && tieneEstado(s, c, t.estado) && sePuedeQuitar(s, c, t.estado))
   if (candidatos.length === 0) return 'hecha'
   if (candidatos.length > 1 && !e) {
     return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'quitarEstado', carta: `estado:${t.estado}` }, candidatas: candidatos, min: 1, max: 1 })

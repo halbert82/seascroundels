@@ -5,9 +5,13 @@
 
 import { describe, expect, it } from 'vitest'
 
+import { encolar } from './estado.ts'
+import { motivoSinSuperar } from './misiones2/comun.ts'
+import { ejecutar } from './motor.ts'
 import { avanceInicialDelEscenario } from './tareas/mision.ts'
+import { mover } from './zonas.ts'
 import { Jugador, type OpcionesSituacion } from './pruebas/situacion.ts'
-import type { CartaId } from './tipos.ts'
+import type { CartaId, Decision } from './tipos.ts'
 
 const MAZO_CAPITAN = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada', 'estrellas', 'ojo', 'ojo', 'timon', 'timon']
 
@@ -16,7 +20,7 @@ function enPuerto(op: OpcionesSituacion): Jugador {
   return Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma'], mazoCapitan: [...MAZO_CAPITAN], ...op })
 }
 
-const fichas = (j: Jugador, f: 'rival' | 'profundidad' | 'derrumbe') => j.estado.mision?.fichas?.[f] ?? 0
+const fichas = (j: Jugador, f: 'rival' | 'derrumbe') => j.estado.mision?.fichas?.[f] ?? 0
 const disponibles = (j: Jugador) => j.zona('misionesDisponibles')
 const acciones = (j: Jugador) => (j.decision.tipo === 'ventanaAccion' ? j.decision.acciones.map((a) => a.tipo) : [])
 const vida = (j: Jugador, id: CartaId, total: number) => total - j.copia(id).heridas
@@ -120,13 +124,13 @@ describe('258 · El mapa era falso', () => {
 })
 
 // ---------------------------------------------------------------------------
-// El pecio del San José
+// El pecio del San José: el mazo del pecio
 
-/** Llega al momento de bucear: «Mar en calma» dos veces (4 de 3). */
+/** Llega al momento de bucear: «Remanso» dos veces (4 de 4). El mazo del pecio ya está barajado. */
 function pecio(op: OpcionesSituacion = {}): Jugador {
   const j = enPuerto({
     misiones: ['pecio-I'],
-    tripulacion: ['vigia', 'guia_alquiler', 'baqueano', 'herbolaria'],
+    tripulacion: ['vigia', 'guia_alquiler', 'bucanero', 'viejo_lobo'],
     mano: ['ojo'],
     mazoPeligros: ['calma', 'calma', 'chubasco', 'chubasco', 'chubasco', 'chubasco', 'chubasco'],
     ...op,
@@ -135,54 +139,114 @@ function pecio(op: OpcionesSituacion = {}): Jugador {
   return j
 }
 
-describe('268 · El pecio del San José (bucear) y la carta de consulta 269', () => {
-  it('cuando va a superarse, puedes bucear: EXP 2 más tu Profundidad con un solo Tripulante; si la fallas, lo pierdes todo', () => {
-    const j = pecio()
-    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'bucear', carta: 'pecio-I', n: 2 } })
-    j.opcion('bucear')
-    expect(() => j.comprometer('EXP', ['vigia', 'baqueano'])).toThrow(/más de 1/)
-    // Vigía inexperta (2, +1 por Diego) contra 2; Destino de «Chubasco repentino»: 0.
-    j.comprometer('EXP', ['vigia']).seguir()
-    expect(fichas(j, 'profundidad')).toBe(1)
-    expect(j.decision).toMatchObject({ motivo: { clave: 'bucear', n: 3 } })
-    // Diego (EXP 1) solo contra 3: falla, pierde la Profundidad y deja de bucear.
-    j.opcion('bucear').comprometer('EXP', ['capitan']).seguir()
-    expect(fichas(j, 'profundidad')).toBe(0)
-    expect(j.registro).toContain('Miras la carta 269 («El fondo del San José»): sin Profundidad, no hay nada más.')
-    expect(j.estado.reputacion).toBe(1)
-    expect(j.zona('misionesSuperadas')).toEqual(['pecio-I'])
-  })
+const PECIO = ['pecio_doblones', 'pecio_tablones', 'pecio_culebrina', 'pecio_botica', 'cadena_oro', 'doblon', 'pecio_tiburon', 'pecio_morena', 'pecio_sinaire', 'pecio_corriente']
+const cuenta = (j: Jugador) => {
+  const buenas = j.zona('mazoPecio').filter((id) => !['pecio_tiburon', 'pecio_morena', 'pecio_sinaire', 'pecio_corriente'].includes(id)).length
+  return { buenas, malas: j.zona('mazoPecio').length - buenas }
+}
 
-  it('subir con Profundidad 3: 1 de reputación de la misión, robas 2, +1 de reputación y el Tesoro 270 (Cadena de oro)', () => {
+describe('268 · El pecio del San José (bucear en el mazo del pecio)', () => {
+  it('al ir a superarse, baraja el mazo del pecio (10 cartas: 6 buenas y 4 malas); la misión ya no da reputación', () => {
     const j = pecio()
-    j.opcion('bucear').comprometer('EXP', ['vigia']).seguir().pasarOfertas()
-    j.opcion('bucear').comprometer('EXP', ['guia_alquiler']).seguir().pasarOfertas()
-    j.opcion('bucear').comprometer('EXP', ['baqueano']).seguir().pasarOfertas()
-    expect(fichas(j, 'profundidad')).toBe(3)
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'bucear', carta: 'pecio-I', n: 0 } })
+    expect([...j.zona('mazoPecio')].sort()).toEqual([...PECIO].sort())
+    expect(cuenta(j)).toEqual({ buenas: 6, malas: 4 })
+    expect(j.registro).toContain('Barajas el mazo del pecio: 10 cartas, 6 buenas y 4 malas.')
     j.opcion('subir')
-    expect(j.estado.reputacion).toBe(2)
-    expect(j.registro.some((r) => r.startsWith('Robas 2'))).toBe(true)
-    expect(j.copia('cadena_oro').vinculadaA).toBe('barco')
-    expect(j.zona('mazoHistoria')).toContain('custodia')
+    expect(j.estado.reputacion).toBe(0)
+    expect(j.zona('misionesSuperadas')).toEqual(['pecio-I'])
+    // Al terminar, el mazo del pecio vuelve al mazo de historia.
+    expect(j.zona('mazoPecio')).toEqual([])
+    for (const id of PECIO) expect(j.zona('mazoHistoria'), id).toContain(id)
   })
 
-  it('con Profundidad 4 ya no se bucea más: también el Tesoro 271, que al entrar en juego da 2 de reputación', () => {
+  it('una buena sale del mazo: agotas al buzo, la aplicas y te la quedas («Doblones sueltos»: robas 2)', () => {
     const j = pecio()
-    j.opcion('bucear').comprometer('EXP', ['vigia']).seguir().pasarOfertas()
-    j.opcion('bucear').comprometer('EXP', ['guia_alquiler']).seguir().pasarOfertas()
-    j.opcion('bucear').comprometer('EXP', ['baqueano']).seguir().pasarOfertas()
-    // EXP 5: la Herbolaria (2, +1 por Diego) y «Ojo avizor» (2 iconos de EXP).
-    j.opcion('bucear').comprometer('EXP', ['herbolaria'], ['ojo']).seguir().pasarOfertas()
-    expect(j.estado.reputacion).toBe(1 + 1 + 2)
-    expect(j.copia('custodia').vinculadaA).toBe('barco')
-    expect(j.copia('cadena_oro').vinculadaA).toBe('barco')
+    j.encimaDelPecio('pecio_doblones').opcion('bucear')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: 'pecio-I' } })
+    const mano = j.zona('mano').length
+    j.elegir('vigia')
+    expect(j.copia('vigia').agotada).toBe(true)
+    expect(j.registro).toContain('Robas del mazo del pecio: «Doblones sueltos» (buena: te la quedas).')
+    expect(j.zona('mano')).toHaveLength(mano + 2)
+    expect(j.zona('pecioSacadas')).toEqual(['pecio_doblones'])
+    expect(cuenta(j)).toEqual({ buenas: 5, malas: 4 })
+    expect(j.decision).toMatchObject({ motivo: { clave: 'bucear', n: 1 } })
   })
 
-  it('sin Tripulantes preparados no se puede bucear: la misión se supera con su 1 de reputación', () => {
+  it('una mala se aplica al buzo y vuelve barajada al mazo del pecio («Tiburón»: 2 heridas)', () => {
+    const j = pecio()
+    j.encimaDelPecio('pecio_tiburon').opcion('bucear').elegir('capitan').pasarOfertas()
+    expect(j.copia('capitan').heridas).toBe(2)
+    expect(j.zona('pecioSacadas')).toEqual([])
+    expect(j.zona('mazoPecio')).toHaveLength(10)
+    expect(cuenta(j)).toEqual({ buenas: 6, malas: 4 })
+    expect(j.registro.some((r) => r.startsWith('«Tiburón» vuelve barajada al mazo del pecio'))).toBe(true)
+  })
+
+  it('«Sin aire»: 1 herida al buzo y no puedes bucear más; la misión se supera y el pecio vuelve al mazo de historia', () => {
+    const j = pecio()
+    j.encimaDelPecio('pecio_doblones', 'pecio_sinaire').opcion('bucear').elegir('vigia')
+    j.opcion('bucear').elegir('bucanero').pasarOfertas()
+    expect(j.copia('bucanero').heridas).toBe(1)
+    expect(j.registro).toContain('Sin aire: no puedes bucear más en esta misión.')
+    expect(j.zona('misionesSuperadas')).toEqual(['pecio-I'])
+    expect(j.zona('mazoPecio')).toEqual([])
+    expect(j.zona('pecioSacadas')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain('pecio_doblones')
+    expect(j.zona('mazoHistoria')).toContain('pecio_sinaire')
+  })
+
+  it('«Corriente de fondo» devuelve al mazo del pecio una buena que hayas sacado (si es un Tesoro, sale del juego)', () => {
+    const j = pecio()
+    j.encimaDelPecio('pecio_doblones', 'cadena_oro', 'pecio_corriente').opcion('bucear').elegir('vigia')
+    j.opcion('bucear').elegir('guia_alquiler')
+    expect(j.copia('cadena_oro').vinculadaA).toBe('barco')
+    j.opcion('bucear').elegir('bucanero')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'corrienteDeFondo' } })
+    j.elegir('cadena_oro')
+    expect(j.zonaDe('cadena_oro')).toBe('mazoPecio')
+    expect(j.registro).toContain('Corriente de fondo: «Cadena de oro del San José» vuelve al mazo del pecio (el Tesoro sale del juego).')
+    // Los Doblones siguen a un lado; la Corriente también vuelve al mazo: 9 cartas, 5 buenas.
+    expect(j.zona('pecioSacadas')).toEqual(['pecio_doblones'])
+    expect(cuenta(j)).toEqual({ buenas: 5, malas: 4 })
+  })
+
+  it('«Corriente de fondo» sin ninguna buena sacada: no ocurre nada', () => {
+    const j = pecio()
+    j.encimaDelPecio('pecio_corriente').opcion('bucear').elegir('vigia')
+    expect(j.registro).toContain('Corriente de fondo: no tienes ninguna carta buena del pecio que devolver; no ocurre nada.')
+    expect(cuenta(j)).toEqual({ buenas: 6, malas: 4 })
+  })
+
+  it('las otras buenas: «Tablones y jarcia» repara 2, «La botica del cirujano» cura 2 y «Una culebrina del galeón» pone un Cañón sin coste', () => {
+    const j = pecio({ barco: { dano: 3 }, mazoMuelle: ['bronce', 'contrabandista', 'pedrero'] })
+    j.copia('capitan').heridas = 2
+    j.encimaDelPecio('pecio_tablones', 'pecio_botica', 'pecio_culebrina').opcion('bucear').elegir('vigia')
+    expect(j.estado.danoBarco).toBe(1)
+    j.opcion('bucear').elegir('guia_alquiler')
+    if (j.decision.tipo === 'repartir') j.repartir({ capitan: 2 })
+    expect(j.copia('capitan').heridas).toBe(0)
+    j.opcion('bucear').elegir('bucanero')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'culebrinaPecio' } })
+    j.elegir('bronce')
+    expect(j.copia('bronce').vinculadaA).toBe('barco')
+    expect(j.zona('pecioSacadas')).toEqual(['pecio_tablones', 'pecio_botica', 'pecio_culebrina'])
+  })
+
+  it('«Una culebrina del galeón» sin Espacio: no pones nada', () => {
+    const j = pecio({ barco: { mejoras: ['casco', 'chalupa'] }, mazoMuelle: ['bronce', 'contrabandista'] })
+    j.encimaDelPecio('pecio_culebrina').opcion('bucear').elegir('vigia')
+    expect(j.registro).toContain('Buscas un Cañón en el mazo de muelle, pero no hay ninguno que quepa en el Barco: no pones nada.')
+    expect(j.zonaDe('bronce')).toBe('mazoMuelle')
+  })
+
+  it('sin Tripulantes preparados no se puede bucear: la misión se supera sin nada', () => {
     const j = enPuerto({ misiones: ['pecio-I'], capitan: { agotada: true }, mazoPeligros: ['calma', 'calma'] })
     j.zarpar('pecio-I').seguir()
-    expect(j.estado.reputacion).toBe(1)
+    expect(j.estado.reputacion).toBe(0)
     expect(j.zona('misionesSuperadas')).toEqual(['pecio-I'])
+    expect(j.zona('mazoHistoria')).toContain('doblon')
   })
 })
 
@@ -198,6 +262,68 @@ describe('Tesoros 270 y 271 (El pecio del San José)', () => {
     expect(j.zona('mano')).toHaveLength(2)
     // El descuento se gasta con el primero.
     expect(j.valor({ tipo: 'coste', carta: j.inst('bucanero', ['muelle']) })).toBe(2)
+  })
+
+  it('El doblón de la calavera, sacado del pecio: 2 de reputación y tu Capitán queda Maldito', () => {
+    const j = pecio()
+    j.encimaDelPecio('doblon').opcion('bucear').elegir('vigia')
+    expect(j.copia('doblon').vinculadaA).toBe('barco')
+    expect(j.estado.reputacion).toBe(2)
+    expect(j.estados('capitan')).toContain('maldito')
+  })
+
+  it('El doblón: tu Capitán no puede quedar derrotado (queda con 1 Vida restante)', () => {
+    const j = pecio()
+    j.encimaDelPecio('doblon', 'pecio_tiburon').opcion('bucear').elegir('vigia')
+    j.copia('capitan').heridas = 3
+    // «Tiburón» al Capitán (Vida 4, 3 heridas): iba a quedar derrotado; se queda con 1 de Vida.
+    j.opcion('bucear').elegir('capitan').pasarOfertas()
+    expect(j.estado.resultado).toBeNull()
+    expect(j.copia('capitan').heridas).toBe(3)
+    expect(j.registro).toContain('El doblón de la calavera: Diego «Garra» Mendoza no queda derrotado, se queda con 1 de Vida.')
+  })
+
+  it('El doblón: el Maldito del Capitán no se quita en la Taberna ni al superar una Prueba', () => {
+    const j = Jugador.en({ barco: { mejoras: ['doblon'] }, capitan: { estados: ['maldito'] }, tripulacion: ['bucanero'], mazoCapitan: [...MAZO_CAPITAN] })
+    j.copia('bucanero').estados = ['maldito']
+    j.pasarTurnoEnPuerto(['taberna', 'astillero'])
+    expect(j.estados('capitan')).toContain('maldito')
+    expect(j.estados('bucanero')).not.toContain('maldito')
+    // Al superar una Prueba a la que está asignado, tampoco.
+    const p = enPuerto({ misiones: ['pruebas-mar5'], barco: { mejoras: ['doblon'] }, capitan: { estados: ['maldito'] }, mazoPeligros: ['chubasco', 'calma', 'calma', 'calma'] })
+    p.zarpar('pruebas-mar5').comprometer('NAV', ['capitan']).seguir()
+    expect(p.registro.some((r) => r.includes('superas la Prueba'))).toBe(true)
+    expect(p.estados('capitan')).toContain('maldito')
+  })
+
+  it('El doblón no se puede descartar: no se pierde al hundirse el Barco y «Corriente de fondo» no lo devuelve', () => {
+    const j = pecio()
+    j.encimaDelPecio('doblon', 'pecio_corriente').opcion('bucear').elegir('vigia')
+    j.opcion('bucear').elegir('guia_alquiler')
+    expect(j.registro).toContain('Corriente de fondo: no tienes ninguna carta buena del pecio que devolver; no ocurre nada.')
+    expect(j.copia('doblon').vinculadaA).toBe('barco')
+    const h = enPuerto({ misiones: ['pruebas-mar5'], barco: { mejoras: ['doblon', 'vela'], dano: 4 }, mazoPeligros: ['rivales', 'calma', 'calma', 'calma'] })
+    h.zarpar('pruebas-mar5').comprometer('COM', []).pasarOfertas().seguir().pasarOfertas()
+    expect(h.registro.some((r) => r.includes('se hunde'))).toBe(true)
+    expect(h.copia('doblon').vinculadaA).toBe('barco')
+  })
+})
+
+describe('Jugador automático en el pecio (Albert)', () => {
+  it('se planta cuando quedan tantas malas como buenas, o cuando la peor mala podría derrotar al buzo', async () => {
+    const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
+    const decide = jugadorConCriterio()
+    const j = pecio()
+    // Con 6 buenas y 4 malas, y el Capitán (4 de Vida) preparado: baja.
+    expect(decide(j.estado, j.decision)).toEqual({ tipo: 'opcion', clave: 'bucear' })
+    // Con 2 buenas fuera (4 y 4): se planta.
+    for (const id of ['pecio_doblones', 'pecio_tablones']) j.estado.zonas.pecioSacadas.push(...j.estado.zonas.mazoPecio.splice(j.zona('mazoPecio').indexOf(id), 1))
+    expect(decide(j.estado, j.decision)).toEqual({ tipo: 'opcion', clave: 'subir' })
+    // Con 5 y 4, pero todos los preparados con 2 o menos de Vida (el Tiburón hace 2): se planta.
+    const k = pecio()
+    k.estado.zonas.pecioSacadas.push(...k.estado.zonas.mazoPecio.splice(k.zona('mazoPecio').indexOf('pecio_doblones'), 1))
+    k.copia('capitan').heridas = 2
+    expect(decide(k.estado, k.decision)).toEqual({ tipo: 'opcion', clave: 'subir' })
   })
 })
 
@@ -215,6 +341,13 @@ describe('272 · Escolta del San Telmo y la permanente 273 «Galeón San Telmo»
     // Al terminar la misión vuelve al mazo de historia.
     expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('mazoHistoria')).toContain('pm_galeon')
+  })
+
+  it('cualquier Prueba que falles le inflige 1 daño, también las de NAV', () => {
+    // «Chubasco» (NAV 2): sin nadie asignado, se falla.
+    const j = enPuerto({ misiones: ['escolta-I'], mazoPeligros: ['chubasco', 'calma', 'calma', 'calma'] })
+    j.zarpar('escolta-I').comprometer('NAV', []).pasarOfertas().seguir().pasarOfertas()
+    expect(vida(j, 'pm_galeon', 4)).toBe(3)
   })
 
   it('cada Prueba de COM que falles le inflige 1 daño; puede sufrir parte del daño del Barco, o todo, en su lugar', () => {
@@ -413,7 +546,7 @@ describe('264–267 · El fugitivo', () => {
     const j = enPuerto({ misiones: ['fugitivo-II'], tripulacion: ['bucanero', 'marinero_p'], mazoPeligros: ['calma', 'fauna', 'chubasco', 'calma', 'calma'] })
     j.zarpar('fugitivo-II')
     expect(j.registro).toContain('Revelas «El barco del fugitivo»: El barco del fugitivo.')
-    // Diego 3 + Bucanero veterano 2 + Rufián de cubierta 2 contra COM 4. El Destino «Remanso» prepara a uno.
+    // Diego 3 + Bucanero veterano 2 + Rufián de cubierta 2 contra COM 3. El Destino «Remanso» prepara a uno.
     j.comprometer('COM', ['capitan', 'bucanero', 'marinero_p']).pasarOfertas().seguir().elegir('capitan')
     expect(j.zona('permanentes')).toEqual(['pm_prisionero'])
     // «Tiburones» (COM 2): sin nadie asignado, se falla: 1 herida, que puede sufrir el prisionero en lugar del Bucanero.
@@ -441,3 +574,56 @@ describe('264–267 · El fugitivo', () => {
     expect(j.registro).toContain('La misión falla: el prisionero muere.')
   })
 })
+
+// ---------------------------------------------------------------------------
+// P98 (Albert): Alerta al otear, los barcos rivales con Alerta y «Vivo, no muerto» sin prisionero
+
+describe('P98 · Alerta al otear, los barcos rivales y el prisionero', () => {
+  it('los Despachos del Rey (Al zarpar: Otea 2) ven el barco del fugitivo: tiene Alerta y no se ofrece mandarlo al fondo', () => {
+    const j = enPuerto({ misiones: ['fugitivo-II'], barco: { mejoras: ['despachos'] }, mazoPeligros: ['calma', 'calma', 'calma'] })
+    j.zarpar('fugitivo-II')
+    expect(j.registro).toContain('«El barco del fugitivo» tiene Alerta: se queda encima del mazo.')
+    // Solo se pregunta por la otra carta («Remanso»).
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'calma' } })
+    j.opcion('fondo').pasarOfertas()
+    expect(j.registro).toContain('Revelas «El barco del fugitivo»: El barco del fugitivo.')
+  })
+
+  it('fuera de una misión, la Vigía inexperta (Otea 1) tampoco puede mandar al fondo el barco de van Hoorn', () => {
+    const j = Jugador.en({ tripulacion: ['vigia'], mazoPeligros: ['barco_vanhoorn', 'calma', 'calma'], mazoCapitan: [...MAZO_CAPITAN] })
+    j.usar('vigia.otear')
+    expect(j.registro).toContain('«El barco de van Hoorn» tiene Alerta: se queda encima del mazo.')
+    expect(j.zona('mazoPeligros')[0]).toBe('barco_vanhoorn')
+  })
+
+  it('«pon 1 al fondo» no puede elegir una carta con Alerta', () => {
+    const j = Jugador.en({ mazoPeligros: ['p2_ronda', 'calma', 'calma'], mazoCapitan: [...MAZO_CAPITAN] })
+    // (Ninguna carta de la caja dice todavía «pon 1 al fondo»: se pide la tarea directamente.)
+    const s = j.estado
+    encolar(s, { tipo: 'otear', n: 2, cartas: [], arriba: [], fondo: [], fondoMax: 1, fondoMin: 1 })
+    s.pendiente = null
+    ejecutar(s)
+    const d = s.pendiente as Decision | null
+    expect(d).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'alFondo', n: 1 } })
+    if (d?.tipo === 'elegirCartas') expect(d.candidatas.map((c) => s.cartas[c]?.id)).toEqual(['calma'])
+  })
+
+  it('el barco del fugitivo es COM 3: Diego solo (COM 3) lo supera y el prisionero entra en juego', () => {
+    const j = enPuerto({ misiones: ['fugitivo-II'], mazoPeligros: ['calma', 'calma', 'calma'] })
+    j.zarpar('fugitivo-II').comprometer('COM', ['capitan']).pasarOfertas().seguir()
+    if (j.decision.tipo === 'elegirCartas') j.elegir('capitan')
+    expect(j.registro).toContain('Total 3 contra 3: superas la Prueba.')
+    expect(j.zona('permanentes')).toEqual(['pm_prisionero'])
+  })
+
+  it('«Vivo, no muerto» no se supera si la carta 267 (el prisionero) no está en juego', () => {
+    const j = enPuerto({ misiones: ['fugitivo-II'], mazoPeligros: ['calma', 'calma', 'calma', 'calma', 'calma'] })
+    // Sin el barco del fugitivo (nunca se captura al prisionero): con 6 de Avance, la misión sigue.
+    mover(j.estado, j.inst('barco_fugitivo', ['mazoHistoria']), 'fueraDeJuego')
+    j.zarpar('fugitivo-II').seguir().seguir().seguir()
+    expect(j.avance('fugitivo-II')).toBeGreaterThanOrEqual(6)
+    expect(j.estado.mision?.fin).toBeNull()
+    expect(motivoSinSuperar(j.estado)).toBe('Sin el prisionero (carta 267) en juego, no puedes superarla')
+  })
+})
+

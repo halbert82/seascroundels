@@ -7,7 +7,7 @@ import { entero } from '../azar.ts'
 import type { Habilidad } from '../datos.ts'
 import type { AccionSobre, Selector } from '../efectos.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
-import { agotar, curarTripulante, ponerEstado, quitarEstadoAnotado, tieneEstado } from '../estados.ts'
+import { agotar, curarTripulante, ponerEstado, quitarEstadoAnotado, sePuedeQuitar, tieneEstado } from '../estados.ts'
 import { INFO_ESTADO } from '../infoEstados.ts'
 import type { Estado, InstId, NuevaTarea, TareaDe } from '../tipos.ts'
 import { costeAPagar, espacioLibre, huecosLibres, plazasLibres } from '../valores.ts'
@@ -489,7 +489,7 @@ export const recuperarDescarte: Manejador<'recuperarDescarte'> = (s, t, e) => {
 /** Quita uno de estos Estados a un Tripulante (Herbolaria, Cataplasma); luego, si lo dice, cúrale N. */
 export const quitarUnEstado: Manejador<'quitarUnEstado'> = (s, t, e) => {
   if (!t.carta) {
-    const candidatos = s.zonas.tripulacion.filter((c) => t.estados.some((x) => tieneEstado(s, c, x)))
+    const candidatos = s.zonas.tripulacion.filter((c) => t.estados.some((x) => tieneEstado(s, c, x) && sePuedeQuitar(s, c, x)))
     if (candidatos.length === 0) return 'hecha'
     if (candidatos.length > 1 && !e) {
       return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'quitarUnEstado', texto: t.estados.map((x) => INFO_ESTADO[x].nombre).join(', ') }, candidatas: candidatos, min: 1, max: 1 })
@@ -499,7 +499,7 @@ export const quitarUnEstado: Manejador<'quitarUnEstado'> = (s, t, e) => {
     return 'sigue'
   }
   const c = t.carta
-  const suyos = t.estados.filter((x) => tieneEstado(s, c, x))
+  const suyos = t.estados.filter((x) => tieneEstado(s, c, x) && sePuedeQuitar(s, c, x))
   let quitar: (typeof suyos)[number] | undefined = suyos[0]
   if (suyos.length > 1) {
     if (!e) {

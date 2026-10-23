@@ -6,7 +6,6 @@ import {
   type CapitanDatos,
   type CapituloDatos,
   type CartaMazoPropioDatos,
-  type ConsultaDatos,
   type DatosCartas,
   type EscenarioDatos,
   type EventoDatos,
@@ -15,6 +14,7 @@ import {
   type MejoraTripulanteDatos,
   type MisionDatos,
   type PasajeroDatos,
+  type PecioDatos,
   type PeligroDatos,
   type PermanenteDatos,
   type PuertoDatos,
@@ -46,8 +46,8 @@ export type EntradaCatalogo =
   | { tipo: 'pasajero'; num: number; id: string; copias: number; carta: PasajeroDatos; mision: MisionDatos }
   /** Fase 11: carta del mazo de historia que un encuentro pone en la zona de permanentes. */
   | { tipo: 'permanente'; num: number; id: string; copias: number; carta: PermanenteDatos }
-  /** Fase 15: carta de consulta del mazo de historia (se mira, no entra en juego). */
-  | { tipo: 'consulta'; num: number; id: string; copias: number; carta: ConsultaDatos; mision: MisionDatos }
+  /** Fase 15: carta del mazo del pecio (buena o mala), del mazo de historia. */
+  | { tipo: 'pecio'; num: number; id: string; copias: number; carta: PecioDatos; mision: MisionDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
@@ -75,7 +75,7 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   mazoPropio: 'Mazo propio',
   pasajero: 'Pasajero',
   permanente: 'Permanente',
-  consulta: 'Carta de consulta',
+  pecio: 'Carta del pecio',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -143,10 +143,10 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     lista.push({ tipo: 'pasajero', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
   for (const carta of datos.permanentes ?? []) lista.push({ tipo: 'permanente', num: carta.num, id: carta.id, copias: 1, carta })
-  for (const carta of datos.consultas ?? []) {
+  for (const carta of datos.pecio ?? []) {
     const mision = datos.misiones.find((m) => m.id === carta.mision)
-    if (!mision) throw new Error(`La carta de consulta «${carta.id}» no pertenece a ninguna misión`)
-    lista.push({ tipo: 'consulta', num: carta.num, id: carta.id, copias: 1, carta, mision })
+    if (!mision) throw new Error(`La carta del pecio «${carta.id}» no pertenece a ninguna misión`)
+    lista.push({ tipo: 'pecio', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
 
   return lista.sort((a, b) => a.num - b.num)
@@ -280,4 +280,28 @@ export function iconosDe(id: string, hab: 'NAV' | 'COM' | 'EXP'): number {
 export function rasgosDe(id: string): string[] {
   const e = porId(id)
   return e.tipo === 'capitan' || e.tipo === 'tripulante' ? e.carta.rasgos : []
+}
+
+// ---------------------------------------------------------------------------
+// Fase 15: el mazo del pecio («El pecio del San José»)
+
+/** Las cartas del mazo del pecio, por identificador: las suyas y los Tesoros 270 y 271 (en el orden de la misión). */
+export function cartasDelPecio(): string[] {
+  const nums = DATOS.misiones.flatMap((m) => m.capitulos.flatMap((c) => c.mazoPecio ?? []))
+  return nums.map((n) => {
+    const e = CATALOGO.find((x) => x.num === n)
+    if (!e) throw new Error(`El mazo del pecio cita la carta ${n}, que no existe`)
+    return e.id
+  })
+}
+
+/** ¿Es del mazo del pecio? */
+export function esDelPecio(id: string): boolean {
+  return cartasDelPecio().includes(id)
+}
+
+/** Una carta buena del mazo del pecio (te la quedas): las suyas marcadas como buenas y los Tesoros. */
+export function esBuenaDelPecio(id: string): boolean {
+  const e = porId(id)
+  return e.tipo === 'tesoro' || (e.tipo === 'pecio' && e.carta.clase === 'buena')
 }

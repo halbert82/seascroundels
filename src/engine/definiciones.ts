@@ -238,6 +238,17 @@ export function esAlerta(s: Estado, carta: InstId): boolean {
   return reglasEncuentro(s, carta)?.alerta === true
 }
 
+/**
+ * P98 (Albert), «Alerta»: si ves esta carta al otear, debe quedarse encima del mazo (no se puede poner al fondo). Fuera de
+ * una misión (otear en puerto), cuenta si alguno de sus encuentros tiene Alerta.
+ */
+export function alertaAlOtear(s: Estado, carta: InstId): boolean {
+  if (!s.cartas[carta]) return false
+  if (s.mision) return esAlerta(s, carta)
+  const r = REGLAS.get(copia(s, carta).id)
+  return Object.values(r?.encuentros ?? {}).some((x) => x?.alerta === true)
+}
+
 /** Todo lo que hace falta para resolver el encuentro de esta carta en la misión en curso. */
 export function definicionEncuentro(s: Estado, carta: InstId): DefinicionEncuentro {
   const enc = encuentroDe(s, carta)

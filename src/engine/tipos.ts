@@ -52,6 +52,10 @@ export const ZONAS = [
   'mazoHistoria',
   'misionesSuperadas',
   'fueraDeJuego',
+  /** Fase 15: el mazo del pecio mientras se bucea («El pecio del San José»). */
+  'mazoPecio',
+  /** Fase 15: las cartas sacadas del mazo del pecio, a un lado (las buenas, y la mala mientras se aplica). */
+  'pecioSacadas',
 ] as const
 
 export type Zona = (typeof ZONAS)[number]
@@ -136,6 +140,8 @@ export type Suceso =
   | { tipo: 'iconos'; cartas: CartaId[] }
   // Para animar la mesa: qué copia concreta cambia.
   | { tipo: 'revelado'; inst: InstId; como: 'encuentro' | 'destino' | 'escenario' }
+  /** Fase 15: se roba una carta del mazo del pecio al bucear (buena o mala). */
+  | { tipo: 'pecio'; inst: InstId; carta: CartaId; buena: boolean }
   | { tipo: 'avance'; n: number; total: number }
   | { tipo: 'heridas'; inst: InstId; n: number }
   | { tipo: 'dano'; n: number }
@@ -148,7 +154,7 @@ export type Suceso =
 export type FinMision = 'superada' | 'retirada' | 'hundida'
 
 /** Fichas que se ponen sobre la carta de misión. Se descartan al terminarla. */
-export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa' | 'derrumbe' | 'rival' | 'profundidad'
+export type FichaMision = 'ladron' | 'alarma' | 'sospecha' | 'persecucion' | 'mecha' | 'defensa' | 'derrumbe' | 'rival'
 
 /** Una Prueba ya resuelta en la misión en curso. */
 export interface PruebaHecha {
@@ -218,6 +224,11 @@ export interface MisionEnCurso {
   destinoForzado?: 'fondo' | 'fuera'
   /** Fase 15: ya se ha hecho lo de «cuando esta misión vaya a superarse» (bucear). */
   antesDeSuperarHecho?: boolean
+  /**
+   * Fase 15, «El pecio del San José»: el buzo de la inmersión en curso, los Tesoros sacados del mazo del pecio en esta
+   * misión (para «Corriente de fondo»), las inmersiones hechas y si ya no se puede bucear más («Sin aire»).
+   */
+  pecio?: { buzo?: InstId; tesoros: InstId[]; inmersiones: number; fin?: boolean }
 }
 
 export interface Bono {

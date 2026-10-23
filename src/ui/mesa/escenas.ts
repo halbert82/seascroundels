@@ -322,7 +322,10 @@ function rival(): PartidaEnMesa {
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 10) }
 }
 
-/** Fase 15, «El pecio del San José»: superada la misión, ya con 2 fichas de Profundidad; ¿se baja otra vez? */
+/**
+ * Fase 15, «El pecio del San José»: superada la misión, dos inmersiones: «Doblones sueltos» (buena, te la quedas) y
+ * «Morena en la bodega» (mala: hiere al buzo y vuelve barajada). ¿Se baja otra vez?
+ */
 function bucear(): PartidaEnMesa {
   const j = Jugador.en({
     empezarEn: 'quedarseOZarpar',
@@ -335,8 +338,8 @@ function bucear(): PartidaEnMesa {
     reputacion: 4,
   })
   j.zarpar('pecio-I').seguir()
-  j.opcion('bucear').comprometer('EXP', ['vigia']).seguir().pasarOfertas()
-  j.opcion('bucear').comprometer('EXP', ['guia_alquiler']).seguir().pasarOfertas()
+  j.encimaDelPecio('pecio_doblones', 'pecio_morena').opcion('bucear').elegir('vigia')
+  j.opcion('bucear').elegir('guia_alquiler').pasarOfertas()
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 10) }
 }
 

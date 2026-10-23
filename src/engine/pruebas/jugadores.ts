@@ -3,7 +3,7 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { costeImpreso, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
+import { costeImpreso, enroladoDe, esBuenaDelPecio, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
@@ -12,7 +12,7 @@ import { entornoActual } from '../peligros.ts'
 import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { esVentaja } from '../infoEstados.ts'
-import { primerNumero, textoDe } from '../textos.ts'
+import { numeroConIcono, primerNumero, textoDe } from '../textos.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valores.ts'
@@ -219,8 +219,14 @@ const PESO_CADENA = 0.2
 /** Reputación que da una misión al superarla (en un final con elección, la mejor opción). */
 function reputacionDe(c: CapituloDatos): number {
   const r = c.recompensa
+  // Fase 15: «El pecio del San José» no da reputación, pero lo que se saca del mazo del pecio (cartas, reparar, curar, un
+  // Cañón, la Cadena de oro y, a veces, el doblón con sus 2 de reputación) vale para el jugador automático como 1.
+  if (c.mazoPecio) return VALOR_PECIO
   return Math.max(r.rep ?? 0, ...(r.elige ?? []).map((o) => o.rep ?? 0))
 }
+
+/** Lo que el jugador automático cree que vale el pecio, en reputación (para elegir a qué misión zarpar). */
+const VALOR_PECIO = 1
 
 /** Puntuación de una misión disponible para zarpar o para poner Avance. */
 function puntuacionMision(s: Estado, m: InstId): number {
@@ -348,6 +354,16 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
       return { tipo: 'cartas', ids: por((c) => costeImpreso(copia(s, c).id)).slice(0, n) }
     case 'buscar':
       return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id) - (MEJORAS_PREFERIDAS[copia(s, c).id] ?? 0)).slice(0, 1) }
+    // Fase 15, el pecio: baja el que más Vida conserva; «Corriente de fondo» devuelve antes una carta ya aplicada que un
+    // Tesoro; de la culebrina, el Cañón más caro que quepa.
+    case 'buzo': {
+      const buzo = elegirBuzo(s, d.candidatas)
+      return { tipo: 'cartas', ids: buzo ? [buzo] : d.candidatas.slice(0, 1) }
+    }
+    case 'corrienteDeFondo':
+      return { tipo: 'cartas', ids: por((c) => (tipoDe(copia(s, c).id) === 'tesoro' ? 10 : 0)).slice(0, 1) }
+    case 'culebrinaPecio':
+      return { tipo: 'cartas', ids: por((c) => -costeImpreso(copia(s, c).id)).slice(0, 1) }
     case 'soplos':
       return { tipo: 'cartas', ids: por((c) => -puntuacionMision(s, c)).slice(0, 1) }
     case 'tablon': {
@@ -1045,15 +1061,37 @@ function cazaElJaguar(s: Estado, c: InstId): boolean {
 // Fase 15
 
 /**
- * «El pecio del San José»: bucea si su mejor buzo preparado (con las cartas de EXP de la mano) llega a la dificultad; a
- * partir de la primera ficha, con 1 de margen para el Destino (si falla, las pierde todas).
+ * «El pecio del San José» (Albert): se planta cuando en el mazo del pecio quedan tantas malas como buenas o más, o cuando
+ * la peor mala que queda podría derrotar al buzo.
  */
 function convieneBucear(s: Estado): boolean {
-  const prof = s.mision?.fichas?.profundidad ?? 0
-  const dificultad = 2 + prof
-  const mano = s.zonas.mano.reduce((n, c) => n + iconos(s, c, 'EXP'), 0)
-  const mejor = Math.max(0, ...s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).map((c) => valor(s, { tipo: 'habilidad', carta: c, hab: 'EXP' })))
-  return mejor + mano >= dificultad + (prof > 0 ? 1 : 0)
+  const mazo = s.zonas.mazoPecio.map((c) => copia(s, c).id)
+  const buenas = mazo.filter(esBuenaDelPecio).length
+  if (mazo.length - buenas >= buenas) return false
+  const buzo = elegirBuzo(s)
+  return buzo !== undefined && buzoASalvo(s, buzo)
+}
+
+/** La peor herida que puede traer una mala que quede en el mazo del pecio (el Tiburón, 2). */
+function peorMalaDelPecio(s: Estado): number {
+  const malas = s.zonas.mazoPecio.map((c) => copia(s, c).id).filter((id) => !esBuenaDelPecio(id))
+  return Math.max(0, ...malas.map((id) => (/\{\d+ herida\}/.test(textoDe(id)) ? numeroConIcono(textoDe(id), 'herida') : 0)))
+}
+
+/** La peor mala que queda no le derrota. */
+function buzoASalvo(s: Estado, c: InstId): boolean {
+  return vidaRestante(s, c) > peorMalaDelPecio(s) || capitanInmortal(s, c)
+}
+
+/** El buzo: uno que aguante la peor mala, el que más Vida conserve y el Capitán solo si no hay otro. */
+function elegirBuzo(s: Estado, candidatas: readonly InstId[] = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)): InstId | undefined {
+  const orden = [...candidatas].sort((a, b) => (a === s.capitan ? 50 : 0) - vidaRestante(s, a) - ((b === s.capitan ? 50 : 0) - vidaRestante(s, b)))
+  return orden.find((c) => buzoASalvo(s, c)) ?? orden[0]
+}
+
+/** Con «El doblón de la calavera» en juego, el Capitán no puede quedar derrotado. */
+function capitanInmortal(s: Estado, c: InstId): boolean {
+  return c === s.capitan && s.zonas.mejoras.some((m) => copia(s, m).id === 'doblon')
 }
 
 /** «Un respiro»: descansa si casi todos están agotados, o hay muchas heridas o Estados, y aún le queda camino. */

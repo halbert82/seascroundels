@@ -26,8 +26,9 @@ export const COLOR_TIPO = {
   pasajero: '#4A4F6B',
   /** Fase 11: las permanentes (cartas del mazo de historia que pone en juego un encuentro). */
   permanente: '#3F4B45',
-  /** Fase 15: las cartas de consulta del mazo de historia («El fondo del San José»). */
-  consulta: '#5A4A2E',
+  /** Fase 15: las cartas del mazo del pecio: las buenas, del color del Tesoro, más oscuro; las malas, rojo de Peligro. */
+  pecioBuena: '#5A4A2E',
+  pecioMala: '#6E2A20',
 } as const
 
 /** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
@@ -582,14 +583,14 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...conArte(entrada.id),
       }
     }
-    case 'consulta': {
-      // Fase 15: carta de consulta del mazo de historia (se mira al superar su misión; no entra en juego).
+    case 'pecio': {
+      // Fase 15: carta del mazo del pecio («El pecio del San José»): buena (te la quedas) o mala (se aplica y vuelve).
       const c = entrada.carta
       return {
         ...base(entrada),
         nombre: c.nombre,
-        color: COLOR_TIPO.consulta,
-        tipoTexto: `Carta de consulta · ${entrada.mision.nombre}`,
+        color: c.clase === 'buena' ? COLOR_TIPO.pecioBuena : COLOR_TIPO.pecioMala,
+        tipoTexto: `Mazo del pecio · ${c.clase === 'buena' ? 'Buena' : 'Mala'}`,
         permanente: true,
         pestanasIzqTop: 74,
         texto: parsearTexto(c.texto),
@@ -710,7 +711,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'tesoro':
     case 'pasajero':
     case 'permanente':
-    case 'consulta':
+    case 'pecio':
       return [entrada.carta.texto]
     case 'habilidad':
       return []

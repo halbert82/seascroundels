@@ -1,7 +1,7 @@
 // Fase 15 · medida informativa de la partida normal (sin informe): `MEDIR_F15=1 npx vitest run src/engine/medir-fase15.informe.test.ts`.
 // Juega las mismas partidas que el informe (semillas 1–N, mazos de inicio, el jugador con criterio) y cuenta lo que pidió
 // Albert de las misiones nuevas: cuántas veces sale y se supera cada una, cómo se reparten los tres capítulos II de la
-// isla, a qué Profundidad se llega en el pecio y cuántas regatas se pierden. Escribe un JSON en MEDIR_SALIDA (o la consola).
+// isla, cuántas cartas se sacan del mazo del pecio (y cuántas veces el doblón) y cuántas regatas se pierden. Escribe un JSON en MEDIR_SALIDA (o la consola).
 
 import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'
@@ -71,19 +71,32 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
     }
   }
 
-  // El pecio: a qué Profundidad se sube (veces que se supera la misión con 0, 1, 2, 3 o 4 fichas).
-  const profundidad = [0, 0, 0, 0, 0]
-  let inmersiones = 0
-  let inmersionesFalladas = 0
+  // El pecio (rehecho): cartas robadas del mazo del pecio en cada misión superada, cuáles salen y cuántas veces el doblón.
+  const robadasPorPecio: number[] = []
+  const salen: Record<string, number> = {}
+  let sinAire = 0
+  let buzosDerrotados = 0
   for (const p of partidas) {
-    for (const x of textos(p)) {
-      if (x.startsWith('Bucear en el pecio')) inmersiones++
-      if (x.startsWith('La inmersión sale mal')) inmersionesFalladas++
-      if (!x.startsWith('Miras la carta 269')) continue
-      const n = /con Profundidad (\d)/.exec(x)?.[1]
-      profundidad[n ? Number(n) : 0]!++
+    const t = textos(p)
+    let enCurso: number | null = null
+    for (const x of t) {
+      if (x.startsWith('Barajas el mazo del pecio')) enCurso = 0
+      if (enCurso === null) continue
+      const m = /^Robas del mazo del pecio: «([^»]+)»/.exec(x)
+      if (m?.[1]) {
+        enCurso++
+        salen[m[1]] = (salen[m[1]] ?? 0) + 1
+      }
+      if (x.startsWith('Sin aire:')) sinAire++
+      if (x.endsWith('queda derrotado.')) buzosDerrotados++
+      if (x.startsWith('El mazo del pecio vuelve al mazo de historia') || x.startsWith('No buceas en el pecio')) {
+        robadasPorPecio.push(enCurso)
+        enCurso = null
+      }
     }
   }
+  const mediaRobadas = robadasPorPecio.length ? robadasPorPecio.reduce((a, b) => a + b, 0) / robadasPorPecio.length : 0
+  const repartoRobadas = robadasPorPecio.reduce<Record<number, number>>((r, n) => ({ ...r, [n]: (r[n] ?? 0) + 1 }), {})
 
   const contar = (frase: string) => cuenta((p) => textos(p).filter((x) => x.includes(frase)).length)
   const resumen = {
@@ -93,7 +106,17 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
     panama: (100 * partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo('panama') && r.resultado === 'superada')).length) / PARTIDAS,
     misiones,
     isla,
-    pecio: { profundidad, inmersiones, inmersionesFalladas },
+    pecio: {
+      superada: misiones['pecio-I']?.superada ?? 0,
+      buceos: robadasPorPecio.length,
+      mediaRobadas,
+      repartoRobadas,
+      salen,
+      doblon: salen['El doblón de la calavera'] ?? 0,
+      sinAire,
+      derrotasDuranteElBuceo: buzosDerrotados,
+      capitanSalvadoPorElDoblon: contar('El doblón de la calavera: '),
+    },
     regata: { superadas: misiones['regata-I']?.superada ?? 0, perdidaContraElRival: contar('El rival gana la regata') },
     vanHoorn: { llegaAntes: contar('Van Hoorn llega antes'), destina: contar('Destinas ') },
     escolta: { galeonHundido: contar('el galeón San Telmo se hunde'), conBonificacion: contar('El galeón llega con') },

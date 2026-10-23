@@ -1,23 +1,27 @@
 // Fase 15 · misiones nuevas: las travesías «La Isla del Tesoro» (capítulo II al azar), «La carrera de van Hoorn» (el
 // rival con su barra y Destina) y «El fugitivo» (el prisionero), y las misiones sueltas «El pecio del San José»
-// (bucear), «Escolta del San Telmo» y «El asedio de Port Royal» (cartas que se protegen) y «La regata de San Juan».
+// (bucear en el mazo del pecio), «Escolta del San Telmo» y «El asedio de Port Royal» (cartas que se protegen) y «La regata
+// de San Juan».
 // También las permanentes con Vida (Galeón San Telmo, Murallas de Port Royal, El prisionero), los dos barcos rivales del
 // mazo de historia y los Tesoros nuevos.
 
 import { entero } from '../azar.ts'
 import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
-import { porId } from '../catalogo.ts'
+import { cartasDelPecio, esBuenaDelPecio, esCanon, esUnica, porId, tipoDe } from '../catalogo.ts'
 import type { CapacidadDeCarta } from '../definiciones.ts'
 import type { Efecto } from '../efectos.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
+import { agotar } from '../estados.ts'
 import { mazoActivo } from '../peligros.ts'
 import { agotaCanones, avance, codigo, dano, robar } from '../peligros2/comun.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { registrarCodigo } from '../tareas/efectos.ts'
 import { registrarEspecial } from '../tareas/peligros2.ts'
+import { numeroConIcono, textoDe } from '../textos.ts'
 import type { CartaId, Estado, InstId, NuevaTarea, TareaDe } from '../tipos.ts'
-import { mover } from '../zonas.ts'
-import { alFallarPrueba, alRevelarPeligro, alSuperarPrueba, dificultadClaves, fichas, ponerFichas, registrarMision, ultimaPrueba } from './comun.ts'
+import { espacioLibre } from '../valores.ts'
+import { barajar, mover } from '../zonas.ts'
+import { alFallarPrueba, alRevelarPeligro, alSuperarPrueba, dificultadClaves, fichas, ponerFichas, registrarMision } from './comun.ts'
 import { registrarVigilante } from './registro.ts'
 
 const reputacion = (n: number): NuevaTarea => ({ tipo: 'cambiarReputacion', n })
@@ -266,6 +270,8 @@ registrarPeligro('barco_vanhoorn', {
         { texto: 'Agotar un Cañón: esta Prueba recibe −1', prueba: true, modDificultad: -1, efectos: [agotaCanones(1)] },
       ],
       abordaje: true,
+      // P98 (Albert): los barcos rivales llevan Alerta (un Otear no puede mandarlos al fondo).
+      alerta: true,
       exito: [robar(1)],
     },
   },
@@ -278,7 +284,11 @@ registrarPeligro('barco_vanhoorn', {
 
 registrarMision('fugitivo-I', {})
 
-registrarMision('fugitivo-II', { alZarpar: () => [aplicar([codigo('fugitivo.barco')])] })
+// P98 (Albert): «No puedes superar esta misión si la carta 267 (el prisionero) no está en juego.»
+registrarMision('fugitivo-II', {
+  alZarpar: () => [aplicar([codigo('fugitivo.barco')])],
+  impideSuperar: (s) => (s.zonas.permanentes.some((c) => copia(s, c).id === 'pm_prisionero') ? null : 'Sin el prisionero (carta 267) en juego, no puedes superarla'),
+})
 
 // La carta 266, «El barco del fugitivo»: Mar · Abordaje · COM 4. Si la superas, pon en juego la carta 267 (el
 // prisionero). Si la fallas, Abordaje y el fugitivo escapa: la misión falla.
@@ -287,101 +297,241 @@ registrarCodigo('fugitivo.escapa', (s) => {
   return []
 })
 registrarPeligro('barco_fugitivo', {
-  encuentros: { unico: { abordaje: true, exito: [{ tipo: 'ponerEnJuego', carta: 'pm_prisionero' }], fallo: [codigo('fugitivo.escapa')] } },
+  // P98 (Albert): Alerta y COM 3 (antes, 4).
+  encuentros: { unico: { abordaje: true, alerta: true, exito: [{ tipo: 'ponerEnJuego', carta: 'pm_prisionero' }], fallo: [codigo('fugitivo.escapa')] } },
   destino: { sinOposicion: [dano(1)] },
 })
 
 // Permanente 267, «El prisionero» (Vida 3): puede sufrir las heridas de un Tripulante en su lugar; sin Vida, la misión
-// falla. (Vuelve al mazo de historia al terminar la misión, como todas.)
-// TODO(regla) P98: no hace falta tener al prisionero para superar «Vivo, no muerto» (opción por defecto; la carta no lo
-// dice), y el barco va encima del mazo sin perseguir: un Otear puede mandarlo al fondo.
+// falla. (Vuelve al mazo de historia al terminar la misión, como todas.) P99 (Albert): puede sufrir más heridas de las que
+// le queda de Vida.
 registrarPermanente('pm_prisionero', { quitar: [], capacidades: [desviar('heridas', 'heridas')] })
 SIN_VIDA.set('pm_prisionero', (s) => fallaPor(s, 'el prisionero muere'))
 
 // ---------------------------------------------------------------------------
-// El pecio del San José (268–271): bucear
+// El pecio del San José (268): bucear en el mazo del pecio (269–271 y 277–283)
 
 const PECIO = 'pecio-I'
-const MAX_PROFUNDIDAD = 4
-const PECIO_FIN = 'pecio.fin'
-const dejoDeBucear = (s: Estado) => s.mision?.hecho?.includes(PECIO_FIN) ?? false
 
-registrarCodigo('pecio.sube', () => [ponerFichas('profundidad', 1)])
-registrarCodigo('pecio.falla', (s) => {
-  const m = s.mision
-  if (!m) return []
-  m.hecho = [...(m.hecho ?? []), PECIO_FIN]
-  const antes = fichas(s, 'profundidad')
-  if (antes > 0) anotar(s, 'aviso', `La inmersión sale mal: pierdes las ${antes === 1 ? 'fichas' : `${antes} fichas`} de Profundidad y dejas de bucear.`)
-  else anotar(s, 'aviso', 'La inmersión sale mal: dejas de bucear.')
-  return antes > 0 ? [ponerFichas('profundidad', -antes)] : []
-})
+/** Buenas y malas que quedan en el mazo del pecio (la mesa las enseña). */
+export function cuentaDelPecio(s: Estado): { buenas: number; malas: number } {
+  const buenas = s.zonas.mazoPecio.filter((c) => esBuenaDelPecio(copia(s, c).id)).length
+  return { buenas, malas: s.zonas.mazoPecio.length - buenas }
+}
 
-/** «Puedes bucear las veces que quieras» (con la misión ya superada, antes de cobrarla). */
-registrarEspecial('pecio.bucear', (s, _t, e) => {
+const cuantas = (n: number, una: string, varias: string) => `${n} ${n === 1 ? una : varias}`
+
+/** «Quedan 4 buenas y 4 malas.» */
+function textoCuenta(s: Estado): string {
+  const { buenas, malas } = cuentaDelPecio(s)
+  return `${cuantas(buenas, 'buena', 'buenas')} y ${cuantas(malas, 'mala', 'malas')}`
+}
+
+/** Tripulantes preparados que pueden bajar (el buzo se agota). */
+const buzosPosibles = (s: Estado) => s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
+
+/** ¿Se puede bucear otra vez? Misión superada, sin «Sin aire», con cartas en el mazo del pecio y alguien preparado. */
+export function puedeBucear(s: Estado): boolean {
   const m = s.mision
-  if (!m || m.fin !== 'superada' || dejoDeBucear(s)) return 'hecha'
-  const prof = fichas(s, 'profundidad')
-  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
-  if (prof >= MAX_PROFUNDIDAD || preparados.length === 0) return 'hecha'
-  const dificultad = 2 + prof
-  if (!e) {
-    return preguntar({
-      tipo: 'elegirOpcion',
-      motivo: { clave: 'bucear', carta: PECIO, n: dificultad },
-      opciones: [
-        { clave: 'bucear', texto: `Bucear: Prueba de EXP ${dificultad} con un solo Tripulante (Profundidad ${prof} de ${MAX_PROFUNDIDAD})` },
-        { clave: 'subir', texto: `Subir con lo que tienes (Profundidad ${prof})` },
-      ],
-    })
+  return !!m?.pecio && m.fin === 'superada' && !m.pecio.fin && s.zonas.mazoPecio.length > 0 && buzosPosibles(s).length > 0
+}
+
+/** «Cuando esta misión vaya a superarse, baraja el mazo del pecio.» Sus cartas salen del mazo de historia. */
+function barajarElPecio(s: Estado): void {
+  const m = s.mision
+  if (!m) return
+  const ids = cartasDelPecio()
+  for (const c of s.zonas.mazoHistoria.filter((x) => ids.includes(copia(s, x).id))) mover(s, c, 'mazoPecio', 'abajo')
+  barajar(s, 'mazoPecio')
+  m.pecio = { tesoros: [], inmersiones: 0 }
+  anotar(s, 'efecto', `Barajas el mazo del pecio: ${s.zonas.mazoPecio.length} cartas, ${textoCuenta(s)}.`)
+}
+
+/** Al terminar de bucear, el mazo del pecio (y lo sacado) vuelve al mazo de historia, salvo los Tesoros en juego. */
+function recogerElPecio(s: Estado): void {
+  const vuelven = [...s.zonas.mazoPecio, ...s.zonas.pecioSacadas]
+  for (const c of vuelven) mover(s, c, 'mazoHistoria', 'abajo')
+  if (vuelven.length > 0) anotar(s, 'efecto', 'El mazo del pecio vuelve al mazo de historia.')
+}
+
+/**
+ * «Puedes bucear las veces que quieras: agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio.»
+ * Paso 0: ¿bajas otra vez?; paso 1: quién baja. Se repite hasta que dices basta, «Sin aire» o no queda nadie preparado.
+ */
+registrarEspecial('pecio.bucear', (s, t, e) => {
+  const m = s.mision
+  if (!m || m.fin !== 'superada') return 'hecha'
+  if (!m.pecio) barajarElPecio(s)
+  const pecio = m.pecio
+  if (!pecio) return 'hecha'
+  if (t.paso === 0) {
+    if (!puedeBucear(s)) {
+      if (!pecio.fin && buzosPosibles(s).length === 0) anotar(s, 'efecto', 'No te queda ningún Tripulante preparado: no puedes bucear más.')
+      recogerElPecio(s)
+      return 'hecha'
+    }
+    if (!e) {
+      return preguntar({
+        tipo: 'elegirOpcion',
+        motivo: { clave: 'bucear', carta: PECIO, n: pecio.inmersiones, texto: textoCuenta(s) },
+        opciones: [
+          { clave: 'bucear', texto: `Bucear: agota a un Tripulante preparado y roba 1 carta del mazo del pecio (quedan ${textoCuenta(s)})` },
+          { clave: 'subir', texto: 'Dejar de bucear' },
+        ],
+      })
+    }
+    if (eleccionDe(e, 'opcion').clave !== 'bucear') {
+      pecio.fin = true
+      anotar(s, 'jugada', pecio.inmersiones === 0 ? 'No buceas en el pecio.' : `Dejas de bucear después de ${cuantas(pecio.inmersiones, 'inmersión', 'inmersiones')}.`)
+      recogerElPecio(s)
+      return 'hecha'
+    }
+    t.paso = 1
+    return 'sigue'
   }
-  if (eleccionDe(e, 'opcion').clave !== 'bucear') {
-    anotar(s, 'jugada', `Subes con Profundidad ${prof}.`)
-    return 'hecha'
+  // Paso 1: el buzo.
+  const posibles = buzosPosibles(s)
+  let buzo: InstId | undefined = posibles.length === 1 ? posibles[0] : undefined
+  if (!buzo) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: PECIO }, candidatas: posibles, min: 1, max: 1 })
+    buzo = eleccionDe(e, 'cartas').ids[0]
   }
-  encolar(s, {
-    tipo: 'pruebaSuelta',
-    fuente: m.carta,
-    paso: 'empezar',
-    definicion: {
-      nombre: `Bucear en el pecio (Profundidad ${prof})`,
-      palabrasClave: [],
-      opciones: [{ hab: 'EXP', dificultad }],
-      exito: [codigo('pecio.sube')],
-      fallo: [codigo('pecio.falla')],
-      maximo: 1,
-      trasSuperar: true,
-    },
-  })
+  t.paso = 0
+  if (!buzo) return 'sigue'
+  pecio.buzo = buzo
+  pecio.inmersiones++
+  anotar(s, 'jugada', `${nombre(s, buzo)} baja al pecio (inmersión ${pecio.inmersiones}).`)
+  encolar(s, { tipo: 'especial', clave: 'pecio.robar', datos: {}, paso: 0 })
+  // Agotar va antes que robar (un buzo Sangrando sufre su herida al agotarse).
+  agotar(s, buzo)
   return 'sigue'
 })
 
-registrarMision(PECIO, {
-  fichas: [{ ficha: 'profundidad', nombre: 'Profundidad', umbral: MAX_PROFUNDIDAD, inicial: 0, nota: 'Cuando vayas a superarla, puedes bucear: EXP 2 más tus fichas de Profundidad.' }],
-  antesDeSuperar: (s) => (s.mision ? [{ tipo: 'especial', clave: 'pecio.bucear', datos: {}, paso: 0 }] : []),
-  // Después de su 1 de reputación: mira la carta 269 y aplica sus recompensas hasta tu Profundidad (se suman).
-  alSuperar: (s) => {
-    const prof = fichas(s, 'profundidad')
-    const tareas: NuevaTarea[] = []
-    const premios = ['roba 2 cartas', '+1 de reputación', 'el Tesoro 270, «Cadena de oro del San José»', 'el Tesoro 271, «La custodia de esmeraldas»']
-    anotar(
-      s,
-      'efecto',
-      prof > 0
-        ? `Miras la carta 269 («El fondo del San José»): con Profundidad ${prof}, ${premios.slice(0, prof).join('; ')}.`
-        : 'Miras la carta 269 («El fondo del San José»): sin Profundidad, no hay nada más.',
-    )
-    if (prof >= 1) tareas.push(robarN(2))
-    if (prof >= 2) tareas.push(reputacion(1))
-    for (const [nivel, id] of [
-      [3, 'cadena_oro'],
-      [4, 'custodia'],
-    ] as const) {
-      const tesoro = prof >= nivel ? s.zonas.mazoHistoria.find((c) => copia(s, c).id === id) : undefined
-      if (tesoro) tareas.push({ tipo: 'ponerTesoro', carta: tesoro })
-    }
-    return tareas
+/** Lo que hace cada carta del mazo del pecio que no es un Tesoro (los números se leen de su texto). */
+const EFECTOS_PECIO: Record<CartaId, (s: Estado, buzo: InstId | undefined, carta: InstId) => NuevaTarea[]> = {
+  // «Roba 2.»
+  pecio_doblones: () => [robarN(numeroConIcono(textoDe('pecio_doblones'), 'robar'))],
+  // «Repara 2.»
+  pecio_tablones: () => [{ tipo: 'reparar', n: numeroConIcono(textoDe('pecio_tablones'), 'dano') }],
+  // «Busca una Mejora con el Rasgo Cañón en el mazo de muelle y ponla en juego sin coste. Si no tienes Espacio, no la pones.»
+  pecio_culebrina: () => [{ tipo: 'especial', clave: 'pecio.culebrina', datos: {}, paso: 0 }],
+  // «Cura 2.» (repartidas como quieras)
+  pecio_botica: () => [{ tipo: 'curar', n: numeroConIcono(textoDe('pecio_botica'), 'herida'), modo: 'repartir' }],
+  // «El buzo sufre 2 heridas.»
+  pecio_tiburon: (s, buzo) => heridasAlBuzo(s, buzo, numeroConIcono(textoDe('pecio_tiburon'), 'herida')),
+  // «El buzo sufre 1 herida.»
+  pecio_morena: (s, buzo) => heridasAlBuzo(s, buzo, numeroConIcono(textoDe('pecio_morena'), 'herida')),
+  // «El buzo sufre 1 herida. No puedes bucear más en esta misión.»
+  pecio_sinaire: (s, buzo) => {
+    if (s.mision?.pecio) s.mision.pecio.fin = true
+    anotar(s, 'aviso', 'Sin aire: no puedes bucear más en esta misión.')
+    return heridasAlBuzo(s, buzo, numeroConIcono(textoDe('pecio_sinaire'), 'herida'))
   },
+  // «Devuelve al mazo del pecio una carta buena que hayas sacado en esta misión y barájalo (si es un Tesoro, sale del
+  // juego). Si no tienes ninguna, no ocurre nada.»
+  pecio_corriente: () => [{ tipo: 'especial', clave: 'pecio.corriente', datos: {}, paso: 0 }],
+}
+
+function heridasAlBuzo(s: Estado, buzo: InstId | undefined, n: number): NuevaTarea[] {
+  if (!buzo || !s.zonas.tripulacion.includes(buzo) || n <= 0) return []
+  return [{ tipo: 'evento', ev: { tipo: 'heridas', objetivo: buzo, cantidad: n }, fase: 'antes', cancelado: false, usadas: [] }]
+}
+
+/** Roba la carta superior del mazo del pecio. Buena: te la quedas (un Tesoro, en juego). Mala: se aplica y vuelve barajada. */
+registrarEspecial('pecio.robar', (s) => {
+  const m = s.mision
+  const carta = s.zonas.mazoPecio[0]
+  if (!m?.pecio || !carta) return 'hecha'
+  const id = copia(s, carta).id
+  const buena = esBuenaDelPecio(id)
+  s.infoRevelada++
+  anotar(s, 'revelar', `Robas del mazo del pecio: «${nombre(s, carta)}» (${buena ? 'buena: te la quedas' : 'mala'}).`, { tipo: 'pecio', inst: carta, carta: id, buena })
+  if (tipoDe(id) === 'tesoro') {
+    m.pecio.tesoros.push(carta)
+    encolar(s, { tipo: 'ponerTesoro', carta })
+    return 'hecha'
+  }
+  mover(s, carta, 'pecioSacadas', 'abajo')
+  const efecto = EFECTOS_PECIO[id]
+  if (!efecto) throw new Error(`Carta del pecio sin efecto: ${id}`)
+  const tareas = efecto(s, m.pecio.buzo, carta)
+  encolar(s, ...tareas, ...(buena ? [] : [{ tipo: 'especial' as const, clave: 'pecio.devolver', datos: { carta }, paso: 0 }]))
+  return 'hecha'
+})
+
+/** «Si es mala, aplícala y vuelve a barajarla en el mazo del pecio.» */
+registrarEspecial('pecio.devolver', (s, t) => {
+  const carta = t.datos.carta as InstId
+  if (!s.zonas.pecioSacadas.includes(carta)) return 'hecha'
+  mover(s, carta, 'mazoPecio', 'abajo')
+  barajar(s, 'mazoPecio')
+  anotar(s, 'efecto', `«${nombre(s, carta)}» vuelve barajada al mazo del pecio (quedan ${textoCuenta(s)}).`)
+  return 'hecha'
+})
+
+/**
+ * Las cartas buenas sacadas en esta misión que «Corriente de fondo» puede devolver: las que están a un lado y los Tesoros
+ * que siguen en juego. TODO(regla) P103: «El doblón de la calavera» no («No puedes descartar esta carta»).
+ */
+export function buenasDevolvibles(s: Estado): InstId[] {
+  const tesoros = (s.mision?.pecio?.tesoros ?? []).filter((c) => s.zonas.mejoras.includes(c) && copia(s, c).id !== 'doblon')
+  return [...s.zonas.pecioSacadas.filter((c) => esBuenaDelPecio(copia(s, c).id)), ...tesoros]
+}
+
+registrarEspecial('pecio.corriente', (s, _t, e) => {
+  const candidatas = buenasDevolvibles(s)
+  if (candidatas.length === 0) {
+    anotar(s, 'efecto', 'Corriente de fondo: no tienes ninguna carta buena del pecio que devolver; no ocurre nada.')
+    return 'hecha'
+  }
+  let carta: InstId | undefined = candidatas.length === 1 ? candidatas[0] : undefined
+  if (!carta) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'corrienteDeFondo', carta: 'pecio_corriente' }, candidatas, min: 1, max: 1 })
+    carta = eleccionDe(e, 'cartas').ids[0]
+  }
+  if (!carta) return 'hecha'
+  const tesoro = tipoDe(copia(s, carta).id) === 'tesoro'
+  mover(s, carta, 'mazoPecio', 'abajo')
+  barajar(s, 'mazoPecio')
+  const pecio = s.mision?.pecio
+  if (pecio) pecio.tesoros = pecio.tesoros.filter((x) => x !== carta)
+  anotar(s, 'aviso', `Corriente de fondo: «${nombre(s, carta)}» vuelve al mazo del pecio${tesoro ? ' (el Tesoro sale del juego)' : ''}.`)
+  return 'hecha'
+})
+
+/**
+ * «Una culebrina del galeón»: busca un Cañón en el mazo de muelle y ponlo en juego sin coste (en el Barco). Solo los que
+ * caben en tu Espacio libre; si no cabe ninguno, no pones nada. El mazo de muelle se baraja después de mirarlo.
+ */
+registrarEspecial('pecio.culebrina', (s, _t, e) => {
+  const candidatas = s.zonas.mazoMuelle.filter((c) => {
+    const id = copia(s, c).id
+    const datos = porId(id)
+    if (!esCanon(id) || datos.tipo !== 'mejoraBarco') return false
+    if (esUnica(id) && s.zonas.mejoras.some((x) => copia(s, x).id === id)) return false
+    return espacioLibre(s) >= datos.carta.espacio
+  })
+  if (!e) {
+    s.infoRevelada++
+    if (candidatas.length === 0) {
+      anotar(s, 'aviso', 'Buscas un Cañón en el mazo de muelle, pero no hay ninguno que quepa en el Barco: no pones nada.')
+      barajar(s, 'mazoMuelle')
+      return 'hecha'
+    }
+    return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'culebrinaPecio', carta: 'pecio_culebrina' }, candidatas, min: 1, max: 1 })
+  }
+  const [carta] = eleccionDe(e, 'cartas').ids
+  if (carta && candidatas.includes(carta)) {
+    mover(s, carta, 'mejoras', 'abajo')
+    copia(s, carta).vinculadaA = 'barco'
+    anotar(s, 'efecto', `Subís del pecio «${nombre(s, carta)}»: la pones en juego en el Barco, sin coste.`)
+  }
+  barajar(s, 'mazoMuelle')
+  return 'hecha'
+})
+
+registrarMision(PECIO, {
+  antesDeSuperar: (s) => (s.mision ? [{ tipo: 'especial', clave: 'pecio.bucear', datos: {}, paso: 0 }] : []),
 })
 
 // ---------------------------------------------------------------------------
@@ -407,7 +557,8 @@ registrarPermanente(GALEON, {
     {
       clave: 'fuego',
       ventana: 'obligada',
-      disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'fallarPrueba' && (s.prueba?.hab ?? ultimaPrueba(s)?.hab) === 'COM',
+      // «Obligado: Después de que falles una Prueba, inflige 1 daño a esta carta» (cualquier Prueba, no solo las de COM).
+      disparo: (_s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'fallarPrueba',
       efecto: (s, yo) => {
         if (yo) danarPermanente(s, yo, 1, 'daño')
         return []
@@ -448,9 +599,9 @@ registrarMision(ASEDIO, {
 // «Obligado: Cuando esta misión pase a estar disponible, pon en juego la carta 275.» Las Murallas están en juego mientras
 // la misión esté disponible (también durante ella); si deja de estarlo (superada o al fondo del mazo de Misiones), vuelven
 // al mazo de historia.
-// TODO(regla) P96: «Sigue en juego mientras “El asedio de Port Royal” esté disponible» (línea añadida por defecto): si la
-// misión deja las disponibles sin superarse (al fondo, o con el Tablón de encargos), las Murallas vuelven al mazo de
-// historia; si vuelve a salir, entran otra vez con toda su Vida.
+// P96 (Albert): «Sigue en juego mientras “El asedio de Port Royal” esté disponible»: si la misión deja las disponibles sin
+// superarse (al fondo, o con el Tablón de encargos), las Murallas vuelven al mazo de historia; si vuelve a salir, entran
+// otra vez con toda su Vida.
 registrarVigilante((s) => {
   const disponible = s.zonas.misionesDisponibles.some((c) => copia(s, c).id === ASEDIO)
   const enJuego = s.zonas.permanentes.find((c) => copia(s, c).id === MURALLAS)
@@ -472,8 +623,8 @@ registrarVigilante((s) => {
   return false
 })
 
-// Permanente 275, «Murallas de Port Royal» (Vida 6). TODO(regla) P97: «al final de cada turno en que no hayas zarpado a
-// esta misión» cuenta también el turno en que aparece (al pie de la letra; opción por defecto).
+// Permanente 275, «Murallas de Port Royal» (Vida 6). P97 (Albert): «al final de cada turno en que no hayas zarpado a esta
+// misión» cuenta también el turno en que aparece (no hay que recordar en qué turno entró).
 registrarPermanente(MURALLAS, {
   quitar: [],
   seQueda: true,

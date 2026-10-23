@@ -357,9 +357,15 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     // Fase 15
     case 'bucear':
       return {
-        titulo: '«El pecio del San José»: ¿buceas?',
-        ayuda: `La misión está superada. Para bajar más, una Prueba de EXP ${n} con un solo Tripulante. Si la superas, 1 ficha de Profundidad más; si la fallas, pierdes todas y dejas de bucear.`,
+        titulo: n === 0 ? '«El pecio del San José»: ¿buceas?' : '«El pecio del San José»: ¿buceas otra vez?',
+        ayuda: `La misión está superada. Para bucear, agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio: si es buena, te la quedas; si es mala, se aplica y vuelve barajada al mazo. Quedan ${m.texto ?? 'cartas'}.`,
       }
+    case 'buzo':
+      return { titulo: '¿Quién baja al pecio?', ayuda: 'El buzo se agota. Las cartas malas le hieren a él.' }
+    case 'corrienteDeFondo':
+      return { titulo: 'Corriente de fondo: ¿qué carta buena vuelve al mazo del pecio?', ayuda: 'Si es un Tesoro, sale del juego.' }
+    case 'culebrinaPecio':
+      return { titulo: 'Una culebrina del galeón: elige un Cañón del mazo de muelle', ayuda: 'Lo pones en juego en el Barco sin coste. Solo se ofrecen los que caben en tu Espacio libre.' }
     case 'desviarAProtegido':
       return {
         titulo: `¿Cuánto recibe «${nombreCarta(m.carta)}» en su lugar?`,

@@ -140,12 +140,6 @@ export const AYUDA_FICHA_MISION: Record<FichaMision, Ayuda> = {
     'Después de que reveles una carta de Peligro: 2 fichas de Rival. En «La ruta de los alisios», su Acción (Destina 3 NAV, una vez por misión) quita 2.',
     'En «La regata de San Juan», con 8 o más el rival gana la regata: al superarla, ganas 1 de reputación en lugar de su recompensa. En «La ruta de los alisios», con 8 van Hoorn llega antes: la misión termina y llega el capítulo II-b.',
   ),
-  profundidad: fichaMision(
-    'profundidad',
-    'Profundidad',
-    'Cuando la misión vaya a superarse, puedes bucear: una Prueba de EXP con un solo Tripulante, de dificultad 2 más tus fichas de Profundidad (máximo 4). Si la superas, 1 ficha más; si la fallas, pierdes todas y dejas de bucear.',
-    'Al superar la misión, miras la carta 269 del mazo de historia y ganas sus recompensas hasta tu Profundidad (se suman).',
-  ),
   mecha: fichaMision(
     'mecha',
     'Mecha',
@@ -189,6 +183,7 @@ export const CLAVES_REGLA = [
   'alerta',
   'destina',
   'capituloAlAzar',
+  'mazoPecio',
   'indestructible',
   'enrolado',
   'otear',
@@ -199,7 +194,7 @@ export const CLAVES_REGLA = [
 export type ClaveRegla = (typeof CLAVES_REGLA)[number]
 
 /** Palabras que nombran una cosa (no un efecto): su primer apartado es «Qué es» en vez de «Qué hace». */
-const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'capituloAlAzar', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
+const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'capituloAlAzar', 'mazoPecio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
 
 function regla(clave: ClaveRegla, nombre: string, hace: string, mas?: ParteAyuda): Ayuda {
   const rotulo = SON_COSAS.includes(clave) ? 'Qué es' : 'Qué hace'
@@ -365,10 +360,10 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   alerta: regla(
     'alerta',
     'Alerta',
-    'Este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva.',
+    'Este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo.',
     {
       rotulo: 'Detalles',
-      texto: 'No valen contra él «Sangre fría», «Soborno», las Velas de tormenta, Íñigo «Lince» Quintero, «Cambio de rumbo», «Retirada a tiempo» ni el Pedrero de borda. Si reúnes el Avance a mitad de él, se resuelve igualmente antes de superar la misión.',
+      texto: 'No valen contra él «Sangre fría», «Soborno», las Velas de tormenta, Íñigo «Lince» Quintero, «Cambio de rumbo», «Retirada a tiempo» ni el Pedrero de borda. Al otear (la Vigía inexperta, «Rumores de taberna», los Despachos del Rey…) no puedes ponerla al fondo, aunque sí ordenarla con las demás que dejas encima. Si reúnes el Avance a mitad de él, se resuelve igualmente antes de superar la misión.',
     },
   ),
   destina: regla(
@@ -382,6 +377,15 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Capítulo al azar',
     'Al superar el capítulo I de «La Isla del Tesoro», barajas boca abajo sus tres capítulos II y pones uno encima del mazo de Misiones sin mirarlo; los otros vuelven al mazo de historia. No sabes cuál te espera hasta que sale.',
   ),
+  mazoPecio: regla(
+    'mazoPecio',
+    'Mazo del pecio',
+    'Diez cartas del mazo de historia (269 a 271 y 277 a 283) que se barajan al superar «El pecio del San José». Cada vez que buceas, agotas a un Tripulante preparado (el buzo) y robas 1: si es buena, te la quedas; si es mala, se aplica y vuelve barajada al mazo.',
+    {
+      rotulo: 'Detalles',
+      texto: 'Puedes bucear las veces que quieras, mientras tengas Tripulantes preparados. Las buenas no vuelven: cada vez quedan menos. Al terminar, el mazo y lo que sacaste vuelven al mazo de historia, salvo los Tesoros que pusiste en juego.',
+    },
+  ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
   enrolado: regla(
     'enrolado',
@@ -393,6 +397,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'otear',
     'Otear',
     'Otea N: mira las N cartas superiores del mazo de Peligros y devuélvelas encima o al fondo del mazo, en el orden que quieras. Si la misión revela de un mazo propio mezclado, mira ese mazo.',
+    { rotulo: 'Detalles', texto: 'Una carta con Alerta (como los barcos rivales) debe quedarse encima del mazo: no puedes ponerla al fondo.' },
   ),
   entrenamiento: regla(
     'entrenamiento',
@@ -591,6 +596,7 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   alerta: /\bAlerta\b/,
   destina: /\bDestina \d/,
   capituloAlAzar: /\bBaraja boca abajo las cartas \d+/,
+  mazoPecio: /\bmazo del pecio\b/,
   indestructible: /\bIndestructible\b/,
   enrolado: /\bEnrolado \d/,
   otear: /\b[Oo]tea\b|\bOtear\b/,

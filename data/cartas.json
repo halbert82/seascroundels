@@ -1387,12 +1387,12 @@
    "ambientacion": "«Cada eslabón paga a un marinero. Y hay muchos eslabones.»"
   },
   {
-   "id": "custodia",
+   "id": "doblon",
    "num": 271,
-   "nombre": "La custodia de esmeraldas",
+   "nombre": "El doblón de la calavera",
    "tipo": "Mejora de barco",
-   "texto": "Indestructible.\nAl entrar en juego, gana {2 rep}.",
-   "ambientacion": "«Iba para la catedral de Sevilla. Ahora va donde tú digas.»"
+   "texto": "Indestructible.\nNo puedes descartar esta carta.\nAl entrar en juego, gana {2 rep}.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar.",
+   "ambientacion": "«Era del capitán del San José. Ahora es tuyo.»"
   }
  ],
  "peligros": [
@@ -8604,7 +8604,7 @@
      "etiquetas": [
       "Alerta"
      ],
-     "textoEfecto": "~Un bergantín del Rey cruza la bocana con los faroles apagados.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoEfecto": "~Un bergantín del Rey cruza la bocana con los faroles apagados.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
      "textoFallo": "El Barco queda **Perseguido**."
     },
     "nat": {
@@ -8627,7 +8627,7 @@
      "etiquetas": [
       "Alerta"
      ],
-     "textoEfecto": "~Desde la loma se ve toda la cala, y el centinela no duerme.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoEfecto": "~Desde la loma se ve toda la cala, y el centinela no duerme.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
      "textoFallo": "El Tripulante asignado con más [EXP] queda **Buscado**."
     },
     "ciu": {
@@ -8650,7 +8650,7 @@
      "etiquetas": [
       "Alerta"
      ],
-     "textoEfecto": "~Desde las almenas se ve cada callejón del puerto.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoEfecto": "~Desde las almenas se ve cada callejón del puerto.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
      "textoFallo": "Inflige {2 herida}."
     }
    },
@@ -8692,7 +8692,7 @@
      "etiquetas": [
       "Alerta"
      ],
-     "textoEfecto": "~Las olas rompen hacia atrás y tiran del Barco hacia los bajos.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoEfecto": "~Las olas rompen hacia atrás y tiran del Barco hacia los bajos.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
      "textoFallo": "Daña {1 dano}."
     },
     "nat": {
@@ -8715,7 +8715,7 @@
      "etiquetas": [
       "Alerta"
      ],
-     "textoEfecto": "~Una jauría asilvestrada os ha olido desde el cañaveral.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoEfecto": "~Una jauría asilvestrada os ha olido desde el cañaveral.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
      "textoFallo": "Inflige {2 herida}."
     },
     "ciu": {
@@ -8738,7 +8738,7 @@
      "etiquetas": [
       "Alerta"
      ],
-     "textoEfecto": "~El tabernero ha cerrado la puerta con llave. Y tiene buena memoria.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva).",
+     "textoEfecto": "~El tabernero ha cerrado la puerta con llave. Y tiene buena memoria.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
      "textoFallo": "Descarta 2 cartas."
     }
    },
@@ -9499,9 +9499,12 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "~El Vrouw Maria, con vuestra carta de marear en el camarote de popa.~ Antes de asignar, puedes agotar un Cañón: esta Prueba recibe −1 de dificultad.",
+    "textoEfecto": "~El Vrouw Maria, con vuestra carta de marear en el camarote de popa.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).\nAntes de asignar, puedes agotar un Cañón: esta Prueba recibe −1 de dificultad.",
     "textoExito": "~Recuperáis lo vuestro y algo más.~ Roba 1.",
-    "textoFallo": "**Abordaje**"
+    "textoFallo": "**Abordaje**",
+    "etiquetas": [
+     "Alerta"
+    ]
    },
    "destino": {
     "nombre": "Andanada holandesa",
@@ -9524,21 +9527,24 @@
     "palabrasClave": [
      "Barco"
     ],
-    "avance": 3,
-    "avanceSinSuperar": 2,
+    "avance": 1,
+    "avanceSinSuperar": 1,
     "prueba": [
      {
       "hab": "COM",
-      "dificultad": 4
+      "dificultad": 3
      }
     ],
     "fallo": [],
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "~Os ha visto, y no piensa rendirse.~",
+    "textoEfecto": "~Os ha visto, y no piensa rendirse.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
     "textoExito": "~Lo sacáis de la bodega a rastras.~ Pon en juego la carta 267 del mazo de historia.",
-    "textoFallo": "**Abordaje**. El fugitivo escapa: la misión falla."
+    "textoFallo": "**Abordaje**. El fugitivo escapa: la misión falla.",
+    "etiquetas": [
+     "Alerta"
+    ]
    },
    "destino": {
     "nombre": "Disparo a la desesperada",
@@ -10518,7 +10524,8 @@
      "avanceNecesario": 6,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** Pon la carta 266 del mazo de historia encima del mazo de Peligros."
+      "**Al zarpar:** Pon la carta 266 del mazo de historia encima del mazo de Peligros.",
+      "No puedes superar esta misión si la carta 267 ~(el prisionero)~ no está en juego."
      ],
      "ambientacion": "«Su balandra es rápida, pero la vuestra tiene más hambre.»",
      "recompensa": {
@@ -10542,18 +10549,30 @@
      "num": 268,
      "nombre": "El pecio del San José",
      "entorno": "mar",
-     "avanceNecesario": 3,
+     "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "Cuando esta misión vaya a superarse, puedes bucear las veces que quieras. Para bucear, haz una Prueba de [EXP] con un solo Tripulante asignado. Su dificultad es 2 más las fichas de Profundidad de esta misión (máximo 4 fichas).",
-      "Si la superas, pon 1 ficha de Profundidad. Si la fallas, retira todas las fichas de Profundidad y deja de bucear."
+      "Cuando esta misión vaya a superarse, baraja el mazo del pecio. Puedes bucear las veces que quieras: agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio.",
+      "Si es buena, quédatela. Si es mala, aplícala y vuelve a barajarla en el mazo del pecio."
      ],
      "ambientacion": "«El galeón se hundió con la plata del virrey. Nadie ha bajado hasta el fondo.»",
      "recompensa": {
-      "rep": 1
+      "texto": "Lo que saques del mazo del pecio ~(cartas 269 a 271 y 277 a 283 del mazo de historia)~."
      },
      "siguiente": [],
-     "textoSiguiente": "Mira la carta 269 del mazo de historia y aplica sus recompensas hasta tu Profundidad"
+     "textoSiguiente": "",
+     "mazoPecio": [
+      269,
+      277,
+      278,
+      279,
+      270,
+      271,
+      280,
+      281,
+      282,
+      283
+     ]
     }
    ]
   },
@@ -11173,7 +11192,7 @@
     "Barco"
    ],
    "vida": 4,
-   "texto": "**Obligado:** Después de que falles una Prueba de [COM], inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
+   "texto": "**Obligado:** Después de que falles una Prueba, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
    "ambientacion": "",
    "misiones": [
     "escolta-I"
@@ -11196,14 +11215,78 @@
    "junto": false
   }
  ],
- "consultas": [
+ "pecio": [
   {
-   "id": "fondo_sanjose",
+   "id": "pecio_doblones",
    "num": 269,
-   "nombre": "El fondo del San José",
+   "nombre": "Doblones sueltos",
    "mision": "pecio",
-   "texto": "Aplica las recompensas hasta tu Profundidad. Se suman.\n**1:** Roba {2 robar}.\n**2:** {+1 rep} adicional.\n**3:** Pon en juego el Tesoro 270.\n**4:** Pon en juego el Tesoro 271.",
-   "ambientacion": "«Más abajo, la plata. Más abajo aún, lo que el virrey no declaró.»"
+   "clase": "buena",
+   "texto": "Roba {2 robar}.",
+   "ambientacion": "«Monedas de a ocho por todo el fondo, como conchas.»"
+  },
+  {
+   "id": "pecio_tablones",
+   "num": 277,
+   "nombre": "Tablones y jarcia",
+   "mision": "pecio",
+   "clase": "buena",
+   "texto": "Repara {2 dano g}.",
+   "ambientacion": "«Roble de Cuba y cabos de cáñamo. Ni el mar los ha podido pudrir.»"
+  },
+  {
+   "id": "pecio_culebrina",
+   "num": 278,
+   "nombre": "Una culebrina del galeón",
+   "mision": "pecio",
+   "clase": "buena",
+   "texto": "Busca una Mejora con el Rasgo _Cañón_ en el mazo de muelle y ponla en juego sin coste. Si no tienes Espacio, no la pones.",
+   "ambientacion": "«Bronce del Rey, con su escudo y todo. Subirla costará la tarde entera.»"
+  },
+  {
+   "id": "pecio_botica",
+   "num": 279,
+   "nombre": "La botica del cirujano",
+   "mision": "pecio",
+   "clase": "buena",
+   "texto": "Cura {2 herida g}.",
+   "ambientacion": "«Frascos lacrados que el agua no ha tocado.»"
+  },
+  {
+   "id": "pecio_tiburon",
+   "num": 280,
+   "nombre": "Tiburón",
+   "mision": "pecio",
+   "clase": "mala",
+   "texto": "El buzo sufre {2 herida}.",
+   "ambientacion": "«Una sombra entre las cuadernas. Luego, dos.»"
+  },
+  {
+   "id": "pecio_morena",
+   "num": 281,
+   "nombre": "Morena en la bodega",
+   "mision": "pecio",
+   "clase": "mala",
+   "texto": "El buzo sufre {1 herida}.",
+   "ambientacion": "«Metió la mano en el arcón equivocado.»"
+  },
+  {
+   "id": "pecio_sinaire",
+   "num": 282,
+   "nombre": "Sin aire",
+   "mision": "pecio",
+   "clase": "mala",
+   "texto": "El buzo sufre {1 herida}.\nNo puedes bucear más en esta misión.",
+   "ambientacion": "«Sube morado y escupiendo agua. Hoy no baja nadie más.»"
+  },
+  {
+   "id": "pecio_corriente",
+   "num": 283,
+   "nombre": "Corriente de fondo",
+   "mision": "pecio",
+   "clase": "mala",
+   "texto": "Devuelve al mazo del pecio una carta buena que hayas sacado en esta misión y barájalo (si es un Tesoro, sale del juego). Si no tienes ninguna, no ocurre nada.",
+   "ambientacion": "«El agua arrastra lo que habíais apilado junto al casco.»"
   }
  ]
 }
