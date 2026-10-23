@@ -1144,6 +1144,16 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - **P99 · Desviar más de lo que le queda.** Por defecto, el Galeón, las Murallas o el prisionero pueden sufrir todo el daño (o todas las heridas), aunque pase de su Vida restante (y entonces se aplica su «sin Vida restante»). La otra opción: como mucho, lo que les queda.
 - **P100 · Tipos de las cartas nuevas que no los traían.** Los dos barcos rivales, «Barco»; el Galeón San Telmo, «Barco»; las Murallas, «Militar»; el prisionero, «Civil» (Mala fama ya lo traía: Civil).
 - **P101 · Nombre del tipo de la carta 269.** Por defecto, «Carta de consulta»: una carta del mazo de historia que no entra en juego (se mira y se aplica). Dorso de misión.
+- **P102 · «Pasajero» sin entrada propia.** El reglamento dice que las palabras con mayúscula tienen su entrada, y «Pasajero» se queda como tipo de carta (Componentes, mazo de historia) sin ella. Por defecto, así. La otra opción: una entrada mínima («carta que viaja contigo; lo que hace lo dice su carta»).
+
+### Reglamento (fase 15)
+
+- Componentes: 256 cartas (fila «Mazos propios y barcos rivales», 14, y fila nueva «Cartas de consulta», 1); listas del mazo de historia con los barcos rivales (montón grande, dorso de Peligros) y la carta de consulta (dorso de misión).
+- Fuera «#### Pasajeros» y «### Pasajero» y sus menciones (Capacidad, Estado, Ventaja, «Al terminar la misión»). Habilidades: las de la Caja básica no tienen texto; una con texto se usa como diga su carta.
+- Palabras clave de los encuentros: «Descomunal N» (con el ejemplo del cachalote) y «Alerta»; Abordaje, también cuando aborda el jugador.
+- Entradas nuevas en la Referencia: Alerta (ejemplo de «Los vigías del fuerte» con «Sangre fría»), Barco rival, Carta de consulta (ejemplo del buceo en el pecio) y Descomunal. Cambiadas: Abordaje, Capítulo (tres salidas dobles y «Capítulo al azar»), Destina (ejemplo con «La ruta de los alisios»), Fichas de misión (Rival y Profundidad), Mazo de Misiones (diez capítulos I y seis aventuras), Número de colección, Palabras clave, Permanente (17), Tesoro y Zona de permanentes.
+- «Superar una misión» (Aprende): el capítulo II al azar, con su ejemplo («El mapa del ahorcado» y sale «…sacudida por un temblor»).
+- Maqueta: dentro del nombre de una carta entre comillas ya no se marcan palabras de juego («La Isla del Tesoro» no remite a «Tesoro»); índice de términos algo más apretado para que siga en una página. Libros: Aprende 41 páginas (desaparece la lámina de Nassau de la 33: el texto llena la página) y Referencia 41 (antes 39). La tabla de Componentes se parte entre las páginas 5 y 6.
 
 ### Medición de la fase 15 (solo informativa; partida normal, 1000 partidas, semillas 1–1000, el mismo jugador automático)
 
