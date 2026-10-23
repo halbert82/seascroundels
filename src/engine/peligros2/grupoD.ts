@@ -30,7 +30,7 @@ import {
   preparar,
   reparar,
   robar,
-  siTienes,
+  siTienesPreparado,
   tieneRasgo,
 } from './comun.ts'
 
@@ -44,10 +44,9 @@ registrarCodigo('p2_motin.dosHeridas', (s) => [{ tipo: 'repartirHeridas', n: 2, 
 // 34. Hermanos de la Costa · Favorable
 registrarPeligro('p2_hermanos', {
   encuentros: {
-    // Gana 1 munición y repara 1 daño. Si tienes un Bucanero, gana 1 munición más.
-    // TODO(regla): P93. Albert pidió «un Bucanero asignado», pero este encuentro no tiene Prueba (nunca hay asignados):
-    // por defecto, mientras decide, se queda «Si tienes un Bucanero».
-    mar: { efecto: [preparaCanon(), reparar(1), siTienes('Bucanero', [preparaCanon()])] },
+    // Prepara un Cañón y repara 1 daño. Si tienes un Bucanero preparado, prepara otro Cañón.
+    // P93 (Albert): «preparado», no «asignado» (este encuentro no tiene Prueba). Diego es Bucanero y cuenta si no está agotado.
+    mar: { efecto: [preparaCanon(), reparar(1), siTienesPreparado('Bucanero', [preparaCanon()])] },
     // Cura 2 heridas, repartidas como quieras. Si no tenías heridas, prepara 1 Tripulante (se mira antes de curar).
     nat: { efecto: [{ tipo: 'si', condicion: { tipo: 'no', condicion: { tipo: 'heridas', minimo: 1 } }, entonces: [preparar(1)] }, { tipo: 'curar', n: 2 }] },
     // Éxito (fase 14, Albert): si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de
@@ -106,8 +105,8 @@ registrarPeligro('p2_barril', {
 })
 
 // 36. Sangre caliente · Leve
-// TODO(regla): P94. «Sin contar al Capitán» choca con la regla de Rasgos («el Capitán cuenta siempre»), aunque aquí no
-// se filtra por Rasgo: por defecto se queda como está.
+// P94 (Albert): se queda «sin contar al Capitán». «El Capitán cuenta siempre» vale para las fórmulas de Rasgo; en las
+// demás elecciones («tus dos Tripulantes con más COM») manda lo que diga la carta.
 const PELEA = 'p2_sangre.pelea'
 // «Tus dos Tripulantes con más COM (sin contar al Capitán) se están pegando: no pueden comprometerse.» Se mira al
 // revelarla (COM impresa); si hay empate en el corte, eliges. Quedan señalados para el fallo («cada uno sufre 1 herida»).

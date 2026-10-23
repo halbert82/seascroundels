@@ -6610,7 +6610,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Una balandra amiga se abarloa y os presta lo que le sobra.~ Prepara un Cañón y repara {1 dano g}. Si tienes un _Bucanero_, prepara otro Cañón (es de su cofradía)."
+     "textoEfecto": "~Una balandra amiga se abarloa y os presta lo que le sobra.~ Prepara un Cañón y repara {1 dano g}. Si tienes un _Bucanero_ preparado, prepara otro Cañón."
     },
     "nat": {
      "nombre": "Bucán en la playa",

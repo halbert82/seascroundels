@@ -111,6 +111,11 @@ export function siTienes(rasgo: string, entonces: Efecto[], sino?: Efecto[]): Ef
   return sino ? { tipo: 'si', condicion: { tipo: 'rasgoEnJuego', rasgo }, entonces, sino } : { tipo: 'si', condicion: { tipo: 'rasgoEnJuego', rasgo }, entonces }
 }
 
+/** «Si tienes un X preparado…» (el Capitán cuenta si no está agotado). */
+export function siTienesPreparado(rasgo: string, entonces: Efecto[]): Efecto {
+  return { tipo: 'si', condicion: { tipo: 'rasgoPreparado', rasgo }, entonces }
+}
+
 /** «En el Mar, …; en Naturaleza o Ciudad, …» (los Destinos que dañaban el Barco dicen qué hacen en cada Entorno). */
 export function enElMar(mar: Efecto[], enTierra: Efecto[]): Efecto {
   return { tipo: 'si', condicion: { tipo: 'entorno', entorno: 'mar' }, entonces: mar, sino: enTierra }

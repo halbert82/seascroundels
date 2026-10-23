@@ -17,11 +17,34 @@ const avance = (j: Jugador, entorno: keyof typeof MISION) => j.avance(MISION[ent
 const ids = (j: Jugador, lista: readonly string[]) => lista.map((c) => j.estado.cartas[c as `i${number}`]?.id)
 
 describe('34 · Hermanos de la Costa', () => {
-  it('Mar: preparas un Cañón y reparas 1; con un Bucanero (Diego lo es), preparas otro Cañón', () => {
-    const j = en('mar', ['p2_hermanos', 'calma'], { barco: { dano: 2, mejoras: [{ id: 'bronce', agotada: true }] } })
+  const dosCanonesAgotados = { mejoras: [{ id: 'bronce', agotada: true }, { id: 'culebrina', agotada: true }] }
+
+  it('Mar: preparas un Cañón y reparas 1; con un Bucanero preparado (Diego lo es), preparas otro Cañón', () => {
+    const j = en('mar', ['p2_hermanos', 'calma'], { barco: { dano: 2, ...dosCanonesAgotados } })
+    j.elegir('bronce') // el primero lo eliges tú; el segundo es el único que queda
     expect(j.copia('bronce').agotada).toBe(false)
+    expect(j.copia('culebrina').agotada).toBe(false)
     expect(j.estado.danoBarco).toBe(1)
     expect(avance(j, 'mar')).toBe(1) // fase 10b: premio pequeño, Avance 1
+  })
+
+  it('Mar (fase 14, P93): con Diego agotado y el Bucanero veterano preparado, llega el segundo Cañón', () => {
+    const j = en('mar', ['p2_hermanos', 'calma'], { capitan: { agotada: true }, tripulacion: ['bucanero'], barco: dosCanonesAgotados })
+    j.elegir('bronce')
+    expect(j.copia('bronce').agotada).toBe(false)
+    expect(j.copia('culebrina').agotada).toBe(false)
+  })
+
+  it('Mar (fase 14, P93): con Diego y el Bucanero veterano agotados, solo llega un Cañón', () => {
+    const j = en('mar', ['p2_hermanos', 'calma'], {
+      capitan: { agotada: true },
+      tripulacion: [{ id: 'bucanero', agotada: true }],
+      barco: dosCanonesAgotados,
+    })
+    j.elegir('bronce')
+    expect(j.copia('bronce').agotada).toBe(false)
+    expect(j.copia('culebrina').agotada).toBe(true)
+    expect(j.decision?.tipo).not.toBe('elegirCartas')
   })
 
   it('Naturaleza: si no tenías heridas, preparas a 1 Tripulante; si las tenías, solo curas 2 repartidas', () => {
@@ -138,6 +161,14 @@ describe('36 · Sangre caliente', () => {
     expect(ids(j, (j.decision as { tripulantes: string[] }).tripulantes)).toEqual(['capitan', 'bucanero'])
     j.comprometer('COM', ['capitan'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego COM 3 + 1 por ser Oficial
+  })
+
+  it('Mar (fase 14, P94): con Diego, el Bucanero veterano y el Grumete leal, se pelean el Bucanero y el Grumete; solo va Diego', () => {
+    // «Sin contar al Capitán» se queda: no es una fórmula de Rasgo, y en las demás elecciones manda la carta.
+    const j = en('mar', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'grumete'] })
+    expect(ids(j, (j.decision as { tripulantes: string[] }).tripulantes)).toEqual(['capitan'])
+    j.comprometer('COM', ['capitan'])
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego COM 3 + 1 por ser Oficial («Oficial asignado»: el Capitán cuenta)
   })
 
   it('Mar: si hay empate en el corte, eliges a quién; si fallas, los dos que se pegaban sufren 1 herida cada uno', () => {

@@ -1034,3 +1034,9 @@ En el informe de la tercera ronda: los 12 Rasgos (11 de personas y el Cañón), 
 ### Para cuando se rehagan los mazos de inicio (no se hace ahora)
 
 - En el muelle de inicio, 2 o 3 Vigías (2 Vigías inexpertas e Íñigo «Lince» Quintero), al menos 2 Oficiales además del Capitán y el Loro parlanchín.
+
+## Fase 14, cuarta ronda: respuestas de Albert (P93–P94 y oficios, 23 de octubre de 2026)
+
+- **P93 · Balandra de la Hermandad (196, Mar):** el texto pasa a «Prepara un Cañón y repara 1 daño. Si tienes un Bucanero preparado, prepara otro Cañón.» (fuera «(es de su cofradía)»). Diego es Bucanero: cuenta si no está agotado. *Ejemplos (con sus pruebas):* con Diego agotado y el Bucanero veterano preparado, llega el segundo Cañón; con los dos agotados, solo llega uno.
+- **P94 · Sangre caliente (Bronca en el sollado):** se queda «sin contar al Capitán». «El Capitán cuenta siempre» vale para las tres fórmulas de Rasgo («si tienes un X», «si tienes un X preparado», «X asignado») y para las rebajas como «Vigía −2». En las demás elecciones («tus dos Tripulantes con más COM») manda lo que diga la carta. Reglamento: entrada Rasgo, con el ejemplo de Diego, el Bucanero veterano y el Grumete leal. *Ejemplo (con su prueba):* con los tres, se pelean el Bucanero y el Grumete; solo Diego puede ser asignado, y como es Oficial, suma +1.
+- **Oficios:** confirmada la lectura. Un oficio puede tener un solo portador en la caja, pero no hay límite en la tripulación: puedes llevar a los tres Pilotos a la vez. Solo limita que una carta sea única. Reglamento: entrada Rasgo.

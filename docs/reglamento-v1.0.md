@@ -1280,7 +1280,7 @@ Los Estados se quitan antes de curar o reparar. De este modo, la curación no se
 
 El Rasgo dice qué es un Tripulante y aparece en cursiva sobre su texto. Hay dos clases. Los Rasgos de grupo dicen qué clase de gente es, y los comparten muchos Tripulantes: Marinero, Bucanero, Oficial, Explorador, Vigía y Contrabandista.
 
-Los Rasgos de oficio nombran al especialista del barco, el que se encarga de una sola tarea a bordo: Piloto, Carpintero, Artillero, Cirujano y Animal. Un oficio puede tener un solo portador en toda la caja, como el Carpintero de a bordo, que es el único Carpintero.
+Los Rasgos de oficio nombran al especialista del barco, el que se encarga de una sola tarea a bordo: Piloto, Carpintero, Artillero, Cirujano y Animal. Un oficio puede tener un solo portador en toda la caja, como el Carpintero de a bordo, que es el único Carpintero. En la tripulación, en cambio, no hay límite por oficio, y el jugador puede llevar a los tres Pilotos a la vez. Solo limita que una carta sea única (ver Única).
 
 Un Tripulante puede tener varios Rasgos, de grupo y de oficio. Los Capitanes también los tienen y cuentan siempre, como cualquier Tripulante (Diego es Bucanero y Oficial). De las Mejoras, solo los Cañones tienen Rasgo (ver Cañón).
 
@@ -1292,11 +1292,19 @@ Las cartas piden un Rasgo solo de tres maneras.
 
 En una Prueba, el Rasgo va debajo de su recuadro con la rebaja de la dificultad. «Vigía −2» quiere decir «si tienes un Vigía preparado, la Prueba pide 2 menos», tanto si lo asignas como si no, y la rebaja se mantiene aunque se agote al asignarlo. «Marinero asignado −2» pide que lo asignes.
 
+El Capitán cuenta siempre en las tres maneras de pedir un Rasgo, y también en las rebajas como «Vigía −2». En las demás elecciones, como «tus dos Tripulantes con más COM», manda lo que diga la carta, que puede dejar fuera al Capitán.
+
 > [!ejemplo]
 > El Viejo lobo de mar es Marinero, Oficial y Piloto: pertenece a dos grupos y tiene un oficio. Si aparece «Calma chicha» («agota a un Marinero o a 2 Tripulantes»), sirve cualquiera de los Marineros del muelle, que son muchos. En cambio, si aparece «Guiarse por las estrellas» («Si tienes un Piloto, +1 Avance»), solo sirve uno de los tres Pilotos. El Viejo lobo vale para las dos cartas.
 
 > [!ejemplo]
 > El Carpintero de a bordo, que es Carpintero y Marinero, está agotado, y el jugador no lleva más Marineros. En la Ciudad supera «Casco en seco» («Repara 1 (2 si tienes un Carpintero)») y repara 2, porque el Carpintero está en la tripulación, aunque esté agotado. Después revela «La cofradía de San Telmo» («Si tienes un Marinero preparado, superas sin Prueba»): como su único Marinero está agotado, tiene que hacer la Prueba.
+
+> [!ejemplo]
+> El jugador lleva a Diego (COM 3), el Bucanero veterano (COM 2) y el Grumete leal (COM 1). En el Mar revela «Bronca en el sollado» («Tus dos Tripulantes con más COM (sin contar al Capitán) se están pegando: no pueden ser asignados»). Esa elección no pide un Rasgo, así que manda la carta: se pelean el Bucanero y el Grumete, y solo Diego puede ser asignado. Como Diego es Oficial, «Cada Oficial asignado suma +1» también vale para él.
+
+> [!ejemplo]
+> Con el Bucanero veterano agotado y Diego preparado, el jugador revela «Balandra de la Hermandad» («Si tienes un Bucanero preparado, prepara otro Cañón»). Diego es Bucanero, así que el segundo Cañón llega. Si Diego también estuviera agotado, solo llegaría el primero.
 
 ### Reclutar
 
