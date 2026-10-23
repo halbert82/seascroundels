@@ -169,6 +169,9 @@ describe('Cartas nombradas en un texto', () => {
     ])
     // Dos partes de la misma carta: las dos, en el orden de la carta.
     expect(cartasYPartes('Sale «Os da alcance» y luego «Turbonada a popa».')).toEqual([{ id: 'p2_turbonada', partes: ['mar', 'destino'] }])
+    // Fase 14: un encuentro que se llama como su carta es el encuentro; el Destino de esa carta se sigue citando aparte.
+    expect(cartasYPartes('Si aparece «Calma chicha», agota a un Marinero.')).toEqual([{ id: 'p2_calma', partes: ['mar'] }])
+    expect(cartasYPartes('Sale el Destino de la carta «Calma chicha» (−1).')).toEqual([{ id: 'p2_calma', partes: ['destino'] }])
   })
 
   it('el ejemplo de «Daño» enseña el encuentro de Ciudad de una carta y el Destino de la otra («el Destino de la carta X»)', () => {

@@ -71,9 +71,9 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
       c.tipo === 'dificultad' && yo !== null && c.claves.includes('Civil') && (ctx.participantes ?? participantes(ctx.s)).includes(yo) ? -1 : 0,
   },
 
-  // Fiador de la Hermandad (fase 14, fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a otro
-  // Tripulante, descarta a Fiador de la Hermandad en su lugar y roba 2.» No vale para los que caen por heridas ni para lo
-  // que descarta una permanente (no es una carta de Peligro).
+  // Fiador de la Hermandad (fase 14, fuera el rehén): «Interrupción: Cuando otro Tripulante vaya a ser descartado por una
+  // carta de Peligro o una permanente, descarta a Fiador de la Hermandad en su lugar y roba 2.» No vale para los que caen
+  // por heridas. Las permanentes, desde la tercera ronda (P90).
   {
     clave: 'fiador.descarte',
     carta: 'fiador',
@@ -105,8 +105,9 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     efecto: (s) => [{ tipo: 'quitarPermanente', candidatas: cortables(s) }],
   }),
 
-  // ¡A por ellos! (fase 14, fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a un
-  // Tripulante, haz una Prueba de COM 3. Si la superas, no se descarta.» No vale para los que caen por heridas. La Prueba
+  // ¡A por ellos! (fase 14, fuera el rehén): «Interrupción: Cuando un Tripulante vaya a ser descartado por una carta de
+  // Peligro o una permanente, haz una Prueba de COM 3. Si la superas, no se descarta.» No vale para los que caen por
+  // heridas. Las permanentes, desde la tercera ronda (P90). La Prueba
   // es normal (se asigna, Destino, Sin oposición) y se hace en el momento, aunque haya otra a medio resolver (la del
   // encuentro que lo descarta): esa se aparta mientras tanto y después se sigue con ella.
   evento('a_por_ellos', 'interrupcion', {
@@ -150,7 +151,8 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
   }),
 
   // Virar y dar la cara: «Interrupción: Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de
-  // Peligros, ponla al fondo del mazo en su lugar.»
+  // Peligros, ponla al fondo del mazo en su lugar.» P89 (Albert): también en un Abordaje; agotar el Cañón es el precio de
+  // esta carta, no una capacidad del Cañón.
   evento('virar', 'interrupcion', {
     coste: [{ tipo: 'agotarCanon' }],
     disparo: (_s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'persigue' && !ev.alFondo,

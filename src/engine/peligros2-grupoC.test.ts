@@ -346,21 +346,45 @@ describe('29 · Toque a rebato', () => {
     expect(k.estadosBarco).toEqual(['perseguido'])
   })
 
-  it('Ciudad: pone en juego la permanente 230; con 3 fichas, descarta al agotado con menos Vida (fase 14); el Fiador no responde: no es una carta de Peligro', () => {
-    // En una misión larga (Ciudad 9), con «Tarde de lluvia» (sin Prueba, 1 de Avance) no se acaba antes.
-    const j = Jugador.enMision({
-      misiones: ['pruebas-ciu9'],
-      mazoPeligros: ['p2_rebato', 'chubasco', 'chubasco', 'chubasco', 'calma'],
-      tripulacion: [{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }, 'fiador'],
-    })
+  // En una misión larga (Ciudad 9), con «Tarde de lluvia» (sin Prueba, 1 de Avance) no se acaba antes.
+  const campanas = (tripulacion: OpcionesSituacion['tripulacion'], mano?: CartaId[]) => {
+    const j = Jugador.enMision({ misiones: ['pruebas-ciu9'], mazoPeligros: ['p2_rebato', 'chubasco', 'chubasco', 'chubasco', 'calma', 'calma'], tripulacion, ...(mano ? { mano } : {}) })
     expect(j.zona('permanentes')).toEqual(['pm_campanas'])
     j.seguir().seguir()
     expect(j.copia('pm_campanas').fichas).toBe(2)
-    j.seguir()
-    expect(j.ofreceCapacidad('fiador.descarte')).toBe(false)
+    return j.seguir()
+  }
+
+  it('Ciudad: pone en juego la permanente 230; con 3 fichas, descarta al agotado con menos Vida (fase 14)', () => {
+    const j = campanas([{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }])
     j.pasarOfertas()
     expect(j.zona('descartesMuelle')).toContain('vigia')
-    expect(j.zona('tripulacion')).toContain('fiador')
+    expect(j.zona('tripulacion')).toContain('bucanero')
+    expect(j.zona('permanentes')).toEqual([])
+  })
+
+  it('P90: las campanas van a descartar a la Vigía; el Fiador puede ir en su lugar (también vale ante una permanente)', () => {
+    const j = campanas([{ id: 'vigia', agotada: true }, { id: 'bucanero', agotada: true }, 'fiador'])
+    expect(j.ofreceCapacidad('fiador.descarte')).toBe(true)
+    const mano = j.zona('mano').length
+    j.usar('fiador.descarte')
+    expect(j.zona('descartesMuelle')).toContain('fiador')
+    expect(j.zona('tripulacion')).toContain('vigia')
+    expect(j.zona('mano').length).toBe(mano + 2)
+    expect(j.zona('permanentes')).toEqual([])
+  })
+
+  it('P90: las campanas van a descartar a la Vigía; «¡A por ellos!» la salva con una Prueba de COM 3 en el momento', () => {
+    const j = campanas([{ id: 'vigia', agotada: true }, 'bucanero'], ['a_por_ellos', 'ojo'])
+    expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(true)
+    j.usar('a_por_ellos.jugar').elegir('ojo')
+    expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
+    // Diego (3) y el Bucanero veterano (2): 5 contra 3. El Destino de «calma» (+0) prepara a 1 asignado.
+    j.comprometer('COM', ['capitan', 'bucanero']).pasarOfertas().seguir()
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'preparar' } })
+    j.elegir('capitan').pasarOfertas()
+    expect(j.zona('tripulacion')).toContain('vigia')
+    expect(j.registro).toContain('Vigía inexperta no se descarta.')
     expect(j.zona('permanentes')).toEqual([])
   })
 

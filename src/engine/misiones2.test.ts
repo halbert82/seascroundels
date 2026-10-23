@@ -277,7 +277,7 @@ describe('120 · El templo (capítulo IV desde la fase 12)', () => {
 // La Flota de la Plata
 
 describe('126 · El Paso de los Vientos', () => {
-  it('los encuentros #Tormenta# reciben +1; al zarpar puedes agotar a un Piloto o a un Marinero para ganar 2', () => {
+  it('los encuentros #Tormenta# reciben +1; al zarpar puedes agotar a un Piloto para ganar 2', () => {
     const j = enPuerto({ misiones: ['flota-I'], tripulacion: ['viejo_lobo'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
     j.zarpar('flota-I')
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'alZarparAgotar' } })
@@ -285,6 +285,13 @@ describe('126 · El Paso de los Vientos', () => {
     expect(j.avance('flota-I')).toBe(2)
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3) // Chubasco repentino: NAV 2 + 1
+  })
+
+  it('fase 14 (Rasgos): un Marinero que no es Piloto ya no vale (el Bucanero veterano)', () => {
+    const j = enPuerto({ misiones: ['flota-I'], tripulacion: ['bucanero'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
+    j.zarpar('flota-I')
+    expect(j.decision).not.toMatchObject({ motivo: { clave: 'alZarparAgotar' } })
+    expect(j.avance('flota-I')).toBe(0)
   })
 })
 
@@ -680,6 +687,16 @@ describe('220 · ¡La guardia!', () => {
     j.seguir()
     expect(j.zona('permanentes')).toEqual([])
     expect(j.registro).toContain('«¡La guardia!» vuelve al mazo de historia.')
+  })
+
+  it('fase 14 (Rasgos, Albert): es de tipo Guardia; su Prueba recibe lo de los encuentros de Guardia (Patente de corso, −1)', () => {
+    const timbas = Array.from({ length: 9 }, () => 'oportunidad')
+    const j = enPuerto({ misiones: ['gobernador-I'], tripulacion: ['reinaldo', 'filibustero', 'espadachin', 'isabela'], capitan: { mejoras: ['patente'] }, mazoPeligros: timbas })
+    j.zarpar('gobernador-I').comprometer('COM', ['filibustero']).seguir().seguir().comprometer('COM', ['espadachin']).seguir().seguir()
+    j.comprometer('COM', ['isabela']).seguir()
+    expect(j.zona('permanentes')).toEqual(['guardia'])
+    j.usar('guardia.quitar0').comprometer('COM', ['capitan', 'reinaldo'])
+    expect(dificultadConDestino(j.estado)).toBe(4) // 5 + 1 (¡La guardia!) − 1 (Patente) − 1 (Ocasión)
   })
 
   it('fase 11 (P63): es una permanente: «Cortar por lo sano» puede devolverla al mazo de historia', () => {

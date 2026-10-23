@@ -167,20 +167,22 @@ function textoAccion(a: AccionSobre): string {
   }
 }
 
-/** ¿Es una carta de Peligro (de las de tres encuentros, de un mazo propio o «La Armada te persigue»)? */
-// TODO(regla): P90. Las permanentes (cartas del mazo de historia, como «Campanas a rebato») no son cartas de Peligro: por
-// defecto, el Fiador y «¡A por ellos!» no responden a lo que descartan.
-export function esCartaDePeligro(s: Estado, carta: InstId | undefined): boolean {
+/**
+ * ¿Es una carta de Peligro (de las de tres encuentros, de un mazo propio o «La Armada te persigue») o una permanente?
+ * Fase 14 (P90, Albert): el Fiador y «¡A por ellos!» también responden a lo que descarta una permanente («Campanas a
+ * rebato»): «por una carta de Peligro o una permanente».
+ */
+export function esPeligroOPermanente(s: Estado, carta: InstId | undefined): boolean {
   if (!carta) return false
   const tipo = porId(copia(s, carta).id).tipo
-  return tipo === 'peligro' || tipo === 'mazoPropio'
+  return tipo === 'peligro' || tipo === 'mazoPropio' || tipo === 'permanente'
 }
 
 /**
  * Fase 14 (fuera el rehén; regla general de Albert): un efecto descarta a un Tripulante. Se va a la pila de descartes del
  * muelle con sus Mejoras, como al despedirlo (sus Tesoros pasan a otro). Si es el Capitán, no se descarta: sufre 1 herida
  * en su lugar. Antes pasa por su suceso, para las Interrupciones (el Fiador, «¡A por ellos!»), que solo responden si lo
- * descarta una carta de Peligro (`fuente`).
+ * descarta una carta de Peligro o una permanente (`fuente`, P90).
  */
 export function descartarTripulante(s: Estado, c: InstId, fuente: InstId | undefined, motivo?: string): void {
   if (!s.zonas.tripulacion.includes(c)) return
@@ -189,7 +191,7 @@ export function descartarTripulante(s: Estado, c: InstId, fuente: InstId | undef
     encolar(s, { tipo: 'evento', ev: { tipo: 'heridas', objetivo: c, cantidad: 1 }, fase: 'antes', cancelado: false, usadas: [] })
     return
   }
-  encolar(s, { tipo: 'evento', ev: { tipo: 'descartarTripulante', carta: c, dePeligro: esCartaDePeligro(s, fuente) }, fase: 'antes', cancelado: false, usadas: [] })
+  encolar(s, { tipo: 'evento', ev: { tipo: 'descartarTripulante', carta: c, dePeligro: esPeligroOPermanente(s, fuente) }, fase: 'antes', cancelado: false, usadas: [] })
 }
 
 /** Le pasa la acción a este Tripulante. */

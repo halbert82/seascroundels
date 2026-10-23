@@ -183,7 +183,7 @@ Cada carta de Peligro tiene **tres encuentros** y una **franja de Destino**.
 
 1. **Entorno del encuentro:** es la franja de color de la izquierda (azul Mar, verde Naturaleza, marrón Ciudad). Durante una misión solo se lee el encuentro de su Entorno.
 2. **Nombre y tipo** del encuentro. El tipo (Guardia, Militar, Pirata…) aparece en versalitas bajo el nombre, junto a sus palabras clave (Elige, Sin ayuda…).
-3. **Prueba:** a la izquierda, justo encima de los efectos, indica el icono de habilidad y su dificultad. Debajo puede llevar un Rasgo y una cifra, como «Vigía −2»: si el jugador tiene un Tripulante con ese Rasgo, la dificultad baja esa cifra.
+3. **Prueba:** a la izquierda, justo encima de los efectos, indica el icono de habilidad y su dificultad. Debajo puede llevar un Rasgo y una cifra, como «Vigía −2»: si el jugador tiene preparado un Tripulante con ese Rasgo, la dificultad baja esa cifra.
 4. **Avance:** es el número del mapa, arriba a la derecha del encuentro. Si el encuentro tiene Prueba, lleva dos números, «3 / 2»: el primero es el Avance que se gana si se supera la Prueba y el segundo, en letra más pequeña, el que se gana si no se supera.
 5. **Efectos:** el efecto de Éxito (verde) se aplica si se supera la Prueba y el de Fallo (rojo), si se falla. Un encuentro sin Prueba, el que no tiene recuadro de Prueba, tiene un solo efecto, que se aplica siempre.
 6. **Destino:** es la franja oscura de abajo. El círculo es su modificador, que se suma al total del jugador: en verde, «+N», le favorece; en rojo, «−N», le perjudica. Al lado figura su efecto.
@@ -472,10 +472,10 @@ Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de 
 Una **Interrupción** que pide una Prueba, como la de «¡A por ellos!», se hace en el momento en que ocurre lo que indica, aunque haya otra Prueba a medio resolver: esa Prueba queda en suspenso y, al terminar la nueva, se sigue con ella.
 
 > [!ejemplo]
-> El jugador asigna a la Vigía inexperta (Vida 1) y al Matasanos (Vida 2) a «Leva forzosa» (COM 4) y falla: «Descarta al Tripulante asignado con menos Vida», que es la Vigía. Antes de que se descarte, juega «¡A por ellos!» («Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba de COM 3. Si la superas, no se descarta»). La Prueba de «Leva forzosa» queda en suspenso. Asigna al Bucanero veterano, que se había quedado a bordo (COM 2, más 1 por Diego, que sigue preparado): suma 3. Sale el Destino de la carta «Arrecife» (−1): el total baja a 2, no supera la Prueba y la Vigía se descarta. Con un Destino de +0 o mejor, la habría salvado. Después se sigue con «Leva forzosa»: el jugador gana su Avance de Prueba no superada.
+> El jugador asigna a la Vigía inexperta (Vida 1) y al Matasanos (Vida 2) a «Leva forzosa» (COM 4) y falla: «Descarta al Tripulante asignado con menos Vida», que es la Vigía. Antes de que se descarte, juega «¡A por ellos!» («Cuando un Tripulante vaya a ser descartado por una carta de Peligro o una permanente, haz una Prueba de COM 3. Si la superas, no se descarta»). La Prueba de «Leva forzosa» queda en suspenso. Asigna al Bucanero veterano, que se había quedado a bordo (COM 2, más 1 por Diego, que sigue preparado): suma 3. Sale el Destino de la carta «Arrecife» (−1): el total baja a 2, no supera la Prueba y la Vigía se descarta. Con un Destino de +0 o mejor, la habría salvado. Después se sigue con «Leva forzosa»: el jugador gana su Avance de Prueba no superada.
 
 > [!ejemplo]
-> En el Mar, el jugador revela una carta de Peligro cuyo encuentro pone en juego la carta 231, «La cadena de la bocana»: mientras siga en juego, no puede superar la misión. Tras resolver el encuentro, usa la Acción de la cadena: «Prueba de COM 5 (4 con un Carpintero)». El jugador tiene preparado al Carpintero de a bordo, así que la Prueba pide 4. Asigna al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añade «¡Al abordaje!»: suma 5. Sale el Destino de la carta «Arrecife» (−1): el total baja a 4 y el jugador supera la Prueba. La cadena vuelve al mazo de historia y el jugador gana 1 de Avance, como indica su texto. Si hubiera fallado la Prueba, el Barco habría sufrido 2 daños.
+> En el Mar, el jugador revela una carta de Peligro cuyo encuentro pone en juego la carta 231, «La cadena de la bocana»: mientras siga en juego, no puede superar la misión. Tras resolver el encuentro, usa la Acción de la cadena: «Prueba de COM 5 (4 si tienes un Carpintero preparado)». El jugador tiene preparado al Carpintero de a bordo, así que la Prueba pide 4. Asigna al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añade «¡Al abordaje!»: suma 5. Sale el Destino de la carta «Arrecife» (−1): el total baja a 4 y el jugador supera la Prueba. La cadena vuelve al mazo de historia y el jugador gana 1 de Avance, como indica su texto. Si hubiera fallado la Prueba, el Barco habría sufrido 2 daños.
 
 #### Fichas de misión
 
@@ -749,7 +749,7 @@ Las cartas de la mano no se asignan: se añaden a la Prueba por sus iconos (ver 
 - En un Destino, «el Tripulante asignado con la habilidad más alta (o más baja)» se refiere a la habilidad de esa Prueba.
 
 > [!ejemplo]
-> El jugador no asigna a nadie a «Bruma en la selva» y falla: «Descarta al Tripulante asignado con menos EXP. Si es el Capitán, sufre 1 herida en su lugar». Lleva a Diego (EXP 1) y al Rufián de cubierta (EXP 0). Como nadie está asignado, se mira toda la tripulación: el Rufián es el de menos EXP y se descarta. Si el de menos EXP fuera Diego, sufriría 1 herida.
+> El jugador no asigna a nadie a «Bruma en la selva» y falla: «Descarta al Tripulante asignado con menos EXP». Lleva a Diego (EXP 1) y al Rufián de cubierta (EXP 0). Como nadie está asignado, se mira toda la tripulación: el Rufián es el de menos EXP y se descarta. Si el de menos EXP fuera Diego, sufriría 1 herida en su lugar, porque el Capitán nunca se descarta (ver Descartar).
 - Las expresiones similares funcionan del mismo modo: «el Tripulante con menos Vida» se refiere a la Vida impresa (el Coleto de cuero no cuenta), y en «el Tripulante de menor coste» el Capitán no cuenta.
 
 > [!ejemplo]
@@ -1073,12 +1073,12 @@ Si el daño del Barco alcanza su Daño máximo, el Barco se hunde. Cada uno de l
 
 Incautado es una palabra clave que aparece en el texto de algunos encuentros: cartas de la mano del jugador o una Mejora se colocan debajo de la carta de misión hasta que se sabe si el jugador supera la misión.
 
-- El jugador elige lo que se incauta, salvo que la carta indique «al azar» o «las de más coste». Si la carta indica que debe ser una carta concreta («si llevas el Amuleto, tiene que ser él»), se incauta esa carta.
+- El jugador elige lo que se incauta, salvo que la carta indique «al azar» o «las de más coste». Si la carta indica que debe ser una carta concreta («si llevas el Amuleto vudú, tiene que ser él»), se incauta esa carta.
 - Si el jugador supera la misión, recupera lo incautado: las cartas vuelven a su mano y la Mejora vuelve a su portador (si su portador ya no está en juego, se descarta). Algunas cartas devuelven lo incautado antes («Recupera ya las cartas incautadas»).
 - Si el jugador no supera la misión, pierde lo incautado: sale del juego, salvo que la carta indique que se descarta.
 
 > [!ejemplo]
-> En Ciudad, el jugador revela «Requisa del Santo Oficio»: «Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto, tiene que ser él». El Bucanero lleva el Amuleto vudú, de modo que el Amuleto va debajo de la misión. Si el jugador se retira, pierde el Amuleto y este sale del juego; si supera la misión, el Amuleto vuelve al Bucanero.
+> En Ciudad, el jugador revela «Requisa del Santo Oficio»: «Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto vudú, tiene que ser él». El Bucanero lleva el Amuleto vudú, de modo que el Amuleto va debajo de la misión. Si el jugador se retira, pierde el Amuleto y este sale del juego; si supera la misión, el Amuleto vuelve al Bucanero.
 
 ### Indestructible
 
@@ -1205,6 +1205,8 @@ Un Pasajero es una carta que viaja con el jugador. Ocupa 1 de Capacidad; si no q
 
 Una permanente es una carta del mazo de historia que un encuentro o una misión pone en juego («Pon en juego la carta 226 del mazo de historia»). Se coloca junto a la misión, en la zona de permanentes, y su texto queda activo hasta que se descarta, es decir, hasta que vuelve al mazo de historia. La Caja básica tiene 13: «¡La guardia!» (220) y las cartas 226 a 237.
 
+Como un encuentro, una permanente lleva su tipo bajo el nombre, y la Prueba de su Acción es de ese tipo. «Campanas a rebato» y «¡La guardia!» son de tipo Guardia, así que lo que cambia los encuentros de tipo Guardia también cambia la Prueba que las quita.
+
 *Véase también:* Zona de permanentes.
 
 ### Persigue
@@ -1276,7 +1278,25 @@ Los Estados se quitan antes de curar o reparar. De este modo, la curación no se
 
 ### Rasgo
 
-El Rasgo es el oficio de un Tripulante y aparece en cursiva sobre su texto: Marinero, Bucanero, Artillero, Contrabandista, Vigía, Piloto, Cirujano, Carpintero, Oficial, Explorador o Animal. Algunas Mejoras de barco también tienen Rasgo: **Cañón** (ver Cañón). Algunas Pruebas, misiones y cartas favorecen al jugador si tiene un Tripulante preparado con cierto Rasgo. En una Prueba, el Rasgo va debajo de su recuadro con la rebaja de la dificultad: «Vigía −2» quiere decir que, con un Vigía, la Prueba pide 2 menos. Basta con que esté preparado al asignar, sea asignado o no, salvo que diga «asignado» («Marinero asignado −2»).
+El Rasgo dice qué es un Tripulante y aparece en cursiva sobre su texto. Hay dos clases. Los Rasgos de grupo dicen qué clase de gente es, y los comparten muchos Tripulantes: Marinero, Bucanero, Oficial, Explorador, Vigía y Contrabandista.
+
+Los Rasgos de oficio nombran al especialista del barco, el que se encarga de una sola tarea a bordo: Piloto, Carpintero, Artillero, Cirujano y Animal. Un oficio puede tener un solo portador en toda la caja, como el Carpintero de a bordo, que es el único Carpintero.
+
+Un Tripulante puede tener varios Rasgos, de grupo y de oficio. Los Capitanes también los tienen y cuentan siempre, como cualquier Tripulante (Diego es Bucanero y Oficial). De las Mejoras, solo los Cañones tienen Rasgo (ver Cañón).
+
+Las cartas piden un Rasgo solo de tres maneras.
+
+- «Si tienes un Carpintero» se cumple con un Carpintero en la tripulación, aunque esté agotado.
+- «Si tienes un Marinero preparado» pide que no esté agotado.
+- «Marinero asignado» pide que esté asignado a la Prueba.
+
+En una Prueba, el Rasgo va debajo de su recuadro con la rebaja de la dificultad. «Vigía −2» quiere decir «si tienes un Vigía preparado, la Prueba pide 2 menos», tanto si lo asignas como si no, y la rebaja se mantiene aunque se agote al asignarlo. «Marinero asignado −2» pide que lo asignes.
+
+> [!ejemplo]
+> El Viejo lobo de mar es Marinero, Oficial y Piloto: pertenece a dos grupos y tiene un oficio. Si aparece «Calma chicha» («agota a un Marinero o a 2 Tripulantes»), sirve cualquiera de los Marineros del muelle, que son muchos. En cambio, si aparece «Guiarse por las estrellas» («Si tienes un Piloto, +1 Avance»), solo sirve uno de los tres Pilotos. El Viejo lobo vale para las dos cartas.
+
+> [!ejemplo]
+> El Carpintero de a bordo, que es Carpintero y Marinero, está agotado, y el jugador no lleva más Marineros. En la Ciudad supera «Casco en seco» («Repara 1 (2 si tienes un Carpintero)») y repara 2, porque el Carpintero está en la tripulación, aunque esté agotado. Después revela «La cofradía de San Telmo» («Si tienes un Marinero preparado, superas sin Prueba»): como su único Marinero está agotado, tiene que hacer la Prueba.
 
 ### Reclutar
 
@@ -1373,7 +1393,7 @@ Volver al muelle es un efecto por el que el jugador elige a uno de sus Tripulant
 
 ### Zona de permanentes
 
-La zona de permanentes está junto a la misión. En ella se colocan las **permanentes**: cartas del mazo de historia que un encuentro o una misión pone en juego («Pon en juego la carta 230 del mazo de historia»). Una permanente tiene su texto activo mientras está en la zona y lleva los mismos tipos que el encuentro que la pone en juego (Terreno, Bestia…), si lo pone un encuentro.
+La zona de permanentes está junto a la misión. En ella se colocan las **permanentes**: cartas del mazo de historia que un encuentro o una misión pone en juego («Pon en juego la carta 230 del mazo de historia»). Una permanente tiene su texto activo mientras está en la zona y lleva su tipo bajo el nombre, como un encuentro (Terreno, Bestia…): casi siempre, el del encuentro que la pone en juego. «¡La guardia!», que la pone una misión, es de tipo Guardia.
 
 - El encuentro da su Avance y cuenta como carta resuelta; su carta se descarta como cualquier otra.
 - Si la permanente no está en el mazo de historia (porque ya está en juego), la carta del encuentro se descarta sin dar su Avance y se revela otra.
@@ -1384,7 +1404,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 - «Cortar por lo sano» devuelve al mazo de historia cualquier permanente.
 
 > [!ejemplo]
-> En el Mar, el jugador revela una carta de Peligro cuyo encuentro de Mar pone en juego la carta 226, «Varados en el banco»: el jugador gana su Avance (2), coloca la permanente junto a la misión y descarta la carta de Peligro. Mientras los Varados sigan en juego, no puede superar la misión ni retirarse. Cada vez que revela un Peligro, pone 1 ficha de Marea sobre la carta; con 2, el Barco flota y la carta vuelve al mazo de historia. Si el jugador quiere salir antes, la Acción de la carta le permite agotar a 2 Tripulantes (o a 1 Marinero) para poner 1 ficha de Marea. Si esa carta de Peligro vuelve a salir en esta misión mientras los Varados siguen en juego, se descarta sin dar Avance y se revela otra.
+> En el Mar, el jugador revela una carta de Peligro cuyo encuentro de Mar pone en juego la carta 226, «Varados en el banco»: el jugador gana su Avance (2), coloca la permanente junto a la misión y descarta la carta de Peligro. Mientras los Varados sigan en juego, no puede superar la misión ni retirarse. Cada vez que revela un Peligro, pone 1 ficha de Marea sobre la carta; con 2, el Barco flota y la carta vuelve al mazo de historia. Si el jugador quiere salir antes, la Acción de la carta le permite agotar a un Marinero o a 2 Tripulantes para poner 1 ficha de Marea. Si esa carta de Peligro vuelve a salir en esta misión mientras los Varados siguen en juego, se descarta sin dar Avance y se revela otra.
 
 *Véase también:* Fichas de misión, Mazo de historia, Prueba de una Acción.
 

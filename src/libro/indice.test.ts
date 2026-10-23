@@ -122,8 +122,8 @@ for (const { carta } of cartas) {
   buscar(carta)
 }
 
-// Fase 11: lo que llevan las permanentes son los tipos de su encuentro (Terreno, Bestia…), no Rasgos de Tripulante.
-const RASGOS = new Set(cartas.filter((e) => !e.id.startsWith('pm_')).flatMap(({ carta }) => (Array.isArray(carta.rasgos) ? carta.rasgos.map(String) : [])))
+// Lo que llevan las permanentes son tipos (Terreno, Guardia…), no Rasgos: desde la fase 14 están en `palabrasClave`.
+const RASGOS = new Set(cartas.flatMap(({ carta }) => (Array.isArray(carta.rasgos) ? carta.rasgos.map(String) : [])))
 
 // ---------------------------------------------------------------------------
 

@@ -996,3 +996,41 @@ Sale del motor (la zona de rehenes, la captura, el rescate y el −1 de reputaci
 ### Inventario de Rasgos (sin cambiar nada)
 
 En el informe de la tercera ronda: los 12 Rasgos (11 de personas y el Cañón), quién los tiene, qué cartas los nombran y una propuesta de cuáles fusionar o quitar. Albert lo decidirá.
+
+## Fase 14, tercera ronda: respuestas de Albert (P89–P92 y Rasgos, 23 de octubre de 2026)
+
+### P89–P92 y «Bruma en la selva»
+
+- **P89 · Agotar un Cañón como pago en un Abordaje:** se puede. Es un precio de la carta, no una suma del Cañón. Vale para «Al abordaje del filibote», el Galeón de la plata y «Virar y dar la cara». *Ejemplo:* contra el filibote (COM 4) agotas los Cañones de bronce antes de asignar y la Prueba pide 3; ya en la Prueba, no puedes dispararlos.
+- **P90 · El Fiador y «¡A por ellos!» ante una permanente:** sí valen. Textos nuevos: Fiador, «**Interrupción:** Cuando otro Tripulante vaya a ser descartado por una carta de Peligro o una permanente, descarta a Fiador de la Hermandad en su lugar y roba 2.»; «¡A por ellos!», «**Interrupción:** Cuando un Tripulante vaya a ser descartado por una carta de Peligro o una permanente, haz una Prueba de COM 3. Si la superas, no se descarta.» *Ejemplo (con su prueba):* con 3 fichas, «Campanas a rebato» va a descartar a la Vigía agotada; el Fiador puede ir en su lugar, o «¡A por ellos!» la salva con una Prueba de COM 3 en el momento. El Fiador lleva ahora «texto apretado» (no cabía).
+- **P91 · Pulso en el muelle y Marineros del galeón hundido:** se queda «de coste 2 o menos».
+- **P92 · La mitad y un descuento a la vez:** primero la mitad del coste impreso, redondeando hacia arriba, y después el descuento, como dice la entrada Coste. *Ejemplo:* con Catalina activa (2 menos), «Pulso en el muelle» recluta al Bucanero veterano sin pagar nada.
+- **Bruma en la selva:** fuera «Si es el Capitán, sufre 1 herida en su lugar» (ya es regla general, entrada Descartar).
+
+### Rasgos
+
+- **Criterio (en el reglamento, entrada Rasgo, con ejemplo):** hay Rasgos de grupo (Marinero, Bucanero, Oficial, Explorador, Vigía, Contrabandista), que dicen qué clase de gente es, y Rasgos de oficio (Piloto, Carpintero, Artillero, Cirujano, Animal), el especialista del barco. Un oficio puede tener un solo portador.
+- **Vocabulario del filtro (en el reglamento):** solo tres fórmulas. «Si tienes un X» (en la tripulación, aunque esté agotado), «si tienes un X preparado» y «X asignado». «Vigía −2» bajo la Prueba es «si tienes un Vigía preparado». El Capitán cuenta siempre.
+- Se quedan todos los Rasgos y el Cañón, sin cambiar cartas salvo estas:
+  - **El Paso de los Vientos (126):** «Al zarpar: Puedes agotar a un Piloto para ganar 2» (antes, «a un Piloto o a un Marinero»).
+  - **Herbolaria (165):** Explorador y Cirujano.
+- **Amuleto, Escapulario, Bandera negra, Patente de corso y Brújula** se escriben como nombres de carta, sin cursiva de Rasgo: «si llevas el Amuleto vudú», «el Escapulario del Carmen», «Si llevas la Bandera negra», «con la Patente de corso», «la Brújula de latón». Nada de Rasgos de objeto por ahora.
+- **Tipos de las permanentes:** se dibujan como el tipo de un encuentro («GUARDIA» en versalitas, no «*Guardia.*» como un Rasgo). En los datos, su campo pasa de `rasgos` a `palabrasClave`, como en los encuentros. **«¡La guardia!» es de tipo Guardia.** Reglamento: entradas Permanente y Zona de permanentes.
+- Redacciones unificadas (mismo significado, sin cambiar lo que hace la carta):
+  - 155 Guiarse por las estrellas: «Si tienes un Piloto en la tripulación» → «Si tienes un Piloto».
+  - 231 La cadena de la bocana: «(4 con un Carpintero)» → «(4 si tienes un Carpintero preparado)», que es lo que ya hacía.
+  - 161 La broma: «−2 si asignas a un Carpintero» → «Carpintero asignado −2»; 203 Curazao: «−2 si asignas a un Artillero» → «−2 con un Artillero asignado».
+  - Pagar agotando, con la misma forma: 156 Calma chicha y 226 Varados en el banco, «agota 2 Tripulantes (o 1 Marinero)» → «agota a un Marinero o a 2 Tripulantes»; 177 «agota un Vigía o un Explorador» → «agota a un Vigía o a un Explorador»; 118 «agotar a un Vigía o Piloto» → «agotar a un Vigía o a un Piloto».
+  - Objetos como nombre de carta: 186, 187, 190, 209 («Si llevas la Bandera negra»), 213, 216 («El Tripulante que lleva el Escapulario del Carmen suma +2»), 217, 224, 177 (Brújula) y 99 Impuestos.
+- Lecturas (no son preguntas):
+  - «Un oficio puede tener un solo portador» se lee como que basta con una carta en la caja (el Cañonero es el único Artillero), no como un límite en la tripulación: puedes llevar a los tres Pilotos a la vez. Así está en el reglamento.
+  - Con el tipo Guardia, la Prueba de COM 5 de «¡La guardia!» recibe lo que reciben los encuentros de Guardia, como ya pasaba con «Campanas a rebato»: −1 con la Patente de corso, +1 con el Bando del virrey. *Ejemplo (con su prueba):* con la Patente, la Prueba para quitarla pide 5 + 1 − 1 = 5 antes del Destino.
+
+### Preguntas para Albert (P93–P94)
+
+- **P93 · Balandra de la Hermandad:** pediste que pase a pedir un Bucanero asignado, pero ese encuentro no tiene Prueba, así que nunca hay nadie asignado y el segundo Cañón no llegaría nunca. Por defecto, mientras decides, se queda «Si tienes un Bucanero» (con Diego se cumple siempre). Otras opciones: «Si tienes un Bucanero preparado» (Diego cuenta si no está agotado) o darle una Prueba al encuentro.
+- **P94 · Sangre caliente:** dice «Tus dos Tripulantes con más COM (sin contar al Capitán) se están pegando: no pueden ser asignados». No filtra por Rasgo, pero choca con «ninguna carta dice “sin contar al Capitán”». Por defecto se queda como está. *Ejemplo:* con Diego, el Bucanero veterano y el Grumete leal, hoy se pelean el Bucanero y el Grumete, y solo Diego puede ir a la Prueba; si el Capitán contara, se pelearían Diego y el Bucanero (los de más COM), y solo podría ir el Grumete.
+
+### Para cuando se rehagan los mazos de inicio (no se hace ahora)
+
+- En el muelle de inicio, 2 o 3 Vigías (2 Vigías inexpertas e Íñigo «Lince» Quintero), al menos 2 Oficiales además del Capitán y el Loro parlanchín.

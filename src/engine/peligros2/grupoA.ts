@@ -67,7 +67,7 @@ registrarPeligro('p2_corriente', {
 // 2. Cielo estrellado · Favorable
 registrarPeligro('p2_cielo', {
   encuentros: {
-    // Mira las 3 de arriba del mazo de Peligros y ordénalas. Si tienes un Piloto en la tripulación, +1 Avance.
+    // Mira las 3 de arriba del mazo de Peligros y ordénalas. Si tienes un Piloto (aunque esté agotado), +1 Avance.
     // Fase 13 (I7): «Otea 3» (antes, «mira las 3 y ordénalas»: ahora puedes mandar cartas al fondo).
     mar: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'libre' }, siTienes('Piloto', [avance(1)])] },
     nat: { exito: [avance(1)], fallo: [pierdesAvance(1)] },
@@ -85,7 +85,7 @@ registrarPeligro('p2_calma', {
   encuentros: {
     mar: {
       elige: [
-        { texto: 'A remar: agota 2 Tripulantes (o 1 Marinero)', efectos: [{ tipo: 'agotarPago', n: 2, oRasgo: 'Marinero' }] },
+        { texto: 'A remar: agota a un Marinero o a 2 Tripulantes', efectos: [{ tipo: 'agotarPago', n: 2, oRasgo: 'Marinero' }] },
         { texto: 'Esperar el viento: NAV 3', prueba: true },
       ],
       exito: [avance(1)],
@@ -124,11 +124,11 @@ registrarPeligro('p2_niebla', {
   // −1 (fase 13: fuera «Encuentro de tipo Barco, Pirata o Guardia: +1 en su lugar»). Sin oposición: −1 [avance] (mín. 0).
   destino: { sinOposicion: [{ tipo: 'menosAvanceEncuentro', n: 1 }] },
 })
-// «Bruma en la selva», fallo: «Descarta al Tripulante asignado con menos [EXP]. Si es el Capitán, sufre 1 herida en su
-// lugar.» P72 (Albert): si hay empate, elige el jugador; el Tripulante se descarta con las reglas normales (sus Mejoras con
-// él y sus Tesoros pasan a otro). Sin nadie asignado se aplica igual, al de menos EXP de toda la tripulación (regla
-// general de la fase 13 para «el Tripulante asignado con más / menos X»). Fase 14: lo del Capitán es ya regla general, y
-// el Fiador y «¡A por ellos!» pueden responder (es una carta de Peligro la que lo descarta).
+// «Bruma en la selva», fallo: «Descarta al Tripulante asignado con menos [EXP].» P72 (Albert): si hay empate, elige el
+// jugador; el Tripulante se descarta con las reglas normales (sus Mejoras con él y sus Tesoros pasan a otro). Sin nadie
+// asignado se aplica igual, al de menos EXP de toda la tripulación (regla general de la fase 13 para «el Tripulante
+// asignado con más / menos X»). Fase 14: si es el Capitán, sufre 1 herida en su lugar por la regla general (la carta ya
+// no lo repite, tercera ronda), y el Fiador y «¡A por ellos!» pueden responder (es una carta de Peligro la que lo descarta).
 registrarEspecial('p2_niebla.separados', (s, t, e) => {
   const asignados = comprometidosDe(s).filter((c) => s.zonas.tripulacion.includes(c))
   const entre = asignados.length > 0 ? asignados : [...s.zonas.tripulacion]
@@ -149,12 +149,12 @@ registrarCodigo('p2_niebla.separados', (_s, fuente) => [{ tipo: 'especial', clav
 
 // 5. Bajamar · Leve
 // Permanente 226 «Varados en el banco»: no puedes superar la misión ni retirarte. Cada Peligro revelado, 1 ficha de
-// Marea; con 2, el Barco flota: se descarta. Acción: agota 2 Tripulantes (o 1 Marinero) para poner 1 ficha.
+// Marea; con 2, el Barco flota: se descarta. Acción: agota a un Marinero o a 2 Tripulantes para poner 1 ficha.
 registrarPermanente('pm_varados', {
   quitar: [],
   acciones: [
     {
-      texto: 'Agota 2 Tripulantes (o 1 Marinero) para poner 1 ficha de Marea',
+      texto: 'Agota a un Marinero o a 2 Tripulantes para poner 1 ficha de Marea',
       coste: [{ tipo: 'agotarVarios', n: 2, oRasgo: 'Marinero' }],
       efectos: [{ tipo: 'ficha', n: 1 }],
     },

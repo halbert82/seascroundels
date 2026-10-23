@@ -20,13 +20,18 @@ interface Nombre {
 
 function nombresDe(e: EntradaCatalogo): { texto: string; parte?: ParteCarta }[] {
   switch (e.tipo) {
+    // Fase 14: si un encuentro se llama como su carta («Calma chicha»), el nombre citado es el del encuentro: se enseña
+    // solo ese recorte, no la carta entera en pequeño (el Destino se cita aparte, «el Destino de la carta «X»»).
     case 'peligro': {
       if (e.carta.retirada) return []
       const encuentros = Object.entries(e.carta.encuentros).map(([entorno, x]) => ({ texto: x.nombre, parte: entorno as Entorno }))
-      return [{ texto: e.carta.nombre }, ...encuentros, { texto: e.carta.destino.nombre, parte: 'destino' }]
+      const carta = encuentros.some((x) => x.texto === e.carta.nombre) ? [] : [{ texto: e.carta.nombre }]
+      return [...carta, ...encuentros, { texto: e.carta.destino.nombre, parte: 'destino' }]
     }
-    case 'mazoPropio':
-      return [{ texto: e.carta.nombre }, { texto: e.carta.encuentro.nombre, parte: 'encuentro' }, { texto: e.carta.destino.nombre, parte: 'destino' }]
+    case 'mazoPropio': {
+      const carta = e.carta.encuentro.nombre === e.carta.nombre ? [] : [{ texto: e.carta.nombre }]
+      return [...carta, { texto: e.carta.encuentro.nombre, parte: 'encuentro' }, { texto: e.carta.destino.nombre, parte: 'destino' }]
+    }
     case 'capitan':
       return [{ texto: e.carta.nombre }, { texto: e.carta.nombre.split(' ')[0] ?? '' }]
     case 'barco':

@@ -379,7 +379,7 @@ export type Evento =
   | { tipo: 'cartaResuelta'; carta: InstId; permanente?: InstId }
   /**
    * Fase 14 (fuera el rehén): un efecto va a descartar a este Tripulante (nunca el Capitán). `dePeligro`: lo descarta una
-   * carta de Peligro (el Fiador y «¡A por ellos!» solo responden a esas; no a las heridas ni a las permanentes).
+   * carta de Peligro o una permanente (el Fiador y «¡A por ellos!» solo responden a esas; no a las heridas). P90.
    */
   | { tipo: 'descartarTripulante'; carta: InstId; dePeligro: boolean }
   /** Un Destino va a ponerse encima del mazo de Peligros («Persigue»). */
@@ -715,7 +715,7 @@ export type Coste =
   | { tipo: 'agotarCapitan' }
   /** Agota a un Tripulante preparado (con ese Rasgo, si lo hay; o con uno de esos Rasgos). */
   | { tipo: 'agotarTripulante'; rasgo: string | null; rasgos?: string[] }
-  /** Agota a N Tripulantes preparados, o a 1 con ese Rasgo («agota 2 Tripulantes (o 1 Marinero)»). */
+  /** Agota a N Tripulantes preparados, o a 1 con ese Rasgo («agota a un Marinero o a 2 Tripulantes»). */
   | { tipo: 'agotarVarios'; n: number; oRasgo?: string }
   /** Agota uno de tus Cañones preparados (eliges cuál). */
   | { tipo: 'agotarCanon' }

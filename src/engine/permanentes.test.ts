@@ -29,17 +29,19 @@ const junto = (j: Jugador, permanente: CartaId): CartaId | undefined => {
 }
 
 describe('Las 12 permanentes en los datos', () => {
-  it('son las cartas 220 («¡La guardia!») y 226–237, de tamaño normal, del mazo de historia, con los Rasgos de su encuentro', () => {
+  it('son las cartas 220 («¡La guardia!») y 226–237, de tamaño normal, del mazo de historia, con el tipo de su encuentro', () => {
     expect(DATOS.permanentes.map((p) => p.num)).toEqual([220, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237])
     for (const p of DATOS.permanentes) expect(reglasPermanente(p.id), p.id).toBeDefined()
     for (const p of DE_ENCUENTRO) {
       const enc = encuentroDe(p)
       expect(enc, p.id).toBeDefined()
-      expect(p.rasgos, p.id).toEqual(enc?.palabrasClave)
+      expect(p.palabrasClave, p.id).toEqual(enc?.palabrasClave)
       expect(enc?.nombre, p.id).toBe(p.nombre)
       expect(porId(p.id).tipo).toBe('permanente')
       expect(reglasPermanente(p.id), p.id).toBeDefined()
     }
+    // Fase 14 (Rasgos, Albert): «¡La guardia!», que la ponen misiones, es de tipo Guardia.
+    expect(DATOS.permanentes.find((p) => p.id === 'guardia')?.palabrasClave).toEqual(['Guardia'])
   })
 
   it('cada encuentro dice «Pon en juego la carta N del mazo de historia (junto a él)» y la segunda frase', () => {

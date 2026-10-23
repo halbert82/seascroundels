@@ -159,7 +159,7 @@ registrarCartasExtra({
     id: PERMANENTE_DE_PRUEBA,
     num: 9201,
     nombre: 'Percances (prueba)',
-    rasgos: [],
+    palabrasClave: [],
     texto: 'Reglas de prueba.',
     ambientacion: '',
     origen: 'percances',

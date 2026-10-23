@@ -47,7 +47,7 @@ describe('34 · Hermanos de la Costa', () => {
     expect(k.zona('tripulacion')).not.toContain('bucanero')
   })
 
-  it('Ciudad (fase 14): un descuento rebaja lo que se paga de la mitad; «de coste 2 o menos» sigue mirando el coste impreso', () => {
+  it('Ciudad (fase 14, P92): primero la mitad del coste impreso y después el descuento; «de coste 2 o menos» (P91) mira el coste impreso', () => {
     const j = en('ciu', ['p2_hermanos', 'chubasco', 'calma'], { muelle: ['bucanero', 'contrabandista'], mano: ['ojo'] })
     j.estado.temporales.push({ clave: 'capitan2.descuento', fuente: 'capitan2', hasta: 'finTurno' }) // Catalina: 2 menos
     j.comprometer('COM', ['capitan']).seguir()
@@ -411,7 +411,7 @@ describe('40 · La sombra de Bastián', () => {
 })
 
 describe('41 · Los holandeses de Curazao', () => {
-  it('Mar: COM 4 (fase 14); puedes agotar un Cañón antes de asignar: −1, o −2 si asignas a un Artillero', () => {
+  it('Mar: COM 4 (fase 14); puedes agotar un Cañón antes de asignar aunque sea un Abordaje (P89): −1, o −2 con un Artillero asignado', () => {
     const j = en('mar', ['p2_curazao', 'chubasco', 'calma'], { tripulacion: ['canonero'], barco: { mejoras: ['bronce'] } })
     j.opcion('1')
     expect(j.copia('bronce').agotada).toBe(true)

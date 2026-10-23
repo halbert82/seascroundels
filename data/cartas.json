@@ -392,7 +392,8 @@
    "copias": 1,
    "senda": "Neutral",
    "rasgos": [
-    "Explorador"
+    "Explorador",
+    "Cirujano"
    ],
    "unico": false,
    "coste": 2,
@@ -459,7 +460,7 @@
    "EXP": 0,
    "vida": 1,
    "mejoras": 0,
-   "texto": "**Interrupción:** Cuando una carta de Peligro vaya a descartar a otro Tripulante, descarta a Fiador de la Hermandad en su lugar y roba {2 robar}.",
+   "texto": "**Interrupción:** Cuando otro Tripulante vaya a ser descartado por una carta de Peligro o una permanente, descarta a Fiador de la Hermandad en su lugar y roba {2 robar}.",
    "ambientacion": "«Mi palabra vale lo que yo. Que no es mucho, pero vale.»"
   },
   {
@@ -1194,7 +1195,7 @@
     "COM",
     "COM"
    ],
-   "texto": "**Interrupción:** Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba de [COM] 3. Si la superas, no se descarta.",
+   "texto": "**Interrupción:** Cuando un Tripulante vaya a ser descartado por una carta de Peligro o una permanente, haz una Prueba de [COM] 3. Si la superas, no se descarta.",
    "ambientacion": "«¡Nadie se queda atrás! Salvo el que se quede.»"
   },
   {
@@ -3951,7 +3952,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~El piloto fija la Polar sobre el trinquete y traza el rumbo de los próximos días.~ Otea 3. Si tienes un _Piloto_ en la tripulación, {+1 avance}."
+     "textoEfecto": "~El piloto fija la Polar sobre el trinquete y traza el rumbo de los próximos días.~ Otea 3. Si tienes un _Piloto_, {+1 avance}."
     },
     "nat": {
      "nombre": "Noche de luna clara",
@@ -4027,7 +4028,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**A remar:** agota 2 Tripulantes (o 1 _Marinero_).\n**Esperar el viento:** [NAV] 3.",
+     "textoEfecto": "**A remar:** agota a un _Marinero_ o a 2 Tripulantes.\n**Esperar el viento:** [NAV] 3.",
      "textoExito": "~Una racha os encuentra.~ {+1 avance}.",
      "textoFallo": "~Días al pairo y el agua se acaba.~ Cada Tripulante sufre {1 herida}.",
      "etiquetas": [
@@ -4139,7 +4140,7 @@
      "nota": "",
      "textoEfecto": "~No se ve a diez pasos y el azar manda más que la vista.~ Resuelve 2 cartas de Destino en esta Prueba.",
      "textoExito": "~Salís de la bruma justo encima del poblado.~ {+1 avance}.",
-     "textoFallo": "~Os separáis en la bruma.~ Descarta al Tripulante asignado con menos [EXP]. Si es el Capitán, sufre {1 herida} en su lugar."
+     "textoFallo": "~Os separáis en la bruma.~ Descarta al Tripulante asignado con menos [EXP]."
     },
     "ciu": {
      "nombre": "Noche de niebla",
@@ -4444,7 +4445,7 @@
      "textoEfecto": "~El gusano ha hecho del casco un queso; hay que encontrar la vía entre las cuadernas, y cuanta más carga, más cuesta.~",
      "textoExito": "~La tapáis con estopa y sebo.~ Repara {1 dano g}.",
      "textoFallo": "El Barco queda con **Vía de agua**. Si ya la tenía, daña {2 dano}.",
-     "notaPrueba": "X = 2 + tus Mejoras de barco (mín. 3, máx. 5); −2 si asignas a un _Carpintero_."
+     "notaPrueba": "X = 2 + tus Mejoras de barco (mín. 3, máx. 5); _Carpintero_ asignado −2."
     },
     "nat": {
      "nombre": "Puente del comején",
@@ -5057,8 +5058,8 @@
      "nota": "",
      "textoEfecto": "~Bajo las copas no se ve el sol; solo queda la aguja de marear.~",
      "textoExito": "~Marcáis los árboles al pasar.~ {+1 avance}.",
-     "textoFallo": "~Alguien se queda atrás.~ El Tripulante asignado con más [NAV] se pierde: no se prepara hasta el final de la misión. **Acción:** agota un _Vigía_ o un _Explorador_ para encontrarlo y prepararlo.",
-     "notaPrueba": "1 si un Tripulante asignado lleva una Brújula."
+     "textoFallo": "~Alguien se queda atrás.~ El Tripulante asignado con más [NAV] se pierde: no se prepara hasta el final de la misión. **Acción:** agota a un _Vigía_ o a un _Explorador_ para encontrarlo y prepararlo.",
+     "notaPrueba": "1 si un Tripulante asignado lleva la Brújula de latón."
     },
     "ciu": {
      "nombre": "Callejas del arrabal",
@@ -5776,7 +5777,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Si llevas la _Bandera negra_, +1 de dificultad (esa bandera la conoce todo el Caribe).",
+     "textoEfecto": "Si llevas la Bandera negra, +1 de dificultad (esa bandera la conoce todo el Caribe).",
      "textoExito": "~Izáis la bandera de Su Majestad y os saluda al pasar.~ Nada más.",
      "textoFallo": "~Os sigue de lejos y pasa vuestras señas.~ El Barco queda **Perseguido**."
     },
@@ -5860,7 +5861,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**Al revelarse:** **Incautado:** pon 2 cartas de tu mano debajo de la carta de misión (la carga que revisan); con la _Patente de corso_, solo 1. Si superas la misión, las recuperas.",
+     "textoEfecto": "**Al revelarse:** **Incautado:** pon 2 cartas de tu mano debajo de la carta de misión (la carga que revisan); con la Patente de corso, solo 1. Si superas la misión, las recuperas.",
      "textoExito": "~Los papeles cuadran.~ Recupera ya las cartas incautadas y roba 1.",
      "textoFallo": "~Decomisan también la pólvora.~ Agota 1 Cañón.",
      "etiquetas": [
@@ -6164,7 +6165,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**Al revelarse:** **Incautado:** una Mejora a tu elección va debajo de la carta de misión; si llevas el _Amuleto_, tiene que ser él (cosa de brujas). Si superas la misión, la recuperas.",
+     "textoEfecto": "**Al revelarse:** **Incautado:** una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto vudú, tiene que ser él (cosa de brujas). Si superas la misión, la recuperas.",
      "textoExito": "~Juráis por los Evangelios.~ Recupera ya la Mejora y el Tripulante asignado con más [EXP] queda **Aguerrido** (sale bendecido).",
      "textoFallo": "~Te sacan en procesión con el sambenito.~ −1 reputación.",
      "etiquetas": [
@@ -7166,7 +7167,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Antes de asignar, puedes agotar un Cañón: −1 de dificultad, o −2 si asignas a un _Artillero_ (metralla a su cubierta).",
+     "textoEfecto": "Antes de asignar, puedes agotar un Cañón: −1 de dificultad, o −2 con un _Artillero_ asignado (metralla a su cubierta).",
      "textoExito": "~El filibote es tuyo.~ Prepara un Cañón y robas 2.",
      "textoFallo": "**Abordaje**"
     },
@@ -7632,7 +7633,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Si tienes una _Bandera negra_, arría su pabellón al verla: superas sin Prueba.",
+     "textoEfecto": "Si llevas la Bandera negra, arría su pabellón al verla: superas sin Prueba.",
      "textoExito": "A tu elección: saqueas la bodega (robas 2) o la santabárbara (prepara un Cañón).",
      "textoFallo": "~Escapa y su cañón de popa os alcanza.~ Daña {1 dano}."
     },
@@ -7999,7 +8000,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Ella sabe quién os ha echado el mal, y cobra por deshacerlo.~\n**Pagarle:** descarta 3 cartas (2 si llevas un _Amuleto_): quita **Maldito** de todos tus Tripulantes y uno de ellos queda **Aguerrido** (te cuelga un gris-gris).\n**Buscar tú el muñeco:** [EXP] 4.",
+     "textoEfecto": "~Ella sabe quién os ha echado el mal, y cobra por deshacerlo.~\n**Pagarle:** descarta 3 cartas (2 si llevas el Amuleto vudú): quita **Maldito** de todos tus Tripulantes y uno de ellos queda **Aguerrido** (te cuelga un gris-gris).\n**Buscar tú el muñeco:** [EXP] 4.",
      "textoExito": "~Lo encuentras y lo quemas.~ Quita **Maldito** de todos tus Tripulantes y robas 2.",
      "textoFallo": "~El bokor te ha visto rondar.~ El Capitán queda **Maldito** y descartas 1 carta.",
      "notaPrueba": "Si buscas tú el muñeco.",
@@ -8240,7 +8241,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~A quien está dentro de un círculo no lo pueden llamar.~ Los Tripulantes con _Escapulario_ suman +2.",
+     "textoEfecto": "~A quien está dentro de un círculo no lo pueden llamar.~ El Tripulante que lleva el Escapulario del Carmen suma +2.",
      "textoExito": "~Al alba, el guía dejó caer su vela: es de oro.~ Robas 2.",
      "textoFallo": "El Tripulante asignado con menos [EXP] salió del círculo: queda **Asustado** y sufre {1 herida}."
     },
@@ -8302,7 +8303,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Las balas lo atraviesan.~ Si un Tripulante asignado lleva un _Escapulario_, −2 de dificultad.",
+     "textoEfecto": "~Las balas lo atraviesan.~ Si un Tripulante asignado lleva el Escapulario del Carmen, −2 de dificultad.",
      "textoExito": "~Lo mandáis al fondo otros siete años.~ +1 reputación y esta carta Se retira.",
      "textoFallo": "**Abordaje**"
     },
@@ -8557,7 +8558,7 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "Las Mejoras no suman ~(no hay acero que lo hiera)~. Si un Tripulante asignado lleva un _Escapulario_ o un _Amuleto_, −2 de dificultad.",
+    "textoEfecto": "Las Mejoras no suman ~(no hay acero que lo hiera)~. Si un Tripulante asignado lleva el Escapulario del Carmen o el Amuleto vudú, −2 de dificultad.",
     "textoExito": "{+1 avance} y robas 2.",
     "textoFallo": "Inflige {1 herida} por cada punto que te falte (máximo 3)."
    },
@@ -8801,7 +8802,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "No puedes superar esta misión hasta superar en ella una Prueba de [NAV] o [EXP], o agotar a un _Vigía_ o _Piloto_ (**Acción**) ~(avistáis la isla)~.",
+      "No puedes superar esta misión hasta superar en ella una Prueba de [NAV] o [EXP], o agotar a un _Vigía_ o a un _Piloto_ (**Acción**) ~(avistáis la isla)~.",
       "**Al zarpar:** Puedes agotar a un _Oficial_: gana {2 avance} ~(el informante de Tortuga solo habla con oficiales)~."
      ],
      "ambientacion": "«Dicen que la isla no sale en ningún mapa. Por eso vamos.»",
@@ -8916,7 +8917,7 @@
      "distancia": 0,
      "reglas": [
       "Temporada de huracanes: los encuentros de tipo #Tormenta# reciben {+1 r} de dificultad.",
-      "**Al zarpar:** Puedes agotar a un _Piloto_ o a un _Marinero_ para ganar {2 avance} ~(conoce el paso)~."
+      "**Al zarpar:** Puedes agotar a un _Piloto_ para ganar {2 avance} ~(conoce el paso)~."
      ],
      "ambientacion": "«Entre Cuba y La Española, el viento manda.»",
      "recompensa": {
@@ -9581,7 +9582,7 @@
    "id": "impuestos",
    "num": 99,
    "nombre": "Impuestos del gobernador",
-   "texto": "**Elige:** descarta 2 cartas, o pierde tu Mejora de mayor coste (empate: eliges). Con la _Patente de corso_ no pagas.",
+   "texto": "**Elige:** descarta 2 cartas, o pierde tu Mejora de mayor coste (empate: eliges). Con la Patente de corso no pagas.",
    "ambientacion": "«El Rey cobra el quinto. El gobernador, lo que quiere.»"
   },
   {
@@ -9856,7 +9857,9 @@
    "id": "guardia",
    "num": 220,
    "nombre": "¡La guardia!",
-   "rasgos": [],
+   "palabrasClave": [
+    "Guardia"
+   ],
    "texto": "Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Haz una Prueba de [COM] 5 ~(los echáis a palos)~, o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.",
    "ambientacion": "",
    "junto": false,
@@ -9869,10 +9872,10 @@
    "id": "pm_varados",
    "num": 226,
    "nombre": "Varados en el banco",
-   "rasgos": [
+   "palabrasClave": [
     "Terreno"
    ],
-   "texto": "No puedes superar la misión ni retirarte. Cada vez que reveles un Peligro, pon 1 ficha de Marea aquí; con 2, el Barco flota: descarta esta carta. **Acción:** agota 2 Tripulantes (o 1 _Marinero_): pon 1 ficha de Marea.",
+   "texto": "No puedes superar la misión ni retirarte. Cada vez que reveles un Peligro, pon 1 ficha de Marea aquí; con 2, el Barco flota: descarta esta carta. **Acción:** agota a un _Marinero_ o a 2 Tripulantes: pon 1 ficha de Marea.",
    "ambientacion": "",
    "origen": "p2_bajamar",
    "entorno": "mar",
@@ -9882,7 +9885,7 @@
    "id": "pm_manigua",
    "num": 227,
    "nombre": "La manigua arde",
-   "rasgos": [
+   "palabrasClave": [
     "Terreno"
    ],
    "texto": "Cada vez que reveles otro Peligro, pon 1 ficha de Fuego aquí. Con 3, cada Tripulante agotado sufre 1 herida (máx. 3); descarta esta carta. **Acción:** agota a un _Explorador_ o a 2 Tripulantes: descarta esta carta.",
@@ -9895,7 +9898,7 @@
    "id": "pm_arenas",
    "num": 228,
    "nombre": "Arenas movedizas",
-   "rasgos": [
+   "palabrasClave": [
     "Terreno"
    ],
    "texto": "El atrapado no puede ser asignado ni prepararse. **Obligado:** cada vez que reveles otro Peligro, pon 1 ficha de Barro aquí. Con 3, sufre 2 heridas; descarta esta carta. **Acción:** agota tantos Tripulantes preparados como fichas haya, más 1: descarta esta carta.",
@@ -9908,7 +9911,7 @@
    "id": "pm_ojos",
    "num": 229,
    "nombre": "Ojos amarillos en la espesura",
-   "rasgos": [
+   "palabrasClave": [
     "Bestia"
    ],
    "texto": "**Obligado:** al final de cada encuentro siguiente, el Tripulante agotado con menos Vida sufre {1 herida}. **Acción:** agota a un Tripulante preparado: Prueba de [COM] 5 solo con él ([EXP] 3 si es _Explorador_). Si superas, roba 2 y descarta esta carta; si fallas, el Tripulante asignado sufre {1 herida}.",
@@ -9921,7 +9924,7 @@
    "id": "pm_campanas",
    "num": 230,
    "nombre": "Campanas a rebato",
-   "rasgos": [
+   "palabrasClave": [
     "Guardia"
    ],
    "texto": "Al terminar cada encuentro, pon 1 ficha aquí. Con 3, descarta al Tripulante agotado con menos Vida y descarta esta carta. **Acción:** agota a un _Oficial_ o supera una Prueba de [COM] 3: descarta esta carta.",
@@ -9934,10 +9937,10 @@
    "id": "pm_cadena",
    "num": 231,
    "nombre": "La cadena de la bocana",
-   "rasgos": [
+   "palabrasClave": [
     "Militar"
    ],
-   "texto": "No puedes superar la misión. **Acción:** Prueba de [COM] 5 (4 con un _Carpintero_). Si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.",
+   "texto": "No puedes superar la misión. **Acción:** Prueba de [COM] 5 (4 si tienes un _Carpintero_ preparado). Si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.",
    "ambientacion": "",
    "origen": "p2_morro",
    "entorno": "mar",
@@ -9947,7 +9950,7 @@
    "id": "pm_murmullos",
    "num": 232,
    "nombre": "Murmullos en el sollado",
-   "rasgos": [
+   "palabrasClave": [
     "Tripulación"
    ],
    "texto": "Cada vez que reveles otro Peligro, pon 1 ficha de Descontento aquí. Con 3, el Barco sufre 2 daños; descarta esta carta. **Respuesta:** después de superar una Prueba por 2 o más, quita 1 ficha. **Acción:** descarta 2 cartas: descarta esta carta.",
@@ -9960,7 +9963,7 @@
    "id": "pm_taberna",
    "num": 233,
    "nombre": "No vuelven de la taberna",
-   "rasgos": [
+   "palabrasClave": [
     "Tripulación"
    ],
    "texto": "Los Tripulantes de la taberna no se preparan. **Acción:** agota a un _Oficial_: prepara a uno, que queda **Borracho**. **Acción:** descarta 3 cartas: descarta esta carta.",
@@ -9973,7 +9976,7 @@
    "id": "pm_viento",
    "num": 234,
    "nombre": "Viento a favor",
-   "rasgos": [],
+   "palabrasClave": [],
    "texto": "Cada Prueba de [NAV] que superes da 1 Avance más. **Respuesta:** después de revelar el Destino de una Prueba de [NAV], descarta esta carta: esa Prueba recibe −2 de dificultad. Se descarta también si fallas una Prueba o se revela un encuentro #Tormenta#.",
    "ambientacion": "",
    "origen": "p2_estrella",
@@ -9984,7 +9987,7 @@
    "id": "pm_lechuza",
    "num": 235,
    "nombre": "La lechuza canta tres veces",
-   "rasgos": [
+   "palabrasClave": [
     "Sobrenatural"
    ],
    "texto": "Cada vez que reveles un nuevo encuentro, pon 1 ficha aquí. Con 3, el señalado sufre 2 heridas y queda **Maldito**; descarta esta carta. **Acción:** agota a un _Vigía_ o supera una Prueba de [EXP] 3: descarta esta carta y el señalado queda **Aguerrido**.",
@@ -9997,7 +10000,7 @@
    "id": "pm_losa",
    "num": 236,
    "nombre": "La losa giratoria",
-   "rasgos": [
+   "palabrasClave": [
     "Terreno"
    ],
    "texto": "Ese Tripulante no puede ser asignado. **Acción:** agota a 2 Tripulantes: descarta esta carta.",
@@ -10010,7 +10013,7 @@
    "id": "pm_cobertura",
    "num": 237,
    "nombre": "Fuego de cobertura",
-   "rasgos": [
+   "palabrasClave": [
     "Barco"
    ],
    "texto": "Los Cañones no suman. **Acción:** Prueba de [NAV] 3: si la superas, descarta esta carta.",

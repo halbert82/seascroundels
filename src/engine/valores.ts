@@ -239,8 +239,8 @@ export function plazasLibres(s: Estado): number {
 /**
  * Fase 14 (regla general de Albert): cuando una carta habla del coste de otra («de coste 2 o menos»), mira siempre el
  * coste impreso; los descuentos (Catalina, Marineros sin barco…) solo rebajan lo que se paga. «Pagando la mitad de su
- * coste, redondeando hacia arriba»: la mitad del coste impreso, y a eso se le aplican los descuentos (nunca menos de 0).
- * TODO(regla): P92, lectura de las dos reglas de Albert juntas; pendiente de que la confirme.
+ * coste, redondeando hacia arriba»: primero la mitad del coste impreso y después los descuentos (nunca menos de 0). P92,
+ * confirmado por Albert, como dice la entrada Coste.
  */
 export function costeAPagar(s: Estado, carta: InstId, modo: 'normal' | 'mitad' | 'gratis' = 'normal'): number {
   if (modo === 'gratis') return 0

@@ -98,7 +98,8 @@ registrarMision('templo-IV', {
 registrarMision('flota-I', {
   capacidades: [dificultadClaves('tormenta', ['Tormenta'], 1)],
   alZarpar: () => [
-    { tipo: 'alZarparOpcional', coste: { tipo: 'agotarRasgo', rasgos: ['Piloto', 'Marinero'] }, efectos: [avance(2)], texto: 'Agotar a un Piloto o a un Marinero para ganar 2 de Avance' },
+    // Fase 14, Rasgos (Albert): solo un Piloto (antes, «un Piloto o un Marinero»: todos los Pilotos son Marineros).
+    { tipo: 'alZarparOpcional', coste: { tipo: 'agotarRasgo', rasgos: ['Piloto'] }, efectos: [avance(2)], texto: 'Agotar a un Piloto para ganar 2 de Avance' },
   ],
 })
 

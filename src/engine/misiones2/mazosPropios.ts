@@ -115,7 +115,7 @@ registrarPeligro('guardian', {
 // Mazo de la Escolta (solo Mar)
 
 // Galeón de la plata · Antes de asignar, puedes agotar un Cañón: −2. Abordaje. (Fase 10b.)
-// TODO(regla): P89, como en «Al abordaje del filibote»: por defecto, la opción de la carta sigue valiendo en el Abordaje.
+// P89 (Albert): como en «Al abordaje del filibote», la opción de la carta vale en el Abordaje (es un precio de la carta).
 registrarPeligro('galeon', {
   encuentros: {
     unico: {
@@ -162,7 +162,7 @@ registrarPeligro('naufragos_g', {
   encuentros: {
     unico: {
       // Fase 14 (Albert): pagando la mitad de su coste, redondeando hacia arriba (antes, sin coste).
-      // TODO(regla): P91. Con «de coste 2 o menos», la mitad siempre es 1 carta; por defecto se queda el tope de coste.
+      // P91 (Albert): se queda «de coste 2 o menos» (la mitad siempre es 1 carta).
       exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante', mitad: true, siNo: [robar(1)] }],
       fallo: [agotar(1)],
     },

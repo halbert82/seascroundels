@@ -258,7 +258,7 @@ registrarPeligro('p2_quinto', {
 })
 
 // 31. Bajo los cañones del Morro · Terrible
-// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Prueba de COM 5 (4 con un Carpintero):
+// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Prueba de COM 5 (4 si tienes un Carpintero preparado):
 // si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.
 registrarPermanente('pm_cadena', {
   quitar: [

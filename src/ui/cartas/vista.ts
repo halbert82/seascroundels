@@ -129,6 +129,8 @@ export interface VistaJugador {
   huecosTop: number
   vida?: number
   rasgos: string[]
+  /** Fase 14: el tipo de una permanente («Guardia», «Terreno»), con la letra del tipo de un encuentro. */
+  tipos?: string
   texto: Segmento[]
   /** «big»: una sola cifra grande y centrada; «center»: centrado. */
   textoClase: '' | 'big' | 'center'
@@ -579,8 +581,9 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       }
     }
     case 'permanente': {
-      // Fase 11: maqueta de las cartas normales del mazo de historia (como los Pasajeros), con
-      // «Permanente» en la cinta y los Rasgos del encuentro que la pone en juego.
+      // Fase 11: maqueta de las cartas normales del mazo de historia (como los Pasajeros), con «Permanente» en la cinta.
+      // Fase 14 (Albert): su tipo (el del encuentro que la pone en juego) se dibuja como el de un encuentro, no como un
+      // Rasgo: «GUARDIA» en versalitas, no «Guardia.» en cursiva.
       const c = entrada.carta
       return {
         ...base(entrada),
@@ -589,7 +592,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         tipoTexto: 'Permanente',
         permanente: true,
         pestanasIzqTop: 74,
-        rasgos: c.rasgos,
+        rasgos: [],
+        ...(c.palabrasClave.length > 0 ? { tipos: c.palabrasClave.join(' · ') } : {}),
         texto: parsearTexto(c.texto),
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),

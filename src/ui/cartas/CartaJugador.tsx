@@ -95,6 +95,12 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
             <div className="rule" />
           </>
         )}
+        {v.tipos && (
+          <>
+            <div className="ptipo">{v.tipos}</div>
+            <div className="rule" />
+          </>
+        )}
         <div className={v.textoClase ? `rules ${v.textoClase}` : 'rules'}>
           <TextoCarta segmentos={v.texto} />
         </div>

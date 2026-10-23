@@ -226,8 +226,12 @@ export interface PermanenteDatos {
   id: string
   num: number
   nombre: string
-  /** Los del encuentro que la pone en juego (Terreno, Bestia…). */
-  rasgos: string[]
+  /**
+   * Su tipo, como el de un encuentro (Terreno, Guardia…): casi siempre, el del encuentro que la pone en juego; «¡La
+   * guardia!», que la pone una misión, es de tipo Guardia (fase 14, Albert). No son Rasgos: la Prueba de su Acción es de
+   * ese tipo.
+   */
+  palabrasClave: string[]
   texto: string
   ambientacion: string
   /** La carta de Peligro (o de mazo propio) que la pone en juego (si la pone un encuentro). */

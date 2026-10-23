@@ -86,11 +86,13 @@ describe('vista de las cartas', () => {
     const v = vistaDeCarta(carta(228)) as VistaJugador & { historia?: { num: number; dorso: string } }
     expect(v.nombre).toBe('Arenas movedizas')
     expect(v.tipoTexto).toBe('Permanente')
-    expect(v.rasgos).toEqual(['Terreno'])
+    expect(v.rasgos).toEqual([])
+    expect(v.tipos).toBe('Terreno') // fase 14: con la letra del tipo de un encuentro, no como un Rasgo
     expect(v.permanente).toBe(true)
     expect(v.arte).toBeUndefined() // «Ilustración pendiente»
     expect(v.historia).toEqual({ num: 228, dorso: 'misiones' })
-    expect((vistaDeCarta(carta(234)) as VistaJugador).rasgos).toEqual([]) // «Viento a favor» no tiene tipo
+    expect((vistaDeCarta(carta(234)) as VistaJugador).tipos).toBeUndefined() // «Viento a favor» no tiene tipo
+    expect((vistaDeCarta(carta(220)) as VistaJugador).tipos).toBe('Guardia') // fase 14: «¡La guardia!» es de tipo Guardia
   })
 
   it('capítulos: sello, travesía, Distancia, recompensa y pie', () => {

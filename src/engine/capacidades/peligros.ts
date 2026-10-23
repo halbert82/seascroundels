@@ -66,10 +66,10 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
   return caps
 }
 
-/** Rasgos impresos de una permanente (los del encuentro que la pone en juego: Terreno, Bestia…). */
-function rasgosDePermanente(id: CartaId): string[] {
+/** Tipo impreso de una permanente (Terreno, Guardia…), como el de un encuentro. */
+function tiposDePermanente(id: CartaId): string[] {
   const e = porId(id)
-  return e.tipo === 'permanente' ? [...e.carta.rasgos] : []
+  return e.tipo === 'permanente' ? [...e.carta.palabrasClave] : []
 }
 
 /**
@@ -106,7 +106,7 @@ export function capacidadesDePermanente(id: CartaId, q: ReglasPermanente): Capac
     switch (forma.tipo) {
       case 'prueba':
         // La Prueba de una Acción es una Prueba normal: se compromete, sale Destino y Sin oposición si no hay nadie.
-        // No se puede hacer durante otra Prueba (P2). Lleva los Rasgos de la permanente (Guardia, Militar…).
+        // No se puede hacer durante otra Prueba (P2). Es del tipo de la permanente (Guardia, Militar…).
         caps.push({
           clave,
           carta: id,
@@ -122,7 +122,7 @@ export function capacidadesDePermanente(id: CartaId, q: ReglasPermanente): Capac
                     paso: 'empezar',
                     definicion: {
                       nombre: `Quitar «${nombreDe(id)}»`,
-                      palabrasClave: rasgosDePermanente(id),
+                      palabrasClave: tiposDePermanente(id),
                       opciones: forma.opciones,
                       exito: [...alQuitar, ...(forma.exito ?? []), { tipo: 'descartarEsta' }],
                       fallo: forma.fallo ?? [],
