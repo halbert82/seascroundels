@@ -561,6 +561,9 @@ function bloquesDe(md: MarkdownIt, tokens: Token[], e: Entorno, opciones: { comp
     const trozo = tokens.slice(i, fin + 1)
     i = fin
 
+    // Un comentario («<!-- TODO(regla): … -->») es para quien edita el reglamento: no sale en el libro.
+    if (t.type === 'html_block' && /^\s*<!--[\s\S]*-->\s*$/.test(t.content)) continue
+
     if (t.type === 'heading_open') {
       soltarTema()
       const texto = trozo[1]?.content ?? ''

@@ -180,8 +180,10 @@ describe('Índice de términos de la Referencia de reglas', () => {
   it('cada ficha de misión que usan las misiones tiene su línea', () => {
     const fichas = new Set(CATALOGO.filter((e) => e.tipo === 'capitulo').flatMap((e) => (reglasMision(e.id)?.fichas ?? []).map((f) => f.nombre)))
     expect(fichas.size).toBe(8) // fase 12: Derrumbe; fase 15: Rival (la Profundidad se fue con el pecio)
-    // Fase 16: la entrada «Fichas de misión» pasa a llamarse «Contadores» (se llevan con dados).
+    // Fase 16: la entrada «Fichas de misión» pasa a llamarse «Contadores» (se llevan con fichas genéricas).
     for (const f of fichas) expect(indice).toContainEqual(expect.objectContaining({ termino: f, en: 'Contadores' }))
+    // Corrección de Albert (fase 16): las cartas dicen «ficha»; quien la busque llega a «Contadores».
+    expect(indice).toContainEqual(expect.objectContaining({ termino: 'Fichas genéricas', en: 'Contadores' }))
   })
 
   it('las opciones de los puertos y los términos que un jugador buscaría sin entrada propia remiten a la entrada que los explica', () => {

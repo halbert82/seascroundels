@@ -1460,7 +1460,7 @@ Albert: «Cuerda de presos», «Alas sobre el fondeadero» y las demás cartas q
 - La culebrina entra en juego 34 veces (3, sin Espacio, vuelve al mazo); el diario sale 36 veces y trae «El prisionero de Portobelo» (Panamá) en 15 (el jugador automático lo prefiere), sin que suban las victorias de Panamá. El pulpo: 28 veces lo sacan entre dos y 3 se suelta solo. Ningún Tripulante queda derrotado buceando.
 - Lo demás, como antes: el galeón se hunde 36 veces; el fugitivo escapa 154 y se le captura 197.
 
-## Fase 16: Estados y Ventajas como cartas, y juego sin fichas (24 de octubre de 2026)
+## Fase 16: Estados y Ventajas como cartas (24 de octubre de 2026)
 
 ### Reglas generales (Albert)
 
@@ -1500,7 +1500,10 @@ Albert: «Cuerda de presos», «Alas sobre el fondeadero» y las demás cartas q
 - **271 El doblón de la calavera:** «Tu Capitán tiene una carta de **Maldito** que no se puede descartar mientras esta carta esté en juego.»
 - **Otros textos de la caja que hablaban de fichas de Estado o de Ventaja:** ninguno más. Tampoco he encontrado textos que se lean mal con cartas («queda Envenenado», «quita Maldito de todos tus Tripulantes» y «quita todos los Estados» se leen igual). Las «fichas» que quedan en las cartas son de contadores (ver P112).
 
-### Juego sin fichas: cartas y dados (principio de fabricación de Albert)
+### Juego sin fichas: cartas y dados (primera entrega, ya corregida: ver «Corrección de Albert: la caja trae fichas»)
+
+*Se queda como historia: es lo que se hizo en la primera entrega de la fase 16 y Albert lo corrigió el mismo día.*
+
 
 - **Reglamento:** Componentes (las cartas mini en una tabla nueva y «Dados» en lugar de «Fichas»), Preparación (paso 8: la reserva y los dados; la reputación empieza en 0), y todas las entradas que hablaban de fichas: Avance, Daño, Herida, Enrolado, Entrenamiento (un dado sobre el icono de esa habilidad), Permanente, Estado y Ventaja (cartas), Mando (Desánimo), la Referencia rápida y los ejemplos.
 - **«Fichas de misión» pasa a llamarse «Contadores»** (la entrada de la Referencia y el apartado de «Aprende a jugar»). No cambian los nombres de lo que se cuenta (Alarma, Rival…). Como las cartas siguen diciendo «pon 1 ficha de Alarma», el reglamento lo explica: cada «ficha» que nombra una carta es un punto del contador.
@@ -1531,9 +1534,53 @@ La diferencia (8 partidas de 1000, y hacia abajo con los muelles variados) es de
 - **Asustado y Envenenado:** «Agota a un Oficial» o «a un Cirujano» vale también si es él mismo (Diego Asustado puede agotarse para quitárselo). Sangrando dice «otro».
 - **Aguerrido** no ahorra un [agotar] que se pague como coste (el del Loro), como hasta ahora.
 
-### Preguntas nuevas para Albert, con la opción por defecto aplicada
+### Respuestas de Albert (P111–P112, 24 de octubre)
 
-- **P111 · Extenuado si ya estaba preparado en la Fase de Inicio.** La carta dice «Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta esta carta». Si en la Fase de Inicio ya está preparado, no «va a prepararse». Por defecto (al pie de la letra), **la carta se queda** hasta la próxima Fase de Inicio en que vaya a prepararse. *Ejemplo:* Rodrigo, asignado a una Prueba de COM, no se agota; fallas «Cuerda de presos» y queda Extenuado. En la Fase de Inicio siguiente ya está preparado: la carta se queda. Ese turno se agota en una Prueba de NAV; en la Fase de Inicio siguiente no se prepara y descarta la carta. La otra opción: la carta se descarta en la primera Fase de Inicio pase lo que pase (y, si estaba agotado, no se prepara). `TODO(regla) P111` en el código (la Fase de Inicio). *Prueba:* estados-cartas.test.
-- **P112 · Las «fichas» de los contadores en las cartas.** 26 frases de 21 cartas dicen «ficha» («pon 1 ficha de Alarma», «quita 2 fichas de Rival», «Con 3 fichas…», la Pólvora del Rey, el Entrenamiento de Nassau y de «Lección aprendida»): 112, 116, 117, 128, 135, 145, 146, 153, 212, 219, 226, 227, 228, 230, 232, 235, 239, 257, 259, 276 y 64. Por defecto, **se quedan así** y el reglamento explica que cada «ficha» es un punto del contador. La otra opción: reescribirlas para los dados («la Alarma sube 1», «el Rival baja 2», «Con 3 de Mecha…»).
+- **P111 · Extenuado si ya estaba preparado en la Fase de Inicio: la carta se queda** (la opción por defecto, al pie de la letra). La carta dice «Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta esta carta»: si en la Fase de Inicio ya está preparado, no «va a prepararse», y la carta se queda hasta la Fase de Inicio en que vaya a prepararse. *Ejemplo:* Rodrigo, asignado a una Prueba de COM, no se agota; fallas «Cuerda de presos» y queda Extenuado. En la Fase de Inicio siguiente ya está preparado: la carta se queda. Ese turno se agota en una Prueba de NAV; en la Fase de Inicio siguiente no se prepara y descarta la carta. Fuera el `TODO(regla)` de la Fase de Inicio. *Prueba:* estados-cartas.test.
+- **P112 · Las «fichas» de los contadores en las cartas: no se cambia ningún texto.** Las 26 frases de 21 cartas que dicen «ficha» («pon 1 ficha de Alarma», «quita 2 fichas de Rival», «Con 3 fichas…», la Pólvora del Rey, el Entrenamiento de Nassau y de «Lección aprendida»: 112, 116, 117, 128, 135, 145, 146, 153, 212, 219, 226, 227, 228, 230, 232, 235, 239, 257, 259, 276 y 64) se quedan como están, porque las fichas existen (ver la corrección siguiente).
 
 *Pruebas:* estados-cartas.test (una por carta nueva o cambiada: el catálogo de las 13 cartas y sus copias, que 6 copias bastan, Extenuado en la Fase de Inicio y con la Taberna, Desánimo al robar y con el Astillero, las cinco Acciones, el jugador automático con la Vía de agua y el doblón), las de los ocho Peligros cambiados (grupos A–E) y guardado.test (una partida con fichas y con «no se prepara» pendiente).
+
+### Corrección de Albert: la caja trae fichas (los dados son regla casera) (24 de octubre)
+
+**Principio de fabricación (sustituye al de la primera entrega):** «El juego se fabrica con cartas y fichas. Lo que tenga texto o efecto propio es una carta (también los Estados y las Ventajas). Lo que solo haya que contar se lleva con fichas: de herida, de daño, de Avance, de Entrenamiento y genéricas (los contadores de misiones, permanentes y Tesoros, y Enrolado), más el marcador de reputación. Llevar la cuenta con dados es una regla casera, no del juego.»
+
+Las cartas mini de Estado y de Ventaja (297–309, la reserva) no cambian. Lo que vuelve a fichas:
+
+- **Reglamento.** Componentes: el apartado «Dados» vuelve a ser «Fichas», con la lista de antes de la fase 16 sin las fichas de Estado y de Ventaja (fichas de herida, de daño y de Avance; fichas de Entrenamiento (+1); fichas genéricas, todas iguales, para los contadores y para Enrolado; un marcador de reputación), y la frase de la caja nombra las fichas y el marcador. Fuera «Sea Scoundrels no usa fichas», «Con 12 dados basta» y todo lo de «dos dados si pasa de 6» y «sube/baja el dado». Los dados solo salen en un consejo de Componentes: «Si te faltan fichas, puedes llevar cualquier cuenta con un dado sobre la carta.» (hay una prueba que lo comprueba). Preparación, paso 1: «Pon el marcador de reputación a 0»; paso 8: «Prepara la reserva y las fichas». Vuelven a fichas, como antes de la fase 16: Avance, Daño, Herida, Enrolado, Entrenamiento (también en Nassau, en «Asignado con más» y en Mejora), Permanente, el texto de la misión en la Anatomía, superar y no superar una misión, la Referencia rápida y los ejemplos (las campanas de «Seguirle por Port Royal», los Varados, la Alarma de «La casa del gobernador», van Hoorn y el Piloto a sueldo).
+- **«Contadores» conserva el nombre** (en «Aprende a jugar» y en la Referencia): es lo que cuenta una carta, y se lleva con **fichas genéricas** (término nuevo del índice). «Pon 1 ficha de Alarma» es poner 1 ficha genérica sobre la carta. Fuera la explicación de que cada «ficha» es un punto del contador. Las fichas de Enrolado también son genéricas.
+- **Dónde va el marcador de reputación:** el reglamento no lo dice (no hay ningún track de reputación: ni en la carta de puerto ni en el Capitán). Ver la conclusión para Albert.
+- **Mesa:** los contadores de las cartas en juego y el Enrolado vuelven a dibujarse como fichas (como antes de la fase 16), no como la cara de un dado. Las heridas, el daño, el Avance y el Entrenamiento no habían cambiado. Las cartas mini de Estado y Ventaja, igual. El glosario de la mesa vuelve a hablar de fichas (contadores, permanentes, Enrolado, «Asignado con más» y la pregunta del Entrenamiento de Nassau), y el rótulo de las ayudas de los contadores pasa de «Ficha de misión» a «Contador».
+- **El libro** no saca los comentarios del reglamento («<!-- … -->»): así el `TODO(regla)` de P113–P116 se queda en el texto sin salir impreso.
+
+### Fichas que hacen falta en la caja (medición, 24 de octubre)
+
+1000 partidas normales con las semillas de siempre (1–1000), los mazos de inicio y el jugador automático, contando después de cada paso cuántas fichas hay a la vez en la mesa. Como el jugador automático juega siempre en Tortuga y casi nunca entrena, he medido también 1000 partidas en Nassau (su opción propia es el Entrenamiento). Cada número se cuenta hasta donde tiene efecto: las heridas hasta la Vida de cada Tripulante, el daño hasta el Daño máximo del Barco, el Avance hasta lo que pide la misión y el Rival hasta 8 (ver la nota). `MEDIR_FICHAS=1 npx vitest run src/engine/medir-fichas.informe.test.ts` (con `MEDIR_FICHAS_PUERTO=nassau` para Nassau).
+
+| Clase | Como mucho a la vez | En el 99 % de las partidas, no más de | La mitad de las partidas, no más de | Propuesta para la caja |
+| --- | --- | --- | --- | --- |
+| Herida (toda la tripulación; también «El prisionero») | 8 | 6 | 3 | **12** |
+| Daño (el Barco; también el Galeón San Telmo y las Murallas de Port Royal) | 9 (el Barco solo, 6) | 8 (el Barco solo, 4) | 2 | **12** |
+| Avance (la misión en curso y las disponibles) | 10 | 7 | 5 | **12** |
+| Entrenamiento | 3 (en Nassau; 1 en Tortuga) | 2 | 0 | **6** |
+| Genéricas (contadores y Enrolado juntos) | 12 | 10 | 3 | **20** |
+| Marcador de reputación | — | — | — | **1** |
+
+- **Herida:** el máximo sale en capítulos largos con varios Tripulantes tocados a la vez (Panamá II, «…sacudida por un temblor», «El fugitivo» II).
+- **Daño:** el Barco solo no pasa de 6 (5 de Daño máximo y 1 más con el Casco reforzado); lo que sube la cuenta es el daño de las Murallas de Port Royal, que siguen en juego entre misiones mientras «El asedio de Port Royal» esté disponible, y el del Galeón San Telmo.
+- **Avance:** el máximo (10) es «El asedio de Port Royal» (pide 7) con los Soplos de la Hermandad puestos en otra misión.
+- **Entrenamiento:** el jugador automático entrena poco; un jugador que vuelva a menudo a Nassau puede acumular más (cada ficha ocupa un hueco de Mejora). Propongo 6 por si acaso.
+- **Genéricas:** el máximo es «La regata de San Juan» (8 de Rival) con una permanente o la Pólvora del Rey. Las demás: Ladrón 5, Mecha 4, Alarma, Sospecha, Persecución, Defensa, Derrumbe, Campanas, Lechuza, Murmullos y Pólvora del Rey 3, Manigua y Arenas 2, Varados 1; Enrolado, hasta 4 en toda la tripulación.
+- **Nota sobre la regata:** su carta dice «pon 2 fichas de Rival» después de cada Peligro, sin tope, y «Con 8 o más fichas de Rival, el rival gana la regata». A partir de 8 ya no cambia nada, así que cuento hasta 8; contadas todas, en una partida llegaron a 24 (en el 99 %, hasta 10). Con 20 genéricas, quien siga poniéndolas después de 8 se puede quedar sin ellas.
+- **Si P114 o P115 cambian:** con una sola ficha para heridas y daño, hay como mucho 11 a la vez (en el 99 %, 9): bastan **20** fichas de daño en lugar de 12 + 12. Con el Entrenamiento como ficha genérica, genéricas y Entrenamiento juntas no pasan de 12: las mismas **20** genéricas bastan.
+- **En total** no hay más de 23 fichas en la mesa a la vez (en el 99 % de las partidas, 18). La propuesta suma 62 fichas y el marcador.
+
+### Preguntas nuevas para Albert (P113–P116), con la opción por defecto aplicada
+
+- **P113 · Cómo se llaman las fichas de los contadores.** Por defecto, **«fichas»** (fichas genéricas): las 21 cartas no cambian («pon 1 ficha de Alarma») y la entrada «Contadores» explica que un contador se lleva con fichas genéricas. La otra opción: llamarlas **«contadores»**, y las 21 cartas (26 frases) pasarían a «pon 1 contador de Alarma», «quita 2 contadores de Rival», «Con 3 contadores…». *Ejemplo:* en «La casa del gobernador» superas una Prueba de COM. Con «fichas», pones 1 ficha de Alarma sobre la misión; con «contadores», pones 1 contador de Alarma (la misma pieza, con otro nombre). `TODO(regla) P113` en el reglamento (Componentes) y en la mesa (la ficha de una carta en juego).
+- **P114 · Heridas y daño: una ficha o dos.** Por defecto, **dos fichas distintas**, de herida y de daño, porque las cartas usan iconos distintos (la gota de sangre de las heridas y el casco del Barco). La otra opción: **una sola ficha de daño** para los Tripulantes y para el Barco (menos clases de ficha en la caja). *Ejemplo:* fallas «Lanchas de la guarnición» (Mar, COM 4): «Daña 1 y el Tripulante asignado con más COM sufre 1 herida». Con dos fichas, pones 1 ficha de daño en el Barco y 1 de herida en el Bucanero; con una sola, 2 fichas de daño iguales, una en cada carta. `TODO(regla) P114` en el reglamento y en la mesa.
+- **P115 · Entrenamiento: ficha propia o genérica.** Por defecto, **ficha propia «+1»** (como en la lista de antes de la fase 16). La otra opción: una **ficha genérica** puesta sobre el icono de la habilidad del Tripulante (una clase de ficha menos). *Ejemplo:* en Nassau eliges «Entrenamiento» y le das +1 COM al Bucanero veterano. Con ficha propia, pones una ficha «+1» junto a su COM; con la genérica, pones una ficha genérica sobre su icono de COM. En los dos casos ocupa un hueco de Mejora. `TODO(regla) P115` en el reglamento y en la mesa.
+- **P116 · Los dados en el reglamento.** Por defecto, **un consejo de una línea en Componentes**: «Si te faltan fichas, puedes llevar cualquier cuenta con un dado sobre la carta.» La otra opción: **ninguna mención** (los dados quedan como regla casera de cada jugador, fuera del libro). *Ejemplo:* un jugador pierde fichas de herida; con el consejo, sabe que puede poner un dado con el 2 sobre el Bucanero en lugar de 2 fichas. `TODO(regla) P116` en el reglamento (Componentes).
+
+*Pruebas:* fuente.test (Componentes trae las fichas, un solo consejo nombra los dados y los comentarios no salen en el libro) e indice.test (el índice tiene «Fichas genéricas» y la lista de «Contadores»).
+

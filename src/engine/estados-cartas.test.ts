@@ -38,7 +38,7 @@ describe('307 · Extenuado', () => {
     expect(j.registro).toContain('Bucanero veterano está Extenuado: no se prepara (descartas su carta de Extenuado).')
   })
 
-  it('TODO(regla) P111: si en la Fase de Inicio ya estaba preparado, la carta se queda hasta que vaya a prepararse', () => {
+  it('P111: si en la Fase de Inicio ya estaba preparado, la carta se queda hasta que vaya a prepararse', () => {
     const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], tripulacion: [{ id: 'bucanero', estados: ['extenuado'] }] })
     expect(j.copia('bucanero').agotada).toBe(false)
     expect(j.estados('bucanero')).toEqual(['extenuado'])

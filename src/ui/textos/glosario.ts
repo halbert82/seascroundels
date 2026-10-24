@@ -17,7 +17,7 @@ export const NOMBRE_CLASE: Record<ClaseAyuda, string> = {
   estado: 'Estado',
   estadoBarco: 'Estado del Barco',
   ventaja: 'Ventaja',
-  fichaMision: 'Ficha de misión',
+  fichaMision: 'Contador',
   limitacion: 'Efecto que dura',
   regla: 'Regla',
 }
@@ -93,10 +93,10 @@ export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
 }
 
 // ---------------------------------------------------------------------------
-// Contadores de misión (reglas impresas de cada capítulo y la entrada «Contadores» del reglamento; fase 16: antes, fichas de
-// misión). Se llevan con un dado sobre la carta; cada «ficha» que nombra la carta es un punto del contador.
+// Contadores de misión (reglas impresas de cada capítulo y la entrada «Contadores» del reglamento; antes de la fase 16, fichas
+// de misión). Se llevan con fichas genéricas sobre la carta: «pon 1 ficha de Alarma» es poner 1 ficha genérica.
 
-const FIN_FICHAS = 'Los contadores de la misión se quitan al terminarla, la superes o no.'
+const FIN_FICHAS = 'Las fichas de los contadores de la misión se descartan al terminarla, la superes o no.'
 const MISION_FALLA = '«La misión falla» es como retirarte: no la superas, pierdes su Avance y eliges si la dejas disponible o la pones al fondo del mazo de Misiones.'
 
 function fichaMision(f: FichaMision, nombre: string, cambia: string, pasa: string, mas = ''): Ayuda {
@@ -105,7 +105,7 @@ function fichaMision(f: FichaMision, nombre: string, cambia: string, pasa: strin
     nombre,
     clase: 'fichaMision',
     partes: [
-      { rotulo: 'Cómo sube y baja (un dado sobre la carta)', texto: cambia },
+      { rotulo: 'Cómo se ponen y se quitan (fichas genéricas)', texto: cambia },
       { rotulo: 'Qué pasa', texto: pasa },
       { rotulo: 'Cuándo terminan', texto: mas ? `${mas} ${FIN_FICHAS}` : FIN_FICHAS },
     ],
@@ -231,7 +231,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Algunos encuentros y misiones dicen «Pon en juego la carta N del mazo de historia»: esa carta, una permanente, se pone junto a la misión (o junto a un Tripulante, si lo dice) con su texto activo. El encuentro da su Avance y su carta se descarta como cualquier otra. Si la permanente no está en el mazo de historia, la carta del encuentro se descarta sin dar su Avance y se revela otra.',
     {
       rotulo: 'Cómo se quita',
-      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia (se quita su dado), salvo las que digan otra cosa («Mala fama», las Murallas de Port Royal).',
+      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia con sus fichas fuera, salvo las que digan otra cosa («Mala fama», las Murallas de Port Royal).',
     },
   ),
   elige: regla(
@@ -300,7 +300,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   comprometidoCon: regla(
     'comprometidoCon',
     'El Tripulante asignado con más (o menos)',
-    'El Tripulante asignado con el número impreso más alto (o más bajo) en esa habilidad, sin contar bonificaciones de Mejoras, Entrenamiento ni otras cartas. Si empatan, eliges tú.',
+    'El Tripulante asignado con el número impreso más alto (o más bajo) en esa habilidad, sin contar bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. Si empatan, eliges tú.',
     {
       rotulo: 'Detalles',
       texto:
@@ -408,8 +408,8 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   enrolado: regla(
     'enrolado',
     'Enrolado',
-    'Enrolado N: al reclutarlo, se pone sobre él un dado con el N. Al final de cada turno baja 1, hayas zarpado o no. Cuando llega a 0, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
-    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas, y los turnos en que te quedas en puerto. No cuenta como derrotado. El Enrolado no se renueva ni sube.' },
+    'Enrolado N: al reclutarlo, recibe N fichas de Enrolado. Al final de cada turno pierde 1, hayas zarpado o no. Cuando no le queda ninguna, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
+    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas, y los turnos en que te quedas en puerto. No cuenta como derrotado. Las fichas no se renuevan ni se añaden.' },
   ),
   otear: regla(
     'otear',

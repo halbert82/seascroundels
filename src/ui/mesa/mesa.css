@@ -503,19 +503,6 @@
   opacity: 0.7;
 }
 
-/* Fase 16: los contadores se llevan con dados: se dibujan como la cara de un dado (marfil, esquinas redondeadas). */
-.ficha.dado {
-  border-radius: 5px;
-  padding: 0 6px;
-  background: linear-gradient(180deg, #fbf3df, #d8c7a0);
-  border: 1px solid #8a6d3b;
-  color: #2a2118;
-  text-shadow: none;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.6);
-}
-.ficha.dado small {
-  opacity: 0.75;
-}
 .ficha-herida {
   background: linear-gradient(180deg, #a3271c, #6e140c);
   border-color: #e7a07f;

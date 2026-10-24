@@ -126,7 +126,17 @@ export function jugarPartida(
     modo,
     sinEscenario,
     textos = false,
-  }: { invariantes?: boolean; mazoDeMuelle?: CartaId[]; variante?: Estado['variante']; modo?: Modo; sinEscenario?: boolean; textos?: boolean } = {},
+    alPaso,
+  }: {
+    invariantes?: boolean
+    mazoDeMuelle?: CartaId[]
+    variante?: Estado['variante']
+    modo?: Modo
+    sinEscenario?: boolean
+    textos?: boolean
+    /** Se llama tras cada respuesta del jugador, con la partida tal como queda (para medir lo que hay en la mesa). */
+    alPaso?: (s: Estado) => void
+  } = {},
 ): Partida {
   let s = nuevaPartida({
     semilla,
@@ -189,6 +199,7 @@ export function jugarPartida(
       p.eleccionesEscenario.push({ carta: d.motivo.carta, texto })
     }
     s = responder(s, eleccion)
+    alPaso?.(s)
     if (invariantes) comprobarInvariantes(s, { json: false })
     for (const r of s.registro) {
       if (r.tipo === 'turno') zarpeAbierto = null

@@ -170,9 +170,8 @@ export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
       continue
     }
     // Fase 16, Extenuado: «Obligado: Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta
-    // esta carta.» Solo si iba a prepararse (estaba agotado).
-    // TODO(regla) P111: si en la Fase de Inicio ya estaba preparado, la carta se queda hasta la próxima vez que vaya a
-    // prepararse en una Fase de Inicio (el texto, al pie de la letra).
+    // esta carta.» Solo si iba a prepararse (estaba agotado). P111 (Albert): si en la Fase de Inicio ya estaba preparado,
+    // la carta se queda hasta la próxima Fase de Inicio en que vaya a prepararse (el texto, al pie de la letra).
     if (copia(s, c).agotada && s.zonas.tripulacion.includes(c) && tieneEstado(s, c, 'extenuado')) {
       quitarEstado(s, c, 'extenuado')
       anotar(s, 'aviso', `${nombre(s, c)} está Extenuado: no se prepara (descartas su carta de Extenuado).`)

@@ -176,6 +176,8 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
           </b>
         </span>
       )}
+      {/* TODO(regla): P114 — heridas y daño son fichas distintas (las cartas usan iconos distintos); si Albert elige una
+          sola ficha de daño para Tripulantes y Barco, esta ficha y la del Barco pasan a ser la misma. */}
       {heridas > 0 && (
         <span className="ficha ficha-herida" title={`${heridas} ${heridas === 1 ? 'herida' : 'heridas'}${vida ? ` de ${vida}` : ''}`}>
           <span className={claseIcono('herida')} />
@@ -192,21 +194,24 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
         </span>
       )}
       {contador !== undefined && (
-        // Fase 10: un solo tipo de contador, también para las cartas que se quedan en juego y llevan la cuenta de algo. Fase 16:
-        // se lleva con un dado (se dibuja como un dado).
-        <span className="ficha ficha-contador dado" title={`Contador: ${contador} (un dado sobre esta carta)`}>
+        // Fase 10: un solo tipo de ficha genérica, también para las cartas que se quedan en juego y llevan la cuenta de algo.
+        // TODO(regla): P113 — se llaman «fichas» (como en las cartas); si Albert elige «contadores», cambia este rótulo.
+        <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha' : 'fichas'} en esta carta (su contador)`}>
           <b>{contador}</b>
+          <small>{contador === 1 ? 'ficha' : 'fichas'}</small>
         </span>
       )}
       {enrolado !== undefined && (
         <span
-          className="ficha ficha-contador ficha-enrolado dado"
-          title={`Enrolado: ${enrolado}. Su dado baja 1 al final de cada turno y se va al llegar a 0.`}
+          className="ficha ficha-contador ficha-enrolado"
+          title={`Enrolado: ${enrolado} ${enrolado === 1 ? 'ficha' : 'fichas'}. Pierde 1 al final de cada turno y se va cuando no le queda ninguna.`}
         >
           <b>{enrolado}</b>
           <small>Enrolado</small>
         </span>
       )}
+      {/* TODO(regla): P115 — el Entrenamiento es una ficha propia «+1»; si Albert elige la ficha genérica sobre el icono de
+          la habilidad, se dibuja como las demás fichas genéricas. */}
       {entrenamiento.map((h, i) => (
         <span key={i} className={`ficha ficha-entrenamiento hab-${h.toLowerCase()}`} title={`Entrenamiento: +1 ${h}`}>
           <span className={claseIcono(h as 'NAV')} />

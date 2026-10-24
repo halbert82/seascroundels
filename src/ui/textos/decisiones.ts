@@ -409,7 +409,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'curarUno':
       return { titulo: `¿A quién curas ${plural(n, 'herida', 'heridas')}?` }
     case 'entrenamiento':
-      return { titulo: '¿Quién recibe el Entrenamiento?', ayuda: '+1 a una habilidad. Ocupa un hueco de Mejora.' }
+      return { titulo: '¿Quién recibe la ficha de Entrenamiento?', ayuda: '+1 a una habilidad. Ocupa un hueco de Mejora.' }
     case 'habilidadEntrenamiento':
       return { titulo: '¿A qué habilidad va el +1?' }
     case 'opcionAutomatica':

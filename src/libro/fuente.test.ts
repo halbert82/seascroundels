@@ -91,6 +91,18 @@ describe('Marcas nuevas', () => {
     const grupos = capitulo('Componentes').bloques.filter((b) => b.tipo === 'componentes')
     expect(grupos.map((g) => (g.tipo === 'componentes' ? g.grupo : ''))).toEqual(['Cartas del jugador', 'Cartas del escenario El Caribe', 'Cartas de Estado y de Ventaja'])
   })
+
+  it('«Componentes» trae las fichas y un solo consejo con el dado; los comentarios del reglamento no salen en el libro', () => {
+    const html = htmlDe(capitulo('Componentes').bloques)
+    expect(html).toContain('<h4 class="componentes-grupo">Fichas</h4>')
+    expect(html).toContain('<li>Fichas genéricas, todas iguales, para los contadores y para ')
+    expect(html).not.toContain('<!--')
+    // Fase 16, corrección de Albert: los dados son una regla casera; solo los nombra el consejo de Componentes.
+    const consejos = capitulo('Componentes').bloques.filter((b) => b.tipo === 'consejo')
+    expect(consejos.map((b) => ('html' in b ? b.html : ''))).toEqual([expect.stringContaining('puedes llevar cualquier cuenta con un dado sobre la carta')])
+    const todo = [...r.aprende.capitulos.flatMap((c) => c.bloques), ...r.referencia.entradas.flatMap((e) => e.bloques)]
+    expect(todo.filter((b) => 'html' in b && /\bdados?\b/i.test(b.html.replace(/Dados cargados/g, '')))).toHaveLength(1)
+  })
 })
 
 describe('Textos de la última ronda (docs/archivo/reglamento-textos.md)', () => {
