@@ -750,6 +750,20 @@
    "ambientacion": "«Recoge trapo, vira en redondo y que la tormenta pase de largo.»",
    "espacio": 1,
    "canon": false
+  },
+  {
+   "id": "culebrina_sanjose",
+   "num": 278,
+   "nombre": "La culebrina del San José",
+   "copias": 1,
+   "senda": "Neutral",
+   "coste": 0,
+   "unico": false,
+   "texto": "Pon esta carta en juego. Si no tienes Espacio, vuelve a barajarla en el mazo del naufragio.\n[mar], [agotar]: Una Prueba de [COM] o de [NAV] recibe {+2}.",
+   "ambientacion": "«Bronce del Rey, con su escudo y todo. Subirla costó la tarde entera.»",
+   "espacio": 1,
+   "canon": true,
+   "mision": "naufragio"
   }
  ],
  "mejorasTripulante": [
@@ -1379,19 +1393,19 @@
    "ambientacion": "«Cada corriente del Caribe, anotada en holandés.»"
   },
   {
-   "id": "cadena_oro",
+   "id": "campana_sanjose",
    "num": 270,
-   "nombre": "Cadena de oro del San José",
+   "nombre": "La campana del San José",
    "tipo": "Mejora de barco",
-   "texto": "**Acción:** Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes o adquieras cuesta {3} menos.",
-   "ambientacion": "«Cada eslabón paga a un marinero. Y hay muchos eslabones.»"
+   "texto": "Pon esta carta en juego.\nIndestructible.\n**Al zarpar:** [mar]: Otea 2.",
+   "ambientacion": "«Bajo el agua no sonaba. Ahora avisa de lo que viene.»"
   },
   {
    "id": "doblon",
    "num": 271,
    "nombre": "El doblón de la calavera",
    "tipo": "Mejora de barco",
-   "texto": "Indestructible.\nNo puedes descartar esta carta.\nAl entrar en juego, gana {2 rep}.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar.",
+   "texto": "Pon esta carta en juego.\nIndestructible.\nNo puedes descartar esta carta.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar.",
    "ambientacion": "«Era del capitán del San José. Ahora es tuyo.»"
   }
  ],
@@ -10537,8 +10551,8 @@
    ]
   },
   {
-   "id": "pecio",
-   "nombre": "El pecio del San José",
+   "id": "naufragio",
+   "nombre": "El naufragio del San José",
    "reto": "Aventura",
    "inicial": false,
    "aventura": true,
@@ -10547,31 +10561,32 @@
     {
      "capitulo": "I",
      "num": 268,
-     "nombre": "El pecio del San José",
+     "nombre": "El naufragio del San José",
      "entorno": "mar",
      "avanceNecesario": 4,
      "distancia": 0,
      "reglas": [
-      "Cuando esta misión vaya a superarse, baraja el mazo del pecio. Puedes bucear las veces que quieras: agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio.",
-      "Si es buena, quédatela. Si es mala, aplícala y vuelve a barajarla en el mazo del pecio."
+      "Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio. Después, puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio."
      ],
      "ambientacion": "«El galeón se hundió con la plata del virrey. Nadie ha bajado hasta el fondo.»",
      "recompensa": {
-      "texto": "Lo que saques del mazo del pecio ~(cartas 269 a 271 y 277 a 283 del mazo de historia)~."
+      "texto": "Lo que saques del mazo del naufragio ~(cartas 269 a 271 y 277 a 285 del mazo de historia)~."
      },
      "siguiente": [],
      "textoSiguiente": "",
-     "mazoPecio": [
+     "mazoNaufragio": [
       269,
       277,
       278,
-      279,
       270,
+      279,
+      282,
       271,
       280,
       281,
-      282,
-      283
+      283,
+      284,
+      285
      ]
     }
    ]
@@ -10672,7 +10687,7 @@
   "aventuras": [
    "ladron",
    "gobernador",
-   "pecio",
+   "naufragio",
    "escolta",
    "asedio",
    "regata"
@@ -11215,78 +11230,78 @@
    "junto": false
   }
  ],
- "pecio": [
+ "naufragio": [
   {
-   "id": "pecio_doblones",
+   "id": "naufragio_cofre",
    "num": 269,
-   "nombre": "Doblones sueltos",
-   "mision": "pecio",
-   "clase": "buena",
-   "texto": "Roba {2 robar}.",
-   "ambientacion": "«Monedas de a ocho por todo el fondo, como conchas.»"
+   "nombre": "El cofre del virrey",
+   "mision": "naufragio",
+   "texto": "Quédate esta carta. Si también tienes «La llave del cofre», gana {1 rep}.",
+   "ambientacion": "«Hierro negro, tres cerraduras y el escudo de Castilla. Pesa como un muerto.»"
   },
   {
-   "id": "pecio_tablones",
+   "id": "naufragio_llave",
    "num": 277,
-   "nombre": "Tablones y jarcia",
-   "mision": "pecio",
-   "clase": "buena",
-   "texto": "Repara {2 dano g}.",
-   "ambientacion": "«Roble de Cuba y cabos de cáñamo. Ni el mar los ha podido pudrir.»"
+   "nombre": "La llave del cofre",
+   "mision": "naufragio",
+   "texto": "Quédate esta carta. Si también tienes «El cofre del virrey», gana {1 rep}.",
+   "ambientacion": "«Colgaba del cuello de un esqueleto con galones.»"
   },
   {
-   "id": "pecio_culebrina",
-   "num": 278,
-   "nombre": "Una culebrina del galeón",
-   "mision": "pecio",
-   "clase": "buena",
-   "texto": "Busca una Mejora con el Rasgo _Cañón_ en el mazo de muelle y ponla en juego sin coste. Si no tienes Espacio, no la pones.",
-   "ambientacion": "«Bronce del Rey, con su escudo y todo. Subirla costará la tarde entera.»"
-  },
-  {
-   "id": "pecio_botica",
+   "id": "naufragio_diario",
    "num": 279,
-   "nombre": "La botica del cirujano",
-   "mision": "pecio",
-   "clase": "buena",
-   "texto": "Cura {2 herida g}.",
-   "ambientacion": "«Frascos lacrados que el agua no ha tocado.»"
+   "nombre": "El diario del capitán",
+   "mision": "naufragio",
+   "texto": "Busca en el mazo de Misiones el capítulo I de una travesía. Ponlo entre tus misiones disponibles en lugar de una de ellas, que va al fondo del mazo de Misiones, y pon {2 avance} sobre él.",
+   "ambientacion": "«Rumbos, sondas y una isla que no sale en ninguna carta.»"
   },
   {
-   "id": "pecio_tiburon",
+   "id": "naufragio_tiburon",
    "num": 280,
    "nombre": "Tiburón",
-   "mision": "pecio",
-   "clase": "mala",
-   "texto": "El buzo sufre {2 herida}.",
+   "mision": "naufragio",
+   "texto": "El Tripulante que ha robado esta carta sufre {1 herida}.\nVuelve a barajar esta carta en el mazo del naufragio.",
    "ambientacion": "«Una sombra entre las cuadernas. Luego, dos.»"
   },
   {
-   "id": "pecio_morena",
+   "id": "naufragio_coral",
    "num": 281,
-   "nombre": "Morena en la bodega",
-   "mision": "pecio",
-   "clase": "mala",
-   "texto": "El buzo sufre {1 herida}.",
-   "ambientacion": "«Metió la mano en el arcón equivocado.»"
+   "nombre": "Coral cortante",
+   "mision": "naufragio",
+   "texto": "El Tripulante que ha robado esta carta queda **Sangrando**.\nVuelve a barajar esta carta en el mazo del naufragio.",
+   "ambientacion": "«Ha crecido sobre el casco como una corona de cuchillas.»"
   },
   {
-   "id": "pecio_sinaire",
+   "id": "naufragio_bolsa",
    "num": 282,
-   "nombre": "Sin aire",
-   "mision": "pecio",
-   "clase": "mala",
-   "texto": "El buzo sufre {1 herida}.\nNo puedes bucear más en esta misión.",
-   "ambientacion": "«Sube morado y escupiendo agua. Hoy no baja nadie más.»"
+   "nombre": "Una bolsa de aire",
+   "mision": "naufragio",
+   "texto": "Prepara a todos tus Tripulantes.",
+   "ambientacion": "«Atrapada en la cámara del capitán. Un trago y otra vez abajo.»"
   },
   {
-   "id": "pecio_corriente",
+   "id": "naufragio_ahogados",
    "num": 283,
-   "nombre": "Corriente de fondo",
-   "mision": "pecio",
-   "clase": "mala",
-   "texto": "Devuelve al mazo del pecio una carta buena que hayas sacado en esta misión y barájalo (si es un Tesoro, sale del juego). Si no tienes ninguna, no ocurre nada.",
-   "ambientacion": "«El agua arrastra lo que habíais apilado junto al casco.»"
+   "nombre": "Los ahogados del San José",
+   "mision": "naufragio",
+   "texto": "El Tripulante que ha robado esta carta queda **Maldito**.\nVuelve a barajar esta carta en el mazo del naufragio.",
+   "ambientacion": "«Seiscientas almas bajaron con él. Alguna sigue a bordo.»"
+  },
+  {
+   "id": "naufragio_raqueros",
+   "num": 284,
+   "nombre": "Raqueros en el horizonte",
+   "mision": "naufragio",
+   "texto": "El Barco queda **Perseguido**.\nVuelve a barajar esta carta en el mazo del naufragio.",
+   "ambientacion": "«Velas sin bandera. Han visto vuestras boyas.»"
+  },
+  {
+   "id": "naufragio_pulpo",
+   "num": 285,
+   "nombre": "El pulpo de la bodega",
+   "mision": "naufragio",
+   "texto": "El pulpo atrapa al Tripulante que ha robado esta carta. **Elige:**\nSacarlo entre dos: agota a otro Tripulante preparado.\nQue se suelte solo: el Tripulante que ha robado esta carta sufre {2 herida}.\nVuelve a barajar esta carta en el mazo del naufragio.",
+   "ambientacion": "«Ocho brazos y ninguna prisa.»"
   }
  ]
 }

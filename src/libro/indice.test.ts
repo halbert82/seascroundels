@@ -156,7 +156,7 @@ describe('Índice de términos de la Referencia de reglas', () => {
   })
 
   it('fase 15 · «Descomunal» y «Alerta» tienen su entrada y su línea («Descomunal 2» de las cartas cuenta como «Descomunal»)', () => {
-    for (const t of ['Descomunal', 'Alerta', 'Mazo del pecio']) expect(r.referencia.entradas.map((e) => e.titulo)).toContain(t)
+    for (const t of ['Descomunal', 'Alerta', 'Mazo del naufragio']) expect(r.referencia.entradas.map((e) => e.titulo)).toContain(t)
     expect(enElIndice('Descomunal 2')).toBe(true)
     expect(enElIndice('Alerta')).toBe(true)
   })
@@ -176,7 +176,7 @@ describe('Índice de términos de la Referencia de reglas', () => {
 
   it('cada ficha de misión que usan las misiones tiene su línea', () => {
     const fichas = new Set(CATALOGO.filter((e) => e.tipo === 'capitulo').flatMap((e) => (reglasMision(e.id)?.fichas ?? []).map((f) => f.nombre)))
-    expect(fichas.size).toBe(8) // fase 12: Derrumbe; fase 15: Rival (la Profundidad se fue con el pecio rehecho)
+    expect(fichas.size).toBe(8) // fase 12: Derrumbe; fase 15: Rival (la Profundidad se fue con el pecio)
     for (const f of fichas) expect(indice).toContainEqual(expect.objectContaining({ termino: f, en: 'Fichas de misión' }))
   })
 

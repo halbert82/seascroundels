@@ -1,7 +1,7 @@
 // Fase 15 · medida informativa de la partida normal (sin informe): `MEDIR_F15=1 npx vitest run src/engine/medir-fase15.informe.test.ts`.
 // Juega las mismas partidas que el informe (semillas 1–N, mazos de inicio, el jugador con criterio) y cuenta lo que pidió
 // Albert de las misiones nuevas: cuántas veces sale y se supera cada una, cómo se reparten los tres capítulos II de la
-// isla, cuántas cartas se sacan del mazo del pecio (y cuántas veces el doblón) y cuántas regatas se pierden. Escribe un JSON en MEDIR_SALIDA (o la consola).
+// isla, cuántas cartas se sacan del mazo del naufragio (cuántas veces se juntan el cofre y la llave, y cuántas sale el doblón) y cuántas regatas se pierden. Escribe un JSON en MEDIR_SALIDA (o la consola).
 
 import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'
@@ -21,7 +21,7 @@ const NUEVAS = [
   'vanhoorn-II-b',
   'fugitivo-I',
   'fugitivo-II',
-  'pecio-I',
+  'naufragio-I',
   'escolta-I',
   'asedio-I',
   'regata-I',
@@ -33,7 +33,7 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
   const sin = process.env.MEDIR_F15_SIN
   if (sin === 'misiones') {
     DATOS.ordenMisiones.travesias = DATOS.ordenMisiones.travesias.filter((t) => !['isla', 'vanhoorn', 'fugitivo'].includes(t))
-    DATOS.ordenMisiones.aventuras = DATOS.ordenMisiones.aventuras.filter((t) => !['pecio', 'escolta', 'asedio', 'regata'].includes(t))
+    DATOS.ordenMisiones.aventuras = DATOS.ordenMisiones.aventuras.filter((t) => !['naufragio', 'escolta', 'asedio', 'regata'].includes(t))
   }
   if (sin === 'peligros') {
     const nuevos = ['p2_fuerza', 'p2_hombro', 'p2_ronda', 'p2_escapatoria', 'p2_respiro', 'p2_provisiones', 'p2_lenguas', 'p2_fondo']
@@ -71,32 +71,30 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
     }
   }
 
-  // El pecio (rehecho): cartas robadas del mazo del pecio en cada misión superada, cuáles salen y cuántas veces el doblón.
-  const robadasPorPecio: number[] = []
+  // El naufragio: cartas robadas del mazo del naufragio cada vez que se supera, cuáles salen y cuántos Tripulantes caen.
+  const robadasPorNaufragio: number[] = []
   const salen: Record<string, number> = {}
-  let sinAire = 0
-  let buzosDerrotados = 0
+  let derrotados = 0
   for (const p of partidas) {
     const t = textos(p)
     let enCurso: number | null = null
     for (const x of t) {
-      if (x.startsWith('Barajas el mazo del pecio')) enCurso = 0
+      if (x.startsWith('Barajas el mazo del naufragio')) enCurso = 0
       if (enCurso === null) continue
-      const m = /^Robas del mazo del pecio: «([^»]+)»/.exec(x)
+      const m = /^Robas del mazo del naufragio: «([^»]+)»/.exec(x)
       if (m?.[1]) {
         enCurso++
         salen[m[1]] = (salen[m[1]] ?? 0) + 1
       }
-      if (x.startsWith('Sin aire:')) sinAire++
-      if (x.endsWith('queda derrotado.')) buzosDerrotados++
-      if (x.startsWith('El mazo del pecio vuelve al mazo de historia') || x.startsWith('No buceas en el pecio')) {
-        robadasPorPecio.push(enCurso)
+      if (x.endsWith('queda derrotado.')) derrotados++
+      if (x.startsWith('El mazo del naufragio vuelve al mazo de historia')) {
+        robadasPorNaufragio.push(enCurso)
         enCurso = null
       }
     }
   }
-  const mediaRobadas = robadasPorPecio.length ? robadasPorPecio.reduce((a, b) => a + b, 0) / robadasPorPecio.length : 0
-  const repartoRobadas = robadasPorPecio.reduce<Record<number, number>>((r, n) => ({ ...r, [n]: (r[n] ?? 0) + 1 }), {})
+  const mediaRobadas = robadasPorNaufragio.length ? robadasPorNaufragio.reduce((a, b) => a + b, 0) / robadasPorNaufragio.length : 0
+  const repartoRobadas = robadasPorNaufragio.reduce<Record<number, number>>((r, n) => ({ ...r, [n]: (r[n] ?? 0) + 1 }), {})
 
   const contar = (frase: string) => cuenta((p) => textos(p).filter((x) => x.includes(frase)).length)
   const resumen = {
@@ -106,15 +104,22 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
     panama: (100 * partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo('panama') && r.resultado === 'superada')).length) / PARTIDAS,
     misiones,
     isla,
-    pecio: {
-      superada: misiones['pecio-I']?.superada ?? 0,
-      buceos: robadasPorPecio.length,
+    naufragio: {
+      superada: misiones['naufragio-I']?.superada ?? 0,
+      buceos: robadasPorNaufragio.length,
       mediaRobadas,
       repartoRobadas,
       salen,
+      cofreYLlave: contar('Juntas «'),
       doblon: salen['El doblón de la calavera'] ?? 0,
-      sinAire,
-      derrotasDuranteElBuceo: buzosDerrotados,
+      culebrinaEnJuego: contar('«La culebrina del San José» entra en juego'),
+      culebrinaSinEspacio: contar('No tienes Espacio para «La culebrina del San José»'),
+      diario: contar('pasa a tus misiones disponibles con'),
+      diarioPanama: contar('«El prisionero de Portobelo» pasa a tus misiones disponibles'),
+      diarioSinCapitulo: contar('No queda ningún capítulo I de travesía'),
+      pulpoEntreDos: contar('baja a ayudar: lo sacan entre dos'),
+      pulpoSolo: contar('El pulpo se suelta solo'),
+      derrotasDuranteElBuceo: derrotados,
       capitanSalvadoPorElDoblon: contar('El doblón de la calavera: '),
     },
     regata: { superadas: misiones['regata-I']?.superada ?? 0, perdidaContraElRival: contar('El rival gana la regata') },

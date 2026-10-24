@@ -108,7 +108,7 @@ export function deserializar(texto: string): Estado {
   // Fase 14 (fuera el rehén): los rehenes y los Tripulantes incautados vuelven a la tripulación. Una partida guardada justo
   // cuando se capturaba o se rescataba a alguien no se puede continuar.
   if (!migrarRehenes(s)) throw anterior()
-  migrarPecio(s)
+  if (!migrarNaufragio(s)) throw new Error('La partida guardada estaba buceando en «El pecio del San José», que ahora es «El naufragio del San José»: no se puede continuar')
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
@@ -139,24 +139,46 @@ function migrarRehenes(s: Estado): boolean {
   return true
 }
 
+/** Fase 15: las cartas del pecio (y las de antes del pecio rehecho) que pasan a ser cartas del naufragio con su número. */
+const DEL_PECIO_AL_NAUFRAGIO: Record<string, string> = {
+  fondo_sanjose: 'naufragio_cofre',
+  pecio_doblones: 'naufragio_cofre',
+  pecio_tablones: 'naufragio_llave',
+  pecio_culebrina: 'culebrina_sanjose',
+  pecio_botica: 'naufragio_diario',
+  pecio_tiburon: 'naufragio_tiburon',
+  pecio_morena: 'naufragio_coral',
+  pecio_sinaire: 'naufragio_bolsa',
+  pecio_corriente: 'naufragio_ahogados',
+  cadena_oro: 'campana_sanjose',
+  custodia: 'doblon',
+  'pecio-I': 'naufragio-I',
+}
+
 /**
- * Fase 15 (el pecio rehecho): las zonas del mazo del pecio son nuevas; la carta de consulta 269 pasa a ser «Doblones
- * sueltos», el Tesoro 271 pasa a ser «El doblón de la calavera» y las demás cartas del mazo del pecio esperan en el mazo de
- * historia. Fuera las fichas de Profundidad.
+ * Fase 15 (el naufragio): «El pecio del San José» pasa a ser «El naufragio del San José». Cada carta del pecio pasa a ser
+ * la del naufragio con su mismo número, y las dos nuevas (284 y 285) esperan en el mazo de historia. Devuelve false si la
+ * partida se guardó mientras se buceaba.
  */
-function migrarPecio(s: Estado): void {
+function migrarNaufragio(s: Estado): boolean {
   const zonas = s.zonas as Record<string, InstId[] | undefined>
-  for (const z of ['mazoPecio', 'pecioSacadas']) if (!Array.isArray(zonas[z])) zonas[z] = []
+  const mision = s.mision as (Estado['mision'] & { pecio?: unknown }) | null | undefined
+  if ((zonas.mazoPecio?.length ?? 0) > 0 || (zonas.pecioSacadas?.length ?? 0) > 0 || mision?.pecio !== undefined) return false
+  delete zonas.mazoPecio
+  delete zonas.pecioSacadas
+  for (const z of ['mazoNaufragio', 'naufragioQuedadas', 'naufragioApartadas']) if (!Array.isArray(zonas[z])) zonas[z] = []
   const cartas = Object.values(s.cartas ?? {})
-  if (cartas.length === 0) return
-  for (const c of cartas) {
-    if (c.id === 'fondo_sanjose') c.id = 'pecio_doblones'
-    if (c.id === 'custodia') c.id = 'doblon'
-  }
+  if (cartas.length === 0) return true
+  for (const c of cartas) c.id = DEL_PECIO_AL_NAUFRAGIO[c.id] ?? c.id
+  s.temporales = (s.temporales ?? []).filter((t) => t.clave !== 'cadena_oro.descuento')
   const ids = new Set(cartas.map((c) => c.id))
-  for (const e of CATALOGO) if (e.tipo === 'pecio' && !ids.has(e.id)) crearCopia(s, e.id, 'mazoHistoria')
+  for (const e of CATALOGO) {
+    const delNaufragio = e.tipo === 'naufragio' || (e.tipo === 'mejoraBarco' && e.carta.mision !== undefined)
+    if (delNaufragio && !ids.has(e.id)) crearCopia(s, e.id, 'mazoHistoria')
+  }
   const fichas = s.mision?.fichas as Record<string, number> | undefined
   if (fichas && 'profundidad' in fichas) delete fichas.profundidad
+  return true
 }
 
 /** Quita una copia de la partida (de su zona y de las cartas). */

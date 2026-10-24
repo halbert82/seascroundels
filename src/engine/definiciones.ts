@@ -33,8 +33,6 @@ export interface DefinicionPrueba {
   minimo?: number
   /** Solo puede hacerla este Tripulante (ya agotado como coste, se compromete solo). */
   soloCon?: InstId
-  /** Fase 15: se hace con la misión ya superada («cuando esta misión vaya a superarse, puedes bucear»): no se corta. */
-  trasSuperar?: boolean
 }
 
 /**

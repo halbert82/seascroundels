@@ -1067,7 +1067,7 @@ Decisiones de Albert en la sesión de diseño del 23 de octubre. Cada una con su
 
 ### Misiones sueltas nuevas (aventuras)
 
-- **268 El pecio del San José** (Mar 4, rehecho el 23 de octubre: un mazo de recompensas en lugar de la tabla de Profundidad): ya no da reputación básica. «Cuando esta misión vaya a superarse, baraja el mazo del pecio. Puedes bucear las veces que quieras: agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio. Si es buena, quédatela. Si es mala, aplícala y vuelve a barajarla en el mazo del pecio.» Sin Prueba ni Destino: el límite son los Tripulantes preparados. El **mazo del pecio** son 10 cartas del mazo de historia: la 269 (deja de ser carta de consulta; el tipo «carta de consulta» desaparece), los Tesoros 270 y 271 y las cartas nuevas 277–283. Las buenas no vuelven al mazo (el riesgo sube solo); al terminar la misión, el mazo del pecio y lo sacado vuelven al mazo de historia, salvo los Tesoros en juego. Ver la sección «El pecio del San José, rehecho» más abajo.
+- **268 El naufragio del San José** (Mar 4; antes «El pecio del San José», rehecho dos veces: la tabla de Profundidad el 23 de octubre y el mazo de cartas buenas y malas el 24): sin reputación ni recompensa propia. «Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio. Después, puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.» Cada carta dice qué hacer con ella. Ver la sección «El naufragio del San José» más abajo.
 - **272 Escolta del San Telmo** (Mar 6): al zarpar, pon en juego la carta 273, «Galeón San Telmo» (Vida 4): cada Prueba que falles le inflige 1 daño (Albert, 23 de octubre: «Obligado: Después de que falles una Prueba, inflige 1 daño a esta carta», cualquier Prueba, no solo las de COM; prueba con «Chubasco», NAV 2); puede sufrir parte del daño del Barco, o todo, en su lugar (Interrupción); sin Vida restante, la misión falla. Recompensa: 2; si el galeón tiene 3 o más de Vida restante, 1 más y robas 2.
 - **274 El asedio de Port Royal** (Ciudad 7): cuando pasa a estar disponible, pon en juego la carta 275, «Murallas de Port Royal» (Vida 6): al final de cada turno en que no hayas zarpado a esa misión, 1 daño; cada Prueba que falles en ella, 1 daño; pueden sufrir el daño del Barco durante esa misión; sin Vida restante, −2 de reputación, la misión va al fondo del mazo de Misiones y la carta vuelve al mazo de historia. Recompensa: 2; con 4 o más de Vida restante, 1 más. Sin mazo de Encargos.
 - **276 La regata de San Juan** (Mar 6): después de revelar cada carta de Peligro, 2 fichas de Rival; cada Prueba de NAV superada, 1 de Avance adicional; con 8 o más fichas de Rival, el rival gana la regata y al superarla ganas 1 de reputación en lugar de su recompensa. Recompensa: 2 y el Tesoro 148, «Gallardete de San Juan» (+1 Mando).
@@ -1098,7 +1098,7 @@ El mazo de Peligros pasa de 56 cartas a 64 (63 en el mazo y «La Armada te persi
 
 ### Numeración
 
-Las 32 cartas nuevas: 247–254 (Peligros), 255–258 (la isla), 259–263 (van Hoorn), 264–267 (el fugitivo), 268–271 (el pecio), 272–273 (la escolta), 274–275 (el asedio) y 276 (la regata), más los dos números libres: 136, «Mala fama», y 148, «Gallardete de San Juan». La caja pasa de 224 a 256 cartas y ya no tiene huecos. Con el pecio rehecho, 7 más (277–283, del mazo del pecio): **263 cartas**.
+Las 32 cartas nuevas: 247–254 (Peligros), 255–258 (la isla), 259–263 (van Hoorn), 264–267 (el fugitivo), 268–271 (el pecio), 272–273 (la escolta), 274–275 (el asedio) y 276 (la regata), más los dos números libres: 136, «Mala fama», y 148, «Gallardete de San Juan». La caja pasa de 224 a 256 cartas y ya no tiene huecos. Con el pecio rehecho, 7 más (277–283, del mazo del pecio): 263 cartas. Con el naufragio (24 de octubre), 2 más (284 y 285): **265 cartas**.
 
 ### Mazo de Misiones
 
@@ -1106,11 +1106,11 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 
 ### Jugador automático
 
-- **Bucear (Albert, pecio rehecho):** se planta cuando en el mazo del pecio quedan tantas malas como buenas o más, o cuando la peor mala que queda (el Tiburón, 2 heridas) podría derrotar al buzo. Baja el preparado que aguante la peor mala y más Vida conserve, y el Capitán solo si no hay otro (con el doblón en juego, el Capitán no corre peligro). «Corriente de fondo»: devuelve antes una carta ya aplicada que un Tesoro. La culebrina: el Cañón más caro que quepa. Para elegir a qué misión zarpa, valora el pecio como 1 de reputación.
+- **Bucear (Albert, naufragio):** no baja nadie a quien la siguiente herida (el Tiburón, 1) o el pulpo (2, si no queda nadie preparado que pueda sacarlo) podrían derrotar; si está Sangrando, cuenta la herida de agotarse. Se planta cuando en el mazo quedan tantas cartas que hacen daño (las que vuelven barajadas) como de las otras, salvo que tenga una mitad del cofre y la otra siga en el mazo: entonces baja a buscarla. Baja el preparado que más Vida conserve, y el Capitán solo si no hay otro (con el doblón en juego, el Capitán no corre peligro). El pulpo: lo sacan entre dos si hay alguien preparado a quien agotarse no le derrote (el que menos vale). El diario: trae el capítulo I que mejor puntúa y cambia la misión disponible que peor puntúa. Para elegir a qué misión zarpa, valora el naufragio como 1 de reputación.
 - **Descansar o seguir:** descansa si casi toda la tripulación está agotada (o, en el Mar, si hay 3 o más heridas; en Ciudad, si dos o más tienen Estados) y aún le faltan 2 o más de Avance; si no, sigue.
 - **Destina de van Hoorn:** lo usa tras resolver un encuentro cuando el Rival llega a 6 (el siguiente Peligro lo pondría a 8) y aún le falta Avance.
 - **Desviar al Protegido:** nunca lo deja a 0. Si el Barco se hundiría (o el Tripulante quedaría derrotado), desvía todo lo que puede; si no, solo lo que le sobra por encima de la Vida que da la recompensa de más (3 el galeón, 4 las murallas; el prisionero, por encima de 1).
-- **Cadena de oro:** la gasta en la Fase de Reclutamiento si en el muelle hay un Tripulante o una Mejora que quiera de coste 3 o más. **Mala fama:** la quita (2 cartas) si tiene 4 o más en la mano, sitio en el Barco y Tripulantes en el muelle.
+- **Mala fama:** la quita (2 cartas) si tiene 4 o más en la mano, sitio en el Barco y Tripulantes en el muelle.
 
 ### Textos que se han ajustado para que quepan o se entiendan (sin cambiar lo que hacen)
 
@@ -1149,6 +1149,8 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 
 ### El pecio del San José, rehecho (23 de octubre): un mazo de recompensas en lugar de la tabla
 
+*Sustituido el 24 de octubre por «El naufragio del San José» (más abajo). Se deja como historia.*
+
 - **La misión (268):** Mar · Avance 4 (antes 3) · sin reputación básica. Reglas en dos párrafos: «Cuando esta misión vaya a superarse, baraja el mazo del pecio. Puedes bucear las veces que quieras: agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio.» / «Si es buena, quédatela. Si es mala, aplícala y vuelve a barajarla en el mazo del pecio.» La recompensa dice «Lo que saques del mazo del pecio.» y la pastilla de abajo, «El mazo del pecio: cartas 269 a 271 y 277 a 283 del mazo de historia» (para encontrarlas en la caja).
 - **El mazo del pecio (10 cartas del mazo de historia).** Buenas (6), te las quedas: 269 «Doblones sueltos» (Roba 2); 277 «Tablones y jarcia» (Repara 2); 278 «Una culebrina del galeón» (Busca una Mejora con el Rasgo Cañón en el mazo de muelle y ponla en juego sin coste. Si no tienes Espacio, no la pones); 279 «La botica del cirujano» (Cura 2); el Tesoro 270 «Cadena de oro del San José» (sin cambios) y el Tesoro 271 «El doblón de la calavera» (antes «La custodia de esmeraldas»). Malas (4), se aplican y vuelven barajadas: 280 «Tiburón» (el buzo sufre 2 heridas); 281 «Morena en la bodega» (1 herida); 282 «Sin aire» (1 herida; no puedes bucear más en esta misión); 283 «Corriente de fondo» (devuelve al mazo del pecio una carta buena que hayas sacado en esta misión y barájalo, si es un Tesoro, sale del juego; si no tienes ninguna, no ocurre nada). Cada una con su ambientación corta.
 - **271 «El doblón de la calavera»** (Tesoro, Mejora de barco): «Indestructible. No puedes descartar esta carta. Al entrar en juego, gana 2 de reputación. Tu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con 1 Vida restante. Tu Capitán queda **Maldito**, y este Estado no se le puede quitar.» Ese Maldito no se quita al superar una Prueba, ni en la Taberna, ni con ninguna carta. Las demás formas de perder la partida no cambian. Es la única reputación del pecio.
@@ -1157,6 +1159,8 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - *Pruebas (fase15-misiones.test):* se baraja el mazo (6 y 4) y sin bucear la misión no da nada; una buena sale del mazo (los Doblones: agotas al buzo y robas 2); una mala vuelve barajada (el Tiburón: 2 heridas al Capitán); «Sin aire» corta el buceo y el pecio vuelve al mazo de historia; «Corriente de fondo» devuelve la Cadena de oro (sale del juego) y sin buenas no hace nada; las otras buenas (repara 2, cura 2, la culebrina pone los Cañones de bronce y, sin Espacio, nada); sin Tripulantes preparados no se bucea; el doblón (2 de reputación y el Capitán Maldito; el Capitán no cae con el Tiburón; el Maldito no se quita en la Taberna ni al superar una Prueba; no se pierde al hundirse el Barco y «Corriente de fondo» no lo devuelve); el jugador automático se planta con 4 y 4, o si la peor mala derrotaría al buzo.
 
 ### Lecturas del pecio y del doblón (no son preguntas)
+
+*Del pecio, sustituido por el naufragio. Siguen valiendo las del doblón (el Maldito que no se quita y salvar al Capitán, Obligado).*
 
 - **El buzo** lo elige el jugador entre sus Tripulantes preparados (si solo hay uno, baja él). «El buzo sufre…» hiere al que ha bajado en esa inmersión.
 - **Las buenas** se aplican al robarlas y se quedan a un lado; las de efecto ya están aplicadas, así que «Corriente de fondo» no deshace lo que hicieron: solo las devuelve al mazo (y pueden volver a salir).
@@ -1167,10 +1171,67 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 
 ### Preguntas nuevas para Albert (P103–P106), con la opción por defecto aplicada
 
+*Respondidas el 24 de octubre: ver «Respuestas de Albert, segunda ronda».*
+
 - **P103 · «Corriente de fondo» y el doblón.** El doblón dice «No puedes descartar esta carta». Por defecto, «Corriente de fondo» no puede devolverlo al mazo del pecio (sería quitarlo del juego y librarse del Maldito después de cobrar los 2 de reputación). *Ejemplo:* sacas el doblón (+2) y después «Corriente de fondo»: si no tienes otra buena, no ocurre nada; si tienes los Doblones sueltos, vuelven ellos. La otra opción: también puede devolverlo (y el Capitán deja de estar protegido, aunque conserva el Maldito hasta que se le quite). `TODO(regla) P103` en el código.
 - **P104 · Avance del barco del fugitivo con COM 3.** La regla de la fase 11 dice que una Prueba de dificultad 3 o menos da 1 / 1. Por defecto, el barco pasa de 3 / 2 a **1 / 1** (si lo superas, 1 de Avance; si no, la misión falla igualmente). *Ejemplo:* capturas al prisionero con Diego y te faltan 5 de Avance (antes, 3). Hace la misión algo más larga. La otra opción: una excepción, 3 / 2 como antes.
 - **P105 · Línea de tipo de las cartas del pecio.** Por defecto, «Mazo del pecio · Buena» y «Mazo del pecio · Mala», para que se sepa al robarla qué hacer (la misión dice «si es buena… si es mala…»). La otra opción: otro nombre (por ejemplo, «Hallazgo» y «Percance»), cambiando también el texto de la misión.
 - **P106 · Dorso de los Tesoros 270 y 271.** Van en el mazo del pecio, que se baraja boca abajo: si llevaran el dorso de muelle de los demás Tesoros, se sabría cuándo toca uno. Por defecto, los dos llevan el dorso de misión, como las otras ocho.
+
+### Respuestas de Albert, segunda ronda (24 de octubre)
+
+- **P103 · «Corriente de fondo» y el doblón:** sin objeto. «Corriente de fondo» sale del juego con el naufragio.
+- **P104 · Avance del barco del fugitivo con COM 3: SÍ, sin excepción.** Da 1 / 1 por la regla general de la fase 11 (dificultad 3 o menos). *Ejemplo:* Diego solo (COM 3) supera el barco, el prisionero entra en juego y la misión gana 1 de Avance. *Prueba:* «el barco del fugitivo es COM 3…» y `avance.test.ts`.
+- **P105 · Línea de tipo de las cartas del pecio:** sustituida por el naufragio. Sus cartas no llevan marca de buena o mala: la línea de tipo dice «Mazo del naufragio» y todas tienen el mismo color.
+- **P106 · Mismo dorso para todo el mazo: SÍ.** Las doce cartas del mazo del naufragio, también la culebrina y los dos Tesoros, llevan el dorso de misión.
+- **Para la revisión de Peligros de Albert** (solo apuntado; no se ha cambiado nada): ver «Efectos que hay que recordar para el turno siguiente», más abajo.
+
+### El naufragio del San José (24 de octubre): sustituye al pecio
+
+- **La misión (268):** «El naufragio del San José» · misión suelta · Mar · Avance 4 · sin reputación ni recompensa propia. Texto: «Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio. Después, puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.» La caja de recompensa solo dice dónde están las cartas: «Lo que saques del mazo del naufragio (cartas 269 a 271 y 277 a 285 del mazo de historia)».
+- **Regla del motor (Albert), no de las cartas:** cada carta dice qué hacer con ella: «Quédate esta carta» (a un lado, hasta que termine la misión), «Pon esta carta en juego» o «Vuelve a barajar esta carta en el mazo del naufragio». Una carta que no dice nada de esto se aparta después de aplicarla. Al terminar la misión, todo el mazo del naufragio vuelve al mazo de historia, salvo las cartas que estén en juego. El motor lo lee del texto de cada carta: una carta nueva que use esas frases funciona sola.
+- **El mazo del naufragio (12 cartas, todas con el mismo dorso y sin marca de buena o mala):**
+  - 269 «El cofre del virrey»: «Quédate esta carta. Si también tienes «La llave del cofre», gana 1 [rep].»
+  - 277 «La llave del cofre»: «Quédate esta carta. Si también tienes «El cofre del virrey», gana 1 [rep].» La reputación se gana una sola vez, al tener las dos.
+  - 278 «La culebrina del San José» · Mejora de barco · Cañón · Espacio 1 (sin coste ni Clase: no se compra): «Pon esta carta en juego. Si no tienes Espacio, vuelve a barajarla en el mazo del naufragio. [mar], [agotar]: Una Prueba de [COM] o de [NAV] recibe +2.»
+  - 270 «La campana del San José» · Tesoro (sustituye a la Cadena de oro): «Pon esta carta en juego. Indestructible. Al zarpar: [mar]: Otea 2.»
+  - 279 «El diario del capitán»: «Busca en el mazo de Misiones el capítulo I de una travesía. Ponlo entre tus misiones disponibles en lugar de una de ellas, que va al fondo del mazo de Misiones, y pon 2 [avance] sobre él.» Si no hay ninguno, no ocurre nada.
+  - 282 «Una bolsa de aire»: «Prepara a todos tus Tripulantes.» No vuelve al mazo.
+  - 271 «El doblón de la calavera» · Tesoro, ya sin reputación: «Pon esta carta en juego. Indestructible. No puedes descartar esta carta. Tu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con 1 Vida restante. Tu Capitán queda Maldito, y este Estado no se le puede quitar.» Ese Maldito no se quita al superar una Prueba, ni en la Taberna, ni con ninguna carta. Las demás formas de perder la partida no cambian.
+  - 280 «Tiburón»: «El Tripulante que ha robado esta carta sufre 1 [herida]. Vuelve a barajar esta carta en el mazo del naufragio.»
+  - 281 «Coral cortante»: «El Tripulante que ha robado esta carta queda Sangrando. Vuelve a barajar…»
+  - 283 «Los ahogados del San José»: «El Tripulante que ha robado esta carta queda Maldito. Vuelve a barajar…»
+  - 284 «Raqueros en el horizonte» (nueva): «El Barco queda Perseguido. Vuelve a barajar…»
+  - 285 «El pulpo de la bodega» (nueva): «El pulpo atrapa al Tripulante que ha robado esta carta. Elige: Sacarlo entre dos: agota a otro Tripulante preparado. Que se suelte solo: el Tripulante que ha robado esta carta sufre 2 [herida]. Vuelve a barajar…» Sin nadie más preparado, la primera opción no se ofrece.
+- **Fuera del juego:** Doblones sueltos, Tablones y jarcia, La botica del cirujano, Cadena de oro del San José (Tesoro 270), Morena en la bodega, Sin aire y Corriente de fondo. Sus números pasan a las cartas nuevas; las ambientaciones de las doce son mías (cortas, para que quepan).
+- **En la mesa:** mientras se bucea, el mazo del naufragio boca abajo con cuántas cartas quedan (sin decir cuáles ayudan y cuáles hacen daño), la última carta que ha salido (con lo que pasa con ella: «Se aplica», «Te la quedas, a un lado», «Entra en juego en el Barco», «Se aparta» o, atenuada y con sello, «Vuelve al mazo») y, a un lado, las que te has quedado. El registro dice «El naufragio del San José» y «mazo del naufragio».
+- **Reglamento:** la entrada «Mazo del pecio» pasa a «Mazo del naufragio», con el ejemplo nuevo en tres partes (la Vigía saca el cofre; el Bucanero, la bolsa de aire; Diego, el pulpo, lo sacan entre dos y el jugador se planta); Componentes: 265 cartas y la fila «Mazo del naufragio» (10: sus nueve cartas y la culebrina; los dos Tesoros cuentan en Tesoros); dorsos: las doce con el dorso de misión.
+- *Pruebas (fase15-misiones.test):* preparar a todos y barajar las 12 (la misión sola no da nada); el cofre y la llave dan 1 de reputación una sola vez, y el cofre solo no da nada; el Tiburón hiere y vuelve barajado; Coral, ahogados y raqueros (Sangrando, Maldito, Perseguido); el pulpo en sus dos opciones y sin nadie más preparado; la bolsa prepara a todos y se aparta; la culebrina entra en juego y, sin Espacio, vuelve barajada; el diario cambia una misión disponible por un capítulo I de travesía con 2 de Avance, y sin ninguno no hace nada; la campana otea 2 al zarpar en el Mar (en Naturaleza, no); la culebrina en juego da +2 a COM o a NAV y no se usa en un Abordaje; la culebrina perdida vuelve al mazo de historia (P108); el doblón (sin reputación y el Capitán Maldito; el Capitán no cae; el Maldito no se quita en la Taberna ni al superar una Prueba; no se pierde al hundirse el Barco ni al terminar el naufragio); el jugador automático (se planta con 5 y 5 salvo si busca la otra mitad del cofre; no baja nadie a quien el Tiburón o el pulpo podrían derrotar; el pulpo, entre dos).
+
+### Lecturas del naufragio (no son preguntas)
+
+- **El que bucea** lo elige el jugador entre sus Tripulantes preparados (si solo hay uno, baja él). «El Tripulante que ha robado esta carta» es el que acaba de bajar. Agotarse va antes que robar: si estaba Sangrando, sufre su herida antes.
+- **«Si también tienes…»** mira las cartas que te has quedado a un lado en esta misión. Como el cofre y la llave no vuelven al mazo hasta el final, la reputación solo se puede ganar una vez.
+- **«Pon esta carta en juego»:** la campana y el doblón se ponen como los Tesoros (en el Barco). La culebrina ocupa su Espacio (1), como una Mejora de barco; ponerla en juego no es adquirirla.
+- **El diario:** la misión en curso (el naufragio) no cuenta entre las que se pueden cambiar. La misión nueva va en el mismo sitio que la que sale. El Avance se queda en la misión mientras siga disponible (como el de Soplos de la Hermandad). Panamá también es una travesía: el diario puede traer «El prisionero de Portobelo».
+- **Se deja de bucear** cuando el jugador quiere, cuando no le queda nadie preparado o cuando el mazo se queda sin cartas (no puede pasar: cinco cartas vuelven siempre).
+
+### Preguntas nuevas para Albert (P107–P108), con la opción por defecto aplicada
+
+- **P107 · Buscar en el mazo de Misiones («El diario del capitán»).** El reglamento dice cómo se busca en el mazo de muelle (lo localizas y lo barajas) y en el de historia (por su número), pero no en el de Misiones. Por defecto, como en el de muelle: localizas el capítulo, **barajas el mazo de Misiones** y después pones al fondo la misión que cambias. *Ejemplo:* buscas «Seguirle por Port Royal», barajas el mazo y pones «Agua y leña» debajo. Si habías oteado el mazo de Misiones, ese orden se pierde. La otra opción: no se baraja (y has visto todo el mazo). `TODO(regla) P107` en el código; el reglamento (Buscar) ya lo dice así.
+- **P108 · La culebrina, si se pierde.** Es una Mejora de barco del mazo de historia, sin coste. Por defecto, si se descarta (el Barco se hunde, «Impuestos del gobernador», un Peligro que te quita una Mejora), **vuelve al mazo de historia**, como un Tesoro, y no a los descartes del muelle. *Ejemplo:* el Barco se hunde con la culebrina y la Vela mayor: la Vela va a los descartes del muelle; la culebrina, al mazo de historia (y no vuelve a salir: el naufragio ya está superado). La otra opción: va a los descartes del muelle y entra en el mazo de muelle como una Mejora más, de coste 0. `TODO(regla) P108` en el código; el reglamento (Mazo del naufragio) ya lo dice así.
+
+### Efectos que hay que recordar para el turno siguiente (para la revisión de Peligros de Albert)
+
+Albert: «Cuerda de presos», «Alas sobre el fondeadero» y las demás cartas que dicen «no se preparan en tu próxima Fase de Inicio» obligan a recordar algo para el turno siguiente, y eso va contra su principio. Solo se apunta; no se ha cambiado nada.
+
+- **«No se preparan en tu próxima Fase de Inicio»** (4 cartas, todas en el mazo de Peligros):
+  - 164 «Maremoto», Ciudad «La ciudad se hunde» (fallo): «Un Tripulante asignado queda sepultado: sufre 1 herida y no se prepara en tu próxima Fase de Inicio.»
+  - 181 «Murciélagos vampiro», «Alas sobre el fondeadero» (fallo): «Los Tripulantes asignados no se preparan en tu próxima Fase de Inicio.»
+  - 189 «Los grilletes del rey», «Cuerda de presos» (fallo): «Los Tripulantes asignados no se preparan en tu próxima Fase de Inicio.»
+  - 213 «La maldición del bokor», «Tambores en la noche» (fallo): «Agota a 2 Tripulantes; no se preparan en tu próxima Fase de Inicio.»
+- **Otras que también miran al turno siguiente** («−1 Mando en tu próximo turno»): 176 «El hambre», «Carestía» (fallo); 200 «Paga atrasada», «Demasiadas voces» (Sin oposición del Destino); 212 «Mal presagio», «Albatros muerto» (fallo).
+- **Parecidas, pero sin salir de la misión:** 177 «Sin rumbo», «La trocha se borra» (fallo): «no se prepara hasta el final de la misión».
 
 ### Reglamento (fase 15)
 
@@ -1214,3 +1275,18 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - **El fugitivo escapa 158 veces** y se le captura 193 (escapa el 45 % de las veces que sale el barco; antes, el 52 %, con COM 4). «Vivo, no muerto»: 282 zarpes, 119 superadas (42 %; antes, 58 %): con 1 de Avance por el barco, hacen falta más encuentros después de capturarlo. El prisionero no muere nunca.
 - **El pecio:** sale en el 19 % de las partidas; 220 zarpes y 184 superadas. **Se sacan 0,78 cartas de media** por pecio (ninguna 57 veces, una 111 y dos 16): el jugador automático se planta si la peor mala que queda (el Tiburón, 2 heridas) puede derrotar al buzo, y casi todos los Tripulantes tienen 1 o 2 de Vida, así que suele bajar solo el Capitán (Vida 4), una vez. **El doblón sale 15 veces** (8 % de los pecios: 30 de reputación en 1000 partidas) y no llega a salvar a ningún Capitán. «Sin aire», 20 veces; un buzo derrotado, 1.
 - Las demás misiones nuevas, como antes (isla, van Hoorn, regata, asedio).
+
+### Medición tras el naufragio (solo informativa; partida normal, 1000 partidas, semillas 1–1000, 24 de octubre)
+
+`MEDIR_F15=1 npx vitest run src/engine/medir-fase15.informe.test.ts`. El jugador automático valora el naufragio como 1 de reputación para decidir si zarpa (como el pecio).
+
+| Fila | Victorias | Victorias de Panamá |
+| --- | --- | --- |
+| Fase 15 con el pecio rehecho (antes) | 45,3 % | 0,4 % |
+| **Fase 15 con el naufragio** | **44,9 %** | **0,4 %** |
+
+- **Las victorias bajan 0,4 puntos** (lo nuevo no hace el juego más fácil: se cumple la norma de Albert). Panamá sigue en el 0,4 %.
+- **El naufragio:** sale en el 19 % de las partidas; 220 zarpes y **188 superadas**. **Se sacan 2,4 cartas de media** cada vez (antes, con el pecio, 0,78): ninguna 4 veces, una 30, dos 80, tres 47, cuatro 19 y cinco o más 8. Preparar a todos antes de bucear y que el Tiburón solo haga 1 herida dejan bajar a casi toda la tripulación.
+- **El cofre y la llave se juntan 9 veces** (9 de reputación en 1000 partidas: casi nada; la reputación cuesta bucear mucho). **El doblón sale 42 veces** (22 % de los naufragios) y salva al Capitán 6.
+- La culebrina entra en juego 34 veces (3, sin Espacio, vuelve al mazo); el diario sale 36 veces y trae «El prisionero de Portobelo» (Panamá) en 15 (el jugador automático lo prefiere), sin que suban las victorias de Panamá. El pulpo: 28 veces lo sacan entre dos y 3 se suelta solo. Ningún Tripulante queda derrotado buceando.
+- Lo demás, como antes: el galeón se hunde 36 veces; el fugitivo escapa 154 y se le captura 197.

@@ -35,11 +35,20 @@ const GRUPOS: Grupo[] = [
   { id: 'mejoras', nombre: 'Mejoras', tipos: ['mejoraBarco', 'mejoraTripulante'] },
   { id: 'mano', nombre: 'Eventos y Habilidades', tipos: ['evento', 'habilidad'] },
   { id: 'peligros', nombre: 'Peligros', tipos: ['peligro', 'mazoPropio'] },
-  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'pecio'] },
+  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'naufragio'] },
   { id: 'permanentes', nombre: 'Permanentes', tipos: ['permanente'] },
   { id: 'tesoros', nombre: 'Tesoros', tipos: ['tesoro'] },
   { id: 'escenario', nombre: 'Escenario y Puertos', tipos: ['escenario', 'puerto'] },
 ]
+
+/** Fase 15: la culebrina del naufragio es una Mejora de barco, pero va con las Misiones (es del mazo del naufragio). */
+function enGrupo(g: Grupo, e: EntradaCatalogo): boolean {
+  if (g.tipos.length === 0) return true
+  const deMision = e.tipo === 'mejoraBarco' && e.carta.mision !== undefined
+  if (g.id === 'mejoras' && deMision) return false
+  if (g.id === 'misiones' && deMision) return true
+  return g.tipos.includes(e.tipo)
+}
 
 type Modo = 'cartas' | 'lado' | 'diferencia'
 
@@ -73,8 +82,8 @@ function descripcion(e: EntradaCatalogo): string {
     }
     case 'pasajero':
       return `Pasajero · ${e.mision.nombre}`
-    case 'pecio':
-      return `Mazo del pecio · ${e.carta.clase === 'buena' ? 'buena' : 'mala'}`
+    case 'naufragio':
+      return 'Mazo del naufragio'
     case 'permanente':
       return e.carta.origen ? `Permanente · la pone en juego la carta ${porId(e.carta.origen).num}` : 'Permanente · la ponen en juego misiones'
     case 'peligro':
@@ -86,7 +95,7 @@ function descripcion(e: EntradaCatalogo): string {
     case 'tesoro':
       return `Tesoro · ${e.carta.tipo}`
     case 'mejoraBarco':
-      return `Mejora de barco · ${copias}`
+      return e.carta.mision ? 'Mejora de barco · mazo del naufragio' : `Mejora de barco · ${copias}`
     case 'mejoraTripulante':
       return `Mejora de tripulante · ${copias}`
     case 'evento':
@@ -234,11 +243,8 @@ export function Galeria() {
   }, [])
 
   const escala = TAMANOS.find((t) => t.id === tamano)?.escala ?? 0.64
-  const tiposGrupo = GRUPOS.find((g) => g.id === grupo)?.tipos ?? []
-  const visibles = useMemo(
-    () => (tiposGrupo.length === 0 ? CATALOGO : CATALOGO.filter((e) => tiposGrupo.includes(e.tipo))),
-    [tiposGrupo],
-  )
+  const grupoActivo = GRUPOS.find((g) => g.id === grupo) ?? GRUPOS[0]!
+  const visibles = useMemo(() => CATALOGO.filter((e) => enGrupo(grupoActivo, e)), [grupoActivo])
 
   const ampliar = useCallback((entrada: EntradaCatalogo, elemento: HTMLElement, fijar: boolean) => {
     const caja = elemento.getBoundingClientRect()
@@ -270,7 +276,7 @@ export function Galeria() {
         </div>
         <nav className="gal-filtros" aria-label="Tipo de carta">
           {GRUPOS.map((g) => {
-            const cuenta = g.tipos.length === 0 ? CATALOGO.length : CATALOGO.filter((e) => g.tipos.includes(e.tipo)).length
+            const cuenta = CATALOGO.filter((e) => enGrupo(g, e)).length
             return (
               <button
                 key={g.id}

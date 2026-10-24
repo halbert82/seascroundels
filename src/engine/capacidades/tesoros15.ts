@@ -1,13 +1,22 @@
-// Capacidades de los Tesoros de la fase 15: el Gallardete de San Juan, la Carta de marear de van Hoorn, la Cadena de oro
-// del San José y El doblón de la calavera. Los números se leen de su texto.
+// Capacidades de los Tesoros de la fase 15 (el Gallardete de San Juan, la Carta de marear de van Hoorn, La campana del San
+// José y El doblón de la calavera) y de La culebrina del San José, la Mejora del mazo del naufragio. Los números se leen
+// de su texto.
 
-import { porId, tipoDe } from '../catalogo.ts'
+import { porId } from '../catalogo.ts'
+import type { Habilidad } from '../datos.ts'
 import { anotar, copia, nombre } from '../estado.ts'
 import { ponerEstado } from '../estados.ts'
-import { numeroConIcono, numerosEntreLlaves, textoDe } from '../textos.ts'
-import type { Capacidad } from '../tipos.ts'
+import { mazoActivo } from '../peligros.ts'
+import { numeroConIcono, numerosEntreLlaves, primerNumero, textoDe } from '../textos.ts'
+import type { Capacidad, Estado } from '../tipos.ts'
 import { valor } from '../valores.ts'
-import { mover } from '../zonas.ts'
+import { enEntorno, participantes } from './comun.ts'
+
+/** Prueba en curso de una de esas habilidades, ya comprometida y con alguien que participa (como los demás Cañones). */
+function pruebaCon(s: Estado, habs: Habilidad[]): boolean {
+  const p = s.prueba
+  return p !== null && !p.automatica && p.hab !== null && habs.includes(p.hab) && participantes(s).length > 0
+}
 
 export const CAPACIDADES_TESOROS15: Capacidad[] = [
   // Gallardete de San Juan (148): «Indestructible. +1 Mando.»
@@ -30,37 +39,37 @@ export const CAPACIDADES_TESOROS15: Capacidad[] = [
       return e.tipo === 'capitulo' && e.carta.entorno === 'mar' ? numeroConIcono(textoDe('carta_marear'), 'avance') : 0
     },
   },
-  // Cadena de oro del San José (270): «Acción: Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes
-  // o adquieras cuesta {3} menos.» Un Tesoro que se descarta vuelve al mazo de historia (sale de la partida).
+  // La campana del San José (270, del mazo del naufragio): «Pon esta carta en juego. Indestructible. Al zarpar: [mar]:
+  // Otea 2.» Se aplica sola, como los Despachos del Rey.
   {
-    clave: 'cadena_oro.gastar',
-    carta: 'cadena_oro',
-    ventana: 'accion',
+    clave: 'campana_sanjose.otear',
+    carta: 'campana_sanjose',
+    ventana: 'alZarpar',
     desde: 'juego',
-    requisito: (s) => !s.temporales.some((x) => x.clave === 'cadena_oro.descuento'),
-    efecto: (s, yo) => {
-      if (yo) {
-        mover(s, yo, 'mazoHistoria', 'abajo')
-        anotar(s, 'efecto', `Descartas la Cadena de oro del San José: este turno, el próximo Tripulante o Mejora que consigas cuesta ${numerosEntreLlaves(textoDe('cadena_oro'))[0] ?? 0} menos.`)
-      }
-      return [{ tipo: 'anadirTemporal', temporal: { clave: 'cadena_oro.descuento', fuente: 'cadena_oro', hasta: 'finTurno' } }]
-    },
+    requisito: (s) => enEntorno(s, 'mar') && s.zonas[mazoActivo(s).mazo].length + s.zonas[mazoActivo(s).descartes].length > 0,
+    efecto: () => [{ tipo: 'otear', n: primerNumero(textoDe('campana_sanjose').split('Otea')[1] ?? ''), cartas: [], arriba: [], fondo: [] }],
   },
+  // La culebrina del San José (278, Mejora de barco del mazo del naufragio, Cañón): «[mar], [agotar]: Una Prueba de [COM]
+  // o de [NAV] recibe +2.» Es fuego de Cañón: en un Abordaje no se usa y «Los Cañones no suman» lo anula.
   {
-    clave: 'cadena_oro.descuento',
-    carta: 'cadena_oro',
-    ventana: 'constante',
-    desde: 'temporal',
-    modifica: (ctx, _yo, c) => {
-      if (c.tipo !== 'coste') return 0
-      const tipo = tipoDe(copia(ctx.s, c.carta).id)
-      return tipo === 'tripulante' || tipo === 'mejoraBarco' || tipo === 'mejoraTripulante' ? -(numerosEntreLlaves(textoDe('cadena_oro'))[0] ?? 0) : 0
+    clave: 'culebrina_sanjose.disparar',
+    carta: 'culebrina_sanjose',
+    ventana: 'libre',
+    desde: 'juego',
+    coste: [{ tipo: 'agotarse' }],
+    requisito: (s) => enEntorno(s, 'mar') && pruebaCon(s, ['COM', 'NAV']),
+    efecto: (s) => {
+      if (!s.prueba) return []
+      const n = numerosEntreLlaves(textoDe('culebrina_sanjose'))[0] ?? 0
+      s.prueba.bonos.push({ n, canon: true, fuente: 'culebrina_sanjose' })
+      anotar(s, 'efecto', `La Prueba recibe +${n}.`)
+      return []
     },
   },
-  // El doblón de la calavera (271): «Indestructible. No puedes descartar esta carta. Al entrar en juego, gana {2 rep}. Tu
-  // Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante. Tu Capitán queda
-  // Maldito, y este Estado no se le puede quitar.» Todo se aplica solo. Que el Maldito no se quite lo mira `sePuedeQuitar`
-  // (estados.ts); que no se pueda descartar, que es Tesoro (indestructible) y que «Corriente de fondo» no lo devuelva.
+  // El doblón de la calavera (271, del mazo del naufragio): «Pon esta carta en juego. Indestructible. No puedes descartar
+  // esta carta. Tu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante. Tu
+  // Capitán queda Maldito, y este Estado no se le puede quitar.» Todo se aplica solo. Que el Maldito no se quite lo mira
+  // `sePuedeQuitar` (estados.ts); que no se pueda descartar, que es Tesoro (indestructible). Ya no da reputación.
   {
     clave: 'doblon.entrar',
     carta: 'doblon',
@@ -70,7 +79,7 @@ export const CAPACIDADES_TESOROS15: Capacidad[] = [
     efecto: (s) => {
       if (ponerEstado(s, s.capitan, 'maldito')) anotar(s, 'aviso', `${nombre(s, s.capitan)} queda Maldito por el doblón de la calavera: este Estado no se le puede quitar.`)
       else anotar(s, 'aviso', `${nombre(s, s.capitan)} ya estaba Maldito: mientras tengas el doblón de la calavera, no se le puede quitar.`)
-      return [{ tipo: 'cambiarReputacion', n: numeroConIcono(textoDe('doblon'), 'rep') }]
+      return []
     },
   },
   {

@@ -357,15 +357,19 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     // Fase 15
     case 'bucear':
       return {
-        titulo: n === 0 ? '«El pecio del San José»: ¿buceas?' : '«El pecio del San José»: ¿buceas otra vez?',
-        ayuda: `La misión está superada. Para bucear, agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio: si es buena, te la quedas; si es mala, se aplica y vuelve barajada al mazo. Quedan ${m.texto ?? 'cartas'}.`,
+        titulo: n === 0 ? '«El naufragio del San José»: ¿buceas?' : '«El naufragio del San José»: ¿buceas otra vez?',
+        ayuda: `La misión está superada. Para bucear, agota a un Tripulante preparado y roba 1 carta del mazo del naufragio: lo que pasa lo dice la carta. Quedan ${m.texto ?? 'cartas'} en el mazo.`,
       }
     case 'buzo':
-      return { titulo: '¿Quién baja al pecio?', ayuda: 'El buzo se agota. Las cartas malas le hieren a él.' }
-    case 'corrienteDeFondo':
-      return { titulo: 'Corriente de fondo: ¿qué carta buena vuelve al mazo del pecio?', ayuda: 'Si es un Tesoro, sale del juego.' }
-    case 'culebrinaPecio':
-      return { titulo: 'Una culebrina del galeón: elige un Cañón del mazo de muelle', ayuda: 'Lo pones en juego en el Barco sin coste. Solo se ofrecen los que caben en tu Espacio libre.' }
+      return { titulo: '¿Quién baja al naufragio?', ayuda: 'Se agota. Lo que la carta le haga «al Tripulante que ha robado esta carta» le pasa a él.' }
+    case 'pulpo':
+      return { titulo: 'El pulpo de la bodega: elige', ayuda: 'Otro Tripulante preparado puede bajar a sacarlo (se agota) o le dejas que se suelte solo (sufre 2 heridas).' }
+    case 'pulpoAyuda':
+      return { titulo: '¿Quién baja a sacarlo?', ayuda: 'Se agota.' }
+    case 'diarioCapitulo':
+      return { titulo: 'El diario del capitán: elige el capítulo I de una travesía', ayuda: 'Va a tus misiones disponibles con 2 de Avance.' }
+    case 'diarioCambiar':
+      return { titulo: `¿Qué misión disponible cambias por «${m.texto ?? 'el capítulo'}»?`, ayuda: 'La que elijas va al fondo del mazo de Misiones.' }
     case 'desviarAProtegido':
       return {
         titulo: `¿Cuánto recibe «${nombreCarta(m.carta)}» en su lugar?`,

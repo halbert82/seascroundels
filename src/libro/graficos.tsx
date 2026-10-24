@@ -35,7 +35,8 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
     case 'Tripulantes':
       return deTipo('tripulante')
     case 'Mejoras':
-      return deTipo('mejoraBarco', 'mejoraTripulante')
+      // Fase 15: sin la culebrina del naufragio, que es del mazo del naufragio.
+      return deTipo('mejoraBarco', 'mejoraTripulante').filter((e) => !(e.tipo === 'mejoraBarco' && e.carta.mision))
     case 'Eventos':
       return deTipo('evento')
     case 'Habilidades':
@@ -61,9 +62,9 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
       return deTipo('pasajero')
     case 'Permanentes':
       return deTipo('permanente')
-    // Fase 15: el mazo del pecio (sin sus dos Tesoros, que cuentan como Tesoros).
-    case 'Mazo del pecio':
-      return deTipo('pecio')
+    // Fase 15: el mazo del naufragio con su culebrina (sin sus dos Tesoros, que cuentan como Tesoros).
+    case 'Mazo del naufragio':
+      return [...deTipo('naufragio'), ...deTipo('mejoraBarco').filter((e) => e.tipo === 'mejoraBarco' && e.carta.mision)].sort((a, b) => a.num - b.num)
     default:
       return []
   }

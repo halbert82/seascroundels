@@ -183,7 +183,7 @@ export const CLAVES_REGLA = [
   'alerta',
   'destina',
   'capituloAlAzar',
-  'mazoPecio',
+  'mazoNaufragio',
   'indestructible',
   'enrolado',
   'otear',
@@ -194,7 +194,7 @@ export const CLAVES_REGLA = [
 export type ClaveRegla = (typeof CLAVES_REGLA)[number]
 
 /** Palabras que nombran una cosa (no un efecto): su primer apartado es «Qué es» en vez de «Qué hace». */
-const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'capituloAlAzar', 'mazoPecio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
+const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'capituloAlAzar', 'mazoNaufragio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
 
 function regla(clave: ClaveRegla, nombre: string, hace: string, mas?: ParteAyuda): Ayuda {
   const rotulo = SON_COSAS.includes(clave) ? 'Qué es' : 'Qué hace'
@@ -377,13 +377,13 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Capítulo al azar',
     'Al superar el capítulo I de «La Isla del Tesoro», barajas boca abajo sus tres capítulos II y pones uno encima del mazo de Misiones sin mirarlo; los otros vuelven al mazo de historia. No sabes cuál te espera hasta que sale.',
   ),
-  mazoPecio: regla(
-    'mazoPecio',
-    'Mazo del pecio',
-    'Diez cartas del mazo de historia (269 a 271 y 277 a 283) que se barajan al superar «El pecio del San José». Cada vez que buceas, agotas a un Tripulante preparado (el buzo) y robas 1: si es buena, te la quedas; si es mala, se aplica y vuelve barajada al mazo.',
+  mazoNaufragio: regla(
+    'mazoNaufragio',
+    'Mazo del naufragio',
+    'Doce cartas del mazo de historia (269 a 271 y 277 a 285) que se barajan al superar «El naufragio del San José». Cada vez que buceas, agotas a un Tripulante preparado y robas 1. Lo que pasa lo dice cada carta: te la quedas, la pones en juego o vuelve barajada al mazo.',
     {
       rotulo: 'Detalles',
-      texto: 'Puedes bucear las veces que quieras, mientras tengas Tripulantes preparados. Las buenas no vuelven: cada vez quedan menos. Al terminar, el mazo y lo que sacaste vuelven al mazo de historia, salvo los Tesoros que pusiste en juego.',
+      texto: 'Antes de bucear preparas a todos tus Tripulantes, y puedes bucear las veces que quieras mientras te quede alguien preparado. Una carta que no dice qué hacer con ella se aparta después de aplicarla. Al terminar, todo el mazo del naufragio vuelve al mazo de historia, salvo las cartas que estén en juego.',
     },
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),
@@ -596,7 +596,7 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   alerta: /\bAlerta\b/,
   destina: /\bDestina \d/,
   capituloAlAzar: /\bBaraja boca abajo las cartas \d+/,
-  mazoPecio: /\bmazo del pecio\b/,
+  mazoNaufragio: /\bmazo del naufragio\b/,
   indestructible: /\bIndestructible\b/,
   enrolado: /\bEnrolado \d/,
   otear: /\b[Oo]tea\b|\bOtear\b/,

@@ -1,6 +1,7 @@
 // Zonas de la partida y movimientos de cartas entre ellas.
 
 import { barajarLista } from './azar.ts'
+import { DATOS } from './datos.ts'
 import { copia } from './estado.ts'
 import { ZONAS, type CartaId, type Estado, type InstId, type Zona } from './tipos.ts'
 
@@ -26,9 +27,18 @@ export function estaEn(s: Estado, inst: InstId, zona: Zona): boolean {
   return s.zonas[zona].includes(inst)
 }
 
+/**
+ * Fase 15: las Mejoras que no son del jugador, sino del mazo de una misión (la culebrina del naufragio). Si se descartan,
+ * no van a ningún mazo de descartes: vuelven al mazo de historia, como los Tesoros.
+ * TODO(regla) P108: lo que pasa si se pierde la culebrina (por defecto, como un Tesoro).
+ */
+const MEJORAS_DE_MISION: ReadonlySet<CartaId> = new Set(DATOS.mejorasBarco.filter((m) => m.mision !== undefined).map((m) => m.id))
+
 /** Mueve una copia a otra zona. Si sale del juego, pierde heridas, fichas y vínculos. */
-export function mover(s: Estado, inst: InstId, destino: Zona, donde: 'arriba' | 'abajo' = 'arriba'): void {
+export function mover(s: Estado, inst: InstId, destinoPedido: Zona, donde: 'arriba' | 'abajo' = 'arriba'): void {
   const origen = zonaDe(s, inst)
+  const aDescartes = destinoPedido === 'descartesMuelle' || destinoPedido === 'descartesCapitan'
+  const destino: Zona = aDescartes && MEJORAS_DE_MISION.has(copia(s, inst).id) ? 'mazoHistoria' : destinoPedido
   s.zonas[origen] = s.zonas[origen].filter((x) => x !== inst)
   const c = copia(s, inst)
   if (EN_JUEGO.has(origen) && !EN_JUEGO.has(destino)) {

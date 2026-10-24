@@ -3,7 +3,7 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { costeImpreso, enroladoDe, esBuenaDelPecio, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
+import { costeImpreso, destinoNaufragio, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
@@ -12,13 +12,15 @@ import { entornoActual } from '../peligros.ts'
 import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
 import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { esVentaja } from '../infoEstados.ts'
+import { estadosDe } from '../estados.ts'
 import { numeroConIcono, primerNumero, textoDe } from '../textos.ts'
 import { capacidadDe } from '../usos.ts'
-import type { Accion, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
+import type { Accion, CartaId, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
 import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valores.ts'
 import { cumple } from '../tareas/efectos.ts'
 import { puedePrepararse } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
+import { tienesDelNaufragio } from '../misiones2/fase15.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
 
@@ -219,14 +221,14 @@ const PESO_CADENA = 0.2
 /** Reputación que da una misión al superarla (en un final con elección, la mejor opción). */
 function reputacionDe(c: CapituloDatos): number {
   const r = c.recompensa
-  // Fase 15: «El pecio del San José» no da reputación, pero lo que se saca del mazo del pecio (cartas, reparar, curar, un
-  // Cañón, la Cadena de oro y, a veces, el doblón con sus 2 de reputación) vale para el jugador automático como 1.
-  if (c.mazoPecio) return VALOR_PECIO
+  // Fase 15: «El naufragio del San José» no da reputación, pero lo que se saca del mazo del naufragio (el cofre y la llave,
+  // la culebrina, la campana, el diario, el doblón) vale para el jugador automático como 1.
+  if (c.mazoNaufragio) return VALOR_NAUFRAGIO
   return Math.max(r.rep ?? 0, ...(r.elige ?? []).map((o) => o.rep ?? 0))
 }
 
-/** Lo que el jugador automático cree que vale el pecio, en reputación (para elegir a qué misión zarpar). */
-const VALOR_PECIO = 1
+/** Lo que el jugador automático cree que vale el naufragio, en reputación (para elegir a qué misión zarpar). */
+const VALOR_NAUFRAGIO = 1
 
 /** Puntuación de una misión disponible para zarpar o para poner Avance. */
 function puntuacionMision(s: Estado, m: InstId): number {
@@ -354,16 +356,18 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
       return { tipo: 'cartas', ids: por((c) => costeImpreso(copia(s, c).id)).slice(0, n) }
     case 'buscar':
       return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id) - (MEJORAS_PREFERIDAS[copia(s, c).id] ?? 0)).slice(0, 1) }
-    // Fase 15, el pecio: baja el que más Vida conserva; «Corriente de fondo» devuelve antes una carta ya aplicada que un
-    // Tesoro; de la culebrina, el Cañón más caro que quepa.
+    // Fase 15, el naufragio: baja el que más Vida conserva (sin dejar a nadie a tiro); al pulpo lo saca el que menos vale;
+    // el diario trae el capítulo I que más le interesa y aparta la misión disponible que menos.
     case 'buzo': {
       const buzo = elegirBuzo(s, d.candidatas)
       return { tipo: 'cartas', ids: buzo ? [buzo] : d.candidatas.slice(0, 1) }
     }
-    case 'corrienteDeFondo':
-      return { tipo: 'cartas', ids: por((c) => (tipoDe(copia(s, c).id) === 'tesoro' ? 10 : 0)).slice(0, 1) }
-    case 'culebrinaPecio':
-      return { tipo: 'cartas', ids: por((c) => -costeImpreso(copia(s, c).id)).slice(0, 1) }
+    case 'pulpoAyuda':
+      return { tipo: 'cartas', ids: por((c) => (vidaAlAgotarse(s, c) <= 0 ? 100 : 0) + valorTripulante(s, c)).slice(0, 1) }
+    case 'diarioCapitulo':
+      return { tipo: 'cartas', ids: por((c) => -puntuacionMision(s, c)).slice(0, 1) }
+    case 'diarioCambiar':
+      return { tipo: 'cartas', ids: por((c) => puntuacionMision(s, c)).slice(0, 1) }
     case 'soplos':
       return { tipo: 'cartas', ids: por((c) => -puntuacionMision(s, c)).slice(0, 1) }
     case 'tablon': {
@@ -548,6 +552,9 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
     // Fase 15
     case 'bucear':
       return elegir(convieneBucear(s) ? 'bucear' : 'subir')
+    // El pulpo: lo sacan entre dos si hay alguien preparado a quien agotarse no le derrote; si no, que se suelte solo.
+    case 'pulpo':
+      return elegir(ayudaContraElPulpo(s) ? 'dos' : 'solo')
     case 'desviarAProtegido':
       return elegir(String(cuantoDesviar(s, d) ?? 1))
     case 'elegirEfectos': {
@@ -887,6 +894,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     }
     case 'bronce.disparar':
     case 'culebrina.disparar':
+    case 'culebrina_sanjose.disparar':
     case 'pistola.disparar': {
       if (!enPruebaAbierta || !p || p.falla) return 0
       if (uso.clave !== 'pistola.disparar' && (p.sinCanones || valor(s, { tipo: 'sinCanones' }) > 0)) return 0
@@ -1004,9 +1012,6 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'pm_murallas.cap.cubrir':
     case 'pm_prisionero.cap.heridas':
       return cuantoDesviar(s, d, uso) !== null ? 3 : 0
-    // La Cadena de oro del San José: en la Fase de Reclutamiento, si hay en el muelle algo de coste 3 o más que quiera.
-    case 'cadena_oro.gastar':
-      return d.motivo.clave === 'jugarCartas' && hayAlgoCaro(s) ? 2 : 0
     // «Mala fama»: la quita (2 cartas) en la Fase de Reclutamiento si le sobra mano y quiere reclutar.
     case 'pm_malafama.quitar0':
       return d.motivo.clave === 'jugarCartas' && mano >= 4 && plazasLibres(s) >= 1 && s.zonas.muelle.some((c) => tipoDe(copia(s, c).id) === 'tripulante') ? 2 : 0
@@ -1060,30 +1065,49 @@ function cazaElJaguar(s: Estado, c: InstId): boolean {
 // ---------------------------------------------------------------------------
 // Fase 15
 
+/** Las cartas del mazo del naufragio que vuelven barajadas: las que hacen daño (Tiburón, Coral, ahogados, raqueros, pulpo). */
+const haceDano = (id: CartaId) => destinoNaufragio(id) === 'barajar'
+
 /**
- * «El pecio del San José» (Albert): se planta cuando en el mazo del pecio quedan tantas malas como buenas o más, o cuando
- * la peor mala que queda podría derrotar al buzo.
+ * «El naufragio del San José» (Albert): no baja nadie si la siguiente herida (el Tiburón) o el pulpo podrían derrotarle.
+ * Se planta cuando en el mazo quedan tantas cartas que hacen daño como de las otras, salvo que ya tenga una mitad del cofre
+ * y la otra siga en el mazo: entonces baja a buscarla.
  */
 function convieneBucear(s: Estado): boolean {
-  const mazo = s.zonas.mazoPecio.map((c) => copia(s, c).id)
-  const buenas = mazo.filter(esBuenaDelPecio).length
-  if (mazo.length - buenas >= buenas) return false
   const buzo = elegirBuzo(s)
-  return buzo !== undefined && buzoASalvo(s, buzo)
+  if (buzo === undefined || !buzoASalvo(s, buzo)) return false
+  if (mitadDelCofrePendiente(s)) return true
+  const mazo = s.zonas.mazoNaufragio.map((c) => copia(s, c).id)
+  const malas = mazo.filter(haceDano).length
+  return mazo.length - malas > malas
 }
 
-/** La peor herida que puede traer una mala que quede en el mazo del pecio (el Tiburón, 2). */
-function peorMalaDelPecio(s: Estado): number {
-  const malas = s.zonas.mazoPecio.map((c) => copia(s, c).id).filter((id) => !esBuenaDelPecio(id))
-  return Math.max(0, ...malas.map((id) => (/\{\d+ herida\}/.test(textoDe(id)) ? numeroConIcono(textoDe(id), 'herida') : 0)))
+/** Tiene una mitad del cofre (el cofre o la llave) y la otra sigue en el mazo del naufragio. */
+function mitadDelCofrePendiente(s: Estado): boolean {
+  const enMazo = (id: CartaId) => s.zonas.mazoNaufragio.some((c) => copia(s, c).id === id)
+  return (tienesDelNaufragio(s, 'naufragio_cofre') && enMazo('naufragio_llave')) || (tienesDelNaufragio(s, 'naufragio_llave') && enMazo('naufragio_cofre'))
 }
 
-/** La peor mala que queda no le derrota. */
+/** Vida que le queda al agotarse (si está Sangrando, agotarse le hiere). */
+function vidaAlAgotarse(s: Estado, c: InstId): number {
+  return vidaRestante(s, c) - (estadosDe(s, c).includes('sangrando') ? 1 : 0)
+}
+
+/** Alguien preparado (que no sea el que bucea) a quien agotarse no le derrota: puede sacar al buzo del pulpo. */
+function ayudaContraElPulpo(s: Estado, buzo: InstId | undefined = s.mision?.naufragio?.buzo): boolean {
+  return s.zonas.tripulacion.some((c) => c !== buzo && !copia(s, c).agotada && vidaAlAgotarse(s, c) > 0)
+}
+
+/** La siguiente herida (el Tiburón) no le derrota, ni el pulpo (si no hay nadie más preparado que lo saque). */
 function buzoASalvo(s: Estado, c: InstId): boolean {
-  return vidaRestante(s, c) > peorMalaDelPecio(s) || capitanInmortal(s, c)
+  if (capitanInmortal(s, c)) return true
+  const vida = vidaAlAgotarse(s, c)
+  const tiburon = numeroConIcono(textoDe('naufragio_tiburon'), 'herida')
+  const pulpo = numeroConIcono(textoDe('naufragio_pulpo'), 'herida')
+  return vida > tiburon && (vida > pulpo || ayudaContraElPulpo(s, c))
 }
 
-/** El buzo: uno que aguante la peor mala, el que más Vida conserve y el Capitán solo si no hay otro. */
+/** El que baja: uno que esté a salvo, el que más Vida conserve y el Capitán solo si no hay otro. */
 function elegirBuzo(s: Estado, candidatas: readonly InstId[] = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)): InstId | undefined {
   const orden = [...candidatas].sort((a, b) => (a === s.capitan ? 50 : 0) - vidaRestante(s, a) - ((b === s.capitan ? 50 : 0) - vidaRestante(s, b)))
   return orden.find((c) => buzoASalvo(s, c)) ?? orden[0]
@@ -1131,16 +1155,6 @@ function cuantoDesviar(s: Estado, d: Decision, uso?: Uso): number | null {
   const necesario = ev.tipo === 'danoBarco' ? s.danoBarco + ev.cantidad - valor(s, { tipo: 'danoMaximo' }) + 1 : copia(s, ev.objetivo).heridas + ev.cantidad - valor(s, { tipo: 'vida', carta: ev.objetivo }) + 1
   const k = peligro ? Math.min(ev.cantidad, restante - 1, Math.max(necesario, restante - umbral)) : Math.min(ev.cantidad, restante - umbral)
   return k >= 1 ? k : null
-}
-
-/** ¿Hay en el muelle un Tripulante o una Mejora que le interese de coste 3 o más? (para la Cadena de oro) */
-function hayAlgoCaro(s: Estado): boolean {
-  return s.zonas.muelle.some((c) => {
-    const id = copia(s, c).id
-    if (costeImpreso(id) < 3 || s.peligrosEnMuelle?.[c] !== undefined) return false
-    const tipo = tipoDe(id)
-    return (tipo === 'tripulante' && plazasLibres(s) >= 1 && puntuacionTripulanteEnMuelle(id) > 0) || ((MEJORAS_PREFERIDAS[id] ?? 0) > 0 && tipo !== 'tripulante')
-  })
 }
 
 /** La capacidad que más le conviene usar ahora, si alguna le conviene. */

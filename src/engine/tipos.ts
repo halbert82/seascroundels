@@ -52,10 +52,12 @@ export const ZONAS = [
   'mazoHistoria',
   'misionesSuperadas',
   'fueraDeJuego',
-  /** Fase 15: el mazo del pecio mientras se bucea («El pecio del San José»). */
-  'mazoPecio',
-  /** Fase 15: las cartas sacadas del mazo del pecio, a un lado (las buenas, y la mala mientras se aplica). */
-  'pecioSacadas',
+  /** Fase 15: el mazo del naufragio mientras se bucea («El naufragio del San José»). */
+  'mazoNaufragio',
+  /** Fase 15: las cartas del mazo del naufragio que te has quedado, a un lado («Quédate esta carta»). */
+  'naufragioQuedadas',
+  /** Fase 15: las cartas del mazo del naufragio que se apartan (la que se está aplicando y las que no dicen qué hacer). */
+  'naufragioApartadas',
 ] as const
 
 export type Zona = (typeof ZONAS)[number]
@@ -140,8 +142,8 @@ export type Suceso =
   | { tipo: 'iconos'; cartas: CartaId[] }
   // Para animar la mesa: qué copia concreta cambia.
   | { tipo: 'revelado'; inst: InstId; como: 'encuentro' | 'destino' | 'escenario' }
-  /** Fase 15: se roba una carta del mazo del pecio al bucear (buena o mala). */
-  | { tipo: 'pecio'; inst: InstId; carta: CartaId; buena: boolean }
+  /** Fase 15: se roba una carta del mazo del naufragio al bucear. */
+  | { tipo: 'naufragio'; inst: InstId; carta: CartaId }
   | { tipo: 'avance'; n: number; total: number }
   | { tipo: 'heridas'; inst: InstId; n: number }
   | { tipo: 'dano'; n: number }
@@ -225,10 +227,10 @@ export interface MisionEnCurso {
   /** Fase 15: ya se ha hecho lo de «cuando esta misión vaya a superarse» (bucear). */
   antesDeSuperarHecho?: boolean
   /**
-   * Fase 15, «El pecio del San José»: el buzo de la inmersión en curso, los Tesoros sacados del mazo del pecio en esta
-   * misión (para «Corriente de fondo»), las inmersiones hechas y si ya no se puede bucear más («Sin aire»).
+   * Fase 15, «El naufragio del San José»: el Tripulante que ha robado la última carta (el que bucea), las inmersiones hechas
+   * y si ya se ha dejado de bucear.
    */
-  pecio?: { buzo?: InstId; tesoros: InstId[]; inmersiones: number; fin?: boolean }
+  naufragio?: { buzo?: InstId; inmersiones: number; fin?: boolean }
 }
 
 export interface Bono {

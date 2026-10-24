@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 263 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica de Sea Scoundrels contiene 265 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -99,9 +99,9 @@ La Caja básica de Sea Scoundrels contiene 263 cartas, que se dividen en cartas 
 | Mazos propios y barcos rivales | 14 |
 | Pasajeros | 2 |
 | Permanentes | 17 |
-| Mazo del pecio | 8 |
+| Mazo del naufragio | 10 |
 
-Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del pecio y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
+Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del naufragio y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
 Las cartas de Peligro, las de los mazos propios, los barcos rivales y las de puerto tienen tamaño tarot (70 × 120 mm), más grande que el del resto de cartas (63 × 88 mm), para que su texto se lea bien. Por eso el mazo de historia se guarda en dos montones, uno por tamaño: las cartas que van al mazo de Peligros (los mazos propios, los barcos rivales y «La Armada te persigue») están en el montón grande.
 
@@ -198,7 +198,7 @@ Las cartas de Escenario tienen nombre, texto y frase de ambientación. Su efecto
 
 #### Cartas del mazo de historia
 
-Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes no van a ningún mazo y llevan el dorso de misión. Las diez cartas del mazo del pecio también llevan el dorso de misión, sus dos Tesoros incluidos, para que no se distingan al barajarlas. Cuando una carta dice «Pon la carta 137 encima del mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
+Las cartas del mazo de historia llevan su número de colección bien visible en el anverso. En el dorso llevan el dorso del mazo al que van, con el mismo número: los capítulos, el dorso de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes no van a ningún mazo y llevan el dorso de misión. Las doce cartas del mazo del naufragio también llevan el dorso de misión, su Mejora y sus dos Tesoros incluidos, para que no se distingan al barajarlas. Cuando una carta dice «Pon la carta 137 encima del mazo de Misiones», el jugador la busca por ese número en el mazo de historia.
 
 > [!grafico] anatomia historia
 
@@ -264,7 +264,7 @@ La partida se prepara siguiendo estos pasos:
 2. **Pon en juego a tu Capitán y tu Barco.** El Capitán empieza en juego preparado.
 3. **Elige un puerto** del escenario El Caribe y ponlo en el centro de la mesa.
 4. **Prepara el mazo de Peligros.** Baraja todas las cartas de Peligro y deja el mazo boca abajo junto a la carta de puerto.
-5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los diez capítulos I y las seis aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del pecio y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
+5. **Prepara las misiones.** Baraja las misiones iniciales y colócalas boca arriba junto a la carta de puerto: son las **misiones disponibles**, a las que el jugador puede zarpar. Baraja los diez capítulos I y las seis aventuras para formar el **mazo de Misiones**. Reúne las cartas del mazo de historia (los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del naufragio y «La Armada te persigue») y déjalas aparte, boca abajo: forman el **mazo de historia**. De este mazo solo salen cartas cuando otra carta lo indica, y se buscan por su número.
 6. **Prepara el muelle.** Baraja tu mazo de muelle y revela tantas cartas como indique el puerto. Esas cartas, boca arriba junto al puerto, forman el **muelle**, que es el único lugar desde el que se pueden reclutar Tripulantes y adquirir Mejoras. Las cartas del mazo de muelle nunca van a la mano del jugador.
    > [!tema]
    > El muelle es donde se busca gente: marineros sin barco, artilleros sin cañón y cirujanos sin título. Lo que no contratas hoy se lo lleva otro capitán.
@@ -828,7 +828,7 @@ Un barco rival es una carta de Peligro del mazo de historia con un solo encuentr
 
 ### Buscar
 
-Para buscar un Tripulante o una Mejora, el jugador lo localiza en su mazo de muelle, lo pone en el muelle y baraja el mazo de muelle. Para buscar una carta del mazo de historia, se localiza por su número de colección, que lleva bien visible en el anverso y en el dorso.
+Para buscar un Tripulante o una Mejora, el jugador lo localiza en su mazo de muelle, lo pone en el muelle y baraja el mazo de muelle. Para buscar una carta del mazo de historia, se localiza por su número de colección, que lleva bien visible en el anverso y en el dorso. Para buscar una carta en el mazo de Misiones, el jugador la localiza y después baraja el mazo de Misiones.
 
 ### Cancelar
 
@@ -1145,7 +1145,7 @@ El Mando es el número de cartas hasta el que el jugador roba al final de cada t
 
 ### Mazo de historia
 
-El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del pecio y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Pon la carta 137 encima del mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia. Las diez cartas del mazo del pecio también llevan el dorso de misión, sus dos Tesoros incluidos (véase Mazo del pecio).
+El mazo de historia está formado por las cartas que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del naufragio y «La Armada te persigue», apartados boca abajo. Ninguna carta sale de él a menos que otra carta lo indique («Pon la carta 137 encima del mazo de Misiones»). Cada carta lleva su número de colección bien visible en el anverso y en el dorso, y se busca por él. El dorso de cada una es el del mazo al que va: los capítulos, el de misión; los Tesoros, el de muelle; los mazos propios, los barcos rivales y «La Armada te persigue», el de Peligros. Los Pasajeros y las permanentes llevan el dorso de misión y, cuando dejan de estar en juego, vuelven al mazo de historia. Las doce cartas del mazo del naufragio también llevan el dorso de misión, su Mejora y sus dos Tesoros incluidos (véase Mazo del naufragio).
 
 - El mazo de historia se guarda en dos montones, uno por tamaño. Las cartas que van al mazo de Peligros son de tamaño tarot, como las de Peligro, y forman el montón grande; las demás forman el montón normal.
 
@@ -1164,20 +1164,23 @@ El mazo de muelle contiene los Tripulantes y las Mejoras del jugador, de 15 a 20
 
 El mazo del capitán contiene los Eventos y las Habilidades del jugador, de 30 a 40 cartas. El jugador roba de él las cartas de su mano. Si debe robar y el mazo está vacío, baraja su pila de descartes para formar un mazo nuevo y pierde un día.
 
-### Mazo del pecio
+### Mazo del naufragio
 
-El mazo del pecio son diez cartas del mazo de historia que se usan en «El pecio del San José»: las cartas 269 y 277 a 283, y los Tesoros 270 y 271. Seis son buenas (cuatro cartas que lo dicen y los dos Tesoros) y cuatro, malas. Cuando la misión vaya a superarse, el jugador baraja el mazo del pecio y puede **bucear** las veces que quiera: agota a un Tripulante preparado, el **buzo**, y roba 1 carta del mazo del pecio.
+El mazo del naufragio son doce cartas del mazo de historia que se usan en «El naufragio del San José»: las cartas 269 a 271 y 277 a 285. Entre ellas hay una Mejora de barco, «La culebrina del San José», y dos Tesoros, el 270 y el 271. Cuando la misión vaya a superarse, el jugador prepara a todos sus Tripulantes y baraja el mazo del naufragio. Después puede **bucear** las veces que quiera: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.
 
-- **Si es buena,** el jugador la aplica y se la queda, a un lado; un Tesoro se pone en juego. Las buenas no vuelven al mazo, así que cada inmersión es más arriesgada que la anterior.
-- **Si es mala,** se aplica (lo que dice del buzo, al Tripulante que ha bajado) y vuelve al mazo del pecio, que se baraja.
-- No hay Prueba ni Destino. El jugador puede bucear mientras tenga Tripulantes preparados, hasta que decida parar o salga «Sin aire».
-- Al terminar la misión, el mazo del pecio y las cartas sacadas vuelven al mazo de historia, salvo los Tesoros que se hayan puesto en juego.
-
-> [!ejemplo]
-> En «El pecio del San José», el jugador reúne 4 de Avance y baraja el mazo del pecio: 6 buenas y 4 malas. Agota a la Vigía inexperta y roba «Doblones sueltos», una buena: roba 2 cartas y la deja a un lado. Quedan 5 buenas y 4 malas.
+- El jugador aplica lo que dice la carta. Lo que le pasa «al Tripulante que ha robado esta carta» le pasa al que acaba de bajar.
+- La carta dice qué hacer con ella: «Quédate esta carta» (el jugador la deja a un lado hasta que termine la misión), «Pon esta carta en juego» (como cualquier Mejora o Tesoro) o «Vuelve a barajar esta carta en el mazo del naufragio». Una carta que no dice nada de esto se aparta después de aplicarla.
+- No hay Prueba ni Destino. El jugador puede bucear mientras le quede algún Tripulante preparado y cartas en el mazo, hasta que decida parar.
+- Al terminar la misión, todo el mazo del naufragio vuelve al mazo de historia (lo que queda en el mazo, lo que el jugador se ha quedado y lo apartado), salvo las cartas que estén en juego. Si la culebrina se descarta después, también vuelve al mazo de historia, como un Tesoro.
 
 > [!ejemplo]
-> Baja otra vez: agota a Diego y roba «Tiburón», una mala. Diego sufre 2 heridas y la carta vuelve al mazo del pecio, que se baraja: siguen quedando 5 buenas y 4 malas. Al jugador solo le queda preparado un Tripulante con 2 de Vida, y otro «Tiburón» lo derrotaría, así que deja de bucear. La misión no da reputación: su recompensa es lo que ha sacado del pecio.
+> En «El naufragio del San José», el jugador reúne 4 de Avance. Prepara a todos sus Tripulantes (Diego, el Bucanero veterano y la Vigía inexperta) y baraja el mazo del naufragio. Agota a la Vigía y roba «El cofre del virrey»: se lo queda, a un lado. Si también tuviera «La llave del cofre», ganaría 1 de reputación.
+
+> [!ejemplo]
+> Agota al Bucanero y roba «Una bolsa de aire»: prepara a todos sus Tripulantes. La carta no dice qué hacer con ella, así que se aparta. La Vigía y el Bucanero vuelven a estar preparados.
+
+> [!ejemplo]
+> Agota a Diego y roba «El pulpo de la bodega». Elige sacarlo entre dos: agota a la Vigía, y Diego no sufre las 2 heridas. El pulpo vuelve barajado al mazo del naufragio. Solo le queda preparado el Bucanero, con 2 de Vida: si sale otra vez el pulpo y nadie puede sacarlo, lo derrota. El jugador deja de bucear, y el cofre vuelve al mazo de historia con el resto del mazo del naufragio.
 
 *Véase también:* Mazo de historia, Tesoro.
 
@@ -1417,7 +1420,7 @@ Un Tesoro es una carta única que otorgan algunas misiones («Pon en juego el Te
 - Un Tesoro no ocupa Espacio ni hueco de Mejora.
 - Si su portador queda derrotado, el jugador vincula el Tesoro a otro de sus Tripulantes.
 - Un Tesoro que se descarta no va a ningún mazo de descartes: vuelve al mazo de historia y sale de la partida.
-- Los Tesoros 270 y 271 no los da ninguna misión: forman parte del mazo del pecio y salen al bucear.
+- Los Tesoros 270 y 271 no los da ninguna misión: forman parte del mazo del naufragio y salen al bucear.
 
 ### Tipos de encuentro
 

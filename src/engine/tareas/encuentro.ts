@@ -84,8 +84,7 @@ function terminada(s: Estado): boolean {
  * puede seguir (la de una Acción, sí).
  */
 function pruebaCortada(s: Estado): boolean {
-  // Fase 15: una Prueba que se hace con la misión ya superada (bucear en el pecio) no se corta.
-  if (s.mision) return s.mision.fin !== null && !(s.prueba?.definicion?.trasSuperar && s.mision.fin === 'superada')
+  if (s.mision) return s.mision.fin !== null
   return s.prueba?.origen !== 'accion'
 }
 

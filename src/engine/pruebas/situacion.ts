@@ -176,7 +176,8 @@ function historiaCompleta(): CartaId[] {
     if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
     if (e.tipo === 'tesoro') ids.push(e.id)
     if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
-    if (e.tipo === 'pasajero' || e.tipo === 'permanente' || e.tipo === 'pecio') ids.push(e.id)
+    if (e.tipo === 'pasajero' || e.tipo === 'permanente' || e.tipo === 'naufragio') ids.push(e.id)
+    if (e.tipo === 'mejoraBarco' && e.carta.mision) ids.push(e.id)
   }
   return ids
 }
@@ -597,13 +598,13 @@ export class Jugador {
   }
 
   /**
-   * Fase 15: pone estas cartas encima del mazo del pecio, en este orden (el mazo se baraja al empezar a bucear y cada vez
-   * que vuelve una mala; así las pruebas saben qué sale).
+   * Fase 15: pone estas cartas encima del mazo del naufragio, en este orden (el mazo se baraja al empezar a bucear y cada
+   * vez que vuelve una carta; así las pruebas saben qué sale).
    */
-  encimaDelPecio(...ids: CartaId[]): this {
+  encimaDelNaufragio(...ids: CartaId[]): this {
     const s = this.estado
-    const arriba = ids.map((id) => this.inst(id, ['mazoPecio']))
-    s.zonas.mazoPecio = [...arriba, ...s.zonas.mazoPecio.filter((c) => !arriba.includes(c))]
+    const arriba = ids.map((id) => this.inst(id, ['mazoNaufragio']))
+    s.zonas.mazoNaufragio = [...arriba, ...s.zonas.mazoNaufragio.filter((c) => !arriba.includes(c))]
     return this
   }
 

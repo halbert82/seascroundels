@@ -91,8 +91,9 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
     // Fase 11: las permanentes (también «¡La guardia!») esperan apartadas en el mazo de historia hasta que un encuentro o
     // una misión las pone en juego.
     if (e.tipo === 'permanente') crearCopia(s, e.id, 'mazoHistoria')
-    // Fase 15: las cartas del mazo del pecio también esperan en el mazo de historia.
-    if (e.tipo === 'pecio') crearCopia(s, e.id, 'mazoHistoria')
+    // Fase 15: las cartas del mazo del naufragio también esperan en el mazo de historia (la culebrina, una Mejora de
+    // barco, también; los Tesoros ya están).
+    if (e.tipo === 'naufragio' || (e.tipo === 'mejoraBarco' && e.carta.mision)) crearCopia(s, e.id, 'mazoHistoria')
   }
 
   // 6. Muelle.

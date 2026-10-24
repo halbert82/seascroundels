@@ -2,7 +2,7 @@
 // número bien visible en el anverso y, en el dorso, el dorso del mazo al que van, con el mismo número. Se buscan por él
 // («Pon la carta 137 encima del mazo de Misiones»).
 
-import { esDelPecio, type EntradaCatalogo } from '../../engine/catalogo.ts'
+import { esDelNaufragio, type EntradaCatalogo } from '../../engine/catalogo.ts'
 
 /** El dorso del mazo al que va una carta del mazo de historia. */
 export type DorsoHistoria = 'misiones' | 'muelle' | 'peligros'
@@ -17,16 +17,19 @@ export function dorsoDeHistoria(e: EntradaCatalogo): DorsoHistoria | null {
     case 'capitulo':
       return e.carta.capitulo === 'I' ? null : 'misiones'
     case 'tesoro':
-      // Fase 15: los Tesoros 270 y 271 van en el mazo del pecio, con el dorso de misión de las demás (si llevaran el de
-      // muelle, se sabría cuándo toca un Tesoro).
-      return esDelPecio(e.id) ? 'misiones' : 'muelle'
+      // Fase 15 (P106, Albert): los Tesoros 270 y 271 van en el mazo del naufragio, con el mismo dorso que las demás (el de
+      // misión): si llevaran el de muelle, se sabría cuándo toca un Tesoro.
+      return esDelNaufragio(e.id) ? 'misiones' : 'muelle'
+    // Fase 15: la culebrina del naufragio es una Mejora de barco, pero del mazo del naufragio: el mismo dorso de misión.
+    case 'mejoraBarco':
+      return e.carta.mision ? 'misiones' : null
     case 'mazoPropio':
       return 'peligros'
     case 'peligro':
       return e.carta.entraDuranteLaPartida && !e.carta.retirada ? 'peligros' : null
     case 'pasajero':
-    // Fase 15: las cartas del mazo del pecio salen al superar su misión: dorso de misión.
-    case 'pecio':
+    // Fase 15: las cartas del mazo del naufragio salen al superar su misión: dorso de misión.
+    case 'naufragio':
     // Fase 11: las permanentes (también «¡La guardia!») no van a ningún mazo (van a la zona de permanentes): dorso de
     // misión, pila normal.
     case 'permanente':

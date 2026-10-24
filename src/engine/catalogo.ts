@@ -13,8 +13,8 @@ import {
   type MejoraBarcoDatos,
   type MejoraTripulanteDatos,
   type MisionDatos,
+  type NaufragioDatos,
   type PasajeroDatos,
-  type PecioDatos,
   type PeligroDatos,
   type PermanenteDatos,
   type PuertoDatos,
@@ -46,8 +46,8 @@ export type EntradaCatalogo =
   | { tipo: 'pasajero'; num: number; id: string; copias: number; carta: PasajeroDatos; mision: MisionDatos }
   /** Fase 11: carta del mazo de historia que un encuentro pone en la zona de permanentes. */
   | { tipo: 'permanente'; num: number; id: string; copias: number; carta: PermanenteDatos }
-  /** Fase 15: carta del mazo del pecio (buena o mala), del mazo de historia. */
-  | { tipo: 'pecio'; num: number; id: string; copias: number; carta: PecioDatos; mision: MisionDatos }
+  /** Fase 15: carta del mazo del naufragio (salvo la culebrina y los Tesoros, que conservan su tipo), del mazo de historia. */
+  | { tipo: 'naufragio'; num: number; id: string; copias: number; carta: NaufragioDatos; mision: MisionDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
@@ -75,7 +75,7 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   mazoPropio: 'Mazo propio',
   pasajero: 'Pasajero',
   permanente: 'Permanente',
-  pecio: 'Carta del pecio',
+  naufragio: 'Carta del naufragio',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -143,10 +143,10 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     lista.push({ tipo: 'pasajero', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
   for (const carta of datos.permanentes ?? []) lista.push({ tipo: 'permanente', num: carta.num, id: carta.id, copias: 1, carta })
-  for (const carta of datos.pecio ?? []) {
+  for (const carta of datos.naufragio ?? []) {
     const mision = datos.misiones.find((m) => m.id === carta.mision)
-    if (!mision) throw new Error(`La carta del pecio «${carta.id}» no pertenece a ninguna misión`)
-    lista.push({ tipo: 'pecio', num: carta.num, id: carta.id, copias: 1, carta, mision })
+    if (!mision) throw new Error(`La carta del naufragio «${carta.id}» no pertenece a ninguna misión`)
+    lista.push({ tipo: 'naufragio', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
 
   return lista.sort((a, b) => a.num - b.num)
@@ -283,25 +283,42 @@ export function rasgosDe(id: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
-// Fase 15: el mazo del pecio («El pecio del San José»)
+// Fase 15: el mazo del naufragio («El naufragio del San José»)
 
-/** Las cartas del mazo del pecio, por identificador: las suyas y los Tesoros 270 y 271 (en el orden de la misión). */
-export function cartasDelPecio(): string[] {
-  const nums = DATOS.misiones.flatMap((m) => m.capitulos.flatMap((c) => c.mazoPecio ?? []))
+/** Las cartas del mazo del naufragio, por identificador, en el orden de la misión (con la culebrina y los Tesoros 270 y 271). */
+export function cartasDelNaufragio(): string[] {
+  const nums = DATOS.misiones.flatMap((m) => m.capitulos.flatMap((c) => c.mazoNaufragio ?? []))
   return nums.map((n) => {
     const e = CATALOGO.find((x) => x.num === n)
-    if (!e) throw new Error(`El mazo del pecio cita la carta ${n}, que no existe`)
+    if (!e) throw new Error(`El mazo del naufragio cita la carta ${n}, que no existe`)
     return e.id
   })
 }
 
-/** ¿Es del mazo del pecio? */
-export function esDelPecio(id: string): boolean {
-  return cartasDelPecio().includes(id)
+/** ¿Es del mazo del naufragio? */
+export function esDelNaufragio(id: string): boolean {
+  return cartasDelNaufragio().includes(id)
 }
 
-/** Una carta buena del mazo del pecio (te la quedas): las suyas marcadas como buenas y los Tesoros. */
-export function esBuenaDelPecio(id: string): boolean {
-  const e = porId(id)
-  return e.tipo === 'tesoro' || (e.tipo === 'pecio' && e.carta.clase === 'buena')
+/** Lo que se hace con una carta del mazo del naufragio después de aplicarla. */
+export type DestinoNaufragio = 'quedar' | 'enJuego' | 'barajar' | 'apartar'
+
+/**
+ * Regla del motor (Albert, fase 15): lo dice el texto de la carta. «Quédate esta carta»: a un lado, hasta que termine la
+ * misión; «Pon esta carta en juego»: en juego; «Vuelve a barajar esta carta…»: otra vez al mazo del naufragio. Una carta que
+ * no dice nada de esto se aparta después de aplicarla.
+ */
+export function destinoNaufragio(id: string): DestinoNaufragio {
+  const c = porId(id).carta
+  const texto = 'texto' in c && typeof c.texto === 'string' ? c.texto : ''
+  if (texto.includes('Quédate esta carta')) return 'quedar'
+  if (texto.includes('Pon esta carta en juego')) return 'enJuego'
+  if (texto.includes('Vuelve a barajar esta carta')) return 'barajar'
+  return 'apartar'
+}
+
+/** Una Mejora o un Tesoro que no es del jugador, sino del mazo de una misión (la culebrina del naufragio). */
+export function esDeMision(id: string): boolean {
+  const c = porId(id).carta
+  return 'mision' in c && typeof c.mision === 'string'
 }

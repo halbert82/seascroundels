@@ -323,23 +323,23 @@ function rival(): PartidaEnMesa {
 }
 
 /**
- * Fase 15, «El pecio del San José»: superada la misión, dos inmersiones: «Doblones sueltos» (buena, te la quedas) y
- * «Morena en la bodega» (mala: hiere al buzo y vuelve barajada). ¿Se baja otra vez?
+ * Fase 15, «El naufragio del San José»: superada la misión, dos inmersiones: «El cofre del virrey» (te lo quedas, a un lado)
+ * y «El pulpo de la bodega», que atrapa a la Guía: ¿lo saca otro entre dos o se suelta solo?
  */
 function bucear(): PartidaEnMesa {
   const j = Jugador.en({
     empezarEn: 'quedarseOZarpar',
     escenario: ['pruebas-calma', 'pruebas-calma', 'pruebas-calma'],
-    misiones: ['pecio-I', 'prueba-I', 'aguada-I'],
+    misiones: ['naufragio-I', 'prueba-I', 'aguada-I'],
     mazoPeligros: ['calma', 'calma', 'chubasco', 'chubasco', 'chubasco', 'chubasco'],
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje'],
     tripulacion: ['vigia', 'guia_alquiler', 'baqueano'],
     reputacion: 4,
   })
-  j.zarpar('pecio-I').seguir()
-  j.encimaDelPecio('pecio_doblones', 'pecio_morena').opcion('bucear').elegir('vigia')
-  j.opcion('bucear').elegir('guia_alquiler').pasarOfertas()
+  j.zarpar('naufragio-I').seguir()
+  j.encimaDelNaufragio('naufragio_cofre', 'naufragio_pulpo').opcion('bucear').elegir('vigia')
+  j.opcion('bucear').elegir('guia_alquiler')
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 10) }
 }
 

@@ -87,9 +87,19 @@ describe('Prueba masiva: mazos de muelle variados', () => {
     // sus pruebas propias (cartas-eventos y decisiones).
     // «Arenga del capitán» (fase 13) está en la colección pero no en el mazo de inicio de Diego: aquí no sale nunca. Tiene
     // su prueba propia (cartas-eventos) y su medida con un mazo de prueba (medir.informe).
-    // Fase 15: la Cadena de oro y El doblón de la calavera solo llegan buceando en «El pecio del San José» (y el doblón
-    // salva al Capitán solo si iba a quedar derrotado). Tienen su prueba propia (fase15-misiones.test).
-    const rarisimas = new Set(['mascaron.evitar', 'espada.cancelar', 'polvora_rey.disparo', 'ni_hombre.jugar', 'arenga.jugar', 'cadena_oro.gastar', 'doblon.entrar', 'doblon.salvar'])
+    // Fase 15: la campana, la culebrina y el doblón del San José solo llegan buceando en «El naufragio del San José» (y el
+    // doblón salva al Capitán solo si iba a quedar derrotado). Tienen su prueba propia (fase15-misiones.test).
+    const rarisimas = new Set([
+      'mascaron.evitar',
+      'espada.cancelar',
+      'polvora_rey.disparo',
+      'ni_hombre.jugar',
+      'arenga.jugar',
+      'campana_sanjose.otear',
+      'culebrina_sanjose.disparar',
+      'doblon.entrar',
+      'doblon.salvar',
+    ])
     expect(capacidadesDelJugador().filter((c) => !usadas.has(c) && !rarisimas.has(c))).toEqual([])
   })
 })

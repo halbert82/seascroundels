@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import { esBuenaDelPecio, iconosDe, porId } from '../../engine/catalogo.ts'
+import { iconosDe, porId } from '../../engine/catalogo.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia, nombre } from '../../engine/estado.ts'
 import { desgloseDificultad, desgloseTotal, dificultadPrueba, nombreDelEncuentro, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
@@ -16,7 +16,6 @@ import { impideRetirarse, impideSuperar } from '../../engine/definiciones.ts'
 import { textoModSiguiente } from '../../engine/tareas/efectos.ts'
 import { avancePrevisto } from '../../engine/tareas/encuentro.ts'
 import { fichasVisibles, motivoSinSuperar } from '../../engine/misiones2/comun.ts'
-import { cuentaDelPecio } from '../../engine/misiones2/fase15.ts'
 import { anchoCentro } from './disposicion.ts'
 import { useLienzo } from './Lienzo.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
@@ -236,7 +235,7 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
       {/* Con scroll propio (layoutScroll: las cartas que vuelan miden bien aunque se haya bajado). */}
       <motion.div layoutScroll className="mision-cuerpo">
         {buceando(s) ? (
-          <PanelPecio alto={MEDIDAS.tarot.alto * escalaPeligro} ancho={centro} />
+          <PanelNaufragio alto={MEDIDAS.tarot.alto * escalaPeligro} ancho={centro} />
         ) : (
           <>
             <div className="hueco-encuentro">
@@ -259,93 +258,87 @@ export function ZonaMision({ desde, decision, sel }: { desde: number; decision: 
   )
 }
 
-/** Fase 15, «El pecio del San José»: se está buceando (el mazo del pecio, o lo sacado, está en la mesa). */
+/** Fase 15, «El naufragio del San José»: se está buceando (el mazo del naufragio, o lo sacado, está en la mesa). */
 function buceando(s: Estado): boolean {
-  return Boolean(s.mision?.pecio) && (s.zonas.mazoPecio.length > 0 || s.zonas.pecioSacadas.length > 0)
+  return Boolean(s.mision?.naufragio) && (s.zonas.mazoNaufragio.length > 0 || s.zonas.naufragioQuedadas.length > 0 || s.zonas.naufragioApartadas.length > 0)
 }
 
-/** La última carta robada del mazo del pecio en esta misión (para enseñarla, también si era mala y ya ha vuelto al mazo). */
-function ultimaDelPecio(s: Estado): { inst: InstId; buena: boolean } | null {
+/** La última carta robada del mazo del naufragio en esta misión (para enseñarla también cuando ya ha vuelto al mazo). */
+function ultimaDelNaufragio(s: Estado): InstId | null {
   for (let i = s.registro.length - 1; i >= 0; i--) {
     const r = s.registro[i]
     if (!r || r.turno !== s.turno) break
-    if (r.dato?.tipo === 'pecio') return { inst: r.dato.inst, buena: r.dato.buena }
+    if (r.dato?.tipo === 'naufragio') return r.dato.inst
   }
   return null
 }
 
+/** Adónde ha ido la última carta robada (lo dice su texto): el rótulo de debajo y, si ya no está a la vista, su sello. */
+function destinoDeLaUltima(s: Estado, c: InstId): { texto: string; sello?: string; aplicandose?: boolean } {
+  const aplicandose = s.pila.some((t) => t.tipo === 'especial' && t.clave === 'naufragio.destino' && t.datos.carta === c)
+  if (aplicandose) return { texto: 'Se aplica', aplicandose: true }
+  if (s.zonas.mazoNaufragio.includes(c)) return { texto: 'Vuelve barajada al mazo', sello: 'Vuelve al mazo' }
+  if (s.zonas.naufragioQuedadas.includes(c)) return { texto: 'Te la quedas, a un lado' }
+  if (s.zonas.mejoras.includes(c)) return { texto: 'Entra en juego en el Barco' }
+  return { texto: 'Se aparta' }
+}
+
 /**
- * Fase 15, «El pecio del San José»: mientras se bucea, el mazo del pecio boca abajo con las buenas y las malas que quedan,
- * la última carta robada y, a un lado, las buenas que te has quedado (también los Tesoros, que ya están en juego).
+ * Fase 15, «El naufragio del San José»: mientras se bucea, el mazo del naufragio boca abajo con las cartas que quedan (sin
+ * decir cuáles ayudan y cuáles hacen daño), la última carta robada y, a un lado, las que te has quedado.
  */
-function PanelPecio({ alto, ancho }: { alto: number; ancho: number }) {
+function PanelNaufragio({ alto, ancho }: { alto: number; ancho: number }) {
   const { s } = useMesa()
-  const m = s.mision
-  const pecio = m?.pecio
-  if (!pecio) return null
-  const { buenas, malas } = cuentaDelPecio(s)
+  const naufragio = s.mision?.naufragio
+  if (!naufragio) return null
   const escala = Math.min(0.62, (alto - 30) / MEDIDAS.normal.alto)
-  const ultima = ultimaDelPecio(s)
-  const sacadas = [...s.zonas.pecioSacadas.filter((c) => esBuenaDelPecio(copia(s, c).id)), ...pecio.tesoros.filter((c) => s.zonas.mejoras.includes(c))]
-  // La mala que se está aplicando sigue a un lado hasta volver al mazo; después se enseña atenuada, con su sello.
-  const malaAqui = s.zonas.pecioSacadas.find((c) => !esBuenaDelPecio(copia(s, c).id))
+  const ultima = ultimaDelNaufragio(s)
+  const destino = ultima && s.cartas[ultima] ? destinoDeLaUltima(s, ultima) : null
+  const quedadas = s.zonas.naufragioQuedadas
   const anchoCarta = MEDIDAS.normal.ancho * escala
-  const escalaSacada = Math.min(0.3, Math.max(0.2, (ancho - 2 * anchoCarta - 60) / Math.max(1, sacadas.length) / MEDIDAS.normal.ancho))
+  const escalaQuedada = Math.min(0.3, Math.max(0.2, (ancho - 2 * anchoCarta - 60) / Math.max(1, quedadas.length) / MEDIDAS.normal.ancho))
+  const quedan = s.zonas.mazoNaufragio.length
   return (
-    <div className="pecio">
-      <div className="pecio-columna">
-        <Explicable ayuda={AYUDA_REGLA.mazoPecio} className="pecio-rotulo">
-          Mazo del pecio
+    <div className="naufragio">
+      <div className="naufragio-columna">
+        <Explicable ayuda={AYUDA_REGLA.mazoNaufragio} className="naufragio-rotulo">
+          Mazo del naufragio
         </Explicable>
-        {s.zonas.mazoPecio.length > 0 ? (
-          <div className="pecio-mazo">
+        {quedan > 0 ? (
+          <div className="naufragio-mazo" title={`Quedan ${quedan} ${quedan === 1 ? 'carta' : 'cartas'} en el mazo del naufragio`}>
             <DorsoEscalado tipo="misiones" escala={escala} />
-            <span className="pecio-cuantas">{s.zonas.mazoPecio.length}</span>
+            <span className="naufragio-cuantas">{quedan}</span>
           </div>
         ) : (
-          <div className="pecio-vacio" style={{ width: anchoCarta, height: MEDIDAS.normal.alto * escala }}>
+          <div className="naufragio-vacio" style={{ width: anchoCarta, height: MEDIDAS.normal.alto * escala }}>
             Vacío
           </div>
         )}
-        <div className="pecio-cuenta" title={`Quedan ${buenas} buenas y ${malas} malas en el mazo del pecio`}>
-          <span className="pecio-buenas">
-            <b>{buenas}</b> {buenas === 1 ? 'buena' : 'buenas'}
-          </span>
-          <span className="pecio-malas">
-            <b>{malas}</b> {malas === 1 ? 'mala' : 'malas'}
-          </span>
-        </div>
       </div>
-      <div className="pecio-columna">
-        <span className="pecio-rotulo">{pecio.inmersiones === 0 ? 'Aún no has buceado' : pecio.inmersiones === 1 ? '1 inmersión' : `${pecio.inmersiones} inmersiones`}</span>
-        {malaAqui ? (
-          <CartaDe inst={malaAqui} escala={escala} revelar="misiones" />
-        ) : ultima && s.cartas[ultima.inst] ? (
+      <div className="naufragio-columna">
+        <span className="naufragio-rotulo">{naufragio.inmersiones === 0 ? 'Aún no has buceado' : naufragio.inmersiones === 1 ? '1 inmersión' : `${naufragio.inmersiones} inmersiones`}</span>
+        {ultima && destino?.aplicandose && s.zonas.naufragioApartadas.includes(ultima) ? (
+          <CartaDe inst={ultima} escala={escala} revelar="misiones" />
+        ) : ultima && destino ? (
           <div className="resuelta">
-            {ultima.buena ? (
-              <CartaMesa inst={`pecio-${ultima.inst}`} sinVuelo id={copia(s, ultima.inst).id} escala={escala} />
-            ) : (
-              <>
-                <CartaMesa inst={`pecio-${ultima.inst}`} sinVuelo id={copia(s, ultima.inst).id} escala={escala} marca="atenuada" />
-                <span className="sello pecio-sello">Vuelve al mazo</span>
-              </>
-            )}
+            <CartaMesa inst={`naufragio-${ultima}`} sinVuelo id={copia(s, ultima).id} escala={escala} {...(destino.sello ? { marca: 'atenuada' as const } : {})} />
+            {destino.sello && <span className="sello naufragio-sello">{destino.sello}</span>}
           </div>
         ) : (
-          <div className="pecio-vacio" style={{ width: anchoCarta, height: MEDIDAS.normal.alto * escala }} />
+          <div className="naufragio-vacio" style={{ width: anchoCarta, height: MEDIDAS.normal.alto * escala }} />
         )}
-        <span className={`pecio-ultima${ultima && !ultima.buena ? ' mala' : ''}`}>{ultima ? (ultima.buena ? 'Buena: te la quedas' : 'Mala: se aplica y vuelve barajada') : '\u00a0'}</span>
+        <span className="naufragio-ultima">{destino ? destino.texto : '\u00a0'}</span>
       </div>
-      <div className="pecio-columna pecio-lado">
-        <span className="pecio-rotulo">Te has quedado</span>
-        {sacadas.length > 0 ? (
-          <div className="pecio-sacadas">
-            {sacadas.map((c) => (
-              <CartaDe key={c} inst={c} escala={escalaSacada} girar={false} />
+      <div className="naufragio-columna naufragio-lado">
+        <span className="naufragio-rotulo">Te has quedado</span>
+        {quedadas.length > 0 ? (
+          <div className="naufragio-quedadas">
+            {quedadas.map((c) => (
+              <CartaDe key={c} inst={c} escala={escalaQuedada} girar={false} />
             ))}
           </div>
         ) : (
-          <span className="pecio-nada">Nada todavía</span>
+          <span className="naufragio-nada">Nada todavía</span>
         )}
       </div>
     </div>

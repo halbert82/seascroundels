@@ -72,6 +72,11 @@ export interface MejoraBarcoDatos {
   canon: boolean
   bonificacion_vida?: number
   bonificacion_capacidad?: number
+  /**
+   * Fase 15: no es una carta del jugador, sino del mazo de una misión («La culebrina del San José», del mazo del
+   * naufragio). Espera en el mazo de historia, no se compra y no va en ningún mazo del jugador.
+   */
+  mision?: string
 }
 
 export interface MejoraTripulanteDatos {
@@ -255,17 +260,17 @@ export interface PermanenteDatos {
 }
 
 /**
- * Fase 15 (rehecho): una carta del mazo del pecio («El pecio del San José»). Al bucear se roba una: si es buena, te la
- * quedas; si es mala, se aplica y vuelve barajada al mazo del pecio. Los Tesoros 270 y 271 también son del mazo del pecio
- * (son buenas), pero siguen siendo Tesoros.
+ * Fase 15: una carta del mazo del naufragio («El naufragio del San José»). Al bucear se roba una y se aplica; lo que pasa
+ * después lo dice su texto («Quédate esta carta», «Pon esta carta en juego», «Vuelve a barajar esta carta…») y, si no dice
+ * nada, se aparta. La culebrina (una Mejora de barco) y la campana y el doblón (Tesoros) también son del mazo del
+ * naufragio, pero conservan su tipo.
  */
-export interface PecioDatos {
+export interface NaufragioDatos {
   id: string
   num: number
   nombre: string
   /** La misión de su mazo. */
   mision: string
-  clase: 'buena' | 'mala'
   texto: string
   ambientacion: string
 }
@@ -329,8 +334,11 @@ export interface CapituloDatos {
   textoSiguiente: string
   /** Mazo propio que baraja al zarpar. */
   mazoPropio?: { nombre: string; cartas: string[] }
-  /** Fase 15: el mazo del pecio («El pecio del San José»), por número de colección (sus cartas y los Tesoros 270 y 271). */
-  mazoPecio?: number[]
+  /**
+   * Fase 15: el mazo del naufragio («El naufragio del San José»), por número de colección: sus cartas, la culebrina (Mejora
+   * de barco) y los Tesoros 270 y 271.
+   */
+  mazoNaufragio?: number[]
 }
 
 export interface MisionDatos {
@@ -386,8 +394,8 @@ export interface DatosCartas {
   cartasDeMazoPropio: CartaMazoPropioDatos[]
   pasajeros: PasajeroDatos[]
   permanentes: PermanenteDatos[]
-  /** Fase 15: las cartas del mazo del pecio que no son Tesoros. */
-  pecio: PecioDatos[]
+  /** Fase 15: las cartas del mazo del naufragio que no son Tesoros ni Mejoras. */
+  naufragio: NaufragioDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

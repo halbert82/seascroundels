@@ -86,6 +86,7 @@
  "tuerto": "El Tuerto recibe {N COM} por cada herida que tenga.",
  "gallardete": "Indestructible.\n{N MAN}.",
  "carta_marear": "Indestructible.\nTus misiones [mar] necesitan {N avance g}.",
- "cadena_oro": "**Acción:** Descarta esta carta: este turno, el próximo Tripulante o Mejora que reclutes o adquieras cuesta {N} menos.",
- "doblon": "Indestructible.\nNo puedes descartar esta carta.\nAl entrar en juego, gana {N rep}.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {N vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar."
+ "doblon": "Pon esta carta en juego.\nIndestructible.\nNo puedes descartar esta carta.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {N vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar.",
+ "campana_sanjose": "Pon esta carta en juego.\nIndestructible.\n**Al zarpar:** [mar]: Otea N.",
+ "culebrina_sanjose": "Pon esta carta en juego. Si no tienes Espacio, vuelve a barajarla en el mazo del naufragio.\n[mar], [agotar]: Una Prueba de [COM] o de [NAV] recibe {N}."
 }

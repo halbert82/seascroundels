@@ -26,9 +26,8 @@ export const COLOR_TIPO = {
   pasajero: '#4A4F6B',
   /** Fase 11: las permanentes (cartas del mazo de historia que pone en juego un encuentro). */
   permanente: '#3F4B45',
-  /** Fase 15: las cartas del mazo del pecio: las buenas, del color del Tesoro, más oscuro; las malas, rojo de Peligro. */
-  pecioBuena: '#5A4A2E',
-  pecioMala: '#6E2A20',
+  /** Fase 15: las cartas del mazo del naufragio, todas del mismo color (no se distingue cuáles ayudan y cuáles hacen daño). */
+  naufragio: '#34505A',
 } as const
 
 /** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
@@ -444,15 +443,16 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     }
     case 'mejoraBarco': {
       const c = entrada.carta
+      // Fase 15: la culebrina del naufragio no es del jugador: sin Clase ni coste (no se compra).
+      const deMision = c.mision !== undefined
       return {
         ...base(entrada),
         nombre: c.nombre,
         unica: c.unico,
-        color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.mejoraBarco,
+        color: deMision ? COLOR_TIPO.mejoraBarco : (COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.mejoraBarco),
         tipoTexto: 'Mejora de barco',
         diseno: 'mejoraBarco',
-        clase: claseDe(c),
-        coste: c.coste,
+        ...(deMision ? {} : { clase: claseDe(c), coste: c.coste }),
         espacio: c.espacio,
         rasgos: c.canon ? ['Cañón'] : [],
         texto: parsearTexto(c.texto),
@@ -583,14 +583,15 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...conArte(entrada.id),
       }
     }
-    case 'pecio': {
-      // Fase 15: carta del mazo del pecio («El pecio del San José»): buena (te la quedas) o mala (se aplica y vuelve).
+    case 'naufragio': {
+      // Fase 15: carta del mazo del naufragio («El naufragio del San José»). Todas iguales por fuera: lo que pasa con ella lo
+      // dice su texto.
       const c = entrada.carta
       return {
         ...base(entrada),
         nombre: c.nombre,
-        color: c.clase === 'buena' ? COLOR_TIPO.pecioBuena : COLOR_TIPO.pecioMala,
-        tipoTexto: `Mazo del pecio · ${c.clase === 'buena' ? 'Buena' : 'Mala'}`,
+        color: COLOR_TIPO.naufragio,
+        tipoTexto: 'Mazo del naufragio',
         permanente: true,
         pestanasIzqTop: 74,
         texto: parsearTexto(c.texto),
@@ -711,7 +712,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'tesoro':
     case 'pasajero':
     case 'permanente':
-    case 'pecio':
+    case 'naufragio':
       return [entrada.carta.texto]
     case 'habilidad':
       return []

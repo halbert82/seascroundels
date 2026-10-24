@@ -1,13 +1,14 @@
 // Fase 15 · misiones nuevas: las travesías «La Isla del Tesoro» (capítulo II al azar), «La carrera de van Hoorn» (el
-// rival con su barra y Destina) y «El fugitivo» (el prisionero), y las misiones sueltas «El pecio del San José»
-// (bucear en el mazo del pecio), «Escolta del San Telmo» y «El asedio de Port Royal» (cartas que se protegen) y «La regata
+// rival con su barra y Destina) y «El fugitivo» (el prisionero), y las misiones sueltas «El naufragio del San José»
+// (bucear en el mazo del naufragio), «Escolta del San Telmo» y «El asedio de Port Royal» (cartas que se protegen) y «La regata
 // de San Juan».
 // También las permanentes con Vida (Galeón San Telmo, Murallas de Port Royal, El prisionero), los dos barcos rivales del
 // mazo de historia y los Tesoros nuevos.
 
 import { entero } from '../azar.ts'
 import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
-import { cartasDelPecio, esBuenaDelPecio, esCanon, esUnica, porId, tipoDe } from '../catalogo.ts'
+import { cartasDelNaufragio, destinoNaufragio, porId } from '../catalogo.ts'
+import { DATOS } from '../datos.ts'
 import type { CapacidadDeCarta } from '../definiciones.ts'
 import type { Efecto } from '../efectos.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
@@ -309,229 +310,327 @@ registrarPermanente('pm_prisionero', { quitar: [], capacidades: [desviar('herida
 SIN_VIDA.set('pm_prisionero', (s) => fallaPor(s, 'el prisionero muere'))
 
 // ---------------------------------------------------------------------------
-// El pecio del San José (268): bucear en el mazo del pecio (269–271 y 277–283)
+// El naufragio del San José (268): bucear en el mazo del naufragio (269–271 y 277–285)
 
-const PECIO = 'pecio-I'
-
-/** Buenas y malas que quedan en el mazo del pecio (la mesa las enseña). */
-export function cuentaDelPecio(s: Estado): { buenas: number; malas: number } {
-  const buenas = s.zonas.mazoPecio.filter((c) => esBuenaDelPecio(copia(s, c).id)).length
-  return { buenas, malas: s.zonas.mazoPecio.length - buenas }
-}
+const NAUFRAGIO = 'naufragio-I'
 
 const cuantas = (n: number, una: string, varias: string) => `${n} ${n === 1 ? una : varias}`
 
-/** «Quedan 4 buenas y 4 malas.» */
-function textoCuenta(s: Estado): string {
-  const { buenas, malas } = cuentaDelPecio(s)
-  return `${cuantas(buenas, 'buena', 'buenas')} y ${cuantas(malas, 'mala', 'malas')}`
-}
+/** Tripulantes preparados que pueden bucear (el que baja se agota). */
+const preparadosParaBucear = (s: Estado) => s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
 
-/** Tripulantes preparados que pueden bajar (el buzo se agota). */
-const buzosPosibles = (s: Estado) => s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
-
-/** ¿Se puede bucear otra vez? Misión superada, sin «Sin aire», con cartas en el mazo del pecio y alguien preparado. */
+/** ¿Se puede bucear otra vez? Misión superada, sin haber dejado de bucear, con cartas en el mazo y alguien preparado. */
 export function puedeBucear(s: Estado): boolean {
   const m = s.mision
-  return !!m?.pecio && m.fin === 'superada' && !m.pecio.fin && s.zonas.mazoPecio.length > 0 && buzosPosibles(s).length > 0
+  return !!m?.naufragio && m.fin === 'superada' && !m.naufragio.fin && s.zonas.mazoNaufragio.length > 0 && preparadosParaBucear(s).length > 0
 }
 
-/** «Cuando esta misión vaya a superarse, baraja el mazo del pecio.» Sus cartas salen del mazo de historia. */
-function barajarElPecio(s: Estado): void {
-  const m = s.mision
-  if (!m) return
-  const ids = cartasDelPecio()
-  for (const c of s.zonas.mazoHistoria.filter((x) => ids.includes(copia(s, x).id))) mover(s, c, 'mazoPecio', 'abajo')
-  barajar(s, 'mazoPecio')
-  m.pecio = { tesoros: [], inmersiones: 0 }
-  anotar(s, 'efecto', `Barajas el mazo del pecio: ${s.zonas.mazoPecio.length} cartas, ${textoCuenta(s)}.`)
-}
-
-/** Al terminar de bucear, el mazo del pecio (y lo sacado) vuelve al mazo de historia, salvo los Tesoros en juego. */
-function recogerElPecio(s: Estado): void {
-  const vuelven = [...s.zonas.mazoPecio, ...s.zonas.pecioSacadas]
-  for (const c of vuelven) mover(s, c, 'mazoHistoria', 'abajo')
-  if (vuelven.length > 0) anotar(s, 'efecto', 'El mazo del pecio vuelve al mazo de historia.')
+/** ¿Tienes esta carta del mazo del naufragio a un lado («Quédate esta carta»)? */
+export function tienesDelNaufragio(s: Estado, id: CartaId): boolean {
+  return s.zonas.naufragioQuedadas.some((c) => copia(s, c).id === id)
 }
 
 /**
- * «Puedes bucear las veces que quieras: agota a un Tripulante preparado (el buzo) y roba 1 carta del mazo del pecio.»
- * Paso 0: ¿bajas otra vez?; paso 1: quién baja. Se repite hasta que dices basta, «Sin aire» o no queda nadie preparado.
+ * «Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio.» Sus cartas salen
+ * del mazo de historia (las que ya están en juego, no). Después se bucea.
  */
-registrarEspecial('pecio.bucear', (s, t, e) => {
+registrarEspecial('naufragio.barajar', (s) => {
   const m = s.mision
   if (!m || m.fin !== 'superada') return 'hecha'
-  if (!m.pecio) barajarElPecio(s)
-  const pecio = m.pecio
-  if (!pecio) return 'hecha'
+  const ids = cartasDelNaufragio()
+  for (const c of s.zonas.mazoHistoria.filter((x) => ids.includes(copia(s, x).id))) mover(s, c, 'mazoNaufragio', 'abajo')
+  barajar(s, 'mazoNaufragio')
+  m.naufragio = { inmersiones: 0 }
+  anotar(s, 'efecto', `Barajas el mazo del naufragio (${cuantas(s.zonas.mazoNaufragio.length, 'carta', 'cartas')}).`)
+  return 'hecha'
+})
+
+/**
+ * Al dejar de bucear, todo el mazo del naufragio vuelve al mazo de historia (el mazo, lo que te has quedado y lo apartado),
+ * salvo las cartas que estén en juego.
+ */
+function recogerElNaufragio(s: Estado): void {
+  const vuelven = [...s.zonas.mazoNaufragio, ...s.zonas.naufragioQuedadas, ...s.zonas.naufragioApartadas]
+  for (const c of vuelven) mover(s, c, 'mazoHistoria', 'abajo')
+  if (vuelven.length > 0) anotar(s, 'efecto', 'El mazo del naufragio vuelve al mazo de historia.')
+}
+
+/**
+ * «Puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.»
+ * Paso 0: ¿bajas otra vez?; paso 1: quién baja. Se repite hasta que dices basta, no queda nadie preparado o el mazo se acaba.
+ */
+registrarEspecial('naufragio.bucear', (s, t, e) => {
+  const m = s.mision
+  const naufragio = m?.naufragio
+  if (!m || m.fin !== 'superada' || !naufragio) return 'hecha'
   if (t.paso === 0) {
     if (!puedeBucear(s)) {
-      if (!pecio.fin && buzosPosibles(s).length === 0) anotar(s, 'efecto', 'No te queda ningún Tripulante preparado: no puedes bucear más.')
-      recogerElPecio(s)
+      if (!naufragio.fin) {
+        if (s.zonas.mazoNaufragio.length === 0) anotar(s, 'efecto', 'El mazo del naufragio se ha quedado sin cartas: no puedes bucear más.')
+        else anotar(s, 'efecto', 'No te queda ningún Tripulante preparado: no puedes bucear más.')
+        naufragio.fin = true
+      }
+      recogerElNaufragio(s)
       return 'hecha'
     }
     if (!e) {
+      const quedan = cuantas(s.zonas.mazoNaufragio.length, 'carta', 'cartas')
       return preguntar({
         tipo: 'elegirOpcion',
-        motivo: { clave: 'bucear', carta: PECIO, n: pecio.inmersiones, texto: textoCuenta(s) },
+        motivo: { clave: 'bucear', carta: NAUFRAGIO, n: naufragio.inmersiones, texto: quedan },
         opciones: [
-          { clave: 'bucear', texto: `Bucear: agota a un Tripulante preparado y roba 1 carta del mazo del pecio (quedan ${textoCuenta(s)})` },
+          { clave: 'bucear', texto: `Bucear: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio (quedan ${quedan})` },
           { clave: 'subir', texto: 'Dejar de bucear' },
         ],
       })
     }
     if (eleccionDe(e, 'opcion').clave !== 'bucear') {
-      pecio.fin = true
-      anotar(s, 'jugada', pecio.inmersiones === 0 ? 'No buceas en el pecio.' : `Dejas de bucear después de ${cuantas(pecio.inmersiones, 'inmersión', 'inmersiones')}.`)
-      recogerElPecio(s)
+      naufragio.fin = true
+      anotar(s, 'jugada', naufragio.inmersiones === 0 ? 'No buceas en el naufragio.' : `Dejas de bucear después de ${cuantas(naufragio.inmersiones, 'inmersión', 'inmersiones')}.`)
+      recogerElNaufragio(s)
       return 'hecha'
     }
     t.paso = 1
     return 'sigue'
   }
-  // Paso 1: el buzo.
-  const posibles = buzosPosibles(s)
+  // Paso 1: quién baja.
+  const posibles = preparadosParaBucear(s)
   let buzo: InstId | undefined = posibles.length === 1 ? posibles[0] : undefined
   if (!buzo) {
-    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: PECIO }, candidatas: posibles, min: 1, max: 1 })
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: NAUFRAGIO }, candidatas: posibles, min: 1, max: 1 })
     buzo = eleccionDe(e, 'cartas').ids[0]
   }
   t.paso = 0
   if (!buzo) return 'sigue'
-  pecio.buzo = buzo
-  pecio.inmersiones++
-  anotar(s, 'jugada', `${nombre(s, buzo)} baja al pecio (inmersión ${pecio.inmersiones}).`)
-  encolar(s, { tipo: 'especial', clave: 'pecio.robar', datos: {}, paso: 0 })
-  // Agotar va antes que robar (un buzo Sangrando sufre su herida al agotarse).
+  naufragio.buzo = buzo
+  naufragio.inmersiones++
+  anotar(s, 'jugada', `${nombre(s, buzo)} baja al naufragio (inmersión ${naufragio.inmersiones}).`)
+  encolar(s, { tipo: 'especial', clave: 'naufragio.robar', datos: {}, paso: 0 })
+  // Agotar va antes que robar (uno que está Sangrando sufre su herida al agotarse).
   agotar(s, buzo)
   return 'sigue'
 })
 
-/** Lo que hace cada carta del mazo del pecio que no es un Tesoro (los números se leen de su texto). */
-const EFECTOS_PECIO: Record<CartaId, (s: Estado, buzo: InstId | undefined, carta: InstId) => NuevaTarea[]> = {
-  // «Roba 2.»
-  pecio_doblones: () => [robarN(numeroConIcono(textoDe('pecio_doblones'), 'robar'))],
-  // «Repara 2.»
-  pecio_tablones: () => [{ tipo: 'reparar', n: numeroConIcono(textoDe('pecio_tablones'), 'dano') }],
-  // «Busca una Mejora con el Rasgo Cañón en el mazo de muelle y ponla en juego sin coste. Si no tienes Espacio, no la pones.»
-  pecio_culebrina: () => [{ tipo: 'especial', clave: 'pecio.culebrina', datos: {}, paso: 0 }],
-  // «Cura 2.» (repartidas como quieras)
-  pecio_botica: () => [{ tipo: 'curar', n: numeroConIcono(textoDe('pecio_botica'), 'herida'), modo: 'repartir' }],
-  // «El buzo sufre 2 heridas.»
-  pecio_tiburon: (s, buzo) => heridasAlBuzo(s, buzo, numeroConIcono(textoDe('pecio_tiburon'), 'herida')),
-  // «El buzo sufre 1 herida.»
-  pecio_morena: (s, buzo) => heridasAlBuzo(s, buzo, numeroConIcono(textoDe('pecio_morena'), 'herida')),
-  // «El buzo sufre 1 herida. No puedes bucear más en esta misión.»
-  pecio_sinaire: (s, buzo) => {
-    if (s.mision?.pecio) s.mision.pecio.fin = true
-    anotar(s, 'aviso', 'Sin aire: no puedes bucear más en esta misión.')
-    return heridasAlBuzo(s, buzo, numeroConIcono(textoDe('pecio_sinaire'), 'herida'))
-  },
-  // «Devuelve al mazo del pecio una carta buena que hayas sacado en esta misión y barájalo (si es un Tesoro, sale del
-  // juego). Si no tienes ninguna, no ocurre nada.»
-  pecio_corriente: () => [{ tipo: 'especial', clave: 'pecio.corriente', datos: {}, paso: 0 }],
-}
-
+/** Heridas al Tripulante que ha robado la carta (si sigue en la tripulación). */
 function heridasAlBuzo(s: Estado, buzo: InstId | undefined, n: number): NuevaTarea[] {
   if (!buzo || !s.zonas.tripulacion.includes(buzo) || n <= 0) return []
   return [{ tipo: 'evento', ev: { tipo: 'heridas', objetivo: buzo, cantidad: n }, fase: 'antes', cancelado: false, usadas: [] }]
 }
 
-/** Roba la carta superior del mazo del pecio. Buena: te la quedas (un Tesoro, en juego). Mala: se aplica y vuelve barajada. */
-registrarEspecial('pecio.robar', (s) => {
-  const m = s.mision
-  const carta = s.zonas.mazoPecio[0]
-  if (!m?.pecio || !carta) return 'hecha'
-  const id = copia(s, carta).id
-  const buena = esBuenaDelPecio(id)
-  s.infoRevelada++
-  anotar(s, 'revelar', `Robas del mazo del pecio: «${nombre(s, carta)}» (${buena ? 'buena: te la quedas' : 'mala'}).`, { tipo: 'pecio', inst: carta, carta: id, buena })
-  if (tipoDe(id) === 'tesoro') {
-    m.pecio.tesoros.push(carta)
-    encolar(s, { tipo: 'ponerTesoro', carta })
-    return 'hecha'
-  }
-  mover(s, carta, 'pecioSacadas', 'abajo')
-  const efecto = EFECTOS_PECIO[id]
-  if (!efecto) throw new Error(`Carta del pecio sin efecto: ${id}`)
-  const tareas = efecto(s, m.pecio.buzo, carta)
-  encolar(s, ...tareas, ...(buena ? [] : [{ tipo: 'especial' as const, clave: 'pecio.devolver', datos: { carta }, paso: 0 }]))
-  return 'hecha'
-})
-
-/** «Si es mala, aplícala y vuelve a barajarla en el mazo del pecio.» */
-registrarEspecial('pecio.devolver', (s, t) => {
-  const carta = t.datos.carta as InstId
-  if (!s.zonas.pecioSacadas.includes(carta)) return 'hecha'
-  mover(s, carta, 'mazoPecio', 'abajo')
-  barajar(s, 'mazoPecio')
-  anotar(s, 'efecto', `«${nombre(s, carta)}» vuelve barajada al mazo del pecio (quedan ${textoCuenta(s)}).`)
-  return 'hecha'
-})
-
-/**
- * Las cartas buenas sacadas en esta misión que «Corriente de fondo» puede devolver: las que están a un lado y los Tesoros
- * que siguen en juego. TODO(regla) P103: «El doblón de la calavera» no («No puedes descartar esta carta»).
- */
-export function buenasDevolvibles(s: Estado): InstId[] {
-  const tesoros = (s.mision?.pecio?.tesoros ?? []).filter((c) => s.zonas.mejoras.includes(c) && copia(s, c).id !== 'doblon')
-  return [...s.zonas.pecioSacadas.filter((c) => esBuenaDelPecio(copia(s, c).id)), ...tesoros]
+/** Un Estado al Tripulante que ha robado la carta (si sigue en la tripulación). */
+function estadoAlBuzo(s: Estado, buzo: InstId | undefined, estado: 'sangrando' | 'maldito'): NuevaTarea[] {
+  if (!buzo || !s.zonas.tripulacion.includes(buzo)) return []
+  return [aplicar([{ tipo: 'sobre', carta: buzo, hacer: { tipo: 'estado', estado } }])]
 }
 
-registrarEspecial('pecio.corriente', (s, _t, e) => {
-  const candidatas = buenasDevolvibles(s)
-  if (candidatas.length === 0) {
-    anotar(s, 'efecto', 'Corriente de fondo: no tienes ninguna carta buena del pecio que devolver; no ocurre nada.')
-    return 'hecha'
+/** «Si también tienes "La llave del cofre", gana 1 [rep].» La reputación se gana una vez, al juntar las dos. */
+function mitadDelCofre(otra: CartaId, esta: CartaId) {
+  return (s: Estado): NuevaTarea[] => {
+    if (!tienesDelNaufragio(s, otra)) return []
+    anotar(s, 'efecto', `Juntas «${porId(esta).carta.nombre}» y «${porId(otra).carta.nombre}».`)
+    return [reputacion(numeroConIcono(textoDe(esta), 'rep'))]
   }
-  let carta: InstId | undefined = candidatas.length === 1 ? candidatas[0] : undefined
-  if (!carta) {
-    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'corrienteDeFondo', carta: 'pecio_corriente' }, candidatas, min: 1, max: 1 })
-    carta = eleccionDe(e, 'cartas').ids[0]
-  }
-  if (!carta) return 'hecha'
-  const tesoro = tipoDe(copia(s, carta).id) === 'tesoro'
-  mover(s, carta, 'mazoPecio', 'abajo')
-  barajar(s, 'mazoPecio')
-  const pecio = s.mision?.pecio
-  if (pecio) pecio.tesoros = pecio.tesoros.filter((x) => x !== carta)
-  anotar(s, 'aviso', `Corriente de fondo: «${nombre(s, carta)}» vuelve al mazo del pecio${tesoro ? ' (el Tesoro sale del juego)' : ''}.`)
+}
+
+/**
+ * Lo que hace cada carta del mazo del naufragio al robarla, antes de decidir adónde va (eso lo dice su texto: ver
+ * `destinoNaufragio`). Los números se leen de su texto. La culebrina, la campana y el doblón solo se ponen en juego.
+ */
+const EFECTOS_NAUFRAGIO: Record<CartaId, (s: Estado, buzo: InstId | undefined) => NuevaTarea[]> = {
+  naufragio_cofre: mitadDelCofre('naufragio_llave', 'naufragio_cofre'),
+  naufragio_llave: mitadDelCofre('naufragio_cofre', 'naufragio_llave'),
+  culebrina_sanjose: () => [],
+  campana_sanjose: () => [],
+  doblon: () => [],
+  // «Busca en el mazo de Misiones el capítulo I de una travesía…»
+  naufragio_diario: () => [{ tipo: 'especial', clave: 'naufragio.diario', datos: {}, paso: 0 }],
+  // «Prepara a todos tus Tripulantes.»
+  naufragio_bolsa: () => [{ tipo: 'prepararTripulantes' }],
+  // «El Tripulante que ha robado esta carta sufre 1 [herida].»
+  naufragio_tiburon: (s, buzo) => heridasAlBuzo(s, buzo, numeroConIcono(textoDe('naufragio_tiburon'), 'herida')),
+  // «… queda Sangrando.» / «… queda Maldito.»
+  naufragio_coral: (s, buzo) => estadoAlBuzo(s, buzo, 'sangrando'),
+  naufragio_ahogados: (s, buzo) => estadoAlBuzo(s, buzo, 'maldito'),
+  // «El Barco queda Perseguido.»
+  naufragio_raqueros: () => [aplicar([{ tipo: 'estadoBarco', estado: 'perseguido' }])],
+  // «El pulpo atrapa al Tripulante que ha robado esta carta. Elige: …»
+  naufragio_pulpo: () => [{ tipo: 'especial', clave: 'naufragio.pulpo', datos: {}, paso: 0 }],
+}
+
+/** Roba la carta superior del mazo del naufragio, la aparta mientras se aplica y después la lleva adonde diga. */
+registrarEspecial('naufragio.robar', (s) => {
+  const m = s.mision
+  const carta = s.zonas.mazoNaufragio[0]
+  if (!m?.naufragio || !carta) return 'hecha'
+  const id = copia(s, carta).id
+  s.infoRevelada++
+  anotar(s, 'revelar', `Robas del mazo del naufragio: «${nombre(s, carta)}».`, { tipo: 'naufragio', inst: carta, carta: id })
+  mover(s, carta, 'naufragioApartadas', 'abajo')
+  const efecto = EFECTOS_NAUFRAGIO[id]
+  if (!efecto) throw new Error(`Carta del naufragio sin efecto: ${id}`)
+  encolar(s, ...efecto(s, m.naufragio.buzo), { tipo: 'especial', clave: 'naufragio.destino', datos: { carta }, paso: 0 })
   return 'hecha'
 })
 
 /**
- * «Una culebrina del galeón»: busca un Cañón en el mazo de muelle y ponlo en juego sin coste (en el Barco). Solo los que
- * caben en tu Espacio libre; si no cabe ninguno, no pones nada. El mazo de muelle se baraja después de mirarlo.
+ * Regla del motor (Albert): «Quédate esta carta», a un lado; «Pon esta carta en juego», en juego (la culebrina, solo si
+ * tienes Espacio: si no, vuelve barajada); «Vuelve a barajar esta carta…», otra vez al mazo; si no dice nada, se aparta.
  */
-registrarEspecial('pecio.culebrina', (s, _t, e) => {
-  const candidatas = s.zonas.mazoMuelle.filter((c) => {
-    const id = copia(s, c).id
-    const datos = porId(id)
-    if (!esCanon(id) || datos.tipo !== 'mejoraBarco') return false
-    if (esUnica(id) && s.zonas.mejoras.some((x) => copia(s, x).id === id)) return false
-    return espacioLibre(s) >= datos.carta.espacio
-  })
-  if (!e) {
-    s.infoRevelada++
-    if (candidatas.length === 0) {
-      anotar(s, 'aviso', 'Buscas un Cañón en el mazo de muelle, pero no hay ninguno que quepa en el Barco: no pones nada.')
-      barajar(s, 'mazoMuelle')
-      return 'hecha'
+registrarEspecial('naufragio.destino', (s, t) => {
+  const carta = t.datos.carta as InstId
+  if (!s.zonas.naufragioApartadas.includes(carta)) return 'hecha'
+  const id = copia(s, carta).id
+  const volverAlMazo = (texto: string) => {
+    mover(s, carta, 'mazoNaufragio', 'abajo')
+    barajar(s, 'mazoNaufragio')
+    anotar(s, 'efecto', texto)
+  }
+  switch (destinoNaufragio(id)) {
+    case 'quedar':
+      mover(s, carta, 'naufragioQuedadas', 'abajo')
+      anotar(s, 'efecto', `Te quedas «${nombre(s, carta)}», a un lado.`)
+      break
+    case 'enJuego': {
+      const e = porId(id)
+      if (e.tipo === 'tesoro') {
+        encolar(s, { tipo: 'ponerTesoro', carta })
+        break
+      }
+      if (e.tipo === 'mejoraBarco' && espacioLibre(s) < e.carta.espacio) {
+        volverAlMazo(`No tienes Espacio para «${nombre(s, carta)}»: vuelve barajada al mazo del naufragio.`)
+        break
+      }
+      mover(s, carta, 'mejoras', 'abajo')
+      copia(s, carta).vinculadaA = 'barco'
+      anotar(s, 'efecto', `«${nombre(s, carta)}» entra en juego en el Barco.`)
+      break
     }
-    return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'culebrinaPecio', carta: 'pecio_culebrina' }, candidatas, min: 1, max: 1 })
+    case 'barajar':
+      volverAlMazo(`«${nombre(s, carta)}» vuelve barajada al mazo del naufragio.`)
+      break
+    case 'apartar':
+      anotar(s, 'efecto', `«${nombre(s, carta)}» se aparta.`)
+      break
   }
-  const [carta] = eleccionDe(e, 'cartas').ids
-  if (carta && candidatas.includes(carta)) {
-    mover(s, carta, 'mejoras', 'abajo')
-    copia(s, carta).vinculadaA = 'barco'
-    anotar(s, 'efecto', `Subís del pecio «${nombre(s, carta)}»: la pones en juego en el Barco, sin coste.`)
-  }
-  barajar(s, 'mazoMuelle')
   return 'hecha'
 })
 
-registrarMision(PECIO, {
-  antesDeSuperar: (s) => (s.mision ? [{ tipo: 'especial', clave: 'pecio.bucear', datos: {}, paso: 0 }] : []),
+/**
+ * «El pulpo atrapa al Tripulante que ha robado esta carta. Elige: Sacarlo entre dos: agota a otro Tripulante preparado.
+ * Que se suelte solo: el Tripulante que ha robado esta carta sufre 2 [herida].» Sin nadie más preparado, solo la segunda.
+ * Paso 0: qué opción; paso 1: a quién agotas.
+ */
+registrarEspecial('naufragio.pulpo', (s, t, e) => {
+  const buzo = s.mision?.naufragio?.buzo
+  const otros = preparadosParaBucear(s).filter((c) => c !== buzo)
+  const soltarse = () => {
+    anotar(s, 'efecto', 'El pulpo se suelta solo.')
+    encolar(s, ...heridasAlBuzo(s, buzo, numeroConIcono(textoDe('naufragio_pulpo'), 'herida')))
+  }
+  if (t.paso === 0) {
+    if (otros.length === 0) {
+      soltarse()
+      return 'hecha'
+    }
+    if (!e) {
+      return preguntar({
+        tipo: 'elegirOpcion',
+        motivo: { clave: 'pulpo', carta: 'naufragio_pulpo' },
+        opciones: [
+          { clave: 'dos', texto: 'Sacarlo entre dos: agota a otro Tripulante preparado' },
+          { clave: 'solo', texto: `Que se suelte solo: ${buzo ? nombre(s, buzo) : 'el Tripulante que ha robado esta carta'} sufre 2 heridas` },
+        ],
+      })
+    }
+    if (eleccionDe(e, 'opcion').clave !== 'dos') {
+      soltarse()
+      return 'hecha'
+    }
+    t.paso = 1
+    return 'sigue'
+  }
+  let ayuda: InstId | undefined = otros.length === 1 ? otros[0] : undefined
+  if (!ayuda) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'pulpoAyuda', carta: 'naufragio_pulpo' }, candidatas: otros, min: 1, max: 1 })
+    ayuda = eleccionDe(e, 'cartas').ids[0]
+  }
+  if (ayuda && otros.includes(ayuda)) {
+    anotar(s, 'efecto', `${nombre(s, ayuda)} baja a ayudar: lo sacan entre dos.`)
+    agotar(s, ayuda)
+  }
+  return 'hecha'
+})
+
+/** Los capítulos I de travesía que quedan en el mazo de Misiones (para «El diario del capitán»). */
+export function capitulosIDeTravesia(s: Estado): InstId[] {
+  return s.zonas.mazoMisiones.filter((c) => {
+    const e = porId(copia(s, c).id)
+    return e.tipo === 'capitulo' && e.carta.capitulo === 'I' && DATOS.ordenMisiones.travesias.includes(e.mision.id)
+  })
+}
+
+/**
+ * «El diario del capitán»: «Busca en el mazo de Misiones el capítulo I de una travesía. Ponlo entre tus misiones
+ * disponibles en lugar de una de ellas, que va al fondo del mazo de Misiones, y pon 2 [avance] sobre él.» Si no hay
+ * ninguno, no ocurre nada. La misión en curso (el naufragio) no cuenta entre las que se pueden cambiar.
+ * TODO(regla) P107: después de buscar, el mazo de Misiones se baraja (como el de muelle al buscar), y la misión cambiada va
+ * al fondo después.
+ * Paso 0: qué capítulo; paso 1: qué misión disponible cambias.
+ */
+registrarEspecial('naufragio.diario', (s, t, e) => {
+  if (t.paso === 0) {
+    const capitulos = capitulosIDeTravesia(s)
+    if (capitulos.length === 0) {
+      anotar(s, 'efecto', 'No queda ningún capítulo I de travesía en el mazo de Misiones: no ocurre nada.')
+      return 'hecha'
+    }
+    let capitulo: InstId | undefined = capitulos.length === 1 ? capitulos[0] : undefined
+    if (!capitulo) {
+      if (!e) {
+        s.infoRevelada++
+        return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'diarioCapitulo', carta: 'naufragio_diario' }, candidatas: capitulos, min: 1, max: 1 })
+      }
+      capitulo = eleccionDe(e, 'cartas').ids[0]
+    }
+    if (!capitulo || !capitulos.includes(capitulo)) return 'hecha'
+    t.datos.capitulo = capitulo
+    t.paso = 1
+    return 'sigue'
+  }
+  const capitulo = t.datos.capitulo as InstId
+  const cambiables = s.zonas.misionesDisponibles.filter((c) => c !== s.mision?.carta)
+  let cambiada: InstId | undefined = cambiables.length === 1 ? cambiables[0] : undefined
+  if (!cambiada && cambiables.length > 1) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'diarioCambiar', carta: 'naufragio_diario', texto: nombre(s, capitulo) }, candidatas: cambiables, min: 1, max: 1 })
+    cambiada = eleccionDe(e, 'cartas').ids[0]
+  }
+  const sitio = cambiada ? s.zonas.misionesDisponibles.indexOf(cambiada) : s.zonas.misionesDisponibles.length
+  mover(s, capitulo, 'misionesDisponibles', 'abajo')
+  // En el mismo sitio que la que sale.
+  s.zonas.misionesDisponibles = s.zonas.misionesDisponibles.filter((c) => c !== capitulo)
+  s.zonas.misionesDisponibles.splice(sitio, 0, capitulo)
+  barajar(s, 'mazoMisiones')
+  if (cambiada) mover(s, cambiada, 'mazoMisiones', 'abajo')
+  const n = numeroConIcono(textoDe('naufragio_diario'), 'avance')
+  copia(s, capitulo).avance += n
+  s.infoRevelada++
+  anotar(
+    s,
+    'efecto',
+    `«${nombre(s, capitulo)}» pasa a tus misiones disponibles con ${n} de Avance${cambiada ? `, en lugar de «${nombre(s, cambiada)}», que va al fondo del mazo de Misiones` : ''}.`,
+  )
+  return 'hecha'
+})
+
+registrarMision(NAUFRAGIO, {
+  antesDeSuperar: (s) =>
+    s.mision
+      ? [
+          { tipo: 'prepararTripulantes' },
+          { tipo: 'especial', clave: 'naufragio.barajar', datos: {}, paso: 0 },
+          { tipo: 'especial', clave: 'naufragio.bucear', datos: {}, paso: 0 },
+        ]
+      : [],
 })
 
 // ---------------------------------------------------------------------------

@@ -116,3 +116,50 @@ describe('Fase 14 · partidas guardadas con rehenes', () => {
     expect(() => deserializar(JSON.stringify(viejo))).toThrow()
   })
 })
+
+describe('Fase 15 · partidas guardadas con el pecio del San José', () => {
+  /** Una partida nueva convertida en una con el pecio: sus cartas, la Cadena de oro, la misión «pecio-I» y sus zonas. */
+  function partidaConElPecio(): Estado & { zonas: Record<string, InstId[]> } {
+    const s = nuevaPartida({ semilla: 5 })
+    const viejo = JSON.parse(serializar(s)) as Estado & { zonas: Record<string, InstId[]> }
+    const antes: Record<string, string> = {
+      naufragio_cofre: 'pecio_doblones',
+      naufragio_llave: 'pecio_tablones',
+      culebrina_sanjose: 'pecio_culebrina',
+      naufragio_diario: 'pecio_botica',
+      naufragio_tiburon: 'pecio_tiburon',
+      naufragio_coral: 'pecio_morena',
+      naufragio_bolsa: 'pecio_sinaire',
+      naufragio_ahogados: 'pecio_corriente',
+      campana_sanjose: 'cadena_oro',
+      'naufragio-I': 'pecio-I',
+    }
+    for (const [i, c] of Object.entries(viejo.cartas)) {
+      if (c.id === 'naufragio_raqueros' || c.id === 'naufragio_pulpo') {
+        delete viejo.cartas[i as InstId]
+        viejo.zonas.mazoHistoria = viejo.zonas.mazoHistoria.filter((x) => x !== i)
+      } else c.id = antes[c.id] ?? c.id
+    }
+    const zonas = viejo.zonas as Record<string, InstId[] | undefined>
+    for (const z of ['mazoNaufragio', 'naufragioQuedadas', 'naufragioApartadas']) delete zonas[z]
+    zonas.mazoPecio = []
+    zonas.pecioSacadas = []
+    return viejo
+  }
+
+  it('las cartas del pecio pasan a ser las del naufragio con su número, y las dos nuevas esperan en el mazo de historia', () => {
+    const t = deserializar(JSON.stringify(partidaConElPecio()))
+    const historia = ids(t, 'mazoHistoria')
+    for (const id of ['naufragio_cofre', 'naufragio_raqueros', 'naufragio_pulpo', 'culebrina_sanjose', 'campana_sanjose', 'doblon']) expect(historia).toContain(id)
+    expect(Object.values(t.cartas).some((c) => c.id.startsWith('pecio') || c.id === 'cadena_oro')).toBe(false)
+    expect([...ids(t, 'mazoMisiones'), ...ids(t, 'misionesDisponibles')]).toContain('naufragio-I')
+    expect(t.zonas.mazoNaufragio).toEqual([])
+    expect('mazoPecio' in t.zonas).toBe(false)
+  })
+
+  it('una partida guardada mientras se buceaba en el pecio no se puede continuar, y lo dice', () => {
+    const viejo = partidaConElPecio()
+    viejo.zonas.mazoPecio = [viejo.zonas.mazoHistoria[0]!]
+    expect(() => deserializar(JSON.stringify(viejo))).toThrow('buceando en «El pecio del San José»')
+  })
+})
