@@ -2,6 +2,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { deserializar, serializar } from './guardado.ts'
+import { nombreDe } from './catalogo.ts'
 import { nuevaPartida } from './preparacion.ts'
 import { Jugador } from './pruebas/situacion.ts'
 import type { Estado, InstId } from './tipos.ts'
@@ -248,5 +249,44 @@ describe('Fase 16 · partidas guardadas con fichas de Estado y de Ventaja', () =
     expect(t.estadosBarco).toEqual(['viaDeAgua'])
     expect(t.cartas[inst(t, 'vigia')]?.estados).toEqual(['extenuado'])
     expect(t.temporales.some((x) => x.clave === 'noPrepara')).toBe(false)
+  })
+})
+
+describe('Revisión de Albert de las cartas de jugador · partidas guardadas con las cartas eliminadas o con los nombres antiguos', () => {
+  /** Una partida «de antes»: con Botín escondido en la mano, Retirada a tiempo en el mazo y Cortar por lo sano en los descartes. */
+  function conCartasEliminadas(): Estado {
+    const j = Jugador.en({ mano: ['ni_hombre', 'ojo'], mazoCapitan: ['timon', 'a_por_ellos'], tripulacion: ['bucanero'] })
+    const viejo = JSON.parse(serializar(j.estado)) as Estado
+    const copiaDe = (id: string, n: number) => {
+      const i = `i9${n}` as InstId
+      viejo.cartas[i] = { ...viejo.cartas[inst(viejo, 'ojo')], id } as Estado['cartas'][InstId]
+      return i
+    }
+    viejo.zonas.mano.push(copiaDe('botin', 11))
+    viejo.zonas.mazoCapitan.push(copiaDe('retirada', 12))
+    viejo.zonas.descartesCapitan.push(copiaDe('cortar', 13))
+    return viejo
+  }
+
+  it('las tres cartas eliminadas salen de la partida estén donde estén; lo demás sigue igual', () => {
+    const t = deserializar(JSON.stringify(conCartasEliminadas()))
+    expect(Object.values(t.cartas).some((c) => ['botin', 'retirada', 'cortar'].includes(c.id))).toBe(false)
+    expect(ids(t, 'mano')).toEqual(['ni_hombre', 'ojo'])
+    expect(ids(t, 'mazoCapitan')).toEqual(['a_por_ellos', 'timon'])
+    expect(ids(t, 'descartesCapitan')).toEqual([])
+  })
+
+  it('las cartas que cambian de nombre conservan su identificador: se leen con el nombre nuevo', () => {
+    const t = deserializar(JSON.stringify(conCartasEliminadas()))
+    expect(nombreDe('ni_hombre')).toBe('Cubrir las espaldas')
+    expect(nombreDe('a_por_ellos')).toBe('¡Nadie se queda atrás!')
+    expect(nombreDe('polvora_c')).toBe('Pólvora robada')
+    expect(ids(t, 'mano')).toContain('ni_hombre')
+  })
+
+  it('una partida guardada a mitad de buscar en el mazo de muelle no se puede continuar, y lo dice', () => {
+    const viejo = conCartasEliminadas()
+    viejo.pendiente = { tipo: 'elegirCartas', motivo: { clave: 'buscar' }, candidatas: [], min: 1, max: 1 } as unknown as Estado['pendiente']
+    expect(() => deserializar(JSON.stringify(viejo))).toThrow(/buscar en un mazo/)
   })
 })

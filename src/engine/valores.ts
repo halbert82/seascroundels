@@ -2,7 +2,7 @@
 // constantes activos (Mejoras preparadas, Tripulantes en juego, efectos temporales y el Barco).
 
 import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
-import { costeImpreso, porId } from './catalogo.ts'
+import { costeImpreso, iconosDe, porId } from './catalogo.ts'
 import { DATOS, type Habilidad } from './datos.ts'
 import { copia } from './estado.ts'
 import { cartaDeEstado } from './infoEstados.ts'
@@ -208,6 +208,21 @@ export function navParaDistancia(s: Estado, agotados: readonly InstId[]): number
 export function habilidadAlAgotarse(s: Estado, agotados: readonly InstId[], hab: Habilidad): number {
   const supuestas = new Set(agotados)
   return agotados.reduce((suma, inst) => suma + valor(s, { tipo: 'habilidad', carta: inst, hab }, supuestas), 0)
+}
+
+/**
+ * Lo que se cubre al elegir Tripulantes (y cartas) para una Distancia o para «Destina X [habilidad]»: NAV en una Distancia;
+ * en «Destina», la habilidad que diga (NAV en los alisios, COM en «¡Nadie se queda atrás!»).
+ */
+export function habilidadQueSeCubre(motivo: { clave: string; texto?: string }): Habilidad {
+  return motivo.clave === 'destina' && (motivo.texto === 'COM' || motivo.texto === 'EXP') ? motivo.texto : 'NAV'
+}
+
+/** Lo que suman esos Tripulantes al agotarse juntos y esas cartas por sus iconos, en la habilidad que se cubre. */
+export function sumaParaCubrir(s: Estado, motivo: { clave: string; texto?: string }, tripulantes: readonly InstId[], cartas: readonly InstId[]): number {
+  const hab = habilidadQueSeCubre(motivo)
+  const deTripulantes = hab === 'NAV' ? navParaDistancia(s, tripulantes) : habilidadAlAgotarse(s, tripulantes, hab)
+  return deTripulantes + cartas.reduce((n, c) => n + iconosDe(copia(s, c).id, hab), 0)
 }
 
 /** Lo más que suma el mejor grupo de Tripulantes preparados al agotarse juntos (para saber si se puede pagar «Destina X»). */

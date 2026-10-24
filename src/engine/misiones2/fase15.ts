@@ -8,7 +8,6 @@
 import { entero } from '../azar.ts'
 import { registrarPeligro, registrarPermanente } from '../capacidades/peligros.ts'
 import { cartasDelNaufragio, destinoNaufragio, porId } from '../catalogo.ts'
-import { DATOS } from '../datos.ts'
 import type { CapacidadDeCarta } from '../definiciones.ts'
 import type { Efecto } from '../efectos.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
@@ -488,7 +487,7 @@ const EFECTOS_NAUFRAGIO: Record<CartaId, (s: Estado, buzo: InstId | undefined) =
   culebrina_sanjose: () => [],
   campana_sanjose: () => [],
   doblon: () => [],
-  // «Busca en el mazo de Misiones el capítulo I de una travesía…»
+  // «Pon 2 [avance] en una misión disponible.»
   naufragio_diario: () => [{ tipo: 'especial', clave: 'naufragio.diario', datos: {}, paso: 0 }],
   // «Prepara a todos tus Tripulantes.»
   naufragio_bolsa: () => [{ tipo: 'prepararTripulantes' }],
@@ -617,64 +616,27 @@ registrarEspecial('naufragio.pulpo', (s, t, e) => {
   return 'hecha'
 })
 
-/** Los capítulos I de travesía que quedan en el mazo de Misiones (para «El diario del capitán»). */
-export function capitulosIDeTravesia(s: Estado): InstId[] {
-  return s.zonas.mazoMisiones.filter((c) => {
-    const e = porId(copia(s, c).id)
-    return e.tipo === 'capitulo' && e.carta.capitulo === 'I' && DATOS.ordenMisiones.travesias.includes(e.mision.id)
-  })
-}
-
 /**
- * «El diario del capitán»: «Busca en el mazo de Misiones el capítulo I de una travesía. Ponlo entre tus misiones
- * disponibles en lugar de una de ellas, que va al fondo del mazo de Misiones, y pon 2 [avance] sobre él.» Si no hay
- * ninguno, no ocurre nada. La misión en curso (el naufragio) no cuenta entre las que se pueden cambiar.
- * P107 (Albert): después de buscar, el mazo de Misiones se baraja (como el de muelle al buscar), y la misión cambiada va al
- * fondo después.
- * Paso 0: qué capítulo; paso 1: qué misión disponible cambias.
+ * «El diario del capitán» (revisión de Albert, fuera Buscar): «Pon 2 [avance] en una misión disponible.» Antes buscaba en el
+ * mazo de Misiones el capítulo I de una travesía (P107: barajar al buscar; ya no hace falta). La misión en curso (el
+ * naufragio) no cuenta. Las fichas se quedan sobre la misión y cuentan cuando zarpas a ella (como los Soplos de la
+ * Hermandad); si no hay ninguna disponible, no ocurre nada.
  */
-registrarEspecial('naufragio.diario', (s, t, e) => {
-  if (t.paso === 0) {
-    const capitulos = capitulosIDeTravesia(s)
-    if (capitulos.length === 0) {
-      anotar(s, 'efecto', 'No queda ningún capítulo I de travesía en el mazo de Misiones: no ocurre nada.')
-      return 'hecha'
-    }
-    let capitulo: InstId | undefined = capitulos.length === 1 ? capitulos[0] : undefined
-    if (!capitulo) {
-      if (!e) {
-        s.infoRevelada++
-        return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'diarioCapitulo', carta: 'naufragio_diario' }, candidatas: capitulos, min: 1, max: 1 })
-      }
-      capitulo = eleccionDe(e, 'cartas').ids[0]
-    }
-    if (!capitulo || !capitulos.includes(capitulo)) return 'hecha'
-    t.datos.capitulo = capitulo
-    t.paso = 1
-    return 'sigue'
-  }
-  const capitulo = t.datos.capitulo as InstId
-  const cambiables = s.zonas.misionesDisponibles.filter((c) => c !== s.mision?.carta)
-  let cambiada: InstId | undefined = cambiables.length === 1 ? cambiables[0] : undefined
-  if (!cambiada && cambiables.length > 1) {
-    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'diarioCambiar', carta: 'naufragio_diario', texto: nombre(s, capitulo) }, candidatas: cambiables, min: 1, max: 1 })
-    cambiada = eleccionDe(e, 'cartas').ids[0]
-  }
-  const sitio = cambiada ? s.zonas.misionesDisponibles.indexOf(cambiada) : s.zonas.misionesDisponibles.length
-  mover(s, capitulo, 'misionesDisponibles', 'abajo')
-  // En el mismo sitio que la que sale.
-  s.zonas.misionesDisponibles = s.zonas.misionesDisponibles.filter((c) => c !== capitulo)
-  s.zonas.misionesDisponibles.splice(sitio, 0, capitulo)
-  barajar(s, 'mazoMisiones')
-  if (cambiada) mover(s, cambiada, 'mazoMisiones', 'abajo')
+registrarEspecial('naufragio.diario', (s, _t, e) => {
   const n = numeroConIcono(textoDe('naufragio_diario'), 'avance')
-  copia(s, capitulo).avance += n
-  s.infoRevelada++
-  anotar(
-    s,
-    'efecto',
-    `«${nombre(s, capitulo)}» pasa a tus misiones disponibles con ${n} de Avance${cambiada ? `, en lugar de «${nombre(s, cambiada)}», que va al fondo del mazo de Misiones` : ''}.`,
-  )
+  const candidatas = s.zonas.misionesDisponibles.filter((c) => c !== s.mision?.carta)
+  if (candidatas.length === 0) {
+    anotar(s, 'efecto', 'No tienes ninguna otra misión disponible: no ocurre nada.')
+    return 'hecha'
+  }
+  let elegida: InstId | undefined = candidatas.length === 1 ? candidatas[0] : undefined
+  if (!elegida) {
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'diarioAvance', carta: 'naufragio_diario', n }, candidatas, min: 1, max: 1 })
+    elegida = eleccionDe(e, 'cartas').ids[0]
+  }
+  if (!elegida || !candidatas.includes(elegida)) return 'hecha'
+  copia(s, elegida).avance += n
+  anotar(s, 'efecto', `El diario del capitán: pones ${n} de Avance en «${nombre(s, elegida)}».`)
   return 'hecha'
 })
 

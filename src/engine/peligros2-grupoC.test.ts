@@ -375,15 +375,18 @@ describe('29 · Toque a rebato', () => {
     expect(j.zona('permanentes')).toEqual([])
   })
 
-  it('P90: las campanas van a descartar a la Vigía; «¡A por ellos!» la salva con una Prueba de COM 3 en el momento', () => {
+  it('P90: las campanas van a descartar a la Vigía; «¡Nadie se queda atrás!» la salva destinando 3 COM (revisión de Albert: ya no es una Prueba)', () => {
     const j = campanas([{ id: 'vigia', agotada: true }, 'bucanero'], ['a_por_ellos', 'ojo'])
     expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(true)
-    j.usar('a_por_ellos.jugar').elegir('ojo')
-    expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
-    // Diego (3) y el Bucanero veterano (2): 5 contra 3. El Destino de «calma» (+0) prepara a 1 asignado.
-    j.comprometer('COM', ['capitan', 'bucanero']).pasarOfertas().seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'preparar' } })
-    j.elegir('capitan').pasarOfertas()
+    j.usar('a_por_ellos.jugar')
+    // Coste impreso (1 carta) y Destina 3 COM: Diego (3) basta.
+    for (let i = 0; i < 3; i++) {
+      if (j.decision.tipo === 'elegirCartas' && j.decision.motivo.clave === 'pagar') j.elegir('ojo')
+      else if (j.decision.tipo === 'cubrirDistancia') j.cubrir('capitan')
+      else break
+    }
+    j.pasarOfertas()
+    expect(j.copia('capitan').agotada).toBe(true)
     expect(j.zona('tripulacion')).toContain('vigia')
     expect(j.registro).toContain('Vigía inexperta no se descarta.')
     expect(j.zona('permanentes')).toEqual([])

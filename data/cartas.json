@@ -91,7 +91,7 @@
    "EXP": 0,
    "vida": 1,
    "mejoras": 0,
-   "texto": "**Interrupción:** Cuando otro Tripulante vaya a sufrir heridas, descarta a Grumete leal para reducirlas a 0.",
+   "texto": "**Interrupción:** Cuando vayas a infligir heridas a otro Tripulante, descarta a Grumete leal para reducirlas a 0.",
    "ambientacion": "«¡Mi capitán, esa bala es para mí!»"
   },
   {
@@ -169,7 +169,7 @@
    "EXP": 0,
    "vida": 2,
    "mejoras": 0,
-   "texto": "Sufre {1 herida}: Filibustero borracho recibe {+2 COM} para esta Prueba. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Filibustero borracho: recibe {+2 COM} para esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«Dos tragos más y abordo yo solo ese galeón.»"
   },
   {
@@ -517,7 +517,7 @@
    "EXP": 0,
    "vida": 2,
    "mejoras": 0,
-   "texto": "Sufre {1 herida}: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Carne de cañón: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.)",
    "ambientacion": "«El primero en saltar al abordaje. El primero en sangrar.»"
   },
   {
@@ -536,7 +536,7 @@
    "EXP": 0,
    "vida": 3,
    "mejoras": 0,
-   "texto": "Sufre {1 herida}: Galeote fugado recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Galeote fugado: recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«Veinte años remando encadenado.»"
   },
   {
@@ -661,7 +661,7 @@
    "senda": "Neutral",
    "coste": 3,
    "unico": true,
-   "texto": "Indestructible.\nCuando el Barco vaya a sufrir más de {2 dano} a la vez, en vez de eso sufre {2 dano}.",
+   "texto": "Indestructible.\nCuando vayas a dañar el Barco con más de {2 dano} a la vez, en vez de eso daña {2 dano}.",
    "ambientacion": "«La patrona de los artilleros vela por el casco.»",
    "espacio": 0,
    "canon": false
@@ -854,19 +854,6 @@
  ],
  "eventos": [
   {
-   "id": "botin",
-   "num": 43,
-   "nombre": "Botín escondido",
-   "copias": 1,
-   "senda": "Piratería",
-   "coste": 0,
-   "iconos": [
-    "COM"
-   ],
-   "texto": "Busca una Mejora.",
-   "ambientacion": "«Bajo la tercera palmera. ¿O era la cuarta?»"
-  },
-  {
    "id": "taberna",
    "num": 44,
    "nombre": "Rumores de taberna",
@@ -877,7 +864,7 @@
     "EXP"
    ],
    "texto": "Otea 2.",
-   "ambientacion": "«Por un vaso de ron, el tabernero lo cuenta todo.»"
+   "ambientacion": "«Por un par de monedas, el tabernero lo cuenta todo.»"
   },
   {
    "id": "reparacion",
@@ -911,24 +898,24 @@
    "nombre": "El capitán hace guardia",
    "copias": 1,
    "senda": "Neutral",
-   "coste": 0,
+   "coste": 1,
    "iconos": [
     "NAV"
    ],
-   "texto": "**Acción:** Agota a tu Capitán: Cura {1 herida g} a cada Tripulante.",
+   "texto": "**Acción:** Agota a tu Capitán: Cura {2 herida g} a cada Tripulante.",
    "ambientacion": "«Dormid, perros. Esta noche vigilo yo.»"
   },
   {
    "id": "polvora_c",
    "num": 48,
-   "nombre": "Pólvora de contrabando",
+   "nombre": "Pólvora robada",
    "copias": 1,
    "senda": "Piratería",
-   "coste": 0,
+   "coste": 1,
    "iconos": [
     "COM"
    ],
-   "texto": "Prepara todos tus _Cañones_.",
+   "texto": "Prepara un _Cañón_.",
    "ambientacion": "«Holandesa, seca y sin papeles.»"
   },
   {
@@ -941,8 +928,8 @@
    "iconos": [
     "NAV"
    ],
-   "texto": "**Respuesta:** [mar]: Después de que reveles una carta de Peligro, gana {2 avance}.",
-   "ambientacion": "«¡Largad todo el trapo, que el viento es nuestro!»"
+   "texto": "**Respuesta:** [mar]: Después de que reveles una carta de Peligro, gana {1 avance}.",
+   "ambientacion": "«¡Desplegad todo el trapo, que el viento es nuestro!»"
   },
   {
    "id": "mapa",
@@ -993,8 +980,8 @@
    "iconos": [
     "COM"
    ],
-   "texto": "**Interrupción:** Cuando se revele un Destino, cancélalo.",
-   "ambientacion": "«Ni lo vi venir. Él tampoco.»"
+   "texto": "**Interrupción:** Cancela todos los efectos de una carta de Destino recién revelada.",
+   "ambientacion": "«Dicen que al destino no se le esquiva. Nadie se lo ha dicho a mis piernas.»"
   },
   {
    "id": "sangre_fria",
@@ -1007,7 +994,7 @@
     "EXP"
    ],
    "texto": "**Respuesta:** [ciu]: Después de que reveles una carta de Peligro, gana su [avance] y descártala sin resolverla.",
-   "ambientacion": "«Ni un músculo, ni un ruido. Y pasaron de largo.»"
+   "ambientacion": "«No mováis un músculo, ni hagáis ruido.»"
   },
   {
    "id": "cambio_rumbo",
@@ -1032,7 +1019,7 @@
    "iconos": [
     "EXP"
    ],
-   "texto": "**Respuesta:** [ciu]: Después de que reveles una carta de Peligro con Prueba, supera automáticamente esa Prueba, sin revelar Destino.",
+   "texto": "**Respuesta:** [ciu]: Después de que reveles una carta de Peligro, supera automáticamente su Prueba (no reveles carta de Destino).",
    "ambientacion": "«En Tortuga todo tiene precio. Hasta mirar hacia otro lado.»"
   },
   {
@@ -1046,19 +1033,19 @@
     "COM"
    ],
    "texto": "**Respuesta:** Después de que asignes Tripulantes a una Prueba, suma {+1} por cada Tripulante asignado.",
-   "ambientacion": "«Uno solo no levanta un ancla. Veinte, sí.»"
+   "ambientacion": "«Uno solo no puede levantar un ancla. Veinte, sí.»"
   },
   {
    "id": "ni_hombre",
    "num": 58,
-   "nombre": "Ni un hombre atrás",
+   "nombre": "Cubrir las espaldas",
    "copias": 1,
    "senda": "Piratería",
    "coste": 1,
    "iconos": [
     "COM"
    ],
-   "texto": "**Interrupción:** Cuando un Tripulante que participe en una Prueba vaya a sufrir heridas, elige a otro Tripulante que participe en esa Prueba. Ese Tripulante las sufre en su lugar.",
+   "texto": "**Interrupción:** Cuando vayas a infligir heridas a un Tripulante que participe en una Prueba, inflígeselas en su lugar a otro Tripulante que participe en esa Prueba.",
    "ambientacion": "«¡Atrás! Esta es mía.»"
   },
   {
@@ -1084,7 +1071,7 @@
    "iconos": [
     "COM"
    ],
-   "texto": "**Respuesta:** Después de que superes una Prueba de [COM], mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo de muelle.",
+   "texto": "**Respuesta:** [ciu]: Después de que superes una Prueba de [COM], mira las 3 cartas superiores del mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Descarta las demás.",
    "ambientacion": "«Sacadme de aquí y soy vuestro.»"
   },
   {
@@ -1098,7 +1085,7 @@
     "EXP"
    ],
    "texto": "**Respuesta:** [nat]: Después de zarpar, gana {2 avance}.",
-   "ambientacion": "«Los cimarrones conocen caminos que no salen en ningún mapa.»"
+   "ambientacion": "«Los nativos conocen caminos que no salen en ningún mapa.»"
   },
   {
    "id": "espesura",
@@ -1140,19 +1127,6 @@
    "ambientacion": "«Esa no nos la vuelven a hacer.»"
   },
   {
-   "id": "retirada",
-   "num": 65,
-   "nombre": "Retirada a tiempo",
-   "copias": 1,
-   "senda": "Neutral",
-   "coste": 1,
-   "iconos": [
-    "NAV"
-   ],
-   "texto": "**Respuesta:** Después de que se revele el Destino de una Prueba, descarta la carta de Peligro sin resolverla.",
-   "ambientacion": "«¡Virad en redondo! Hoy no es día de morir.»"
-  },
-  {
    "id": "cataplasma",
    "num": 169,
    "nombre": "Cataplasma",
@@ -1163,25 +1137,12 @@
     "EXP"
    ],
    "texto": "Quita el Estado **Envenenado** o **Sangrando** de un Tripulante y cúrale {1 herida g}.",
-   "ambientacion": "«Barro, hojas y una oración. Funciona casi siempre.»"
-  },
-  {
-   "id": "cortar",
-   "num": 170,
-   "nombre": "Cortar por lo sano",
-   "copias": 1,
-   "senda": "Neutral",
-   "coste": 0,
-   "iconos": [
-    "COM"
-   ],
-   "texto": "**Acción:** Descarta 2 cartas de tu mano: Devuelve al mazo de historia una carta de la zona de permanentes.",
-   "ambientacion": "«Si no puedes desatar el nudo, córtalo.»"
+   "ambientacion": "«Barro, hojas y una oración. Funciona… casi siempre.»"
   },
   {
    "id": "a_por_ellos",
    "num": 171,
-   "nombre": "¡A por ellos!",
+   "nombre": "¡Nadie se queda atrás!",
    "copias": 1,
    "senda": "Piratería",
    "coste": 1,
@@ -1189,8 +1150,8 @@
     "COM",
     "COM"
    ],
-   "texto": "**Interrupción:** Cuando un Tripulante vaya a ser descartado por una carta de Peligro o una permanente, haz una Prueba de [COM] 3. Si la superas, no se descarta.",
-   "ambientacion": "«¡Nadie se queda atrás! Salvo el que se quede.»"
+   "texto": "**Interrupción:** Cuando un Tripulante vaya a ser descartado por un efecto de juego, destina 3 [COM] para evitarlo.",
+   "ambientacion": "«Si se llevan a uno, se nos llevan a todos.»"
   },
   {
    "id": "ron_valientes",
@@ -1216,7 +1177,7 @@
     "NAV",
     "COM"
    ],
-   "texto": "**Interrupción:** Agota un _Cañón_: Cuando un Destino vaya a poner su carta encima del mazo de Peligros, ponla al fondo del mazo en su lugar.",
+   "texto": "**Respuesta:** [mar]: Después de que reveles una carta de Peligro cuyo encuentro tenga una Prueba de [NAV], agota un _Cañón_: esa Prueba es de [COM] en lugar de [NAV].",
    "ambientacion": "«¿Nos persiguen? Que prueben el bronce de popa.»"
   },
   {
@@ -1244,7 +1205,7 @@
     "COM",
     "COM"
    ],
-   "ambientacion": "«¡Garfios a la borda, y que Dios reparta suerte!»"
+   "ambientacion": "«¡Saltad, y que Dios reparta suerte!»"
   },
   {
    "id": "timon",
@@ -1268,7 +1229,7 @@
     "EXP",
     "EXP"
    ],
-   "ambientacion": "«En el Caribe, el que parpadea pierde.»"
+   "ambientacion": "«En el Caribe, el que parpadea se pierde.»"
   },
   {
    "id": "coraje",
@@ -1304,7 +1265,7 @@
     "NAV",
     "EXP"
    ],
-   "ambientacion": "«La Polar no miente. Los mapas, a veces.»"
+   "ambientacion": "«Las estrellas no mienten. Los mapas, a veces.»"
   }
  ],
  "tesoros": [
@@ -1321,7 +1282,7 @@
    "num": 129,
    "nombre": "Mascarón del galeón",
    "tipo": "Mejora de barco",
-   "texto": "Indestructible.\n{+1 dano}.\n**Interrupción:** Cuando el Barco vaya a recibir daño, evítalo. (Límite de una vez por misión.)",
+   "texto": "Indestructible.\n{+1 dano}.\n**Interrupción:** Cuando vayas a dañar el Barco, evita ese daño. (Límite de una vez por misión.)",
    "ambientacion": "«La dama de madera ha visto mil batallas.»"
   },
   {
@@ -4056,7 +4017,7 @@
      "nota": "",
      "textoEfecto": "**A remar:** agota a un _Marinero_ o a 2 Tripulantes.\n**Esperar el viento:** [NAV] 3.",
      "textoExito": "~Una racha os encuentra.~ {+1 avance}.",
-     "textoFallo": "~Días al pairo y el agua se acaba.~ Cada Tripulante sufre {1 herida}.",
+     "textoFallo": "~Días al pairo y el agua se acaba.~ Inflige {1 herida} a cada Tripulante.",
      "etiquetas": [
       "Elige"
      ]
@@ -4240,7 +4201,7 @@
      "siempre": [],
      "nota": "",
      "textoExito": "~Cruzáis con el agua por la cintura y la marea borra vuestro rastro.~ La siguiente Prueba de esta misión recibe −1 de dificultad.",
-     "textoFallo": "~La marea os pilla a medio estero.~ El Tripulante asignado con menos [NAV] sufre {1 herida}. {−1 avance}.",
+     "textoFallo": "~La marea os pilla a medio estero.~ Inflige {1 herida} al Tripulante asignado con menos [NAV]. {−1 avance}.",
      "textoEfecto": "~El estero parecía vadeable a la ida. Ahora la marea lo llena a ojos vistas.~"
     },
     "ciu": {
@@ -4573,7 +4534,7 @@
      "nota": "",
      "textoEfecto": "~La tormenta baja por la ladera detrás de vosotros.~ Esta Prueba recibe +1 de dificultad por cada Tripulante que ya estuviera agotado al revelarla (máx. +2): los rezagados frenan a todos.",
      "textoExito": "~Llegáis a una cueva antes que la tormenta.~ Prepara a 1 Tripulante.",
-     "textoFallo": "~Un rayo cae sobre la cola de la columna.~ El Tripulante con menos Vida sufre {2 herida}."
+     "textoFallo": "~Un rayo cae sobre la cola de la columna.~ Inflige {2 herida} al Tripulante con menos Vida."
     },
     "ciu": {
      "nombre": "La riada",
@@ -4740,7 +4701,7 @@
      "nota": "",
      "textoEfecto": "~La ladera se viene abajo; hay que sujetar las piedras a pulso y sacar a los vuestros.~",
      "textoExito": "~El temblor abre una grieta en la roca, y dentro hay un escondite antiguo.~ {2 robar} y {+1 avance}.",
-     "textoFallo": "~El camino ya no existe.~ {−2 avance} y el Tripulante asignado con más [COM] sufre {1 herida}."
+     "textoFallo": "~El camino ya no existe.~ {−2 avance} e inflige {1 herida} al Tripulante asignado con más [COM]."
     },
     "ciu": {
      "nombre": "La ciudad se hunde",
@@ -4761,7 +4722,7 @@
      "nota": "",
      "textoEfecto": "~Las calles de arena se escurren al mar con las casas encima.~",
      "textoExito": "~Sacáis a los vecinos de los escombros.~ +1 reputación.",
-     "textoFallo": "~Un Tripulante asignado queda sepultado:~ sufre {1 herida} y queda **Extenuado**."
+     "textoFallo": "~Un Tripulante asignado queda sepultado:~ inflígele {1 herida}; queda **Extenuado**."
     }
    },
    "destino": {
@@ -4771,7 +4732,7 @@
     "texto": "",
     "mod": "−2",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Capitán."
    }
   },
   {
@@ -4935,7 +4896,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Capitán."
    }
   },
   {
@@ -4969,7 +4930,7 @@
      "nota": "",
      "textoEfecto": "~Semanas de galleta y cecina; sangran las encías y se abren las cicatrices.~",
      "textoExito": "~Limas olvidadas en un barril.~ Cura {1 herida g} a cada Tripulante herido.",
-     "textoFallo": "~Las heridas viejas se abren.~ Cada Tripulante que ya tenga heridas sufre {1 herida} más (máximo 3 heridas en total)."
+     "textoFallo": "~Las heridas viejas se abren.~ Inflige {1 herida} más a cada Tripulante que ya tenga heridas (máximo 3 heridas en total)."
     },
     "nat": {
      "nombre": "Manzanillas de la muerte",
@@ -4995,7 +4956,7 @@
      "nota": "",
      "textoEfecto": "~La tripulación tiene hambre y la selva está llena de fruta. Alguna mata.~",
      "textoExito": "~Guayabas y mameyes de verdad.~ Prepara 2 Tripulantes.",
-     "textoFallo": "~Alguien muerde la manzanita del manzanillo.~ El Tripulante con menos Vida sufre {2 herida}."
+     "textoFallo": "~Alguien muerde la manzanita del manzanillo.~ Inflige {2 herida} al Tripulante con menos Vida."
     },
     "ciu": {
      "nombre": "Carestía",
@@ -5147,7 +5108,7 @@
      "nota": "",
      "textoEfecto": "~Subió a bordo con la leña.~ Si tienes un _Animal_ (el gato del barco), superas sin Prueba.",
      "textoExito": "~La echáis por la borda en un saco, y entre los fardos aparece el ron que alguien escondía.~ {1 robar}.",
-     "textoFallo": "~Muerde al que dormía abajo.~ El Tripulante no asignado con menos Vida sufre {2 herida} (si no queda ninguno, el Tripulante asignado con menos [EXP])."
+     "textoFallo": "~Muerde al que dormía abajo.~ Inflige {2 herida} al Tripulante no asignado con menos Vida (si no queda ninguno, al Tripulante asignado con menos [EXP])."
     },
     "nat": {
      "nombre": "Barba amarilla",
@@ -5199,7 +5160,7 @@
     "texto": "",
     "mod": "0",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante preparado con menos Vida sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Tripulante preparado con menos Vida."
    }
   },
   {
@@ -5318,7 +5279,7 @@
      "nota": "",
      "textoEfecto": "Si ningún Tripulante está herido, ganas el Avance sin Prueba (no hay sangre en el agua).",
      "textoExito": "~Pescáis uno para la cena.~ Cura {2 herida g}.",
-     "textoFallo": "~Van a por el que sangra.~ El Tripulante con más heridas sufre {2 herida}.",
+     "textoFallo": "~Van a por el que sangra.~ Inflige {2 herida} al Tripulante con más heridas.",
      "notaPrueba": "+1 por cada Tripulante herido (máx. 5)."
     },
     "nat": {
@@ -5375,7 +5336,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante con menos Vida sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Tripulante con menos Vida."
    }
   },
   {
@@ -5449,7 +5410,7 @@
      "nota": "",
      "textoEfecto": "~Os han seguido hasta el pueblo. Hay que echarlos a escobazos, a oscuras.~",
      "textoExito": "~El posadero os da cama sin cobrar.~ Cura {1 herida g} a cada Tripulante asignado.",
-     "textoFallo": "~Entran por la ventana del Capitán, que dormía en la mejor cama.~ El Capitán sufre {1 herida} y descartas 1 carta (pagas al barbero)."
+     "textoFallo": "~Entran por la ventana del Capitán, que dormía en la mejor cama.~ Inflige {1 herida} al Capitán y descarta 1 carta (pagas al barbero)."
     }
    },
    "destino": {
@@ -5459,7 +5420,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante agotado con menos Vida sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Tripulante agotado con menos Vida."
    }
   },
   {
@@ -5570,7 +5531,7 @@
      "nota": "",
      "textoEfecto": "~El jaguar que llevabais para la casa de fieras del gobernador ha roto la jaula.~ **Sin ayuda** (en la bodega a oscuras solo cabe uno con un farol).",
      "textoExito": "~Vuelve a la jaula y el gobernador pagará bien.~ {3 robar}.",
-     "textoFallo": "~El zarpazo llega antes que el farol.~ El Tripulante asignado sufre {2 herida} y queda **Asustado**.",
+     "textoFallo": "~El zarpazo llega antes que el farol.~ Inflige {2 herida} al Tripulante asignado, que queda **Asustado**.",
      "etiquetas": [
       "Sin ayuda"
      ]
@@ -5609,7 +5570,7 @@
      "nota": "",
      "textoEfecto": "~El jaguar del gobernador anda suelto por el mercado.~ Si tienes un _Animal_, la Prueba recibe +1 de dificultad (lo huele y va a por él).",
      "textoExito": "~Lo devuelves a la jaula delante de toda la plaza.~ +1 reputación.",
-     "textoFallo": "~El mercado queda destrozado.~ El Tripulante asignado con más [COM] sufre {2 herida} y se descarta la carta de más a la izquierda del muelle (los tenderos huyen)."
+     "textoFallo": "~El mercado queda destrozado.~ Inflige {2 herida} al Tripulante asignado con más [COM] y se descarta la carta de más a la izquierda del muelle (los tenderos huyen)."
     }
    },
    "destino": {
@@ -5619,7 +5580,7 @@
     "texto": "",
     "mod": "−2",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante con menos Vida sufre {2 herida}."
+    "textoSinOposicion": "Inflige {2 herida} al Tripulante con menos Vida."
    }
   },
   {
@@ -5649,7 +5610,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** el caimán vuelca la chalupa: el Tripulante preparado con menos Vida cae al agua y no puede ser asignado. ~Hay que llegar hasta él antes que la bestia.~",
      "textoExito": "~Lo subís a bordo de un tirón; el caimán se queda con el remo.~ Ese Tripulante se prepara y queda **Aguerrido**.",
-     "textoFallo": "~Lo arrastra al fondo.~ Ese Tripulante sufre {2 herida}, y la chalupa se pierde: daña {1 dano}."
+     "textoFallo": "~Lo arrastra al fondo.~ Inflige {2 herida} a ese Tripulante, y la chalupa se pierde: daña {1 dano}."
     },
     "nat": {
      "nombre": "El Viejo del manglar",
@@ -5671,7 +5632,7 @@
      "nota": "",
      "textoEfecto": "Con el barro a la cintura, las Mejoras no suman.",
      "textoExito": "~Abatís al Viejo. Su piel y sus dientes valen una fortuna.~ {2 robar} y {+1 avance}.",
-     "textoFallo": "~El giro de la muerte.~ Si tienes un _Animal_, el caimán se lo lleva: vuelve al muelle. Si no, el Tripulante asignado con más [COM] sufre {3 herida}."
+     "textoFallo": "~El giro de la muerte.~ Si tienes un _Animal_, el caimán se lo lleva: vuelve al muelle. Si no, inflige {3 herida} al Tripulante asignado con más [COM]."
     },
     "ciu": {
      "nombre": "El foso de la muralla",
@@ -5693,17 +5654,17 @@
      "nota": "",
      "textoEfecto": "~El gobernador echa caimanes al foso. Hay que cruzarlo a nado de noche.~",
      "textoExito": "~Entráis por donde nadie vigila.~ {+1 avance}.",
-     "textoFallo": "El Tripulante asignado con más [NAV] sale del agua a medias. **Elige:** sufre {2 herida} (escapa mordido) o se descarta (lo pescan los guardias)."
+     "textoFallo": "El Tripulante asignado con más [NAV] sale del agua a medias. **Elige:** inflígele {2 herida} (escapa mordido) o se descarta (lo pescan los guardias)."
     }
    },
    "destino": {
     "nombre": "Giro de la muerte",
     "modificador": null,
     "textoPrototipo": "",
-    "texto": "Fallas la Prueba, salvo que el Tripulante asignado con la habilidad más alta sufra {2 herida}: entonces, −1 en su lugar.",
+    "texto": "Fallas la Prueba, salvo que inflijas {2 herida} al Tripulante asignado con la habilidad más alta: entonces, −1 en su lugar.",
     "mod": "✕",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante con menos Vida sufre {2 herida}."
+    "textoSinOposicion": "Inflige {2 herida} al Tripulante con menos Vida."
    }
   },
   {
@@ -5750,7 +5711,7 @@
      "siempre": [],
      "nota": "",
      "textoExito": "~Os lleva por la senda de las mulas.~ {+1 avance}.",
-     "textoFallo": "~Os toma por cazadores de desertores, dispara y huye.~ El Tripulante asignado con más [EXP] sufre {1 herida}.",
+     "textoFallo": "~Os toma por cazadores de desertores, dispara y huye.~ Inflige {1 herida} al Tripulante asignado con más [EXP].",
      "notaPrueba": "~Se cuadra ante un galón.~"
     },
     "ciu": {
@@ -5827,7 +5788,7 @@
      "nota": "",
      "textoEfecto": "~Los perros siguen la sangre.~ +1 de dificultad si algún Tripulante asignado tiene heridas.",
      "textoExito": "~Los despistáis en el arroyo y os quedáis con su cecina.~ Cura {1 herida g}.",
-     "textoFallo": "~Los perros acorralan al más lento.~ El Tripulante asignado con menos Vida sufre {1 herida} y queda **Buscado** (los cazadores ya tienen su cara)."
+     "textoFallo": "~Los perros acorralan al más lento.~ Inflige {1 herida} al Tripulante asignado con menos Vida, que queda **Buscado** (los cazadores ya tienen su cara)."
     },
     "ciu": {
      "nombre": "Tu cara en el muelle",
@@ -5858,7 +5819,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Capitán."
    }
   },
   {
@@ -5913,7 +5874,7 @@
      "nota": "",
      "textoEfecto": "~Vigilan el río por donde baja el tabaco. Bajáis en canoa y en la canoa solo caben dos.~ No puedes asignar más de 2 Tripulantes.",
      "textoExito": "~La corriente os deja lejos, con los fardos.~ Nada más.",
-     "textoFallo": "~Volcáis en los rápidos.~ Agota 1 _Cañón_ (pólvora mojada) y el Tripulante asignado con más [NAV] sufre {1 herida}."
+     "textoFallo": "~Volcáis en los rápidos.~ Agota 1 _Cañón_ (pólvora mojada) e inflige {1 herida} al Tripulante asignado con más [NAV]."
     },
     "ciu": {
      "nombre": "El aduanero tiene precio",
@@ -6236,7 +6197,7 @@
      "nota": "",
      "textoEfecto": "~Acuden de todo el puerto.~ +1 de dificultad por cada encuentro de tipo #Armada#, #Militar# o #Guardia# que ya hayas resuelto en esta misión (máx. +2).",
      "textoExito": "~Hundís la lancha del capitán y las demás se retiran.~ Nada más.",
-     "textoFallo": "~Os acribillan desde las lanchas.~ Daña {1 dano} y el Tripulante asignado con más [COM] sufre {1 herida}."
+     "textoFallo": "~Os acribillan desde las lanchas.~ Daña {1 dano} e inflige {1 herida} al Tripulante asignado con más [COM]."
     },
     "nat": {
      "nombre": "La hoguera de la atalaya",
@@ -6333,7 +6294,7 @@
      "nota": "",
      "textoEfecto": "~La garita cobra el paso según la carga.~ **Al revelarse:** si tienes 5 o más cartas en la mano, +1 de dificultad.",
      "textoExito": "~Os quedáis la caja del portazgo.~ {2 robar}.",
-     "textoFallo": "~Os cobran en sangre y en tiempo.~ El Tripulante asignado con más [COM] sufre {1 herida}. {−1 avance}."
+     "textoFallo": "~Os cobran en sangre y en tiempo.~ Inflige {1 herida} al Tripulante asignado con más [COM]. {−1 avance}."
     },
     "ciu": {
      "nombre": "Embargo del recaudador",
@@ -6438,7 +6399,7 @@
      "nota": "",
      "textoEfecto": "~Entráis en bote por la galería que da al mar.~",
      "textoExito": "~Un preso agradecido os cuenta el camino.~ {+1 avance}.",
-     "textoFallo": "~El carcelero os coge en la ronda.~ El Tripulante asignado con más [NAV] queda **Buscado** y sufre {1 herida}."
+     "textoFallo": "~El carcelero os coge en la ronda.~ El Tripulante asignado con más [NAV] queda **Buscado**; inflígele {1 herida}."
     }
    },
    "destino": {
@@ -6448,7 +6409,7 @@
     "texto": "",
     "mod": "−2",
     "ambientacion": "",
-    "textoSinOposicion": "[mar]: Daña {1 dano}. [nat]/[ciu]: El Capitán sufre {1 herida}."
+    "textoSinOposicion": "[mar]: Daña {1 dano}. [nat]/[ciu]: Inflige {1 herida} al Capitán."
    }
   },
   {
@@ -6499,7 +6460,7 @@
      "nota": "",
      "textoEfecto": "+2 de dificultad si algún Tripulante está **Buscado** (su nombre está en la lista de la patrulla).",
      "textoExito": "~Cortáis las sogas y un colgado aún respira; os guía por el monte.~ {+1 avance}.",
-     "textoFallo": "~La patrulla vuelve a por más.~ El Tripulante asignado con menos Vida queda **Buscado** y sufre {1 herida}."
+     "textoFallo": "~La patrulla vuelve a por más.~ El Tripulante asignado con menos Vida queda **Buscado**; inflígele {1 herida}."
     },
     "ciu": {
      "nombre": "Ahorcan a uno de los vuestros",
@@ -6724,7 +6685,7 @@
      "nota": "",
      "textoEfecto": "~Unos contrabandistas enterraron aquí su mercancía.~",
      "textoExito": "~Desentierras ron y pólvora.~ Prepara un _Cañón_ y 1 Tripulante.",
-     "textoFallo": "~Sus dueños vuelven antes de tiempo.~ El Tripulante asignado con más [EXP] sufre {1 herida}."
+     "textoFallo": "~Sus dueños vuelven antes de tiempo.~ Inflige {1 herida} al Tripulante asignado con más [EXP]."
     },
     "ciu": {
      "nombre": "Lenguas sueltas",
@@ -6777,7 +6738,7 @@
      "nota": "",
      "textoEfecto": "Tus dos Tripulantes con más [COM] (sin contar al Capitán) se están pegando: no pueden ser asignados. Cada _Oficial_ asignado suma +1 (los separa a gritos).",
      "textoExito": "~El contramaestre los castiga juntos a las bombas.~ Repara {1 dano g}.",
-     "textoFallo": "~Los dos se rompen la cara.~ Cada uno sufre {1 herida}."
+     "textoFallo": "~Los dos se rompen la cara.~ Inflige {1 herida} a cada uno."
     },
     "nat": {
      "nombre": "La última cantimplora",
@@ -6798,7 +6759,7 @@
      "nota": "",
      "textoEfecto": "~Queda agua para uno y todos la quieren.~",
      "textoExito": "~Encontráis un arroyo y se acaba la pelea.~ Cura {1 herida g} a dos Tripulantes distintos.",
-     "textoFallo": "~Se la queda el más fuerte.~ Tu Tripulante con más [COM] cura {1 herida g} y tu Tripulante con menos Vida sufre {1 herida}."
+     "textoFallo": "~Se la queda el más fuerte.~ Cura {1 herida g} a tu Tripulante con más [COM] e inflige {1 herida} a tu Tripulante con menos Vida."
     },
     "ciu": {
      "nombre": "Pelea de taberna",
@@ -6820,7 +6781,7 @@
      "nota": "",
      "textoEfecto": "~Tus hombres y los de otro barco se lían a botellazos.~",
      "textoExito": "~Los vencidos pagan la ronda y sueltan su ruta.~ {+1 avance} y {1 robar}.",
-     "textoFallo": "~Un taburete en la cabeza.~ El Tripulante asignado con más [COM] sufre {1 herida} y descartas 1 carta (los destrozos)."
+     "textoFallo": "~Un taburete en la cabeza.~ Inflige {1 herida} al Tripulante asignado con más [COM] y descarta 1 carta (los destrozos)."
     }
    },
    "destino": {
@@ -6903,7 +6864,7 @@
      "nota": "",
      "textoEfecto": "**Sin ayuda.** ~Un tahúr reta a uno de los tuyos a una partida a vida o muerte.~ Cada carta de tu mano que añadas suma 1 más (aquí se gana con naipes).",
      "textoExito": "~Te llevas la banca.~ {3 robar}.",
-     "textoFallo": "~El tahúr cobra con la navaja.~ El Tripulante asignado sufre {2 herida}.",
+     "textoFallo": "~El tahúr cobra con la navaja.~ Inflige {2 herida} al Tripulante asignado.",
      "etiquetas": [
       "Sin ayuda"
      ]
@@ -6981,7 +6942,7 @@
      "nota": "",
      "textoEfecto": "~Tus hombres no dan un paso más sin su parte.~\n**Pagar:** descarta 1 carta por cada Tripulante que tengas (máx. 3).\n**Plantarte:** [COM] 3, +1 de dificultad por cada _Pirata_ que tengas (máx. +2; son los más codiciosos).",
      "textoExito": "~Los convences a tu manera y te quedas la parte del capitán.~ {2 robar}.",
-     "textoFallo": "~Te la cobran igual, y a golpes.~ Descarta 2 cartas y el Capitán sufre {1 herida}.",
+     "textoFallo": "~Te la cobran igual, y a golpes.~ Descarta 2 cartas e inflige {1 herida} al Capitán.",
      "etiquetas": [
       "Elige"
      ]
@@ -7049,7 +7010,7 @@
      "nota": "",
      "textoEfecto": "~Un práctico os sube por el río a cambio de una parte. Conoce dos canales: el bueno y el de sus amigos.~",
      "textoExito": "~Lees el río mejor que él y ahora trabaja para ti.~ La siguiente Prueba de esta misión recibe −1 de dificultad.",
-     "textoFallo": "~Os mete en el canal de sus amigos.~ {−1 avance} y el Tripulante asignado con más [NAV] sufre {1 herida}."
+     "textoFallo": "~Os mete en el canal de sus amigos.~ {−1 avance} e inflige {1 herida} al Tripulante asignado con más [NAV]."
     },
     "ciu": {
      "nombre": "Matones del armador",
@@ -7278,7 +7239,7 @@
      "nota": "",
      "textoEfecto": "**Sin ayuda.** ~El Vizcaíno, tu antiguo contramaestre y hoy capitán rival, reta a tu Capitán a sable.~ Puedes mandar a otro Tripulante en su lugar, pero entonces la Prueba recibe +1 de dificultad (sus hombres se ríen y los tuyos dudan).",
      "textoExito": "~Su gente paga por recuperarlo vivo.~ Prepara un _Cañón_ y a 1 Tripulante asignado.",
-     "textoFallo": "El Tripulante asignado sufre {2 herida} y queda **Sangrando**.",
+     "textoFallo": "Inflige {2 herida} al Tripulante asignado, que queda **Sangrando**.",
      "etiquetas": [
       "Sin ayuda"
      ]
@@ -7303,7 +7264,7 @@
      "nota": "",
      "textoEfecto": "~Lo enterrasteis juntos hace años. Él llegó antes y lo dejó lleno de trampas.~ Si asignas al Capitán, −2 de dificultad (recuerda dónde pisabais).",
      "textoExito": "~Encuentras la mitad que a él se le pasó.~ {2 robar}.",
-     "textoFallo": "~Salta su trampa.~ El Tripulante asignado con más [EXP] sufre {2 herida}."
+     "textoFallo": "~Salta su trampa.~ Inflige {2 herida} al Tripulante asignado con más [EXP]."
     },
     "ciu": {
      "nombre": "La vieja deuda",
@@ -7335,7 +7296,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Capitán."
    }
   },
   {
@@ -7365,7 +7326,7 @@
      "nota": "",
      "textoEfecto": "Solo pueden ser asignados el Capitán y los _Oficiales_. La Prueba recibe +1 de dificultad por cada Tripulante preparado que no sea _Oficial_ (se han unido a los amotinados; máx. +3).",
      "textoExito": "~Cuelgas al cabecilla del palo mayor y el resto vuelve al trabajo.~ Prepara a todos tus Tripulantes.",
-     "textoFallo": "~Los amotinados toman el timón y vuelven a puerto.~ Te retiras de la misión y el Capitán sufre {1 herida}."
+     "textoFallo": "~Los amotinados toman el timón y vuelven a puerto.~ Te retiras de la misión e inflige {1 herida} al Capitán."
     },
     "nat": {
      "nombre": "Se llevan la piragua",
@@ -7761,7 +7722,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Hay que guiarse por las estrellas, no por las luces.~ Un _Vigía_ asignado suma +2 (las ve por encima de la bruma).",
-     "textoExito": "~Las luces se posan donde hay algo enterrado.~ Busca una Mejora en tu mazo y añádela a tu mano.",
+     "textoExito": "~Las luces se posan donde hay algo enterrado.~ {1 robar}.",
      "textoFallo": "~Las seguís hasta la ciénaga.~ {−2 avance}."
     },
     "ciu": {
@@ -7823,7 +7784,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** el Tripulante preparado con menos [EXP] oye el canto y va hacia la borda.\n**Atarlo al palo mayor:** agótalo a él y a otro Tripulante preparado.\n**Ir tras él en el bote:** [NAV] 3.",
      "textoExito": "~Lo sacáis del agua con las joyas que ella le regaló.~ {3 robar}.",
-     "textoFallo": "~Lo sacáis del agua sin joyas y medio ahogado.~ Sufre {2 herida} y queda **Asustado**.",
+     "textoFallo": "~Lo sacáis del agua sin joyas y medio ahogado.~ Inflígele {2 herida}; queda **Asustado**.",
      "notaPrueba": "Si vas tras él.",
      "etiquetas": [
       "Elige"
@@ -7848,7 +7809,7 @@
      "nota": "",
      "textoEfecto": "~Sus huellas van al revés.~ En esta Prueba, invierte el modificador del Destino: −1 cuenta como +1 y +2 como −2. «Fallas la Prueba» no cambia.",
      "textoExito": "~Os lleva a un remanso.~ Cura {1 herida g} a cada Tripulante asignado.",
-     "textoFallo": "El Tripulante asignado con menos [EXP] se va tras ella. Aparece al alba, medio ahogado: sufre {2 herida}."
+     "textoFallo": "El Tripulante asignado con menos [EXP] se va tras ella. Aparece al alba, medio ahogado: inflígele {2 herida}."
     },
     "ciu": {
      "nombre": "La cantante del puerto",
@@ -7879,7 +7840,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante preparado con menos [EXP] sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Tripulante preparado con menos [EXP]."
    }
   },
   {
@@ -7985,7 +7946,7 @@
      "nota": "",
      "textoEfecto": "~Los muertos del bokor huelen la sangre.~ Cada Tripulante asignado que tenga heridas suma 1 menos.",
      "textoExito": "~Les llenáis la boca de sal y caen para siempre.~ Esta carta Se retira.",
-     "textoFallo": "El Tripulante asignado con más [COM] sufre {1 herida} y queda **Maldito** (lo han mordido)."
+     "textoFallo": "Inflige {1 herida} al Tripulante asignado con más [COM], que queda **Maldito** (lo han mordido)."
     },
     "nat": {
      "nombre": "Tambores en la noche",
@@ -8042,7 +8003,7 @@
     "texto": "Inflige {1 herida} a un Tripulante asignado.",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán sufre {1 herida}."
+    "textoSinOposicion": "Inflige {1 herida} al Capitán."
    }
   },
   {
@@ -8094,7 +8055,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** **Incautado:** el cofre pide su ofrenda: pon bajo la carta de misión una Mejora de uno de tus Tripulantes o 2 cartas de la mano. Si superas la misión, la recuperas y {2 robar} (el cofre paga su deuda). Si no, se queda en la cueva.",
      "textoExito": "~Sorteáis las trampas y dais con otra salida.~ {+1 avance}.",
-     "textoFallo": "~Cae la losa.~ El Tripulante asignado con más [EXP] sufre {2 herida}.",
+     "textoFallo": "~Cae la losa.~ Inflige {2 herida} al Tripulante asignado con más [EXP].",
      "etiquetas": [
       "Incautado"
      ]
@@ -8118,7 +8079,7 @@
      "nota": "",
      "textoEfecto": "~Un desconocido que huele a salitre os pide sus monedas. Encuentra antes a los que llevan su marca.~",
      "textoExito": "~Lo echáis al mar del que salió.~ {2 robar} (sus monedas ya son vuestras).",
-     "textoFallo": "~Se cobra lo suyo.~ Descarta 2 cartas, y cada Tripulante **Maldito** sufre {1 herida}.",
+     "textoFallo": "~Se cobra lo suyo.~ Descarta 2 cartas e inflige {1 herida} a cada Tripulante **Maldito**.",
      "notaPrueba": "+1 por cada Tripulante **Maldito** (máx. 5)."
     }
    },
@@ -8181,7 +8142,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** se traga entero al Tripulante preparado con menos Vida: no puede ser asignado. Si tienes un _Animal_ (el Loro, por ejemplo), os avisa a tiempo y no se traga a nadie.",
      "textoExito": "~Le abrís la panza y sale vivo, con el anillo de otro que se tragó antes.~ {2 robar}.",
-     "textoFallo": "El tragado (o, si no hubo, el Tripulante asignado con más [COM]) sufre {2 herida} antes de que lo escupa."
+     "textoFallo": "Inflige {2 herida} al tragado (o, si no hubo, al Tripulante asignado con más [COM]) antes de que lo escupa."
     },
     "ciu": {
      "nombre": "Se ha escapado la serpiente",
@@ -8213,7 +8174,7 @@
     "texto": "Inflige {1 herida} a un Tripulante asignado.",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante preparado con menos Vida sufre {2 herida}."
+    "textoSinOposicion": "Inflige {2 herida} al Tripulante preparado con menos Vida."
    }
   },
   {
@@ -8269,7 +8230,7 @@
      "nota": "",
      "textoEfecto": "~A quien está dentro de un círculo no lo pueden llamar.~ El Tripulante que lleva el Escapulario del Carmen suma +2.",
      "textoExito": "~Al alba, el guía dejó caer su vela: es de oro.~ {2 robar}.",
-     "textoFallo": "El Tripulante asignado con menos [EXP] salió del círculo: queda **Asustado** y sufre {1 herida}."
+     "textoFallo": "El Tripulante asignado con menos [EXP] salió del círculo: queda **Asustado**; inflígele {1 herida}."
     },
     "ciu": {
      "nombre": "Procesión de ánimas",
@@ -8300,7 +8261,7 @@
     "texto": "Si fallas la Prueba: uno de los Tripulantes asignados queda **Asustado**.",
     "mod": "−2",
     "ambientacion": "",
-    "textoSinOposicion": "El Tripulante con más heridas sufre {1 herida} y queda **Asustado**."
+    "textoSinOposicion": "Inflige {1 herida} al Tripulante con más heridas, que queda **Asustado**."
    }
   },
   {
@@ -8350,7 +8311,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Salen del agua por todas partes.~ Antes de resolver, cada Tripulante preparado que no hayas asignado sufre {1 herida} (los que se quedaron atrás).",
+     "textoEfecto": "~Salen del agua por todas partes.~ Antes de resolver, inflige {1 herida} a cada Tripulante preparado que no hayas asignado (los que se quedaron atrás).",
      "textoExito": "~Los devolvéis al mar. Llevaban encima el oro del Holandés.~ {2 robar}.",
      "textoFallo": "~Os arrastran hacia la orilla.~ Inflige {3 herida}."
     },
@@ -9255,7 +9216,7 @@
     "texto": "",
     "mod": "−2",
     "ambientacion": "",
-    "textoSinOposicion": "El Capitán sufre {2 herida}."
+    "textoSinOposicion": "Inflige {2 herida} al Capitán."
    }
   },
   {
@@ -9955,7 +9916,7 @@
      "distancia": 0,
      "reglas": [
       "Los encuentros de tipo #Militar# y #Guardia# reciben {+1 r} de dificultad.",
-      "Si fallas una Prueba de [COM], cada Tripulante asignado sufre además {1 herida} ~(cae de la escala)~."
+      "Si fallas una Prueba de [COM], inflige además {1 herida} a cada Tripulante asignado ~(cae de la escala)~."
      ],
      "ambientacion": "«Treinta pies de piedra y un centinela dormido.»",
      "recompensa": {
@@ -9975,7 +9936,7 @@
      "avanceNecesario": 5,
      "distancia": 0,
      "reglas": [
-      "**Al zarpar:** La mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4 fichas, después de resolver ese Peligro, si no has superado la misión, el polvorín estalla: {2 herida} repartidas entre tus Tripulantes y te retiras."
+      "**Al zarpar:** La mecha está encendida. Cada vez que reveles un Peligro, pon 1 ficha de Mecha. Con 4 fichas, después de resolver ese Peligro, si no has superado la misión, el polvorín estalla: inflige {2 herida} y te retiras."
      ],
      "ambientacion": "«Una chispa y la fortaleza entera salta por los aires. Mejor que nos pille lejos.»",
      "recompensa": {
@@ -10004,7 +9965,7 @@
      "distancia": 0,
      "reglas": [
       "Los _Cañones_ no suman ~(las balas lo atraviesan como si fuera niebla)~.",
-      "Estáis a bordo del fantasma, no en vuestro barco: el Barco no sufre daño en esta misión. Cada daño que fuera a sufrir es, en su lugar, {1 herida} a un Tripulante que elijas."
+      "Estáis a bordo del fantasma, no en vuestro barco: en esta misión no dañes el Barco; en su lugar, por cada daño, inflige {1 herida} a un Tripulante que elijas."
      ],
      "ambientacion": "«La mesa está puesta y la sopa, caliente. No hay nadie.»",
      "recompensa": {
@@ -10081,8 +10042,8 @@
      "avanceNecesario": 3,
      "distancia": 0,
      "reglas": [
-      "El Barco sale de carena: la primera vez que vaya a sufrir daño en esta misión, evítalo.",
-      "**Gesta:** Si superas la misión sin que el Barco haya sufrido daño en esta misión, {+1 rep}."
+      "El Barco sale de carena: la primera vez que vayas a dañarlo en esta misión, evita ese daño.",
+      "**Gesta:** Si superas la misión sin haber dañado el Barco en esta misión, {+1 rep}."
      ],
      "ambientacion": "«A ver de qué está hecha esta vieja.»",
      "recompensa": {
@@ -10238,12 +10199,12 @@
      "distancia": 0,
      "reglas": [
       "Cada Prueba de [COM] que superes y cada vez que un Tripulante quede **Buscado**: 1 ficha de Alarma. Con 2, la misión necesita {+1 avance r}. Con 3, pon en juego la carta 220 del mazo de historia.",
-      "Saqueo: puedes retirarte entre dos Peligros y cobrar según tu Avance: con 2 o 3, {2 robar}; con 4 o más, {+1 rep} y busca una Mejora."
+      "Saqueo: puedes retirarte entre dos Peligros y cobrar según tu Avance: con 2 o 3, {2 robar}; con 4 o más, {+1 rep} y {2 robar}."
      ],
      "ambientacion": "«Música, pelucas y candelabros de plata. Los candelabros, para nosotros.»",
      "recompensa": {
       "rep": 1,
-      "search": "up"
+      "draw": 2
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -10622,7 +10583,7 @@
    "id": "reclutas",
    "num": 100,
    "nombre": "Marineros sin barco",
-   "texto": "Busca un Tripulante y ponlo en el muelle. Este turno, reclutarlo cuesta 1 menos.",
+   "texto": "Mira las 3 cartas superiores del mazo de muelle: pon un Tripulante de entre ellas en el muelle en lugar de la carta de más a la izquierda (que se descarta) y las demás al fondo. Este turno, reclutarlo cuesta 1 menos.",
    "ambientacion": "«Un mercante se hundió en la barra. Su tripulación busca patrón.»"
   },
   {
@@ -10664,7 +10625,7 @@
    "id": "ribera",
    "num": 106,
    "nombre": "Carpinteros de ribera",
-   "texto": "**Elige:** repara {2 dano g}, o busca una Mejora de barco y ponla en el muelle.",
+   "texto": "**Elige:** repara {2 dano g}, o este turno adquirir una Mejora de barco cuesta 1 menos.",
    "ambientacion": "«Calafates, cordeleros y un herrero que no hace preguntas.»"
   },
   {
@@ -10746,7 +10707,7 @@
    "emboscada",
    "estrellas",
    "estrellas",
-   "botin",
+   "arenga",
    "taberna",
    "reparacion",
    "vendas",
@@ -10768,9 +10729,8 @@
    "espesura",
    "trampa",
    "leccion",
-   "retirada",
+   "reflejos",
    "cataplasma",
-   "cortar",
    "a_por_ellos",
    "ron_valientes",
    "virar"
@@ -10928,7 +10888,7 @@
    "palabrasClave": [
     "Terreno"
    ],
-   "texto": "Cada vez que reveles otro Peligro, pon 1 ficha de Fuego aquí. Con 3, cada Tripulante agotado sufre 1 herida (máx. 3); descarta esta carta. **Acción:** agota a un _Explorador_ o a 2 Tripulantes: descarta esta carta.",
+   "texto": "Cada vez que reveles otro Peligro, pon 1 ficha de Fuego aquí. Con 3, inflige {1 herida} a cada Tripulante agotado (máx. 3); descarta esta carta. **Acción:** agota a un _Explorador_ o a 2 Tripulantes: descarta esta carta.",
    "ambientacion": "",
    "origen": "p2_fuego",
    "entorno": "nat",
@@ -10941,7 +10901,7 @@
    "palabrasClave": [
     "Terreno"
    ],
-   "texto": "El atrapado no puede ser asignado ni prepararse. **Obligado:** cada vez que reveles otro Peligro, pon 1 ficha de Barro aquí. Con 3, sufre 2 heridas; descarta esta carta. **Acción:** agota tantos Tripulantes preparados como fichas haya, más 1: descarta esta carta.",
+   "texto": "El atrapado no puede ser asignado ni prepararse. **Obligado:** cada vez que reveles otro Peligro, pon 1 ficha de Barro aquí. Con 3, inflige {2 herida} al atrapado; descarta esta carta. **Acción:** agota tantos Tripulantes preparados como fichas haya, más 1: descarta esta carta.",
    "ambientacion": "",
    "origen": "p2_arenas",
    "entorno": "nat",
@@ -10954,7 +10914,7 @@
    "palabrasClave": [
     "Bestia"
    ],
-   "texto": "**Obligado:** al final de cada encuentro siguiente, el Tripulante agotado con menos Vida sufre {1 herida}. **Acción:** agota a un Tripulante preparado: Prueba de [COM] 5 solo con él ([EXP] 3 si es _Explorador_). Si superas, {2 robar} y descarta esta carta; si fallas, el Tripulante asignado sufre {1 herida}.",
+   "texto": "**Obligado:** al final de cada encuentro siguiente, inflige {1 herida} al Tripulante agotado con menos Vida. **Acción:** agota a un Tripulante preparado: Prueba de [COM] 5 solo con él ([EXP] 3 si es _Explorador_). Si superas, {2 robar} y descarta esta carta; si fallas, inflige {1 herida} al Tripulante asignado.",
    "ambientacion": "",
    "origen": "p2_jaguar",
    "entorno": "nat",
@@ -10980,7 +10940,7 @@
    "palabrasClave": [
     "Militar"
    ],
-   "texto": "No puedes superar la misión. **Acción:** Prueba de [COM] 5 (4 si tienes un _Carpintero_ preparado). Si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.",
+   "texto": "No puedes superar la misión. **Acción:** Prueba de [COM] 5 (4 si tienes un _Carpintero_ preparado). Si superas, descarta esta carta y gana 1 Avance; si fallas, daña {2 dano}.",
    "ambientacion": "",
    "origen": "p2_morro",
    "entorno": "mar",
@@ -10993,7 +10953,7 @@
    "palabrasClave": [
     "Tripulación"
    ],
-   "texto": "Cada vez que reveles otro Peligro, pon 1 ficha de Descontento aquí. Con 3, el Barco sufre 2 daños; descarta esta carta. **Respuesta:** después de superar una Prueba por 2 o más, quita 1 ficha. **Acción:** descarta 2 cartas: descarta esta carta.",
+   "texto": "Cada vez que reveles otro Peligro, pon 1 ficha de Descontento aquí. Con 3, daña {2 dano}; descarta esta carta. **Respuesta:** después de superar una Prueba por 2 o más, quita 1 ficha. **Acción:** descarta 2 cartas: descarta esta carta.",
    "ambientacion": "",
    "origen": "p2_paga",
    "entorno": "mar",
@@ -11030,7 +10990,7 @@
    "palabrasClave": [
     "Sobrenatural"
    ],
-   "texto": "Cada vez que reveles un nuevo encuentro, pon 1 ficha aquí. Con 3, el señalado sufre 2 heridas y queda **Maldito**; descarta esta carta. **Acción:** agota a un _Vigía_ o supera una Prueba de [EXP] 3: descarta esta carta y el señalado queda **Aguerrido**.",
+   "texto": "Cada vez que reveles un nuevo encuentro, pon 1 ficha aquí. Con 3, inflige {2 herida} al señalado, que queda **Maldito**; descarta esta carta. **Acción:** agota a un _Vigía_ o supera una Prueba de [EXP] 3: descarta esta carta y el señalado queda **Aguerrido**.",
    "ambientacion": "",
    "origen": "p2_presagio",
    "entorno": "nat",
@@ -11083,7 +11043,7 @@
     "Civil"
    ],
    "vida": 3,
-   "texto": "**Interrupción:** Cuando un Tripulante vaya a sufrir heridas, esta carta puede sufrir parte de esas heridas o todas, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
+   "texto": "**Interrupción:** Cuando vayas a infligir heridas a un Tripulante, inflige parte de esas heridas o todas a esta carta en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
    "ambientacion": "",
    "origen": "barco_fugitivo",
    "entorno": "unico",
@@ -11097,7 +11057,7 @@
     "Barco"
    ],
    "vida": 4,
-   "texto": "**Obligado:** Después de que falles una Prueba, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
+   "texto": "**Obligado:** Después de que falles una Prueba, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando vayas a dañar el Barco, inflige parte de ese daño o todo a esta carta en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante, la misión falla.",
    "ambientacion": "",
    "misiones": [
     "escolta-I"
@@ -11112,7 +11072,7 @@
     "Militar"
    ],
    "vida": 6,
-   "texto": "Sigue en juego mientras «El asedio de Port Royal» esté disponible.\n**Obligado:** Al final de cada turno en que no hayas zarpado a esa misión, inflige {1 dano} a esta carta.\n**Obligado:** Después de que falles una Prueba en esa misión, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando el Barco vaya a sufrir daño durante esa misión, esta carta puede sufrir parte de ese daño o todo, en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante: −2 reputación, pon la misión al fondo del mazo de Misiones y devuelve esta carta al mazo de historia.",
+   "texto": "Sigue en juego mientras «El asedio de Port Royal» esté disponible.\n**Obligado:** Al final de cada turno en que no hayas zarpado a esa misión, inflige {1 dano} a esta carta.\n**Obligado:** Después de que falles una Prueba en esa misión, inflige {1 dano} a esta carta.\n**Interrupción:** Cuando vayas a dañar el Barco durante esa misión, inflige parte de ese daño o todo a esta carta en su lugar.\n**Obligado:** Cuando esta carta no tenga Vida restante: −2 reputación, pon la misión al fondo del mazo de Misiones y devuelve esta carta al mazo de historia.",
    "ambientacion": "",
    "misiones": [
     "asedio-I"
@@ -11142,7 +11102,7 @@
    "num": 279,
    "nombre": "El diario del capitán",
    "mision": "naufragio",
-   "texto": "Busca en el mazo de Misiones el capítulo I de una travesía. Ponlo entre tus misiones disponibles en lugar de una de ellas, que va al fondo del mazo de Misiones, y pon {2 avance} sobre él.",
+   "texto": "Pon {2 avance} en una misión disponible.",
    "ambientacion": "«Rumbos, sondas y una isla que no sale en ninguna carta.»"
   },
   {
@@ -11150,7 +11110,7 @@
    "num": 280,
    "nombre": "Tiburón",
    "mision": "naufragio",
-   "texto": "El Tripulante que ha robado esta carta sufre {1 herida}.\nVuelve a barajar esta carta en el mazo del naufragio.",
+   "texto": "Inflige {1 herida} al Tripulante que ha robado esta carta.\nVuelve a barajar esta carta en el mazo del naufragio.",
    "ambientacion": "«Una sombra entre las cuadernas. Luego, dos.»"
   },
   {
@@ -11190,7 +11150,7 @@
    "num": 285,
    "nombre": "El pulpo de la bodega",
    "mision": "naufragio",
-   "texto": "El pulpo atrapa al Tripulante que ha robado esta carta. **Elige:**\nSacarlo entre dos: agota a otro Tripulante preparado.\nQue se suelte solo: el Tripulante que ha robado esta carta sufre {2 herida}.\nVuelve a barajar esta carta en el mazo del naufragio.",
+   "texto": "El pulpo atrapa al Tripulante que ha robado esta carta. **Elige:**\nSacarlo entre dos: agota a otro Tripulante preparado.\nQue se suelte solo: inflige {2 herida} al Tripulante que ha robado esta carta.\nVuelve a barajar esta carta en el mazo del naufragio.",
    "ambientacion": "«Ocho brazos y ninguna prisa.»"
   }
  ],
@@ -11230,7 +11190,7 @@
    "num": 288,
    "nombre": "Pertrechos para el viaje",
    "mision": "prueba",
-   "texto": "Adquiere sin coste una Mejora del muelle de coste 1 o menos.\nUn Tripulante sufre {1 herida}.",
+   "texto": "Adquiere sin coste una Mejora del muelle de coste 1 o menos.\nInflige {1 herida} a un Tripulante.",
    "ambientacion": "«Lona nueva, brea fresca y una mano vendada.»"
   },
   {
@@ -11238,7 +11198,7 @@
    "num": 289,
    "nombre": "Gente de la aguada",
    "mision": "aguada",
-   "texto": "Recluta sin coste un Tripulante del muelle de coste 2 o menos.\nEl Barco sufre {1 dano}.",
+   "texto": "Recluta sin coste un Tripulante del muelle de coste 2 o menos.\nDaña {1 dano}.",
    "ambientacion": "«Junto al pozo siempre hay alguien con ganas de dejar la isla.»"
   },
   {
@@ -11320,14 +11280,14 @@
    "num": 294,
    "nombre": "La cueva se viene abajo",
    "mision": "isla",
-   "texto": "**Elige:**\nCargas con todo el oro: gana {3 rep}; cada Tripulante sufre {1 herida}.\nSales a tiempo: gana {2 rep} y {2 robar}.",
+   "texto": "**Elige:**\nCargas con todo el oro: gana {3 rep}; inflige {1 herida} a cada Tripulante.\nSales a tiempo: gana {2 rep} y {2 robar}.",
    "ambientacion": "«Las paredes crujen. El oro pesa.»",
    "elige": [
     {
      "clave": "oro",
      "texto": "Cargas con todo el oro",
      "rep": 3,
-     "efecto": "cada Tripulante sufre 1 herida"
+     "efecto": "inflige 1 herida a cada Tripulante"
     },
     {
      "clave": "salir",
@@ -11363,7 +11323,7 @@
    "clase": "Estado",
    "de": "Barco",
    "copias": 1,
-   "texto": "**Obligado:** Después de resolver cada carta de Peligro en una misión de [mar], el Barco sufre {1 dano}, salvo que agotes a un Tripulante preparado.\n**Acción:** Agota a un _Carpintero_: descarta esta carta."
+   "texto": "**Obligado:** Después de resolver cada carta de Peligro en una misión de [mar], daña {1 dano}, salvo que agotes a un Tripulante preparado.\n**Acción:** Agota a un _Carpintero_: descarta esta carta."
   },
   {
    "id": "estado:velasRotas",
@@ -11403,7 +11363,7 @@
    "clase": "Estado",
    "de": "Tripulante",
    "copias": 6,
-   "texto": "**Obligado:** Al final del turno, este Tripulante sufre {1 herida}.\n**Acción:** Agota a un _Cirujano_: descarta esta carta."
+   "texto": "**Obligado:** Al final del turno, inflige {1 herida} a este Tripulante.\n**Acción:** Agota a un _Cirujano_: descarta esta carta."
   },
   {
    "id": "estado:sangrando",
@@ -11413,7 +11373,7 @@
    "clase": "Estado",
    "de": "Tripulante",
    "copias": 6,
-   "texto": "**Obligado:** Después de que este Tripulante se agote, sufre {1 herida}.\n**Acción:** Agota a otro Tripulante preparado: descarta esta carta."
+   "texto": "**Obligado:** Después de que este Tripulante se agote, inflígele {1 herida}.\n**Acción:** Agota a otro Tripulante preparado: descarta esta carta."
   },
   {
    "id": "estado:asustado",

@@ -2,8 +2,8 @@
 // números, que están en constantes.ts). Los números se leen del texto de cada carta.
 
 import { anotar, copia, nombre } from '../estado.ts'
-import { encuentroDe, mazoActivo } from '../peligros.ts'
-import { clavesDelEncuentro, dificultadDeOpcion, esAbordaje } from '../prueba.ts'
+import { mazoActivo } from '../peligros.ts'
+import { clavesDelEncuentro, definicionDe, dificultadDeOpcion, esAbordaje } from '../prueba.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Habilidad } from '../datos.ts'
 import type { Capacidad, CartaId, Estado, InstId, NuevaTarea } from '../tipos.ts'
@@ -325,7 +325,7 @@ function opcionDeCarronadas(s: Estado): number | null {
   const p = s.prueba
   if (!p || p.automatica || p.hab !== null || !s.zonas.encuentro.includes(p.encuentro)) return null
   const limite = numeroTras(texto('carronadas'), 'dificultad')
-  const opciones = encuentroDe(s, p.encuentro).prueba
+  const opciones = definicionDe(s, p.encuentro).opciones
   for (let i = 0; i < opciones.length; i++) {
     const o = opciones[i]
     if (o?.hab !== 'COM') continue

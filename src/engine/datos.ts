@@ -330,8 +330,6 @@ export interface OpcionFinal {
 
 export interface RecompensaDatos {
   rep?: number
-  /** Buscar en el mazo de muelle: Tripulante, Mejora de barco o Mejora. */
-  search?: 'crew' | 'ship' | 'up'
   draw?: number
   /** id del Tesoro que se gana. */
   tesoro?: string

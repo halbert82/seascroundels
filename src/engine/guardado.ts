@@ -114,6 +114,7 @@ export function deserializar(texto: string): Estado {
   migrar(s)
   migrarQuintaRonda(s)
   migrarFase16(s)
+  if (!migrarRevisionJugador(s)) throw new Error('La partida guardada estaba a mitad de una carta que ya no existe o ha cambiado (buscar en un mazo, «Cortar por lo sano», «¡A por ellos!» o «El diario del capitán»): no se puede continuar')
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()
   return s
@@ -154,6 +155,30 @@ function migrarFase16(s: Estado): void {
     if (c && !(c.estados ?? []).includes('extenuado')) c.estados = [...(c.estados ?? []), 'extenuado']
   }
   s.temporales = (s.temporales ?? []).filter((t) => !extenuados.includes(t))
+}
+
+/** Revisión de Albert de las cartas de jugador: cartas que salen de la caja. */
+const CARTAS_FUERA = new Set(['botin', 'retirada', 'cortar'])
+/** Decisiones de cartas que ya no existen o que ahora piden otra cosa: no se puede seguir desde ellas. */
+const DECISIONES_FUERA = new Set(['buscar', 'diarioCapitulo', 'diarioCambiar', 'quitarPermanente'])
+
+/**
+ * Revisión de Albert de las cartas de jugador: fuera «Botín escondido», «Retirada a tiempo» y «Cortar por lo sano» (estén
+ * donde estén: en la mano, en el mazo del capitán o en sus descartes), y fuera la mecánica Buscar. Los nombres nuevos
+ * («Cubrir las espaldas», «Pólvora robada», «¡Nadie se queda atrás!») no necesitan nada: la partida guarda el identificador
+ * de la carta y el nombre sale de los datos. Devuelve false si la partida estaba a mitad de algo que ya no existe: buscar en
+ * un mazo, jugar una de esas cartas, la Prueba de «¡A por ellos!» o el diario del capitán de antes.
+ */
+function migrarRevisionJugador(s: Estado): boolean {
+  if (s.pendiente && DECISIONES_FUERA.has(s.pendiente.motivo.clave)) return false
+  for (const t of s.pila ?? []) {
+    const tarea = t as { tipo: string; fuente?: InstId; uso?: { clave?: string } }
+    if (tarea.tipo === 'buscarMuelle' || tarea.tipo === 'quitarPermanente') return false
+    if (tarea.tipo === 'pruebaSuelta' && tarea.fuente && s.cartas[tarea.fuente]?.id === 'a_por_ellos') return false
+    if (tarea.tipo === 'usar' && ['botin.jugar', 'retirada.jugar', 'cortar.jugar', 'a_por_ellos.jugar'].includes(tarea.uso?.clave ?? '')) return false
+  }
+  for (const [inst, c] of Object.entries(s.cartas ?? {})) if (CARTAS_FUERA.has(c.id)) quitarCopia(s, inst as InstId)
+  return true
 }
 
 /** Fase 14: fuera el rehén y el Tripulante incautado. Devuelve false si la partida estaba a mitad de una captura. */

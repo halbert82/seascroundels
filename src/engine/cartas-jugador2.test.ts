@@ -1,18 +1,13 @@
 // Cartas de jugador 2.0 (fase 6): una prueba (al menos) por carta, con el ejemplo del documento cuando lo hay.
 
 import { describe, expect, it } from 'vitest'
-import { registrarPeligro, registrarPermanente } from './capacidades/peligros.ts'
 import { DATOS } from './datos.ts'
 import { ejecutar } from './motor.ts'
 import { descartarTripulante } from './tareas/peligros2.ts'
 import type { CartaId } from './tipos.ts'
 
-import { Jugador, PERMANENTE_DE_PRUEBA, dificultadConDestino } from './pruebas/situacion.ts'
-
-// Una carta de Peligro que pone en juego una permanente (sin forma de quitarla) para «Cortar por lo sano», solo en este
-// fichero.
-registrarPermanente(PERMANENTE_DE_PRUEBA, { quitar: [] })
-registrarPeligro('percances', { encuentros: { mar: { pone: { carta: PERMANENTE_DE_PRUEBA } } } })
+import { Jugador, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
+import { nombreDe } from './catalogo.ts'
 
 describe('Herbolaria', () => {
   it('Agotar: quita el Estado Envenenado o Sangrando de un Tripulante (si tiene los dos, eliges cuál)', () => {
@@ -108,77 +103,60 @@ describe('Cataplasma', () => {
   })
 })
 
-describe('Cortar por lo sano', () => {
-  it('fase 11 · Acción: descarta 2 cartas (su coste es 0) para devolver al mazo de historia una carta de la zona de permanentes', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
-    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
-    j.usar('cortar.jugar').elegir('timon', 'coraje')
-    expect(j.zona('permanentes')).toEqual([])
-    expect(j.zona('mazoHistoria')).toContain(PERMANENTE_DE_PRUEBA)
-    expect(j.zona('mano')).toEqual(['ojo'])
-  })
+describe('¡Nadie se queda atrás! (revisión de Albert; antes «¡A por ellos!»)', () => {
+  // «Interrupción: Cuando un Tripulante vaya a ser descartado por un efecto de juego, destina 3 [COM] para evitarlo.» Ya no
+  // es una Prueba: Destina es un coste (agotas Tripulantes preparados cuya COM sume 3), sin Destino ni cartas de la mano.
+  // «Leva forzosa» (COM 4) con la Vigía sola (1): falla y la va a descartar.
+  const leva = (op: { tripulacion?: CartaId[]; capitanAgotado?: boolean } = {}) =>
+    Jugador.enMision({
+      misiones: ['ladron-I'],
+      mazoPeligros: ['p2_grilletes', 'chubasco', 'calma', 'calma'],
+      tripulacion: op.tripulacion ?? ['vigia', 'bucanero'],
+      mano: ['a_por_ellos', 'ojo'],
+      ...(op.capitanAgotado ? { capitan: { agotada: true } } : {}),
+    })
 
-  it('fase 10b: también las que antes eran de nivel Terrible («La cadena de la bocana»)', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['p2_morro', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
-    expect(j.zona('permanentes')).toEqual(['pm_cadena'])
-    j.usar('cortar.jugar').elegir('timon', 'coraje')
-    expect(j.zona('permanentes')).toEqual([])
-    expect(j.zona('mazoHistoria')).toContain('pm_cadena')
-  })
-
-  it('con dos permanentes en juego, el jugador elige cuál devuelve', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['p2_morro', 'percances', 'calma'], mano: ['cortar', 'ojo', 'timon', 'coraje'] })
-    j.seguir()
-    expect(j.zona('permanentes')).toEqual(['pm_cadena', PERMANENTE_DE_PRUEBA])
-    j.usar('cortar.jugar').elegir('timon', 'coraje')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'quitarPermanente' } })
-    j.elegir('pm_cadena')
-    expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
-  })
-
-  it('no se puede jugar sin 2 cartas más en la mano', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'calma'], mano: ['cortar', 'ojo'] })
-    expect(j.ofreceCapacidad('cortar.jugar')).toBe(false)
-  })
-})
-
-describe('¡A por ellos!', () => {
-  // Fase 14 (fuera el rehén): «Interrupción: Cuando una carta de Peligro vaya a descartar a un Tripulante, haz una Prueba
-  // de COM 3. Si la superas, no se descarta.» «Leva forzosa» (COM 4) con la Vigía sola (1): falla y la va a descartar.
-  // La Prueba de la leva queda en suspenso (su Destino, en la mesa) mientras se hace la de «¡A por ellos!».
-  const leva = (destino: CartaId) =>
-    Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['p2_grilletes', 'chubasco', destino, 'calma', 'calma'], tripulacion: ['vigia', 'bucanero'], mano: ['a_por_ellos', 'ojo'] })
-
-  it('Interrupción: Prueba de COM 3 en mitad de la otra; si la superas, no se descarta y se sigue con la leva', () => {
-    const j = leva('calma')
+  it('se llama así, y el ejemplo del reglamento: el Bucanero (2 + 1 de Diego) destina 3 COM y la Vigía no se descarta', () => {
+    expect(nombreDe('a_por_ellos')).toBe('¡Nadie se queda atrás!')
+    const j = leva()
     j.comprometer('COM', ['vigia']).seguir()
     expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(true)
-    j.usar('a_por_ellos.jugar').elegir('ojo')
-    expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
-    expect(j.zona('destino')).toEqual(['chubasco'])
-    // El Bucanero veterano, que se quedó a bordo: 2 + 1 de Diego = 3 contra 3 (Destino de «calma»: +0).
-    j.comprometer('COM', ['bucanero']).pasarOfertas()
-    expect([...j.zona('destino')].sort()).toEqual(['calma', 'chubasco'])
-    j.seguir().pasarOfertas()
+    j.usar('a_por_ellos.jugar')
+    // Coste impreso (1 carta) y Destina 3 COM, en el orden en que los pida el motor.
+    for (let i = 0; i < 3 && j.decision.tipo !== 'ventanaAccion'; i++) {
+      if (j.decision.tipo === 'cubrirDistancia') {
+        expect(j.decision.motivo).toMatchObject({ clave: 'destina', n: 3, texto: 'COM' })
+        j.cubrir('bucanero')
+      } else if (j.decision.tipo === 'elegirCartas' && j.decision.motivo.clave === 'pagar') j.elegir('ojo')
+      else break
+    }
+    expect(j.copia('bucanero').agotada).toBe(true)
     expect(j.zona('tripulacion')).toContain('vigia')
     expect(j.registro).toContain('Vigía inexperta no se descarta.')
+    expect(j.registro.some((t) => t.startsWith('Destinas 3 de COM'))).toBe(true)
+    // No es una Prueba: no se revela otro Destino.
+    expect(j.zona('destino').length + j.zona('descartesPeligros').filter((c) => c === 'calma').length).toBeLessThanOrEqual(1)
     expect(j.zona('descartesCapitan')).toEqual(expect.arrayContaining(['a_por_ellos', 'ojo']))
-    // Se sigue con la leva: su Prueba se cierra y su Destino también va a los descartes.
-    expect(j.estado.prueba).toBeNull()
-    expect(j.zona('destino')).toEqual([])
-    expect(j.zona('descartesPeligros')).toEqual(expect.arrayContaining(['p2_grilletes', 'chubasco', 'calma']))
   })
 
-  it('si no la superas, se descarta igual', () => {
-    const j = leva('fauna') // Destino −1: el Bucanero suma 2 contra 3.
-    j.comprometer('COM', ['vigia']).seguir().usar('a_por_ellos.jugar').elegir('ojo')
-    j.comprometer('COM', ['bucanero']).pasarOfertas().seguir().pasarOfertas()
+  it('si pasas, se descarta; no se ofrece si los preparados no suman 3 de COM', () => {
+    const j = leva()
+    j.comprometer('COM', ['vigia']).seguir().pasarOfertas()
     expect(j.zona('descartesMuelle')).toContain('vigia')
+    // Diego agotado y solo queda el Grumete leal preparado: no llega a 3.
+    const k = leva({ tripulacion: ['vigia', 'grumete'], capitanAgotado: true })
+    k.comprometer('COM', ['vigia']).seguir()
+    expect(k.ofreceCapacidad('a_por_ellos.jugar')).toBe(false)
   })
 
-  it('no se ofrece fuera de un descarte (en puerto no hay ninguno)', () => {
-    const j = Jugador.en({ mano: ['a_por_ellos', 'ojo'] })
+  it('vale contra cualquier efecto de juego (no solo Peligros y permanentes), y no fuera de un descarte', () => {
+    const j = Jugador.en({ tripulacion: ['vigia', 'bucanero'], mano: ['a_por_ellos', 'ojo'] })
     expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(false)
+    const s = j.estado
+    descartarTripulante(s, j.inst('vigia'), undefined)
+    s.pendiente = null
+    ejecutar(s)
+    expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(true)
   })
 })
 
@@ -190,18 +168,53 @@ describe('Ron para los valientes', () => {
   })
 })
 
-describe('Virar y dar la cara', () => {
-  it('Interrupción: agota un Cañón y la carta que persigue va al fondo del mazo en vez de encima (fase 10b)', () => {
-    const j = Jugador.enMision({
-      misiones: ['pruebas-mar5'],
-      mazoPeligros: ['chubasco', 'p2_turbonada', 'calma', 'racha'],
+describe('Virar y dar la cara (revisión de Albert)', () => {
+  // «Respuesta: [Mar]: Después de que reveles una carta de Peligro cuyo encuentro tenga una Prueba de [NAV], agota un
+  // Cañón: esa Prueba es de [COM] en lugar de [NAV].» El ejemplo de Albert: sale un encuentro de NAV 4 («Turbonada a
+  // popa»), agotas la Culebrina de proa y se resuelve como COM 4 con los mismos asignados y modificadores.
+  const turbonada = (op: { misiones?: string[]; mejoras?: CartaId[] } = {}) =>
+    Jugador.enMision({
+      misiones: op.misiones ?? ['pruebas-mar5'],
+      mazoPeligros: ['p2_turbonada', 'calma', 'calma', 'calma'],
+      tripulacion: ['bucanero'],
       mano: ['virar'],
-      barco: { mejoras: ['bronce'] },
+      barco: { mejoras: op.mejoras ?? ['culebrina', 'bronce'] },
     })
-    j.comprometer('NAV', ['capitan']).seguir()
+
+  it('el ejemplo: NAV 4 pasa a COM 4 agotando la Culebrina de proa', () => {
+    const j = turbonada()
     expect(j.ofreceCapacidad('virar.jugar')).toBe(true)
     j.usar('virar.jugar')
-    expect(j.copia('bronce').agotada).toBe(true)
-    expect(j.zona('mazoPeligros')).toEqual(['calma', 'racha', 'p2_turbonada'])
+    if (j.decision.tipo === 'elegirCartas') j.elegir('culebrina')
+    expect(j.copia('culebrina').agotada).toBe(true)
+    expect(j.copia('bronce').agotada).toBe(false)
+    expect(j.registro).toContain('Viráis y dais la cara: la Prueba de NAV de este encuentro es de COM.')
+    expect(j.decision).toMatchObject({ tipo: 'comprometer', opciones: [{ hab: 'COM', dificultad: 4 }] })
+    j.comprometer('COM', ['capitan', 'bucanero'])
+    expect(j.estado.prueba?.hab).toBe('COM')
+    // Diego 3 + Bucanero 2 (los dos asignados: Diego ya no da su +1): 5 contra 4, la misma dificultad.
+    expect(totalSinDestinoPrueba(j.estado)).toBe(5)
+    expect(j.estado.prueba?.dificultadBase).toBe(4)
+    // Los Cañones de bronce (COM, en el Mar) sí se pueden usar en esa Prueba.
+    expect(j.ofreceCapacidad('bronce.disparar')).toBe(true)
+  })
+
+  it('solo en el Mar, con un Cañón preparado y si el encuentro tiene Prueba de NAV', () => {
+    expect(turbonada({ mejoras: [] }).ofreceCapacidad('virar.jugar')).toBe(false)
+    expect(turbonada({ mejoras: [{ id: 'culebrina', agotada: true } as unknown as CartaId] }).ofreceCapacidad('virar.jugar')).toBe(false)
+    // En Ciudad («Cobrar la deuda»), no.
+    const ciudad = Jugador.enMision({ mazoPeligros: ['p2_turbonada', 'calma', 'calma'], mano: ['virar'], barco: { mejoras: ['culebrina'] } })
+    expect(ciudad.ofreceCapacidad('virar.jugar')).toBe(false)
+    // Un encuentro del Mar sin Prueba de NAV («Pelea de taberna» en el Mar es de COM): no.
+    const com = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['rivales', 'calma', 'calma'], mano: ['virar'], barco: { mejoras: ['culebrina'] } })
+    expect(com.ofreceCapacidad('virar.jugar')).toBe(false)
+  })
+
+  it('ya no tiene nada que ver con Persigue: la carta que persigue va encima del mazo como siempre', () => {
+    // «Chubasco repentino» (NAV) con «Turbonada a popa» de Destino, que persigue: va encima del mazo de Peligros.
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['chubasco', 'p2_turbonada', 'calma', 'racha'], mano: ['virar'], barco: { mejoras: ['bronce'] } })
+    j.pasarOfertas().comprometer('NAV', ['capitan']).seguir()
+    expect(j.zona('mazoPeligros')[0]).toBe('p2_turbonada')
+    expect(j.copia('bronce').agotada).toBe(false)
   })
 })

@@ -62,6 +62,18 @@ describe('vista de las cartas', () => {
     expect([casco.clase, casco.color]).toEqual(['Neutral', COLOR_TIPO.tripulanteNeutral])
   })
 
+  it('fase 16: las cartas de jugador llevan todas la misma letra (18 px), sin texto grande; las demás, la suya', () => {
+    const jugador = (n: number) => vistaDeCarta(carta(n)) as VistaJugador
+    // Capitán, Barco, Tripulante, Mejoras, Evento y Habilidad.
+    for (const n of [1, 3, 7, 24, 34, 44, 66]) expect(jugador(n).letra, `carta ${n}`).toBe(18)
+    // 45 y 46 ya no van grandes.
+    for (const n of [45, 46]) expect([jugador(n).textoClase, jugador(n).letra], `carta ${n}`).toEqual(['', 18])
+    // Provisional (TODO(regla) en ajustes.ts): las que no caben a 18 px, a la letra mayor con la que caben.
+    expect(jugador(168).letra).toBe(17.5)
+    // Un Tesoro, un Escenario y la culebrina del naufragio no son cartas de jugador: no cambian.
+    for (const n of [148, 97, 278]) expect(jugador(n).letra, `carta ${n}`).toBeUndefined()
+  })
+
   it('las Mejoras con una sola cifra se dibujan grandes y las Habilidades no tienen texto', () => {
     expect((vistaDeCarta(carta(21)) as VistaJugador).textoClase).toBe('big')
     const habilidad = vistaDeCarta(carta(66)) as VistaJugador

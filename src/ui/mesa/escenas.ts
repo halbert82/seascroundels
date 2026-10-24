@@ -290,9 +290,8 @@ function tripulacionDePaso(): PartidaEnMesa {
 }
 
 /**
- * Fase 14, en Ciudad: «Leva forzosa» fallada va a descartar a la Vigía inexperta. `ofrecida`: se ofrece «¡A por ellos!»
- * (Interrupción). Si no, ya jugada: su Prueba de COM 3 con el Bucanero veterano asignado y su Destino revelado, mientras
- * la de la leva (y su Destino) espera en la mesa.
+ * Fase 14, en Ciudad: «Leva forzosa» fallada va a descartar a la Vigía inexperta. `ofrecida`: se ofrece «¡Nadie se queda
+ * atrás!» (Interrupción). Si no, ya jugada y pagada su carta: falta destinar 3 COM (revisión de Albert: ya no es una Prueba).
  */
 function aPorEllos(ofrecida: boolean): PartidaEnMesa {
   const j = Jugador.enMision({
@@ -304,7 +303,7 @@ function aPorEllos(ofrecida: boolean): PartidaEnMesa {
     reputacion: 3,
   })
   j.comprometer('COM', ['vigia', 'matasanos']).seguir()
-  if (!ofrecida) j.usar('a_por_ellos.jugar').elegir('ojo').comprometer('COM', ['bucanero']).pasarOfertas()
+  if (!ofrecida) j.usar('a_por_ellos.jugar').elegir('ojo')
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 8) }
 }
 

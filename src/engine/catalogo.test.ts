@@ -8,8 +8,9 @@ describe('catálogo de la Caja básica', () => {
   it('tiene una carta por cada número de colección, sin huecos ni repetidos (los Peligros 2.0 siguen desde el 154)', () => {
     // Fase 12: el 136 («Seguirle por los muelles») y el 148 (el antiguo «A bordo del fantasma») se unieron al capítulo
     // anterior de su travesía. Fase 15: los ocupan «Mala fama» (136) y el «Gallardete de San Juan» (148). Quinta ronda: el
-    // Práctico del puerto (166) sale de la caja y deja su número libre.
-    const HUECOS: number[] = [166]
+    // Práctico del puerto (166) sale de la caja y deja su número libre. Revisión de Albert de las cartas de jugador: salen
+    // «Botín escondido» (43), «Retirada a tiempo» (65) y «Cortar por lo sano» (170), y sus números quedan libres.
+    const HUECOS: number[] = [43, 65, 166, 170]
     const nums = CATALOGO.map((c) => c.num)
     const maximo = Math.max(...nums)
     expect(nums).toEqual(Array.from({ length: maximo }, (_, i) => i + 1).filter((n) => !HUECOS.includes(n)))
@@ -30,7 +31,11 @@ describe('catálogo de la Caja básica', () => {
 
   it('cumple con los mazos predefinidos de la versión 0', () => {
     const m = DATOS.mazosPredefinidos
-    expect(m.mazoDelCapitan).toHaveLength(40)
+    // TODO(regla): revisión de Albert, opción por defecto pendiente de confirmar: el hueco de «Cortar por lo sano» no se
+    // rellena y el mazo del capitán de inicio queda en 39 hasta que se rehagan los mazos de inicio.
+    expect(m.mazoDelCapitan).toHaveLength(39)
+    expect(m.mazoDelCapitan).toContain('arenga')
+    expect(m.mazoDelCapitan.filter((id) => id === 'reflejos')).toHaveLength(2)
     // TODO(regla): excepción temporal de la fase 14 (de 15 a 20 en el reglamento). Fase 15, quinta ronda: 25, sin el Práctico.
     expect(m.mazoDeMuelle).toHaveLength(25)
     expect(m.mazoDeMuelle).not.toContain('practico')

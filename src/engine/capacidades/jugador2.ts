@@ -1,13 +1,13 @@
 // Cartas de jugador 2.0 (fase 6): responden a las reglas nuevas de Peligro (Estados, cartas que se quedan en
-// juego, Persigue y, desde la fase 14, los descartes de Tripulantes). 3 Tripulantes y 5 Eventos (fase 15, quinta ronda:
-// fuera el Práctico del puerto).
+// juego y, desde la fase 14, los descartes de Tripulantes). 3 Tripulantes y 4 Eventos (fase 15, quinta ronda: fuera el
+// Práctico del puerto; revisión de Albert: fuera «Cortar por lo sano»).
 
 import { anotar, nombre } from '../estado.ts'
-import { numeroConIcono, primerNumero, textoDe } from '../textos.ts'
+import { numeroConIcono, numeroTras, textoDe } from '../textos.ts'
 import { tieneEstado } from '../estados.ts'
 import type { FichaTripulante } from '../infoEstados.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
-import { participantes } from './comun.ts'
+import { conPruebaDe, enEntorno, participantes, peligroRevelado } from './comun.ts'
 
 function evento(carta: CartaId, ventana: Ventana, resto: Omit<Capacidad, 'clave' | 'carta' | 'ventana' | 'desde'>): Capacidad {
   return { clave: `${carta}.jugar`, carta, ventana, desde: 'mano', ...resto }
@@ -69,41 +69,22 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     efecto: () => [{ tipo: 'quitarUnEstado', estados: ['envenenado', 'sangrando'], curar: 1 }],
   }),
 
-  // Cortar por lo sano: «Acción: Descarta 2 cartas de tu mano: Devuelve al mazo de historia una carta de la zona de
-  // permanentes.» (Fase 11; antes, «Descarta una carta de Peligro que se quede en juego».) Coste 0: solo cuesta las 2
-  // cartas de su capacidad. La carta que no deba poder quitarse así lo dirá en su texto (fase 10b).
-  evento('cortar', 'accion', {
-    coste: [{ tipo: 'pagar', n: 2 }],
-    requisito: (s) => cortables(s).length > 0,
-    efecto: (s) => [{ tipo: 'quitarPermanente', candidatas: cortables(s) }],
-  }),
+  // Revisión de Albert: fuera «Cortar por lo sano» (devolvía cualquier permanente al mazo de historia).
 
-  // ¡A por ellos! (fase 14, fuera el rehén): «Interrupción: Cuando un Tripulante vaya a ser descartado por una carta de
-  // Peligro o una permanente, haz una Prueba de COM 3. Si la superas, no se descarta.» No vale para los que caen por
-  // heridas. Las permanentes, desde la tercera ronda (P90). La Prueba
-  // es normal (se asigna, Destino, Sin oposición) y se hace en el momento, aunque haya otra a medio resolver (la del
-  // encuentro que lo descarta): esa se aparta mientras tanto y después se sigue con ella.
+  // «¡Nadie se queda atrás!» (revisión de Albert; antes «¡A por ellos!», con una Prueba de COM 3): «Interrupción: Cuando un
+  // Tripulante vaya a ser descartado por un efecto de juego, destina 3 [COM] para evitarlo.» Destina es un coste: agotas
+  // Tripulantes preparados cuya COM sume 3, sin Destino ni cartas de la mano. Vale contra cualquier efecto (como el Fiador):
+  // no para los que caen por heridas, ni para despedir, ni para el que se va al acabarse su Enrolado, ni para el que se
+  // descarta él mismo para pagar un coste (ninguno de esos es «descartado por un efecto»).
   evento('a_por_ellos', 'interrupcion', {
-    disparo: (_s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'descartarTripulante' && ev.dePeligro,
-    efecto: (_s, yo, suceso) =>
-      yo && suceso
-        ? [
-            {
-              tipo: 'pruebaSuelta',
-              fuente: yo,
-              paso: 'empezar',
-              anidada: true,
-              cancelaSuceso: suceso.id,
-              definicion: {
-                nombre: '¡A por ellos!',
-                palabrasClave: [],
-                opciones: [{ hab: 'COM', dificultad: primerNumero(textoDe('a_por_ellos')) }],
-                exito: [],
-                fallo: [],
-              },
-            },
-          ]
-        : [],
+    coste: [{ tipo: 'destina', n: numeroTras(textoDe('a_por_ellos'), 'destina'), hab: 'COM' }],
+    disparo: (_s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'descartarTripulante',
+    efecto: (s, _yo, suceso) => {
+      if (suceso?.ev.tipo !== 'descartarTripulante') return []
+      suceso.cancelado = true
+      anotar(s, 'efecto', `${nombre(s, suceso.ev.carta)} no se descarta.`)
+      return []
+    },
   }),
 
   // Ron para los valientes: «Acción: Un Tripulante queda Borracho y Aguerrido.»
@@ -123,21 +104,20 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     ],
   }),
 
-  // Virar y dar la cara: «Interrupción: Agota un Cañón: Cuando un Destino vaya a poner su carta encima del mazo de
-  // Peligros, ponla al fondo del mazo en su lugar.» P89 (Albert): también en un Abordaje; agotar el Cañón es el precio de
-  // esta carta, no una capacidad del Cañón.
-  evento('virar', 'interrupcion', {
+  // Virar y dar la cara (revisión de Albert; antes mandaba al fondo la carta de Persigue): «Respuesta: [Mar]: Después de
+  // que reveles una carta de Peligro cuyo encuentro tenga una Prueba de [NAV], agota un Cañón: esa Prueba es de [COM] en
+  // lugar de [NAV].» Misma dificultad y los mismos modificadores del encuentro; la habilidad pasa a ser COM (así cuentan
+  // las bonificaciones de COM y no las de NAV). Agotar el Cañón es el precio de esta carta (P89), también en un Abordaje.
+  evento('virar', 'respuesta', {
     coste: [{ tipo: 'agotarCanon' }],
-    disparo: (_s, _yo, ev, fase) => fase === 'antes' && ev.tipo === 'persigue' && !ev.alFondo,
-    efecto: (_s, _yo, suceso) => {
-      if (suceso?.ev.tipo === 'persigue') suceso.ev.alFondo = true
+    disparo: (s, _yo, ev, fase) =>
+      fase === 'despues' && enEntorno(s, 'mar') && peligroRevelado(s, ev) && s.mision?.navAcom !== ev.carta && conPruebaDe(s, ev.carta, 'NAV'),
+    efecto: (s, _yo, suceso) => {
+      if (s.mision && suceso?.ev.tipo === 'revelarPeligro') {
+        s.mision.navAcom = suceso.ev.carta
+        anotar(s, 'efecto', 'Viráis y dais la cara: la Prueba de NAV de este encuentro es de COM.')
+      }
       return []
     },
   }),
 ]
-
-/** Permanentes que «Cortar por lo sano» puede devolver al mazo de historia (todas las de la zona de permanentes). */
-// Fase 11 (P63): «¡La guardia!» también es una permanente: Cortar puede devolverla.
-function cortables(s: Estado) {
-  return [...s.zonas.permanentes]
-}

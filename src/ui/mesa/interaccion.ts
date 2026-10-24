@@ -200,7 +200,7 @@ export function interaccion(s: Estado, d: Decision, sel: Seleccion): Interaccion
     case 'cubrirDistancia':
       for (const c of [...d.tripulantes, ...d.cartas]) {
         elegir(c)
-        anadir(opciones, c, { etiqueta: sel.cartas.includes(c) ? 'Quitar' : 'Usar para la Distancia', seleccion: alternar(sel, c) })
+        anadir(opciones, c, { etiqueta: sel.cartas.includes(c) ? 'Quitar' : d.motivo.clave === 'destina' ? 'Destinar' : 'Usar para la Distancia', seleccion: alternar(sel, c) })
       }
       break
     case 'comprometer': {

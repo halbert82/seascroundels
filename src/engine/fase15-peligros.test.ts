@@ -154,26 +154,25 @@ describe('250 · Sin escapatoria (Alerta)', () => {
     expect(j.copia('capitan').heridas).toBe(2)
   })
 
-  it('Ciudad «La cuenta del tabernero» (EXP 2): «Retirada a tiempo» no se ofrece tras el Destino; si fallas, descartas 2', () => {
-    const j = en('ciu9', ['p2_escapatoria', 'fauna', 'calma'], { mano: ['retirada', 'ojo', 'timon', 'coraje'] })
+  it('Ciudad «La cuenta del tabernero» (EXP 2): si fallas, descartas 2 («Retirada a tiempo» ya no está en la caja)', () => {
+    const j = en('ciu9', ['p2_escapatoria', 'fauna', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     j.comprometer('EXP', [])
-    expect(j.ofreceCapacidad('retirada.jugar')).toBe(false)
     j.pasarOfertas().seguir()
     expect(j.decision.motivo.clave).toBe('descartar')
   })
 
   it('si reúnes el Avance a mitad de un encuentro con Alerta, se resuelve igual antes de superar la misión', () => {
-    // Mar 5 con 4 de Avance y una carta ya resuelta: «¡A toda vela!» da 2 al revelar «La resaca» y se llega a 6.
+    // Mar 5: «¡A toda vela!» da 1 al revelar «La resaca» y se llega al Avance de la misión.
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
       escenario: ['pruebas-calma'],
       misiones: ['pruebas-mar5'],
-      avance: { 'pruebas-mar5': 1 },
+      avance: { 'pruebas-mar5': 2 },
       mazoPeligros: ['calma', 'p2_escapatoria', 'calma', 'calma'],
       mano: ['viento', 'ojo'],
       mazoCapitan: ['coraje'],
     })
-    // «Mar en calma» da 2 (3 de 5); al revelar «La resaca», «¡A toda vela!» da 2 más: 5 de 5.
+    // «Mar en calma» da 2 (4 de 5); al revelar «La resaca», «¡A toda vela!» da 1 más: 5 de 5.
     j.zarpar('pruebas-mar5').pasarOfertas().seguir()
     j.usar('viento.jugar').elegir('ojo').pasarOfertas()
     // La misión no se supera todavía: hay que resolver «La resaca».

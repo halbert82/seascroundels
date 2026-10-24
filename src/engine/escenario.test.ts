@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { costeImpreso } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 import { jugadorConCriterio } from './pruebas/jugadores.ts'
 import { Jugador, MISIONES_DE_PRUEBA } from './pruebas/situacion.ts'
@@ -65,14 +66,18 @@ describe('Escenario 2.0: buenas', () => {
     expect(j.copia('capitan').agotada).toBe(false)
   })
 
-  it('Marineros sin barco: buscas un Tripulante, va al muelle y este turno reclutarlo cuesta 1 menos', () => {
-    const j = revelar('reclutas', { mano: ['ojo'], muelle: ['sable'], mazoMuelle: ['vela', 'bucanero', 'casco', 'grumete'] })
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'buscar' } })
+  it('Marineros sin barco (revisión de Albert, fuera Buscar): miras 3 del mazo de muelle y pones un Tripulante en lugar de la carta de más a la izquierda; este turno, reclutarlo cuesta 1 menos', () => {
+    const j = revelar('reclutas', { mano: ['ojo'], muelle: ['sable', 'vela'], mazoMuelle: ['casco', 'bucanero', 'grumete', 'vigia'] })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'marinerosSinBarco' } })
     const d = j.decision
     if (d.tipo !== 'elegirCartas') throw new Error()
+    // Solo los Tripulantes de las 3 de arriba (la Vigía, la cuarta, no).
     expect(d.candidatas.map((c) => j.estado.cartas[c]?.id).sort()).toEqual(['bucanero', 'grumete'])
     j.elegir('bucanero')
-    expect(j.zona('muelle')).toEqual(['sable', 'bucanero'])
+    // El Sable, la de más a la izquierda, se descarta; las demás van al fondo del mazo de muelle.
+    expect(j.zona('muelle')).toEqual(['bucanero', 'vela'])
+    expect(j.zona('descartesMuelle')).toEqual(['sable'])
+    expect(j.zona('mazoMuelle')).toEqual(['vigia', 'casco', 'grumete'])
     // El Bucanero veterano cuesta 2: este turno, 1.
     expect(j.valor({ tipo: 'coste', carta: j.inst('bucanero') })).toBe(1)
     j.reclutar('bucanero').elegir('ojo')
@@ -80,28 +85,41 @@ describe('Escenario 2.0: buenas', () => {
     expect(j.zona('mano')).toEqual([])
   })
 
-  it('Marineros sin barco: el descuento es solo para la carta encontrada', () => {
-    const j = revelar('reclutas', { muelle: ['bucanero'], mazoMuelle: ['bucanero'] })
-    j.elegir('bucanero')
-    const [viejo, nuevo] = j.zona('muelle').map((_, i) => j.estado.zonas.muelle[i]!)
-    expect(j.valor({ tipo: 'coste', carta: viejo! })).toBe(2)
-    expect(j.valor({ tipo: 'coste', carta: nuevo! })).toBe(1)
+  it('Marineros sin barco: con un solo Tripulante entre las 3 no se pregunta; sin ninguno, van al fondo, no se descarta nada y no hay descuento', () => {
+    const uno = revelar('reclutas', { muelle: ['sable'], mazoMuelle: ['casco', 'grumete', 'vela'] })
+    expect(uno.zona('muelle')).toEqual(['grumete'])
+    expect(uno.valor({ tipo: 'coste', carta: uno.inst('grumete') })).toBe(Math.max(0, costeImpreso('grumete') - 1))
+    expect(uno.zona('descartesMuelle')).toEqual(['sable'])
+    const ninguno = revelar('reclutas', { muelle: ['sable'], mazoMuelle: ['casco', 'vela', 'catalejo', 'bucanero'] })
+    expect(ninguno.zona('muelle')).toEqual(['sable'])
+    expect(ninguno.zona('descartesMuelle')).toEqual([])
+    expect(ninguno.zona('mazoMuelle')).toEqual(['bucanero', 'casco', 'vela', 'catalejo'])
+    expect(ninguno.registro).toContain('No sale ningún Tripulante: no entra nadie en el muelle.')
+  })
+
+  it('Marineros sin barco: el descuento es solo para la carta que entra', () => {
+    const j = revelar('reclutas', { muelle: ['sable', 'bucanero'], mazoMuelle: ['bucanero'] })
+    const [viejo, nuevo] = [j.estado.zonas.muelle[1]!, j.estado.zonas.muelle[0]!]
+    expect(j.valor({ tipo: 'coste', carta: viejo })).toBe(2)
+    expect(j.valor({ tipo: 'coste', carta: nuevo })).toBe(1)
   })
 
   it('Carpinteros de ribera: eliges reparar 2 daños del Barco', () => {
-    const j = revelar('ribera', { barco: { dano: 3 }, mazoMuelle: ['vela'] })
-    expect(opciones(j)).toEqual(['Reparar 2 daños del Barco', 'Buscar una Mejora de barco y ponerla en el muelle'])
+    const j = revelar('ribera', { barco: { dano: 3 }, muelle: ['vela'] })
+    expect(opciones(j)).toEqual(['Reparar 2 daños del Barco', 'Este turno, adquirir una Mejora de barco cuesta 1 menos'])
     j.opcion('0')
     expect(j.estado.danoBarco).toBe(1)
-    expect(j.zona('muelle')).toEqual([])
+    expect(j.valor({ tipo: 'coste', carta: j.inst('vela') })).toBe(costeImpreso('vela'))
   })
 
-  it('Carpinteros de ribera: o buscas una Mejora de barco y la pones en el muelle', () => {
-    const j = revelar('ribera', { barco: { dano: 3 }, mazoMuelle: ['sable', 'vela', 'marinero_p'] })
+  it('Carpinteros de ribera (revisión de Albert, fuera Buscar): o este turno adquirir una Mejora de barco cuesta 1 menos', () => {
+    const j = revelar('ribera', { barco: { dano: 3 }, muelle: ['vela', 'sable', 'bucanero'] })
     j.opcion('1')
-    j.elegir('vela')
-    expect(j.zona('muelle')).toEqual(['vela'])
     expect(j.estado.danoBarco).toBe(3)
+    // La Vela mayor (Mejora de barco) cuesta 1 menos; el Sable (de tripulante) y el Bucanero, no.
+    expect(j.valor({ tipo: 'coste', carta: j.inst('vela') })).toBe(costeImpreso('vela') - 1)
+    expect(j.valor({ tipo: 'coste', carta: j.inst('sable') })).toBe(costeImpreso('sable'))
+    expect(j.valor({ tipo: 'coste', carta: j.inst('bucanero') })).toBe(costeImpreso('bucanero'))
   })
 
   it('Feria en la isla: robas 1 y curas 1 a cada Tripulante', () => {

@@ -260,7 +260,6 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
     anotar(s, 'efecto', '¡Gesta cumplida!: +1 de reputación.', { tipo: 'gesta', mision: e.id })
     tareas.push({ tipo: 'cambiarReputacion', n: 1 })
   }
-  if (r.search) tareas.push({ tipo: 'buscarMuelle', filtro: r.search === 'crew' ? 'tripulante' : r.search === 'ship' ? 'mejoraBarco' : 'mejora' })
   if (r.draw) tareas.push({ tipo: 'robar', n: r.draw })
   if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
   // Fase 15: «Coge la carta N del mazo de historia»: una carta de recompensa (bucear en el naufragio, los finales con

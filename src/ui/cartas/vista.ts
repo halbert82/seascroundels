@@ -5,7 +5,7 @@ import arteJson from '../../../data/arte.json'
 import { codigoColeccion, type EntradaCatalogo } from '../../engine/catalogo.ts'
 import { dorsoDeHistoria, type DorsoHistoria } from './historia.ts'
 import type { DestinoDatos, EncuentroDatos, Entorno, Habilidad, MisionDatos } from '../../engine/datos.ts'
-import { esTextoGrande } from './ajustes.ts'
+import { letraJugador } from './ajustes.ts'
 import { parsearFichas, parsearTexto, type Ficha, type IconoId, type Segmento } from './marcado.ts'
 
 // ---------------------------------------------------------------------------
@@ -140,6 +140,8 @@ export interface VistaJugador {
   texto: Segmento[]
   /** «big»: una sola cifra grande y centrada; «center»: centrado. */
   textoClase: '' | 'big' | 'center'
+  /** Fase 16: letra de las reglas de una carta de jugador, en px (18; ver ajustes.ts). Sin ella, la de su tipo de carta. */
+  letra?: number
   ambientacion: string
   arte?: Arte
   /**
@@ -320,6 +322,11 @@ function base(entrada: EntradaCatalogo): Omit<VistaJugador, 'nombre' | 'color' |
   }
 }
 
+/** Base de una carta de jugador (Capitán, Barco, Tripulante, Mejoras, Evento y Habilidad): la de todas, con su letra. */
+function baseJugador(entrada: EntradaCatalogo): ReturnType<typeof base> {
+  return { ...base(entrada), letra: letraJugador(entrada.num) }
+}
+
 /** Fase 13: en las cartas de Peligro, «Daña 2» no se parte entre dos líneas. */
 const UNIR = { unirNumero: true } as const
 
@@ -420,7 +427,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     case 'capitan': {
       const c = entrada.carta
       return {
-        ...base(entrada),
+        ...baseJugador(entrada),
         nombre: c.nombre,
         unica: true,
         color: COLOR_TIPO.capitan,
@@ -441,7 +448,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     case 'barco': {
       const c = entrada.carta
       return {
-        ...base(entrada),
+        ...baseJugador(entrada),
         nombre: c.nombre,
         color: COLOR_TIPO.barco,
         tipoTexto: 'Barco',
@@ -460,7 +467,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     case 'tripulante': {
       const c = entrada.carta
       return {
-        ...base(entrada),
+        ...baseJugador(entrada),
         nombre: c.nombre,
         unica: c.unico,
         color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.tripulanteNeutral,
@@ -482,7 +489,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       // Fase 15: la culebrina del naufragio no es del jugador: sin Clase ni coste (no se compra).
       const deMision = c.mision !== undefined
       return {
-        ...base(entrada),
+        ...(deMision ? base(entrada) : baseJugador(entrada)),
         nombre: c.nombre,
         unica: c.unico,
         color: deMision ? COLOR_TIPO.mejoraBarco : (COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.mejoraBarco),
@@ -500,7 +507,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     case 'mejoraTripulante': {
       const c = entrada.carta
       return {
-        ...base(entrada),
+        ...baseJugador(entrada),
         nombre: c.nombre,
         unica: c.unico,
         color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.mejoraTripulante,
@@ -517,7 +524,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     case 'evento': {
       const c = entrada.carta
       return {
-        ...base(entrada),
+        ...baseJugador(entrada),
         nombre: c.nombre,
         color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.evento,
         tipoTexto: 'Evento',
@@ -526,7 +533,6 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         coste: c.coste,
         pestanasIzq: pestanasIconos(c.iconos),
         texto: parsearTexto(c.texto),
-        textoClase: esTextoGrande(entrada.num) ? 'big' : '',
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),
       }
@@ -534,7 +540,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
     case 'habilidad': {
       const c = entrada.carta
       return {
-        ...base(entrada),
+        ...baseJugador(entrada),
         nombre: c.nombre,
         color: COLOR_CLASE[claseDe(c)] ?? COLOR_TIPO.habilidad,
         tipoTexto: 'Habilidad',
@@ -683,9 +689,6 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       let recompensaTexto: string | undefined
       if (r.texto) recompensaTexto = undefined
       else if (r.victoria) recompensaTexto = '¡Victoria!'
-      else if (r.search === 'crew') recompensaTexto = 'y busca un Tripulante'
-      else if (r.search === 'ship') recompensaTexto = 'y busca una Mejora de barco'
-      else if (r.search === 'up') recompensaTexto = 'y busca una Mejora'
       else if (r.draw) recompensaTexto = `y roba ${r.draw}`
       const vista: VistaCapitulo = {
         forma: 'capitulo',

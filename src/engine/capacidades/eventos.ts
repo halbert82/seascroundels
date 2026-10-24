@@ -2,14 +2,12 @@
 // Sin etiqueta, en cualquier pausa (N2); «Acción:», en las ventanas de acción; Respuestas e Interrupciones,
 // cuando ocurre lo que dicen. Los números se leen del texto de cada carta.
 
-import { tipoDe } from '../catalogo.ts'
 import { anotar, copia } from '../estado.ts'
 import { encuentroDe, mazoActivo } from '../peligros.ts'
 import { numeroConIcono, numerosEntreLlaves, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
 import { huecosLibres, plazasLibres } from '../valores.ts'
 import { canonesAgotados, destinoVigente, enEntorno, hayAgotados, hayHeridos, hayQueReparar, participantes, peligroQueSePuedeQuitar } from './comun.ts'
-import { esAlerta } from '../definiciones.ts'
 
 const texto = (id: CartaId) => textoDe(id)
 
@@ -22,12 +20,7 @@ function hayMazoDePeligros(s: Estado): boolean {
 }
 
 export const CAPACIDADES_EVENTOS: Capacidad[] = [
-  // Sin etiqueta: en cualquier pausa.
-  evento('botin', 'libre', {
-    // «Busca una Mejora.»
-    requisito: (s) => s.zonas.mazoMuelle.some((c) => ['mejoraBarco', 'mejoraTripulante'].includes(tipoDe(copia(s, c).id))),
-    efecto: () => [{ tipo: 'buscarMuelle', filtro: 'mejora' }],
-  }),
+  // Sin etiqueta: en cualquier pausa. (Revisión de Albert: fuera «Botín escondido», que buscaba una Mejora.)
   evento('taberna', 'libre', {
     // «Otea 2.»
     requisito: hayMazoDePeligros,
@@ -44,14 +37,15 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('vendas'), 'herida'), modo: 'repartir' }],
   }),
   evento('polvora_c', 'libre', {
-    // «Prepara todos tus Cañones.» (fase 10b)
+    // «Pólvora robada» (revisión de Albert; antes «Pólvora de contrabando», que preparaba todos): «Prepara un Cañón.» Con
+    // varios agotados, eliges cuál.
     requisito: (s) => canonesAgotados(s).length > 0,
-    efecto: () => [{ tipo: 'prepararCanon', todos: true }],
+    efecto: () => [{ tipo: 'prepararCanon' }],
   }),
 
   // Acción.
   evento('ron_descanso', 'accion', {
-    // «Acción: Agota a tu Capitán: Cura 1 herida a cada Tripulante.»
+    // «Acción: Agota a tu Capitán: Cura 2 heridas a cada Tripulante.» (Revisión de Albert: coste 1 y 2 heridas; antes, 0 y 1.)
     coste: [{ tipo: 'agotarCapitan' }],
     requisito: hayHeridos,
     efecto: () => [{ tipo: 'curar', n: numeroConIcono(texto('ron_descanso'), 'herida'), modo: 'cadaUno' }],
@@ -82,7 +76,8 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
 
   // Respuestas al revelar una carta de Peligro (revelar un Destino no cuenta, D3).
   evento('viento', 'respuesta', {
-    // «Respuesta: [Mar]: Después de que reveles una carta de Peligro, gana 2 de Avance.» (Fase 13, P82: el Entorno delante.)
+    // «Respuesta: [Mar]: Después de que reveles una carta de Peligro, gana 1 de Avance.» (Fase 13, P82: el Entorno delante.
+    // Revisión de Albert: 1 de Avance; antes, 2.)
     disparo: (s, _yo, ev, fase) => fase === 'despues' && ev.tipo === 'revelarPeligro' && enEntorno(s, 'mar'),
     efecto: () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('viento'), 'avance'), motivo: '¡A toda vela!' }],
   }),
@@ -98,8 +93,9 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'fondo', avance: false }],
   }),
   evento('soborno', 'respuesta', {
-    // «Respuesta: [Ciudad]: Después de que reveles una carta de Peligro con Prueba, supera automáticamente esa Prueba,
-    // sin revelar Destino.» (N17)
+    // «Respuesta: [Ciudad]: Después de que reveles una carta de Peligro, supera automáticamente su Prueba (no reveles carta
+    // de Destino).» (N17) Revisión de Albert: el texto ya no dice «con Prueba», pero sin Prueba no hay nada que superar y no
+    // se ofrece (como P23). Con Alerta tampoco (fase 15: Alerta frena a Soborno, lo dice el reglamento).
     disparo: (s, _yo, ev, fase) =>
       fase === 'despues' && enEntorno(s, 'ciu') && peligroQueSePuedeQuitar(s, ev) && encuentroDe(s, ev.carta).prueba.length > 0 && s.mision?.automatica !== ev.carta,
     efecto: (s, _yo, suceso) => {
@@ -145,12 +141,20 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
     },
   }),
   evento('prisionero', 'respuesta', {
-    // Fase 14 (Albert): «Respuesta: Después de que superes una Prueba de COM, mira las 3 cartas superiores del mazo de
-    // muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Pon las demás al fondo del mazo
-    // de muelle.» (También si se superó automáticamente, N17.) Sin Capacidad no se ofrece: no podrías reclutar a nadie.
+    // Fase 14 (Albert): «Respuesta: [Ciudad]: Después de que superes una Prueba de COM, mira las 3 cartas superiores del
+    // mazo de muelle. Puedes reclutar sin coste un Tripulante de coste 2 o menos de entre ellas. Descarta las demás.»
+    // (También si se superó automáticamente, N17.) Revisión de Albert: solo en Ciudad, y las demás se descartan (antes, al
+    // fondo). Sin Capacidad no se ofrece: no podrías reclutar a nadie.
     disparo: (s, _yo, ev, fase) =>
-      fase === 'despues' && ev.tipo === 'superarPrueba' && s.prueba?.hab === 'COM' && plazasLibres(s) >= 1 && s.zonas.mazoMuelle.length + s.zonas.descartesMuelle.length > 0,
-    efecto: () => [{ tipo: 'reclutarDelMazoMuelle', n: numeroTras(texto('prisionero'), 'mira las'), maxCoste: numeroTras(texto('prisionero'), 'coste'), cartas: [] }],
+      fase === 'despues' &&
+      ev.tipo === 'superarPrueba' &&
+      enEntorno(s, 'ciu') &&
+      s.prueba?.hab === 'COM' &&
+      plazasLibres(s) >= 1 &&
+      s.zonas.mazoMuelle.length + s.zonas.descartesMuelle.length > 0,
+    efecto: () => [
+      { tipo: 'reclutarDelMazoMuelle', n: numeroTras(texto('prisionero'), 'mira las'), maxCoste: numeroTras(texto('prisionero'), 'coste'), cartas: [], resto: 'descartar' },
+    ],
   }),
   evento('animo', 'respuesta', {
     // «Respuesta: Después de que falles una Prueba, roba 2.»
@@ -164,24 +168,19 @@ export const CAPACIDADES_EVENTOS: Capacidad[] = [
       fase === 'despues' && ev.tipo === 'fallarPrueba' && s.prueba?.hab !== null && participantes(s).some((c) => huecosLibres(s, c) > 0),
     efecto: (s) => (s.prueba?.hab ? [{ tipo: 'ponerEntrenamiento', entre: participantes(s), hab: s.prueba.hab, carta: null }] : []),
   }),
-  evento('retirada', 'respuesta', {
-    // «Respuesta: Después de que se revele el Destino de una Prueba, descarta la carta de Peligro sin resolverla.»
-    // El Destino ya revelado se aplica igual (N16).
-    // Fase 15: no si el encuentro de la Prueba tiene Alerta.
-    disparo: (s, _yo, ev, fase) =>
-      fase === 'despues' && ev.tipo === 'revelarDestino' && s.prueba?.destino === ev.carta && s.zonas.encuentro.includes(s.prueba.encuentro) && !esAlerta(s, s.prueba.encuentro),
-    efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
-  }),
 
   // Interrupciones.
+  // Revisión de Albert: fuera «Retirada a tiempo» (descartaba el Peligro después de ver el Destino).
+
   evento('reflejos', 'interrupcion', {
-    // «Interrupción: Cuando se revele un Destino, cancélalo.»
+    // «Interrupción: Cancela todos los efectos de una carta de Destino recién revelada.» (Revisión de Albert: lo mismo que
+    // antes, «Cuando se revele un Destino, cancélalo», redactado de otra forma.)
     disparo: (s, _yo, ev, fase) => fase === 'antes' && destinoVigente(s, ev),
     efecto: () => [{ tipo: 'cambiarDestino', modo: 'cancelar' }],
   }),
   evento('ni_hombre', 'interrupcion', {
-    // «Interrupción: Cuando un Tripulante que participe en una Prueba vaya a sufrir heridas, elige a otro Tripulante
-    // que participe en esa Prueba. Ese Tripulante las sufre en su lugar.»
+    // «Cubrir las espaldas» (antes «Ni un hombre atrás»): cuando un Tripulante que participe en una Prueba vaya a recibir
+    // heridas, eliges a otro Tripulante que participe en esa Prueba, que las recibe en su lugar.
     disparo: (s, _yo, ev, fase) =>
       fase === 'antes' && ev.tipo === 'heridas' && ev.cantidad > 0 && participantes(s).includes(ev.objetivo) && participantes(s).length > 1,
     efecto: (s, _yo, suceso) => (suceso ? [{ tipo: 'desviarHeridas', suceso: suceso.id, entre: participantes(s) }] : []),

@@ -226,14 +226,13 @@ describe('48 · Fuego de San Telmo', () => {
     expect(k.estado.mision?.modsSiguientes).toEqual([{ de: 'prueba', dosDestinos: true }])
   })
 
-  it('Naturaleza: un Vigía comprometido suma +2; si superas, buscas una Mejora para el muelle (P46)', () => {
+  it('Naturaleza: un Vigía comprometido suma +2; si superas, robas 1 (revisión de Albert, fuera Buscar; antes P46)', () => {
     const j = en('nat', ['p2_santelmo', 'chubasco', 'calma'], { tripulacion: ['vigia'], mazoMuelle: ['bucanero', 'sable'] })
     j.comprometer('NAV', ['vigia'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(3) // 0 + 1 de Diego + 2
     j.seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'buscar' } })
-    j.elegir('sable')
-    expect(j.zona('muelle')).toContain('sable')
+    expect(robas(j, 1)).toBe(true)
+    expect(j.zona('muelle')).not.toContain('sable')
   })
 
   it('Ciudad: con un Marinero preparado superas sin Prueba; si superas, robas 2 y nada más (fase 14: ya no recluta)', () => {

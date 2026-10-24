@@ -9,7 +9,8 @@ import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { margen, registrarCodigo } from '../tareas/efectos.ts'
 import { habilidadImpresa, preparar as prepararCopia, registrarEspecial } from '../tareas/peligros2.ts'
-import { mover, moverA, rebarajar } from '../zonas.ts'
+import { mover } from '../zonas.ts'
+import { mirarYPonerEnMuelle } from '../tareas/cartas.ts'
 import {
   agotar,
   avance,
@@ -65,33 +66,7 @@ registrarPeligro('p2_hermanos', {
 // izquierda (que se descarta) y las otras al fondo.
 // P42 (confirmada): una carta de Peligro que ocupa el muelle no cuenta como «la de más a la izquierda»: se salta (si
 // no, la quitarías gratis); las otras van al fondo en el orden en que estaban.
-registrarEspecial('p2_barril.lenguas', (s, _t, e) => {
-  if (s.zonas.mazoMuelle.length === 0 && s.zonas.descartesMuelle.length > 0) {
-    rebarajar(s, 'descartesMuelle', 'mazoMuelle')
-    anotar(s, 'aviso', 'Se acaba el mazo de muelle: se baraja su pila de descartes.')
-  }
-  const vistas = s.zonas.mazoMuelle.slice(0, 3)
-  if (vistas.length === 0) return 'hecha'
-  if (!e) {
-    s.infoRevelada++
-    anotar(s, 'revelar', `Miras las cartas de arriba del mazo de muelle: ${nombres(s, vistas)}.`)
-    if (vistas.length > 1) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'lenguasSueltas' }, candidatas: vistas, min: 1, max: 1 })
-  }
-  const elegida = vistas.length === 1 ? vistas[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
-  if (!elegida) return 'hecha'
-  const izquierda = s.zonas.muelle.find((c) => s.peligrosEnMuelle?.[c] === undefined)
-  const indice = izquierda ? s.zonas.muelle.indexOf(izquierda) : s.zonas.muelle.length
-  if (izquierda) {
-    mover(s, izquierda, 'descartesMuelle')
-    anotar(s, 'efecto', `Se descarta del muelle «${nombre(s, izquierda)}».`)
-  }
-  moverA(s, elegida, 'muelle', indice)
-  anotar(s, 'efecto', `«${nombre(s, elegida)}» entra en el muelle.`)
-  const resto = vistas.filter((c) => c !== elegida)
-  for (const c of resto) mover(s, c, 'mazoMuelle', 'abajo')
-  if (resto.length > 0) anotar(s, 'efecto', `Pones al fondo del mazo de muelle: ${nombres(s, resto)}.`)
-  return 'hecha'
-})
+registrarEspecial('p2_barril.lenguas', (s, _t, e) => mirarYPonerEnMuelle(s, e, { motivo: 'lenguasSueltas' }))
 registrarCodigo('p2_barril.lenguas', () => [{ tipo: 'especial', clave: 'p2_barril.lenguas', datos: {}, paso: 0 }])
 registrarPeligro('p2_barril', {
   encuentros: {

@@ -215,8 +215,6 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: 'Fase de Final de turno', ayuda: 'Descarta las cartas que quieras. Después robarás hasta tu Mando.' }
     case 'pagar':
       return { titulo: `Paga ${n} por «${nombreCarta(m.carta)}»`, ayuda: `Elige ${plural(n, 'carta', 'cartas')} de tu mano para descartar.` }
-    case 'buscar':
-      return { titulo: 'Busca en el mazo de muelle', ayuda: 'Elige la carta que pasa al muelle. Después se baraja el mazo.' }
     case 'herir':
       return { titulo: `¿Quién sufre ${plural(n, 'herida', 'heridas')}?` }
     case 'heridas': {
@@ -293,6 +291,11 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return d.tipo === 'elegirOpcion' ? { titulo: '¿Cómo pagas?' } : { titulo: `Agota a ${plural(n, 'Tripulante', 'Tripulantes')} para pagar` }
     case 'lenguasSueltas':
       return { titulo: '¿Cuál pones en el muelle?', ayuda: 'Sustituye a la carta de más a la izquierda del muelle; las otras van al fondo del mazo de muelle.' }
+    case 'marinerosSinBarco':
+      return {
+        titulo: 'Marineros sin barco: ¿qué Tripulante pones en el muelle?',
+        ayuda: 'Sustituye a la carta de más a la izquierda del muelle; las otras van al fondo del mazo de muelle. Este turno, reclutarlo cuesta 1 menos.',
+      }
     case 'gratisDelMuelle':
       // Fase 13: «sin coste», el término del reglamento (nunca «gratis»).
       return {
@@ -316,8 +319,6 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: `¿Qué Estado le quitas a ${nombreCarta(m.carta)}?` }
     case 'junto':
       return { titulo: `¿Junto a quién va «${nombreCarta(m.carta)}»?`, ayuda: 'Hay empate: eliges tú. La permanente va junto a ese Tripulante.' }
-    case 'quitarPermanente':
-      return { titulo: '¿Qué permanente devuelves al mazo de historia?', ayuda: 'Elige una carta de la zona de permanentes.' }
     case 'separados':
       return { titulo: 'Os separáis en la bruma', ayuda: 'Varios asignados empatan con la EXP más baja: eliges quién se pierde (se descarta con sus Mejoras; si es el Capitán, sufre 1 herida en su lugar).' }
     case 'cancelarCualDestino':
@@ -372,10 +373,8 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: 'El pulpo de la bodega: elige', ayuda: 'Otro Tripulante preparado puede bajar a sacarlo (se agota) o le dejas que se suelte solo (sufre 2 heridas).' }
     case 'pulpoAyuda':
       return { titulo: '¿Quién baja a sacarlo?', ayuda: 'Se agota.' }
-    case 'diarioCapitulo':
-      return { titulo: 'El diario del capitán: elige el capítulo I de una travesía', ayuda: 'Va a tus misiones disponibles con 2 de Avance.' }
-    case 'diarioCambiar':
-      return { titulo: `¿Qué misión disponible cambias por «${m.texto ?? 'el capítulo'}»?`, ayuda: 'La que elijas va al fondo del mazo de Misiones.' }
+    case 'diarioAvance':
+      return { titulo: 'El diario del capitán', ayuda: `¿En qué misión disponible pones ${plural(n, 'ficha', 'fichas')} de Avance? Cuentan cuando zarpes a ella.` }
     case 'desviarAProtegido':
       return {
         titulo: `¿Cuánto recibe «${nombreCarta(m.carta)}» en su lugar?`,
@@ -401,7 +400,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'reclutarDelMazoMuelle':
       return {
         titulo: 'Del mazo de muelle, sin coste',
-        ayuda: `Puedes reclutar sin coste a uno de estos Tripulantes de coste ${n} o menos (o a ninguno). Los demás van al fondo del mazo de muelle.`,
+        ayuda: `Puedes reclutar sin coste a uno de estos Tripulantes de coste ${n} o menos (o a ninguno). ${m.texto === 'descartar' ? 'Los demás se descartan.' : 'Los demás van al fondo del mazo de muelle.'}`,
       }
     case 'naufrago':
       return { titulo: 'Náufrago en la playa', ayuda: 'Puedes reclutar sin coste a uno de estos Tripulantes. Al final del turno se descarta.' }
@@ -691,9 +690,6 @@ export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; si
   if (r.victoria) partes.push('¡ganas la partida!')
   if (r.rep) partes.push(`+${r.rep} de reputación`)
   if (como.gesta) partes.push('+1 de reputación por la Gesta')
-  if (r.search === 'crew') partes.push('buscas un Tripulante en el mazo de muelle')
-  else if (r.search === 'ship') partes.push('buscas una Mejora de barco en el mazo de muelle')
-  else if (r.search) partes.push('buscas una Mejora en el mazo de muelle')
   if (r.draw) partes.push(`robas ${n2(r.draw, 'carta', 'cartas')}`)
   if (r.pasajero) partes.push(`«${nombreDe(r.pasajero)}» sube a bordo como Pasajero`)
   // Fase 15: «Coge la carta 286 del mazo de historia» (una carta de recompensa). Con un final con elección, sus opciones.

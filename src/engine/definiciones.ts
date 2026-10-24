@@ -249,7 +249,9 @@ export function alertaAlOtear(s: Estado, carta: InstId): boolean {
 
 /** Todo lo que hace falta para resolver el encuentro de esta carta en la misión en curso. */
 export function definicionEncuentro(s: Estado, carta: InstId): DefinicionEncuentro {
-  const enc = encuentroDe(s, carta)
+  const impreso = encuentroDe(s, carta)
+  // «Virar y dar la cara»: la Prueba de NAV de este encuentro es de COM en su lugar (misma dificultad y modificadores).
+  const enc = s.mision?.navAcom === carta ? { ...impreso, prueba: impreso.prueba.map((o) => (o.hab === 'NAV' ? { ...o, hab: 'COM' as const } : o)) } : impreso
   const r = reglasEncuentro(s, carta) ?? {}
   const { efecto, exito, fallo, ...resto } = r
   // Con reglas registradas, lo impreso es solo para leerlo.

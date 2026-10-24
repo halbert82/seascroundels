@@ -64,10 +64,10 @@ function estado(e: FichaTripulante | EstadoBarco, hace: string, propia: string, 
 export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
   // Fase 16 (Albert): los Estados y las Ventajas son cartas mini; cada una dice cómo se quita («Acción: Agota a un
   // Cirujano: descarta esta carta»), además de la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
-  envenenado: estado('envenenado', 'Al final del turno, sufre 1 herida.', 'Se quita agotando a un Cirujano (Acción).', 'la Herbolaria o «Cataplasma»'),
+  envenenado: estado('envenenado', 'Al final del turno, le infliges 1 herida.', 'Se quita agotando a un Cirujano (Acción).', 'la Herbolaria o «Cataplasma»'),
   borracho: estado('borracho', 'Recibe +1 COM, pero no puede ser asignado a Pruebas de NAV ni de EXP.', 'Se quita al final del turno.'),
   asustado: estado('asustado', 'No puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda).', 'Se quita al final del turno, o agotando a un Oficial (Acción).'),
-  sangrando: estado('sangrando', 'Cada vez que se agota, sufre 1 herida.', 'Se quita agotando a otro Tripulante preparado (Acción).', '«Cataplasma»'),
+  sangrando: estado('sangrando', 'Cada vez que se agota, le infliges 1 herida.', 'Se quita agotando a otro Tripulante preparado (Acción).', '«Cataplasma»'),
   buscado: estado('buscado', 'No puede ser asignado en las misiones de Ciudad.', 'Se quita descartando 1 carta en la Fase de Reclutamiento.'),
   maldito: estado('maldito', '−1 al total de cada Prueba en la que participe.', 'Se quita al superar una Prueba en la que participe.', '«La mambo del mercado»'),
   extenuado: estado('extenuado', 'En la Fase de Inicio no se prepara.', 'Se quita entonces, en lugar de prepararse.'),
@@ -75,7 +75,7 @@ export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
   aguerrido: estado('aguerrido', 'Puede ser asignado a una Prueba sin agotarse.', 'Se quita al hacerlo; no caduca al final del turno.'),
   viaDeAgua: estado(
     'viaDeAgua',
-    'En una misión de Mar, después de cada carta de Peligro, el Barco sufre 1 daño, salvo que agotes a un Tripulante preparado.',
+    'En una misión de Mar, después de cada carta de Peligro: «Daña 1», salvo que agotes a un Tripulante preparado.',
     'Se quita agotando a un Carpintero (Acción).',
   ),
   velasRotas: estado('velasRotas', 'Las Distancias aumentan en 1, y en el Mar tus Pruebas de NAV reciben −1.', 'Se quita agotando a un Carpintero (Acción).'),
@@ -218,7 +218,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   abordaje: regla(
     'abordaje',
     'Abordaje',
-    'El enemigo salta a tu cubierta: en esta Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades). Si fallas, sufres 1 herida por cada punto que te falte para llegar a la dificultad, sin máximo.',
+    'El enemigo salta a tu cubierta: en esta Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades). Si fallas, infliges 1 herida por cada punto que te falte para llegar a la dificultad, sin máximo (las repartes como quieras).',
     {
       rotulo: 'Detalles',
       texto:
@@ -289,7 +289,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'descartaTripulante',
     'Descartar a un Tripulante',
     'El Tripulante va a la pila de descartes del mazo de muelle junto con sus Mejoras, como al despedirlo. Sus Tesoros pasan a otro Tripulante.',
-    { rotulo: 'El Capitán', texto: 'Si un efecto descartaría al Capitán, el Capitán no se descarta: sufre 1 herida en su lugar.' },
+    { rotulo: 'El Capitán', texto: 'Si un efecto descartaría al Capitán, el Capitán no se descarta: en su lugar, le infliges 1 herida.' },
   ),
   recluta: regla(
     'recluta',

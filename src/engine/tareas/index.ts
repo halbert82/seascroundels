@@ -3,7 +3,6 @@
 import type { TipoTarea } from '../tipos.ts'
 import {
   anadirTemporal,
-  buscarMuelle,
   curar,
   pagar,
   perderDia,
@@ -88,7 +87,6 @@ import {
   especial,
   gratisDelMuelle,
   prepararN,
-  quitarPermanente,
   quitarUnEstado,
   recuperarDescarte,
 } from './peligros2.ts'
@@ -114,7 +112,6 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   perderDia,
   reponerMuelle,
   revelarMuelle,
-  buscarMuelle,
   perderMejora,
   curar,
   reparar,
@@ -202,7 +199,6 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   gratisDelMuelle,
   recuperarDescarte,
   quitarUnEstado,
-  quitarPermanente,
   descartarMazoCapitan,
   ponerEnJuego,
   destina,

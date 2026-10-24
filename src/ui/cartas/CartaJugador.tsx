@@ -15,7 +15,8 @@ function fondoArte(v: VistaJugador): string {
 const TAMANOS_PERMANENTE = [16.5, 16, 15.5, 15, 14.5, 14, 13.5, 13, 12.5, 12]
 
 export function CartaJugador({ v }: { v: VistaJugador }) {
-  const estiloCarta = { '--cc': v.color } as CSSProperties
+  // Fase 16: las cartas de jugador llevan todas la misma letra en las reglas (--fsj; ver ajustes.ts).
+  const estiloCarta = { '--cc': v.color, ...(v.letra !== undefined ? { '--fsj': `${v.letra}px` } : {}) } as CSSProperties
   const conCoste = v.coste !== undefined
   const caja = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
@@ -65,7 +66,15 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
   })
   return (
     <div
-      className={['card', v.alta && 'tall', v.permanente && 'perm', esTextoApretado(v.num) && 'tight', v.diseno && `jug t-${v.diseno}`].filter(Boolean).join(' ')}
+      className={[
+        'card',
+        v.alta && 'tall',
+        v.permanente && 'perm',
+        v.letra !== undefined ? 'dj' : esTextoApretado(v.num) && 'tight',
+        v.diseno && `jug t-${v.diseno}`,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={estiloCarta}
     >
       {v.diseno === 'mejoraBarco' && <div className="marco" />}

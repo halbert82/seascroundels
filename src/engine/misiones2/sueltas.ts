@@ -152,9 +152,10 @@ registrarMision('gobernador-I', {
   ...alarma(),
   // Saqueo: si te retiras entre dos Peligros, cobras según tu Avance.
   alRetirarte: (s, avance) => {
+    // Revisión de Albert (fuera Buscar): con 4 o más, +1 de reputación y robas 2 (antes, buscabas una Mejora).
     if (avance >= 4) {
-      anotar(s, 'efecto', `Saqueo: te retiras con ${avance} de Avance: +1 de reputación y buscas una Mejora.`)
-      return [reputacion(1), { tipo: 'buscarMuelle', filtro: 'mejora' }]
+      anotar(s, 'efecto', `Saqueo: te retiras con ${avance} de Avance: +1 de reputación y robas 2 cartas.`)
+      return [reputacion(1), robar(2)]
     }
     if (avance >= 2) {
       anotar(s, 'efecto', `Saqueo: te retiras con ${avance} de Avance: robas 2 cartas.`)

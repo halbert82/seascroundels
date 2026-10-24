@@ -1,10 +1,10 @@
 // El panel de decisión: qué te pide el juego ahora, con sus botones, contadores y confirmación.
 
 import type { ReactNode } from 'react'
-import { iconosDe, nombreDe } from '../../engine/catalogo.ts'
+import { nombreDe } from '../../engine/catalogo.ts'
 import { copia } from '../../engine/estado.ts'
 import type { Decision, Eleccion, Estado, InstId } from '../../engine/tipos.ts'
-import { navParaDistancia } from '../../engine/valores.ts'
+import { habilidadQueSeCubre, sumaParaCubrir } from '../../engine/valores.ts'
 import { definicionActual, problemaCompromiso } from '../../engine/prueba.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { porId } from '../../engine/catalogo.ts'
@@ -157,13 +157,14 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
       break
     }
     case 'cubrirDistancia': {
+      const hab = habilidadQueSeCubre(d.motivo)
       const nav = navCubierta(s, d, sel.cartas)
       // Fase 10: hay que agotar al menos a un Tripulante; las cartas con NAV solo completan.
       const conTripulante = sel.cartas.some((c) => d.tripulantes.includes(c))
       const vale = nav >= d.distancia && conTripulante
       centro = (
         <span className={`pd-contador ${vale ? 'bien' : 'mal'}`}>
-          <Icono id="NAV" /> {nav} de {d.distancia}
+          <Icono id={hab} /> {nav} de {d.distancia}
           {!conTripulante && sel.cartas.length > 0 && <small> · falta un Tripulante</small>}
         </span>
       )
@@ -263,7 +264,10 @@ function rotuloBandeja(s: Estado, cartas: readonly InstId[]): string {
 }
 
 function navCubierta(s: Estado, d: Extract<Decision, { tipo: 'cubrirDistancia' }>, elegidas: readonly InstId[]): number {
-  const tripulantes = elegidas.filter((c) => d.tripulantes.includes(c))
-  const cartas = elegidas.filter((c) => d.cartas.includes(c))
-  return navParaDistancia(s, tripulantes) + cartas.reduce((n, c) => n + iconosDe(copia(s, c).id, 'NAV'), 0)
+  return sumaParaCubrir(
+    s,
+    d.motivo,
+    elegidas.filter((c) => d.tripulantes.includes(c)),
+    elegidas.filter((c) => d.cartas.includes(c)),
+  )
 }

@@ -3,11 +3,11 @@
 import { costeImpreso, esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
 import { curable, curarTripulante, quitarEstadoBarco } from '../estados.ts'
-import type { Estado, InstId, TareaDe } from '../tipos.ts'
+import type { Estado, InstId } from '../tipos.ts'
 import { valor } from '../valores.ts'
-import { arriba, barajar, mover, rebarajar } from '../zonas.ts'
+import { arriba, mover, moverA, rebarajar } from '../zonas.ts'
 import { DATOS } from '../datos.ts'
-import { eleccionDe, preguntar, type Manejador } from './comun.ts'
+import { eleccionDe, preguntar, type Manejador, type Resultado } from './comun.ts'
 
 /** Descarta la carta de arriba del mazo de Escenario sin aplicarla. */
 export function perderUnDia(s: Estado): void {
@@ -110,37 +110,49 @@ export const revelarMuelle: Manejador<'revelarMuelle'> = (s, t) => {
   return 'hecha'
 }
 
-function cumpleFiltro(id: string, filtro: TareaDe<'buscarMuelle'>['filtro']): boolean {
-  const tipo = tipoDe(id)
-  if (filtro === 'tripulante') return tipo === 'tripulante'
-  if (filtro === 'mejoraBarco') return tipo === 'mejoraBarco'
-  return tipo === 'mejoraBarco' || tipo === 'mejoraTripulante'
-}
-
-const NOMBRE_FILTRO = { tripulante: 'un Tripulante', mejoraBarco: 'una Mejora de barco', mejora: 'una Mejora' } as const
-
-/** Buscar: mira el mazo de muelle, pon la carta elegida en el muelle y baraja el mazo. */
-export const buscarMuelle: Manejador<'buscarMuelle'> = (s, t, e) => {
-  const candidatas = s.zonas.mazoMuelle.filter((c) => cumpleFiltro(copia(s, c).id, t.filtro))
+/**
+ * «Mira las 3 cartas superiores del mazo de muelle: pon 1 en el muelle en lugar de la carta de más a la izquierda (que se
+ * descarta) y las otras al fondo» («Lenguas sueltas», en «Barril de ron»). Revisión de Albert: «Marineros sin barco» hace
+ * lo mismo, pero solo con un Tripulante (`soloTripulantes`) y «Este turno, reclutarlo cuesta 1 menos» (`marca`). Si no sale
+ * ningún Tripulante, las 3 van al fondo, no se descarta nada y no hay descuento.
+ * P42 (confirmada): una carta de Peligro que ocupa el muelle no cuenta como «la de más a la izquierda»: se salta (si no, la
+ * quitarías gratis); las otras van al fondo en el orden en que estaban.
+ */
+export function mirarYPonerEnMuelle(
+  s: Estado,
+  e: Parameters<Manejador<'especial'>>[2],
+  como: { motivo: 'lenguasSueltas' | 'marinerosSinBarco'; soloTripulantes?: boolean; marca?: { clave: string; fuente: string } },
+): Resultado {
+  if (s.zonas.mazoMuelle.length === 0 && s.zonas.descartesMuelle.length > 0) {
+    rebarajar(s, 'descartesMuelle', 'mazoMuelle')
+    anotar(s, 'aviso', 'Se acaba el mazo de muelle: se baraja su pila de descartes.')
+  }
+  const vistas = s.zonas.mazoMuelle.slice(0, 3)
+  if (vistas.length === 0) return 'hecha'
+  const candidatas = como.soloTripulantes ? vistas.filter((c) => tipoDe(copia(s, c).id) === 'tripulante') : vistas
   if (!e) {
-    s.infoRevelada++ // Miras el mazo.
-    if (candidatas.length === 0) {
-      anotar(s, 'aviso', `Buscas ${NOMBRE_FILTRO[t.filtro]}, pero no queda ninguna en el mazo de muelle.`)
-      barajar(s, 'mazoMuelle')
-      return 'hecha'
+    s.infoRevelada++
+    anotar(s, 'revelar', `Miras las cartas de arriba del mazo de muelle: ${nombres(s, vistas)}.`)
+    if (candidatas.length > 1) return preguntar({ tipo: 'elegirCartas', motivo: { clave: como.motivo }, candidatas, min: 1, max: 1 })
+  }
+  const elegida = candidatas.length === 1 ? candidatas[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
+  if (elegida && candidatas.includes(elegida)) {
+    const izquierda = s.zonas.muelle.find((c) => s.peligrosEnMuelle?.[c] === undefined)
+    const indice = izquierda ? s.zonas.muelle.indexOf(izquierda) : s.zonas.muelle.length
+    if (izquierda) {
+      mover(s, izquierda, 'descartesMuelle')
+      anotar(s, 'efecto', `Se descarta del muelle «${nombre(s, izquierda)}».`)
     }
-    return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'buscar' }, candidatas, min: 1, max: 1 })
-  }
-  const [elegida] = eleccionDe(e, 'cartas').ids
-  if (!elegida) throw new Error('Falta la carta buscada')
-  mover(s, elegida, 'muelle', 'abajo')
-  barajar(s, 'mazoMuelle')
-  anotar(s, 'efecto', `Buscas ${NOMBRE_FILTRO[t.filtro]}: «${nombre(s, elegida)}» pasa al muelle.`)
-  // «Marineros sin barco»: este turno, reclutar esa carta cuesta 1 menos.
-  if (t.marca) {
-    s.temporales.push({ clave: t.marca.clave, fuente: t.marca.fuente, hasta: 'finTurno', inst: elegida })
-    anotar(s, 'efecto', `Este turno, reclutar a «${nombre(s, elegida)}» cuesta 1 menos.`)
-  }
+    moverA(s, elegida, 'muelle', indice)
+    anotar(s, 'efecto', `«${nombre(s, elegida)}» entra en el muelle.`)
+    if (como.marca) {
+      s.temporales.push({ clave: como.marca.clave, fuente: como.marca.fuente, hasta: 'finTurno', inst: elegida })
+      anotar(s, 'efecto', `Este turno, reclutar a «${nombre(s, elegida)}» cuesta 1 menos.`)
+    }
+  } else if (como.soloTripulantes) anotar(s, 'efecto', 'No sale ningún Tripulante: no entra nadie en el muelle.')
+  const resto = vistas.filter((c) => c !== elegida)
+  for (const c of resto) mover(s, c, 'mazoMuelle', 'abajo')
+  if (resto.length > 0) anotar(s, 'efecto', `Pones al fondo del mazo de muelle: ${nombres(s, resto)}.`)
   return 'hecha'
 }
 

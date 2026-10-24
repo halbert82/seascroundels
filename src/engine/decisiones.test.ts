@@ -401,10 +401,10 @@ describe('Decisiones que dependen de cartas concretas', () => {
     expect(pedrero.ofreceCapacidad('pedrero.disparar')).toBe(true)
   })
 
-  it('D5a · en una misión de Mar 5, resuelta una carta y con 3, revelas el Kraken y «¡A toda vela!» la supera sin resolverlo', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], avance: { 'pruebas-mar5': 1 }, mano: ['viento', 'ojo'], mazoPeligros: ['calma', 'leyenda', 'chubasco'] })
+  it('D5a · en una misión de Mar 5, resuelta una carta y con 4, revelas el Kraken y «¡A toda vela!» (+1) la supera sin resolverlo', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], avance: { 'pruebas-mar5': 2 }, mano: ['viento', 'ojo'], mazoPeligros: ['calma', 'leyenda', 'chubasco'] })
     j.pasar() // no juega «¡A toda vela!» con el Mar en calma
-    expect(j.avance('pruebas-mar5')).toBe(3)
+    expect(j.avance('pruebas-mar5')).toBe(4)
     j.seguir() // revela el Kraken
     j.usar('viento.jugar').elegir('ojo')
     expect(j.registro).toContain('Reúnes el Avance a mitad del encuentro: lo dejas sin resolver.')
@@ -517,15 +517,8 @@ describe('N15 · «Perdidos en la espesura» ignora el recuadro rojo y la herida
   })
 })
 
-describe('N16 · «Retirada a tiempo» quita el encuentro, pero el Destino ya revelado se aplica', () => {
-  it('la Patrulla española con «Celada»: el Bucanero sufre la herida, pero te ahorras el fallo', () => {
-    const j = Jugador.enMision({ misiones: ['prueba-I'], mano: ['retirada', 'ojo'], tripulacion: ['bucanero'], mazoPeligros: ['ley', 'asalto', 'calma', 'calma'] })
-    j.comprometer('COM', ['bucanero']).usar('retirada.jugar').elegir('ojo')
-    expect(j.copia('bucanero').heridas).toBe(1)
-    expect(j.estado.danoBarco).toBe(0)
-    expect(j.zona('apartados')).toContain('armada') // sin el fallo, la Armada no entra
-  })
-})
+// N16 («Retirada a tiempo» quitaba el encuentro y el Destino ya revelado se aplicaba): sin uso desde la revisión de Albert,
+// que sacó la carta de la caja.
 
 describe('N17 · Una Prueba superada automáticamente cuenta como superada, sin participantes', () => {
   it('«Soborno» ante «Perros de la guardia» (COM 3 o EXP 3): eliges COM y puedes jugar «Prisionero liberado»; Uñas largas no roba', () => {

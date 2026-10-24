@@ -5,7 +5,7 @@ import { anotar, buscarTarea, claveUso, copia, encolar, nombre, sucesoDescartada
 import { agotar, quitarEstadoAnotado, quitarEstadoBarco } from '../estados.ts'
 import { definicionActual, destinosDeLaPrueba, efectosDeDestino } from '../prueba.ts'
 import { reglasDe } from '../definiciones.ts'
-import { mazoActivo, ponerAPerseguir } from '../peligros.ts'
+import { ponerAPerseguir } from '../peligros.ts'
 import type { Estado, Evento, NuevaTarea, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { capacidadDe, claveDe, encolarUso, usosDisparados, usosDisponibles } from '../usos.ts'
@@ -48,11 +48,9 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
       return
     }
     case 'persigue': {
+      // Revisión de Albert: «Virar y dar la cara» ya no la manda al fondo; nada más cambia lo que hace Persigue.
       if (!estaEn(s, ev.carta, 'destino')) return
-      if (ev.alFondo) {
-        mover(s, ev.carta, mazoActivo(s).mazo, 'abajo')
-        anotar(s, 'efecto', `«${nombre(s, ev.carta)}» va al fondo del mazo de Peligros en vez de perseguirte.`)
-      } else ponerAPerseguir(s, ev.carta)
+      ponerAPerseguir(s, ev.carta)
       return
     }
     case 'danoBarco': {
@@ -251,6 +249,8 @@ export const jugarEvento: Manejador<'jugarEvento'> = (s, t) => {
       if (c.tipo === 'agotarCapitan') agotar(s, s.capitan)
       else if (c.tipo === 'pagar') pagos.push({ tipo: 'pagar', cantidad: c.n, motivo: copia(s, t.carta).id })
       else if (c.tipo === 'agotarCanon') pagos.push({ tipo: 'agotarCanones', n: 1, coste: true })
+      // «¡Nadie se queda atrás!»: destina 3 COM.
+      else if (c.tipo === 'destina') pagos.push({ tipo: 'destina', n: c.n, hab: c.hab })
       else throw new Error(`Coste no previsto en un Evento: ${c.tipo}`)
     }
     encolar(s, ...pagos)

@@ -11,13 +11,14 @@ const predefinidos = () => ({
 })
 
 describe('Construir tu mazo', () => {
-  it('los mazos de inicio de Diego cumplen las reglas: muelle de 25 (excepción temporal de la fase 14), capitán de 40', () => {
+  it('los mazos de inicio de Diego cumplen las reglas: muelle de 25 (excepción temporal de la fase 14), capitán de 39 (revisión de Albert)', () => {
     // TODO(regla): excepción temporal de la fase 14; quitar cuando se rehagan los mazos de inicio (el reglamento dice de
     // 15 a 20 cartas de muelle; el de inicio lleva 25 para probar los seis Tripulantes nuevos: eran 26 hasta que el
     // Práctico del puerto salió de la caja, en la quinta ronda de la fase 15).
     const m = { ...predefinidos(), mazoDeMuelle: [...DATOS.mazosPredefinidos.mazoDeMuelle] }
     expect(m.mazoDeMuelle).toHaveLength(MUELLE_TEMPORAL_FASE14)
-    expect(m.mazoDelCapitan).toHaveLength(40)
+    // TODO(regla): revisión de Albert, por defecto: 39 (sin «Cortar por lo sano», cuyo hueco no se rellena) hasta rehacer los mazos.
+    expect(m.mazoDelCapitan).toHaveLength(39)
     expect(erroresDeMazos(m, { muelleMaximo: MUELLE_TEMPORAL_FASE14 })).toEqual([])
     // Sin la excepción, 25 cartas no valen: la regla sigue siendo de 15 a 20.
     expect(erroresDeMazos(m)).toEqual(['El mazo de muelle tiene 25 cartas; debe tener de 15 a 20.'])
@@ -26,7 +27,7 @@ describe('Construir tu mazo', () => {
   it('el mazo de muelle debe tener de 15 a 20 cartas y el del capitán de 30 a 40', () => {
     const corto = { ...predefinidos(), mazoDeMuelle: predefinidos().mazoDeMuelle.slice(0, 14) }
     expect(erroresDeMazos(corto)).toEqual(['El mazo de muelle tiene 14 cartas; debe tener de 15 a 20.'])
-    const largo = { ...predefinidos(), mazoDelCapitan: [...predefinidos().mazoDelCapitan, 'estrellas'] }
+    const largo = { ...predefinidos(), mazoDelCapitan: [...predefinidos().mazoDelCapitan, 'estrellas', 'vendas'] }
     expect(erroresDeMazos(largo)).toContain('El mazo del capitán tiene 41 cartas; debe tener de 30 a 40.')
   })
 
@@ -66,13 +67,14 @@ describe('Construir tu mazo', () => {
     for (const t of DATOS.tesoros) expect('senda' in t, t.id).toBe(false)
     // Las de Piratería que Albert enumeró (todas las demás Mejoras, Eventos y Habilidades son Neutrales).
     const pirateria = CATALOGO.filter((e) => ['mejoraBarco', 'mejoraTripulante', 'evento', 'habilidad'].includes(e.tipo) && claseDe(e.id) === 'Piratería').map((e) => e.num)
-    expect(pirateria).toEqual([24, 29, 30, 32, 37, 40, 41, 43, 48, 51, 57, 58, 60, 66, 69, 171, 172, 173])
+    // Revisión de Albert: fuera «Botín escondido» (43).
+    expect(pirateria).toEqual([24, 29, 30, 32, 37, 40, 41, 48, 51, 57, 58, 60, 66, 69, 171, 172, 173])
     // Los dos Capitanes son de Piratería: sus mazos de inicio siguen siendo legales.
     expect(DATOS.capitanes.map((c) => c.senda)).toEqual(['Piratería', 'Piratería'])
   })
 
   it('fase 11 · un Capitán solo puede usar cartas de su Clase y Neutrales (también Mejoras, Eventos y Habilidades)', () => {
-    // Con un Capitán Neutral (supuesto), la Bandera negra, «¡A por ellos!» y «¡Al abordaje!» no valdrían.
+    // Con un Capitán Neutral (supuesto), la Bandera negra, «¡Nadie se queda atrás!» y «¡Al abordaje!» no valdrían.
     const m = predefinidos()
     expect(erroresDeMazos(m)).toEqual([])
     const neutral = DATOS.capitanes[0]
@@ -84,7 +86,7 @@ describe('Construir tu mazo', () => {
       expect(erroresDeMazos(m)).toEqual(
         expect.arrayContaining([
           '«Bandera negra» es de la Clase Piratería y tu Capitán es de Neutral.',
-          '«¡A por ellos!» es de la Clase Piratería y tu Capitán es de Neutral.',
+          '«¡Nadie se queda atrás!» es de la Clase Piratería y tu Capitán es de Neutral.',
           '«¡Al abordaje!» es de la Clase Piratería y tu Capitán es de Neutral.',
         ]),
       )

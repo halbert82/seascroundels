@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest'
 
 import { Jugador, type OpcionesSituacion, dificultadConDestino } from './pruebas/situacion.ts'
 import { plazasOcupadas } from './valores.ts'
+import { porId } from './catalogo.ts'
+import { quedaDe } from './definiciones.ts'
 
 const MAZO_CAPITAN = ['coraje', 'emboscada', 'estrellas', 'coraje', 'emboscada', 'estrellas', 'ojo', 'ojo', 'timon', 'timon']
 
@@ -163,15 +165,22 @@ describe('117 · La casa del gobernador', () => {
     expect(j.zona('mazoHistoria')).toContain('guardia')
   })
 
-  it('saqueo: si te retiras con 2 o 3 de Avance, robas 2; con 4 o más, +1 de reputación y buscas una Mejora', () => {
+  it('saqueo: si te retiras con 2 o 3 de Avance, robas 2; con 4 o más, +1 de reputación y robas 2 (revisión de Albert: antes buscabas una Mejora)', () => {
     const poco = enPuerto({ misiones: ['gobernador-I'], avance: { 'gobernador-I': 2 }, mazoPeligros: ['chubasco', 'calma'] })
     poco.zarpar('gobernador-I').retirarse()
     expect(poco.registro).toContain('Saqueo: te retiras con 3 de Avance: robas 2 cartas.')
     expect(poco.zona('mano')).toHaveLength(2)
     const mucho = enPuerto({ misiones: ['gobernador-I'], avance: { 'gobernador-I': 3 }, mazoMuelle: ['sable'], mazoPeligros: ['chubasco', 'calma'] })
-    mucho.zarpar('gobernador-I').retirarse().elegir('sable')
+    mucho.zarpar('gobernador-I').retirarse()
+    expect(mucho.registro).toContain('Saqueo: te retiras con 4 de Avance: +1 de reputación y robas 2 cartas.')
     expect(mucho.estado.reputacion).toBe(1)
-    expect(mucho.zona('muelle')).toContain('sable')
+    expect(mucho.zona('mano')).toHaveLength(2)
+    expect(mucho.zona('muelle')).not.toContain('sable')
+  })
+
+  it('recompensa (revisión de Albert, fuera Buscar): +1 de reputación y robas 2', () => {
+    const e = porId('gobernador-I')
+    expect(e.tipo === 'capitulo' && e.carta.recompensa).toEqual({ rep: 1, draw: 2 })
   })
 })
 
@@ -715,15 +724,13 @@ describe('220 · ¡La guardia!', () => {
     expect(dificultadConDestino(j.estado)).toBe(4) // 5 + 1 (¡La guardia!) − 1 (Patente) − 1 (Ocasión)
   })
 
-  it('fase 11 (P63): es una permanente: «Cortar por lo sano» puede devolverla al mazo de historia', () => {
+  it('fase 11 (P63): es una permanente; sin «Cortar por lo sano» (revisión de Albert), sale con sus propias Acciones', () => {
     const timbas = Array.from({ length: 9 }, () => 'oportunidad')
-    const j = enPuerto({ misiones: ['gobernador-I'], tripulacion: ['reinaldo', 'filibustero', 'espadachin'], mazoPeligros: timbas, mano: ['cortar', 'ojo', 'timon', 'coraje'] })
+    const j = enPuerto({ misiones: ['gobernador-I'], tripulacion: ['reinaldo', 'filibustero', 'espadachin'], mazoPeligros: timbas, mano: ['ojo', 'timon', 'coraje'] })
     j.zarpar('gobernador-I').comprometer('COM', ['filibustero']).seguir().seguir().comprometer('COM', ['espadachin']).seguir().seguir()
     j.comprometer('COM', ['reinaldo']).seguir()
     expect(j.zona('permanentes')).toEqual(['guardia'])
-    j.usar('cortar.jugar').elegir('timon', 'coraje')
-    expect(j.zona('permanentes')).toEqual([])
-    expect(j.zona('mazoHistoria')).toContain('guardia')
+    expect(quedaDe(j.estado, j.inst('guardia'))?.quitar.length).toBeGreaterThan(0)
   })
 })
 

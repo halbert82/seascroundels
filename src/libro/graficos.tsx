@@ -26,7 +26,7 @@ const capitulos = (f: (e: EntradaCatalogo & { tipo: 'capitulo' }) => boolean) =>
   visibles.filter((e): e is EntradaCatalogo & { tipo: 'capitulo' } => e.tipo === 'capitulo' && f(e))
 
 /** Cartas de cada fila de «Componentes», por el nombre de la fila. */
-function cartasDeFila(nombre: string): EntradaCatalogo[] {
+export function cartasDeFila(nombre: string): EntradaCatalogo[] {
   switch (sinEtiquetas(nombre)) {
     case 'Capitanes':
       return deTipo('capitan')

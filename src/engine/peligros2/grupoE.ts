@@ -257,12 +257,11 @@ registrarPeligro('p2_santelmo', {
     // Éxito: el comprometido con más NAV queda Inspirado. Fallo: en la siguiente Prueba, 2 Destinos y el peor.
     // Fase 13 (I4): éxito, prepara a 1 Tripulante asignado (antes, Inspirado).
     mar: { exito: [comprometidoCon('eleccion', { tipo: 'preparar' })], fallo: [{ tipo: 'siguiente', mod: { de: 'prueba', dosDestinos: true } }] },
-    // Un Vigía comprometido suma +2. Éxito: busca una Mejora. Fallo: pierdes 2 Avance.
-    // P46 (confirmada): «busca una Mejora en tu mazo y añádela a tu mano»: las Mejoras van en el mazo de muelle, no en
-    // la mano. Por defecto: buscas una Mejora en el mazo de muelle y la pones en el muelle, como las recompensas.
+    // Un Vigía comprometido suma +2. Éxito: roba 1 (revisión de Albert, fuera Buscar; antes buscaba una Mejora, P46).
+    // Fallo: pierdes 2 Avance.
     nat: {
       capacidades: [habilidadDe('vigias', (ctx, c) => (tieneRasgo(ctx.s, c, 'Vigía') ? 2 : 0))],
-      exito: [codigo('p2_santelmo.buscar')],
+      exito: [robar(1)],
       fallo: [pierdesAvance(2)],
     },
     // Si tienes un Marinero preparado, superas sin Prueba. Éxito (fase 14, Albert): roba 2 y nada más (antes, reclutar
@@ -277,7 +276,6 @@ registrarPeligro('p2_santelmo', {
   // +1. Sin oposición: −1 en su lugar. (Fase 13, I1: fuera «no se pueden usar capacidades de Tripulantes ni de Mejoras».)
   destino: { modificador: (_s, p) => (p.comprometidos.length === 0 ? 1 : -1) },
 })
-registrarCodigo('p2_santelmo.buscar', () => [{ tipo: 'buscarMuelle', filtro: 'mejora' }])
 
 // 49. La sirena · Leve ------------------------------------------------------------
 

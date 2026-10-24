@@ -51,6 +51,6 @@ describe('Textos de las decisiones', () => {
     expect(textoPlano('chalupa')).toBe('Al zarpar: Naturaleza / Ciudad: Gana 1 Avance.')
     expect(textoPlano('bandera')).toBe('Mar: Tus Pruebas de COM reciben +1.')
     expect(textoPlano('bronce')).toBe('Mar, agotar: Una Prueba de COM recibe +2.')
-    expect(textoPlano('viento')).toBe('Respuesta: Mar: Después de que reveles una carta de Peligro, gana 2 Avance.')
+    expect(textoPlano('viento')).toBe('Respuesta: Mar: Después de que reveles una carta de Peligro, gana 1 Avance.')
   })
 })

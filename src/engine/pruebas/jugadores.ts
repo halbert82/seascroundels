@@ -13,13 +13,14 @@ import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.
 import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { esVentaja } from '../infoEstados.ts'
 import { estadosDe } from '../estados.ts'
-import { numeroConIcono, primerNumero, textoDe } from '../textos.ts'
+import { numeroConIcono, textoDe } from '../textos.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, CartaId, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
-import { navParaDistancia, plazasLibres, valor, valorSinMinimo } from '../valores.ts'
+import { plazasLibres, sumaParaCubrir, valor, valorSinMinimo } from '../valores.ts'
 import { cumple } from '../tareas/efectos.ts'
 import { puedePrepararse } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
+import { canonesPreparados } from '../capacidades/comun.ts'
 import { tienesDelNaufragio } from '../misiones2/fase15.ts'
 
 export type JugadorAutomatico = (s: Estado, d: Decision) => Eleccion
@@ -52,11 +53,11 @@ export function jugadorAlAzar(semilla: number | string): JugadorAutomatico {
       case 'cubrirDistancia': {
         // Todos los preparados y todas las cartas. Casi siempre llega (el motor solo ofrece misiones alcanzables), pero no
         // siempre: agotar a uno puede bajar la NAV de los demás (semilla 7378, Diego). Entonces, el primer grupo que llegue.
-        const cartas = d.cartas.reduce((n, c) => n + iconosDe(copia(_s, c).id, 'NAV'), 0)
-        if (navParaDistancia(_s, d.tripulantes) + cartas >= d.distancia) return { tipo: 'cartas', ids: [...d.tripulantes, ...d.cartas] }
+        // «Destina X [habilidad]» se cubre igual, con su habilidad.
+        if (sumaParaCubrir(_s, d.motivo, d.tripulantes, d.cartas) >= d.distancia) return { tipo: 'cartas', ids: [...d.tripulantes, ...d.cartas] }
         for (let m = (1 << d.tripulantes.length) - 1; m > 0; m--) {
           const grupo = d.tripulantes.filter((_, i) => m & (1 << i))
-          if (navParaDistancia(_s, grupo) + cartas >= d.distancia) return { tipo: 'cartas', ids: [...grupo, ...d.cartas] }
+          if (sumaParaCubrir(_s, d.motivo, grupo, d.cartas) >= d.distancia) return { tipo: 'cartas', ids: [...grupo, ...d.cartas] }
         }
         return { tipo: 'cartas', ids: [...d.tripulantes, ...d.cartas] }
       }
@@ -364,20 +365,18 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'perderMejora':
     case 'agotarMejora':
       return { tipo: 'cartas', ids: por((c) => costeImpreso(copia(s, c).id)).slice(0, n) }
-    case 'buscar':
-      return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id) - (MEJORAS_PREFERIDAS[copia(s, c).id] ?? 0)).slice(0, 1) }
+    // «Marineros sin barco»: el Tripulante que más le interesa (reclutarlo le costará 1 menos este turno).
+    case 'marinerosSinBarco':
+      return { tipo: 'cartas', ids: por((c) => -puntuacionTripulanteEnMuelle(copia(s, c).id)).slice(0, 1) }
     // Fase 15, el naufragio: baja el que más Vida conserva (sin dejar a nadie a tiro); al pulpo lo saca el que menos vale;
-    // el diario trae el capítulo I que más le interesa y aparta la misión disponible que menos.
+    // el diario pone el Avance en la misión disponible que más le interesa (como los Soplos de la Hermandad).
     case 'buzo': {
       const buzo = elegirBuzo(s, d.candidatas)
       return { tipo: 'cartas', ids: buzo ? [buzo] : d.candidatas.slice(0, 1) }
     }
     case 'pulpoAyuda':
       return { tipo: 'cartas', ids: por((c) => (vidaAlAgotarse(s, c) <= 0 ? 100 : 0) + valorTripulante(s, c)).slice(0, 1) }
-    case 'diarioCapitulo':
-      return { tipo: 'cartas', ids: por((c) => -puntuacionMision(s, c)).slice(0, 1) }
-    case 'diarioCambiar':
-      return { tipo: 'cartas', ids: por((c) => puntuacionMision(s, c)).slice(0, 1) }
+    case 'diarioAvance':
     case 'soplos':
       return { tipo: 'cartas', ids: por((c) => -puntuacionMision(s, c)).slice(0, 1) }
     case 'tablon': {
@@ -592,8 +591,12 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           // Albert (fase 8): soborna (1 carta) si no tiene preparado ningún Tripulante con NAV 3 o más; si lo tiene,
           // pone La Armada encima del mazo.
           return elegir(tieneNavegante(s, 3) ? '1' : '0')
-        case 'ribera':
-          return elegir(s.danoBarco >= 2 ? '0' : '1')
+        case 'ribera': {
+          // Revisión de Albert: repara 2 o, este turno, adquirir una Mejora de barco cuesta 1 menos. El descuento solo le
+          // sirve si hay una Mejora de barco en el muelle.
+          const mejoraEnMuelle = s.zonas.muelle.some((c) => tipoDe(copia(s, c).id) === 'mejoraBarco')
+          return elegir(s.danoBarco >= 2 || (s.danoBarco >= 1 && !mejoraEnMuelle) ? '0' : '1')
+        }
         case 'p2_respiro':
           // Fase 15, «Un respiro»: descansa (pierde 2 de Avance) si la tripulación está agotada o tocada y aún le queda
           // camino; si no, sigue (+1 de Avance). La opción «0» es Descansar, la «1», Seguir.
@@ -685,7 +688,8 @@ function cubrirDistancia(s: Estado, d: Extract<Decision, { tipo: 'cubrirDistanci
   // Fase 10: al menos un Tripulante (la máscara vacía no vale).
   for (let mascara = 1; mascara < 1 << d.tripulantes.length; mascara++) {
     const grupo = d.tripulantes.filter((_, i) => mascara & (1 << i))
-    let nav = navParaDistancia(s, grupo)
+    // «Destina X [habilidad]» se paga como una Distancia, con la habilidad que diga (COM en «¡Nadie se queda atrás!»).
+    let nav = sumaParaCubrir(s, d.motivo, grupo, [])
     const usadas: InstId[] = []
     for (const c of cartas) {
       if (nav >= d.distancia) break
@@ -823,7 +827,7 @@ function faltaAvance(s: Estado): number {
 
 /** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
 /** Capacidades que empiezan una Prueba (la de una Acción). */
-const PRUEBAS_DE_ACCION = new Set(['guardia.quitar0', 'pm_ojos.accion0', 'a_por_ellos.jugar'])
+const PRUEBAS_DE_ACCION = new Set(['guardia.quitar0', 'pm_ojos.accion0'])
 
 function empiezaUnaPrueba(s: Estado, uso: Uso): boolean {
   if (PRUEBAS_DE_ACCION.has(uso.clave)) return true
@@ -860,7 +864,8 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'botica.curar':
       return heridosTotales(s) > 0 && (vidaRestante(s, s.capitan) <= 2 || mano >= 4) ? 1 : 0
     case 'ron_descanso.jugar':
-      return d.motivo.clave === 'jugarCartas' && heridosTotales(s) >= 3 ? 1 : 0
+      // Coste 1 y cura 2 a cada uno (revisión de Albert): en puerto, con varias heridas repartidas.
+      return d.motivo.clave === 'jugarCartas' && heridosTotales(s) >= 3 && mano >= 2 ? 1 : 0
     case 'ron_reserva.beber': {
       const portador = fuente ? copia(s, fuente).vinculadaA : null
       if (!portador || portador === 'barco') return 0
@@ -868,8 +873,10 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     }
     // Cañones (fase 10b: se preparan en vez de recargar)
     case 'canonero.preparar':
-    case 'polvora_c.jugar':
       return 1
+    case 'polvora_c.jugar':
+      // «Pólvora robada» (coste 1): prepara un Cañón; solo si sobra mano.
+      return mano >= 3 ? 1 : 0
     case 'polvora_rey.disparo':
       return 3
     // Otear y preparar
@@ -885,8 +892,6 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'trampa.jugar':
       return enMision && entornoActual(s) === 'nat' ? 1 : 0
     // En puerto
-    case 'botin.jugar':
-      return d.motivo.clave === 'jugarCartas' && mano >= 3 ? 1 : 0
     case 'naufrago.jugar':
       return d.motivo.clave === 'jugarCartas' && plazasLibres(s) >= 1 && mano >= 3 ? 1 : 0
     case 'capitan2.agotar':
@@ -966,14 +971,6 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return destinoMalo(s) ? 3 : 0
     case 'reflejos.jugar':
       return mano >= 2 && destinoMalo(s) ? 3 : 0
-    case 'retirada.jugar': {
-      if (!p?.destino || !p.hab || mano < 2) return 0
-      const mod = modificadorDeDestino(s, p.destino, p.encuentro, p.hab)
-      const hab = p.hab
-      const posibles = participantesDe(s).length > 0 ? s.zonas.mano.reduce((n, c) => n + iconos(s, c, hab), 0) : 0
-      const perdida = mod === 'fallo' || participantesDe(s).length === 0 || totalPrueba(s) + posibles < dificultadPrueba(s) + mod
-      return perdida && peligroDeFallo(s, p.encuentro) >= 2 ? 3 : 0
-    }
     // Encuentros que conviene quitar
     case 'bartolome.descartar':
     case 'velas_tormenta.esquivar':
@@ -984,7 +981,8 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'sangre_fria.jugar':
       return carta && mano >= 3 && riesgoDelEncuentro(s, carta) >= 2 ? 3 : 0
     case 'soborno.jugar':
-      return carta && mano >= 3 && riesgoDelEncuentro(s, carta) >= 1 ? 3 : 0
+      // Revisión de Albert: con cualquier Peligro de Ciudad que tenga Prueba y algún riesgo (antes, solo con 3 cartas en la mano).
+      return carta && mano >= 2 && riesgoDelEncuentro(s, carta) >= 1 ? 3 : 0
     case 'espesura.jugar':
       return p && mano >= 2 && peligroDeFallo(s, p.encuentro) >= 1.5 ? 3 : 0
     // Fase 10b: quitar Buscado pagando 1 carta, si sobra mano.
@@ -1013,8 +1011,11 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return 0
     // Cartas de jugador 2.0
     case 'herbolaria.quitar':
-    case 'virar.jugar':
       return 3
+    case 'virar.jugar':
+      // Revisión de Albert: la Prueba de NAV pasa a ser de COM agotando un Cañón. Si en COM llega mejor (contando los demás
+      // Cañones, que sí suman en COM y en el Mar).
+      return ev?.tipo === 'revelarPeligro' && convieneVirar(s, ev.carta) ? 3 : 0
     case 'fiador.descarte': {
       // Fase 14: se descarta él (y robas 2) en lugar de otro que valga más.
       if (ev?.tipo !== 'descartarTripulante' || !fuente) return 0
@@ -1022,12 +1023,10 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     }
     case 'cataplasma.jugar':
       return 2
-    case 'cortar.jugar':
-      return trasEncuentro && mano >= 4 ? 2 : 0
     case 'a_por_ellos.jugar':
-      // Fase 14: Prueba de COM 3 para que no se descarte: si vale la pena y los preparados llegan.
+      // «¡Nadie se queda atrás!» (revisión de Albert): Destina 3 COM para que no se descarte, si vale la pena salvarlo.
       if (ev?.tipo !== 'descartarTripulante' || mano < 2) return 0
-      return valorTripulante(s, ev.carta) >= 3 && alcanza(s, [{ hab: 'COM', dificultad: primerNumero(textoDe('a_por_ellos')) }]) ? 3 : 0
+      return valorTripulante(s, ev.carta) >= 3 ? 3 : 0
     case 'arenga.jugar':
       return convieneArenga(s) ? 2 : 0
     case 'ron_valientes.jugar':
@@ -1078,6 +1077,33 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
  * ¿Llegan los preparados (con las cartas de la mano) a alguna de estas Pruebas con 1 de margen? La dificultad es la
  * real: con lo que le sumen la misión, «¡La guardia!» o «la siguiente Prueba recibe +1».
  */
+/** Lo que le sobra (o falta) para superar el encuentro comprometiendo a todos los preparados y las cartas útiles. */
+function margenDelEncuentro(s: Estado, carta: InstId): number {
+  const enc = definicionEncuentro(s, carta)
+  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c))
+  let margen = -99
+  for (let i = 0; i < enc.opciones.length; i++) {
+    const o = enc.opciones[i]!
+    const { total, dificultad } = prevision(s, carta, i, preparados, s.zonas.mano.filter((c) => iconos(s, c, o.hab) > 0))
+    margen = Math.max(margen, total - dificultad)
+  }
+  return margen
+}
+
+/** «Virar y dar la cara»: ¿le va mejor la Prueba de COM (con los Cañones que le queden) que la de NAV? */
+function convieneVirar(s: Estado, carta: InstId): boolean {
+  const m = s.mision
+  if (!m) return false
+  const nav = margenDelEncuentro(s, carta)
+  const antes = m.navAcom
+  m.navAcom = carta
+  const canones = definicionEncuentro(s, carta).abordaje ? 0 : 2 * Math.max(0, canonesPreparados(s).length - 1)
+  const com = margenDelEncuentro(s, carta) + canones
+  if (antes === undefined) delete m.navAcom
+  else m.navAcom = antes
+  return nav < 1 && com >= nav + 2
+}
+
 function alcanza(s: Estado, opciones: readonly { hab: 'NAV' | 'COM' | 'EXP'; dificultad: number }[]): boolean {
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c))
   if (preparados.length === 0) return false

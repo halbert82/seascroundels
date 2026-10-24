@@ -584,8 +584,12 @@
 .card.t-habilidad .art{left:0;right:0;top:56px;height:352px}
 .card.t-habilidad .ribbon{top:393px}
 .card.t-habilidad .tbox{top:408px;padding:20px 16px 8px;gap:3px;justify-content:center}
-.card.t-habilidad .rules{font-size:15px;line-height:1.28}
 .card.t-habilidad .flavor{margin:0;font-size:14px;line-height:1.2}
+
+/* Fase 16 (Albert): un solo tamaño de letra, 18 px, para el texto de reglas de todas las cartas de jugador (Capitán, Barco,
+   Tripulantes, Mejoras, Eventos y Habilidades), sin texto grande ni apretado. Viene en --fsj desde CartaJugador: las que
+   aún no caben a 18 px llevan una letra provisional (ajustes.ts). La cifra sola de las Mejoras («+1 [NAV]») sigue grande. */
+.card.dj .rules:not(.big){font-size:var(--fsj,18px);line-height:1.36}
 
 /* ---------- Fase 16: cartas mini de Estado (marco rojo) y de Ventaja (marco verde), 41 × 63 mm ---------- */
 .card.cmini{width:246px;height:378px;border-radius:13px;

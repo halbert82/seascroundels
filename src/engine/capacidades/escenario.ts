@@ -7,6 +7,9 @@ import { anotar, copia, nombre } from '../estado.ts'
 import { mover } from '../zonas.ts'
 import type { Efecto, OpcionEfectos } from '../efectos.ts'
 import { cumple, registrarCodigo } from '../tareas/efectos.ts'
+import { registrarEspecial } from '../tareas/peligros2.ts'
+import { mirarYPonerEnMuelle } from '../tareas/cartas.ts'
+import { tipoDe } from '../catalogo.ts'
 import { numeroConIcono, numeroTras, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId, Estado, InstId, NuevaTarea } from '../tipos.ts'
 import { entornoDeMision } from './comun.ts'
@@ -30,9 +33,17 @@ function elige(opciones: OpcionEfectos[], inst: InstId): NuevaTarea {
 
 const n = (carta: CartaId) => primerNumero(textoDe(carta))
 
-// Lo que no es un efecto de los Peligros: buscar una Mejora de barco, la deserción y La Armada encima del mazo.
-registrarCodigo('ribera.buscar', () => [{ tipo: 'buscarMuelle', filtro: 'mejoraBarco' }])
+// Lo que no es un efecto de los Peligros: el descuento de los Carpinteros de ribera, la deserción y La Armada encima del
+// mazo.
+registrarCodigo('ribera.descuento', () => [esteTurno('ribera.turno', 'ribera')])
 registrarCodigo('desercion.desertar', () => [{ tipo: 'desercion' }])
+
+// Marineros sin barco (revisión de Albert, fuera Buscar): «Mira las 3 cartas superiores del mazo de muelle: pon un
+// Tripulante de entre ellas en el muelle en lugar de la carta de más a la izquierda (que se descarta) y las demás al fondo.
+// Este turno, reclutarlo cuesta 1 menos.» Como «Lenguas sueltas»; si no sale ningún Tripulante, no hay descuento.
+registrarEspecial('reclutas.mirar', (s, _t, e) =>
+  mirarYPonerEnMuelle(s, e, { motivo: 'marinerosSinBarco', soloTripulantes: true, marca: { clave: 'reclutas.turno', fuente: 'reclutas' } }),
+)
 
 /** «La Armada te persigue», si está apartada, en el mazo de Peligros o en sus descartes (de ahí se puede sacar). */
 function armadaQueSePuedeSacar(s: Estado): InstId | undefined {
@@ -62,15 +73,16 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
   // Vientos alisios y Temporada de huracanes: ver sus efectos temporales, abajo.
   alRevelar('alisios', () => [esteTurno('alisios.turno', 'alisios')]),
 
-  // Marineros sin barco: busca un Tripulante y ponlo en el muelle. Este turno, reclutarlo cuesta 1 menos.
-  alRevelar('reclutas', () => [{ tipo: 'buscarMuelle', filtro: 'tripulante', marca: { clave: 'reclutas.turno', fuente: 'reclutas' } }]),
+  // Marineros sin barco: mira las 3 de arriba del mazo de muelle y pon un Tripulante en el muelle (ver arriba).
+  alRevelar('reclutas', () => [{ tipo: 'especial', clave: 'reclutas.mirar', datos: {}, paso: 0 }]),
 
-  // Carpinteros de ribera: Elige: repara 2 daños, o busca una Mejora de barco y ponla en el muelle.
+  // Carpinteros de ribera (revisión de Albert, fuera Buscar): «Elige: repara 2 daños, o este turno adquirir una Mejora de
+  // barco cuesta 1 menos.» (Antes, buscar una Mejora de barco y ponerla en el muelle.)
   alRevelar('ribera', (_s, inst) => [
     elige(
       [
         { texto: `Reparar ${numeroConIcono(textoDe('ribera'), 'dano')} daños del Barco`, efectos: [{ tipo: 'reparar', n: numeroConIcono(textoDe('ribera'), 'dano') }] },
-        { texto: 'Buscar una Mejora de barco y ponerla en el muelle', efectos: [{ tipo: 'codigo', clave: 'ribera.buscar' }] },
+        { texto: 'Este turno, adquirir una Mejora de barco cuesta 1 menos', efectos: [{ tipo: 'codigo', clave: 'ribera.descuento' }] },
       ],
       inst,
     ),
@@ -198,6 +210,15 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     ventana: 'constante',
     desde: 'temporal',
     modifica: (_ctx, yo, c) => (c.tipo === 'coste' && yo !== null && c.carta === yo ? -1 : 0),
+  },
+  {
+    // Carpinteros de ribera: este turno, adquirir una Mejora de barco cuesta 1 menos (cada una que adquieras; el coste
+    // impreso no cambia).
+    clave: 'ribera.turno',
+    carta: 'ribera',
+    ventana: 'constante',
+    desde: 'temporal',
+    modifica: (ctx, _yo, c) => (c.tipo === 'coste' && tipoDe(copia(ctx.s, c.carta).id) === 'mejoraBarco' && ctx.s.zonas.muelle.includes(c.carta) ? -1 : 0),
   },
   {
     clave: 'escasez.turno',

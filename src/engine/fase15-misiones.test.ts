@@ -350,32 +350,27 @@ describe('268 · El naufragio del San José y la carta 286, «Fondeáis sobre el
     expect(k.zona('mazoNaufragio')).toHaveLength(11)
   })
 
-  it('«El diario del capitán»: un capítulo I de travesía del mazo de Misiones pasa a tus misiones disponibles con 2 de Avance', () => {
-    const j = naufragio({ misiones: ['naufragio-I', 'prueba-I', 'aguada-I'], mazoMisiones: ['ladron-I', 'espia-I', 'fantasma-I', 'gobernador-I'] })
+  it('«El diario del capitán» (revisión de Albert, fuera Buscar): pones 2 de Avance en una misión disponible (la misión en curso no cuenta)', () => {
+    const j = naufragio({ misiones: ['naufragio-I', 'prueba-I', 'aguada-I'], mazoMisiones: ['ladron-I', 'espia-I'] })
     j.encimaDelNaufragio('naufragio_diario').opcion('bucear').elegir('vigia')
-    // Solo se ofrecen los capítulos I de travesía (no las aventuras).
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'diarioCapitulo' } })
-    expect(j.decision.tipo === 'elegirCartas' && j.decision.candidatas.map((c) => j.estado.cartas[c]?.id).sort()).toEqual(['espia-I', 'fantasma-I'])
-    j.elegir('espia-I')
-    // Cambia una de las disponibles; la misión en curso no cuenta.
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'diarioCambiar' } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'diarioAvance', n: 2 } })
     expect(j.decision.tipo === 'elegirCartas' && j.decision.candidatas.map((c) => j.estado.cartas[c]?.id).sort()).toEqual(['aguada-I', 'prueba-I'])
     j.elegir('aguada-I')
-    expect(disponibles(j)).toEqual(['naufragio-I', 'prueba-I', 'espia-I'])
-    expect(j.avance('espia-I')).toBe(2)
-    expect(j.zona('mazoMisiones').at(-1)).toBe('aguada-I')
-    expect(j.registro).toContain('«Seguirle por Port Royal» pasa a tus misiones disponibles con 2 de Avance, en lugar de «Agua y leña», que va al fondo del mazo de Misiones.')
+    expect(j.avance('aguada-I')).toBe(2)
+    expect(j.registro).toContain('El diario del capitán: pones 2 de Avance en «Agua y leña».')
+    // Ya no se busca en el mazo de Misiones: no cambia nada allí.
+    expect(j.zona('mazoMisiones')).toEqual(['ladron-I', 'espia-I'])
     // El diario se aparta; al terminar, el Avance se queda en la misión.
     expect(j.zona('naufragioApartadas')).toEqual(['naufragio_diario'])
     j.opcion('subir')
-    expect(j.avance('espia-I')).toBe(2)
+    expect(j.avance('aguada-I')).toBe(2)
     expect(j.zona('mazoHistoria')).toContain('naufragio_diario')
   })
 
-  it('«El diario del capitán» sin capítulos I de travesía en el mazo de Misiones: no ocurre nada', () => {
-    const j = naufragio({ mazoMisiones: ['ladron-I', 'gobernador-I'] })
+  it('«El diario del capitán» con una sola misión disponible además del naufragio: va a ella sin preguntar', () => {
+    const j = naufragio({ misiones: ['naufragio-I', 'prueba-I'] })
     j.encimaDelNaufragio('naufragio_diario').opcion('bucear').elegir('vigia')
-    expect(j.registro).toContain('No queda ningún capítulo I de travesía en el mazo de Misiones: no ocurre nada.')
+    expect(j.avance('prueba-I')).toBe(2)
     expect(j.decision).toMatchObject({ motivo: { clave: 'bucear', n: 1 } })
   })
 })

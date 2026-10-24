@@ -44,10 +44,10 @@ Cada línea lleva su ejemplo de juego. Cada decisión tendrá su prueba en el mo
 - **N11 · Rehén con solo el Capitán en juego: no pasa nada** (el Capitán no puede ser rehén). *Ejemplo:* fallas Bandoleros con Diego solo y comprometido: nadie es capturado.
 - **Reforzar solo si se comprometió a alguien** (reglamento, confirmado por Albert). *Ejemplo:* sin comprometidos no puedes descartar «¡Al abordaje!» tras el Destino para salvar la Prueba: la fallas y se aplica Sin oposición.
 - **N12 · El ejemplo del primer turno cuenta el +1 NAV en el Mar de La Sombra del Alba y su Destino pasa a ser «Corriente traicionera».** *Ejemplo:* Diego y el Bucanero suman 3, más 1 del Barco: 4; «Corriente traicionera» da +2 por ser de NAV y la Prueba pide 5; refuerza con «Mano firme al timón» y llega a 6. El Final no cambia.
-- **N13 · Una herida pagada como coste se puede evitar o desviar como cualquier otra herida**, salvo que la carta diga expresamente que no se puede. El coste se da por pagado igualmente. *Ejemplo:* el Filibustero paga su herida para tener +2 COM; el Grumete se descarta y la reduce a 0, y el Filibustero conserva el +2. También se puede desviar con «Ni un hombre atrás». Si esa herida derrota al Tripulante, Isabela o el Amuleto lo salvan igual.
+- **N13 · Una herida pagada como coste se puede evitar o desviar como cualquier otra herida**, salvo que la carta diga expresamente que no se puede. El coste se da por pagado igualmente. *Ejemplo:* el Filibustero paga su herida para tener +2 COM; el Grumete se descarta y la reduce a 0, y el Filibustero conserva el +2. También se puede desviar con «Cubrir las espaldas» (antes «Ni un hombre atrás»). Si esa herida derrota al Tripulante, Isabela o el Amuleto lo salvan igual.
 - **N14 · El Loro que se une a una Prueba sin comprometidos anula la línea Sin oposición** (el Destino se aplica tras su ventana, N9): la Prueba se puede superar y se puede reforzar. *Ejemplo:* no comprometes a nadie contra los Espíritus de la selva (EXP 3); sale «Contratiempo» (+1; Sin oposición: −1 Avance) y el Loro se une: no pierdes Avance, la Prueba pide 4 y llegas con el Loro (1), «Ojo avizor» (2) y «Rumbo por las estrellas» (1).
 - **N15 · «Perdidos en la espesura» ignora el recuadro rojo y la herida extra de la misión, pero no lo que añade el Destino.** *Ejemplo:* en «El templo» fallas la Trampa de dardos (1 herida · 1 herida) con el Destino «Fiebre»: sin la carta son 4 heridas; con ella, 1 (la de «Fiebre»).
-- **N16 · «Retirada a tiempo» quita el encuentro, pero el Destino ya revelado se aplica** (su efecto añadido y su línea Sin oposición). No hay Prueba que resolver, ni Avance, ni recuadros, y la carta no cuenta como resuelta (D5b). *Ejemplo:* comprometes al Bucanero contra la Patrulla española y sale «Celada» (+2; un comprometido sufre 1 herida); juegas «Retirada a tiempo»: el Bucanero sufre la herida, pero te ahorras el fallo.
+- *(Sin uso desde la revisión de Albert de las cartas de jugador: «Retirada a tiempo» salió de la caja.)* **N16 · «Retirada a tiempo» quita el encuentro, pero el Destino ya revelado se aplica** (su efecto añadido y su línea Sin oposición). No hay Prueba que resolver, ni Avance, ni recuadros, y la carta no cuenta como resuelta (D5b). *Ejemplo:* comprometes al Bucanero contra la Patrulla española y sale «Celada» (+2; un comprometido sufre 1 herida); juegas «Retirada a tiempo»: el Bucanero sufre la herida, pero te ahorras el fallo.
 - **N17 · Una Prueba superada automáticamente («Carronadas», «Soborno») cuenta como superada, sin participantes.** Se activan «Prisionero liberado» y las reglas de misión de «al superar»; no se activan Uñas largas, el Contrabandista ni el Rastreador. Si el encuentro tiene dos opciones, eliges cuál superas. *Ejemplo:* juegas «Soborno» ante «Perros de la guardia» (COM 3 o EXP 3): eliges COM y luego puedes jugar «Prisionero liberado».
 - **N18 · Son Cañones las cuatro Mejoras con munición** (Cañones de bronce, Carronadas, Culebrina y Pedrero), **y solo se usan en misiones de Mar**, también el Pedrero. *(Fase 13: ya no es regla general; lo dice cada carta con «[mar], [agotar]:». Ver «Reglas generales nuevas».)* *Ejemplo:* en «Cobrar la deuda» (Ciudad) revelas la Pelea de taberna (COM 3): no puedes descartarla con el Pedrero.
 - **N19 · El descuento de Catalina se gasta con el siguiente Tripulante que reclutes, aunque sea gratis.** *Ejemplo:* agotas a Catalina y juegas «Náufrago en la playa»: el Tripulante que reclutas gratis se lleva el descuento y el siguiente cuesta lo normal.
@@ -139,7 +139,7 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
   - **P41** · «el de menor coste»: el Capitán no cuenta;
   - **P42** · Lenguas sueltas: una carta de Peligro que ocupa el muelle no es «la de más a la izquierda»;
   - **P43** · Echarse la culpa: siempre dos Tripulantes distintos; si empatan, eliges;
-  - **P46** · Fuegos fatuos: la Mejora se busca en el mazo de muelle y se pone en el muelle;
+  - **P46** · Fuegos fatuos: la Mejora se busca en el mazo de muelle y se pone en el muelle *(sin uso desde la revisión de Albert de las cartas de jugador: ahora roba 1)*;
   - **P47** · Subasta del naufragio: poner la Mejora con descuento es opcional.
 - **P45 · Agua dulce (corregida):** primero quita Envenenado y después cura 1 herida a cada uno. *Ejemplo:* el Bucanero con 1 herida y Envenenado acaba sin ficha y sin herida.
 
@@ -1244,7 +1244,7 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - **P109 queda sustituida** por esto.
 - *Pruebas (fase15-misiones.test):* la misión sin reglas y con la recompensa nueva, y la 286 cita el mazo del naufragio; al superarla, primero se supera y después se coge la 286 (prepara a todos y baraja las 12); al terminar, la 286 y el mazo vuelven al mazo de historia; las preguntas del buceo vienen de la carta 286; una partida guardada con la versión anterior mientras se buceaba no vuelve a bucear (guardado.test: una partida de antes recibe la 286 en el mazo de historia).
 
-**P107 · Al buscar en el mazo de Misiones con «El diario del capitán», se baraja después: SÍ.** Ya estaba así (el reglamento, en «Buscar»); fuera la marca pendiente. *Prueba:* la del diario (la misión cambiada va al fondo después de barajar).
+**P107 · Al buscar en el mazo de Misiones con «El diario del capitán», se baraja después: SÍ.** *(Ya no hace falta desde la revisión de Albert de las cartas de jugador: el diario pone 2 de Avance en una misión disponible y nadie busca en el mazo de Misiones.)* Ya estaba así (el reglamento, en «Buscar»); fuera la marca pendiente. *Prueba:* la del diario (la misión cambiada va al fondo después de barajar).
 
 ### Lecturas de la tercera ronda (no son preguntas)
 
@@ -1668,3 +1668,97 @@ La regata es más dura (el rival ya no deja 1 de reputación de consuelo y la ca
 - **Antes**, retirarse dejaba la regata disponible: el jugador se retiraba con 6 de Rival (128 retiradas), volvía con el Rival a 0 y acababa ganándola en el 91 % de las partidas en que salía (193 de 213). **Ahora** solo hay un intento: se gana en el 62 % (133) y en el 34 % (72) se aparta.
 - **Gana el rival o te retiras da lo mismo:** con el jugador de antes y el revisado salen las mismas regatas ganadas y apartadas; solo cambia cuántas terminan por la octava ficha (38) en lugar de por retirarse (34 de las 67).
 - **Victorias:** con los mazos de inicio, de 45,6 % a 44,7 % (9 partidas de 1000 menos); con mazos de muelle variados, de 43,6 % a 43,9 % (hacia arriba). En conjunto, del tamaño del azar: la regata solo sale en una de cada cinco partidas. La regata en sí es más dura (60 regatas ganadas menos en 1000 partidas, y cada una da 2 de reputación y +1 Mando), así que no baja la dificultad. Panamá sigue muy por debajo del 10 % (1,1 %).
+
+## Revisión de Albert de las cartas de jugador (24 de octubre de 2026)
+
+### Textos nuevos
+
+- **44 Rumores de taberna**, **54 Sangre fría**, **57 ¡Todos a una!**, **61 Senda escondida**, **66 ¡Al abordaje!**, **68 Ojo avizor**, **71 Rumbo por las estrellas** y **169 Cataplasma**: ambientaciones nuevas.
+- **47 El capitán hace guardia:** coste 1 (antes 0) y «Cura {2 herida g} a cada Tripulante» (antes 1).
+- **48 Pólvora robada** (antes «Pólvora de contrabando»; el identificador no cambia): coste 1 (antes 0) y «Prepara un _Cañón_.» (antes todos). Con varios agotados, eliges cuál.
+- **49 ¡A toda vela!:** gana {1 avance} (antes 2); ambientación nueva.
+- **53 Reflejos de gato:** «**Interrupción:** Cancela todos los efectos de una carta de Destino recién revelada.» Hace lo mismo que antes; ambientación nueva.
+- **56 Soborno:** «**Respuesta:** [ciu]: Después de que reveles una carta de Peligro, supera automáticamente su Prueba (no reveles carta de Destino).» Ver P124: el motor sigue sin ofrecerlo contra un encuentro sin Prueba (no hay nada que superar) ni con Alerta.
+- **58 Cubrir las espaldas** (antes «Ni un hombre atrás»). Con la norma «Inflige» (abajo), su texto final es «**Interrupción:** Cuando vayas a infligir heridas a un Tripulante que participe en una Prueba, inflígeselas en su lugar a otro Tripulante que participe en esa Prueba.» (Albert lo había escrito con «sufre las heridas»; el jugador sigue eligiendo a quién). N13 ya lo nombra así.
+- **60 Prisionero liberado:** solo en Ciudad ([ciu]) y las demás se descartan (antes, al fondo del mazo de muelle).
+- **171 ¡Nadie se queda atrás!** (antes «¡A por ellos!»): «**Interrupción:** Cuando un Tripulante vaya a ser descartado por un efecto de juego, destina 3 [COM] para evitarlo.» Destina es un coste: agotas Tripulantes preparados cuya COM sume 3, sin Destino ni cartas de la mano. Vale contra cualquier efecto (como el Fiador): no contra las heridas, despedir, Enrolado ni el que se descarta para pagar un coste. Puede destinarse el propio Tripulante que se va a descartar si está preparado.
+- **173 Virar y dar la cara:** «**Respuesta:** [mar]: Después de que reveles una carta de Peligro cuyo encuentro tenga una Prueba de [NAV], agota un _Cañón_: esa Prueba es de [COM] en lugar de [NAV].» Ya no tiene que ver con Persigue. El ejemplo de Albert es la prueba: «Turbonada a popa» (NAV 4) con la Culebrina de proa agotada se resuelve como COM 4. Ver P122 para los modificadores.
+
+### Cartas eliminadas (decisión de Albert)
+
+**43 Botín escondido, 65 Retirada a tiempo y 170 Cortar por lo sano** salen de la caja y de la galería; sus números quedan libres. N16 («Retirada a tiempo») queda sin uso. **Mazo del capitán de inicio** (P120, opciones por defecto pendientes de confirmar): la 240 «Arenga del capitán» en lugar del Botín, la segunda copia de 53 «Reflejos de gato» en lugar de la Retirada, y el hueco de Cortar sin rellenar: **39 cartas** (legal: de 30 a 40) hasta que se rehagan los mazos de inicio. Marcado con `TODO(regla)` en las pruebas de los mazos.
+
+**Permanentes sin «Cortar por lo sano»:** ninguna se queda para siempre. Todas tienen su propia salida en su texto (una Acción, su contador o «descarta esta carta») y vuelven al mazo de historia al terminar la misión, salvo **Mala fama (136)**, que sigue en juego entre misiones y sale con su Acción («Descarta 2 cartas de tu mano»), y las tres de misión (El prisionero, Galeón San Telmo, Murallas de Port Royal), que se van con su misión.
+
+### Fuera la mecánica Buscar (decisión de Albert)
+
+- **100 Marineros sin barco:** «Mira las 3 cartas superiores del mazo de muelle: pon un Tripulante de entre ellas en el muelle en lugar de la carta de más a la izquierda (que se descarta) y las demás al fondo. Este turno, reclutarlo cuesta 1 menos.» Como «Lenguas sueltas» (Barril de ron): la misma regla en el motor. *Lectura:* si no sale ningún Tripulante, las 3 van al fondo, no se descarta nada y no hay descuento; con uno solo, no se pregunta. **No cabe a la letra normal** (la ambientación pisa el borde por 3 px): provisionalmente va con la letra apretada (15,5 px), ver P125.
+- **106 Carpinteros de ribera:** «**Elige:** repara {2 dano g}, o este turno adquirir una Mejora de barco cuesta 1 menos.» Ver P123.
+- **117 La casa del gobernador:** el Saqueo con 4 o más da {+1 rep} y {2 robar}; la recompensa, +1 de reputación y roba 2.
+- **210 Fuegos fatuos** (Fuego de San Telmo, Naturaleza), al superar: «{1 robar}.» P46 queda sin uso.
+- **279 El diario del capitán:** «Pon {2 avance} en una misión disponible.» (no la del naufragio, que es la que se está jugando). P107 ya no hace falta: nadie busca en el mazo de Misiones.
+- **Reglamento:** la entrada Buscar solo habla de sacar una carta del mazo de historia por su número.
+
+### Norma de las heridas: «Inflige» siempre (respuesta de Albert durante la revisión)
+
+Albert vio que las cartas decían «inflige» y «sufre» indistintamente (87 «sufre» y 39 «inflige») y eligió **«Inflige» siempre**, como Daña, Cura o Roba: «Inflige {2 herida}» sin destinatario son heridas libres; con destinatario, van a quien diga («Inflige {1 herida} al Tripulante asignado con más [COM]», «Inflige {1 herida} al Capitán»); con pronombre, «inflígele». Los momentos también: «Cuando vayas a infligir heridas a un Tripulante…». Por coherencia, el daño del Barco: «Daña {N dano}» y «Cuando vayas a dañar el Barco…».
+
+- **87 textos de 62 cartas** (Peligros 156–217, el mazo propio 224, misiones 114, 144, 145 y 147, permanentes 227–235, 267, 273 y 275, el naufragio, las cartas de recompensa 288, 289 y 294, los Estados 297, 301 y 302, y las cartas de jugador 5, 9, 28, 58, 129, 244 y 245). No queda ningún «sufr…» en las cartas de la caja. Lo que hace cada carta no cambia; el motor lee los mismos números.
+- **Ejemplos:** Filibustero borracho «Inflige {1 herida} a Filibustero borracho: recibe {+2 COM} para esta Prueba.» (lo mismo la Carne de cañón y el Galeote fugado); La Cruz de Santa Bárbara «Cuando vayas a dañar el Barco con más de {2 dano} a la vez, en vez de eso daña {2 dano}.»; «A bordo del fantasma» (147) «en esta misión no dañes el Barco; en su lugar, por cada daño, inflige {1 herida} a un Tripulante que elijas.»; la Gesta de «Rumbo a mar abierto» «sin haber dañado el Barco en esta misión».
+- **Caben todas.** Dos Peligros bajan medio punto la letra al ajustarse solos: 164 Maremoto (15 → 14,5 px) y 180 Tiburones (14,5 → 14 px).
+- **Pasajeros 221 y 222:** dicen «no puede ser asignado ni recibir heridas, Estados ni Ventajas» (una restricción, no un efecto): sin cambiar. Ver P126.
+- **Reglamento y mesa** con la misma norma (también las reglas de heridas libres, Abordaje, hundirse, el Capitán que no se descarta, Envenenado, Sangrando y Vía de agua). En el reglamento queda «sufrir» solo en la narración de algunos ejemplos («Diego no sufre las 2 heridas»).
+
+### Tamaño de letra de las cartas de jugador (decisión de Albert)
+
+Un solo tamaño para todo el texto de reglas de las cartas de jugador, **18 px** (antes 17). Fuera el texto grande de 45 y 46 y el apretado de las cartas largas. Los Peligros, las misiones y los Estados no cambian. Medido con capturas (`node capturas/medir-jugador18.mjs`, que deja cada carta en `capturas/jugador18/`): caben 78 de las 83 con texto. **No caben** (P125; hasta que Albert decida, cada una lleva un tamaño provisional marcado con `TODO(regla)`):
+
+| Carta | Le sobra a 18 px | Provisional |
+| --- | --- | --- |
+| 009 Filibustero borracho | 1 px (casi nada) | 17,5 px |
+| 011 Isabela «Cuervo» Saldaña | 17,6 px (casi una línea) | 15 px |
+| 018 Viejo lobo de mar | 21,6 px (casi una línea) | 15 px |
+| 168 Fiador de la Hermandad | 23,6 px (casi una línea) | 17,5 px |
+| 244 Carne de cañón | 1 px (casi nada) | 17,5 px |
+
+- Las cinco Mejoras cuyo texto es solo una cifra (021, 023, 035, 036 y 042, «+1 [NAV]») siguen con la cifra grande y centrada, como en sus referencias: se tomó como el dato de la carta, no como texto de reglas.
+- En el Barco (003), «Distancia −1.» parte la línea y deja «−1.» solo en la última.
+
+### Lecturas (no son preguntas, salvo las que se indican)
+
+- **Soborno** sigue sin valer contra Alerta (fase 15: «Alerta frena a Sangre fría, Soborno…», lo dice el reglamento) ni contra un encuentro sin Prueba. El jugador automático lo juega ahora con 2 cartas en la mano (antes 3) ante cualquier Peligro de Ciudad con algún riesgo. Ver P124.
+- **Virar y dar la cara:** la dificultad y lo que diga el propio encuentro («Vigía −2», «un Vigía asignado suma +2») no cambian; las bonificaciones que dependen de la habilidad pasan a ser las de COM (la Bandera negra y los demás _Cañones_ suman; las Velas rotas, que restan a las Pruebas de NAV, ya no). Ver P122.
+- **Componentes:** la fila de Tripulantes decía 23 desde la fase 14; los datos tienen 29 copias. La caja tiene **336 cartas** (antes se contaban 333; con las tres que salen, 336). Una prueba nueva compara cada fila de Componentes con los datos y la frase de la caja con el total.
+- **La Interrupción que pide una Prueba con otra a medias:** ya no la usa ninguna carta (solo «¡A por ellos!»). Se queda en los dos libros, sin nombrar ninguna carta, y el motor la sigue sabiendo hacer. Ver P121.
+
+### Motor, mesa y jugador automático
+
+- **Motor:** fuera las tareas de buscar y de devolver una permanente; «Lenguas sueltas» y «Marineros sin barco» comparten la misma regla; «Destina» se paga también como coste de un Evento y se suma con la habilidad que diga (la mesa lo dibuja con su icono); la Prueba de NAV de un encuentro puede pasar a COM («Virar y dar la cara»), y lo que mira «carta con Prueba de COM/NAV» (Pedrero, Velas de tormenta, Carronadas) ve el cambio; fuera lo de mandar al fondo la carta que persigue.
+- **Mesa:** el panel de «Destina 3 COM» con su icono; las preguntas nuevas de Marineros sin barco y del diario; el Prisionero dice «Los demás se descartan».
+- **Jugador automático:** «Virar y dar la cara» cuando en COM llega mejor que en NAV (contando los demás _Cañones_); «Pólvora robada» si le sobra mano; «¡Nadie se queda atrás!» para salvar a un Tripulante que vale la pena, destinando el grupo más barato; Soborno con 2 cartas; el Prisionero, solo en Ciudad; en los Carpinteros, el descuento si hay una Mejora de barco en el muelle; el diario, en la misión que más le interesa. Usa todas las capacidades alguna vez (el informe ya no lista ninguna sin usar: antes, la Arenga).
+- **Partidas guardadas:** las tres cartas eliminadas salen de la partida estén donde estén; los nombres nuevos salen de los datos (el identificador no cambia). Una partida guardada a mitad de buscar, de Cortar, de la Prueba de «¡A por ellos!» o del diario de antes no se puede continuar, y lo dice.
+
+### Equilibrio (1000 partidas, semillas 1–1000, mazos de inicio)
+
+| | Antes | Después |
+| --- | --- | --- |
+| Victorias | 44,7 % (436 por reputación, 11 Panamá) | 44,8 % (439 por reputación, 9 Panamá) |
+| Con mazos de muelle variados (2000 partidas) | 43,9 % | 44,6 % |
+| Derrotas por tiempo / por el Capitán | 68,9 % / 31,1 % | 65,4 % / 34,6 % |
+| Tripulantes muertos por partida | 3,27 | 3,35 |
+| Misiones retiradas por partida | 2,20 | 2,07 |
+
+- **Las victorias no cambian** (una partida de 1000; siete de 1000 con muelles variados): del tamaño del azar. Se pierden dos cartas que salvaban encuentros (Retirada a tiempo y Cortar por lo sano) y entra la Arenga; se muere un poco más y se retira algo menos.
+- **Ninguna carta nueva o cambiada sube mucho las victorias.** Las diferencias por carta del informe salen de muy pocas partidas (Pólvora robada 4, Virar 5, ¡Nadie se queda atrás! 7, Prisionero liberado 11) y son ruido. Panamá, 0,9 %.
+
+*Pruebas:* cartas-eventos.test (47, 48, 49, 53, 58, 60 en Ciudad y en el Mar, y que 43, 65 y 170 ya no existen), cartas-jugador2.test (¡Nadie se queda atrás! con el ejemplo del reglamento, sin COM suficiente y contra cualquier efecto; Virar con el ejemplo de Albert, solo en el Mar, con _Cañón_ y con Prueba de NAV, y que ya no toca Persigue), escenario.test (Marineros sin barco con uno, dos o ningún Tripulante; Carpinteros), fase15-misiones.test (el diario), misiones2.test (Saqueo y recompensa del gobernador; ¡La guardia! sale con sus Acciones), peligros2-grupoE.test (Fuegos fatuos roba 1), peligros2-grupoC.test (las campanas y ¡Nadie se queda atrás!), guardado.test (cartas eliminadas, nombres nuevos, partida a mitad de buscar), decisiones.test de la mesa (la ayuda de retirarse) y libro/componentes.test (Componentes cuadra con los datos).
+
+### Preguntas para Albert (P120–P126), con la opción por defecto aplicada
+
+- **P120 · Mazo del capitán de inicio.** Por defecto: Arenga en lugar del Botín, segunda Reflejos en lugar de la Retirada y 39 cartas (el hueco de Cortar sin rellenar) hasta rehacer los mazos de inicio.
+- **P121 · La regla de la Interrupción que pide una Prueba con otra a medias** (ninguna carta la usa ya). Por defecto se queda en los dos libros sin nombrar cartas. Propuesta: quitarla de «Aprende a jugar» y dejar una línea en la Referencia («Prueba de una Acción») para cartas futuras. *Ejemplo:* una carta futura «Sacarlo a rastras» («Interrupción: Cuando un Tripulante vaya a ser descartado, haz una Prueba de COM 3; si la superas, no se descarta»): la Prueba de «Leva forzosa» queda en suspenso, se hace la nueva con su Destino y después se termina la leva. La otra opción: borrarla y decir «ninguna Prueba empieza durante otra».
+- **P122 · Virar y dar la cara: las bonificaciones que dependen de la habilidad siguen a la nueva (COM).** *Ejemplo:* con la Bandera negra («[mar]: Tus Pruebas de COM reciben +1») y las Velas rotas («[mar]: Tus Pruebas de NAV reciben −1»), viras «Turbonada a popa» (NAV 4): la Prueba es COM 4, la Bandera suma +1 y las Velas rotas ya no restan. La otra opción: también se aplican los modificadores de NAV que tuviera la Prueba antes del cambio.
+- **P123 · Carpinteros de ribera: el descuento vale para cada Mejora de barco que adquieras ese turno.** *Ejemplo:* en el muelle están la Vela mayor (1) y el Casco reforzado (2): con el descuento pagas 0 y 1. La otra opción: solo para la primera que adquieras (pagas 0 y 2).
+- **P124 · Soborno contra Alerta.** Su texto ya no dice «con Prueba», y en la revisión dijiste «Soborno sobre cualquier Peligro de Ciudad». Por defecto sigue sin valer contra un encuentro con Alerta (la regla de Alerta, fase 15, lo nombra) ni sin Prueba (no hay nada que superar). *Ejemplo:* revelas «Los vigías del fuerte» (EXP 3, Alerta): no puedes jugar Soborno. La otra opción: con Alerta sí vale, porque el encuentro se resuelve igual (con la Prueba superada); habría que quitarlo de la lista de Alerta.
+- **P125 · Cartas que no caben a 18 px** (009, 011, 018, 168 y 244) **y «Marineros sin barco» (100)**: acortar el texto o bajar un poco la ilustración, carta por carta. Mientras, letra provisional. Y dos detalles: ¿las Mejoras de una sola cifra (021, 023, 035, 036, 042) siguen con la cifra grande?, ¿el Barco (003) puede decir «Distancia −1» sin que se parta el «−1»?
+- **P126 · Los Pasajeros 221 y 222** dicen «no puede ser asignado ni recibir heridas, Estados ni Ventajas». Por defecto no cambian (es una restricción, no un efecto). Con la norma: «no puede ser asignado, y no se le pueden infligir heridas ni poner Estados ni Ventajas».

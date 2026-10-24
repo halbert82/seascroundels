@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { capacidadesDe } from './capacidades/index.ts'
-import { iconosDe } from './catalogo.ts'
+import { CATALOGO, iconosDe, nombreDe } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 
 import { Jugador, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
@@ -18,13 +18,12 @@ describe('Habilidades (sin texto)', () => {
 })
 
 describe('Eventos sin etiqueta (en cualquier pausa)', () => {
-  it('043 · Botín escondido: buscas una Mejora en el mazo de muelle', () => {
-    const j = Jugador.en({ mano: ['botin'], mazoMuelle: ['bucanero', 'sable'] })
-    j.usar('botin.jugar')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'buscar' } })
-    j.elegir('sable')
-    expect(j.zona('muelle')).toContain('sable')
-    expect(j.zona('descartesCapitan')).toEqual(['botin'])
+  it('revisión de Albert: «Botín escondido» (43), «Retirada a tiempo» (65) y «Cortar por lo sano» (170) ya no están en la caja', () => {
+    for (const id of ['botin', 'retirada', 'cortar']) {
+      expect(CATALOGO.some((e) => e.id === id)).toBe(false)
+      expect(capacidadesDe(id)).toEqual([])
+    }
+    expect(CATALOGO.filter((e) => [43, 65, 170].includes(e.num))).toEqual([])
   })
 
   it('044 · Rumores de taberna: oteas 2 y eliges el orden de las que dejas arriba', () => {
@@ -47,22 +46,27 @@ describe('Eventos sin etiqueta (en cualquier pausa)', () => {
     expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([0, 0])
   })
 
-  it('048 · Pólvora de contrabando (fase 10b): preparas todos tus Cañones', () => {
-    const j = Jugador.en({ mano: ['polvora_c'], barco: { mejoras: [{ id: 'bronce', agotada: true }, { id: 'culebrina', agotada: true }] } })
-    j.usar('polvora_c.jugar')
-    expect(j.copia('bronce').agotada).toBe(false)
+  it('048 · Pólvora robada (revisión de Albert; antes «Pólvora de contrabando»): coste 1, preparas un Cañón (eliges cuál)', () => {
+    expect(nombreDe('polvora_c')).toBe('Pólvora robada')
+    const j = Jugador.en({ mano: ['polvora_c', 'ojo'], barco: { mejoras: [{ id: 'bronce', agotada: true }, { id: 'culebrina', agotada: true }] } })
+    j.usar('polvora_c.jugar').elegir('ojo')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'prepararCanon' } })
+    j.elegir('culebrina')
     expect(j.copia('culebrina').agotada).toBe(false)
-    const sin = Jugador.en({ mano: ['polvora_c'], barco: { mejoras: ['bronce'] } })
-    expect(sin.ofreceCapacidad('polvora_c.jugar')).toBe(false)
+    expect(j.copia('bronce').agotada).toBe(true)
+    // Sin Cañones agotados no se ofrece; sin otra carta para pagar su coste, tampoco.
+    expect(Jugador.en({ mano: ['polvora_c', 'ojo'], barco: { mejoras: ['bronce'] } }).ofreceCapacidad('polvora_c.jugar')).toBe(false)
+    expect(Jugador.en({ mano: ['polvora_c'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } }).ofreceCapacidad('polvora_c.jugar')).toBe(false)
   })
 })
 
 describe('Eventos de Acción', () => {
-  it('047 · El capitán hace guardia: agotas a Diego y curas 1 a cada Tripulante', () => {
-    const j = Jugador.en({ mano: ['ron_descanso'], capitan: { heridas: 2 }, tripulacion: [{ id: 'bucanero', heridas: 1 }] })
-    j.usar('ron_descanso.jugar')
+  it('047 · El capitán hace guardia (revisión de Albert: coste 1, cura 2): agotas a Diego y curas 2 a cada Tripulante', () => {
+    const j = Jugador.en({ mano: ['ron_descanso', 'ojo'], capitan: { heridas: 3 }, tripulacion: [{ id: 'bucanero', heridas: 1 }] })
+    j.usar('ron_descanso.jugar').elegir('ojo')
     expect(j.copia('capitan').agotada).toBe(true)
     expect([j.copia('capitan').heridas, j.copia('bucanero').heridas]).toEqual([1, 0])
+    expect(j.zona('descartesCapitan').sort()).toEqual(['ojo', 'ron_descanso'])
   })
 
   it('051 · ¡Arriba, perros!: preparas a un Tripulante', () => {
@@ -94,10 +98,10 @@ describe('Eventos de Acción', () => {
 })
 
 describe('Respuestas al revelar una carta de Peligro', () => {
-  it('049 · ¡A toda vela!: en el Mar, +2 de Avance', () => {
+  it('049 · ¡A toda vela! (revisión de Albert: 1 de Avance; antes 2): en el Mar, +1 de Avance', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['viento', 'ojo'], mazoPeligros: ['calma', 'calma', 'calma'] })
     j.usar('viento.jugar').elegir('ojo')
-    expect(j.registro).toContain('¡A toda vela!: +2 de Avance (2/3).')
+    expect(j.registro).toContain('¡A toda vela!: +1 de Avance (1/3).')
   })
 
   it('054 · Sangre fría: en Ciudad, ganas el Avance de la carta y la descartas sin resolverla', () => {
@@ -145,27 +149,35 @@ describe('Otras Respuestas', () => {
     expect(totalSinDestinoPrueba(j.estado)).toBe(3 + 2 + 2)
   })
 
-  it('060 · Prisionero liberado (fase 14): tras superar una Prueba de COM, miras 3 del mazo de muelle, puedes reclutar sin coste uno de coste 2 o menos y el resto va al fondo', () => {
+  it('060 · Prisionero liberado (revisión de Albert: solo en Ciudad y las demás se descartan): tras superar una Prueba de COM, miras 3 del mazo de muelle, puedes reclutar sin coste uno de coste 2 o menos y descartas el resto', () => {
+    // «Cobrar la deuda» (Ciudad): «Pelea de taberna», Prueba de COM.
     const j = Jugador.enMision({
-      misiones: ['pruebas-mar3'],
       mano: ['prisionero', 'ojo'],
       muelle: ['bucanero'],
       mazoMuelle: ['contrabandista', 'grumete', 'sable', 'vigia'],
-      mazoPeligros: ['fauna', 'chubasco', 'calma'],
+      mazoPeligros: ['rivales', 'chubasco', 'calma'],
     })
     j.comprometer('COM', ['capitan']).seguir()
     j.usar('prisionero.jugar').elegir('ojo')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'reclutarDelMazoMuelle', n: 2 } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'reclutarDelMazoMuelle', n: 2, texto: 'descartar' } })
     // Del mazo, no del muelle visible: el Bucanero no sale; el Contrabandista cuesta 3 y el Sable es una Mejora.
     expect((j.decision as { candidatas: string[] }).candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id)).toEqual(['grumete'])
     j.elegir('grumete')
     expect(j.zona('tripulacion')).toContain('grumete')
-    expect(j.zona('mazoMuelle')).toEqual(['vigia', 'contrabandista', 'sable'])
+    expect(j.zona('descartesMuelle').sort()).toEqual(['contrabandista', 'sable'])
+    expect(j.zona('mazoMuelle')).toEqual(['vigia'])
     expect(j.zona('muelle')).toEqual(['bucanero'])
   })
 
+  it('060 · Prisionero liberado: en el Mar no se ofrece aunque superes una Prueba de COM', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['prisionero', 'ojo'], mazoMuelle: ['grumete', 'sable', 'vigia'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+    j.comprometer('COM', ['capitan']).seguir()
+    expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
+    expect(j.ofreceCapacidad('prisionero.jugar')).toBe(false)
+  })
+
   it('060 · «De coste 2 o menos» mira el coste impreso: con el descuento de Catalina, el Contrabandista (3) sigue sin valer', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['prisionero', 'ojo'], mazoMuelle: ['contrabandista', 'sable', 'vigia'], mazoPeligros: ['fauna', 'chubasco', 'calma'] })
+    const j = Jugador.enMision({ mano: ['prisionero', 'ojo'], mazoMuelle: ['contrabandista', 'sable', 'vigia'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
     j.estado.temporales.push({ clave: 'capitan2.descuento', fuente: 'capitan2', hasta: 'finTurno' })
     expect(j.valor({ tipo: 'coste', carta: j.inst('contrabandista') })).toBe(1)
     j.comprometer('COM', ['capitan']).seguir()
@@ -187,25 +199,17 @@ describe('Otras Respuestas', () => {
     expect(j.copia('bucanero').entrenamiento).toEqual(['COM'])
   })
 
-  it('065 · Retirada a tiempo: tras revelarse el Destino, descartas la carta de Peligro sin resolverla', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['retirada', 'ojo'], mazoPeligros: ['cazadores', 'leyenda', 'calma', 'calma'] })
-    j.comprometer('COM', ['capitan']).usar('retirada.jugar').elegir('ojo')
-    expect(j.zona('descartesPeligros')).toEqual(expect.arrayContaining(['cazadores', 'leyenda']))
-    expect(j.estado.danoBarco).toBe(0) // sin el fallo de la Fragata
-    // La Fragata no da Avance ni cuenta como resuelta: después se revela y resuelve el Mar en calma.
-    expect(j.estado.mision?.cartasResueltas).toBe(1)
-    expect(j.avance('pruebas-mar3')).toBe(2)
-  })
 })
 
 describe('Interrupciones', () => {
-  it('053 · Reflejos de gato: cancelas un Destino', () => {
+  it('053 · Reflejos de gato: cancelas todos los efectos de una carta de Destino recién revelada', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['reflejos', 'ojo'], mazoPeligros: ['fauna', 'leyenda', 'calma'] })
     j.comprometer('COM', ['capitan']).usar('reflejos.jugar').elegir('ojo').seguir()
     expect(j.registro).toContain('Total 3 contra 2: superas la Prueba.')
   })
 
-  it('058 · Ni un hombre atrás: las heridas de un participante las sufre otro participante', () => {
+  it('058 · Cubrir las espaldas (antes «Ni un hombre atrás»): las heridas de un participante las recibe otro participante', () => {
+    expect(nombreDe('ni_hombre')).toBe('Cubrir las espaldas')
     // «Puñal escondido»: uno de los comprometidos sufre 1 herida. Va a Diego y se desvía al Bucanero.
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], mano: ['ni_hombre', 'ojo'], tripulacion: ['bucanero'], mazoPeligros: ['fauna', 'rivales', 'calma'] })
     j.comprometer('COM', ['capitan', 'bucanero']).elegir('capitan')

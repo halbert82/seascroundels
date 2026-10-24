@@ -3,11 +3,11 @@
 
 import { costeImpreso, esCanon, esUnica, porId } from '../catalogo.ts'
 import type { Entorno, Habilidad } from '../datos.ts'
-import { esAlerta } from '../definiciones.ts'
+import { definicionEncuentro, esAlerta } from '../definiciones.ts'
 import { copia } from '../estado.ts'
 import { curable } from '../estados.ts'
 import { mejoraActiva } from '../valores.ts'
-import { encuentroDe, entornoActual } from '../peligros.ts'
+import { entornoActual } from '../peligros.ts'
 import type { Estado, Evento, InstId } from '../tipos.ts'
 import { plazasLibres, valor } from '../valores.ts'
 
@@ -81,7 +81,8 @@ export function peligroQueSePuedeQuitar(s: Estado, ev: Evento): ev is Extract<Ev
 
 /** Una carta «con Prueba de X» lo es si alguna de sus opciones es de esa habilidad (D4). */
 export function conPruebaDe(s: Estado, carta: InstId, hab: Habilidad): boolean {
-  return encuentroDe(s, carta).prueba.some((o) => o.hab === hab)
+  // La definición, no lo impreso: «Virar y dar la cara» puede haber cambiado la Prueba de NAV a COM.
+  return definicionEncuentro(s, carta).opciones.some((o) => o.hab === hab)
 }
 
 /**

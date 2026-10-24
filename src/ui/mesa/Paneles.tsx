@@ -312,7 +312,7 @@ export function FinDeMision({ s, desde, alCerrar, elegir }: { s: Estado; desde: 
   const cifras = cifrasDeMision(s, i)
   const d = s.pendiente
   const pendiente = d?.motivo.clave
-  const eliges = pendiente === 'buscar' || pendiente === 'portadorTesoro'
+  const eliges = pendiente === 'portadorTesoro'
   // Final con elección: se elige aquí mismo.
   const finales = d?.tipo === 'elegirOpcion' && pendiente === 'finalMision' ? d.opciones : []
   const despues = s.registro.slice(i)

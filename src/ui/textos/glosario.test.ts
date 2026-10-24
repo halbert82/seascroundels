@@ -146,7 +146,6 @@ describe('Lo que se explica junto a una carta ampliada', () => {
 
   it('las palabras de los Peligros 2.0: Zona de permanentes, Elige, Sin ayuda, Incautado, Persigue, Ocupa el muelle', () => {
     expect(nombres('p2_bajamar')).toContain('Zona de permanentes')
-    expect(nombres('cortar')).toContain('Zona de permanentes')
     expect(nombres('p2_calma')).toContain('Elige')
     expect(nombres('p2_jaguar')).toContain('Sin ayuda')
     expect(nombres('p2_aduana')).toContain('Incautado')
@@ -157,7 +156,8 @@ describe('Lo que se explica junto a una carta ampliada', () => {
 
   it('«Persigue» no es «Entra en el mazo de Peligros», aunque las dos pongan la carta encima del mazo', () => {
     expect(nombres('p2_turbonada')).not.toContain('Entra en el mazo de Peligros')
-    expect(nombres('virar')).toEqual(['Persigue'])
+    // Revisión de Albert: «Virar y dar la cara» ya no tiene que ver con Persigue.
+    expect(nombres('virar')).not.toContain('Persigue')
     expect(nombres('armada_patrulla')).toContain('Entra en el mazo de Peligros')
   })
 

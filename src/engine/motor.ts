@@ -7,7 +7,7 @@ import type { Manejador, Resultado } from './tareas/comun.ts'
 import type { Decision, Eleccion, Estado, Tarea } from './tipos.ts'
 import { encolarUso, mismoUso, usosDisponibles } from './usos.ts'
 import { iconosDe } from './catalogo.ts'
-import { navParaDistancia, plazasOcupadas, valor } from './valores.ts'
+import { plazasOcupadas, sumaParaCubrir, valor } from './valores.ts'
 import { esAlerta, impideSuperar } from './definiciones.ts'
 // Reglas de las cartas de Peligro 2.0 y de las misiones 2.0 (se registran al cargar).
 import './peligros2/index.ts'
@@ -175,7 +175,7 @@ export function validarEleccion(s: Estado, d: Decision, e: Eleccion): void {
       if (tripulantes.length + cartas.length !== e.ids.length) invalida('alguna carta no sirve para cubrir la Distancia')
       // Fase 10: hay que agotar siempre al menos un Tripulante; las cartas con NAV solo completan.
       if (tripulantes.length === 0) invalida('hay que agotar al menos a un Tripulante preparado')
-      const nav = navParaDistancia(s, tripulantes) + cartas.reduce((n, c) => n + iconosDe(copia(s, c).id, 'NAV'), 0)
+      const nav = sumaParaCubrir(s, d.motivo, tripulantes, cartas)
       if (nav < d.distancia) invalida(`con eso sumas ${nav} y la Distancia es ${d.distancia}`)
       return
     }

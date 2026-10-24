@@ -114,9 +114,9 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
       doblon: salen['El doblón de la calavera'] ?? 0,
       culebrinaEnJuego: contar('«La culebrina del San José» entra en juego'),
       culebrinaSinEspacio: contar('No tienes Espacio para «La culebrina del San José»'),
-      diario: contar('pasa a tus misiones disponibles con'),
-      diarioPanama: contar('«El prisionero de Portobelo» pasa a tus misiones disponibles'),
-      diarioSinCapitulo: contar('No queda ningún capítulo I de travesía'),
+      // Revisión de Albert (fuera Buscar): el diario pone 2 de Avance en una misión disponible.
+      diario: contar('El diario del capitán: pones'),
+      diarioSinMision: contar('No tienes ninguna otra misión disponible'),
       pulpoEntreDos: contar('baja a ayudar: lo sacan entre dos'),
       pulpoSolo: contar('El pulpo se suelta solo'),
       derrotasDuranteElBuceo: derrotados,
