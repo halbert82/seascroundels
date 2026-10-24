@@ -1098,7 +1098,7 @@ El mazo de Peligros pasa de 56 cartas a 64 (63 en el mazo y «La Armada te persi
 
 ### Numeración
 
-Las 32 cartas nuevas: 247–254 (Peligros), 255–258 (la isla), 259–263 (van Hoorn), 264–267 (el fugitivo), 268–271 (el pecio), 272–273 (la escolta), 274–275 (el asedio) y 276 (la regata), más los dos números libres: 136, «Mala fama», y 148, «Gallardete de San Juan». La caja pasa de 224 a 256 cartas y ya no tiene huecos. Con el pecio rehecho, 7 más (277–283, del mazo del pecio): 263 cartas. Con el naufragio (24 de octubre), 2 más (284 y 285): **265 cartas**.
+Las 32 cartas nuevas: 247–254 (Peligros), 255–258 (la isla), 259–263 (van Hoorn), 264–267 (el fugitivo), 268–271 (el pecio), 272–273 (la escolta), 274–275 (el asedio) y 276 (la regata), más los dos números libres: 136, «Mala fama», y 148, «Gallardete de San Juan». La caja pasa de 224 a 256 cartas y ya no tiene huecos. Con el pecio rehecho, 7 más (277–283, del mazo del pecio): 263 cartas. Con el naufragio (24 de octubre), 2 más (284 y 285): 265 cartas. Con la carta de recompensa del naufragio (tercera ronda), 1 más (286): **266 cartas**.
 
 ### Mazo de Misiones
 
@@ -1188,6 +1188,8 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 
 ### El naufragio del San José (24 de octubre): sustituye al pecio
 
+*La tercera ronda (más abajo) cambia la misión: ya no tiene texto y su recompensa es «Coge la carta 286 del mazo de historia». El mazo del naufragio no cambia.*
+
 - **La misión (268):** «El naufragio del San José» · misión suelta · Mar · Avance 4 · sin reputación ni recompensa propia. Texto: «Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio. Después, puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.» La caja de recompensa solo dice dónde están las cartas: «Lo que saques del mazo del naufragio (cartas 269 a 271 y 277 a 285 del mazo de historia)».
 - **Regla del motor (Albert), no de las cartas:** cada carta dice qué hacer con ella: «Quédate esta carta» (a un lado, hasta que termine la misión), «Pon esta carta en juego» o «Vuelve a barajar esta carta en el mazo del naufragio». Una carta que no dice nada de esto se aparta después de aplicarla. Al terminar la misión, todo el mazo del naufragio vuelve al mazo de historia, salvo las cartas que estén en juego. El motor lo lee del texto de cada carta: una carta nueva que use esas frases funciona sola.
 - **El mazo del naufragio (12 cartas, todas con el mismo dorso y sin marca de buena o mala):**
@@ -1218,9 +1220,67 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 
 ### Preguntas nuevas para Albert (P107–P109), con la opción por defecto aplicada
 
+*Respondidas el 24 de octubre: ver «Respuestas de Albert, tercera ronda».*
+
 - **P107 · Buscar en el mazo de Misiones («El diario del capitán»).** El reglamento dice cómo se busca en el mazo de muelle (lo localizas y lo barajas) y en el de historia (por su número), pero no en el de Misiones. Por defecto, como en el de muelle: localizas el capítulo, **barajas el mazo de Misiones** y después pones al fondo la misión que cambias. *Ejemplo:* buscas «Seguirle por Port Royal», barajas el mazo y pones «Agua y leña» debajo. Si habías oteado el mazo de Misiones, ese orden se pierde. La otra opción: no se baraja (y has visto todo el mazo). `TODO(regla) P107` en el código; el reglamento (Buscar) ya lo dice así.
 - **P108 · La culebrina, si se pierde.** Es una Mejora de barco del mazo de historia, sin coste. Por defecto, si se descarta (el Barco se hunde, «Impuestos del gobernador», un Peligro que te quita una Mejora), **vuelve al mazo de historia**, como un Tesoro, y no a los descartes del muelle. *Ejemplo:* el Barco se hunde con la culebrina y la Vela mayor: la Vela va a los descartes del muelle; la culebrina, al mazo de historia (y no vuelve a salir: el naufragio ya está superado). La otra opción: va a los descartes del muelle y entra en el mazo de muelle como una Mejora más, de coste 0. `TODO(regla) P108` en el código; el reglamento (Mazo del naufragio) ya lo dice así.
 - **P109 · La caja de recompensa de la 268.** Albert pidió la misión «sin reputación ni recompensa propia». Por defecto, la caja de recompensa no da nada: solo dice dónde están las cartas, «Lo que saques del mazo del naufragio (cartas 269 a 271 y 277 a 285 del mazo de historia)», para encontrarlas en la caja. La otra opción: la caja vacía (y el número de las cartas solo en el reglamento).
+
+### Respuestas de Albert, tercera ronda (24 de octubre)
+
+**Reglas generales nuevas** (en el reglamento y en CLAUDE.md, «Decisiones de reglas»):
+
+- **Toda carta del mazo de historia que sale del juego (se descarta, se pierde o termina su misión) vuelve al mazo de historia.** Nunca va a una pila de descartes ni fuera de la partida. Está en la entrada «Mazo de historia» del reglamento, con este ejemplo: el Barco se hunde con «La culebrina del San José» y la Vela mayor; la Vela va a la pila de descartes del muelle y la culebrina vuelve al mazo de historia. En el motor es una sola regla para todas las cartas del mazo de historia (capítulos II–IV, Tesoros, mazos propios y barcos rivales, Pasajeros, permanentes, mazo del naufragio, cartas de recompensa y «La Armada te persigue»): si una va a los descartes del muelle o del capitán o fuera de la partida, va al mazo de historia (antes era un caso especial de la culebrina). *Pruebas (fase15-misiones.test):* la culebrina perdida al hundirse el Barco; un Tesoro descartado vuelve y una Mejora del jugador va a los descartes; una carta de recompensa que va fuera de la partida vuelve al mazo de historia.
+  - **P108 cerrada** por esta regla: la culebrina perdida vuelve al mazo de historia.
+  - **Salida doble:** el capítulo II que no toca se queda en el mazo de historia (antes, «sale de la partida»; para el jugador es lo mismo: no vuelve a salir). Reglamento («Superar una misión» y «Capítulo») y registro: «“Romper el bloqueo” se queda en el mazo de historia». *Pruebas:* las de Maracaibo, San Felipe y van Hoorn (mision.test, misiones2.test, fase15-misiones.test).
+  - **«Se retira»** en una carta de mazo propio: ver P110, abajo.
+- **Los recuadros de recompensa de las misiones solo dicen qué carta coger** («Coge la carta N del mazo de historia», «Pon la carta N encima del mazo de Misiones», «Pon en juego la carta N») **o qué se gana** («gana 2 [rep]», «roba 2 cartas»). Las reglas que haga falta explicar van en una carta del mazo de historia. Reglamento: Anatomía de la misión (Recompensa), «Superar una misión» (paso 2: «Si la recompensa dice “Coge la carta N”, haz lo que dice esa carta y, al terminar, devuélvela al mazo de historia») y la entrada «Mazo de historia». Hoy hay 13 recuadros que no lo cumplen: ver el inventario, abajo (no se ha cambiado ninguno).
+
+**El naufragio del San José, con la regla anterior:**
+
+- **268** queda sin texto (no tiene reglas) y su recompensa es «Coge la carta 286 del mazo de historia.»
+- **286 «Fondeáis sobre el San José»** (carta nueva): «Prepara a todos tus Tripulantes y baraja el mazo del naufragio ~(cartas 269–271 y 277–285)~. / Puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.» La ambientación es mía: «Echad el ancla sobre el bajo. El que aguante la respiración, que se quite la camisa.»
+- Al terminar de bucear, la carta 286 y el mazo del naufragio vuelven al mazo de historia por la regla general, salvo las cartas que estén en juego. El cofre y la llave («Quédate esta carta») también vuelven. El resto del mazo del naufragio no cambia.
+- **P109 queda sustituida** por esto.
+- *Pruebas (fase15-misiones.test):* la misión sin reglas y con la recompensa nueva, y la 286 cita el mazo del naufragio; al superarla, primero se supera y después se coge la 286 (prepara a todos y baraja las 12); al terminar, la 286 y el mazo vuelven al mazo de historia; las preguntas del buceo vienen de la carta 286; una partida guardada con la versión anterior mientras se buceaba no vuelve a bucear (guardado.test: una partida de antes recibe la 286 en el mazo de historia).
+
+**P107 · Al buscar en el mazo de Misiones con «El diario del capitán», se baraja después: SÍ.** Ya estaba así (el reglamento, en «Buscar»); fuera la marca pendiente. *Prueba:* la del diario (la misión cambiada va al fondo después de barajar).
+
+### Lecturas de la tercera ronda (no son preguntas)
+
+- **Tipo de la carta 286:** su línea de tipo dice «Recompensa · El naufragio del San José» (como «Pasajero · …») y su color es un pardo oscuro. Es una **carta de recompensa**: una carta del mazo de historia que una recompensa te pide coger; se hace lo que dice y vuelve al mazo de historia. Lleva el dorso de misión, como los Pasajeros y las permanentes. Componentes: 266 cartas y una fila nueva, «Cartas de recompensa» (1). Si Albert prefiere otro nombre, se cambia en un sitio.
+- **Orden:** ahora la misión se supera antes de bucear (el buceo es su recompensa). En la mesa sale primero el panel de «Misión superada» («Recompensa: coges la carta 286 del mazo de historia, “Fondeáis sobre el San José”») y después se bucea. Mientras se bucea, la carta 286 se ve a la izquierda del mazo del naufragio, con el rótulo «Recompensa».
+- **Maqueta de las cartas del mazo de historia:** la carta 286 no cabía (la ambientación tocaba el borde de abajo) y la comprobación automática no lo veía. Arreglada la comprobación: ahora cuenta también el margen de abajo. De paso caben bien seis cartas a las que les pasaba lo mismo sin que se notara mucho: 220 «¡La guardia!» (letra 15,5), 228 (15), 267 «El prisionero» (16), 273 «Galeón San Telmo» (12,5), 275 «Murallas de Port Royal» (13,5) y 285 «El pulpo de la bodega» (14). La 286 queda a 15.
+- **Libro:** los nombres de las fichas de Componentes ya no se parten con guion («Cartas de re-compensa»).
+
+### Pregunta nueva para Albert (P110), con la opción por defecto aplicada
+
+- **P110 · «Se retira» en una carta de mazo propio.** Con la regla general, una carta del mazo de historia que sale del juego vuelve al mazo de historia. La única carta de mazo propio que Se retira es la 122, «Guerreros esqueleto» (mazo del Templo, «Se deshacen en polvo»). Por defecto, **vuelve al mazo de historia** (la regla, al pie de la letra), y por tanto puede volver a salir si se vuelve a barajar el mazo del Templo. *Ejemplo:* en «El templo» superas a los Guerreros esqueleto (vuelven al mazo de historia), pero fallas la misión y la dejas disponible. Al zarpar otra vez, barajas el mazo del Templo con 6 Peligros y los esqueletos vuelven a estar en él. La otra opción: una carta que Se retira sale de la partida aunque sea del mazo de historia (y el jugador tiene que apartarla para no barajarla con su mazo propio la próxima vez). `TODO(regla) P110` en el código (peligros.ts); el reglamento («Se retira») ya lo dice así. *Prueba:* mazosPropios2.test (122).
+
+### Inventario: recuadros de recompensa que dicen algo más que «coge / pon la carta N» o «gana X» (sin cambiar nada)
+
+Trece recuadros. Con una carta de recompensa (como la 286) para cada uno que lo necesita, harían falta **10 cartas nuevas** (números 287 a 296; la caja pasaría a 276). Tres se arreglan sin carta nueva.
+
+| Carta | Hoy dice | Propuesta | Cartas nuevas |
+| --- | --- | --- | --- |
+| 113 Cobrar la deuda (inicial) | Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles. | «Coge la carta N.» Carta «El soplo del deudor»: el mismo texto. | 1 |
+| 114 Rumbo a mar abierto (inicial) | Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida. | «Coge la carta N.» Carta «Pertrechos para el viaje»: el mismo texto. | 1 |
+| 115 Agua y leña (inicial) | Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño. | «Coge la carta N.» Carta «Gente de la aguada»: el mismo texto. | 1 |
+| 120 El templo (IV) | Elige: la Espada del sacerdote y +2, pero tu Capitán queda Maldito; o devuelves el ídolo: +3. (Etiqueta: «Pon en juego el Tesoro 121».) | «Coge la carta N.» Carta «Ante el altar»: «Elige: Te llevas la Espada del sacerdote: pon en juego el Tesoro 121 y gana 2 [rep]; tu Capitán queda Maldito. Devuelves el ídolo a su altar: gana 3 [rep].» Fuera la etiqueta (hoy dice el Tesoro aunque elijas el ídolo). | 1 |
+| 141 La cala de los contrabandistas | +2 y el Tesoro. Don Anselmo se baja y paga: roba 2 y descártalo. Sin él, no hay Tesoro. | «+2 [rep]» y la etiqueta del Tesoro 142. Lo de Don Anselmo, a su carta (221), que ya dice «Sin él, la carta 141 no da el Tesoro»: «Al terminar la carta 141, se baja y paga: roba 2. Devuélvelo al mazo de historia.» (Otra opción: una carta de recompensa.) | 0 |
+| 145 El polvorín (III) | Elige: rescatas a tu amigo, +4; o vuelas el polvorín, +3 y el Tesoro, y el Barco queda Perseguido. | «Coge la carta N.» Carta «La mecha encendida»: «Elige: Rescatas a tu amigo: gana 4 [rep]. Vuelas el polvorín: pon en juego el Tesoro 146 y gana 3 [rep]; el Barco queda Perseguido.» Fuera la etiqueta del Tesoro. | 1 |
+| 149 El camarote del capitán (II) | Elige: el Farol de los ahogados y +3; o le devuelves su bitácora: +4 y quita Maldito de todos tus Tripulantes. | «Coge la carta N.» Carta «La bitácora del capitán muerto»: «Elige: Te llevas el Farol de los ahogados: pon en juego el Tesoro 150 y gana 3 [rep]. Le devuelves su bitácora: gana 4 [rep] y quita Maldito de todos tus Tripulantes.» Fuera la etiqueta del Tesoro. | 1 |
+| 151 El prisionero de Portobelo (I) | +1 y pon en juego al Pasajero El guía del istmo. | «+1 [rep]. Pon en juego la carta 222.» (El Pasajero ya explica sus reglas en su carta.) | 0 |
+| 255 El mapa del ahorcado (I) | +1. Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve las otras al mazo de historia. | «+1 [rep]. Coge la carta N.» Carta «Las tres cruces del mapa»: «Baraja boca abajo los capítulos II de La Isla del Tesoro que estén en el mazo de historia ~(cartas 256, 257 y 258)~. Pon uno encima del mazo de Misiones sin mirarlo y devuelve los demás al mazo de historia.» | 1 |
+| 258 El mapa era falso (II) | +1 y roba 2. Baraja boca abajo las cartas 256 y 257… (lo mismo, con dos). | «+1 [rep] y roba 2. Coge la carta N» (la misma de la 255: como la 258 ya está superada, solo quedan la 256 y la 257). | 0 |
+| 257 …sacudida por un temblor (II) | Elige: cargar con todo el oro, +3 y cada Tripulante sufre 1 herida; o salir a tiempo, +2 y roba 2. | «Coge la carta N.» Carta «La cueva se viene abajo»: «Elige: Cargas con todo el oro: gana 3 [rep]; cada Tripulante sufre 1 [herida]. Sales a tiempo: gana 2 [rep] y roba 2.» | 1 |
+| 272 Escolta del San Telmo | +2. Si la carta 273 tiene 3 o más Vida restante, +1 adicional y roba 2. | «+2 [rep]. Coge la carta N.» Carta «El galeón llega a puerto»: «Si la carta 273 tiene 3 o más Vida restante, gana 1 [rep] y roba 2.» (Otra opción: escribirlo en la 273, pero ya va a letra 12,5.) | 1 |
+| 274 El asedio de Port Royal | +2. Si la carta 275 tiene 4 o más Vida restante, +1 adicional. | «+2 [rep]. Coge la carta N.» Carta «Port Royal resiste»: «Si la carta 275 tiene 4 o más Vida restante, gana 1 [rep].» (Otra opción: escribirlo en la 275, que ya va a letra 13,5 con la caja alta.) | 1 |
+
+- **Dudosa, se queda como está si Albert no dice otra cosa:** 117 «La casa del gobernador», «+1 y busca una Mejora». Buscar una Mejora en el mazo de muelle es lo que se gana, como robar.
+- **Cumplen, aunque eligen entre dos:** las etiquetas «Pon la carta 218 o la 140» (139) y «Pon la carta 219 o la 144» (143). Cuál se pone lo dicen las reglas del capítulo I.
+- **Fuera del recuadro** (no entran en el inventario): las reglas de la misión que cambian la recompensa («La regata»: «ganas 1 de reputación en lugar de su recompensa»; el Saqueo de la 117; las Gestas).
+- Si los cuatro finales con elección (120, 145, 149, 257) pasan a cartas, la entrada «Final con elección» del reglamento cambia: la elección está en la carta de recompensa.
 
 ### Efectos que hay que recordar para el turno siguiente (para la revisión de Peligros de Albert)
 

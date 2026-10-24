@@ -143,13 +143,6 @@ export const mision: Manejador<'mision'> = (s, t) => {
       encolar(s, { tipo: 'encuentro', carta: null, paso: 'revelar' })
       return 'sigue'
     case 'terminar': {
-      // Fase 15: «Cuando esta misión vaya a superarse, …» (bucear en el pecio): con la misión ya superada, antes de cobrarla.
-      const antes = m.fin === 'superada' && !m.antesDeSuperarHecho ? reglasMision(copia(s, m.carta).id)?.antesDeSuperar : undefined
-      if (antes) {
-        m.antesDeSuperarHecho = true
-        encolar(s, ...antes(s), { tipo: 'superarMision' }, { tipo: 'cerrarMision' })
-        return 'hecha'
-      }
       encolar(s, m.fin === 'superada' ? { tipo: 'superarMision' } : { tipo: 'fallarMision', paso: 'anotar' }, { tipo: 'cerrarMision' })
       return 'hecha'
     }
@@ -284,16 +277,17 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   // se leen al pie de la letra, así que daña el Barco aunque la misión sea de tierra).
   if (r.precio && r.precio.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: r.precio, contexto: 'efecto' })
   if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
-  // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda y el otro sale de la partida.
+  // Fase 15: «Coge la carta N del mazo de historia» (El naufragio del San José). Una partida guardada con la versión
+  // anterior mientras se buceaba (el buceo iba antes de superar la misión) ya ha buceado.
+  if (r.coge !== undefined && !m.antesDeSuperarHecho) tareas.push({ tipo: 'cogerCarta', num: r.coge })
+  // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda; el otro no sale nunca y se queda en el mazo
+  // de historia (fase 15, regla general de Albert: lo que sale del juego vuelve allí).
   const posibles = e.carta.siguiente
   const num = elegido ?? posibles[0]
-  // Fase 15: con un capítulo al azar («La Isla del Tesoro»), los demás se quedan en el mazo de historia.
+  // Fase 15: con un capítulo al azar («La Isla del Tesoro»), los demás también se quedan en el mazo de historia.
   for (const otro of reglas?.conservarOtros ? [] : posibles.filter((n) => n !== num)) {
     const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === otro)
-    if (carta) {
-      mover(s, carta, 'fueraDeJuego')
-      anotar(s, 'efecto', `«${nombre(s, carta)}» sale de la partida.`)
-    }
+    if (carta) anotar(s, 'efecto', `«${nombre(s, carta)}» se queda en el mazo de historia.`)
   }
   if (num !== undefined && !(r.elige && r.elige.length > 0)) {
     const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === num)

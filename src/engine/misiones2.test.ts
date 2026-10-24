@@ -417,13 +417,13 @@ describe('137 · La goleta del correo (capítulo II desde la fase 12)', () => {
 // El cargamento de Maracaibo
 
 describe('139 · Los muelles de Maracaibo', () => {
-  it('al zarpar sube Don Anselmo; sin Buscados ni #Guardia# fallados, añade el II-a y el II-b sale de la partida', () => {
+  it('al zarpar sube Don Anselmo; sin Buscados ni #Guardia# fallados, añade el II-a y el II-b se queda en el mazo de historia', () => {
     const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 2 }, mazoPeligros: ['calma', 'calma'] })
     j.zarpar('maracaibo-I').cubrir('viejo_lobo')
     expect(j.zona('pasajeros')).toEqual(['anselmo'])
     expect(j.zona('misionesSuperadas')).toEqual(['maracaibo-I'])
     expect(enMisiones(j)).toContain('maracaibo-II-a')
-    expect(j.zona('fueraDeJuego')).toContain('maracaibo-II-b')
+    expect(j.zona('mazoHistoria')).toContain('maracaibo-II-b')
   })
 
   it('con un encuentro #Guardia# fallado, los guardacostas te esperan: añade el II-b', () => {
@@ -432,7 +432,7 @@ describe('139 · Los muelles de Maracaibo', () => {
     const j = enPuerto({ misiones: ['maracaibo-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 4 }, mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     j.zarpar('maracaibo-I').cubrir('viejo_lobo').comprometer('EXP').seguir()
     expect(enMisiones(j)).toContain('maracaibo-II-b')
-    expect(j.zona('fueraDeJuego')).toContain('maracaibo-II-a')
+    expect(j.zona('mazoHistoria')).toContain('maracaibo-II-a')
   })
 
   it('con un Tripulante Buscado, también el II-b', () => {
@@ -504,7 +504,7 @@ describe('143 · Desembarco nocturno', () => {
     const j = enPuerto({ misiones: ['sanfelipe-I'], tripulacion: ['viejo_lobo'], avance: { 'sanfelipe-I': 2 }, mazoPeligros: ['calma', 'calma'] })
     j.zarpar('sanfelipe-I').cubrir('viejo_lobo')
     expect(enMisiones(j)).toContain('sanfelipe-II-a')
-    expect(j.zona('fueraDeJuego')).toContain('sanfelipe-II-b')
+    expect(j.zona('mazoHistoria')).toContain('sanfelipe-II-b')
     expect(j.estado.reputacion).toBe(1) // fase 11: 1 (antes 2)
   })
 
@@ -518,7 +518,7 @@ describe('143 · Desembarco nocturno', () => {
     if (j.decision.motivo.clave === 'herir') j.elegir('bucanero')
     j.seguir()
     expect(enMisiones(j)).toContain('sanfelipe-II-b')
-    expect(j.zona('fueraDeJuego')).toContain('sanfelipe-II-a')
+    expect(j.zona('mazoHistoria')).toContain('sanfelipe-II-a')
   })
 })
 

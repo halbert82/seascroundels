@@ -221,9 +221,10 @@ const PESO_CADENA = 0.2
 /** Reputación que da una misión al superarla (en un final con elección, la mejor opción). */
 function reputacionDe(c: CapituloDatos): number {
   const r = c.recompensa
-  // Fase 15: «El naufragio del San José» no da reputación, pero lo que se saca del mazo del naufragio (el cofre y la llave,
-  // la culebrina, la campana, el diario, el doblón) vale para el jugador automático como 1.
-  if (c.mazoNaufragio) return VALOR_NAUFRAGIO
+  // Fase 15: «El naufragio del San José» no da reputación (su recompensa es coger la carta 286, que hace bucear), pero lo
+  // que se saca del mazo del naufragio (el cofre y la llave, la culebrina, la campana, el diario, el doblón) vale para el
+  // jugador automático como 1.
+  if (r.coge !== undefined) return VALOR_NAUFRAGIO
   return Math.max(r.rep ?? 0, ...(r.elige ?? []).map((o) => o.rep ?? 0))
 }
 

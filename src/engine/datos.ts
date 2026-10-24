@@ -275,6 +275,26 @@ export interface NaufragioDatos {
   ambientacion: string
 }
 
+/**
+ * Fase 15 (Albert, tercera ronda): una carta de recompensa del mazo de historia. El recuadro de recompensa de una misión
+ * solo dice qué carta coger («Coge la carta 286 del mazo de historia»); las reglas que haga falta explicar van en ella. Se
+ * coge, se hace lo que dice y vuelve al mazo de historia (lo que hace está escrito a mano en src/engine/misiones2/).
+ */
+export interface CartaRecompensaDatos {
+  id: string
+  num: number
+  nombre: string
+  /** La misión cuya recompensa la da. */
+  mision: string
+  texto: string
+  ambientacion: string
+  /**
+   * El mazo del naufragio que baraja («Fondeáis sobre el San José»), por número de colección: sus cartas, la culebrina
+   * (Mejora de barco) y los Tesoros 270 y 271.
+   */
+  mazoNaufragio?: number[]
+}
+
 
 /** Una de las opciones de un final con elección. */
 export interface OpcionFinal {
@@ -304,6 +324,8 @@ export interface RecompensaDatos {
   victoria?: boolean
   /** Pasajero que se pone en juego. */
   pasajero?: string
+  /** Fase 15: «Coge la carta N del mazo de historia» (una carta de recompensa), por número de colección. */
+  coge?: number
   /** Final con elección: eliges una de estas recompensas. */
   elige?: OpcionFinal[]
   /** La recompensa tal y como se imprime, cuando no basta con las fichas («Elige: …»). */
@@ -334,11 +356,6 @@ export interface CapituloDatos {
   textoSiguiente: string
   /** Mazo propio que baraja al zarpar. */
   mazoPropio?: { nombre: string; cartas: string[] }
-  /**
-   * Fase 15: el mazo del naufragio («El naufragio del San José»), por número de colección: sus cartas, la culebrina (Mejora
-   * de barco) y los Tesoros 270 y 271.
-   */
-  mazoNaufragio?: number[]
 }
 
 export interface MisionDatos {
@@ -396,6 +413,8 @@ export interface DatosCartas {
   permanentes: PermanenteDatos[]
   /** Fase 15: las cartas del mazo del naufragio que no son Tesoros ni Mejoras. */
   naufragio: NaufragioDatos[]
+  /** Fase 15: las cartas de recompensa del mazo de historia («Coge la carta N del mazo de historia»). */
+  cartasDeRecompensa: CartaRecompensaDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

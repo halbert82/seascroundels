@@ -2,7 +2,7 @@
 // La interfaz solo dibuja: todo lo que dice sale de aquí.
 
 import { capacidadPorClave } from '../../engine/capacidades/index.ts'
-import { nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
+import { CATALOGO, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { quedaDe, type FormaDeQuitar } from '../../engine/definiciones.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
@@ -357,8 +357,8 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     // Fase 15
     case 'bucear':
       return {
-        titulo: n === 0 ? '«El naufragio del San José»: ¿buceas?' : '«El naufragio del San José»: ¿buceas otra vez?',
-        ayuda: `La misión está superada. Para bucear, agota a un Tripulante preparado y roba 1 carta del mazo del naufragio: lo que pasa lo dice la carta. Quedan ${m.texto ?? 'cartas'} en el mazo.`,
+        titulo: n === 0 ? '«Fondeáis sobre el San José»: ¿buceas?' : '«Fondeáis sobre el San José»: ¿buceas otra vez?',
+        ayuda: `Has superado «El naufragio del San José». Para bucear, agota a un Tripulante preparado y roba 1 carta del mazo del naufragio: lo que pasa lo dice la carta. Quedan ${m.texto ?? 'cartas'} en el mazo.`,
       }
     case 'buzo':
       return { titulo: '¿Quién baja al naufragio?', ayuda: 'Se agota. Lo que la carta le haga «al Tripulante que ha robado esta carta» le pasa a él.' }
@@ -691,6 +691,11 @@ export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; si
   else if (r.search) partes.push('buscas una Mejora en el mazo de muelle')
   if (r.draw) partes.push(`robas ${n2(r.draw, 'carta', 'cartas')}`)
   if (r.pasajero) partes.push(`«${nombreDe(r.pasajero)}» sube a bordo como Pasajero`)
+  // Fase 15: «Coge la carta 286 del mazo de historia» (El naufragio del San José).
+  if (r.coge !== undefined) {
+    const carta = CATALOGO.find((c) => c.num === r.coge)
+    partes.push(`coges la carta ${r.coge} del mazo de historia${carta ? `, «${nombreDe(carta.id)}»` : ''}`)
+  }
   if (r.tesoro) partes.push(como.sinTesoro ? `no ganas el Tesoro «${nombreDe(r.tesoro)}»` : `ganas el Tesoro «${nombreDe(r.tesoro)}»`)
   const siguiente = como.siguiente ?? e.carta.siguiente[0]
   if (siguiente !== undefined && !r.tesoro && !(r.elige && r.elige.length > 0)) {

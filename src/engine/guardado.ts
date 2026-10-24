@@ -109,6 +109,7 @@ export function deserializar(texto: string): Estado {
   // cuando se capturaba o se rescataba a alguien no se puede continuar.
   if (!migrarRehenes(s)) throw anterior()
   if (!migrarNaufragio(s)) throw new Error('La partida guardada estaba buceando en «El pecio del San José», que ahora es «El naufragio del San José»: no se puede continuar')
+  migrarCartasDeRecompensa(s)
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
@@ -179,6 +180,20 @@ function migrarNaufragio(s: Estado): boolean {
   const fichas = s.mision?.fichas as Record<string, number> | undefined
   if (fichas && 'profundidad' in fichas) delete fichas.profundidad
   return true
+}
+
+/**
+ * Fase 15, tercera ronda: la recompensa del naufragio es la carta 286, «Fondeáis sobre el San José», que espera en el mazo
+ * de historia, y la zona de la carta cogida es nueva. (Una partida guardada mientras se buceaba con la versión anterior
+ * sigue buceando y no vuelve a bucear al cobrar la misión: ver `superarMision`.)
+ */
+function migrarCartasDeRecompensa(s: Estado): void {
+  const zonas = s.zonas as Record<string, InstId[] | undefined>
+  if (!Array.isArray(zonas.cogidas)) zonas.cogidas = []
+  const cartas = Object.values(s.cartas ?? {})
+  if (cartas.length === 0) return
+  const ids = new Set(cartas.map((c) => c.id))
+  for (const e of CATALOGO) if (e.tipo === 'recompensa' && !ids.has(e.id)) crearCopia(s, e.id, 'mazoHistoria')
 }
 
 /** Quita una copia de la partida (de su zona y de las cartas). */

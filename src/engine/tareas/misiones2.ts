@@ -2,7 +2,7 @@
 
 import { porId } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
-import { reglasMision } from '../misiones2/registro.ts'
+import { efectoDeRecompensa, reglasMision } from '../misiones2/registro.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { mover } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
@@ -42,6 +42,33 @@ export const bajarPasajero: Manejador<'bajarPasajero'> = (s, t) => {
   if (!carta) return 'hecha'
   mover(s, carta, 'mazoHistoria', 'abajo')
   anotar(s, 'aviso', `${nombre(s, carta)} ${t.motivo}: deja el Barco.`)
+  return 'hecha'
+}
+
+/**
+ * Fase 15 (Albert, tercera ronda): «Coge la carta N del mazo de historia». La carta sale del mazo de historia, se hace lo
+ * que dice y, al terminar, vuelve a él (regla general: lo que sale del juego vuelve al mazo de historia).
+ */
+export const cogerCarta: Manejador<'cogerCarta'> = (s, t) => {
+  const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === t.num)
+  if (!carta) {
+    anotar(s, 'efecto', `La carta ${t.num} no está en el mazo de historia: no ocurre nada.`)
+    return 'hecha'
+  }
+  const id = copia(s, carta).id
+  const efecto = efectoDeRecompensa(id)
+  if (!efecto) throw new Error(`Carta de recompensa sin efecto: ${id}`)
+  mover(s, carta, 'cogidas', 'abajo')
+  anotar(s, 'aviso', `Coges la carta ${t.num} del mazo de historia: «${nombre(s, carta)}».`)
+  encolar(s, ...efecto(s), { tipo: 'devolverCogida', carta })
+  return 'hecha'
+}
+
+/** La carta de recompensa cogida vuelve al mazo de historia cuando se ha hecho lo que dice. */
+export const devolverCogida: Manejador<'devolverCogida'> = (s, t) => {
+  if (!s.zonas.cogidas.includes(t.carta)) return 'hecha'
+  mover(s, t.carta, 'mazoHistoria', 'abajo')
+  anotar(s, 'efecto', `«${nombre(s, t.carta)}» vuelve al mazo de historia.`)
   return 'hecha'
 }
 

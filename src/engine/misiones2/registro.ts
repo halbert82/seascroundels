@@ -36,7 +36,7 @@ export interface ReglasMision {
   reputacionMinima?: number
   /** «Gesta»: si se cumple al superarla, +1 de reputación. */
   gesta?: (s: Estado) => boolean
-  /** Salida doble: número de colección de la carta que se añade (la otra sale de la partida). */
+  /** Salida doble: número de colección de la carta que se añade (la otra se queda en el mazo de historia). */
   siguiente?: (s: Estado) => number
   /** ¿Se gana el Tesoro de la recompensa? (por defecto, sí) */
   conTesoro?: (s: Estado) => boolean
@@ -56,8 +56,6 @@ export interface ReglasMision {
    * historia («La Isla del Tesoro»: uno de los tres capítulos II, al azar).
    */
   conservarOtros?: boolean
-  /** «Cuando esta misión vaya a superarse, …»: lo que se hace con la misión ya superada, antes de cobrarla (bucear). */
-  antesDeSuperar?: (s: Estado) => NuevaTarea[]
   /** Si devuelve tareas, se cobran en lugar de la recompensa impresa (sin Tesoro ni capítulo siguiente). */
   recompensaEnLugar?: (s: Estado) => NuevaTarea[] | null
   /** Si no la superas, no eliges si la dejas disponible: sale de la partida («apártala»). */
@@ -99,4 +97,25 @@ export function reglasMision(id: CartaId): ReglasMision | undefined {
 /** Capítulos con reglas registradas (para comprobar que no falta ninguno). */
 export function misionesConReglas(): CartaId[] {
   return [...REGLAS.keys()]
+}
+
+/**
+ * Fase 15 (Albert, tercera ronda): lo que hace cada carta de recompensa del mazo de historia al cogerla («Coge la carta
+ * 286 del mazo de historia»). Su texto es para leerlo; lo que hace está escrito a mano. Al terminar, vuelve al mazo de
+ * historia.
+ */
+const CARTAS_DE_RECOMPENSA = new Map<CartaId, (s: Estado) => NuevaTarea[]>()
+
+export function registrarCartaDeRecompensa(id: CartaId, efecto: (s: Estado) => NuevaTarea[]): void {
+  if (CARTAS_DE_RECOMPENSA.has(id)) throw new Error(`Carta de recompensa repetida: ${id}`)
+  CARTAS_DE_RECOMPENSA.set(id, efecto)
+}
+
+export function efectoDeRecompensa(id: CartaId): ((s: Estado) => NuevaTarea[]) | undefined {
+  return CARTAS_DE_RECOMPENSA.get(id)
+}
+
+/** Cartas de recompensa con su efecto escrito (para comprobar que no falta ninguna). */
+export function cartasDeRecompensaConEfecto(): CartaId[] {
+  return [...CARTAS_DE_RECOMPENSA.keys()]
 }

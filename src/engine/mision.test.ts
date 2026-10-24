@@ -442,12 +442,14 @@ describe('Fase 12 · el capítulo siguiente va encima del mazo de Misiones', () 
     expect(j.zona('mazoMisiones')).toEqual([])
   })
 
-  it('salida doble: el capítulo que toca va encima y sale; el otro sale de la partida', () => {
+  it('salida doble: el capítulo que toca va encima y sale; el otro se queda en el mazo de historia (fase 15)', () => {
     const j = enPuerto({ misiones: ['maracaibo-I', 'prueba-I', 'aguada-I'], mazoMisiones: ['fantasma-I'], tripulacion: ['viejo_lobo'], avance: { 'maracaibo-I': 2 }, mazoPeligros: ['calma', 'calma'] })
     j.zarpar('maracaibo-I').cubrir('viejo_lobo')
     expect(j.zona('misionesDisponibles')).toEqual(['prueba-I', 'aguada-I', 'maracaibo-II-a'])
     expect(j.zona('mazoMisiones')).toEqual(['fantasma-I'])
-    expect(j.zona('fueraDeJuego')).toContain('maracaibo-II-b')
+    expect(j.zona('mazoHistoria')).toContain('maracaibo-II-b')
+    expect(j.zona('fueraDeJuego')).toEqual([])
+    expect(j.registro).toContain('«Romper el bloqueo» se queda en el mazo de historia.')
   })
 
   it('no obliga a zarpar a él: en el turno siguiente, el Tablón de encargos lo manda al fondo y sale la de arriba', () => {

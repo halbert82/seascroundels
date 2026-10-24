@@ -58,6 +58,11 @@ export const ZONAS = [
   'naufragioQuedadas',
   /** Fase 15: las cartas del mazo del naufragio que se apartan (la que se está aplicando y las que no dicen qué hacer). */
   'naufragioApartadas',
+  /**
+   * Fase 15 (Albert, tercera ronda): la carta de recompensa que se ha cogido del mazo de historia («Coge la carta 286 del
+   * mazo de historia») mientras se hace lo que dice; después vuelve al mazo de historia.
+   */
+  'cogidas',
 ] as const
 
 export type Zona = (typeof ZONAS)[number]
@@ -224,7 +229,10 @@ export interface MisionEnCurso {
    * caen) o fuera de la partida («apártala»: La ruta de los alisios).
    */
   destinoForzado?: 'fondo' | 'fuera'
-  /** Fase 15: ya se ha hecho lo de «cuando esta misión vaya a superarse» (bucear). */
+  /**
+   * Solo en partidas guardadas antes de la tercera ronda de la fase 15: ya se había buceado («Cuando esta misión vaya a
+   * superarse…», antes de cobrar la misión). Ahora se bucea al coger la carta 286, que es la recompensa.
+   */
   antesDeSuperarHecho?: boolean
   /**
    * Fase 15, «El naufragio del San José»: el Tripulante que ha robado la última carta (el que bucea), las inmersiones hechas
@@ -503,6 +511,9 @@ export type Tarea = { id: number } & (
   | { tipo: 'bajarPasajero'; carta: CartaId; motivo: string }
   | { tipo: 'fallarMision'; paso: 'anotar' | 'conservar' }
   | { tipo: 'ponerTesoro'; carta: InstId }
+  /** Fase 15: «Coge la carta N del mazo de historia»: la coges, haces lo que dice y vuelve al mazo de historia. */
+  | { tipo: 'cogerCarta'; num: number }
+  | { tipo: 'devolverCogida'; carta: InstId }
   | { tipo: 'cerrarMision' }
   // Capacidades de las cartas del jugador (fase 4)
   /**

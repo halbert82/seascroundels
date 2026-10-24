@@ -14,7 +14,8 @@ const ANTES = 2
 const DESPUES = 2
 
 /** Lo que no se parte: las cartas dibujadas, las negritas (términos de juego), los títulos y las líneas de índice. */
-const SIN_PARTIR = '.miniatura, .card, strong, b, h1, h2, h3, h4, .indice-linea, svg, style, script'
+// Fase 15: los nombres de las fichas de Componentes son títulos («Cartas de recompensa» no se parte con guion).
+const SIN_PARTIR = '.miniatura, .card, strong, b, h1, h2, h3, h4, .indice-linea, .componente-nombre, svg, style, script'
 
 /** Una palabra con sus guiones blandos («Re­ve­las»). Las siglas (NAV, COM) y las palabras cortas, tal cual. */
 export function silabearPalabra(palabra: string): string {

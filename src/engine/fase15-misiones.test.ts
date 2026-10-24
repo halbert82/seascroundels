@@ -5,6 +5,8 @@
 
 import { describe, expect, it } from 'vitest'
 
+import { cartasDelNaufragio, porId } from './catalogo.ts'
+import { DATOS } from './datos.ts'
 import { encolar } from './estado.ts'
 import { motivoSinSuperar } from './misiones2/comun.ts'
 import { ejecutar } from './motor.ts'
@@ -126,7 +128,10 @@ describe('258 · El mapa era falso', () => {
 // ---------------------------------------------------------------------------
 // El naufragio del San José: el mazo del naufragio
 
-/** Llega al momento de bucear: «Remanso» dos veces (4 de 4). El mazo del naufragio ya está barajado. */
+/**
+ * Llega al momento de bucear: «Remanso» dos veces (4 de 4), la misión se supera y se coge la carta 286. El mazo del
+ * naufragio ya está barajado.
+ */
 function naufragio(op: OpcionesSituacion = {}): Jugador {
   const j = enPuerto({
     misiones: ['naufragio-I'],
@@ -154,27 +159,45 @@ const NAUFRAGIO = [
   'naufragio_pulpo',
 ]
 
-describe('268 · El naufragio del San José (bucear en el mazo del naufragio)', () => {
-  it('al ir a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio (12 cartas); la misión no da reputación', () => {
+describe('268 · El naufragio del San José y la carta 286, «Fondeáis sobre el San José» (bucear en el mazo del naufragio)', () => {
+  it('la misión no tiene reglas y su recompensa es «Coge la carta 286 del mazo de historia»; la 286 cita el mazo del naufragio', () => {
+    const mision = DATOS.misiones.find((m) => m.id === 'naufragio')?.capitulos[0]
+    expect(mision?.reglas).toEqual([])
+    expect(mision?.recompensa).toEqual({ coge: 286, texto: 'Coge la carta 286 del mazo de historia.' })
+    const fondeo = porId('fondeo_sanjose')
+    expect(fondeo).toMatchObject({ tipo: 'recompensa', num: 286 })
+    expect(fondeo.tipo === 'recompensa' && fondeo.carta.texto).toContain('baraja el mazo del naufragio ~(cartas 269–271 y 277–285)~')
+    expect(cartasDelNaufragio().map((id) => porId(id).num).sort((a, b) => a - b)).toEqual([269, 270, 271, 277, 278, 279, 280, 281, 282, 283, 284, 285])
+  })
+
+  it('al superarla, coges la carta 286: prepara a todos tus Tripulantes y baraja el mazo del naufragio (12 cartas); no da reputación', () => {
     const j = enPuerto({ misiones: ['naufragio-I'], tripulacion: ['vigia', 'bucanero'], mazoPeligros: ['calma', 'calma', 'chubasco'] })
     j.copia('bucanero').agotada = true
     j.zarpar('naufragio-I').seguir()
-    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'bucear', carta: 'naufragio-I', n: 0 } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'bucear', carta: 'fondeo_sanjose', n: 0 } })
+    // Primero se supera la misión y después se coge la carta: la misión ya está superada mientras se bucea.
+    const superas = j.registro.indexOf('¡Superas «El naufragio del San José»!')
+    const coges = j.registro.indexOf('Coges la carta 286 del mazo de historia: «Fondeáis sobre el San José».')
+    expect(superas).toBeGreaterThanOrEqual(0)
+    expect(coges).toBeGreaterThan(superas)
+    expect(j.zona('cogidas')).toEqual(['fondeo_sanjose'])
     expect(j.copia('bucanero').agotada).toBe(false)
     expect([...j.zona('mazoNaufragio')].sort()).toEqual([...NAUFRAGIO].sort())
     expect(j.registro).toContain('Barajas el mazo del naufragio (12 cartas).')
     j.opcion('subir')
     expect(j.estado.reputacion).toBe(0)
     expect(j.zona('misionesSuperadas')).toEqual(['naufragio-I'])
-    // Al terminar, todo el mazo del naufragio vuelve al mazo de historia.
+    // Al terminar de bucear, la carta 286 y todo el mazo del naufragio vuelven al mazo de historia (regla general).
     expect(j.zona('mazoNaufragio')).toEqual([])
-    for (const id of NAUFRAGIO) expect(j.zona('mazoHistoria'), id).toContain(id)
+    expect(j.zona('cogidas')).toEqual([])
+    for (const id of [...NAUFRAGIO, 'fondeo_sanjose']) expect(j.zona('mazoHistoria'), id).toContain(id)
+    expect(j.registro).toContain('«Fondeáis sobre el San José» vuelve al mazo de historia.')
   })
 
   it('«El cofre del virrey» y «La llave del cofre»: te los quedas a un lado; al juntar los dos, 1 de reputación, una sola vez', () => {
     const j = naufragio()
     j.encimaDelNaufragio('naufragio_cofre', 'naufragio_tiburon', 'naufragio_llave').opcion('bucear')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: 'naufragio-I' } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: 'fondeo_sanjose' } })
     j.elegir('vigia')
     expect(j.copia('vigia').agotada).toBe(true)
     expect(j.registro).toContain('Robas del mazo del naufragio: «El cofre del virrey».')
@@ -304,6 +327,40 @@ describe('268 · El naufragio del San José (bucear en el mazo del naufragio)', 
   })
 })
 
+describe('268 · partida guardada con la versión anterior mientras se buceaba', () => {
+  it('ya se había buceado antes de cobrar la misión: al cobrarla no se coge la carta 286 ni se vuelve a bucear', () => {
+    const j = Jugador.enMision({ misiones: ['naufragio-I'], mazoPeligros: ['calma', 'calma', 'calma'] })
+    const s = j.estado
+    if (!s.mision) throw new Error('sin misión')
+    s.mision.fin = 'superada'
+    s.mision.antesDeSuperarHecho = true
+    encolar(s, { tipo: 'superarMision' })
+    s.pendiente = null
+    ejecutar(s)
+    expect(j.zona('cogidas')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain('fondeo_sanjose')
+    expect(j.registro.some((r) => r.startsWith('Coges la carta 286'))).toBe(false)
+  })
+})
+
+describe('Regla general (Albert): toda carta del mazo de historia que sale del juego vuelve al mazo de historia', () => {
+  it('un Tesoro que se descarta vuelve al mazo de historia; una Mejora del jugador va a los descartes del muelle', () => {
+    const j = Jugador.en({ barco: { mejoras: ['gallardete', 'vela'] }, mazoHistoria: [] })
+    mover(j.estado, j.inst('gallardete', ['mejoras']), 'descartesMuelle')
+    mover(j.estado, j.inst('vela', ['mejoras']), 'descartesMuelle')
+    expect(j.zona('mazoHistoria')).toEqual(['gallardete'])
+    expect(j.zona('descartesMuelle')).toEqual(['vela'])
+  })
+
+  it('lo que va fuera de la partida, si es del mazo de historia, también vuelve a él (una carta de recompensa)', () => {
+    const j = Jugador.en({ mazoHistoria: ['fondeo_sanjose'] })
+    mover(j.estado, j.inst('fondeo_sanjose', ['mazoHistoria']), 'cogidas')
+    mover(j.estado, j.inst('fondeo_sanjose', ['cogidas']), 'fueraDeJuego')
+    expect(j.zona('fueraDeJuego')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain('fondeo_sanjose')
+  })
+})
+
 describe('Las cartas del mazo del naufragio que se quedan en juego', () => {
   it('La campana del San José (270): al zarpar a una misión de Mar, oteas 2; a una de Naturaleza, no', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], barco: { mejoras: ['campana_sanjose'] }, mazoPeligros: ['leyenda', 'cazadores', 'calma', 'calma'] })
@@ -331,7 +388,9 @@ describe('Las cartas del mazo del naufragio que se quedan en juego', () => {
     expect(j.ofreceCapacidad('culebrina_sanjose.disparar')).toBe(false)
   })
 
-  it('La culebrina perdida no va a los descartes del muelle: vuelve al mazo de historia (P108)', () => {
+  it('La culebrina perdida no va a los descartes del muelle: vuelve al mazo de historia (regla general; cierra P108)', () => {
+    // El Barco se hunde con la culebrina y la Vela mayor: la Vela va a los descartes del muelle; la culebrina, al mazo de
+    // historia (el ejemplo del reglamento, en «Mazo de historia»).
     const j = Jugador.en({ barco: { dano: 5, mejoras: ['culebrina_sanjose', 'vela'] }, mazoHistoria: [] })
     expect(j.zona('mejoras')).toEqual([])
     expect(j.zona('mazoHistoria')).toEqual(['culebrina_sanjose'])
@@ -585,7 +644,7 @@ describe('259–263 · La carrera de van Hoorn', () => {
     expect(disponibles(j)).toContain('vanhoorn-II-b')
   })
 
-  it('I: si te retiras, también se aparta y llega el II-b; si la superas, 1 de reputación y llega el II-a (el II-b sale)', () => {
+  it('I: si te retiras, también se aparta y llega el II-b; si la superas, 1 de reputación y llega el II-a (el II-b se queda en el mazo de historia)', () => {
     const r = enPuerto({ misiones: ['vanhoorn-I'], mazoPeligros: ['calma', 'calma', 'calma', 'calma'] })
     r.zarpar('vanhoorn-I').retirarse()
     expect(r.zona('fueraDeJuego')).toContain('vanhoorn-I')
@@ -594,7 +653,7 @@ describe('259–263 · La carrera de van Hoorn', () => {
     s.zarpar('vanhoorn-I').seguir().seguir()
     expect(s.estado.reputacion).toBe(1)
     expect(disponibles(s)).toContain('vanhoorn-II-a')
-    expect(s.zona('fueraDeJuego')).toContain('vanhoorn-II-b')
+    expect(s.zona('mazoHistoria')).toContain('vanhoorn-II-b')
   })
 
   it('II-a «La isla de Aves»: 3 de reputación y el Tesoro 263, «Carta de marear» (tus misiones de Mar necesitan 1 menos)', () => {
@@ -719,8 +778,9 @@ describe('P98 · Alerta al otear, los barcos rivales y el prisionero', () => {
 
   it('«Vivo, no muerto» no se supera si la carta 267 (el prisionero) no está en juego', () => {
     const j = enPuerto({ misiones: ['fugitivo-II'], mazoPeligros: ['calma', 'calma', 'calma', 'calma', 'calma'] })
-    // Sin el barco del fugitivo (nunca se captura al prisionero): con 6 de Avance, la misión sigue.
-    mover(j.estado, j.inst('barco_fugitivo', ['mazoHistoria']), 'fueraDeJuego')
+    // Sin el barco del fugitivo (nunca se captura al prisionero): con 6 de Avance, la misión sigue. (Fuera del juego volvería
+    // al mazo de historia: se aparta.)
+    mover(j.estado, j.inst('barco_fugitivo', ['mazoHistoria']), 'apartados')
     j.zarpar('fugitivo-II').seguir().seguir().seguir()
     expect(j.avance('fugitivo-II')).toBeGreaterThanOrEqual(6)
     expect(j.estado.mision?.fin).toBeNull()

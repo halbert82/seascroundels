@@ -6,6 +6,7 @@ import {
   type CapitanDatos,
   type CapituloDatos,
   type CartaMazoPropioDatos,
+  type CartaRecompensaDatos,
   type DatosCartas,
   type EscenarioDatos,
   type EventoDatos,
@@ -48,6 +49,8 @@ export type EntradaCatalogo =
   | { tipo: 'permanente'; num: number; id: string; copias: number; carta: PermanenteDatos }
   /** Fase 15: carta del mazo del naufragio (salvo la culebrina y los Tesoros, que conservan su tipo), del mazo de historia. */
   | { tipo: 'naufragio'; num: number; id: string; copias: number; carta: NaufragioDatos; mision: MisionDatos }
+  /** Fase 15: carta de recompensa del mazo de historia («Coge la carta 286 del mazo de historia»). */
+  | { tipo: 'recompensa'; num: number; id: string; copias: number; carta: CartaRecompensaDatos; mision: MisionDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
@@ -76,6 +79,7 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   pasajero: 'Pasajero',
   permanente: 'Permanente',
   naufragio: 'Carta del naufragio',
+  recompensa: 'Carta de recompensa',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -147,6 +151,11 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     const mision = datos.misiones.find((m) => m.id === carta.mision)
     if (!mision) throw new Error(`La carta del naufragio «${carta.id}» no pertenece a ninguna misión`)
     lista.push({ tipo: 'naufragio', num: carta.num, id: carta.id, copias: 1, carta, mision })
+  }
+  for (const carta of datos.cartasDeRecompensa ?? []) {
+    const mision = datos.misiones.find((m) => m.id === carta.mision)
+    if (!mision) throw new Error(`La carta de recompensa «${carta.id}» no pertenece a ninguna misión`)
+    lista.push({ tipo: 'recompensa', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
 
   return lista.sort((a, b) => a.num - b.num)
@@ -285,9 +294,12 @@ export function rasgosDe(id: string): string[] {
 // ---------------------------------------------------------------------------
 // Fase 15: el mazo del naufragio («El naufragio del San José»)
 
-/** Las cartas del mazo del naufragio, por identificador, en el orden de la misión (con la culebrina y los Tesoros 270 y 271). */
+/**
+ * Las cartas del mazo del naufragio, por identificador, en el orden de la carta que lo baraja («Fondeáis sobre el San
+ * José», 286), con la culebrina y los Tesoros 270 y 271.
+ */
 export function cartasDelNaufragio(): string[] {
-  const nums = DATOS.misiones.flatMap((m) => m.capitulos.flatMap((c) => c.mazoNaufragio ?? []))
+  const nums = DATOS.cartasDeRecompensa.flatMap((c) => c.mazoNaufragio ?? [])
   return nums.map((n) => {
     const e = CATALOGO.find((x) => x.num === n)
     if (!e) throw new Error(`El mazo del naufragio cita la carta ${n}, que no existe`)
@@ -317,8 +329,29 @@ export function destinoNaufragio(id: string): DestinoNaufragio {
   return 'apartar'
 }
 
-/** Una Mejora o un Tesoro que no es del jugador, sino del mazo de una misión (la culebrina del naufragio). */
-export function esDeMision(id: string): boolean {
-  const c = porId(id).carta
-  return 'mision' in c && typeof c.mision === 'string'
+/**
+ * ¿Es una carta del mazo de historia? Las que no empiezan la partida en ningún mazo: los capítulos II, III y IV, los
+ * Tesoros, los mazos propios y los barcos rivales, los Pasajeros, las permanentes, el mazo del naufragio (con su
+ * culebrina), las cartas de recompensa y «La Armada te persigue». Fase 15 (Albert, tercera ronda): cuando una de ellas sale
+ * del juego (se descarta, se pierde o termina su misión), vuelve al mazo de historia (ver `mover` en zonas.ts).
+ */
+export function esDeHistoria(id: string): boolean {
+  const e = porId(id)
+  switch (e.tipo) {
+    case 'capitulo':
+      return e.carta.capitulo !== 'I'
+    case 'tesoro':
+    case 'mazoPropio':
+    case 'pasajero':
+    case 'permanente':
+    case 'naufragio':
+    case 'recompensa':
+      return true
+    case 'mejoraBarco':
+      return e.carta.mision !== undefined
+    case 'peligro':
+      return DATOS.mazosPredefinidos.apartadosDePeligros.includes(e.id)
+    default:
+      return false
+  }
 }

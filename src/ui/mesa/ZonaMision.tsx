@@ -284,8 +284,9 @@ function destinoDeLaUltima(s: Estado, c: InstId): { texto: string; sello?: strin
 }
 
 /**
- * Fase 15, «El naufragio del San José»: mientras se bucea, el mazo del naufragio boca abajo con las cartas que quedan (sin
- * decir cuáles ayudan y cuáles hacen daño), la última carta robada y, a un lado, las que te has quedado.
+ * Fase 15, «El naufragio del San José»: mientras se bucea, la carta 286 que lo pide (la recompensa de la misión), el mazo del
+ * naufragio boca abajo con las cartas que quedan (sin decir cuáles ayudan y cuáles hacen daño), la última carta robada y, a
+ * un lado, las que te has quedado.
  */
 function PanelNaufragio({ alto, ancho }: { alto: number; ancho: number }) {
   const { s } = useMesa()
@@ -295,11 +296,20 @@ function PanelNaufragio({ alto, ancho }: { alto: number; ancho: number }) {
   const ultima = ultimaDelNaufragio(s)
   const destino = ultima && s.cartas[ultima] ? destinoDeLaUltima(s, ultima) : null
   const quedadas = s.zonas.naufragioQuedadas
+  const cogida = s.zonas.cogidas[0]
   const anchoCarta = MEDIDAS.normal.ancho * escala
-  const escalaQuedada = Math.min(0.3, Math.max(0.2, (ancho - 2 * anchoCarta - 60) / Math.max(1, quedadas.length) / MEDIDAS.normal.ancho))
+  const escalaCogida = 0.3
+  const anchoCogida = cogida ? MEDIDAS.normal.ancho * escalaCogida + 22 : 0
+  const escalaQuedada = Math.min(0.3, Math.max(0.2, (ancho - 2 * anchoCarta - anchoCogida - 60) / Math.max(1, quedadas.length) / MEDIDAS.normal.ancho))
   const quedan = s.zonas.mazoNaufragio.length
   return (
     <div className="naufragio">
+      {cogida && (
+        <div className="naufragio-columna">
+          <span className="naufragio-rotulo">Recompensa</span>
+          <CartaDe inst={cogida} escala={escalaCogida} girar={false} />
+        </div>
+      )}
       <div className="naufragio-columna">
         <Explicable ayuda={AYUDA_REGLA.mazoNaufragio} className="naufragio-rotulo">
           Mazo del naufragio

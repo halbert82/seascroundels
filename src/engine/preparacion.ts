@@ -1,6 +1,6 @@
 // Preparación de la partida (reglamento, «Preparación de la partida»).
 
-import { CATALOGO } from './catalogo.ts'
+import { CATALOGO, esDeHistoria } from './catalogo.ts'
 import { DATOS } from './datos.ts'
 import { anotar, encolar, estadoVacio } from './estado.ts'
 import { ejecutar } from './motor.ts'
@@ -82,18 +82,12 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
     const siguiente = s.zonas.mazoMisiones[0]
     if (siguiente) mover(s, siguiente, 'misionesDisponibles', 'abajo')
   }
+  // Las demás cartas del mazo de historia: capítulos II, III y IV, Tesoros, mazos propios y barcos rivales, Pasajeros,
+  // permanentes (también «¡La guardia!»), el mazo del naufragio con su culebrina y las cartas de recompensa. Esperan
+  // apartadas hasta que una carta las pide. («La Armada te persigue» ya está.)
   for (const e of CATALOGO) {
-    if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') crearCopia(s, e.id, 'mazoHistoria')
-    if (e.tipo === 'tesoro') crearCopia(s, e.id, 'mazoHistoria')
-    if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) crearCopia(s, e.id, 'mazoHistoria')
-    // Misiones 2.0: los Pasajeros esperan apartados en el mazo de historia.
-    if (e.tipo === 'pasajero') crearCopia(s, e.id, 'mazoHistoria')
-    // Fase 11: las permanentes (también «¡La guardia!») esperan apartadas en el mazo de historia hasta que un encuentro o
-    // una misión las pone en juego.
-    if (e.tipo === 'permanente') crearCopia(s, e.id, 'mazoHistoria')
-    // Fase 15: las cartas del mazo del naufragio también esperan en el mazo de historia (la culebrina, una Mejora de
-    // barco, también; los Tesoros ya están).
-    if (e.tipo === 'naufragio' || (e.tipo === 'mejoraBarco' && e.carta.mision)) crearCopia(s, e.id, 'mazoHistoria')
+    if (e.tipo === 'peligro' || !esDeHistoria(e.id)) continue
+    for (let i = 0; i < e.copias; i++) crearCopia(s, e.id, 'mazoHistoria')
   }
 
   // 6. Muelle.

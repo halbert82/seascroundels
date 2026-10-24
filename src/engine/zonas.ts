@@ -1,7 +1,7 @@
 // Zonas de la partida y movimientos de cartas entre ellas.
 
 import { barajarLista } from './azar.ts'
-import { DATOS } from './datos.ts'
+import { esDeHistoria } from './catalogo.ts'
 import { copia } from './estado.ts'
 import { ZONAS, type CartaId, type Estado, type InstId, type Zona } from './tipos.ts'
 
@@ -27,18 +27,19 @@ export function estaEn(s: Estado, inst: InstId, zona: Zona): boolean {
   return s.zonas[zona].includes(inst)
 }
 
-/**
- * Fase 15: las Mejoras que no son del jugador, sino del mazo de una misión (la culebrina del naufragio). Si se descartan,
- * no van a ningún mazo de descartes: vuelven al mazo de historia, como los Tesoros.
- * TODO(regla) P108: lo que pasa si se pierde la culebrina (por defecto, como un Tesoro).
- */
-const MEJORAS_DE_MISION: ReadonlySet<CartaId> = new Set(DATOS.mejorasBarco.filter((m) => m.mision !== undefined).map((m) => m.id))
+/** Zonas a las que va una carta que sale del juego: los descartes del jugador y fuera de la partida. */
+const SALE_DEL_JUEGO: ReadonlySet<Zona> = new Set<Zona>(['descartesMuelle', 'descartesCapitan', 'fueraDeJuego'])
 
-/** Mueve una copia a otra zona. Si sale del juego, pierde heridas, fichas y vínculos. */
+/**
+ * Mueve una copia a otra zona. Si sale del juego, pierde heridas, fichas y vínculos.
+ * Fase 15 (Albert, tercera ronda; cierra P108): toda carta del mazo de historia que sale del juego (se descarta, se pierde
+ * o se retira) vuelve al mazo de historia, y no a ningún mazo de descartes: la culebrina del naufragio perdida, un Tesoro
+ * descartado o incautado, la carta de un mazo propio que Se retira. Las que vuelven al terminar su misión lo hacen en su
+ * sitio (`devolverPeligros`, el naufragio, los barcos rivales).
+ */
 export function mover(s: Estado, inst: InstId, destinoPedido: Zona, donde: 'arriba' | 'abajo' = 'arriba'): void {
   const origen = zonaDe(s, inst)
-  const aDescartes = destinoPedido === 'descartesMuelle' || destinoPedido === 'descartesCapitan'
-  const destino: Zona = aDescartes && MEJORAS_DE_MISION.has(copia(s, inst).id) ? 'mazoHistoria' : destinoPedido
+  const destino: Zona = SALE_DEL_JUEGO.has(destinoPedido) && esDeHistoria(copia(s, inst).id) ? 'mazoHistoria' : destinoPedido
   s.zonas[origen] = s.zonas[origen].filter((x) => x !== inst)
   const c = copia(s, inst)
   if (EN_JUEGO.has(origen) && !EN_JUEGO.has(destino)) {

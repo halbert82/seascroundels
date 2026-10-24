@@ -25,7 +25,10 @@ describe('122 · Guerreros esqueleto', () => {
   it('COM 4: si superas, esta carta Se retira; si fallas, Inflige 2 heridas, libres (fase 13)', () => {
     const j = en('nat', ['esqueleto', 'calma', 'calma'], { tripulacion: ['reinaldo'] })
     j.comprometer('COM', ['capitan', 'reinaldo']).seguir()
-    expect(j.zona('fueraDeJuego')).toContain('esqueleto')
+    // Fase 15 (regla general de Albert): es una carta del mazo de historia, así que vuelve a él (TODO(regla) P110).
+    expect(j.zona('fueraDeJuego')).not.toContain('esqueleto')
+    expect(j.zona('mazoHistoria')).toContain('esqueleto')
+    expect(j.registro).toContain('«Guerreros esqueleto» se retira y vuelve al mazo de historia.')
     // Las 2 heridas del fallo van a quien quiera el jugador: también al Carpintero, que no fue asignado.
     const k = en('nat', ['esqueleto', 'calma', 'calma'], { tripulacion: ['carpintero'] })
     k.comprometer('COM', ['capitan']).seguir().repartir({ capitan: 1, carpintero: 1 })

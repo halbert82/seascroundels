@@ -1,6 +1,6 @@
 // Mazo de Peligros activo (el normal o el mezclado de una misión), encuentros y descartes.
 
-import { costeImpreso, porId, tipoDe } from './catalogo.ts'
+import { costeImpreso, esDeHistoria, porId, tipoDe } from './catalogo.ts'
 import type { EncuentroDatos, Entorno } from './datos.ts'
 import { quedaDe } from './definiciones.ts'
 import { anotar, copia, encolar } from './estado.ts'
@@ -62,8 +62,12 @@ export function encuentroDe(s: Estado, carta: InstId): EncuentroDatos {
 /** Descarta una carta de Peligro revelada en la misión: a sus descartes, o fuera del juego si «se retira». */
 export function descartarPeligro(s: Estado, carta: InstId): void {
   if (s.mision?.retirar.includes(carta)) {
+    const id = copia(s, carta).id
+    // Fase 15 (regla general de Albert): una carta del mazo de historia (la de un mazo propio) vuelve allí.
+    // TODO(regla) P110: con eso, la de un mazo propio puede volver a salir si se vuelve a barajar su mazo propio.
     mover(s, carta, 'fueraDeJuego')
-    anotar(s, 'efecto', `«${porId(copia(s, carta).id).carta.nombre}» se retira del juego.`, { tipo: 'seRetira', carta: copia(s, carta).id })
+    const vuelve = esDeHistoria(id) ? ' y vuelve al mazo de historia' : ' del juego'
+    anotar(s, 'efecto', `«${porId(id).carta.nombre}» se retira${vuelve}.`, { tipo: 'seRetira', carta: id })
     return
   }
   mover(s, carta, mazoActivo(s).descartes)

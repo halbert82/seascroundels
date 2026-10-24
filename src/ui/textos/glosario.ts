@@ -380,10 +380,10 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   mazoNaufragio: regla(
     'mazoNaufragio',
     'Mazo del naufragio',
-    'Doce cartas del mazo de historia (269 a 271 y 277 a 285) que se barajan al superar «El naufragio del San José». Cada vez que buceas, agotas a un Tripulante preparado y robas 1. Lo que pasa lo dice cada carta: te la quedas, la pones en juego o vuelve barajada al mazo.',
+    'Doce cartas del mazo de historia (269 a 271 y 277 a 285). Las baraja la carta 286, «Fondeáis sobre el San José», que coges al superar «El naufragio del San José». Cada vez que buceas, agotas a un Tripulante preparado y robas 1. Lo que pasa lo dice cada carta: te la quedas, la pones en juego o vuelve barajada al mazo.',
     {
       rotulo: 'Detalles',
-      texto: 'Antes de bucear preparas a todos tus Tripulantes, y puedes bucear las veces que quieras mientras te quede alguien preparado. Una carta que no dice qué hacer con ella se aparta después de aplicarla. Al terminar, todo el mazo del naufragio vuelve al mazo de historia, salvo las cartas que estén en juego.',
+      texto: 'Antes de bucear preparas a todos tus Tripulantes, y puedes bucear las veces que quieras mientras te quede alguien preparado. Una carta que no dice qué hacer con ella se aparta después de aplicarla. Al terminar, la carta 286 y todo el mazo del naufragio vuelven al mazo de historia, salvo las cartas que estén en juego.',
     },
   ),
   indestructible: regla('indestructible', 'Indestructible', 'No se puede perder ni agotar por ningún efecto, ni siquiera al hundirse el Barco.'),

@@ -163,3 +163,17 @@ describe('Fase 15 · partidas guardadas con el pecio del San José', () => {
     expect(() => deserializar(JSON.stringify(viejo))).toThrow('buceando en «El pecio del San José»')
   })
 })
+
+describe('Fase 15, tercera ronda · partidas guardadas antes de la carta 286 («Fondeáis sobre el San José»)', () => {
+  it('la carta 286 espera en el mazo de historia y la zona de la carta cogida existe', () => {
+    const s = nuevaPartida({ semilla: 5 })
+    const viejo = JSON.parse(serializar(s)) as Estado
+    const fondeo = inst(viejo, 'fondeo_sanjose')
+    viejo.zonas.mazoHistoria = viejo.zonas.mazoHistoria.filter((x) => x !== fondeo)
+    delete viejo.cartas[fondeo]
+    delete (viejo.zonas as Partial<Estado['zonas']>).cogidas
+    const t = deserializar(JSON.stringify(viejo))
+    expect(ids(t, 'mazoHistoria')).toContain('fondeo_sanjose')
+    expect(t.zonas.cogidas).toEqual([])
+  })
+})

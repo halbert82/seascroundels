@@ -323,8 +323,8 @@ function rival(): PartidaEnMesa {
 }
 
 /**
- * Fase 15, «El naufragio del San José»: superada la misión, dos inmersiones: «El cofre del virrey» (te lo quedas, a un lado)
- * y «El pulpo de la bodega», que atrapa a la Guía: ¿lo saca otro entre dos o se suelta solo?
+ * Fase 15, «El naufragio del San José»: superada la misión, coges la carta 286 y buceas dos veces: «El cofre del virrey» (te
+ * lo quedas, a un lado) y «El pulpo de la bodega», que atrapa a la Guía: ¿lo saca otro entre dos o se suelta solo?
  */
 function bucear(): PartidaEnMesa {
   const j = Jugador.en({
@@ -340,7 +340,10 @@ function bucear(): PartidaEnMesa {
   j.zarpar('naufragio-I').seguir()
   j.encimaDelNaufragio('naufragio_cofre', 'naufragio_pulpo').opcion('bucear').elegir('vigia')
   j.opcion('bucear').elegir('guia_alquiler')
-  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 10) }
+  // Fase 15 (tercera ronda): la misión se supera antes de bucear (el buceo es su recompensa, la carta 286); el panel de
+  // «Misión superada» ya se ha cerrado.
+  const superada = j.estado.registro.findIndex((r) => r.dato?.tipo === 'finMision')
+  return { ...empezar(j.estado), desde: Math.max(superada + 1, j.estado.registro.length - 10) }
 }
 
 /**

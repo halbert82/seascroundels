@@ -35,7 +35,7 @@ const GRUPOS: Grupo[] = [
   { id: 'mejoras', nombre: 'Mejoras', tipos: ['mejoraBarco', 'mejoraTripulante'] },
   { id: 'mano', nombre: 'Eventos y Habilidades', tipos: ['evento', 'habilidad'] },
   { id: 'peligros', nombre: 'Peligros', tipos: ['peligro', 'mazoPropio'] },
-  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'naufragio'] },
+  { id: 'misiones', nombre: 'Misiones', tipos: ['capitulo', 'pasajero', 'naufragio', 'recompensa'] },
   { id: 'permanentes', nombre: 'Permanentes', tipos: ['permanente'] },
   { id: 'tesoros', nombre: 'Tesoros', tipos: ['tesoro'] },
   { id: 'escenario', nombre: 'Escenario y Puertos', tipos: ['escenario', 'puerto'] },
@@ -84,6 +84,8 @@ function descripcion(e: EntradaCatalogo): string {
       return `Pasajero · ${e.mision.nombre}`
     case 'naufragio':
       return 'Mazo del naufragio'
+    case 'recompensa':
+      return `Carta de recompensa · ${e.mision.nombre}`
     case 'permanente':
       return e.carta.origen ? `Permanente · la pone en juego la carta ${porId(e.carta.origen).num}` : 'Permanente · la ponen en juego misiones'
     case 'peligro':

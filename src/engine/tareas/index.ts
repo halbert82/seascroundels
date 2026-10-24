@@ -57,7 +57,7 @@ import {
   zarpar,
 } from './mision.ts'
 import { adquirir, despedir, reclutar, ventanaJugar } from './jugar.ts'
-import { bajarPasajero, elegirFinal, fichasMision, ponerPasajero } from './misiones2.ts'
+import { bajarPasajero, cogerCarta, devolverCogida, elegirFinal, fichasMision, ponerPasajero } from './misiones2.ts'
 import { quedarseEnPuerto, quitarTodosLosEstados, reponerMisiones, soplos, tablon } from './puerto.ts'
 import {
   agotarParaPagar,
@@ -158,6 +158,8 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   bajarPasajero,
   fallarMision,
   ponerTesoro,
+  cogerCarta,
+  devolverCogida,
   cerrarMision,
   otear,
   quitarEncuentro,

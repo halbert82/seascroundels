@@ -23,7 +23,7 @@ import type { CartaId, Estado, InstId, NuevaTarea, TareaDe } from '../tipos.ts'
 import { espacioLibre } from '../valores.ts'
 import { barajar, mover } from '../zonas.ts'
 import { alFallarPrueba, alRevelarPeligro, alSuperarPrueba, dificultadClaves, fichas, ponerFichas, registrarMision } from './comun.ts'
-import { registrarVigilante } from './registro.ts'
+import { registrarCartaDeRecompensa, registrarVigilante } from './registro.ts'
 
 const reputacion = (n: number): NuevaTarea => ({ tipo: 'cambiarReputacion', n })
 const robarN = (n: number): NuevaTarea => ({ tipo: 'robar', n })
@@ -311,8 +311,13 @@ SIN_VIDA.set('pm_prisionero', (s) => fallaPor(s, 'el prisionero muere'))
 
 // ---------------------------------------------------------------------------
 // El naufragio del San José (268): bucear en el mazo del naufragio (269–271 y 277–285)
+// Fase 15, tercera ronda (Albert): la misión no tiene reglas; su recompensa es «Coge la carta 286 del mazo de historia», y la
+// carta 286, «Fondeáis sobre el San José», es la que hace bucear. Al terminar, ella y el mazo del naufragio vuelven al mazo de
+// historia (regla general), salvo las cartas que estén en juego.
 
 const NAUFRAGIO = 'naufragio-I'
+/** La carta 286, «Fondeáis sobre el San José»: las preguntas del buceo vienen de ella. */
+const FONDEO = 'fondeo_sanjose'
 
 const cuantas = (n: number, una: string, varias: string) => `${n} ${n === 1 ? una : varias}`
 
@@ -331,8 +336,8 @@ export function tienesDelNaufragio(s: Estado, id: CartaId): boolean {
 }
 
 /**
- * «Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio.» Sus cartas salen
- * del mazo de historia (las que ya están en juego, no). Después se bucea.
+ * Carta 286: «Prepara a todos tus Tripulantes y baraja el mazo del naufragio.» Sus cartas salen del mazo de historia (las
+ * que ya están en juego, no). Después se bucea.
  */
 registrarEspecial('naufragio.barajar', (s) => {
   const m = s.mision
@@ -347,7 +352,7 @@ registrarEspecial('naufragio.barajar', (s) => {
 
 /**
  * Al dejar de bucear, todo el mazo del naufragio vuelve al mazo de historia (el mazo, lo que te has quedado y lo apartado),
- * salvo las cartas que estén en juego.
+ * salvo las cartas que estén en juego (regla general de Albert). La carta 286 vuelve después (`devolverCogida`).
  */
 function recogerElNaufragio(s: Estado): void {
   const vuelven = [...s.zonas.mazoNaufragio, ...s.zonas.naufragioQuedadas, ...s.zonas.naufragioApartadas]
@@ -377,7 +382,7 @@ registrarEspecial('naufragio.bucear', (s, t, e) => {
       const quedan = cuantas(s.zonas.mazoNaufragio.length, 'carta', 'cartas')
       return preguntar({
         tipo: 'elegirOpcion',
-        motivo: { clave: 'bucear', carta: NAUFRAGIO, n: naufragio.inmersiones, texto: quedan },
+        motivo: { clave: 'bucear', carta: FONDEO, n: naufragio.inmersiones, texto: quedan },
         opciones: [
           { clave: 'bucear', texto: `Bucear: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio (quedan ${quedan})` },
           { clave: 'subir', texto: 'Dejar de bucear' },
@@ -397,7 +402,7 @@ registrarEspecial('naufragio.bucear', (s, t, e) => {
   const posibles = preparadosParaBucear(s)
   let buzo: InstId | undefined = posibles.length === 1 ? posibles[0] : undefined
   if (!buzo) {
-    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: NAUFRAGIO }, candidatas: posibles, min: 1, max: 1 })
+    if (!e) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'buzo', carta: FONDEO }, candidatas: posibles, min: 1, max: 1 })
     buzo = eleccionDe(e, 'cartas').ids[0]
   }
   t.paso = 0
@@ -573,8 +578,8 @@ export function capitulosIDeTravesia(s: Estado): InstId[] {
  * «El diario del capitán»: «Busca en el mazo de Misiones el capítulo I de una travesía. Ponlo entre tus misiones
  * disponibles en lugar de una de ellas, que va al fondo del mazo de Misiones, y pon 2 [avance] sobre él.» Si no hay
  * ninguno, no ocurre nada. La misión en curso (el naufragio) no cuenta entre las que se pueden cambiar.
- * TODO(regla) P107: después de buscar, el mazo de Misiones se baraja (como el de muelle al buscar), y la misión cambiada va
- * al fondo después.
+ * P107 (Albert): después de buscar, el mazo de Misiones se baraja (como el de muelle al buscar), y la misión cambiada va al
+ * fondo después.
  * Paso 0: qué capítulo; paso 1: qué misión disponible cambias.
  */
 registrarEspecial('naufragio.diario', (s, t, e) => {
@@ -622,16 +627,20 @@ registrarEspecial('naufragio.diario', (s, t, e) => {
   return 'hecha'
 })
 
-registrarMision(NAUFRAGIO, {
-  antesDeSuperar: (s) =>
-    s.mision
-      ? [
-          { tipo: 'prepararTripulantes' },
-          { tipo: 'especial', clave: 'naufragio.barajar', datos: {}, paso: 0 },
-          { tipo: 'especial', clave: 'naufragio.bucear', datos: {}, paso: 0 },
-        ]
-      : [],
-})
+// La misión no tiene reglas: su recompensa es la carta 286.
+registrarMision(NAUFRAGIO, {})
+
+// Carta 286, «Fondeáis sobre el San José»: «Prepara a todos tus Tripulantes y baraja el mazo del naufragio (cartas 269–271
+// y 277–285). Puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.»
+registrarCartaDeRecompensa(FONDEO, (s) =>
+  s.mision
+    ? [
+        { tipo: 'prepararTripulantes' },
+        { tipo: 'especial', clave: 'naufragio.barajar', datos: {}, paso: 0 },
+        { tipo: 'especial', clave: 'naufragio.bucear', datos: {}, paso: 0 },
+      ]
+    : [],
+)
 
 // ---------------------------------------------------------------------------
 // Escolta del San Telmo (272–273)

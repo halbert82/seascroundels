@@ -5,7 +5,7 @@
 
 import { sembrar } from '../azar.ts'
 import { registrarCapacidades } from '../capacidades/index.ts'
-import { CATALOGO, esUnica, registrarCartasExtra } from '../catalogo.ts'
+import { CATALOGO, esDeHistoria, esUnica, registrarCartasExtra } from '../catalogo.ts'
 import { DATOS, type CapituloDatos, type Entorno, type Habilidad, type MisionDatos } from '../datos.ts'
 import { copia as copiaDe, encolar, estadoVacio } from '../estado.ts'
 import { ejecutar, responder } from '../motor.ts'
@@ -173,11 +173,8 @@ registrarCartasExtra({
 function historiaCompleta(): CartaId[] {
   const ids: CartaId[] = [PERMANENTE_DE_PRUEBA]
   for (const e of CATALOGO) {
-    if (e.tipo === 'capitulo' && e.carta.capitulo !== 'I') ids.push(e.id)
-    if (e.tipo === 'tesoro') ids.push(e.id)
-    if (e.tipo === 'mazoPropio') for (let i = 0; i < e.copias; i++) ids.push(e.id)
-    if (e.tipo === 'pasajero' || e.tipo === 'permanente' || e.tipo === 'naufragio') ids.push(e.id)
-    if (e.tipo === 'mejoraBarco' && e.carta.mision) ids.push(e.id)
+    if (e.tipo === 'peligro' || !esDeHistoria(e.id)) continue
+    for (let i = 0; i < e.copias; i++) ids.push(e.id)
   }
   return ids
 }

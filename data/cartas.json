@@ -10565,29 +10565,14 @@
      "entorno": "mar",
      "avanceNecesario": 4,
      "distancia": 0,
-     "reglas": [
-      "Cuando esta misión vaya a superarse, prepara a todos tus Tripulantes y baraja el mazo del naufragio. Después, puedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio."
-     ],
+     "reglas": [],
      "ambientacion": "«El galeón se hundió con la plata del virrey. Nadie ha bajado hasta el fondo.»",
      "recompensa": {
-      "texto": "Lo que saques del mazo del naufragio ~(cartas 269 a 271 y 277 a 285 del mazo de historia)~."
+      "coge": 286,
+      "texto": "Coge la carta 286 del mazo de historia."
      },
      "siguiente": [],
-     "textoSiguiente": "",
-     "mazoNaufragio": [
-      269,
-      277,
-      278,
-      270,
-      279,
-      282,
-      271,
-      280,
-      281,
-      283,
-      284,
-      285
-     ]
+     "textoSiguiente": ""
     }
    ]
   },
@@ -11302,6 +11287,30 @@
    "mision": "naufragio",
    "texto": "El pulpo atrapa al Tripulante que ha robado esta carta. **Elige:**\nSacarlo entre dos: agota a otro Tripulante preparado.\nQue se suelte solo: el Tripulante que ha robado esta carta sufre {2 herida}.\nVuelve a barajar esta carta en el mazo del naufragio.",
    "ambientacion": "«Ocho brazos y ninguna prisa.»"
+  }
+ ],
+ "cartasDeRecompensa": [
+  {
+   "id": "fondeo_sanjose",
+   "num": 286,
+   "nombre": "Fondeáis sobre el San José",
+   "mision": "naufragio",
+   "texto": "Prepara a todos tus Tripulantes y baraja el mazo del naufragio ~(cartas 269–271 y 277–285)~.\nPuedes bucear las veces que quieras: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.",
+   "ambientacion": "«Echad el ancla sobre el bajo. El que aguante la respiración, que se quite la camisa.»",
+   "mazoNaufragio": [
+    269,
+    277,
+    278,
+    270,
+    279,
+    282,
+    271,
+    280,
+    281,
+    283,
+    284,
+    285
+   ]
   }
  ]
 }

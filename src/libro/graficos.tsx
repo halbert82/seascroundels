@@ -65,6 +65,9 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
     // Fase 15: el mazo del naufragio con su culebrina (sin sus dos Tesoros, que cuentan como Tesoros).
     case 'Mazo del naufragio':
       return [...deTipo('naufragio'), ...deTipo('mejoraBarco').filter((e) => e.tipo === 'mejoraBarco' && e.carta.mision)].sort((a, b) => a.num - b.num)
+    // Fase 15 (tercera ronda): las cartas que coge una recompensa («Coge la carta 286 del mazo de historia»).
+    case 'Cartas de recompensa':
+      return deTipo('recompensa')
     default:
       return []
   }

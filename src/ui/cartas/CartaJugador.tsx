@@ -22,10 +22,22 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
     const el = caja.current
     if (!v.permanente || !el) return
     const carta = el.closest('.card')
+    // ¿Cabe todo, también el relleno de abajo? En una caja flexible, scrollHeight no siempre lo cuenta, y la ambientación
+    // (o la última línea) llegaba a tocar el borde (fase 15: 220, 228, 267, 273, 275, 285 y 286).
+    const cabe = () => {
+      if (el.scrollHeight > el.clientHeight + 0.5) return false
+      const ultimo = el.lastElementChild
+      if (!ultimo) return true
+      const marco = el.getBoundingClientRect()
+      const escala = el.offsetHeight > 0 ? marco.height / el.offsetHeight : 1
+      const estilo = getComputedStyle(el)
+      const debajo = (parseFloat(estilo.paddingBottom) || 0) + (parseFloat(estilo.borderBottomWidth) || 0)
+      return (ultimo.getBoundingClientRect().bottom - marco.top) / escala + debajo <= el.offsetHeight + 1
+    }
     const probar = () => {
       for (const t of TAMANOS_PERMANENTE) {
         el.style.setProperty('--fsp', `${t}px`)
-        if (el.scrollHeight <= el.clientHeight + 0.5) return true
+        if (cabe()) return true
       }
       return false
     }

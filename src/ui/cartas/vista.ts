@@ -28,6 +28,8 @@ export const COLOR_TIPO = {
   permanente: '#3F4B45',
   /** Fase 15: las cartas del mazo del naufragio, todas del mismo color (no se distingue cuáles ayudan y cuáles hacen daño). */
   naufragio: '#34505A',
+  /** Fase 15 (tercera ronda): las cartas de recompensa del mazo de historia («Coge la carta 286 del mazo de historia»). */
+  recompensa: '#5A4A2E',
 } as const
 
 /** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
@@ -599,6 +601,22 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...conArte(entrada.id),
       }
     }
+    case 'recompensa': {
+      // Fase 15 (tercera ronda): carta de recompensa del mazo de historia. La misión dice «Coge la carta 286 del mazo de
+      // historia» y esta carta explica lo que se gana; después vuelve al mazo de historia. Misma maqueta que las del naufragio.
+      const c = entrada.carta
+      return {
+        ...base(entrada),
+        nombre: c.nombre,
+        color: COLOR_TIPO.recompensa,
+        tipoTexto: `Recompensa · ${entrada.mision.nombre}`,
+        permanente: true,
+        pestanasIzqTop: 74,
+        texto: parsearTexto(c.texto),
+        ambientacion: c.ambientacion,
+        ...conArte(entrada.id),
+      }
+    }
     case 'permanente': {
       // Fase 11: maqueta de las cartas normales del mazo de historia (como los Pasajeros), con «Permanente» en la cinta.
       // Fase 14 (Albert): su tipo (el del encuentro que la pone en juego) se dibuja como el de un encuentro, no como un
@@ -713,6 +731,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'pasajero':
     case 'permanente':
     case 'naufragio':
+    case 'recompensa':
       return [entrada.carta.texto]
     case 'habilidad':
       return []

@@ -28,8 +28,9 @@ export function dorsoDeHistoria(e: EntradaCatalogo): DorsoHistoria | null {
     case 'peligro':
       return e.carta.entraDuranteLaPartida && !e.carta.retirada ? 'peligros' : null
     case 'pasajero':
-    // Fase 15: las cartas del mazo del naufragio salen al superar su misión: dorso de misión.
+    // Fase 15: las cartas del mazo del naufragio y las cartas de recompensa salen al superar su misión: dorso de misión.
     case 'naufragio':
+    case 'recompensa':
     // Fase 11: las permanentes (también «¡La guardia!») no van a ningún mazo (van a la zona de permanentes): dorso de
     // misión, pila normal.
     case 'permanente':
