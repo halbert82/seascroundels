@@ -108,7 +108,7 @@ La Caja básica de Sea Scoundrels contiene 336 cartas, que se dividen en cartas 
 | --- | --- |
 | Estados de los Tripulantes | 42 |
 | Ventajas | 12 |
-| Estados del Barco y Desánimo | 4 |
+| Estados del Barco y de la tripulación | 4 |
 
 Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del naufragio, las cartas de recompensa y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
@@ -196,7 +196,7 @@ Cada carta de Peligro tiene **tres encuentros** y una **franja de Destino**.
 > [!grafico] anatomia peligro
 
 1. **Entorno del encuentro:** es la franja de color de la izquierda (azul Mar, verde Naturaleza, marrón Ciudad). Durante una misión solo se lee el encuentro de su Entorno.
-2. **Nombre y tipo** del encuentro. El tipo (Guardia, Militar, Pirata…) aparece en versalitas bajo el nombre, junto a sus palabras clave (Elige, Sin ayuda…).
+2. **Nombre y tipo** del encuentro. El tipo (Guardia, Militar, Pirata…) aparece en versalitas bajo el nombre. A su lado, en etiquetas, van las palabras clave que cambian la forma de resolverlo: Elige, Sin ayuda, Descomunal, Abordaje, Alerta o Incautado. Algunas se recuerdan además entre paréntesis en el texto del encuentro.
 3. **Prueba:** a la izquierda, justo encima de los efectos, indica el icono de habilidad y su dificultad. Debajo puede llevar un Rasgo y una cifra, como «Vigía −2»: si el jugador tiene preparado un Tripulante con ese Rasgo, la dificultad baja esa cifra.
 4. **Avance:** es el número del mapa, arriba a la derecha del encuentro. Si el encuentro tiene Prueba, lleva dos números, «3 / 2»: el primero es el Avance que se gana si se supera la Prueba y el segundo, en letra más pequeña, el que se gana si no se supera.
 5. **Efectos:** el efecto de Éxito (verde) se aplica si se supera la Prueba y el de Fallo (rojo), si se falla. Un encuentro sin Prueba, el que no tiene recuadro de Prueba, tiene un solo efecto, que se aplica siempre.
@@ -317,7 +317,7 @@ En esta fase, el jugador puede realizar las siguientes acciones tantas veces com
 - **Jugar un Evento** de la mano: se paga su coste y se aplica su efecto.
 - **Despedir a un Tripulante:** el Tripulante se pone en la pila de descartes del mazo de muelle junto con sus Mejoras. El Capitán no puede ser despedido.
 
-Para **pagar un coste**, el jugador descarta de su mano tantas cartas como indique el timón.
+Para **pagar un coste**, el jugador descarta de su mano tantas cartas como indique el timón. Siempre que haya que redondear, se redondea hacia arriba: si una carta deja pagar la mitad de un coste de 3, se pagan 2 cartas.
 
 > [!tema]
 > Cada carta de tu mano es tiempo, contactos y favores. Lo que gastas en reclutar a un buen marinero es lo que ya no podrás hacer con ellos.
@@ -344,12 +344,12 @@ Los dos puertos del escenario El Caribe, Tortuga y Nassau, tienen las mismas tre
 Curar heridas y quitar Estados son efectos distintos: la Taberna hace las dos cosas. Del mismo modo, reparar solo quita daño, y el Astillero, además, quita los Estados del Barco. Algunas cartas de Escenario pueden cerrar una opción durante un turno; en ese turno, dicha opción no puede elegirse.
 
 > [!ejemplo]
-> El jugador se encuentra en Tortuga con 3 daños y Velas rotas en el Barco, 2 heridas en Diego y el Bucanero veterano Buscado e Inspirado. Entre las misiones disponibles hay una de Ciudad que no le conviene. Si elige Taberna y Astillero, resuelve todos los daños, heridas y Estados: el Barco queda sin daño ni Velas rotas, Diego queda curado y el Bucanero pierde Buscado, pero sigue Inspirado, porque la Taberna no quita las Ventajas. Si elige Tablón de encargos y Taberna, cambia esa misión y cura a Diego, pero zarpa con Velas rotas en el Barco.
+> El jugador se encuentra en Tortuga con 3 daños en el Barco, que está Desarbolado, 2 heridas en Diego y el Bucanero veterano Buscado e Inspirado. Entre las misiones disponibles hay una de Ciudad que no le conviene. Si elige Taberna y Astillero, resuelve todos los daños, heridas y Estados: el Barco queda sin daño y deja de estar Desarbolado, Diego queda curado y el Bucanero pierde Buscado, pero sigue Inspirado, porque la Taberna no quita las Ventajas. Si elige Tablón de encargos y Taberna, cambia esa misión y cura a Diego, pero zarpa con el Barco Desarbolado.
 
 #### 4. Fase de Final de turno
 
 1. Opcionalmente, descarta cartas de tu mano.
-2. Roba cartas de tu mazo del capitán hasta tener en la mano tantas como tu Mando (con una carta de Desánimo, 1 menos; después, devuélvela a la reserva). Si hay que robar y el mazo del capitán está vacío, baraja su pila de descartes para formar un mazo nuevo y **pierde un día**: descarta la carta superior del mazo de Escenario sin aplicarla.
+2. Roba cartas de tu mazo del capitán hasta tener en la mano tantas como tu Mando (si tu tripulación está Desmoralizada, 1 menos; después, devuelve la carta de Desmoralizado a la reserva). Si hay que robar y el mazo del capitán está vacío, baraja su pila de descartes para formar un mazo nuevo y **pierde un día**: descarta la carta superior del mazo de Escenario sin aplicarla.
 3. Se aplican los efectos que dicen «al final de cada turno».
 4. Cada Tripulante Enrolado pierde 1 ficha de Enrolado; el que se queda sin ninguna se va (ver Enrolado).
 
@@ -422,7 +422,7 @@ Algunos encuentros llevan debajo de la Prueba un Rasgo y una cifra, como «Vigí
 
 #### Palabras clave de los encuentros
 
-Los encuentros de Peligro usan algunas palabras clave que es importante conocer antes de jugar. Todas ellas tienen su entrada en la Referencia de reglas.
+Los encuentros de Peligro usan algunas palabras clave que es importante conocer antes de jugar. Todas ellas tienen su entrada en la Referencia de reglas. Las que cambian la forma de resolver el encuentro (Elige, Sin ayuda, Descomunal, Abordaje, Alerta e Incautado) figuran además como etiqueta junto al tipo del encuentro.
 
 **Al revelarse.** Este efecto se aplica en cuanto se revela el encuentro, antes de elegir y antes de asignar a nadie.
 
@@ -446,7 +446,7 @@ Los encuentros de Peligro usan algunas palabras clave que es importante conocer 
 > [!ejemplo]
 > En «Registro casa por casa» (EXP 4), el jugador asigna a la Vigía inexperta, que lleva el Catalejo de latón (EXP 2 + 1), y al Rastreador de la selva (EXP 3). El jugador falla la Prueba: «Descarta al Tripulante asignado con más EXP». Con el Catalejo, la Vigía suma tanto como el Rastreador, pero su EXP impresa es 2 y la de él, 3. Por tanto, se descarta el Rastreador. Si el jugador hubiera asignado a Diego (EXP 1) solo con la Vigía, se descartaría la Vigía; y si el de más EXP fuera el Capitán, no se descartaría: sufriría 1 herida en su lugar.
 
-**Abordaje.** Esta palabra clave indica una lucha cuerpo a cuerpo de cubierta a cubierta, tanto si el enemigo salta a la del jugador como si es el jugador quien aborda: en esa Prueba no se pueden usar Cañones (ni suman ni se pueden agotar sus capacidades). Si el jugador falla la Prueba, inflige 1 herida por cada punto que le falte para llegar a la dificultad, sin máximo, y las reparte como quiera entre sus Tripulantes. Si el jugador falla, se considera que le falta al menos 1 punto, aunque haya fallado por un Destino que dice «Fallas la Prueba».
+**Abordaje.** Esta palabra clave indica una lucha cuerpo a cuerpo de cubierta a cubierta, tanto si el enemigo salta a la del jugador como si es el jugador quien aborda. Como Sin ayuda y Descomunal, cambia la Prueba, y el texto del encuentro lo recuerda al final: «Abordaje (no puedes usar las capacidades de tus Cañones; si fallas, inflige 1 herida por cada punto que te falte)». En esa Prueba, los Cañones ni suman ni se pueden agotar para usar sus capacidades. Si el jugador falla la Prueba, inflige 1 herida por cada punto que le falte para llegar a la dificultad, sin máximo, y las reparte como quiera entre sus Tripulantes. Si el jugador falla, se considera que le falta al menos 1 punto, aunque haya fallado por un Destino que dice «Fallas la Prueba».
 
 > [!ejemplo]
 > En el Mar, el jugador revela «Proa en la niebla» (COM 3, Abordaje). Lleva los Cañones de bronce, pero en un Abordaje no puede usarlos. No asigna a nadie, así que falla la Prueba con un total de 0: le faltan 3 puntos e inflige 3 heridas, que reparte como quiere entre sus Tripulantes. Sale el Destino de la carta «Arrecife» y, como no ha asignado a nadie, se aplica también su efecto Sin oposición, la parte del Mar: «Daña 1». Si hubiera asignado al Bucanero veterano (COM 2, más 1 por Diego), con el −1 del Destino su total habría sido 2: le habría faltado 1 punto, para 1 herida.
@@ -518,7 +518,7 @@ Después de resolver una carta de Peligro, el jugador puede retirarse y volver a
 > Una retirada a medias no existe: el botín o está en tu bodega o no está.
 
 > [!ejemplo]
-> En «Rumbo a la isla» (Mar 5), el jugador lleva 3 de Avance y solo le queda preparado el Rufián. Con él solo, lo más probable es no superar la Prueba de la siguiente carta y ganar únicamente su valor menor de Avance. Además, una Fragata cazadora (COM 5, 3 daños al Barco) podría hundir el Barco. Si el jugador se retira, no obtiene nada.
+> En «Rumbo a la isla» (Mar 5), el jugador lleva 3 de Avance y solo le queda preparado el Rufián. Con él solo, lo más probable es no superar la Prueba de la siguiente carta y ganar únicamente su valor menor de Avance. Además, «El ojo del huracán» (NAV 6; si falla, Daña 3) podría hundir el Barco. Si el jugador se retira, no obtiene nada.
 
 #### Superar una misión
 
@@ -596,7 +596,7 @@ Las cartas de Peligro y de Escenario usan iconos para sus penalizaciones más co
 - **Pierdes un día:** se descarta la carta superior del mazo de Escenario sin aplicarla.
 
 > [!ejemplo]
-> En una misión de Ciudad, el jugador falla «Carestía»: su tripulación queda con Desánimo, y pone la carta de Desánimo junto al Barco. Al final de este mismo turno, cuando va a robar, roba hasta 4 cartas en lugar de 5 y devuelve la carta de Desánimo a la reserva. Al final del turno siguiente vuelve a robar hasta 5.
+> En una misión de Ciudad, el jugador falla «Carestía»: su tripulación queda Desmoralizada, y pone la carta de Desmoralizado junto al Barco. Al final de este mismo turno, cuando va a robar, roba hasta 4 cartas en lugar de 5 y devuelve la carta de Desmoralizado a la reserva. Al final del turno siguiente vuelve a robar hasta 5.
 
 #### Estados y Ventajas
 
@@ -658,9 +658,9 @@ El jugador recluta al Bucanero veterano descartando «Soborno» y «Ojo avizor»
 
 El jugador revela la carta superior del mazo de Peligros y lee su encuentro de Mar: «Turbonada a popa», NAV 4 con Avance 3 / 1 (3 si la supera y 1 si no). Asigna a Diego (NAV 2) y al Bucanero (NAV 1), que suman 3. La Sombra del Alba otorga +1 a las Pruebas de NAV en el Mar, por lo que el total es 4. Ambos Tripulantes quedan agotados. El Bucanero no recibe el +1 de Diego, porque Diego solo lo otorga mientras está preparado y, al ser asignado, se agota. Con 4 contra 4 sería suficiente, pero el Destino puede restar del total y, después, ya no se pueden añadir cartas de la mano. Por ello, el jugador añade en este momento «Mano firme al timón», con dos iconos de NAV: el total es 6.
 
-El jugador revela el Destino de la carta «Arrecife»: −1. El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por superar la Turbonada, 1 más; además, la Turbonada queda atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
+El jugador revela el Destino de la carta «Arrecife»: −1. El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por el efecto de Éxito de la Turbonada, 1 más. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
 
-**Recompensa.** La misión no da reputación, pero el jugador no ha dañado el Barco: cumple la Gesta y gana 1. Coge la carta 288, «Pertrechos para el viaje»: adquiere sin coste la Vela mayor (la única Mejora del muelle de coste 1 o menos) e inflige 1 herida a un Tripulante: elige a Diego. Devuelve la carta, aparta la misión, repone las misiones disponibles, descarta el Destino (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
+**Recompensa.** La misión no da reputación, pero el jugador no ha dañado el Barco: cumple la Gesta y gana 1. Coge la carta 288, «Pertrechos para el viaje»: adquiere sin coste la Vela mayor (la única Mejora del muelle de coste 1 o menos) e inflige 1 herida a un Tripulante: elige a Diego. Devuelve la carta, aparta la misión, repone las misiones disponibles, descarta la Turbonada y la carta del Destino y vuelve a puerto.
 
 **Fase de Final de turno.** El jugador conserva «¡Al abordaje!» y roba cuatro cartas para tener cinco. La Vela mayor le dará 1 de Avance al zarpar a su próxima misión de Mar.
 
@@ -699,11 +699,13 @@ Al construir sus mazos, el jugador debe seguir estas reglas:
 
 ### Abordaje
 
-Abordaje es una palabra clave que aparece en algunos encuentros con Prueba, sola en su efecto de Fallo («**Abordaje**»). El enemigo salta a la cubierta del jugador: en esa Prueba no se pueden usar Cañones, ni suman ni se pueden agotar sus capacidades. Si el jugador falla la Prueba, inflige 1 herida por cada punto que le falte para llegar a la dificultad, sin máximo.
+Abordaje es una palabra clave de algunos encuentros con Prueba: el enemigo salta a la cubierta del jugador, o el jugador a la suya. Como Sin ayuda y Descomunal, cambia la Prueba. En la carta figura como etiqueta junto al tipo del encuentro, y el texto del encuentro acaba con su recordatorio: «Abordaje (no puedes usar las capacidades de tus Cañones; si fallas, inflige 1 herida por cada punto que te falte)».
 
-- Si el jugador falla la Prueba, se considera que le falta al menos 1 punto, aunque la haya fallado por un Destino que dice «Fallas la Prueba».
+- En esa Prueba no se pueden usar las capacidades de los Cañones: ni suman ni se pueden agotar para disparar. La Pólvora del Rey, que es fuego de Cañón, tampoco vale.
+- Si el propio encuentro deja agotar un Cañón antes de asignar («Antes de asignar, puedes agotar un Cañón: −2 de dificultad»), el jugador sí puede hacerlo: no usa la capacidad del Cañón, sino lo que dice el encuentro.
+- Si el jugador falla la Prueba, inflige 1 herida por cada punto que le falte para llegar a la dificultad, sin máximo. Se considera que le falta al menos 1 punto, aunque la haya fallado por un Destino que dice «Fallas la Prueba».
 - Las heridas las reparte el jugador como quiera entre sus Tripulantes, preparados o agotados, Capitán incluido, como cualquier otra herida.
-- La Pólvora del Rey, que es fuego de Cañón, tampoco vale en un Abordaje.
+- Si el efecto de Fallo dice algo más («El fugitivo escapa: la misión falla»), se aplica también.
 - La regla es la misma cuando es el jugador quien aborda un barco rival, como «El barco de van Hoorn».
 
 > [!ejemplo]
@@ -827,7 +829,7 @@ El Barco del jugador tiene tres valores:
 
 El Barco recibe daño cuando una carta lo indica, en cualquier Entorno. Ver Daño.
 
-El Barco puede tener los siguientes Estados: Vía de agua, Velas rotas y Perseguido. El Astillero del puerto los quita todos.
+El Barco puede quedar Anegado, Desarbolado o Perseguido: son sus Estados. El Astillero del puerto los quita todos.
 
 *Véase también:* Daño, Distancia, Estado, Hundirse, Mejora.
 
@@ -858,7 +860,7 @@ Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carr
 - **Agota N Cañones:** el jugador elige N de sus Cañones preparados y los agota. Si tiene menos, agota los que tenga. Como pago de un «Elige», solo se ofrece si tiene N Cañones preparados.
 - **Prepara un Cañón:** el jugador elige uno de sus Cañones agotados y lo prepara.
 - **Los Cañones no suman:** lo que un Cañón añade a esa Prueba no cuenta.
-- **Abordaje:** en una Prueba con Abordaje no se pueden usar Cañones: ni suman ni se pueden agotar sus capacidades.
+- **Abordaje:** en una Prueba con Abordaje no se pueden usar las capacidades de los Cañones: ni suman ni se pueden agotar para disparar. Si el propio encuentro deja agotar un Cañón antes de asignar, eso sí puede hacerse (ver Abordaje).
 - Con «Escasez de pertrechos», los Cañones no se preparan en la Fase de Inicio.
 
 > [!ejemplo]
@@ -911,10 +913,10 @@ El coste de una carta es el número que aparece en el timón. Para pagarlo, el j
 - El Capitán y los Tesoros no tienen coste.
 - Cuando una carta habla del coste de otra («un Tripulante de coste 2 o menos»), se mira siempre el coste impreso en el timón. Los descuentos («cuesta 1 menos») solo rebajan lo que se paga.
 - **Sin coste:** la carta entra en juego sin que el jugador pague nada.
-- **Mitad del coste:** «pagando la mitad de su coste, redondeando hacia arriba» quiere decir que el jugador paga la mitad del coste impreso y, si sale media carta, paga una entera. Un coste de 1 o de 2 se paga con 1 carta; uno de 3 o de 4, con 2. Un descuento rebaja esa cantidad.
+- **Mitad del coste:** «pagando la mitad de su coste» quiere decir que el jugador paga la mitad del coste impreso, redondeando hacia arriba como siempre (ver Redondear): si sale media carta, paga una entera. Un coste de 1 o de 2 se paga con 1 carta; uno de 3 o de 4, con 2. Un descuento rebaja esa cantidad.
 
 > [!ejemplo]
-> Al empezar el turno sale el Escenario «Marineros sin barco»: el jugador mira las 3 cartas superiores del mazo de muelle y pone al Contrabandista del bajo Caribe (coste 3) en el muelle, en lugar de la carta de más a la izquierda. Este turno, reclutarlo cuesta 1 menos. Más tarde, en la misión, el jugador supera «Pulso en el muelle»: puede reclutar un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste. El Contrabandista no vale: aunque ese turno le costaría 2, su coste impreso es 3. El Bucanero veterano (coste 2) sí: la mitad de 2 es 1, así que lo recluta descartando 1 carta.
+> Al empezar el turno sale el Escenario «Marineros sin barco»: el jugador mira las 3 cartas superiores del mazo de muelle, pone al Contrabandista del bajo Caribe (coste 3) en el muelle en lugar de la carta de más a la izquierda, que se descarta, y las otras dos al fondo del mazo de muelle. Este turno, reclutarlo cuesta 1 menos. Más tarde, en la misión, el jugador supera «Pulso en el muelle»: puede reclutar un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste. El Contrabandista no vale: aunque ese turno le costaría 2, su coste impreso es 3. El Bucanero veterano (coste 2) sí: la mitad de 2 es 1, así que lo recluta descartando 1 carta.
 
 ### Coste de una capacidad (los dos puntos)
 
@@ -924,7 +926,7 @@ En el texto de una carta, lo que va antes de los dos puntos es el coste, y lo qu
 
 **Curar N** («Cura 2», con el icono de herida) quita N heridas de los Tripulantes del jugador. **Reparar N** («Repara 2», con el icono del casco del Barco) quita N daños del Barco. Si el efecto no indica a quién cura, el jugador reparte la curación como quiera.
 
-- Curar no quita Estados y reparar no quita la Vía de agua. Quitar un Estado es un efecto distinto: solo lo hacen las cartas que lo dicen («Quita el Estado Envenenado o Sangrando de un Tripulante»), la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
+- Curar no quita Estados, y reparar tampoco: un Barco Anegado sigue Anegado aunque se repare. Quitar un Estado es un efecto distinto: solo lo hacen las cartas que lo dicen («Quita el Estado Envenenado o Sangrando de un Tripulante»), la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
 
 > [!ejemplo]
 > El Bucanero veterano tiene 1 herida y está Envenenado. El jugador juega «Vendas y aguardiente» (cura 2) sobre él: le cura la herida, pero sigue Envenenado. Con «Cataplasma» le quitaría Envenenado y le curaría 1 herida.
@@ -1028,6 +1030,7 @@ Elige es una palabra clave que indica que el encuentro, el Destino o la carta of
 - En una carta de Escenario, el jugador elige al revelarla. Si no puede cumplir entera ninguna de sus opciones, no ocurre nada.
 - Una opción que consiste en un pago (descartar cartas, agotar Tripulantes o Cañones…) no se ofrece si el jugador no puede pagarla entera.
 - Si una opción consiste en pagar y la otra en hacer la Prueba, pagar se considera superar la Prueba: el jugador gana el primer número de su Avance (X) sin hacer la Prueba ni revelar Destino.
+- Un efecto de Éxito o de Fallo también puede decir «Elige:»; el jugador escoge al aplicarlo. Cada opción dice primero lo que hace y, entre paréntesis, lo que ocurre en la historia: «Elige: roba 2 cartas (saqueáis los almacenes) o prepara a todos los Tripulantes asignados (ayudáis con los cubos y os invitan en la taberna)», en el Éxito de «El puerto en llamas».
 
 > [!ejemplo]
 > En Ciudad, el jugador revela «El aduanero tiene precio» (Elige): «**Untarle la mano:** descarta 2 cartas y gana el Avance sin Prueba» y «**Pasar el género por tu cuenta:** EXP 3», con «Contrabandista −2» debajo de la Prueba. Lleva al Contrabandista del bajo Caribe y solo tiene 2 cartas en la mano, de modo que prefiere hacer la Prueba, que pide 1, y conservar las cartas.
@@ -1083,12 +1086,12 @@ El **mazo de Escenario** actúa como el reloj de la partida. El Caribe incluye 1
 
 ### Estado
 
-Un Estado es una carta mini que perjudica o limita a un Tripulante o al Barco. Las cartas de Estado y de Ventaja no van en ningún mazo: forman una **reserva** aparte, boca arriba. Cuando un efecto dice que un Tripulante «queda Envenenado», el jugador coge una carta de Envenenado de la reserva y la pone sobre él; los Estados del Barco y el Desánimo se ponen junto al Barco. Cada carta dice qué hace y cómo se quita. **Quitar un Estado**, o «descarta esta carta», es devolver la carta a la reserva: no hay pila de descartes.
+Un Estado es una carta mini que perjudica o limita a un Tripulante o al Barco. Las cartas de Estado y de Ventaja no van en ningún mazo: forman una **reserva** aparte, boca arriba. Todos los Estados se nombran con un adjetivo y las cartas dicen siempre «queda»: «el Tripulante queda Envenenado», «el Barco queda Anegado», «tu tripulación queda Desmoralizada». Cuando un efecto dice que un Tripulante «queda Envenenado», el jugador coge una carta de Envenenado de la reserva y la pone sobre él; los Estados del Barco y el de la tripulación se ponen junto al Barco. Cada carta dice qué hace y cómo se quita. **Quitar un Estado**, o «descarta esta carta», es devolver la carta a la reserva: no hay pila de descartes.
 
 - Un Tripulante no puede tener dos veces el mismo Estado, y el Barco tampoco: si ya lo tiene, no ocurre nada.
 - Cuando un Tripulante sale del juego, sus cartas de Estado y de Ventaja vuelven a la reserva.
 - Hay 6 cartas de cada Estado de los Tripulantes. Como el jugador nunca tiene más de 6 Tripulantes, la reserva no se queda sin ellas.
-- En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Los Estados se quitan antes de curar o reparar. Curar no quita Estados, ni reparar quita la Vía de agua.
+- En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Los Estados se quitan antes de curar o reparar. Curar no quita Estados, ni reparar los del Barco.
 - Si una carta dice que una carta de Estado no se puede descartar, como el Maldito que «El doblón de la calavera» da al Capitán, no se quita de ninguna forma mientras esa carta esté en juego: ni con la Taberna, ni al cumplirse su condición, ni con ninguna carta.
 
 **Estados de los Tripulantes**
@@ -1103,13 +1106,13 @@ Un Estado es una carta mini que perjudica o limita a un Tripulante o al Barco. L
 
 **Estados del Barco**
 
-- **Vía de agua:** en una misión de Mar, después de resolver cada carta de Peligro, se aplica «Daña 1», salvo que el jugador agote a un Tripulante preparado para achicar. Se quita agotando a un Carpintero (es la Acción de su carta). También se quita con el Astillero o con cualquier carta que así lo indique.
-- **Velas rotas:** las Distancias de todas las misiones aumentan en 1, y en el Mar el total de las Pruebas de NAV recibe −1. Se quita agotando a un Carpintero (es la Acción de su carta). También se quita con el Astillero o con cualquier carta que así lo indique.
+- **Anegado:** en una misión de Mar, después de resolver cada carta de Peligro, se aplica «Daña 1», salvo que el jugador agote a un Tripulante preparado para achicar. Se quita agotando a un Carpintero (es la Acción de su carta). También se quita con el Astillero o con cualquier carta que así lo indique.
+- **Desarbolado:** las Distancias de todas las misiones aumentan en 1, y en el Mar el total de las Pruebas de NAV recibe −1. Se quita agotando a un Carpintero (es la Acción de su carta). También se quita con el Astillero o con cualquier carta que así lo indique.
 - **Perseguido:** los encuentros de tipo Armada reciben +1 de dificultad. Este Estado se quita cuando se supera un encuentro de tipo Armada. También se quita con el Astillero o con cualquier carta que así lo indique.
 
-**Desánimo**
+**Estado de la tripulación**
 
-- **Desánimo:** es de toda la tripulación («Tu tripulación queda con Desánimo») y su carta se pone junto al Barco. Al final del turno, cuando el jugador vaya a robar, roba 1 carta menos y devuelve esta carta a la reserva. Hay una sola carta: si ya la tiene, no ocurre nada. No es un Estado de un Tripulante ni del Barco: no la quitan la Taberna ni el Astillero.
+- **Desmoralizado:** es de toda la tripulación («Tu tripulación queda Desmoralizada») y su carta se pone junto al Barco. Al final del turno, cuando el jugador vaya a robar, roba 1 carta menos y devuelve esta carta a la reserva. Hay una sola carta: si ya la tiene, no ocurre nada. No es un Estado de un Tripulante ni del Barco: no la quitan la Taberna ni el Astillero.
 
 > [!ejemplo]
 > El Bucanero veterano está Asustado y Sangrando. No puede ser asignado él solo, de modo que el jugador lo asigna junto con Diego a una Prueba de COM. Al agotarse, el Bucanero sufre 1 herida por Sangrando. Tras el encuentro, el jugador usa la Acción de la carta de Sangrando: agota al Rufián de cubierta, que estaba preparado, y devuelve la carta a la reserva. Al final del turno, la carta de Asustado también vuelve a la reserva.
@@ -1183,7 +1186,7 @@ Las indicaciones **(Límite de una vez por turno.)** y **(Límite de una vez por
 
 El Mando es el número de cartas hasta el que el jugador roba al final de cada turno. Lo indica su Capitán.
 
-- Con una carta de **Desánimo** junto al Barco, al final del turno el jugador roba 1 carta menos (ver Estado).
+- Si la tripulación del jugador está Desmoralizada (con la carta de Desmoralizado junto al Barco), al final del turno roba 1 carta menos (ver Estado).
 
 ### Mazo de historia
 
@@ -1296,6 +1299,8 @@ Ocupar el muelle es una palabra clave que aparece en el texto de algunos fallos:
 
 Las palabras clave son términos con una regla propia que aparecen en el texto de las cartas. Las de los encuentros de Peligro son Abordaje, Al revelarse, Alerta, Descomunal, Elige, Incautado, Ocupar el muelle, Persigue y Sin ayuda; las de las cartas del jugador, como Indestructible o Enrolado, figuran en la primera línea de su texto. Cada una tiene su propia entrada en esta Referencia.
 
+Las que cambian la forma de resolver un encuentro (Abordaje, Alerta, Descomunal, Elige, Incautado y Sin ayuda) figuran además como etiqueta junto a su tipo, bajo el nombre del encuentro. Abordaje, Descomunal y Sin ayuda cambian su Prueba.
+
 *Véase también:* Tipos de encuentro.
 
 ### Partida de aprendizaje
@@ -1380,10 +1385,10 @@ Tortuga y Nassau tienen las mismas tres opciones comunes, además de su opción 
 - **Soplos de la Hermandad** (opción propia de Tortuga): se ponen 2 de Avance en una misión disponible.
 - **Entrenamiento** (opción propia de Nassau): un Tripulante recibe una ficha de Entrenamiento.
 
-Los Estados se quitan antes de curar o reparar. De este modo, la curación no se gasta en Envenenado o Sangrando, ni la reparación en Vía de agua. Si una carta cierra una opción durante un turno («Cuarentena» cierra la Taberna), el jugador no puede elegirla ese turno.
+Los Estados se quitan antes de curar o reparar. De este modo, la curación no se gasta mientras un Tripulante sigue Envenenado o Sangrando, ni la reparación mientras el Barco sigue Anegado. Si una carta cierra una opción durante un turno («Cuarentena» cierra la Taberna), el jugador no puede elegirla ese turno.
 
 > [!ejemplo]
-> El Barco tiene 2 daños y Vía de agua. El jugador elige el Astillero: se quita la Vía de agua y se reparan los 2 daños; el tercer punto de reparación se pierde.
+> El Barco tiene 2 daños y está Anegado. El jugador elige el Astillero: el Barco deja de estar Anegado y se reparan los 2 daños; el tercer punto de reparación se pierde.
 
 ### Rasgo
 
@@ -1423,6 +1428,15 @@ Reclutar consiste en pagar el coste de un Tripulante del muelle para que entre e
 
 - El Barco no puede llevar más Tripulantes que su Capacidad. El Capitán no cuenta para este límite.
 - Si un efecto permite reclutar durante una misión, el Tripulante entra preparado y ocupa Capacidad (si no cabe, no puede reclutarse). Este reclutamiento cuenta como reclutar.
+
+### Redondear
+
+Siempre que haya que redondear, se redondea hacia arriba: la mitad de 3 es 2, y la de 5, 3. Las cartas no lo repiten.
+
+> [!ejemplo]
+> En Ciudad, el jugador revela «Mercante de La Habana»: «Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle pagando la mitad de su coste». Agota al Rufián de cubierta y adquiere La Cruz de Santa Bárbara (coste 3): la mitad de 3 es 1 y media, así que paga 2 cartas.
+
+*Véase también:* Coste.
 
 ### Reputación
 
@@ -1528,7 +1542,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 - Al terminar la misión, independientemente de que el jugador la supere, se retire o se hunda el Barco, todas las permanentes vuelven al mazo de historia, salvo las que indiquen lo contrario: «Mala fama» no vuelve, y las «Murallas de Port Royal» siguen en juego mientras «El asedio de Port Royal» esté disponible.
 
 > [!ejemplo]
-> En el Mar, el jugador revela una carta de Peligro cuyo encuentro de Mar pone en juego la carta 226, «Varados en el banco»: el jugador gana su Avance (2), coloca la permanente junto a la misión y descarta la carta de Peligro. Mientras los Varados sigan en juego, no puede superar la misión ni retirarse. Cada vez que revela un Peligro, pone 1 ficha de Marea sobre la carta; con 2, el Barco flota y la carta vuelve al mazo de historia. Si el jugador quiere salir antes, la Acción de la carta le permite agotar a un Marinero o a 2 Tripulantes para poner 1 ficha de Marea. Si esa carta de Peligro vuelve a salir en esta misión mientras los Varados siguen en juego, se descarta sin dar Avance y se revela otra.
+> En el Mar, el jugador revela «Varados en la arena», que pone en juego la carta 226, la permanente del mismo nombre: el jugador gana su Avance (2), coloca la permanente junto a la misión y descarta la carta de Peligro. Mientras los Varados sigan en juego, no puede superar la misión ni retirarse. Cada vez que revela un Peligro, pone 1 ficha de Marea sobre la carta; con 2, el Barco flota y la carta vuelve al mazo de historia. Si el jugador quiere salir antes, la Acción de la carta le permite agotar a un Marinero o a 2 Tripulantes para poner 1 ficha de Marea. Si esa carta de Peligro vuelve a salir en esta misión mientras los Varados siguen en juego, se descarta sin dar Avance y se revela otra.
 
 *Véase también:* Contadores, Mazo de historia, Prueba de una Acción.
 
@@ -1547,7 +1561,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 1. **Fase de Inicio:** revela una carta de Escenario y aplícala · prepara las cartas · efectos de «al empezar el turno».
 2. **Fase de Reclutamiento:** recluta, adquiere Mejoras, juega Eventos y despide, en cualquier orden · al terminar, descarta y repón el muelle.
 3. **Fase de Rumbo:** quédate en puerto (dos opciones distintas del puerto) o zarpa a una misión disponible.
-4. **Fase de Final de turno:** descarta las cartas que quieras · roba hasta tu Mando (1 menos con Desánimo; si el mazo del capitán se acaba, se pierde un día) · efectos de «al final de cada turno» · cada Enrolado pierde 1 ficha (sin ninguna, se va).
+4. **Fase de Final de turno:** descarta las cartas que quieras · roba hasta tu Mando (1 menos si tu tripulación está Desmoralizada; si el mazo del capitán se acaba, se pierde un día) · efectos de «al final de cada turno» · cada Enrolado pierde 1 ficha (sin ninguna, se va).
 
 ### Resolver una Prueba
 
@@ -1557,7 +1571,10 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 4. Resuelve la Prueba: superada si tu total es igual o mayor que la dificultad.
 5. Gana el Avance: X si se supera, Y si no («Avance X / Y»).
 
-**Abordaje:** en esa Prueba no se usan Cañones; si fallas, 1 herida por cada punto que te falte (las repartes tú).
+### Recuerda
+
+- **Redondear:** siempre hacia arriba (la mitad de 3 es 2).
+- **Abordaje** (etiqueta junto al tipo del encuentro): no puedes usar las capacidades de tus Cañones; si fallas, inflige 1 herida por cada punto que te falte (las repartes tú).
 
 ### Iconos de efecto
 
@@ -1591,9 +1608,9 @@ Son cartas mini de una reserva aparte: quitarlas («descarta esta carta») es de
 | Buscado | Estado | No puede ser asignado en Ciudad | Descartando 1 carta en la Fase de Reclutamiento |
 | Maldito | Estado | −1 al total de cada Prueba en la que participe | Al superar una Prueba en la que participe |
 | Extenuado | Estado | En la Fase de Inicio no se prepara | Entonces, en vez de prepararse |
-| Vía de agua | Estado del Barco | En el Mar, después de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar | Acción: agota a un Carpintero |
-| Velas rotas | Estado del Barco | Distancias +1; −1 al total de las Pruebas de NAV en el Mar | Acción: agota a un Carpintero |
+| Anegado | Estado del Barco | En el Mar, después de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar | Acción: agota a un Carpintero |
+| Desarbolado | Estado del Barco | Distancias +1; −1 al total de las Pruebas de NAV en el Mar | Acción: agota a un Carpintero |
 | Perseguido | Estado del Barco | Los encuentros de tipo Armada reciben +1 de dificultad | Al superar un encuentro de tipo Armada |
-| Desánimo | Estado (junto al Barco) | Al final del turno robas 1 carta menos | Entonces, al robar (no lo quitan la Taberna ni el Astillero) |
+| Desmoralizado | Estado de la tripulación | Al final del turno robas 1 carta menos | Entonces, al robar (no lo quitan la Taberna ni el Astillero) |
 | Inspirado | Ventaja | +1 al total de cada Prueba en la que participe | Al final del turno |
 | Aguerrido | Ventaja | Puede ser asignado sin agotarse | Al hacerlo |

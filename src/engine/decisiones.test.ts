@@ -53,8 +53,8 @@ describe('D1a · «Mientras esté preparado» se pierde al agotarse, también a 
 
 describe('D7 · Los cambios a «las Distancias» solo afectan a las misiones lejanas', () => {
   // Fase 8: ninguna carta de Escenario cambia ya las Distancias de las misiones lejanas (ver la prueba de los Vientos
-  // alisios y la Temporada de huracanes); la regla se sigue viendo con Velas rotas.
-  it('con Velas rotas, «La selva» sube 1 y «Cobrar la deuda» y «Rumbo a mar abierto» siguen en 0', () => {
+  // alisios y la Temporada de huracanes); la regla se sigue viendo con el Barco Desarbolado.
+  it('con el Barco Desarbolado, «La selva» sube 1 y «Cobrar la deuda» y «Rumbo a mar abierto» siguen en 0', () => {
     const sin = Jugador.en({ misiones: ['templo-II', 'deuda-I', 'prueba-I'] })
     const con = Jugador.en({ misiones: ['templo-II', 'deuda-I', 'prueba-I'], barco: { estados: ['velasRotas'] } })
     expect(con.valor({ tipo: 'distancia', mision: con.inst('templo-II') })).toBe(sin.valor({ tipo: 'distancia', mision: sin.inst('templo-II') }) + 1)

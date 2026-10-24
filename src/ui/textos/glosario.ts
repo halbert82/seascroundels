@@ -80,7 +80,7 @@ export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
   ),
   velasRotas: estado('velasRotas', 'Las Distancias aumentan en 1, y en el Mar tus Pruebas de NAV reciben −1.', 'Se quita agotando a un Carpintero (Acción).'),
   perseguido: estado('perseguido', 'Los encuentros de tipo Armada reciben +1 de dificultad.', 'Se quita al superar un encuentro de tipo Armada.'),
-  // El Desánimo va junto al Barco, pero no es un Estado del Barco ni de un Tripulante.
+  // Desmoralizado va junto al Barco, pero no es un Estado del Barco ni de un Tripulante (es de la tripulación).
   desanimo: {
     clave: 'estado:desanimo',
     nombre: INFO_ESTADO.desanimo.nombre,
@@ -582,11 +582,11 @@ const PATRON_ESTADO: Record<FichaTripulante | EstadoBarco, RegExp> = {
   maldito: /\bMaldit[oa]s?\b/,
   inspirado: /\bInspirad[oa]s?\b/,
   aguerrido: /\bAguerrid[oa]s?\b/,
-  viaDeAgua: /\bVía de agua\b/,
-  velasRotas: /\bVelas rotas\b/,
+  viaDeAgua: /\bAnegad[oa]s?\b/,
+  velasRotas: /\bDesarbolad[oa]s?\b/,
   perseguido: /\bPerseguido\b/,
   extenuado: /\bExtenuad[oa]s?\b/,
-  desanimo: /\bDesánimo\b/,
+  desanimo: /\bDesmoralizad[oa]s?\b/,
 }
 
 const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {

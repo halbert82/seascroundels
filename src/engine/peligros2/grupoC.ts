@@ -135,7 +135,7 @@ registrarPeligro('p2_ojos', {
     },
   },
   // +1. No puedes jugar Eventos en esta Prueba. Sin oposición: robas 1 menos al final de este turno.
-  // −1. Sin oposición: «Tu tripulación queda con Desánimo» (fase 16; antes, «Al final de este turno, roba 1 carta menos»).
+  // −1. Sin oposición: «Tu tripulación queda Desmoralizada» (fase 16; antes, «Al final de este turno, roba 1 carta menos»).
   // (Fase 13, I1: fuera «no puedes jugar Eventos en esta Prueba».)
   destino: { sinOposicion: [{ tipo: 'estadoBarco', estado: 'desanimo' }] },
 })
@@ -348,7 +348,7 @@ registrarPeligro('p2_horca', {
 // 33. La Armada de Barlovento · Terrible
 registrarPeligro('p2_armada', {
   encuentros: {
-    // +2 si el Barco tiene Velas rotas. Éxito: nada más (fase 10b: superar un encuentro de tipo Armada ya quita
+    // +2 si el Barco está Desarbolado (antes, Velas rotas). Éxito: nada más (fase 10b: superar un encuentro de tipo Armada ya quita
     // Perseguido). Fallo: Abordaje.
     mar: {
       abordaje: true,

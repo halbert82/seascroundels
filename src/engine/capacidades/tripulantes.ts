@@ -145,7 +145,7 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
     modifica: (_ctx, yo, c) => (c.tipo === 'sinAgotarAlComprometer' && c.carta === yo && c.hab === 'COM' ? 1 : 0),
   },
 
-  // Carpintero de a bordo: «Agotar: Repara 1 daño.» (Fase 15, quinta ronda: ya no quita la Vía de agua.)
+  // Carpintero de a bordo: «Agotar: Repara 1 daño.» (Fase 15, quinta ronda: ya no quita Anegado.)
   {
     clave: 'carpintero.reparar',
     carta: 'carpintero',

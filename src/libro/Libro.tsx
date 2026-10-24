@@ -356,6 +356,12 @@ function EntradaVista({ e }: { e: Entrada }) {
  * opción del puerto…) y las palabras de sus listas (palabras clave, Rasgos, fichas de misión). Lo que no tiene
  * entrada propia dice en cuál se explica.
  */
+/**
+ * Un grupo de letra con más líneas que esto puede seguir en la columna siguiente (revisión de los Peligros 154–162: con
+ * «Anegado», la D entera saltaba de columna y la T–Z se iba a otra página). Los cortos no se parten.
+ */
+const LETRA_LARGA = 6
+
 function IndiceDeTerminos({ lineas }: { lineas: LineaIndice[] }) {
   const letras: { letra: string; lineas: LineaIndice[] }[] = []
   for (const l of lineas) {
@@ -371,7 +377,7 @@ function IndiceDeTerminos({ lineas }: { lineas: LineaIndice[] }) {
       <p className="indice-terminos-nota">Cada término de juego con la página donde se explica. Si no tiene entrada propia, en cursiva va la entrada que lo explica.</p>
       <div className="indice-terminos-columnas">
         {letras.map((g) => (
-          <div key={g.letra} className="indice-terminos-letra">
+          <div key={g.letra} className={`indice-terminos-letra${g.lineas.length > LETRA_LARGA ? ' larga' : ''}`}>
             <div className="indice-terminos-inicial">{g.letra}</div>
             <ol>
               {g.lineas.map((l) => (

@@ -2313,6 +2313,20 @@ body {
   display: none;
 }
 
+/* «Recuerda»: reglas sueltas, bajo la tabla de Estados. */
+.cp-recuerda {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 7.6pt;
+  line-height: 1.3;
+}
+
+.cp-recuerda li {
+  padding: 0.9mm 0;
+  border-bottom: 0.3pt solid var(--papel-3);
+}
+
 .cp-filete {
   margin-top: 3mm;
 }
@@ -2560,6 +2574,15 @@ body {
 
 .indice-terminos-letra {
   break-inside: avoid-column;
+}
+
+/* Un grupo largo puede seguir en la columna siguiente, sin partir ninguna línea. */
+.indice-terminos-letra.larga {
+  break-inside: auto;
+}
+
+.indice-terminos .indice-linea {
+  break-inside: avoid;
 }
 
 .indice-terminos-letra {

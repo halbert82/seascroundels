@@ -74,7 +74,7 @@ export const CAPACIDADES_CONSTANTES: Capacidad[] = [
         : 0,
   },
   {
-    // «[Mar]: Tus Pruebas de NAV reciben +1» (fase 13, P82). Con «Velas rotas», no.
+    // «[Mar]: Tus Pruebas de NAV reciben +1» (fase 13, P82). Con el Barco Desarbolado, su −1 lo compensa.
     clave: 'barco.nav',
     carta: 'barco',
     ventana: 'constante',

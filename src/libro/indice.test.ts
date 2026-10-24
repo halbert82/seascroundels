@@ -17,7 +17,9 @@ const indice = r.referencia.indice
 const normal = (t: string) => t.normalize('NFC').replace(/\s*[:.]\s*$/, '').trim().toLowerCase()
 
 /** Formas distintas del mismo término en una carta y en el reglamento. */
-const MISMO_TERMINO: Record<string, string> = { 'ocupa el muelle': 'ocupar el muelle' }
+// Revisión de Albert de los Peligros 154–162: los Estados son adjetivos y concuerdan («tu tripulación queda
+// **Desmoralizada**»); el índice lo trae por el nombre de su carta, Desmoralizado.
+const MISMO_TERMINO: Record<string, string> = { 'ocupa el muelle': 'ocupar el muelle', desmoralizada: 'desmoralizado' }
 
 /** ¿Tiene el índice una línea para este término (o su singular, o el término con el que empieza)? */
 function enElIndice(termino: string): boolean {

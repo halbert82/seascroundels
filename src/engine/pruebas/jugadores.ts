@@ -602,13 +602,8 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           // camino; si no, sigue (+1 de Avance). La opción «0» es Descansar, la «1», Seguir.
           return elegir(claves.includes('0') && convieneDescansar(s) ? '0' : (claves.find((c) => c !== '0') ?? claves[0]!))
         default:
-          // Vía de agua (fase 10b): achica (agota a uno) si el Barco está cerca de hundirse o sobra gente preparada.
-          // Carpintero (fase 10b): tapa la Vía de agua salvo que el Barco esté a punto de hundirse.
-          const tapar = d.opciones.find((o) => o.texto.startsWith('Quita Vía de agua'))
-          if (tapar) {
-            const reparar = d.opciones.find((o) => o !== tapar)!.clave
-            return elegir(valor(s, { tipo: 'danoMaximo' }) - s.danoBarco <= 1 ? reparar : tapar.clave)
-          }
+          // Anegado (antes Vía de agua, fase 10b): achica (agota a uno) si el Barco está cerca de hundirse o sobra gente preparada.
+          // (Fuera la elección del Carpintero entre reparar y tapar la vía de agua: ya no existe desde la fase 15.)
           if (d.opciones.some((o) => o.texto.startsWith('Achicar'))) {
             const margen = valor(s, { tipo: 'danoMaximo' }) - s.danoBarco
             const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length

@@ -87,6 +87,8 @@ export interface Reglamento {
     estados: { ficha: string; clase: string; hace: string; quita: string }[]
     /** Cabecera de la columna «Cómo se quita…» de la tabla de Estados. */
     estadosQuita: string
+    /** «Recuerda»: reglas sueltas que conviene tener a la vista (redondear, Abordaje). */
+    recuerda: string[]
   }
 }
 
@@ -909,6 +911,7 @@ export function leerReglamento(fuente: string): Reglamento {
       estadosIntro: renderizar(md, estadosTokens.slice(0, Math.max(0, finIntro)), eQ),
       estados: tabla('Estados').map(([ficha = '', clase = '', hace = '', quita = '']) => ({ ficha, clase, hace, quita })),
       estadosQuita: cabeceraDe(seccionRapida('Estados'))[3] ?? '',
+      recuerda: lista('Recuerda'),
     },
   }
 }

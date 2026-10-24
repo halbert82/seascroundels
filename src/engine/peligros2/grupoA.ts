@@ -18,7 +18,6 @@ import {
   enElMar,
   heridas,
   mas,
-  mejorasDeBarco,
   menos,
   preparaCanon,
   participantesCon,
@@ -33,6 +32,7 @@ import {
   heridaPorAsignado,
   SIN_LIMITE_DE_COSTE,
 } from './comun.ts'
+import { espacioOcupado } from '../valores.ts'
 
 // 1. La corriente del Golfo · Favorable
 registrarPeligro('p2_corriente', {
@@ -42,16 +42,17 @@ registrarPeligro('p2_corriente', {
     // Éxito: prepara 1 Tripulante. Fallo: Inflige 1 herida (fase 13: heridas libres, también las que antes iban a un
     // Tripulante asignado).
     nat: { exito: [preparar(1)], fallo: [heridas(1)] },
-    // Fase 14 (Albert): «Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle de coste 2 o menos pagando la
-    // mitad de su coste (redondeando hacia arriba).» Solo Mejoras (antes, también reclutar sin coste).
+    // Fase 14 (Albert): «Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle pagando la mitad de su coste.»
+    // Solo Mejoras (antes, también reclutar sin coste). Revisión de Albert de los Peligros: sin límite de coste (antes, de
+    // coste 2 o menos); la mitad se redondea hacia arriba por la regla general.
     ciu: {
       efecto: [
         {
           tipo: 'elegir',
           opciones: [
             {
-              texto: 'Agotar a 1 Tripulante: adquirir una Mejora del muelle de coste 2 o menos pagando la mitad de su coste',
-              efectos: [{ tipo: 'agotarPago', n: 1 }, { tipo: 'gratisDelMuelle', maxCoste: 2, que: 'mejora', mitad: true }],
+              texto: 'Agotar a 1 Tripulante: adquirir una Mejora del muelle pagando la mitad de su coste',
+              efectos: [{ tipo: 'agotarPago', n: 1 }, { tipo: 'gratisDelMuelle', maxCoste: SIN_LIMITE_DE_COSTE, que: 'mejora', mitad: true }],
             },
             { texto: 'No', efectos: [] },
           ],
@@ -67,9 +68,9 @@ registrarPeligro('p2_corriente', {
 // 2. Cielo estrellado · Favorable
 registrarPeligro('p2_cielo', {
   encuentros: {
-    // Mira las 3 de arriba del mazo de Peligros y ordénalas. Si tienes un Piloto (aunque esté agotado), +1 Avance.
-    // Fase 13 (I7): «Otea 3» (antes, «mira las 3 y ordénalas»: ahora puedes mandar cartas al fondo).
-    mar: { efecto: [{ tipo: 'mirarOrdenar', n: 3, fondo: 'libre' }, siTienes('Piloto', [avance(1)])] },
+    // «Otea 2. Si tienes un Piloto (aunque esté agotado), +1 Avance.» Fase 13 (I7): «Otea 3»; revisión de Albert de los
+    // Peligros: Otea 2.
+    mar: { efecto: [{ tipo: 'mirarOrdenar', n: 2, fondo: 'libre' }, siTienes('Piloto', [avance(1)])] },
     nat: { exito: [avance(1)], fallo: [pierdesAvance(1)] },
     // Éxito: prepara a 1 Tripulante asignado (fase 13: antes quedaba Inspirado, pero el asignado ya está agotado y la
     // ficha se quita al final del turno: nunca llegaba a usarla). Fallo: descarta 1 carta.
@@ -148,7 +149,7 @@ registrarEspecial('p2_niebla.separados', (s, t, e) => {
 registrarCodigo('p2_niebla.separados', (_s, fuente) => [{ tipo: 'especial', clave: 'p2_niebla.separados', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
 
 // 5. Bajamar · Leve
-// Permanente 226 «Varados en el banco»: no puedes superar la misión ni retirarte. Cada Peligro revelado, 1 ficha de
+// Permanente 226 «Varados en la arena» (antes «Varados en el banco»): no puedes superar la misión ni retirarte. Cada Peligro revelado, 1 ficha de
 // Marea; con 2, el Barco flota: se descarta. Acción: agota a un Marinero o a 2 Tripulantes para poner 1 ficha.
 registrarPermanente('pm_varados', {
   quitar: [],
@@ -205,10 +206,18 @@ registrarPeligro('p2_arrecife', {
 registrarPeligro('p2_fuego', {
   encuentros: {
     mar: {
+      // Revisión de Albert de los Peligros: «Anegar la Santa Bárbara: agota todos tus Cañones.» o «Atacar el fuego: NAV 4.
+      // Antes de asignar, puedes agotar Cañones: −1 de dificultad por cada uno.» (antes, +1 si tenías alguno preparado).
+      // Cuántos agotas se elige con la opción; solo se ofrecen los que tienes preparados.
       elige: [
-        // Fase 15, quinta ronda: fuera Pólvora mojada.
-        { texto: 'Anegar la santabárbara: agota todos tus Cañones', efectos: [agotaCanones('todos')] },
-        { texto: 'Atacar el fuego: NAV 4 (+1 de dificultad si tienes algún Cañón preparado)', prueba: true, modSi: { condicion: { tipo: 'canonesPreparados', minimo: 1 }, n: 1 } },
+        { texto: 'Anegar la Santa Bárbara: agota todos tus Cañones', efectos: [agotaCanones('todos')] },
+        { texto: 'Atacar el fuego: NAV 4, sin agotar Cañones', prueba: true },
+        ...[1, 2, 3, 4, 5].map((n) => ({
+          texto: `Atacar el fuego agotando ${n === 1 ? '1 Cañón' : `${n} Cañones`}: NAV 4, −${n} de dificultad`,
+          prueba: true,
+          modDificultad: -n,
+          efectos: [agotaCanones(n)],
+        })),
       ],
       exito: [preparaCanon()],
       // Fase 10b: fuera Incendio a bordo. Fase 15, quinta ronda: fuera Pólvora mojada: Daña 1 y agota todos tus Cañones.
@@ -251,22 +260,24 @@ registrarPermanente('pm_manigua', {
 // 8. La broma · Duro
 registrarPeligro('p2_broma', {
   encuentros: {
-    // EXP X: X = 2 + tus Mejoras de barco (mín. 3, máx. 5); −2 si comprometes a un Carpintero.
+    // EXP X (revisión de Albert de los Peligros): X = 1 + el Espacio que ocupan tus Mejoras de barco; −2 si asignas a un
+    // Carpintero. La carta lleva 3 de dificultad impresa para la X: se suma la diferencia.
+    // TODO(regla): sin mínimo ni máximo (antes, X = 2 + Mejoras, mín. 3 y máx. 5), pendiente de confirmar por Albert.
     mar: {
-      capacidades: [
-        dificultad('x', (ctx) => Math.min(5, Math.max(3, 2 + mejorasDeBarco(ctx.s))) - 3 - (participantesCon(ctx, 'Carpintero') > 0 ? 2 : 0)),
-      ],
+      capacidades: [dificultad('x', (ctx) => 1 + espacioOcupado(ctx.s) - 3 - (participantesCon(ctx, 'Carpintero') > 0 ? 2 : 0))],
       exito: [reparar(1)],
       fallo: [{ tipo: 'si', condicion: { tipo: 'estadoBarco', estado: 'viaDeAgua' }, entonces: [dano(2)], sino: [{ tipo: 'estadoBarco', estado: 'viaDeAgua' }] }],
     },
-    // EXP 3, +1 por cada Tripulante comprometido después del primero.
+    // «Puente desatendido» (revisión de Albert de los Peligros): EXP 3, +1 por cada Tripulante asignado (antes, después del
+    // primero). Éxito: +1 Avance por cada Tripulante asignado (antes, +1 si asignabas a uno solo).
     nat: {
-      capacidades: [dificultad('peso', (ctx) => Math.max(0, participantesCtx(ctx).length - 1))],
-      exito: [{ tipo: 'si', condicion: { tipo: 'comprometidos', minimo: 1, maximo: 1 }, entonces: [avance(1)] }],
+      capacidades: [dificultad('peso', (ctx) => participantesCtx(ctx).length)],
+      exito: [{ tipo: 'porCada', medida: 'comprometidos', efectos: [avance(1)] }],
       // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado» (libres).
       fallo: [heridaPorAsignado()],
     },
-    ciu: { exito: [robar(2)], fallo: [{ tipo: 'descartarMayorCoste' }] },
+    // «Muelle carcomido». Fallo (revisión de Albert de los Peligros): descarta 2 cartas al azar (antes, la de mayor coste).
+    ciu: { exito: [robar(2)], fallo: [{ tipo: 'descartarAzar', n: 2 }] },
   },
   // 0. Sin oposición: [mar]: Daña 1; [nat]/[ciu]: descarta 1 carta. (Fase 13, I1: fuera «las Mejoras no suman ni se pueden
   // usar».)
@@ -274,21 +285,15 @@ registrarPeligro('p2_broma', {
 })
 
 // 9. Turbonada · Duro
-registrarCodigo('p2_turbonada.agotados', (s, fuente) => {
-  if (!s.mision || !fuente) return []
-  const n = Math.min(2, s.zonas.tripulacion.filter((c) => copia(s, c).agotada).length)
-  s.mision.marcas = { ...(s.mision.marcas ?? {}), [`${fuente}.agotados`]: n }
-  return []
-})
 registrarPeligro('p2_turbonada', {
   encuentros: {
-    mar: { exito: [avance(1), { tipo: 'alFondo' }], fallo: [dano(1), { tipo: 'estadoBarco', estado: 'velasRotas' }] },
-    // Esta Prueba recibe +1 por cada Tripulante que ya estuviera agotado al revelarla (máx. +2).
+    // Revisión de Albert de los Peligros: éxito, +1 Avance (fuera «Pon esta carta al fondo del mazo de Peligros»); fallo,
+    // Daña 1 y el Barco queda Desarbolado (la clave interna sigue siendo «velasRotas»).
+    mar: { exito: [avance(1)], fallo: [dano(1), { tipo: 'estadoBarco', estado: 'velasRotas' }] },
+    // «Rayos en la sierra» (revisión de Albert): EXP 2, +1 por cada Tripulante herido (máx. +2). Al pie de la letra, cuenta
+    // toda la tripulación (no solo los asignados), y en el momento de resolver.
     nat: {
-      alRevelarse: [codigo('p2_turbonada.agotados')],
-      capacidades: [
-        { clave: 'rezagados', ventana: 'constante', modifica: (ctx, yo, c) => (c.tipo === 'dificultad' && yo ? (ctx.s.mision?.marcas?.[`${yo}.agotados`] ?? 0) : 0) },
-      ],
+      capacidades: [dificultad('heridos', (ctx) => Math.min(2, ctx.s.zonas.tripulacion.filter((c) => copia(ctx.s, c).heridas > 0).length))],
       exito: [preparar(1)],
       fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 2 } }],
     },

@@ -137,7 +137,7 @@ describe('Estados de los Tripulantes (fase 10b)', () => {
 })
 
 describe('Estados del Barco (fase 10b)', () => {
-  it('Vía de agua: al final de cada carta de Peligro en el Mar, 1 daño, salvo que agotes a un Tripulante para achicar', () => {
+  it('Anegado: al final de cada carta de Peligro en el Mar, 1 daño, salvo que agotes a un Tripulante para achicar', () => {
     const j = mision('pruebas-mar5', ['calma', 'calma', 'calma'], { barco: { estados: ['viaDeAgua'] } })
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'elegirEfectos' } })
     j.opcion('1')
@@ -151,7 +151,7 @@ describe('Estados del Barco (fase 10b)', () => {
     expect(m.decision.motivo.clave).toBe('trasEncuentro')
   })
 
-  it('Vía de agua: reparar no la quita; fase 15, quinta ronda: el Carpintero solo repara (solo la quita el Astillero)', () => {
+  it('Anegado: reparar no lo quita; fase 15, quinta ronda: el Carpintero solo repara (solo lo quita el Astillero)', () => {
     const j = Jugador.en({ mano: ['reparacion'], barco: { dano: 2, estados: ['viaDeAgua'] } })
     j.usar('reparacion.jugar')
     expect(j.estado.danoBarco).toBe(0)
@@ -160,12 +160,12 @@ describe('Estados del Barco (fase 10b)', () => {
     k.usar('carpintero.reparar')
     expect(k.estadosBarco).toEqual(['viaDeAgua'])
     expect(k.estado.danoBarco).toBe(0)
-    // Sin daño que reparar, el Carpintero no se ofrece (aunque haya Vía de agua).
+    // Sin daño que reparar, el Carpintero no se ofrece (aunque el Barco esté Anegado).
     const v = Jugador.en({ tripulacion: ['carpintero'], barco: { estados: ['viaDeAgua'] } })
     expect(v.ofreceCapacidad('carpintero.reparar')).toBe(false)
   })
 
-  it('Velas rotas: −1 al total de las Pruebas de NAV en el Mar; Distancias 1 mayores; el Astillero la quita', () => {
+  it('Desarbolado: −1 al total de las Pruebas de NAV en el Mar; Distancias 1 mayores; el Astillero lo quita', () => {
     const m = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { estados: ['velasRotas'] } })
     m.comprometer('NAV', ['bucanero'])
     expect(totalSinDestinoPrueba(m.estado)).toBe(2) // NAV 1 + 1 de Diego + 1 del Barco − 1

@@ -7,7 +7,7 @@ import { costeImpreso, esIndestructible, nombreDe, porId, rasgosDe, tipoDe } fro
 import { definicionEncuentro, quedaDe, reglasPermanente } from '../definiciones.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, sePuedeQuitar, tieneEstado } from '../estados.ts'
-import { INFO_ESTADO } from '../infoEstados.ts'
+import { INFO_ESTADO, sujetoJuntoAlBarco } from '../infoEstados.ts'
 import { cerrarPrueba, descartarPeligro, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { mover, rebarajar } from '../zonas.ts'
@@ -207,11 +207,11 @@ export const ponerEstado_: Manejador<'ponerEstado'> = (s, t, e) => {
 }
 
 export const ponerEstadoBarco_: Manejador<'ponerEstadoBarco'> = (s, t) => {
-  const info = INFO_ESTADO[t.estado]
-  // Fase 16: el Desánimo es de la tripulación («Tu tripulación queda con Desánimo»), aunque su carta va junto al Barco.
-  const quien = t.estado === 'desanimo' ? 'Tu tripulación' : 'El Barco'
-  if (ponerEstadoBarco(s, t.estado)) anotar(s, 'aviso', t.estado === 'desanimo' ? 'Tu tripulación queda con Desánimo.' : `El Barco: ${info.nombre}.`)
-  else anotar(s, 'efecto', `${quien} ya tiene ${info.nombre}.`)
+  // Fase 16: Desmoralizado es de la tripulación («Tu tripulación queda Desmoralizada»), aunque su carta va junto al Barco.
+  const { quien, adjetivo } = sujetoJuntoAlBarco(t.estado)
+  const Quien = quien.charAt(0).toUpperCase() + quien.slice(1)
+  if (ponerEstadoBarco(s, t.estado)) anotar(s, 'aviso', `${Quien} queda ${adjetivo}.`)
+  else anotar(s, 'efecto', `${Quien} ya está ${adjetivo}.`)
   return 'hecha'
 }
 
@@ -232,7 +232,9 @@ export const quitarEstado_: Manejador<'quitarEstado'> = (s, t, e) => {
 }
 
 export const quitarEstadoBarco_: Manejador<'quitarEstadoBarco'> = (s, t) => {
-  if (quitarEstadoBarco(s, t.estado)) anotar(s, 'efecto', `El Barco ya no tiene ${INFO_ESTADO[t.estado].nombre}.`)
+  const { quien, adjetivo } = sujetoJuntoAlBarco(t.estado)
+  const Quien = quien.charAt(0).toUpperCase() + quien.slice(1)
+  if (quitarEstadoBarco(s, t.estado)) anotar(s, 'efecto', `${Quien} ya no está ${adjetivo}.`)
   return 'hecha'
 }
 

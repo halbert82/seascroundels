@@ -28,8 +28,8 @@ export function esVentaja(f: string): f is Ventaja {
 /** Estados del Barco (los quita el Astillero). Fase 10b: fuera Incendio a bordo. Fase 15, quinta ronda: fuera Pólvora mojada. */
 export const ESTADOS_BARCO = ['viaDeAgua', 'velasRotas', 'perseguido'] as const
 /**
- * Lo que se pone junto al Barco: sus Estados y, fase 16, el Desánimo de la tripulación («Tu tripulación queda con
- * Desánimo»). El Desánimo no es un Estado del Barco ni de un Tripulante: no lo quitan el Astillero ni la Taberna (se
+ * Lo que se pone junto al Barco: sus Estados y, fase 16, Desmoralizado, de la tripulación («Tu tripulación queda
+ * Desmoralizada»). Desmoralizado no es un Estado del Barco ni de un Tripulante: no lo quitan el Astillero ni la Taberna (se
  * descarta solo al robar, al final del mismo turno).
  */
 export const ESTADOS_JUNTO_AL_BARCO = [...ESTADOS_BARCO, 'desanimo'] as const
@@ -64,12 +64,21 @@ export const INFO_ESTADO: Record<FichaTripulante | EstadoBarco, InfoEstado> = {
   inspirado: { nombre: 'Inspirado', texto: '+1 al total de cada Prueba a la que esté asignado. Se quita al final del turno.', ventaja: true },
   aguerrido: { nombre: 'Aguerrido', texto: 'Puede ser asignado a una Prueba sin agotarse. Se quita al hacerlo.', ventaja: true },
   viaDeAgua: {
-    nombre: 'Vía de agua',
+    nombre: 'Anegado',
     texto: 'En el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar.',
   },
-  velasRotas: { nombre: 'Velas rotas', texto: '−1 al total de las Pruebas de NAV en el Mar. Las Distancias aumentan en 1.' },
+  velasRotas: { nombre: 'Desarbolado', texto: '−1 al total de las Pruebas de NAV en el Mar. Las Distancias aumentan en 1.' },
   perseguido: { nombre: 'Perseguido', texto: 'Los encuentros de tipo Armada reciben +1 de dificultad. Se quita al superar uno.' },
-  desanimo: { nombre: 'Desánimo', texto: 'Al final del turno robas 1 carta menos; después se descarta.' },
+  desanimo: { nombre: 'Desmoralizado', texto: 'Al final del turno robas 1 carta menos; después se descarta.' },
+}
+
+/**
+ * Quién queda con un Estado de los que van junto al Barco y el adjetivo concordado (todos los Estados son adjetivos y se
+ * dicen con «queda»): «el Barco queda Anegado» y, fase 16, «tu tripulación queda Desmoralizada» (su carta se llama
+ * Desmoralizado, pero el Estado es de la tripulación). Para el registro y la interfaz.
+ */
+export function sujetoJuntoAlBarco(e: EstadoBarco): { quien: string; adjetivo: string } {
+  return e === 'desanimo' ? { quien: 'tu tripulación', adjetivo: 'Desmoralizada' } : { quien: 'el Barco', adjetivo: INFO_ESTADO[e].nombre }
 }
 
 /**

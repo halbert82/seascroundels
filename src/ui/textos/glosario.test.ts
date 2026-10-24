@@ -55,7 +55,7 @@ describe('Glosario de la mesa', () => {
       'Se quita descartando 1 carta en la Fase de Reclutamiento. También se quita con la Taberna o con cualquier carta que así lo indique.',
     )
     expect(AYUDA_ESTADO.velasRotas.partes[1]?.texto).toBe('Se quita agotando a un Carpintero (Acción). También se quita con el Astillero o con cualquier carta que así lo indique.')
-    // El Desánimo no es un Estado de un Tripulante ni del Barco: no lo quitan la Taberna ni el Astillero.
+    // Desmoralizado no es un Estado de un Tripulante ni del Barco: no lo quitan la Taberna ni el Astillero.
     expect(AYUDA_ESTADO.desanimo.partes[1]?.texto).toContain('No la quitan la Taberna ni el Astillero')
   })
 

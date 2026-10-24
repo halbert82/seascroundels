@@ -22,7 +22,7 @@ export function opcionesDelPuerto(s: Estado): OpcionPuerto[] {
     const titulo = /\*\*(.+?)\.\*\*/.exec(texto)?.[1] ?? ''
     if (titulo === 'Astillero') {
       // «Repara 3 daños y quita todos los Estados del Barco.» Primero los Estados (regla de oro 5: el orden lo eliges
-      // tú), así el primer punto de reparación no se gasta en tapar la Vía de agua.
+      // tú), así el primer punto de reparación no se gasta en quitar Anegado.
       const n = primerNumero(texto)
       opciones.push({
         clave: 'astillero',
@@ -86,7 +86,7 @@ export const quedarseEnPuerto: Manejador<'quedarseEnPuerto'> = (s, t, e) => {
 export const quitarTodosLosEstados: Manejador<'quitarTodosLosEstados'> = (s, t) => {
   if (t.de === 'barco') {
     const quitados = quitarEstadosBarco(s)
-    if (quitados.length > 0) anotar(s, 'efecto', `El Barco ya no tiene ${quitados.join(' ni ')}.`)
+    if (quitados.length > 0) anotar(s, 'efecto', `El Barco ya no está ${quitados.join(' ni ')}.`)
   } else {
     for (const linea of quitarEstadosTripulacion(s)) anotar(s, 'efecto', `${linea}.`)
   }

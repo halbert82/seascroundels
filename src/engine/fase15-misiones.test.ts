@@ -648,7 +648,7 @@ describe('274 · El asedio de Port Royal y la permanente 275 «Murallas de Port 
 
   it('durante la misión, pueden sufrir el daño del Barco en su lugar; si caen, la misión falla y va al fondo sin preguntar', () => {
     // «Comerciante estafador» no; «Mercante armado»… en Ciudad: «Pelea de taberna» (COM 3) no daña el Barco. Se usa un daño
-    // de la Vía de agua: no, en Ciudad no achica. Se prueba con las Murallas a 1 de Vida y una Prueba fallada.
+    // de Anegado: no, en Ciudad no achica. Se prueba con las Murallas a 1 de Vida y una Prueba fallada.
     const j = enPuerto({ misiones: ['asedio-I'], reputacion: 4, mazoPeligros: ['fauna', 'calma', 'calma'] })
     j.zarpar('asedio-I')
     j.copia('pm_murallas').heridas = 5

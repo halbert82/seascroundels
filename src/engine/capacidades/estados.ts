@@ -1,6 +1,6 @@
 // Lo que hacen las cartas de Estado mientras están puestas (fase 16; antes, fichas), como capacidades del registro:
-// modificadores (Borracho, Velas rotas, Perseguido, Desánimo), la Obligada de Vía de agua y las Acciones que las quitan
-// (Buscado, Envenenado, Sangrando, Asustado, Vía de agua y Velas rotas). Extenuado lo aplica la Fase de Inicio. Lo que pasa al final
+// modificadores (Borracho, Desarbolado, Perseguido, Desmoralizado), la Obligada de Anegado y las Acciones que las quitan
+// (Buscado, Envenenado, Sangrando, Asustado, Anegado y Desarbolado). Extenuado lo aplica la Fase de Inicio. Lo que pasa al final
 // del turno, al asignar (Asustado, Buscado, Aguerrido) o al superar una Prueba (Maldito, Perseguido) lo resuelven las
 // tareas correspondientes; Inspirado y Maldito suman al total en prueba.ts (fase 10b).
 // También está aquí la carta de Peligro que ocupa el muelle: pagar para descartarla.
@@ -45,7 +45,7 @@ export const CAPACIDADES_ESTADOS: Capacidad[] = [
         : [],
   }),
 
-  // Velas rotas (fase 10b): −1 al total de las Pruebas de NAV en el Mar, y las Distancias aumentan en 1.
+  // Desarbolado (fase 10b; antes, Velas rotas): −1 al total de las Pruebas de NAV en el Mar, y las Distancias aumentan en 1.
   deBarco('velasRotas', {
     clave: 'distancia',
     ventana: 'constante',
@@ -62,7 +62,7 @@ export const CAPACIDADES_ESTADOS: Capacidad[] = [
     ventana: 'constante',
     modifica: (_ctx, _yo, c) => (c.tipo === 'dificultad' && c.claves.includes('Armada') ? 1 : 0),
   }),
-  // Vía de agua (fase 10b): en el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para
+  // Anegado (fase 10b; antes, Vía de agua): en el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para
   // achicar. Si no tienes a nadie preparado, solo queda el daño.
   deBarco('viaDeAgua', {
     clave: 'dano',
@@ -103,7 +103,7 @@ export const CAPACIDADES_ESTADOS: Capacidad[] = [
     coste: [{ tipo: 'agotarTripulante', rasgo: 'Oficial' }],
     efecto: (_s, yo) => (yo ? [quitarDe(yo, 'asustado')] : []),
   }),
-  // Vía de agua y Velas rotas: «Acción: Agota a un Carpintero: descarta esta carta.»
+  // Anegado y Desarbolado: «Acción: Agota a un Carpintero: descarta esta carta.»
   deBarco('viaDeAgua', {
     clave: 'quitar',
     ventana: 'accion',
@@ -116,7 +116,7 @@ export const CAPACIDADES_ESTADOS: Capacidad[] = [
     coste: [{ tipo: 'agotarTripulante', rasgo: 'Carpintero' }],
     efecto: () => [{ tipo: 'aplicarEfectos', efectos: [{ tipo: 'quitarEstadoBarco', estado: 'velasRotas' }], contexto: 'efecto' }],
   }),
-  // Desánimo (junto al Barco): «Obligado: Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta
+  // Desmoralizado (antes, Desánimo; junto al Barco): «Obligado: Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta
   // carta.» El −1 es constante mientras esté puesto (solo cuenta al robar al final del turno); la carta se descarta justo
   // después de robar (tarea `descartarDesanimo`).
   deBarco('desanimo', {

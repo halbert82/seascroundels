@@ -5,7 +5,7 @@
   "fuente": "Textos v1.0 (la verdad). Los campos en inglés o abreviados (fx, win, al, ops, g, atajo, mix…) vienen del prototipo antiguo y sirven de ayuda para el motor: si chocan con el texto, manda el texto y el reglamento.",
   "num": "Número de colección «Caja básica · NNN»; las recompensas de misión citan estos números.",
   "avance": "En un encuentro con Prueba, «avance» es lo que ganas si la superas y «avanceSinSuperar», lo que ganas si no la superas (fallas o no asignas a nadie). Se ve en la carta como «3 / 2». Fase 11: una Prueba de dificultad 3 o menos da 1 / 1; una dura, 3 / 1 o 3 / 2 (3 / 2 si su fallo es grave). Los encuentros sin Prueba y los que ponen en juego una permanente solo llevan «avance»: 0 o 1 si dan un premio, 1 si no dan nada y 2 si ponen en juego una permanente que perjudica.",
-  "estados": "Fase 16: los Estados y las Ventajas son cartas mini (sección `estados`), con su número de colección y sus copias. No van en ningún mazo: forman una reserva aparte. «Queda Envenenado» = coge una carta de Envenenado de la reserva y ponla sobre el Tripulante; «descarta esta carta» o «quita el Estado» = devuélvela a la reserva. `clave` es el nombre del Estado en el motor; `de`, dónde se pone (Tripulante, Barco o, Desánimo, junto al Barco)."
+  "estados": "Fase 16: los Estados y las Ventajas son cartas mini (sección `estados`), con su número de colección y sus copias. No van en ningún mazo: forman una reserva aparte. «Queda Envenenado» = coge una carta de Envenenado de la reserva y ponla sobre el Tripulante; «descarta esta carta» o «quita el Estado» = devuélvela a la reserva. `clave` es el nombre del Estado en el motor; `de`, dónde se pone (Tripulante, Barco o, Desmoralizado, junto al Barco)."
  },
  "capitanes": [
   {
@@ -3230,7 +3230,7 @@
     "mar": {
      "nombre": "Kraken",
      "palabrasClave": [
-      "Monstruo",
+      "Bestia",
       "Sobrenatural"
      ],
      "avance": 4,
@@ -3259,7 +3259,7 @@
      "nombre": "Caimán gigante",
      "palabrasClave": [
       "Bestia",
-      "Monstruo"
+      "Bestia"
      ],
      "avance": 3,
      "prueba": [
@@ -3708,7 +3708,11 @@
      "siempre": [],
      "nota": "",
      "textoExito": "~Le dais esquinazo entre los cayos:~ {+1 avance}.",
-     "textoFallo": "**Abordaje**"
+     "textoFallo": "",
+     "textoEfecto": "**Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
+     "etiquetas": [
+      "Abordaje"
+     ]
     },
     "nat": {
      "nombre": "Desembarco de casacas",
@@ -3875,7 +3879,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Encontráis el eje de la corriente y el Barco corre sin forzar una vela.~ {+1 avance} por cada punto que superes (máx. +2).",
+     "textoExito": "~Encontráis el eje de la corriente y el Barco corre sin forzar vela.~ {+1 avance} por cada punto que superes la dificultad (máx. +2).",
      "textoFallo": "~La corriente os echa contra los bajos.~ Daña {1 dano}."
     },
     "nat": {
@@ -3895,7 +3899,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Bajáis en canoa sin dar un paso.~ Prepara 1 Tripulante.",
+     "textoExito": "~Bajáis en canoa.~ Prepara 1 Tripulante.",
      "textoFallo": "~La canoa vuelca en un rápido.~ Inflige {1 herida}."
     },
     "ciu": {
@@ -3909,7 +3913,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Tiene que zarpar antes de tiempo y vende la carga a precio de derribo.~ Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba)."
+     "textoEfecto": "~Tiene que zarpar antes de tiempo y vende la carga a precio de derribo.~ Puedes agotar a 1 Tripulante para adquirir 1 Mejora del muelle pagando la mitad de su coste."
     }
    },
    "destino": {
@@ -3939,7 +3943,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~El piloto fija la Polar sobre el trinquete y traza el rumbo de los próximos días.~ Otea 3. Si tienes un _Piloto_, {+1 avance}."
+     "textoEfecto": "~El piloto fija la Polar y traza el rumbo de los próximos días.~ Otea 2. Si tienes un _Piloto_, {+1 avance}."
     },
     "nat": {
      "nombre": "Noche de luna clara",
@@ -4039,7 +4043,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Ni una brisa bajo los árboles; abrir trocha a machete con este calor es faena de condenados.~ Suma 1 a la dificultad de la Prueba por cada Tripulante asignado que esté herido.",
+     "textoEfecto": "~Ni una brisa bajo los árboles; abrir trocha a machete con este calor es agotador.~ Suma 1 a la dificultad de la Prueba por cada Tripulante asignado que esté herido.",
      "textoExito": "~Dais con un manantial a la sombra.~ Cura {2 herida g}.",
      "textoFallo": "~Golpe de calor.~ Agota a 1 Tripulante."
     },
@@ -4060,7 +4064,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Os abrís paso a codazos hasta el brocal y llenáis los toneles antes que nadie.~ Prepara a 1 Tripulante y cura {1 herida g}.",
+     "textoExito": "~Os abrís paso a codazos hasta la fuente y llenáis los toneles antes que nadie.~ Prepara a 1 Tripulante y cura {1 herida g}.",
      "textoFallo": "~Os echan de la fuente y el agua os la venden los aguadores a precio de oro.~ Descarta 2 cartas."
     }
    },
@@ -4104,9 +4108,12 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~El casco de un barco sale de la niebla de repente. Cuando os dais cuenta, ya están saltando por la borda.~",
+     "textoEfecto": "~El casco de un barco sale de la niebla de repente. Cuando os dais cuenta, ya están saltando por la borda.~ **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
      "textoExito": "~Los echáis por la borda.~",
-     "textoFallo": "**Abordaje**"
+     "textoFallo": "",
+     "etiquetas": [
+      "Abordaje"
+     ]
     },
     "nat": {
      "nombre": "Bruma en la selva",
@@ -4125,8 +4132,8 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~No se ve a diez pasos y el azar manda más que la vista.~ Resuelve 2 cartas de Destino en esta Prueba.",
-     "textoExito": "~Salís de la bruma justo encima del poblado.~ {+1 avance}.",
+     "textoEfecto": "~No se ve a diez pasos.~ Resuelve 2 cartas de Destino en esta Prueba.",
+     "textoExito": "~Salís de la bruma justo encima de vuestro destino.~ {+1 avance}.",
      "textoFallo": "~Os separáis en la bruma.~ Descarta al Tripulante asignado con menos [EXP]."
     },
     "ciu": {
@@ -4170,7 +4177,7 @@
    "version": 2,
    "encuentros": {
     "mar": {
-     "nombre": "Varados en el banco",
+     "nombre": "Varados en la arena",
      "palabrasClave": [
       "Terreno"
      ],
@@ -4221,7 +4228,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Con la marea baja el casco queda al aire: raspáis lo que se le ha pegado y selláis las juntas con brea.~ Repara {1 dano g} ({2 dano g} si tienes un _Carpintero_).",
+     "textoExito": "~Con la marea baja el casco queda al aire: raspáis y selláis las juntas.~ Repara {1 dano g} ({2 dano g} si tienes un _Carpintero_).",
      "textoFallo": "~La marea sube antes de acabar y los carpinteros del puerto cobran igual.~ Descarta 1 carta por cada daño que tenga el Barco (mín. 1, máx. 3)."
     }
    },
@@ -4335,7 +4342,7 @@
    "version": 2,
    "encuentros": {
     "mar": {
-     "nombre": "Fuego en la santabárbara",
+     "nombre": "Fuego en la Santa Bárbara",
      "palabrasClave": [
       "Barco"
      ],
@@ -4351,7 +4358,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**Anegar la santabárbara:** agota todos tus _Cañones_.\n**Atacar el fuego:** [NAV] 4 (viráis para que el viento eche las llamas fuera); +1 de dificultad si tienes algún _Cañón_ preparado.",
+     "textoEfecto": "**Anegar la Santa Bárbara:** agota todos tus _Cañones_.\n**Atacar el fuego:** [NAV] 4. Antes de asignar, puedes agotar _Cañones_: −1 de dificultad por cada uno.",
      "textoExito": "~Lo apagáis sin mojar un barril.~ Prepara un _Cañón_.",
      "textoFallo": "~Lo apagáis a cubos, pero se moja la pólvora.~ Daña {1 dano} y agota todos tus _Cañones_.",
      "etiquetas": [
@@ -4389,7 +4396,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Entre el humo y los gritos, nadie os vigila.~ **Elige:** saqueáis los almacenes ({2 robar}) o ayudáis con los cubos (prepara a todos los Tripulantes asignados: os invitan en la taberna).",
+     "textoExito": "~Entre el humo y los gritos, nadie os vigila.~ **Elige:** {2 robar} (saqueáis los almacenes) o prepara a todos los Tripulantes asignados (ayudáis con los cubos y os invitan en la taberna).",
      "textoFallo": "~Alguien jura que os vio con una antorcha.~ −1 reputación."
     }
    },
@@ -4412,7 +4419,7 @@
    "version": 2,
    "encuentros": {
     "mar": {
-     "nombre": "Casco comido por la broma",
+     "nombre": "Casco carcomido por la broma",
      "palabrasClave": [
       "Barco"
      ],
@@ -4431,11 +4438,11 @@
      "nota": "",
      "textoEfecto": "~El gusano ha hecho del casco un queso; hay que encontrar la vía entre las cuadernas, y cuanta más carga, más cuesta.~",
      "textoExito": "~La tapáis con estopa y sebo.~ Repara {1 dano g}.",
-     "textoFallo": "El Barco queda con **Vía de agua**. Si ya la tenía, daña {2 dano}.",
-     "notaPrueba": "X = 2 + tus Mejoras de barco (mín. 3, máx. 5); _Carpintero_ asignado −2."
+     "textoFallo": "El Barco queda **Anegado**. Si ya lo estaba, daña {2 dano}.",
+     "notaPrueba": "X = 1 + el Espacio que ocupan tus Mejoras de barco; _Carpintero_ asignado −2."
     },
     "nat": {
-     "nombre": "Puente del comején",
+     "nombre": "Puente desatendido",
      "palabrasClave": [
       "Terreno"
      ],
@@ -4451,9 +4458,9 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~El puente aguanta.~ Si asignaste a uno solo, tiende un cabo para los demás: {+1 avance}.",
+     "textoExito": "~El puente aguanta.~ {+1 avance} por cada Tripulante asignado.",
      "textoFallo": "~El puente se hunde.~ Inflige {1 herida} por cada Tripulante asignado.",
-     "notaPrueba": "+1 por cada Tripulante asignado después del primero."
+     "notaPrueba": "+1 por cada Tripulante asignado."
     },
     "ciu": {
      "nombre": "Muelle carcomido",
@@ -4472,8 +4479,8 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoExito": "~Bajo un tablón suelto, el alijo de algún contrabandista.~ {2 robar}.",
-     "textoFallo": "~Un tablón cede y vuestra carga cae al agua.~ Descarta la carta de mayor coste de tu mano."
+     "textoExito": "~Bajo un tablón suelto, encuentras el alijo de algún contrabandista.~ {2 robar}.",
+     "textoFallo": "~Un tablón cede y vuestra carga cae al agua.~ Descarta 2 cartas al azar."
     }
    },
    "destino": {
@@ -4511,9 +4518,9 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Una nube negra corre detrás de vosotros más deprisa que el barco.~",
-     "textoExito": "~Corréis delante de la racha y os empuja.~ {+1 avance}. Pon esta carta al fondo del mazo de Peligros (la dejáis atrás).",
-     "textoFallo": "~Os alcanza con todo el trapo arriba.~ Daña {1 dano} y el Barco queda con **Velas rotas**."
+     "textoEfecto": "~Una nube negra os persigue.~",
+     "textoExito": "~Avanzáis por delante de la racha y os empuja.~ {+1 avance}.",
+     "textoFallo": "~Os alcanza con las velas desplegadas.~ Daña {1 dano} y el Barco queda **Desarbolado**."
     },
     "nat": {
      "nombre": "Rayos en la sierra",
@@ -4525,14 +4532,14 @@
      "prueba": [
       {
        "hab": "EXP",
-       "dificultad": 3
+       "dificultad": 2
       }
      ],
      "fallo": [],
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~La tormenta baja por la ladera detrás de vosotros.~ Esta Prueba recibe +1 de dificultad por cada Tripulante que ya estuviera agotado al revelarla (máx. +2): los rezagados frenan a todos.",
+     "textoEfecto": "~La tormenta baja por la ladera detrás de vosotros.~ Esta Prueba recibe +1 de dificultad por cada Tripulante herido (máx. +2).",
      "textoExito": "~Llegáis a una cueva antes que la tormenta.~ Prepara a 1 Tripulante.",
      "textoFallo": "~Un rayo cae sobre la cola de la columna.~ Inflige {2 herida} al Tripulante con menos Vida."
     },
@@ -4542,7 +4549,7 @@
       "Tormenta",
       "Civil"
      ],
-     "avance": 3,
+     "avance": 2,
      "avanceSinSuperar": 1,
      "prueba": [
       {
@@ -4840,7 +4847,7 @@
      "nota": "",
      "textoEfecto": "~El sol derrite la brea de las costuras; hay que baldear la cubierta sin parar.~",
      "textoExito": "~La cubierta aguanta y la gente se refresca.~ Prepara 1 Tripulante.",
-     "textoFallo": "~Las costuras se abren al sol.~ El Barco queda con **Vía de agua**."
+     "textoFallo": "~Las costuras se abren al sol.~ El Barco queda **Anegado**."
     },
     "nat": {
      "nombre": "Sed en la trocha",
@@ -4977,7 +4984,7 @@
      "nota": "",
      "textoEfecto": "**Pagar lo que piden:** descarta 2 cartas.\n**Regatear:** [EXP] 3.",
      "textoExito": "~Compras barato y sobra.~ {1 robar} y cura {1 herida g}.",
-     "textoFallo": "~Os vais con la tripa vacía.~ Tu tripulación queda con **Desánimo**.",
+     "textoFallo": "~Os vais con la tripa vacía.~ Tu tripulación queda **Desmoralizada**.",
      "etiquetas": [
       "Elige"
      ]
@@ -6001,7 +6008,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "Tu tripulación queda con **Desánimo**."
+    "textoSinOposicion": "Tu tripulación queda **Desmoralizada**."
    }
   },
   {
@@ -6520,9 +6527,12 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "+2 de dificultad si el Barco tiene **Velas rotas**.",
+     "textoEfecto": "+2 de dificultad si el Barco está **Desarbolado**. **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
      "textoExito": "~Le ganáis el barlovento y se queda atrás.~ Nada más.",
-     "textoFallo": "~Os da alcance y os aborda.~ **Abordaje**"
+     "textoFallo": "~Os da alcance y os aborda.~",
+     "etiquetas": [
+      "Abordaje"
+     ]
     },
     "nat": {
      "nombre": "Dragones tras el rastro",
@@ -6631,7 +6641,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~Un bucanero sin barco reta a los tuyos a un pulso. Si pierde, se enrola.~",
-     "textoExito": "Si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba).",
+     "textoExito": "Si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste.",
      "textoFallo": "~Pagas la ronda.~ Descarta 1 carta."
     }
    },
@@ -6955,7 +6965,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "Tu tripulación queda con **Desánimo**."
+    "textoSinOposicion": "Tu tripulación queda **Desmoralizada**."
    }
   },
   {
@@ -7154,9 +7164,12 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "Antes de asignar, puedes agotar un _Cañón_: −1 de dificultad, o −2 con un _Artillero_ asignado (metralla a su cubierta).",
+     "textoEfecto": "Antes de asignar, puedes agotar un _Cañón_: −1 de dificultad, o −2 con un _Artillero_ asignado (metralla a su cubierta). **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
      "textoExito": "~El filibote es tuyo.~ Prepara un _Cañón_ y {2 robar}.",
-     "textoFallo": "**Abordaje**"
+     "textoFallo": "",
+     "etiquetas": [
+      "Abordaje"
+     ]
     },
     "nat": {
      "nombre": "La aguada de los holandeses",
@@ -7405,9 +7418,12 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Parece una presa fácil, lenta y cargada hasta la borda, pero lleva las portas pintadas y cien soldados tumbados en cubierta. Quiere piratas vivos para la horca.~",
+     "textoEfecto": "~Parece una presa fácil, lenta y cargada hasta la borda, pero lleva las portas pintadas y cien soldados tumbados en cubierta. Quiere piratas vivos para la horca.~ **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
      "textoExito": "~Veis la trampa a tiempo y le cruzáis la popa a cañonazos.~ Prepara un _Cañón_.",
-     "textoFallo": "~Os abarloáis confiados y salen de debajo de las lonas.~ **Abordaje**"
+     "textoFallo": "~Os abarloáis confiados y salen de debajo de las lonas.~",
+     "etiquetas": [
+      "Abordaje"
+     ]
     },
     "nat": {
      "nombre": "El cebo",
@@ -7560,7 +7576,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~La marea trae la carga del galeón.~ A tu elección: abrís el de ron (prepara a todos los Tripulantes agotados, pero quedan **Borrachos**) o el de pólvora (prepara un _Cañón_)."
+     "textoEfecto": "~La marea trae la carga del galeón.~ **Elige:** prepara a todos los Tripulantes agotados, que quedan **Borrachos** (abrís el de ron), o prepara un _Cañón_ (abrís el de pólvora)."
     },
     "ciu": {
      "nombre": "Subasta del naufragio",
@@ -7621,7 +7637,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "Si llevas la Bandera negra, arría su pabellón al verla: superas sin Prueba.",
-     "textoExito": "A tu elección: saqueas la bodega ({2 robar}) o la santabárbara (prepara un _Cañón_).",
+     "textoExito": "**Elige:** {2 robar} (saqueáis la bodega) o prepara un _Cañón_ (saqueáis la Santa Bárbara).",
      "textoFallo": "~Escapa y su cañón de popa os alcanza.~ Daña {1 dano}."
     },
     "nat": {
@@ -7870,7 +7886,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** el Tripulante preparado con más [COM] lo mató de un tiro. Lleva el pájaro colgado al cuello y no puede ser asignado a esta Prueba.",
      "textoExito": "~Lo arrojáis al mar y vuelve el viento.~ {+1 avance}.",
-     "textoFallo": "~Calma chicha y agua podrida.~ Tu tripulación queda con **Desánimo**."
+     "textoFallo": "~Calma chicha y agua podrida.~ Tu tripulación queda **Desmoralizada**."
     },
     "nat": {
      "nombre": "La lechuza canta tres veces",
@@ -8121,7 +8137,7 @@
      "nota": "",
      "textoEfecto": "~Se enrosca al casco.~ Cada _Artillero_ asignado suma +1 (cañonazo a quemarropa).",
      "textoExito": "~Suelta el casco y se hunde herida.~ Prepara un _Cañón_ (grasa de serpiente para las mechas).",
-     "textoFallo": "~Aprieta.~ Daña {2 dano}. Si el Barco ya tenía 2 o más daños, además queda con **Velas rotas** (le parte el palo)."
+     "textoFallo": "~Aprieta.~ Daña {2 dano}. Si el Barco ya tenía 2 o más daños, además queda **Desarbolado** (le parte el palo)."
     },
     "nat": {
      "nombre": "La boa del río",
@@ -8209,7 +8225,7 @@
      "nota": "",
      "textoEfecto": "~Una hilera de velas camina sobre las olas hacia el barco. El Vigía la ve venir de lejos.~",
      "textoExito": "~Viráis a tiempo y su estela os empuja.~ {+1 avance}.",
-     "textoFallo": "~Sus velas prenden las vuestras.~ El Barco queda con **Velas rotas**."
+     "textoFallo": "~Sus velas prenden las vuestras.~ El Barco queda **Desarbolado**."
     },
     "nat": {
      "nombre": "El círculo en el suelo",
@@ -8290,9 +8306,12 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Las balas lo atraviesan.~ Si un Tripulante asignado lleva el Escapulario del Carmen, −2 de dificultad.",
+     "textoEfecto": "~Las balas lo atraviesan.~ Si un Tripulante asignado lleva el Escapulario del Carmen, −2 de dificultad. **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
      "textoExito": "~Lo mandáis al fondo otros siete años.~ +1 reputación y esta carta Se retira.",
-     "textoFallo": "**Abordaje**"
+     "textoFallo": "",
+     "etiquetas": [
+      "Abordaje"
+     ]
     },
     "nat": {
      "nombre": "Sus ahogados en la playa",
@@ -8960,7 +8979,7 @@
      "siempre": [],
      "nota": "",
      "textoEfecto": "~No sopla viento, pero la mar llega gruesa de una tormenta lejana.~",
-     "textoFallo": "Si fallas por 1, daña {1 dano}. Si fallas por 2 o más, daña {2 dano} y el Barco queda con **Vía de agua**."
+     "textoFallo": "Si fallas por 1, daña {1 dano}. Si fallas por 2 o más, daña {2 dano} y el Barco queda **Anegado**."
     },
     "nat": {
      "nombre": "La ladera suelta",
@@ -9242,9 +9261,12 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "Antes de asignar, puedes agotar un _Cañón_: −2 de dificultad.",
+    "textoEfecto": "Antes de asignar, puedes agotar un _Cañón_: −2 de dificultad. **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
     "textoExito": "{2 robar} y prepara un _Cañón_.",
-    "textoFallo": "**Abordaje**"
+    "textoFallo": "",
+    "etiquetas": [
+     "Abordaje"
+    ]
    },
    "destino": {
     "nombre": "Andanada de costado",
@@ -9344,7 +9366,7 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoExito": "~Uno se enrola.~ Si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste (redondeando hacia arriba); si no, {1 robar}.",
+    "textoExito": "~Uno se enrola.~ Si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de su coste; si no, {1 robar}.",
     "textoFallo": "~Remáis en balde.~ Agota a 1 Tripulante."
    },
    "destino": {
@@ -9454,10 +9476,11 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "~El Vrouw Maria, con vuestra carta de marear en el camarote de popa.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).\nAntes de asignar, puedes agotar un _Cañón_: esta Prueba recibe −1 de dificultad.",
+    "textoEfecto": "~El Vrouw Maria, con vuestra carta de marear en el camarote de popa.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).\nAntes de asignar, puedes agotar un _Cañón_: esta Prueba recibe −1 de dificultad. **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
     "textoExito": "~Recuperáis lo vuestro y algo más.~ {1 robar}.",
-    "textoFallo": "**Abordaje**",
+    "textoFallo": "",
     "etiquetas": [
+     "Abordaje",
      "Alerta"
     ]
    },
@@ -9494,10 +9517,11 @@
     "exito": [],
     "siempre": [],
     "nota": "",
-    "textoEfecto": "~Os ha visto, y no piensa rendirse.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo).",
+    "textoEfecto": "~Os ha visto, y no piensa rendirse.~ **Alerta** (este encuentro se resuelve siempre: ninguna carta puede descartarlo, devolverlo al mazo ni evitar que se resuelva. Si ves esta carta al otear, debe quedarse encima del mazo). **Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).",
     "textoExito": "~Lo sacáis de la bodega a rastras.~ Pon en juego la carta 267 del mazo de historia.",
-    "textoFallo": "**Abordaje**. El fugitivo escapa: la misión falla.",
+    "textoFallo": "El fugitivo escapa: la misión falla.",
     "etiquetas": [
+     "Abordaje",
      "Alerta"
     ]
    },
@@ -10604,7 +10628,7 @@
    "id": "desercion",
    "num": 103,
    "nombre": "Deserción",
-   "texto": "**Elige:** paga la soldada (descarta 1 carta por cada Tripulante, máximo 3), o tu Tripulante de menor coste deserta y vuelve al muelle (con sus Mejoras descartadas). Tu Capitán nunca deserta.",
+   "texto": "**Elige:** descarta 1 carta por cada Tripulante, máximo 3 (pagas la soldada), o tu Tripulante de menor coste vuelve al muelle con sus Mejoras descartadas (deserta). Tu Capitán nunca deserta.",
    "ambientacion": "«Sin paga no hay lealtad. Y en Tortuga sobran capitanes.»"
   },
   {
@@ -10871,7 +10895,7 @@
   {
    "id": "pm_varados",
    "num": 226,
-   "nombre": "Varados en el banco",
+   "nombre": "Varados en la arena",
    "palabrasClave": [
     "Terreno"
    ],
@@ -11318,7 +11342,7 @@
   {
    "id": "estado:viaDeAgua",
    "num": 297,
-   "nombre": "Vía de agua",
+   "nombre": "Anegado",
    "clave": "viaDeAgua",
    "clase": "Estado",
    "de": "Barco",
@@ -11328,7 +11352,7 @@
   {
    "id": "estado:velasRotas",
    "num": 298,
-   "nombre": "Velas rotas",
+   "nombre": "Desarbolado",
    "clave": "velasRotas",
    "clase": "Estado",
    "de": "Barco",
@@ -11348,7 +11372,7 @@
   {
    "id": "estado:desanimo",
    "num": 300,
-   "nombre": "Desánimo",
+   "nombre": "Desmoralizado",
    "clave": "desanimo",
    "clase": "Estado",
    "de": "",

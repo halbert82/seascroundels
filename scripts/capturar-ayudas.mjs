@@ -67,8 +67,8 @@ try {
       await p.waitForTimeout(200)
       if ((await p.locator('.explicacion').count()) !== 0) fallos.push(`${tamano}: la explicación no se cierra al salir con el ratón`)
     }
-    await pulsar(p.locator('.zona-barco .estado-ficha', { hasText: 'Vía de agua' }))
-    await comprobar(p, `${tamano} pulsar Vía de agua`, 'Astillero')
+    await pulsar(p.locator('.zona-barco .estado-ficha', { hasText: 'Anegado' }))
+    await comprobar(p, `${tamano} pulsar Anegado`, 'Astillero')
     await foto(p, `estado-barco-pulsado-${tamano}`)
     await p.keyboard.press('Escape')
     await p.waitForTimeout(250)

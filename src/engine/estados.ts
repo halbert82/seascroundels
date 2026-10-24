@@ -83,7 +83,7 @@ export function quitarEstadosTripulacion(s: Estado): string[] {
 }
 
 /**
- * Astillero: quita todos los Estados del Barco. Devuelve sus nombres, para el registro. Fase 16: el Desánimo, que también
+ * Astillero: quita todos los Estados del Barco. Devuelve sus nombres, para el registro. Fase 16: Desmoralizado, que también
  * va junto al Barco, no es un Estado del Barco y se queda.
  */
 export function quitarEstadosBarco(s: Estado): string[] {

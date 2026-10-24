@@ -63,7 +63,7 @@ registrarPeligro('p2_tortugas', {
 // 13. Sol de justicia · Leve
 registrarPeligro('p2_sol', {
   encuentros: {
-    // NAV 3 (Carpintero −2, en los datos). Éxito: prepara 1. Fallo: Vía de agua.
+    // NAV 3 (Carpintero −2, en los datos). Éxito: prepara 1. Fallo: el Barco queda Anegado (antes, Vía de agua).
     mar: { exito: [preparar(1)], fallo: [{ tipo: 'estadoBarco', estado: 'viaDeAgua' }] },
     // Elige: volver al último arroyo (pierdes 1 Avance) o buscar agua por delante (Prueba de EXP 3).
     nat: {
@@ -108,7 +108,7 @@ registrarPeligro('p2_hambre', {
         { texto: 'Regatear: EXP 3', prueba: true },
       ],
       exito: [robar(1), { tipo: 'curar', n: 1 }],
-      // Fase 16 (Albert): «Tu tripulación queda con Desánimo»: robas 1 carta menos al final de este mismo turno (antes, P29:
+      // Fase 16 (Albert): «Tu tripulación queda Desmoralizada»: robas 1 carta menos al final de este mismo turno (antes, P29:
       // −1 Mando en tu próximo turno).
       fallo: [{ tipo: 'estadoBarco', estado: 'desanimo' }],
     },

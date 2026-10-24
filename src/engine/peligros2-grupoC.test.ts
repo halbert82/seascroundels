@@ -205,7 +205,7 @@ describe('26 · Ojos del gobernador', () => {
     expect(k.estados('capitan')).toEqual(['buscado'])
   })
 
-  it('Destino «Oídos en la pared»: −1 y ya se pueden jugar Eventos (fase 13, I1); sin oposición, tu tripulación queda con Desánimo (fase 16)', () => {
+  it('Destino «Oídos en la pared»: −1 y ya se pueden jugar Eventos (fase 13, I1); sin oposición, tu tripulación queda Desmoralizada (fase 16)', () => {
     const j = conDestino('p2_ojos', { mano: ['vendas', 'ojo'], capitan: { heridas: 1 } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
@@ -598,7 +598,7 @@ describe('32 · La horca', () => {
 })
 
 describe('33 · La Armada de Barlovento', () => {
-  it('Mar: +2 con Velas rotas; tipo Armada: +1 si estás Perseguido y, si la superas, se quita (fase 10b); si fallas, Abordaje', () => {
+  it('Mar: +2 si el Barco está Desarbolado; tipo Armada: +1 si estás Perseguido y, si la superas, se quita (fase 10b); si fallas, Abordaje', () => {
     const j = en('mar', ['p2_armada', 'chubasco', 'calma'], { barco: { estados: ['velasRotas'] } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(6) // NAV 4 (fase 14, antes 6) + 2

@@ -311,7 +311,7 @@ describe('253 · Malas lenguas y la permanente 136 «Mala fama»', () => {
 // Mar de fondo
 
 describe('254 · Mar de fondo (según por cuánto falles)', () => {
-  it('Mar (NAV 3): fallar por 1 daña 1; por 2 o más, daña 2 y el Barco queda con Vía de agua', () => {
+  it('Mar (NAV 3): fallar por 1 daña 1; por 2 o más, daña 2 y el Barco queda Anegado', () => {
     // Diego 2 + Barco 1 = 3; con «Tiburones» (−1) de Destino, 2: falla por 1.
     const uno = en('mar', ['p2_fondo', 'fauna', 'calma'])
     uno.comprometer('NAV', ['capitan']).seguir()

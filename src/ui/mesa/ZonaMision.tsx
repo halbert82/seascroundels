@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { iconosDe, porId } from '../../engine/catalogo.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia, nombre } from '../../engine/estado.ts'
-import { desgloseDificultad, desgloseTotal, dificultadPrueba, nombreDelEncuentro, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
+import { definicionActual, desgloseDificultad, desgloseTotal, dificultadPrueba, nombreDelEncuentro, prevision, totalPrueba, type ParteDesglose } from '../../engine/prueba.ts'
 import type { Decision, Estado, InstId } from '../../engine/tipos.ts'
 import { valor } from '../../engine/valores.ts'
 import { MEDIDAS } from '../cartas/Carta.tsx'
@@ -465,11 +465,27 @@ function AvanceDeLaPrueba({ hab, resultado }: { hab: 'NAV' | 'COM' | 'EXP' | nul
   )
 }
 
+/**
+ * Revisión de Albert de los Peligros: Abordaje va en la Prueba, como Sin ayuda y Descomunal. Las tres se ven junto a la
+ * Prueba en curso.
+ */
+function etiquetasDeLaPrueba(s: Estado): string[] {
+  if (!s.prueba) return []
+  const def = definicionActual(s)
+  return [...(def.abordaje ? ['Abordaje'] : []), ...(def.sinAyuda ? ['Sin ayuda'] : []), ...(def.minimo ? [`Descomunal ${def.minimo}`] : [])]
+}
+
 function Cabecera({ titulo, hab }: { titulo: string; hab: 'NAV' | 'COM' | 'EXP' | null }) {
+  const { s } = useMesa()
   return (
     <div className="prueba-cabecera">
       <span className="prueba-rotulo">Prueba</span>
       <span className="prueba-titulo">{titulo}</span>
+      {etiquetasDeLaPrueba(s).map((x) => (
+        <span key={x} className="prueba-etq">
+          {x}
+        </span>
+      ))}
       {hab && (
         <span className={`prueba-hab hab-${hab.toLowerCase()}`}>
           <Icono id={hab} /> {hab}

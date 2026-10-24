@@ -130,16 +130,18 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba', n: 4 } })
     j.seguir()
     expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
-    // Por superar la Turbonada, 1 de Avance más y la carta va al fondo del mazo; con sus 3, la misión llega a 5 de 3.
+    // Por superar la Turbonada, 1 de Avance más; con sus 3, la misión llega a 5 de 3. (Revisión de Albert de los Peligros:
+    // la carta ya no va al fondo del mazo: se descarta como cualquier otra.)
     expect(j.registro).toContain('Turbonada: +1 de Avance (2/3).')
     expect(j.registro).toContain('Ganas 3 de Avance (5/3).')
-    expect(j.registro).toContain('«Turbonada» va al fondo del mazo de Peligros.')
-    expect(j.zona('mazoPeligros').at(-1)).toBe('p2_turbonada')
+    expect(j.registro.some((t) => t.includes('va al fondo del mazo de Peligros'))).toBe(false)
+    expect(j.zona('mazoPeligros')).not.toContain('p2_turbonada')
+    expect(j.zona('descartesPeligros')).toContain('p2_turbonada')
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
     // Recompensa (fase 11): la misión no da reputación, pero como el Barco no tiene ningún daño, la Gesta da 1.
     // Adquiere sin coste una Mejora del muelle de coste 1 o menos: la Vela mayor (el muelle repuesto tiene la Vela, el
-    // Casco, la Vigía y el Carpintero). Su precio: un Tripulante sufre 1 herida, y el jugador se la da a Diego.
+    // Casco, la Vigía y el Carpintero). Su precio: inflige 1 herida a un Tripulante, y el jugador elige a Diego.
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
     expect(j.estado.reputacion).toBe(1)
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })

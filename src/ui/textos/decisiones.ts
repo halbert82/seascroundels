@@ -6,7 +6,7 @@ import { CATALOGO, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { quedaDe, type FormaDeQuitar } from '../../engine/definiciones.ts'
 import { destinoDe } from '../../engine/destinos.ts'
 import { copia } from '../../engine/estado.ts'
-import { INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
+import { INFO_ESTADO, sujetoJuntoAlBarco, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
 import { nombreDelEncuentro } from '../../engine/prueba.ts'
 import { encuentroDe } from '../../engine/peligros.ts'
 import { textoDe } from '../../engine/textos.ts'
@@ -305,7 +305,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'mitadDelMuelle':
       return {
         titulo: 'Del muelle, a mitad de coste',
-        ayuda: `Puedes poner en juego una carta del muelle de coste ${n} o menos pagando la mitad de su coste, redondeando hacia arriba (o ninguna).`,
+        ayuda: `Puedes poner en juego una carta del muelle${n >= 99 ? '' : ` de coste ${n} o menos`} pagando la mitad de su coste, redondeando hacia arriba (o ninguna).`,
       }
     case 'portadorGratis':
       return { titulo: `¿Quién lleva «${nombreCarta(m.carta)}»?` }
@@ -478,12 +478,16 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
       const quien = { uno: 'un Tripulante', comprometido: 'uno de los Tripulantes asignados', todos: 'todos tus Tripulantes', capitan: 'tu Capitán' }[e.a]
       return `${quien} ${e.a === 'todos' ? 'quedan' : 'queda'} ${INFO_ESTADO[e.estado].nombre}`
     }
-    case 'estadoBarco':
-      return `el Barco: ${INFO_ESTADO[e.estado].nombre}`
+    case 'estadoBarco': {
+      const { quien, adjetivo } = sujetoJuntoAlBarco(e.estado)
+      return `${quien} queda ${adjetivo}`
+    }
     case 'quitarEstado':
       return `quitas ${INFO_ESTADO[e.estado].nombre}${e.a === 'todos' ? ' a todos' : ''}`
-    case 'quitarEstadoBarco':
-      return `el Barco ya no tiene ${INFO_ESTADO[e.estado].nombre}`
+    case 'quitarEstadoBarco': {
+      const { quien, adjetivo } = sujetoJuntoAlBarco(e.estado)
+      return `${quien} ya no está ${adjetivo}`
+    }
     case 'incautar':
       return e.que === 'mano' ? `te incautan ${n2(e.n, 'carta', 'cartas')} de la mano` : e.que === 'mejora' ? 'te incautan una Mejora' : 'te incautan un Tripulante'
     case 'ocuparMuelle':
@@ -532,7 +536,7 @@ export function describirEfecto(e: Efecto, todos: readonly Efecto[] = []): strin
     case 'elegir':
       return `eliges: ${e.opciones.map((o) => o.texto).join(' o ')}`
     case 'gratisDelMuelle':
-      if (e.mitad) return `pones en juego una carta del muelle de coste ${e.maxCoste} o menos pagando la mitad de su coste`
+      if (e.mitad) return `pones en juego una carta del muelle${e.maxCoste >= 99 ? '' : ` de coste ${e.maxCoste} o menos`} pagando la mitad de su coste`
       return e.maxCoste >= 99 ? 'pones en juego sin coste una carta del muelle' : `pones en juego sin coste una carta del muelle de coste ${e.maxCoste} o menos`
     case 'reclutarDelMazoMuelle':
       return `miras ${e.n} del mazo de muelle y puedes reclutar sin coste a uno de coste ${e.maxCoste} o menos`
@@ -610,8 +614,10 @@ function describirCondicion(c: Condicion): string {
       return c.minimo === 1 ? 'tienes algún Cañón preparado' : `tienes ${c.minimo} o más Cañones preparados`
     case 'estado':
       return `alguien está ${INFO_ESTADO[c.estado].nombre}`
-    case 'estadoBarco':
-      return `el Barco tiene ${INFO_ESTADO[c.estado].nombre}`
+    case 'estadoBarco': {
+      const { quien, adjetivo } = sujetoJuntoAlBarco(c.estado)
+      return `${quien} está ${adjetivo}`
+    }
     case 'no':
       return `no ${describirCondicion(c.condicion)}`
     case 'comprometidos':

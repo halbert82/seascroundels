@@ -32,6 +32,10 @@ describe('Los dos libros salen de las dos partes del reglamento', () => {
     expect(r.rapida.prueba).toHaveLength(5)
     expect(r.rapida.iconos.length).toBeGreaterThan(10)
     expect(r.rapida.estados.map((f) => f.ficha)).toContain('Envenenado')
+    // Revisión de Albert de los Peligros 154–162: redondear (siempre hacia arriba) y el recordatorio del Abordaje, a la vista.
+    expect(r.rapida.recuerda).toHaveLength(2)
+    expect(r.rapida.recuerda[0]).toContain('hacia arriba')
+    expect(r.rapida.recuerda[1]).toContain('herida por cada punto que te falte')
   })
 })
 
@@ -177,7 +181,8 @@ describe('Tipografía del texto', () => {
   it('en la Referencia, los términos en negrita remiten a su página y cada entrada acaba con «Véase también»', () => {
     const abordaje = r.referencia.entradas.find((e) => e.titulo === 'Abordaje')
     expect(htmlDe(abordaje?.bloques ?? [])).toContain('<a class="pagref" href="#r-prueba"></a>')
-    expect(abordaje?.vease.map((v) => v.titulo)).toEqual(['Cañón', 'Destino'])
+    // Desde la revisión de los Peligros 154–162 nombra también las otras dos palabras clave que cambian la Prueba.
+    expect(abordaje?.vease.map((v) => v.titulo)).toEqual(['Cañón', 'Destino', 'Sin ayuda', 'Descomunal'])
     const accion = r.referencia.entradas.find((e) => e.titulo === 'Acción')
     expect(accion?.vease[0]).toEqual({ titulo: 'Capacidades de las cartas', id: 'a-capacidades-de-las-cartas', libro: 'aprende' })
   })

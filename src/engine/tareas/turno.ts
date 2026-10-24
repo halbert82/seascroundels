@@ -113,7 +113,7 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       encolar(
         s,
         { tipo: 'robarHastaMando' },
-        // Fase 16, Desánimo: «Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta.» (El −1 lo
+        // Fase 16, Desmoralizado: «Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta.» (El −1 lo
         // pone su capacidad constante; aquí se descarta, robes o no.)
         { tipo: 'descartarDesanimo' },
         { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] },

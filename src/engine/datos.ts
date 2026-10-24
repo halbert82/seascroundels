@@ -312,7 +312,7 @@ export interface EstadoCartaDatos {
   /** Su nombre en el motor («envenenado», «viaDeAgua»…). */
   clave: string
   clase: 'Estado' | 'Ventaja'
-  /** Dónde se pone: sobre un Tripulante, junto al Barco (sus Estados) o, sin más («Desánimo»), junto al Barco. */
+  /** Dónde se pone: sobre un Tripulante, junto al Barco (sus Estados) o, sin más («Desmoralizado»), junto al Barco. */
   de: 'Tripulante' | 'Barco' | ''
   copias: number
   texto: string

@@ -73,7 +73,8 @@ export function cartasDeFila(nombre: string): EntradaCatalogo[] {
       return deTipo('estado').filter((e) => e.tipo === 'estado' && e.carta.clase === 'Estado' && e.carta.de === 'Tripulante')
     case 'Ventajas':
       return deTipo('estado').filter((e) => e.tipo === 'estado' && e.carta.clase === 'Ventaja')
-    case 'Estados del Barco y Desánimo':
+    // Desmoralizado (antes Desánimo) es el Estado de la tripulación: su carta va junto al Barco.
+    case 'Estados del Barco y de la tripulación':
       return deTipo('estado').filter((e) => e.tipo === 'estado' && e.carta.de !== 'Tripulante')
     default:
       return []
@@ -1047,6 +1048,16 @@ export function Contraportada({ rapida }: { rapida: Reglamento['rapida'] }) {
               ))}
             </tbody>
           </table>
+          {rapida.recuerda.length > 0 && (
+            <>
+              <h3 className="cp-apartado">Recuerda</h3>
+              <ul className="cp-recuerda">
+                {rapida.recuerda.map((html, i) => (
+                  <li key={i} dangerouslySetInnerHTML={{ __html: html }} />
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </div>
       <Filete className="cp-filete" />

@@ -971,6 +971,25 @@
   font-size: 18px;
 }
 
+/* Abordaje, Sin ayuda y Descomunal junto a la Prueba (revisión de Albert de los Peligros). */
+.prueba-etq {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-family: 'Alegreya Sans SC', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--pergamino);
+  background: rgba(142, 43, 35, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(230, 180, 160, 0.45);
+}
+
+.prueba-etq + .prueba-etq,
+.prueba-etq ~ .prueba-hab {
+  margin-left: 0;
+}
+
 .hab-nav {
   --hab: var(--nav);
 }

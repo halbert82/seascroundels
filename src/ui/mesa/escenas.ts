@@ -29,6 +29,7 @@ export const ESCENAS = [
   'bucear',
   'asedio',
   'estados',
+  'abordaje',
 ] as const
 export type Escena = (typeof ESCENAS)[number]
 
@@ -66,6 +67,7 @@ const CONDICION: Record<
     | 'bucear'
     | 'asedio'
     | 'estados'
+    | 'abordaje'
   >,
   (s: Estado, desde: number) => boolean
 > = {
@@ -82,7 +84,7 @@ const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'emboscada', '
 
 /**
  * Fase 16: en puerto (Jugar cartas), varias cartas de Estado y de Ventaja puestas: sobre los Tripulantes y junto al Barco.
- * El Carpintero y el Matasanos están preparados, así que las cartas de Vía de agua y de Envenenado ofrecen su Acción.
+ * El Carpintero y el Matasanos están preparados, así que las cartas de Anegado y de Envenenado ofrecen su Acción.
  */
 function estados(): PartidaEnMesa {
   const j = Jugador.en({
@@ -113,7 +115,7 @@ function enJuego(): PartidaEnMesa {
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje', 'cataplasma'],
     tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, { id: 'viejo_lobo', estados: ['aguerrido'] }],
-    // Sin Vía de agua: desde la fase 10b, al final de cada Peligro pregunta si achicas, y la escena se pararía ahí.
+    // Sin Anegado: desde la fase 10b, al final de cada Peligro pregunta si achicas, y la escena se pararía ahí.
     barco: { estados: ['perseguido', 'velasRotas'], mejoras: [{ id: 'bronce', agotada: true }, 'vela'] },
     reputacion: 6,
   })
@@ -275,6 +277,23 @@ function dosDestinos(): PartidaEnMesa {
 }
 
 /**
+ * Revisión de Albert de los Peligros: «Proa en la niebla» (COM 3, Abordaje): la etiqueta Abordaje se ve junto a la Prueba
+ * mientras asignas, y los Cañones de bronce no se ofrecen.
+ */
+function abordaje(): PartidaEnMesa {
+  const j = Jugador.enMision({
+    misiones: ['pruebas-mar5'],
+    mazoPeligros: ['p2_niebla', 'chubasco', 'calma', 'calma'],
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje', 'abordaje'],
+    tripulacion: ['bucanero', 'vigia'],
+    barco: { mejoras: ['bronce'] },
+    reputacion: 2,
+  })
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 4) }
+}
+
+/**
  * Fase 14, en puerto: dos Enrolados con sus fichas (al Piloto le queda 1: se va al final de este turno), la Carne de
  * cañón herida y El Tuerto con 2 heridas (COM 3); en el muelle, la Guía de alquiler y el Galeote fugado.
  */
@@ -424,6 +443,7 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'bucear') return bucear()
   if (nombre === 'asedio') return asedio()
   if (nombre === 'estados') return estados()
+  if (nombre === 'abordaje') return abordaje()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

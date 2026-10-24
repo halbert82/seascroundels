@@ -175,7 +175,7 @@ export const pagar: Manejador<'pagar'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** Reparar N daños (fase 10b: reparar ya no quita la Vía de agua). */
+/** Reparar N daños (fase 10b: reparar ya no quita Anegado, antes Vía de agua). */
 export const reparar: Manejador<'reparar'> = (s, t) => {
   const n = t.n
   const antes = s.danoBarco
@@ -278,10 +278,10 @@ export const robarHastaMando: Manejador<'robarHastaMando'> = (s) => {
 }
 
 /**
- * Fase 16, Desánimo: «Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta.» El −1 al robar lo
+ * Fase 16, Desmoralizado: «Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta.» El −1 al robar lo
  * da su capacidad constante (capacidades/estados.ts); después de robar, la carta vuelve a la reserva.
  */
 export const descartarDesanimo: Manejador<'descartarDesanimo'> = (s) => {
-  if (quitarEstadoBarco(s, 'desanimo')) anotar(s, 'efecto', 'Desánimo: robas 1 carta menos y descartas su carta.')
+  if (quitarEstadoBarco(s, 'desanimo')) anotar(s, 'efecto', 'Desmoralizado: robas 1 carta menos y descartas su carta.')
   return 'hecha'
 }

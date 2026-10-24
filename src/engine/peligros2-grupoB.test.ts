@@ -58,7 +58,7 @@ describe('12 · Tortugas', () => {
 })
 
 describe('13 · Sol de justicia', () => {
-  it('Mar: NAV 1 con un Carpintero; si superas, preparas 1; si fallas, Vía de agua', () => {
+  it('Mar: NAV 1 con un Carpintero; si superas, preparas 1; si fallas, el Barco queda Anegado', () => {
     const j = en('mar', ['p2_sol', 'chubasco', 'calma'], { tripulacion: ['carpintero'] })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(1)
@@ -136,7 +136,7 @@ describe('14 · El hambre', () => {
     expect(k.copia('viejo_lobo').heridas).toBe(2)
   })
 
-  it('Ciudad, Elige: pagas 2 cartas (y ganas el Avance) o regateas; si fallas, tu tripulación queda con Desánimo (fase 16)', () => {
+  it('Ciudad, Elige: pagas 2 cartas (y ganas el Avance) o regateas; si fallas, tu tripulación queda Desmoralizada (fase 16)', () => {
     const j = en('ciu', ['p2_hambre', 'calma', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     j.opcion('0').elegir('ojo', 'timon')
     expect(j.zona('mano')).toEqual(['coraje'])

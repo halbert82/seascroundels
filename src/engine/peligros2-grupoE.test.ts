@@ -303,7 +303,7 @@ describe('49 · La sirena', () => {
 })
 
 describe('50 · Mal presagio', () => {
-  it('Mar: el preparado con más COM no puede comprometerse; si fallas, tu tripulación queda con Desánimo (fase 16)', () => {
+  it('Mar: el preparado con más COM no puede comprometerse; si fallas, tu tripulación queda Desmoralizada (fase 16)', () => {
     const j = en('mar', ['p2_presagio', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     expect(tripulantes(j)).toEqual(['bucanero'])
     j.comprometer('NAV', []).seguir()
@@ -484,7 +484,7 @@ describe('53 · La serpiente marina', () => {
     expect(j.copia('bronce').agotada).toBe(false)
   })
 
-  it('Mar: si fallas, 2 daños y, si el Barco ya tenía 2 o más, Velas rotas', () => {
+  it('Mar: si fallas, 2 daños y, si el Barco ya tenía 2 o más, queda Desarbolado', () => {
     const j = en('mar', ['p2_serpiente_marina', 'chubasco', 'calma'], { barco: { dano: 2 } })
     j.comprometer('COM', []).seguir()
     expect(j.estado.danoBarco).toBe(4)
@@ -539,7 +539,7 @@ describe('53 · La serpiente marina', () => {
 })
 
 describe('54 · La Santa Compaña', () => {
-  it('Mar: si fallas, el Barco queda con Velas rotas (fase 10b)', () => {
+  it('Mar: si fallas, el Barco queda Desarbolado (fase 10b)', () => {
     const j = en('mar', ['p2_compana', 'chubasco', 'calma'])
     j.comprometer('NAV', []).seguir()
     expect(j.estadosBarco).toEqual(['velasRotas'])

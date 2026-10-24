@@ -355,7 +355,7 @@ registrarPeligro('p2_presagio', {
     mar: {
       alRevelarse: [alguno('preparados', mas('COM'), { tipo: 'noCompromete', hasta: 'finPrueba' })],
       exito: [avance(1)],
-      // Fase 16: «Tu tripulación queda con Desánimo» (antes, −1 Mando en tu próximo turno).
+      // Fase 16: «Tu tripulación queda Desmoralizada» (antes, −1 Mando en tu próximo turno).
       fallo: [{ tipo: 'estadoBarco', estado: 'desanimo' }],
     },
     // Al revelarse, elige un Tripulante al azar: pon en juego la carta 235 junto a él, con 1 ficha. (Como antes, se
@@ -462,7 +462,7 @@ registrarCodigo('p2_serpiente_marina.escupe', (s, fuente) => {
 
 registrarPeligro('p2_serpiente_marina', {
   encuentros: {
-    // Cada Artillero comprometido suma +1. Éxito: +2 munición. Fallo: 2 daños y, si ya tenía 2 o más, Velas rotas.
+    // Cada Artillero comprometido suma +1. Éxito: +2 munición. Fallo: 2 daños y, si ya tenía 2 o más, queda Desarbolado.
     mar: {
       capacidades: [habilidadDe('artilleros', (ctx, c) => (tieneRasgo(ctx.s, c, 'Artillero') ? 1 : 0))],
       exito: [preparaCanon()],
@@ -494,7 +494,7 @@ registrarPeligro('p2_serpiente_marina', {
 
 registrarPeligro('p2_compana', {
   encuentros: {
-    // NAV 4 (3 con un Vigía comprometido). Éxito: +1 Avance. Fallo: Velas rotas (fase 10b, antes Incendio a bordo).
+    // NAV 4 (3 con un Vigía comprometido). Éxito: +1 Avance. Fallo: el Barco queda Desarbolado (fase 10b, antes Incendio a bordo).
     mar: { exito: [avance(1)], fallo: [{ tipo: 'estadoBarco', estado: 'velasRotas' }] },
     // Los Tripulantes con Escapulario suman +2. Éxito: robas 2. Fallo: el comprometido con menos EXP queda Asustado
     // y sufre 1 herida.

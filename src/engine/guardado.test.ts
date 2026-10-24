@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import { deserializar, serializar } from './guardado.ts'
 import { nombreDe } from './catalogo.ts'
+import { INFO_ESTADO } from './infoEstados.ts'
 import { nuevaPartida } from './preparacion.ts'
 import { Jugador } from './pruebas/situacion.ts'
 import type { Estado, InstId } from './tipos.ts'
@@ -288,5 +289,19 @@ describe('Revisión de Albert de las cartas de jugador · partidas guardadas con
     const viejo = conCartasEliminadas()
     viejo.pendiente = { tipo: 'elegirCartas', motivo: { clave: 'buscar' }, candidatas: [], min: 1, max: 1 } as unknown as Estado['pendiente']
     expect(() => deserializar(JSON.stringify(viejo))).toThrow(/buscar en un mazo/)
+  })
+})
+
+describe('Albert: Vía de agua, Velas rotas y Desánimo pasan a llamarse Anegado, Desarbolado y Desmoralizado', () => {
+  it('una partida guardada con esos Estados se carga igual (la clave no cambia) y los muestra con el nombre nuevo', () => {
+    const j = Jugador.en({ barco: { dano: 1, estados: ['viaDeAgua', 'velasRotas', 'desanimo'] } })
+    // La partida se guardó antes del cambio: en el guardado solo van las claves, no los nombres.
+    const guardada = serializar(j.estado)
+    expect(guardada).not.toMatch(/Anegado|Desarbolado|Desmoralizado/)
+    const t = deserializar(guardada)
+    expect(t.estadosBarco).toEqual(['viaDeAgua', 'velasRotas', 'desanimo'])
+    // En la mesa (la carta junto al Barco) y en la galería y la ampliación (su carta mini).
+    expect(t.estadosBarco?.map((e) => INFO_ESTADO[e].nombre)).toEqual(['Anegado', 'Desarbolado', 'Desmoralizado'])
+    expect(t.estadosBarco?.map((e) => nombreDe(`estado:${e}`))).toEqual(['Anegado', 'Desarbolado', 'Desmoralizado'])
   })
 })

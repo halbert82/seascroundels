@@ -333,7 +333,7 @@ describe('38 · Paga atrasada', () => {
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
-  it('Destino «Demasiadas voces»: −1 en cualquier Prueba, también con 3 o más asignados (fase 13, I1); Sin oposición: Desánimo (fase 16)', () => {
+  it('Destino «Demasiadas voces»: −1 en cualquier Prueba, también con 3 o más asignados (fase 13, I1); Sin oposición: tu tripulación queda Desmoralizada (fase 16)', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     j.comprometer('COM', ['capitan', 'bucanero', 'vigia'])
     expect(dificultadConDestino(j.estado)).toBe(3)

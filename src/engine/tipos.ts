@@ -362,7 +362,7 @@ export interface Estado {
   /** Prueba en curso dentro de la misión. */
   prueba: PruebaEnCurso | null
   temporales: Temporal[]
-  /** Fichas de Estado del Barco (Vía de agua, Incendio a bordo…). */
+  /** Cartas de Estado junto al Barco (Anegado, Desarbolado, Perseguido y Desmoralizado). */
   estadosBarco?: EstadoBarco[]
   /** Carta de Peligro que «persigue»: está encima del mazo de Peligros y será el siguiente encuentro. */
   persigue?: InstId | null
@@ -468,7 +468,7 @@ export type Tarea = { id: number } & (
   | { tipo: 'reponerMisiones' }
   | { tipo: 'descartarFinal' }
   | { tipo: 'robarHastaMando' }
-  /** Fase 16: tras robar al final del turno, la carta de Desánimo vuelve a la reserva. */
+  /** Fase 16: tras robar al final del turno, la carta de Desmoralizado vuelve a la reserva. */
   | { tipo: 'descartarDesanimo' }
   | { tipo: 'anadirTemporal'; temporal: Temporal }
   // Misiones (fase 3)
