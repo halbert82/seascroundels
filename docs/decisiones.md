@@ -1216,10 +1216,11 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - **El diario:** la misión en curso (el naufragio) no cuenta entre las que se pueden cambiar. La misión nueva va en el mismo sitio que la que sale. El Avance se queda en la misión mientras siga disponible (como el de Soplos de la Hermandad). Panamá también es una travesía: el diario puede traer «El prisionero de Portobelo».
 - **Se deja de bucear** cuando el jugador quiere, cuando no le queda nadie preparado o cuando el mazo se queda sin cartas (no puede pasar: cinco cartas vuelven siempre).
 
-### Preguntas nuevas para Albert (P107–P108), con la opción por defecto aplicada
+### Preguntas nuevas para Albert (P107–P109), con la opción por defecto aplicada
 
 - **P107 · Buscar en el mazo de Misiones («El diario del capitán»).** El reglamento dice cómo se busca en el mazo de muelle (lo localizas y lo barajas) y en el de historia (por su número), pero no en el de Misiones. Por defecto, como en el de muelle: localizas el capítulo, **barajas el mazo de Misiones** y después pones al fondo la misión que cambias. *Ejemplo:* buscas «Seguirle por Port Royal», barajas el mazo y pones «Agua y leña» debajo. Si habías oteado el mazo de Misiones, ese orden se pierde. La otra opción: no se baraja (y has visto todo el mazo). `TODO(regla) P107` en el código; el reglamento (Buscar) ya lo dice así.
 - **P108 · La culebrina, si se pierde.** Es una Mejora de barco del mazo de historia, sin coste. Por defecto, si se descarta (el Barco se hunde, «Impuestos del gobernador», un Peligro que te quita una Mejora), **vuelve al mazo de historia**, como un Tesoro, y no a los descartes del muelle. *Ejemplo:* el Barco se hunde con la culebrina y la Vela mayor: la Vela va a los descartes del muelle; la culebrina, al mazo de historia (y no vuelve a salir: el naufragio ya está superado). La otra opción: va a los descartes del muelle y entra en el mazo de muelle como una Mejora más, de coste 0. `TODO(regla) P108` en el código; el reglamento (Mazo del naufragio) ya lo dice así.
+- **P109 · La caja de recompensa de la 268.** Albert pidió la misión «sin reputación ni recompensa propia». Por defecto, la caja de recompensa no da nada: solo dice dónde están las cartas, «Lo que saques del mazo del naufragio (cartas 269 a 271 y 277 a 285 del mazo de historia)», para encontrarlas en la caja. La otra opción: la caja vacía (y el número de las cartas solo en el reglamento).
 
 ### Efectos que hay que recordar para el turno siguiente (para la revisión de Peligros de Albert)
 
