@@ -5,7 +5,8 @@ import { responder } from '../../engine/motor.ts'
 import { nuevaPartida } from '../../engine/preparacion.ts'
 import { mazoDeMuelleAlAzar } from '../../engine/pruebas/equilibrio.ts'
 import { jugadorAlAzar, jugadorConCriterio } from '../../engine/pruebas/jugadores.ts'
-import { sucesoDe, textoDecision, textoPlano, textoUso } from './decisiones.ts'
+import { Jugador } from '../../engine/pruebas/situacion.ts'
+import { loQuePierdesAlRetirarte, sucesoDe, textoDecision, textoPlano, textoUso } from './decisiones.ts'
 
 describe('Textos de las decisiones', () => {
   it('ninguna decisión de muchas partidas automáticas se queda sin texto', { timeout: 180_000 }, () => {
@@ -28,6 +29,19 @@ describe('Textos de las decisiones', () => {
       }
     }
     expect(vistas.size).toBeGreaterThan(30)
+  })
+
+  it('P119: tras un encuentro de la regata, la ayuda avisa de que retirarse la aparta; en otra misión, solo se pierde el Avance', () => {
+    const enMision = (mision: string) => {
+      const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma', 'pruebas-calma'], misiones: [mision], mazoPeligros: ['calma', 'calma', 'calma', 'calma'] })
+      j.zarpar(mision)
+      return j
+    }
+    const regata = enMision('regata-I')
+    expect(regata.decision.motivo.clave).toBe('trasEncuentro')
+    expect(textoDecision(regata.estado, regata.decision).ayuda).toBe('Sigue con la misión revelando otra carta, o retírate a puerto (pierdes el Avance y la misión se aparta).')
+    expect(loQuePierdesAlRetirarte(enMision('vanhoorn-I').estado)).toBe('pierdes el Avance y la misión se aparta')
+    expect(loQuePierdesAlRetirarte(enMision('pruebas-mar5').estado)).toBe('pierdes el Avance')
   })
 
   it('el texto de una carta se lee sin marcado', () => {

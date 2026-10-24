@@ -8,7 +8,7 @@ import { navParaDistancia } from '../../engine/valores.ts'
 import { definicionActual, problemaCompromiso } from '../../engine/prueba.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { porId } from '../../engine/catalogo.ts'
-import { textoDecision, textoUso } from '../textos/decisiones.ts'
+import { loQuePierdesAlRetirarte, textoDecision, textoUso } from '../textos/decisiones.ts'
 import { CartaDe, useMesa } from './contexto.tsx'
 import { eleccionConfirmada, type Seleccion } from './interaccion.ts'
 import { Icono } from './Zonas.tsx'
@@ -55,7 +55,7 @@ export function PanelDecision({ decision: d, sel, setSel, elegir }: Props) {
       }
       if (d.acciones.some((a) => a.tipo === 'retirarse')) {
         botones.push(
-          <Boton key="retirarse" peligro onClick={() => elegir({ tipo: 'accion', accion: { tipo: 'retirarse' } })} titulo="Vuelves a puerto y pierdes el Avance de la misión.">
+          <Boton key="retirarse" peligro onClick={() => elegir({ tipo: 'accion', accion: { tipo: 'retirarse' } })} titulo={`Vuelves a puerto y ${loQuePierdesAlRetirarte(s)}.`}>
             Retirarte a puerto
           </Boton>,
         )

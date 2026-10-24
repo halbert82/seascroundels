@@ -95,7 +95,15 @@ describe('Marcas nuevas', () => {
   it('«Componentes» trae las fichas y un solo consejo con el dado; los comentarios del reglamento no salen en el libro', () => {
     const html = htmlDe(capitulo('Componentes').bloques)
     expect(html).toContain('<h4 class="componentes-grupo">Fichas</h4>')
-    expect(html).toContain('<li>Fichas genéricas, todas iguales, para los contadores y para ')
+    expect(html).toContain('<li>20 fichas genéricas, todas iguales, para los contadores y para ')
+    // P118 (Albert): la lista dice cuántas fichas hay de cada clase, y la frase de la caja, cuántas en total.
+    expect(html).toContain('<li>12 fichas de herida.</li>')
+    expect(html).toContain('<li>12 fichas de Avance.</li>')
+    expect(html).toContain('<li>6 fichas de <strong class="termino">Entrenamiento</strong> (+1).</li>')
+    const lista = html.match(/<h4 class="componentes-grupo">Fichas<\/h4>\s*<ul>([\s\S]*?)<\/ul>/)?.[1] ?? ''
+    const cantidades = [...lista.matchAll(/<li>(\d+) fichas /g)].map((m) => Number(m[1]))
+    expect(cantidades).toEqual([12, 12, 12, 6, 20, 20])
+    expect(html).toContain(`además de ${cantidades.reduce((a, b) => a + b, 0)} fichas.`)
     expect(html).not.toContain('<!--')
     // Fase 16, corrección de Albert: los dados son una regla casera; solo los nombra el consejo de Componentes.
     const consejos = capitulo('Componentes').bloques.filter((b) => b.tipo === 'consejo')
@@ -106,7 +114,7 @@ describe('Marcas nuevas', () => {
 
   it('fase 16 (Albert): la reputación se lleva con fichas de reputación; ya no hay marcador', () => {
     expect(fuente).not.toMatch(/marcador de reputación/i)
-    expect(htmlDe(capitulo('Componentes').bloques)).toContain('<li>Fichas de reputación.</li>')
+    expect(htmlDe(capitulo('Componentes').bloques)).toContain('<li>20 fichas de reputación.</li>')
     expect(htmlDe(capitulo('Preparación de la partida').bloques)).toContain('El jugador empieza sin ninguna ficha de reputación.')
     const entrada = r.referencia.entradas.find((e) => e.titulo === 'Reputación')
     const html = htmlDe(entrada?.bloques ?? [])

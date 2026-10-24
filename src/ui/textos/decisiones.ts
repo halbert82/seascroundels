@@ -12,6 +12,7 @@ import { encuentroDe } from '../../engine/peligros.ts'
 import { textoDe } from '../../engine/textos.ts'
 import type { AccionSobre, Condicion, Efecto, Medida, Selector } from '../../engine/efectos.ts'
 import { textoModSiguiente } from '../../engine/tareas/efectos.ts'
+import { reglasMision } from '../../engine/misiones2/registro.ts'
 import type { OpcionPrueba } from '../../engine/datos.ts'
 import type { Decision, Estado, Evento, InstId, Uso } from '../../engine/tipos.ts'
 
@@ -336,7 +337,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'trasEncuentro':
       return s.mision?.sinRetirada
         ? { titulo: 'Carta resuelta', ayuda: 'Sigue con la misión revelando otra carta. No puedes retirarte de esta misión.' }
-        : { titulo: 'Carta resuelta', ayuda: 'Sigue con la misión revelando otra carta, o retírate a puerto (pierdes el Avance).' }
+        : { titulo: 'Carta resuelta', ayuda: `Sigue con la misión revelando otra carta, o retírate a puerto (${loQuePierdesAlRetirarte(s)}).` }
     case 'interrupcion':
     case 'respuesta': {
       const suceso = sucesoDe(s, d)
@@ -709,4 +710,11 @@ export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; si
     partes.push(capitulo ? `«${capitulo.nombre}» va encima del mazo de Misiones` : `la carta ${siguiente} va encima del mazo de Misiones`)
   }
   return partes
+}
+
+/** Lo que cuesta retirarse: el Avance y, en las misiones que se apartan si no las superas (la regata, «La ruta de los
+ * alisios»), también la carta. */
+export function loQuePierdesAlRetirarte(s: Estado): string {
+  const m = s.mision
+  return m && reglasMision(copia(s, m.carta).id)?.apartarSiNoSuperas ? 'pierdes el Avance y la misión se aparta' : 'pierdes el Avance'
 }

@@ -1608,18 +1608,20 @@ Albert acepta la propuesta de la medición anterior: **12 fichas de herida, 12 d
 - **Lo que se pasa de la meta al ganar** (partida normal, 444 victorias por reputación): justo la meta en 245, +1 en 128, +2 en 47 y +3 en 24. En la larga, lo mismo (+3 como mucho).
 - **El tope no es casualidad:** lo más que se gana de una vez en la caja son 4 de reputación (la recompensa de «La huida con la plata», 128, y una opción de las cartas de recompensa 291 y 292), y la partida se gana en el momento de alcanzar la meta. Así que se llega como mucho a la meta − 1 + 4: **15 en la normal, 19 en la larga y 12 en la corta**. Las 1000 partidas llegan justo a ese tope.
 - En 58 partidas normales (108 largas) la reputación baja después de su máximo (cartas que la hacen perder): las fichas devueltas vuelven a la reserva y no cambian la cuenta.
-- **Propuesta para la caja: 20 fichas de reputación.** Con 19 basta para cualquier partida de la caja básica; la 20 es el margen (por si se pierde una). Medir: `MEDIR_REPUTACION=1 npx vitest run src/engine/medir-reputacion.informe.test.ts` (con `MEDIR_REPUTACION_MODOS=normal` o `larga`).
+- **Propuesta para la caja: 20 fichas de reputación.** Con 19 basta para cualquier partida de la caja básica; la 20 es el margen (por si se pierde una). *Aceptada por Albert (P117).* Medir: `MEDIR_REPUTACION=1 npx vitest run src/engine/medir-reputacion.informe.test.ts` (con `MEDIR_REPUTACION_MODOS=normal` o `larga`).
 
 *Pruebas:* fuente.test («la reputación se lleva con fichas de reputación; ya no hay marcador»: Componentes, Preparación, la entrada Reputación y su línea en el índice).
 
 ### La regata de San Juan termina con 8 fichas de Rival (decisión de Albert, 24 de octubre)
 
+*Completada por P119 (ver «Respuestas de Albert (P117–P119)»): el texto de la carta cambia y la regata también se aparta si te retiras o no la superas por otro motivo.*
+
 - **Texto nuevo de la carta 276**, segunda regla: «**Obligado:** Con 8 fichas de Rival, el rival gana la regata: la misión termina sin superarse. Apártala.» La primera regla no cambia. Cabe sin ajustar nada: sus reglas quedan a 13,6 px (la 259, «La ruta de los alisios», con tres reglas, está en el mínimo, 10,8).
 - **Cómo se juega, igual que en la 259:** la misión termina en el momento de revelar el Peligro que pone la octava ficha, sin resolverlo, y no se pregunta si la dejas disponible: la carta se aparta (sale de la partida; es una Aventura del mazo de Misiones, no vuelve al mazo de historia). No se gana nada: ni reputación ni el Tesoro 148, «Gallardete de San Juan». Fuera la lectura anterior («al superarla, 1 de reputación en lugar de su recompensa»).
 - *Ejemplo:* zarpas a la regata, que pide 6 de Avance. Revelas «Mar en calma» (2 de Avance) y después dos «Chubasco» cuyas Pruebas de NAV fallas (1 de Avance cada uno): tienes 4 de Avance y 6 fichas de Rival. Al revelar el cuarto Peligro, «Navío a la deriva», pones la octava ficha: el rival gana la regata. La misión termina sin resolver «Navío a la deriva», pierdes el Avance, apartas la carta y no ganas nada. Si te hubieras retirado antes de revelarlo, tampoco ganarías nada, pero podrías dejar la regata disponible para otro turno.
-- **Si te retiras antes** (o el Barco se hunde), la regla de siempre: no la superas y eliges si la dejas disponible o la pones al fondo del mazo de Misiones.
+- **Si te retiras antes** (o el Barco se hunde), la regla de siempre: no la superas y eliges si la dejas disponible o la pones al fondo del mazo de Misiones. *Sustituido por P119:* si no la superas por cualquier motivo, se aparta.
 - **Motor:** la regla mira «8 o más» (una partida guardada con la regla anterior que ya pasara de 8 termina con la siguiente ficha). Fuera del motor la regla «en lugar de su recompensa» (ya no la usa ninguna carta). El registro dice «El rival gana la regata con 8 fichas de Rival: la misión termina sin superarse.» y el panel del final de misión, «La misión termina» (también en la 259, que antes decía «La misión falla»).
-- **Jugador automático:** con 6 fichas de Rival y Avance por reunir, se retira de la regata. Seguir no le daría nada (el Peligro siguiente la termina) y retirándose tampoco gana nada, pero la regata sigue disponible para otro turno. En la 259 no cambia nada: retirarse o llegar a 8 da lo mismo (se aparta y llega el capítulo II-b).
+- **Jugador automático:** con 6 fichas de Rival y Avance por reunir, se retira de la regata (*ya no, desde P119*: retirarse también la aparta). Seguir no le daría nada (el Peligro siguiente la termina) y retirándose tampoco gana nada, pero la regata sigue disponible para otro turno. En la 259 no cambia nada: retirarse o llegar a 8 da lo mismo (se aparta y llega el capítulo II-b).
 - **Mesa:** la ayuda del contador de Rival explica las dos misiones con la regla nueva.
 - **Reglamento:** no cita la regata (la entrada «Contadores» solo nombra el Rival): no cambia.
 - *Pruebas:* fase15-misiones.test: «con 8 fichas de Rival, el rival gana la regata…» (con 6 fichas, revelar un Peligro pone la octava, la misión termina sin resolverlo, no se gana nada y la carta queda apartada) y «si te retiras de la regata…».
@@ -1635,3 +1637,34 @@ Albert acepta la propuesta de la medición anterior: **12 fichas de herida, 12 d
 | Regatas que gana el rival | 39 (superadas con 8 o más: solo 1 de reputación) | 43 (termina la misión y se aparta) | 6 |
 
 La regata es más dura (el rival ya no deja 1 de reputación de consuelo y la carta se pierde), pero el cambio en las victorias es del tamaño del azar: no baja la dificultad. Con el jugador que se retira a tiempo, la regata se intenta más veces (333 zarpes, 128 retiradas) y se gana más a menudo, porque no se pierde la carta.
+
+### Respuestas de Albert (P117–P119, 24 de octubre)
+
+- **P117 · 20 fichas de reputación en la caja** (decisión de Albert). Con 19 basta para la partida larga, la que más llega a tener (la meta − 1 + 4, la mayor ganancia de una vez); la 20 es de margen, por si se pierde una.
+- **P118 · Las cantidades van en Componentes.** La lista de fichas dice cuántas hay de cada clase, una por línea: 12 fichas de herida, 12 de daño, 12 de Avance, 6 de Entrenamiento (+1), 20 genéricas (contadores y Enrolado) y 20 de reputación. La frase de la caja dice ahora «además de 82 fichas» (la suma). Va una clase por línea porque «12 de Avance» el libro lo convierte en el icono del mapa (como «2 de Avance» en las reglas), y en una lista de componentes no toca. Componentes sigue cabiendo: la lista queda en la página 6 de «Aprende a jugar», con aire, y los libros siguen en 40 y 44 páginas; `npm run comprobar:reglamento`, sin problemas.
+- **P119 · La regata de San Juan (276): fuera el hueco de retirarse antes de la octava ficha**, con la misma fórmula que «La ruta de los alisios» (259). Su segunda regla pasa a ser: «**Obligado:** Con 8 fichas de Rival, el rival gana la regata y la misión termina. Si no la superas, apártala.» Cabe sin ajustar nada: sus reglas se quedan a 13,6 px, igual que antes.
+  - **Si no la superas por cualquier motivo** (llega la octava ficha, te retiras, la misión falla o se hunde el Barco), la regata se aparta: sale de la partida y no se pregunta si la dejas disponible. No se gana nada: ni reputación ni el Tesoro 148. Con la octava ficha, la misión sigue terminando en el momento de revelar ese Peligro, sin resolverlo.
+  - *Ejemplo:* zarpas a la regata (Mar 6). Revelas «Mar en calma» (2 de Avance, 2 fichas de Rival) y un «Chubasco» cuya Prueba de NAV fallas (1 de Avance, 4 fichas de Rival). El Barco ya lleva 4 daños y te retiras para no hundirlo: pierdes el Avance, apartas la regata y no ganas nada. Antes de P119 podías dejarla disponible y volver otro turno con el Rival a 0.
+  - **Motor:** la regata usa la misma regla que la 259 («apártala si no la superas»), en lugar de apartarla solo con la octava ficha.
+  - **Jugador automático:** ya no se retira de la regata por las fichas de Rival. Con 6, el Peligro siguiente la termina igual, y retirarse también la aparta: da lo mismo. Se retira solo por lo de cualquier misión: el Barco a punto de hundirse, el Capitán con 1 de Vida o sin fuerzas.
+  - **Mesa:** en la regata y en «La ruta de los alisios», la ayuda de después de cada encuentro y el botón «Retirarte a puerto» dicen «pierdes el Avance y la misión se aparta». La ayuda del contador de Rival lo explica para las dos.
+  - *Pruebas:* fase15-misiones.test («si te retiras de la regata antes de la octava ficha, también se aparta…» y «si el Barco se hunde en la regata, tampoco la superas: se aparta»; la de la octava ficha no cambia), fuente.test (las cantidades de Componentes suman lo que dice la frase de la caja) y decisiones.test de la mesa (la ayuda de retirarse).
+
+**Equilibrio** (1000 partidas normales, semillas 1–1000, mazos de inicio; la regata llega a estar disponible en el 21,3 % de las partidas). `MEDIR_F15=1 npx vitest run src/engine/medir-fase15.informe.test.ts`.
+
+| | Antes (regla de la fase 16) | P119 con el jugador de antes (se retira con 6 de Rival) | P119 con el jugador revisado |
+| --- | --- | --- | --- |
+| Victorias | 45,6 % | 44,6 % | 44,7 % |
+| Panamá | 1,2 % | 1,1 % | 1,1 % |
+| Con mazos de muelle variados (2000 partidas) | 43,6 % | — | 43,9 % |
+| Derrotas por tiempo / por el Capitán | 68,6 % / 31,4 % | — | 68,9 % / 31,1 % |
+| Zarpes a la regata | 333 | 206 | 206 |
+| Regatas ganadas (2 de reputación y el Gallardete) | 193 | 133 | 133 |
+| Terminan sin superarse: gana el rival | 6 | 4 | 38 |
+| Terminan sin superarse: te retiras | 128 | 67 | 33 |
+| Terminan sin superarse: se hunde el Barco | 5 | 1 | 1 |
+| Regatas apartadas | 6 | 72 | 72 |
+
+- **Antes**, retirarse dejaba la regata disponible: el jugador se retiraba con 6 de Rival (128 retiradas), volvía con el Rival a 0 y acababa ganándola en el 91 % de las partidas en que salía (193 de 213). **Ahora** solo hay un intento: se gana en el 62 % (133) y en el 34 % (72) se aparta.
+- **Gana el rival o te retiras da lo mismo:** con el jugador de antes y el revisado salen las mismas regatas ganadas y apartadas; solo cambia cuántas terminan por la octava ficha (38) en lugar de por retirarse (34 de las 67).
+- **Victorias:** con los mazos de inicio, de 45,6 % a 44,7 % (9 partidas de 1000 menos); con mazos de muelle variados, de 43,6 % a 43,9 % (hacia arriba). En conjunto, del tamaño del azar: la regata solo sale en una de cada cinco partidas. La regata en sí es más dura (60 regatas ganadas menos en 1000 partidas, y cada una da 2 de reputación y +1 Mando), así que no baja la dificultad. Panamá sigue muy por debajo del 10 % (1,1 %).

@@ -712,10 +712,33 @@ describe('276 · La regata de San Juan y el Tesoro 148 «Gallardete de San Juan�
     expect(j.copia('regata-I').avance).toBe(0)
   })
 
-  it('si te retiras de la regata (sin 8 fichas de Rival), eliges como siempre si la dejas disponible', () => {
+  it('P119: si te retiras de la regata antes de la octava ficha, también se aparta (no se pregunta si la dejas disponible) y no ganas nada', () => {
+    // «Si no la superas, apártala.» Con 2 fichas de Rival y 2 de Avance («Mar en calma»), el jugador se retira.
     const j = enPuerto({ misiones: ['regata-I'], mazoPeligros: ['calma', 'calma', 'calma', 'calma'] })
-    j.zarpar('regata-I').retirarse()
-    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'conservarMision' } })
+    j.zarpar('regata-I')
+    expect(fichas(j, 'rival')).toBe(2)
+    j.retirarse()
+    expect(j.decision).not.toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'conservarMision' } })
+    expect(j.registro).toContain('Te retiras de «La regata de San Juan».')
+    expect(j.registro).toContain('«La regata de San Juan» se aparta: sale de la partida.')
+    expect(j.estado.mision).toBeNull()
+    expect(j.zona('fueraDeJuego')).toContain('regata-I')
+    expect(disponibles(j)).not.toContain('regata-I')
+    expect(j.estado.reputacion).toBe(0)
+    expect(j.zona('mazoHistoria')).toContain('gallardete')
+  })
+
+  it('P119: si el Barco se hunde en la regata, tampoco la superas: se aparta', () => {
+    // «La leyenda» (el Kraken), Prueba de COM fallada con 3 daños: el Barco se hunde y la misión no se supera.
+    const j = enPuerto({ misiones: ['regata-I'], barco: { dano: 3 }, mazoPeligros: ['leyenda', 'calma', 'calma', 'calma'] })
+    j.zarpar('regata-I')
+    j.comprometer('COM', []).seguir()
+    for (let i = 0; i < 10 && j.estado.mision; i++) j.seguir()
+    expect(j.estado.mision).toBeNull()
+    expect(j.registro).toContain('¡El Barco se hunde!')
+    expect(j.zona('fueraDeJuego')).toContain('regata-I')
+    expect(disponibles(j)).not.toContain('regata-I')
+    expect(j.zona('mazoHistoria')).toContain('gallardete')
   })
 })
 

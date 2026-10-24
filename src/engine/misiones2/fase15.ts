@@ -252,18 +252,20 @@ registrarMision('isla-II-falso', {
 const FICHA_RIVAL = (nota: string) => ({ ficha: 'rival' as const, nombre: 'Rival', umbral: 8, inicial: 0, nota })
 const reglasDeRival = (): CapacidadDeCarta[] => [alRevelarPeligro('rival', () => [ponerFichas('rival', 2)]), ...avanceAdicional('ceñir', 'NAV', 'Ceñís el viento')]
 
-// La regata de San Juan (276). «Obligado: Con 8 fichas de Rival, el rival gana la regata: la misión termina sin superarse.
-// Apártala.» (Fase 16, decisión de Albert, como «La ruta de los alisios»): termina en el momento de revelar el Peligro que
-// pone la octava ficha, sin resolverlo; no se pregunta si la dejas disponible (sale de la partida) y no se gana nada, ni
-// reputación ni el Gallardete. Mira «8 o más» y no solo el paso a 8: una partida guardada con la regla anterior (la regata
-// seguía con 8 o más) termina en cuanto se pone la siguiente ficha.
+// La regata de San Juan (276). «Obligado: Con 8 fichas de Rival, el rival gana la regata y la misión termina. Si no la
+// superas, apártala.» (Fase 16, decisiones de Albert, como «La ruta de los alisios»): termina en el momento de revelar el
+// Peligro que pone la octava ficha, sin resolverlo. P119: si no la superas por cualquier motivo (la octava ficha, te
+// retiras, la misión falla o se hunde el Barco), se aparta: sale de la partida, sin preguntar si la dejas disponible, y no
+// se gana nada. Mira «8 o más» y no solo el paso a 8: una partida guardada con la regla anterior (la regata seguía con 8
+// o más) termina en cuanto se pone la siguiente ficha.
 registrarMision('regata-I', {
-  fichas: [FICHA_RIVAL('Con 8, el rival gana la regata: la misión termina sin superarse y se aparta.')],
+  fichas: [FICHA_RIVAL('Con 8, el rival gana la regata y la misión termina. Si no la superas, se aparta.')],
   capacidades: reglasDeRival(),
   alCambiarFichas: (s, _f, _antes, ahora) => {
-    if (ahora >= 8 && terminaLaMision(s, 'el rival gana la regata con 8 fichas de Rival') && s.mision) s.mision.destinoForzado = 'fuera'
+    if (ahora >= 8) terminaLaMision(s, 'el rival gana la regata con 8 fichas de Rival')
     return []
   },
+  apartarSiNoSuperas: true,
 })
 
 // La carrera de van Hoorn · I «La ruta de los alisios» (259). Acción: Destina 3 NAV: quita 2 fichas de Rival (una vez

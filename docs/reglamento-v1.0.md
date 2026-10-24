@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 333 cartas, que se dividen en cartas del jugador, cartas del escenario El Caribe y cartas de Estado y de Ventaja, además de fichas.
+La Caja básica de Sea Scoundrels contiene 333 cartas, que se dividen en cartas del jugador, cartas del escenario El Caribe y cartas de Estado y de Ventaja, además de 82 fichas.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -116,10 +116,12 @@ Las cartas de Peligro, las de los mazos propios, los barcos rivales y las de pue
 
 **Fichas**
 
-- Fichas de herida, de daño y de Avance.
-- Fichas de Entrenamiento (+1).
-- Fichas genéricas, todas iguales, para los contadores y para Enrolado.
-- Fichas de reputación.
+- 12 fichas de herida.
+- 12 fichas de daño.
+- 12 fichas de Avance.
+- 6 fichas de Entrenamiento (+1).
+- 20 fichas genéricas, todas iguales, para los contadores y para Enrolado.
+- 20 fichas de reputación.
 
 > [!consejo]
 > Si te faltan fichas, puedes llevar cualquier cuenta con un dado sobre la carta.
