@@ -199,6 +199,30 @@ describe('Virar y dar la cara (revisión de Albert)', () => {
     expect(j.ofreceCapacidad('bronce.disparar')).toBe(true)
   })
 
+  it('P122: la Prueba pasa a ser de COM a todos los efectos: suman los modificadores de COM (Bandera negra) y ya no los de NAV (Desarbolado)', () => {
+    // El ejemplo de P122: Bandera negra («[mar]: Tus Pruebas de COM reciben +1») y el Barco Desarbolado («[mar]: Tus
+    // Pruebas de NAV reciben −1»). Se vira «Turbonada a popa» (NAV 4) agotando la Culebrina de proa.
+    const mesa = () =>
+      Jugador.enMision({
+        misiones: ['pruebas-mar5'],
+        mazoPeligros: ['p2_turbonada', 'calma', 'calma', 'calma'],
+        tripulacion: ['bucanero'],
+        mano: ['virar'],
+        barco: { mejoras: ['culebrina', 'bandera'], estados: ['velasRotas'] },
+      })
+    const j = mesa()
+    j.usar('virar.jugar')
+    if (j.decision.tipo === 'elegirCartas') j.elegir('culebrina')
+    j.comprometer('COM', ['capitan'])
+    // Diego COM 3 + 1 de la Bandera negra; el −1 de Desarbolado (NAV) ya no resta, ni el +1 del Barco (NAV) suma.
+    expect(totalSinDestinoPrueba(j.estado)).toBe(4)
+    expect(j.estado.prueba?.dificultadBase).toBe(4)
+    // Sin virar, la misma Prueba de NAV: Diego NAV 2 + 1 del Barco − 1 de Desarbolado; la Bandera no suma.
+    const k = mesa()
+    k.pasarOfertas().comprometer('NAV', ['capitan'])
+    expect(totalSinDestinoPrueba(k.estado)).toBe(2)
+  })
+
   it('solo en el Mar, con un Cañón preparado y si el encuentro tiene Prueba de NAV', () => {
     expect(turbonada({ mejoras: [] }).ofreceCapacidad('virar.jugar')).toBe(false)
     expect(turbonada({ mejoras: [{ id: 'culebrina', agotada: true } as unknown as CartaId] }).ofreceCapacidad('virar.jugar')).toBe(false)

@@ -17,7 +17,7 @@ describe('Construir tu mazo', () => {
     // Práctico del puerto salió de la caja, en la quinta ronda de la fase 15).
     const m = { ...predefinidos(), mazoDeMuelle: [...DATOS.mazosPredefinidos.mazoDeMuelle] }
     expect(m.mazoDeMuelle).toHaveLength(MUELLE_TEMPORAL_FASE14)
-    // TODO(regla): revisión de Albert, por defecto: 39 (sin «Cortar por lo sano», cuyo hueco no se rellena) hasta rehacer los mazos.
+    // P120 (Albert): 39 (sin «Cortar por lo sano», cuyo hueco no se rellena) hasta rehacer los mazos de inicio.
     expect(m.mazoDelCapitan).toHaveLength(39)
     expect(erroresDeMazos(m, { muelleMaximo: MUELLE_TEMPORAL_FASE14 })).toEqual([])
     // Sin la excepción, 25 cartas no valen: la regla sigue siendo de 15 a 20.

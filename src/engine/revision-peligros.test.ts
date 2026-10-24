@@ -80,7 +80,7 @@ describe('Abordaje pasa a la Prueba (como Sin ayuda y Descomunal)', () => {
 })
 
 describe('Norma de estilo: primero el efecto y, entre paréntesis, lo temático; «A tu elección» pasa a «Elige:»', () => {
-  it('ningún texto usa ya la fórmula «A tu elección:» (quedan «una Mejora a tu elección» y «un Tripulante a tu elección», que no son una elección entre efectos)', () => {
+  it('ningún texto usa ya la fórmula «A tu elección:» (P128: tampoco dentro de una frase; ver solo-encuentros.test)', () => {
     expect(textosDeLaCaja().filter((t) => /a tu elección:/i.test(t))).toEqual([])
   })
 

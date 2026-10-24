@@ -1686,7 +1686,7 @@ La regata es más dura (el rival ya no deja 1 de reputación de consuelo y la ca
 
 ### Cartas eliminadas (decisión de Albert)
 
-**43 Botín escondido, 65 Retirada a tiempo y 170 Cortar por lo sano** salen de la caja y de la galería; sus números quedan libres. N16 («Retirada a tiempo») queda sin uso. **Mazo del capitán de inicio** (P120, opciones por defecto pendientes de confirmar): la 240 «Arenga del capitán» en lugar del Botín, la segunda copia de 53 «Reflejos de gato» en lugar de la Retirada, y el hueco de Cortar sin rellenar: **39 cartas** (legal: de 30 a 40) hasta que se rehagan los mazos de inicio. Marcado con `TODO(regla)` en las pruebas de los mazos.
+**43 Botín escondido, 65 Retirada a tiempo y 170 Cortar por lo sano** salen de la caja y de la galería; sus números quedan libres. N16 («Retirada a tiempo») queda sin uso. **Mazo del capitán de inicio** (P120, confirmado por Albert): la 240 «Arenga del capitán» en lugar del Botín, la segunda copia de 53 «Reflejos de gato» en lugar de la Retirada, y el hueco de Cortar sin rellenar: **39 cartas** (legal: de 30 a 40) hasta que se rehagan los mazos de inicio. Marcado con `TODO(regla)` en las pruebas de los mazos.
 
 **Permanentes sin «Cortar por lo sano»:** ninguna se queda para siempre. Todas tienen su propia salida en su texto (una Acción, su contador o «descarta esta carta») y vuelven al mazo de historia al terminar la misión, salvo **Mala fama (136)**, que sigue en juego entre misiones y sale con su Acción («Descarta 2 cartas de tu mano»), y las tres de misión (El prisionero, Galeón San Telmo, Murallas de Port Royal), que se van con su misión.
 
@@ -1753,7 +1753,7 @@ Un solo tamaño para todo el texto de reglas de las cartas de jugador, **18 px**
 
 *Pruebas:* cartas-eventos.test (47, 48, 49, 53, 58, 60 en Ciudad y en el Mar, y que 43, 65 y 170 ya no existen), cartas-jugador2.test (¡Nadie se queda atrás! con el ejemplo del reglamento, sin COM suficiente y contra cualquier efecto; Virar con el ejemplo de Albert, solo en el Mar, con _Cañón_ y con Prueba de NAV, y que ya no toca Persigue), escenario.test (Marineros sin barco con uno, dos o ningún Tripulante; Carpinteros), fase15-misiones.test (el diario), misiones2.test (Saqueo y recompensa del gobernador; ¡La guardia! sale con sus Acciones), peligros2-grupoE.test (Fuegos fatuos roba 1), peligros2-grupoC.test (las campanas y ¡Nadie se queda atrás!), guardado.test (cartas eliminadas, nombres nuevos, partida a mitad de buscar), decisiones.test de la mesa (la ayuda de retirarse) y libro/componentes.test (Componentes cuadra con los datos).
 
-### Preguntas para Albert (P120–P126), con la opción por defecto aplicada
+### Preguntas para Albert (P120–P126), con la opción por defecto aplicada (cerradas: ver «Respuestas de Albert P120–P131» al final)
 
 - **P120 · Mazo del capitán de inicio.** Por defecto: Arenga en lugar del Botín, segunda Reflejos en lugar de la Retirada y 39 cartas (el hueco de Cortar sin rellenar) hasta rehacer los mazos de inicio.
 - **P121 · La regla de la Interrupción que pide una Prueba con otra a medias** (ninguna carta la usa ya). Por defecto se queda en los dos libros sin nombrar cartas. Propuesta: quitarla de «Aprende a jugar» y dejar una línea en la Referencia («Prueba de una Acción») para cartas futuras. *Ejemplo:* una carta futura «Sacarlo a rastras» («Interrupción: Cuando un Tripulante vaya a ser descartado, haz una Prueba de COM 3; si la superas, no se descarta»): la Prueba de «Leva forzosa» queda en suspenso, se hace la nueva con su Destino y después se termina la leva. La otra opción: borrarla y decir «ninguna Prueba empieza durante otra».
@@ -1781,7 +1781,7 @@ Un solo tamaño para todo el texto de reglas de las cartas de jugador, **18 px**
 - **157 Bruma en la selva:** texto y Éxito nuevos (lo mismo: 2 Destinos, +1 Avance).
 - **158:** el encuentro de Mar se llama «**Varados en la arena**». *Lectura:* la permanente 226 que pone también se llama así (en la caja, cada permanente se llama como el encuentro que la pone, y una prueba lo exige). **Casco en seco**, Éxito: texto nuevo (lo mismo).
 - **160:** el encuentro de Mar se llama «**Fuego en la Santa Bárbara**», con «**Anegar la Santa Bárbara:** agota todos tus _Cañones_.» o «**Atacar el fuego:** [NAV] 4. Antes de asignar, puedes agotar _Cañones_: −1 de dificultad por cada uno.» (antes, +1 si tenías alguno preparado). En el motor, al elegir se dice cuántos _Cañones_ agotas (solo se ofrecen los que tienes preparados).
-- **161:** el encuentro de Mar se llama «**Casco carcomido por la broma**»: X = 1 + el Espacio que ocupan tus Mejoras de barco; _Carpintero_ asignado −2 (antes, 2 + número de Mejoras, mín. 3 y máx. 5). **Sin mínimo ni máximo, por defecto (P130):** sin Mejoras, X = 1; con 6 de Espacio, X = 7. Fallo con **Anegado**. El de Naturaleza se llama «**Puente desatendido**»: +1 por cada Tripulante asignado (antes, después del primero); Éxito: {+1 avance} por cada Tripulante asignado (antes, +1 si asignabas a uno solo). **Muelle carcomido**, Éxito con texto nuevo y Fallo: «Descarta 2 cartas al azar.» (antes, la de mayor coste).
+- **161:** el encuentro de Mar se llama «**Casco carcomido por la broma**»: X = 1 + el Espacio que ocupan tus Mejoras de barco; _Carpintero_ asignado −2 (antes, 2 + número de Mejoras, mín. 3 y máx. 5). **Sin mínimo ni máximo, por defecto (P130; Albert lo cambió después a mínimo 3, sin máximo):** sin Mejoras, X = 1; con 6 de Espacio, X = 7. Fallo con **Anegado**. El de Naturaleza se llama «**Puente desatendido**»: +1 por cada Tripulante asignado (antes, después del primero); Éxito: {+1 avance} por cada Tripulante asignado (antes, +1 si asignabas a uno solo). **Muelle carcomido**, Éxito con texto nuevo y Fallo: «Descarta 2 cartas al azar.» (antes, la de mayor coste).
 - **162 Turbonada a popa:** texto nuevo; Éxito: {+1 avance} (fuera «Pon esta carta al fondo del mazo de Peligros»); Fallo: Daña 1 y el Barco queda **Desarbolado**. **Rayos en la sierra:** [EXP] 2 (antes 3); +1 de dificultad por cada Tripulante herido (máx. +2), al pie de la letra: cuenta toda la tripulación, no solo los asignados, en el momento de resolver (antes, los agotados al revelarla). **La riada:** Avance 2 / 1 (antes 3 / 1).
 - **Caben todas.** El reglamento recoge los cambios (el ejemplo de juego completo, en el que la Turbonada iba al fondo del mazo, se ha rehecho; su prueba también).
 
@@ -1829,10 +1829,69 @@ Un solo tamaño para todo el texto de reglas de las cartas de jugador, **18 px**
 
 *Pruebas:* peligros2-grupoA.test (el Mercante con la Cruz y el redondeo, Otea 2, el fuego con 0 y 2 _Cañones_ y la dificultad según los que agotas, la X de la broma con 0, 4 y 6 de Espacio y la Bandera, el Puente con uno y dos asignados y su Avance, el Muelle al azar, la Turbonada sin ir al fondo y los Rayos con 0, 1 y 3 heridos), revision-peligros.test (nada dice «redondeando»; los 9 Abordajes con su etiqueta, su recordatorio y su Fallo, y que el motor los sigue tratando igual; ninguna fórmula «A tu elección:»; los cuatro textos de Albert; Bestia; los nombres y Avances nuevos), estados-cartas.test (los nombres nuevos, ningún «queda con» de Estado y el registro), guardado.test (Estados con nombre antiguo), ejemplos.test (el turno completo del reglamento, con la Turbonada que ya no va al fondo) y permanentes.test.
 
-### Preguntas para Albert (P127–P130), con la opción por defecto aplicada
+### Preguntas para Albert (P127–P131), con la opción por defecto aplicada (cerradas: ver «Respuestas de Albert P120–P131» justo debajo)
 
 - **P127 · El recordatorio de Abordaje con «inflige».** Lo escribiste «si fallas, sufres 1 herida por cada punto que te falte», pero la norma de las heridas de hoy es «Inflige» siempre. Por defecto: «**Abordaje** (no puedes usar las capacidades de tus _Cañones_; si fallas, inflige 1 herida por cada punto que te falte).» La otra opción: tu texto tal cual (con «sufres»).
 - **P128 · Lo que queda con «a tu elección» o con lo temático delante.** 190 El Santo Oficio: «**Incautado:** una Mejora a tu elección va debajo…» → propuesta «una Mejora que elijas». 209 Presa fácil: «Puedes colarte en su casa: recupera a la mano 2 cartas de tu descarte (lo que te vendió caro). Si lo haces, un Tripulante a tu elección queda **Buscado** (alguien os vio salir por la ventana).» → propuesta «Puedes recuperar a la mano 2 cartas de tu descarte (os coláis en su casa y os lleváis lo que te vendió caro). Si lo haces, un Tripulante que elijas queda **Buscado** (alguien os vio salir por la ventana).» Por defecto, sin cambiar hasta que digas.
 - **P129 · «Por cada 2» con un número impar.** «Fango del estuario» (182): «+1 por cada 2 Mejoras de barco (máx. 5)». Por defecto se cuentan parejas enteras (no es redondear). *Ejemplo:* con una sola Mejora de barco (la Vela mayor), NAV 4; con dos, NAV 5 (el máximo). La otra opción, con la regla nueva: con una sola, +1 (NAV 5).
 - **P130 · Casco carcomido por la broma, sin mínimo ni máximo** (por defecto, como lo escribiste). *Ejemplo:* al empezar, sin Mejoras de barco, la X es 1; con el Casco, el Bronce y la Chalupa (6 de Espacio), 7. Antes iba de 3 a 5. Es lo que más suaviza esta revisión (ver el equilibrio).
 - **P131 · El redondeo en «Aprende a jugar»:** por defecto va como una frase en el párrafo de pagar costes (no cuesta páginas). La otra opción: como sexta regla de oro, que añade 2 páginas al libro (de 40 a 42).
+
+## Respuestas de Albert P120–P131 y regla general: solo los encuentros piden Pruebas (24 de octubre de 2026)
+
+### Regla general nueva (Albert; sustituye a P121)
+
+**Solo los encuentros piden Pruebas:** los de las cartas de Peligro, los de los mazos propios y los de los barcos rivales. Cuando cualquier otra carta necesita una habilidad, usa **Destina** (un coste: agotas Tripulantes preparados que sumen ese valor o más; no se revela Destino ni se añaden cartas de la mano).
+
+- **Reglamento:** en «Aprende a jugar», un párrafo nuevo al final de «Resolver una Prueba» («**Solo los encuentros piden Pruebas** —…») con el ejemplo de «¡Nadie se queda atrás!» (destinar a mitad de «Leva forzosa»), que antes estaba en «Pruebas que nacen de una Acción», y una frase en el punto de Destina de «Capacidades de las cartas». En la Referencia, las entradas **Prueba** (al principio) y **Destina**.
+- **Fuera la regla de la Interrupción que pide una Prueba con otra a medias**, de los dos libros (el párrafo de «Aprende a jugar» y el punto de «Prueba de una Acción» en la Referencia). El motor la sigue sabiendo hacer, pero ninguna carta la usa.
+- **Ninguna carta de jugador pide ya una Prueba** (comprobado y con prueba: ninguna dice «Prueba de [habilidad] N», «haz una Prueba» ni «supera una Prueba de»). Las que hablan de Pruebas reaccionan a la del encuentro («Después de que superes una Prueba…», «recibe +2 COM en esta Prueba»).
+- **Pendiente de esta regla (Albert las pasará a Destina cuando revise el mazo de historia):** seis permanentes tienen todavía una Acción con Prueba y no se han tocado: **220 ¡La guardia!**, **229 Ojos amarillos en la espesura**, **230 Campanas a rebato**, **231 La cadena de la bocana**, **235 La lechuza canta tres veces** y **237 Fuego de cobertura**. Marcadas con `TODO(regla)` en el motor. La entrada Prueba dice que «cambiarán a Destina» y remite a «Prueba de una Acción», que las nombra y sigue explicando cómo se resuelve esa Prueba mientras tanto (sin Avance propio y nunca durante otra Prueba). En «Aprende a jugar», «Pruebas que nacen de una Acción» queda en un párrafo corto, sin el ejemplo de «La cadena de la bocana» (con el ejemplo, el capítulo «Las misiones» se pasaba unas líneas y el libro crecía 2 páginas; la Referencia conserva el ejemplo de «¡La guardia!»).
+
+### Respuestas de Albert (cerradas, sin `TODO(regla)`)
+
+- **P120 · Mazo del capitán de inicio:** sí. La Arenga en lugar del Botín, la segunda «Reflejos de gato» en lugar de la Retirada y 39 cartas hasta rehacer los mazos de inicio.
+- **P122 · Virar y dar la cara:** sí. La Prueba pasa a ser de COM a todos los efectos: se aplican los modificadores de COM (Bandera negra) y ya no los de NAV (Desarbolado, ni el +1 de NAV del Barco). Era lo que ya hacía el motor. *Prueba (el ejemplo de Albert):* con la Bandera negra y el Barco Desarbolado se vira «Turbonada a popa» (NAV 4) y Diego solo suma COM 3 + 1 de la Bandera = 4; sin virar, NAV 2 + 1 del Barco − 1 de Desarbolado = 2.
+- **P123 · Carpinteros de ribera (106): solo la primera.** Texto: «**Elige:** repara {2 dano g}, o la primera Mejora de barco que adquieras este turno cuesta 1 menos.» El descuento se gasta con la primera Mejora de barco que adquieras ese turno, también si la adquieres sin coste o pagando la mitad (como el de Catalina, N19); una Mejora de tripulante no lo gasta. *Prueba (el ejemplo):* con la Vela mayor (1) y el Casco reforzado (2) en el muelle, pagas 0 y 2.
+- **P124 · Soborno contra Alerta:** sigue sin valer (como estaba).
+- **P125 · Cartas que no caben a 18 px:** todas las cartas de jugador llevan ya 18 px; fuera la letra provisional.
+  - **009 Filibustero borracho y 245 Galeote fugado:** «para esta Prueba» pasa a «en esta Prueba». El Galeote cabía; **el Filibustero sigue sin caber por 1 px** (ver P132).
+  - **244 Carne de cañón:** no hay un texto «un poco más corto» que quepa sin cambiar lo que hace. Le sobra 1 px porque una línea con icono es 2 px más alta que una sin icono: con tres líneas y dos de ellas con icono, no cabe; acortar unas palabras no le quita ninguna línea (le haría falta bajar a dos, y el «Límite de una vez por turno» ocupa casi una entera). Lo que sí cabe es poner los dos iconos en la misma línea (ver P132). Por defecto, la ilustración baja 4 px.
+  - **011 Isabela, 018 Viejo lobo de mar y 168 Fiador de la Hermandad:** la ilustración baja 26 px (lo que necesitaba el Fiador, 23,6, con un poco de margen; los tres igual para que se vean iguales en la mesa) y la caja de texto sube lo mismo, sin tocar el texto. **100 Marineros sin barco** (Escenario, a su letra de 17 px, ya no apretada): 16 px. Comprobado con capturas: los nombres, las pestañas, la cinta del tipo y la Vida siguen en su sitio.
+  - **Mejoras de una sola cifra** (021, 023, 035, 036, 042): se quedan con la cifra grande.
+  - **Barco (003):** «Distancia −1.» ya no se parte: si no cabe, baja entera a la línea siguiente.
+- **P126 · Pasajeros 221 y 222:** «Viaja contigo, pero no es un Tripulante: no puede ser asignado, y no se le pueden infligir heridas ni poner Estados ni Ventajas.» Lo que hacen no cambia. También la ayuda de la mesa (glosario).
+- **P127 · Recordatorio de Abordaje:** con «inflige», como estaba.
+- **P128:** 190 El Santo Oficio, «una Mejora que elijas»; 209 Presa fácil, «Puedes recuperar a la mano 2 cartas de tu descarte (os coláis en su casa y os lleváis lo que te vendió caro). Si lo haces, un Tripulante que elijas queda **Buscado** (alguien os vio salir por la ventana).» Ya no queda ningún «a tu elección» en la caja; el ejemplo de Incautado del reglamento también dice «una Mejora que elijas».
+- **P129 · Fango del estuario con 1 Mejora de barco:** +0 (parejas enteras; no hay redondeo), como estaba. *Prueba:* con 0 y 1 Mejoras, NAV 4; con 2 y 3, NAV 5.
+- **P130 · Casco carcomido por la broma, con mínimo 3:** nota de la Prueba «X = 1 + el Espacio que ocupan tus Mejoras de barco (mín. 3); _Carpintero_ asignado −2.» El −2 del Carpintero va después del mínimo: sin Mejoras y con el Carpintero asignado, 3 − 2 = 1. Sin máximo: con 6 de Espacio, 7.
+- **P131 · Redondeo en «Aprende a jugar»:** una frase en el párrafo de pagar costes, como estaba.
+
+### Error de estilo: el icono de robar sin verbo
+
+La recompensa de **117 La casa del gobernador** se dibujaba «+1 [rep] y roba 2», y la de **116 El ladrón del puerto**, igual (la carta escribía el texto «y roba N» en lugar del icono). Ahora las dos: «{+1 rep} · {2 robar}», con el icono. Repaso de la caja: no queda ningún «roba {N robar}» (una prueba lo vigila). Se quedan con verbo los que roban de otra manera (105, el Destino de 188 y 286), como dice la norma.
+
+### Pruebas
+
+`solo-encuentros.test` (la regla general: solo las seis permanentes, aparte de los encuentros, piden una Prueba, en los datos y en el motor; ninguna carta de jugador; el reglamento la dice en Prueba, Destina y «Aprende a jugar» y ya no tiene la regla de la Interrupción; los textos de P125, P126 y P128; ningún «roba {N robar}»), `escenario.test` (Carpinteros: el texto, el ejemplo de Albert y que una Mejora de tripulante no gasta el descuento), `peligros2-grupoA.test` (el Casco con mínimo 3, con la Bandera, con la Vela mayor, el Carpintero después del mínimo y sin máximo), `peligros2-grupoB.test` (el Fango con 0, 1, 2 y 3 Mejoras), `cartas-jugador2.test` (Virar con la Bandera negra y Desarbolado), `vista.test` (todas a 18 px, la ilustración más baja, el Barco y la recompensa con el icono de robar) y las de los mazos (P120, sin `TODO`).
+
+### Equilibrio (1000 partidas, semillas 1–1000, mazos de inicio; las mismas semillas antes y después)
+
+| | Antes | Después |
+| --- | --- | --- |
+| Victorias | 45,6 % (452 por reputación, 4 Panamá) | 45,4 % (450 por reputación, 4 Panamá) |
+| Con mazos de muelle variados (2000 partidas) | 44,1 % | 44,1 % |
+| Derrotas por tiempo / por el Capitán | 344 / 200 | 344 / 202 |
+| Misiones retiradas por partida | 1,99 | 2,01 |
+| «La broma»: Pruebas falladas | 58,6 % | 66,4 % |
+
+- **Las victorias no cambian** (2 partidas de 1000 menos; con muelles variados, igual): del tamaño del azar. Panamá, 0,4 %, muy por debajo del 10 %.
+- **Lo único que se nota es el Casco carcomido con mínimo 3:** «La broma» se falla bastante más (de 58,6 % a 66,4 % de sus Pruebas), que es lo que se perdía al quitar el mínimo.
+- **Carpinteros de ribera solo la primera:** el jugador automático elige el descuento casi igual que antes (78,5 % de las veces, antes 79,0 %) y la carta sigue ayudando lo mismo (+2,0 puntos de victoria si sale pronto, antes +1,7: ruido).
+- La regla general no cambia ninguna carta de jugador (ya no pedían Pruebas) ni las seis permanentes (no se han tocado). Virar y P129 ya funcionaban así.
+
+### Pregunta para Albert (P132), con la opción por defecto aplicada
+
+- **P132 · Filibustero borracho (009) y Carne de cañón (244): siguen sin caber por 1 px.** Una línea con icono es 2 px más alta, y las dos cartas tienen tres líneas de reglas con dos iconos en líneas distintas. **Por defecto, la ilustración baja 4 px** en las dos (no se nota) y el texto se queda como está. La otra opción: un texto que pone los dos iconos en la misma línea, sin cambiar lo que hacen (comprobado con capturas: así caben a 18 px sin tocar la ilustración):
+  - 009: «Inflige {1 herida} a Filibustero borracho: {+2 COM} en esta Prueba. (Límite de una vez por turno.)» (como la Pistola, sin «recibe»; queda en dos líneas). Si lo quieres, el Galeote fugado (245) diría lo mismo con {+2 NAV}, por coherencia.
+  - 244: «Inflige {1 herida} a Carne de cañón: {+1 COM} a los demás Tripulantes asignados en esta Prueba. (Límite de una vez por turno.)»

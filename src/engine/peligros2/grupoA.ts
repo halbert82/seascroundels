@@ -260,11 +260,11 @@ registrarPermanente('pm_manigua', {
 // 8. La broma · Duro
 registrarPeligro('p2_broma', {
   encuentros: {
-    // EXP X (revisión de Albert de los Peligros): X = 1 + el Espacio que ocupan tus Mejoras de barco; −2 si asignas a un
-    // Carpintero. La carta lleva 3 de dificultad impresa para la X: se suma la diferencia.
-    // TODO(regla): sin mínimo ni máximo (antes, X = 2 + Mejoras, mín. 3 y máx. 5), pendiente de confirmar por Albert.
+    // EXP X (revisión de Albert de los Peligros): X = 1 + el Espacio que ocupan tus Mejoras de barco, con un mínimo de 3
+    // (P130) y sin máximo; −2 si asignas a un Carpintero (después del mínimo). La carta lleva 3 de dificultad impresa para
+    // la X: se suma la diferencia.
     mar: {
-      capacidades: [dificultad('x', (ctx) => 1 + espacioOcupado(ctx.s) - 3 - (participantesCon(ctx, 'Carpintero') > 0 ? 2 : 0))],
+      capacidades: [dificultad('x', (ctx) => Math.max(3, 1 + espacioOcupado(ctx.s)) - 3 - (participantesCon(ctx, 'Carpintero') > 0 ? 2 : 0))],
       exito: [reparar(1)],
       fallo: [{ tipo: 'si', condicion: { tipo: 'estadoBarco', estado: 'viaDeAgua' }, entonces: [dano(2)], sino: [{ tipo: 'estadoBarco', estado: 'viaDeAgua' }] }],
     },

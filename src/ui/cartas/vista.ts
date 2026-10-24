@@ -5,7 +5,7 @@ import arteJson from '../../../data/arte.json'
 import { codigoColeccion, type EntradaCatalogo } from '../../engine/catalogo.ts'
 import { dorsoDeHistoria, type DorsoHistoria } from './historia.ts'
 import type { DestinoDatos, EncuentroDatos, Entorno, Habilidad, MisionDatos } from '../../engine/datos.ts'
-import { letraJugador } from './ajustes.ts'
+import { LETRA_JUGADOR, arteCorto } from './ajustes.ts'
 import { parsearFichas, parsearTexto, type Ficha, type IconoId, type Segmento } from './marcado.ts'
 
 // ---------------------------------------------------------------------------
@@ -142,6 +142,8 @@ export interface VistaJugador {
   textoClase: '' | 'big' | 'center'
   /** Fase 16: letra de las reglas de una carta de jugador, en px (18; ver ajustes.ts). Sin ella, la de su tipo de carta. */
   letra?: number
+  /** P125: px que se acorta la ilustración para que quepa el texto (la caja de texto sube lo mismo). */
+  arteCorto?: number
   ambientacion: string
   arte?: Arte
   /**
@@ -305,7 +307,9 @@ function esCifraSola(texto: string): boolean {
 }
 
 function base(entrada: EntradaCatalogo): Omit<VistaJugador, 'nombre' | 'color' | 'tipoTexto' | 'texto' | 'ambientacion'> {
+  const corto = arteCorto(entrada.num)
   return {
+    ...(corto > 0 ? { arteCorto: corto } : {}),
     forma: 'jugador',
     num: entrada.num,
     codigo: codigoColeccion(entrada.num),
@@ -324,7 +328,7 @@ function base(entrada: EntradaCatalogo): Omit<VistaJugador, 'nombre' | 'color' |
 
 /** Base de una carta de jugador (Capitán, Barco, Tripulante, Mejoras, Evento y Habilidad): la de todas, con su letra. */
 function baseJugador(entrada: EntradaCatalogo): ReturnType<typeof base> {
-  return { ...base(entrada), letra: letraJugador(entrada.num) }
+  return { ...base(entrada), letra: LETRA_JUGADOR }
 }
 
 /** Fase 13: en las cartas de Peligro, «Daña 2» no se parte entre dos líneas. */
@@ -459,7 +463,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
           { icono: 'espacio', valor: c.espacio, color: '#6B4A2B' },
         ],
         pestanasDerTop: 96,
-        texto: parsearTexto(c.texto),
+        // P125 (Albert): «Distancia −1» no se parte (el «−1» nunca solo en la última línea), como «Daña 2» en los Peligros.
+        texto: parsearTexto(c.texto, { unirNumero: true, unirCifras: true }),
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),
       }
@@ -689,7 +694,8 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       let recompensaTexto: string | undefined
       if (r.texto) recompensaTexto = undefined
       else if (r.victoria) recompensaTexto = '¡Victoria!'
-      else if (r.draw) recompensaTexto = `y roba ${r.draw}`
+      // Norma de estilo (Albert): el icono de robar ya dice «roba», sin verbo delante: «{+1 rep} · {2 robar}».
+      else if (r.draw) recompensa.push(...(recompensa.length > 0 ? [{ texto: '·' }] : []), { texto: String(r.draw), icono: 'robar' })
       const vista: VistaCapitulo = {
         forma: 'capitulo',
         num: entrada.num,

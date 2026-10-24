@@ -243,7 +243,7 @@ El texto de juego de una carta se compone de capacidades. Cada capacidad empieza
 
 - **Sin etiqueta:** se trata de una capacidad constante, que se aplica mientras la carta esté en juego («Mar: Tus Pruebas de COM reciben +1»). En un Evento, significa que puede jugarse en cualquier momento.
 - **Un coste y dos puntos:** lo que va antes de los dos puntos es el coste, y lo que va después, el efecto. «Agotar: Repara 1 daño» significa que se agota la carta para reparar 1 daño. Si el jugador no puede pagar el coste completo, no puede usar la capacidad.
-- **Destina X [habilidad]:** es un coste. El jugador agota Tripulantes preparados cuya habilidad sume al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano.
+- **Destina X [habilidad]:** es un coste. El jugador agota Tripulantes preparados cuya habilidad sume al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano. Solo los encuentros piden Pruebas: las demás cartas, cuando necesitan una habilidad, usan Destina.
 - **Acción:** esta capacidad puede usarse en una ventana de acción, es decir, durante la Fase de Reclutamiento, después de resolver una carta de Peligro o durante una Prueba, después de revelar el Destino.
 - **Respuesta:** esta capacidad puede usarse justo después de que ocurra lo que indica («Después de que reveles un encuentro…»).
 - **Interrupción:** esta capacidad puede usarse cuando algo va a ocurrir, antes de que ocurra. Normalmente lo evita o lo modifica («Cuando el portador vaya a quedar derrotado…»).
@@ -420,6 +420,11 @@ Algunos encuentros llevan debajo de la Prueba un Rasgo y una cifra, como «Vigí
 > [!ejemplo]
 > En Ciudad, el jugador revela «Leva forzosa» (COM 4). Asigna a Diego (COM 3) y, para protegerse de un Destino desfavorable, añade «¡Al abordaje!», que tiene dos iconos de COM: suma 5. Sale el Destino de la carta «Los holandeses de Curazao»: −1, y «Inflige 1 herida a un Tripulante asignado». Diego, el único asignado, sufre la herida y el total baja a 4. Con 4 contra 4, el jugador supera la Prueba.
 
+**Solo los encuentros piden Pruebas:** los de las cartas de Peligro, los de los mazos propios y los de los barcos rivales. Cuando cualquier otra carta necesita una habilidad, usa **Destina** («destina 3 COM»): el jugador agota Tripulantes preparados cuya habilidad sume ese valor o más. Destinar es un coste, no una Prueba: no se revela Destino ni se añaden cartas de la mano. Se paga en el momento, también a mitad de una Prueba.
+
+> [!ejemplo]
+> El jugador asigna a la Vigía inexperta (Vida 1) y al Matasanos (Vida 2) a «Leva forzosa» (COM 4) y falla: «Descarta al Tripulante asignado con menos Vida», que es la Vigía. Antes de que se descarte, juega «¡Nadie se queda atrás!» («**Interrupción:** Cuando un Tripulante vaya a ser descartado por un efecto de juego, destina 3 COM para evitarlo»). Destinar no es una Prueba: no revela Destino ni añade cartas de la mano. La Vigía y el Matasanos ya están agotados, así que agota al Bucanero veterano, que se había quedado a bordo (COM 2, más 1 por Diego, que sigue preparado): suma 3 y la Vigía no se descarta. Después se sigue con «Leva forzosa»: el jugador gana su Avance de Prueba no superada.
+
 #### Palabras clave de los encuentros
 
 Los encuentros de Peligro usan algunas palabras clave que es importante conocer antes de jugar. Todas ellas tienen su entrada en la Referencia de reglas. Las que cambian la forma de resolver el encuentro (Elige, Sin ayuda, Descomunal, Abordaje, Alerta e Incautado) figuran además como etiqueta junto al tipo del encuentro.
@@ -488,18 +493,7 @@ Algunos encuentros y algunas misiones dicen «**Pon en juego la carta N del mazo
 
 #### Pruebas que nacen de una Acción
 
-Algunas capacidades de **Acción** piden hacer una Prueba: la de «La cadena de la bocana», la de «Campanas a rebato», la de «¡La guardia!»… Esta Prueba se resuelve como cualquier otra: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición. Existen dos diferencias:
-
-- No tiene Avance propio: el jugador solo gana lo que indique su texto.
-- No puede empezarse durante otra Prueba. Se hace en una ventana de acción fuera de una Prueba, es decir, en la Fase de Reclutamiento o después de resolver una carta de Peligro.
-
-Una **Interrupción** que pide una Prueba se hace en el momento en que ocurre lo que indica, aunque haya otra Prueba a medio resolver: esa Prueba queda en suspenso y, al terminar la nueva, se sigue con ella. Si lo que pide es destinar Tripulantes (Destina), no hay ninguna Prueba nueva: es un coste y se paga en el momento.
-
-> [!ejemplo]
-> El jugador asigna a la Vigía inexperta (Vida 1) y al Matasanos (Vida 2) a «Leva forzosa» (COM 4) y falla: «Descarta al Tripulante asignado con menos Vida», que es la Vigía. Antes de que se descarte, juega «¡Nadie se queda atrás!» («**Interrupción:** Cuando un Tripulante vaya a ser descartado por un efecto de juego, destina 3 COM para evitarlo»). Destinar no es una Prueba: no revela Destino ni añade cartas de la mano. La Vigía y el Matasanos ya están agotados, así que agota al Bucanero veterano, que se había quedado a bordo (COM 2, más 1 por Diego, que sigue preparado): suma 3 y la Vigía no se descarta. Después se sigue con «Leva forzosa»: el jugador gana su Avance de Prueba no superada.
-
-> [!ejemplo]
-> En el Mar, el jugador revela una carta de Peligro cuyo encuentro pone en juego la carta 231, «La cadena de la bocana»: mientras siga en juego, no puede superar la misión. Tras resolver el encuentro, usa la Acción de la cadena: «Prueba de COM 5 (4 si tienes un Carpintero preparado)». El jugador tiene preparado al Carpintero de a bordo, así que la Prueba pide 4. Asigna al Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) y añade «¡Al abordaje!»: suma 5. Sale el Destino de la carta «Arrecife» (−1): el total baja a 4 y el jugador supera la Prueba. La cadena vuelve al mazo de historia y el jugador gana 1 de Avance, como indica su texto. Si hubiera fallado la Prueba, el Barco habría sufrido 2 daños.
+Por ahora, seis permanentes del mazo de historia, como «La cadena de la bocana», todavía piden una Prueba con su **Acción**; pasarán a Destina (ver «Prueba de una Acción» en la Referencia). Esa Prueba se resuelve como cualquier otra, con su Destino, pero no tiene Avance propio y no puede empezarse durante otra Prueba: se hace en la Fase de Reclutamiento o después de resolver una carta de Peligro.
 
 #### Contadores
 
@@ -972,7 +966,7 @@ Durante la Fase de Reclutamiento, el jugador puede despedir a un Tripulante. Par
 
 ### Destina
 
-Destina es una palabra clave de coste: «**Destina X** [habilidad]: efecto». Para pagarlo, el jugador agota Tripulantes preparados cuya habilidad, sumada, sea al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano. Nunca aparece en los Peligros: un encuentro tiene una Prueba o un coste, no las dos cosas.
+Destina es una palabra clave de coste: «**Destina X** [habilidad]: efecto». Para pagarlo, el jugador agota Tripulantes preparados cuya habilidad, sumada, sea al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano. Solo los encuentros piden Pruebas (ver Prueba): cuando cualquier otra carta necesita una habilidad, usa Destina. Nunca aparece en los Peligros: un encuentro tiene una Prueba o un coste, no las dos cosas.
 
 - Si el jugador no puede llegar a X con sus Tripulantes preparados, no puede pagar el coste.
 - La habilidad de cada Tripulante cuenta con sus bonificaciones, igual que al cubrir una Distancia. Mientras Diego esté preparado, los demás Tripulantes suman 1 más.
@@ -1168,7 +1162,7 @@ Incautado es una palabra clave que aparece en el texto de algunos encuentros: ca
 - Si el jugador no supera la misión, pierde lo incautado: sale del juego, salvo que la carta indique que se descarta.
 
 > [!ejemplo]
-> En Ciudad, el jugador revela «Requisa del Santo Oficio»: «Incautado: una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto vudú, tiene que ser él». El Bucanero lleva el Amuleto vudú, de modo que el Amuleto va debajo de la misión. Si el jugador se retira, pierde el Amuleto y este sale del juego; si supera la misión, el Amuleto vuelve al Bucanero.
+> En Ciudad, el jugador revela «Requisa del Santo Oficio»: «Incautado: una Mejora que elijas va debajo de la carta de misión; si llevas el Amuleto vudú, tiene que ser él». El Bucanero lleva el Amuleto vudú, de modo que el Amuleto va debajo de la misión. Si el jugador se retira, pierde el Amuleto y este sale del juego; si supera la misión, el Amuleto vuelve al Bucanero.
 
 ### Indestructible
 
@@ -1342,7 +1336,9 @@ El portador es el Tripulante al que está vinculada una Mejora de tripulante o u
 
 ### Prueba
 
-Una Prueba es el desafío de un encuentro. Consta de una habilidad y una dificultad («COM 3»), con un efecto de Éxito (verde) y uno de Fallo (rojo). Para resolverla, se siguen estos pasos:
+Una Prueba es el desafío de un encuentro. Solo los encuentros piden Pruebas: los de las cartas de Peligro, los de los mazos propios y los de los barcos rivales. Cuando cualquier otra carta necesita una habilidad, usa Destina, que es un coste y no una Prueba (ver Destina). Seis permanentes del mazo de historia todavía piden una Prueba con su Acción; cambiarán a Destina (ver Prueba de una Acción).
+
+Una Prueba consta de una habilidad y una dificultad («COM 3»), con un efecto de Éxito (verde) y uno de Fallo (rojo). Para resolverla, se siguen estos pasos:
 
 1. **Asignar Tripulantes.** El jugador puede asignar a la Prueba cualquier número de Tripulantes preparados, incluido ninguno. Cada Tripulante asignado se agota y suma su valor en la habilidad de la Prueba, más las bonificaciones de sus Mejoras. El jugador también puede añadir cartas de su mano: cada icono de la habilidad de la Prueba suma 1. Si no asigna a nadie, falla la Prueba.
 2. **Revelar el Destino.** Su modificador se suma al total del jugador y se aplica su efecto. Si no se ha asignado a nadie, se aplica también su efecto Sin oposición.
@@ -1364,11 +1360,10 @@ Una Prueba es el desafío de un encuentro. Consta de una habilidad y una dificul
 
 ### Prueba de una Acción
 
-Una Prueba de una Acción es la Prueba que exigen algunas capacidades de Acción («**Acción:** haz una Prueba de COM 5…»). Se resuelve como una Prueba normal: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición.
+Una Prueba de una Acción es la Prueba que todavía exigen las Acciones de seis permanentes del mazo de historia («**Acción:** haz una Prueba de COM 5…»): «¡La guardia!», «Ojos amarillos en la espesura», «Campanas a rebato», «La cadena de la bocana», «La lechuza canta tres veces» y «Fuego de cobertura». Cambiarán a Destina, porque solo los encuentros piden Pruebas (ver Prueba). Mientras tanto, se resuelve como una Prueba normal: el jugador asigna a sus Tripulantes y añade cartas de su mano, revela el Destino y, si no ha asignado a nadie, aplica su efecto Sin oposición.
 
 - Esta Prueba no tiene Avance propio: el jugador solo gana lo que indique su texto.
 - No puede hacerse durante otra Prueba; se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro.
-- La Prueba que pide una Interrupción se hace en el momento, aunque haya otra Prueba a medio resolver: esa queda en suspenso y, al terminar la nueva, se sigue con ella.
 
 > [!ejemplo]
 > En «La casa del gobernador», la Alarma llega a 3 y la permanente «¡La guardia!» entra en juego junto a la misión. Tras resolver una carta de Peligro, el jugador usa su Acción: Prueba de COM 5, que con el +1 de dificultad de la propia guardia pide 6. Asigna a Diego (COM 3) y al Bucanero veterano (COM 2; no recibe el +1 de Diego, que se agota a la vez) y añade «¡Al abordaje!» (dos iconos de COM): 7. Sale el Destino de la carta «Arrecife» (−1): el total baja a 6 y el jugador supera la Prueba, de modo que ¡La guardia! vuelve al mazo de historia. El jugador no gana Avance por esta Prueba.

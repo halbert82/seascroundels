@@ -68,10 +68,30 @@ describe('vista de las cartas', () => {
     for (const n of [1, 3, 7, 24, 34, 44, 66]) expect(jugador(n).letra, `carta ${n}`).toBe(18)
     // 45 y 46 ya no van grandes.
     for (const n of [45, 46]) expect([jugador(n).textoClase, jugador(n).letra], `carta ${n}`).toEqual(['', 18])
-    // Provisional (TODO(regla) en ajustes.ts): las que no caben a 18 px, a la letra mayor con la que caben.
-    expect(jugador(168).letra).toBe(17.5)
+    // P125: ya no hay letras provisionales; las que no cabían bajan un poco la ilustración.
+    for (const n of [9, 11, 18, 168, 244, 245]) expect(jugador(n).letra, `carta ${n}`).toBe(18)
     // Un Tesoro, un Escenario y la culebrina del naufragio no son cartas de jugador: no cambian.
     for (const n of [148, 97, 278]) expect(jugador(n).letra, `carta ${n}`).toBeUndefined()
+  })
+
+  it('P125: Isabela, el Viejo lobo, el Fiador y Marineros sin barco bajan un poco la ilustración, sin tocar su texto', () => {
+    const corta = (n: number) => (vistaDeCarta(carta(n)) as VistaJugador).arteCorto
+    expect([11, 18, 168].map(corta)).toEqual([26, 26, 26])
+    expect(corta(100)).toBe(16)
+    // TODO(regla) P132: el Filibustero borracho y la Carne de cañón, 4 px.
+    expect([9, 244].map(corta)).toEqual([4, 4])
+    // Las demás, nada (Rufián de cubierta, Galeote fugado, Carpinteros de ribera).
+    for (const n of [4, 245, 106]) expect(corta(n), `carta ${n}`).toBeUndefined()
+    // Los textos de 009 y 245 dicen «en esta Prueba» (como la Pistola).
+    for (const n of [9, 245]) expect(textoPlano((vistaDeCarta(carta(n)) as VistaJugador).texto), `carta ${n}`).toMatch(/en esta Prueba\./)
+  })
+
+  it('P125: en el Barco, «Distancia −1» no se parte (el «−1» nunca solo en la última línea)', () => {
+    const barco = vistaDeCarta(carta(3)) as VistaJugador
+    const i = barco.texto.findIndex((s) => s.tipo === 'numero' && s.valor === '−1')
+    const antes = barco.texto[i - 1]
+    expect(antes?.tipo === 'texto' && antes.texto.endsWith('Distancia\u00a0')).toBe(true)
+    expect(barco.texto[i]).toMatchObject({ tipo: 'numero', valor: '−1', tras: '.' })
   })
 
   it('las Mejoras con una sola cifra se dibujan grandes y las Habilidades no tienen texto', () => {
@@ -115,6 +135,14 @@ describe('vista de las cartas', () => {
     expect(v.historia).toEqual({ num: 228, dorso: 'misiones' })
     expect((vistaDeCarta(carta(234)) as VistaJugador).tipos).toBeUndefined() // «Viento a favor» no tiene tipo
     expect((vistaDeCarta(carta(220)) as VistaJugador).tipos).toBe('Guardia') // fase 14: «¡La guardia!» es de tipo Guardia
+  })
+
+  it('el robo de una recompensa va con su icono, sin verbo: «+1 [rep] · 2 [robar]» (La casa del gobernador y El ladrón del puerto)', () => {
+    for (const n of [116, 117]) {
+      const v = vistaDeCarta(carta(n)) as VistaCapitulo
+      expect(v.recompensa, `carta ${n}`).toEqual([{ texto: '+1', icono: 'rep' }, { texto: '·' }, { texto: '2', icono: 'robar' }])
+      expect(v.recompensaTexto, `carta ${n}`).toBeUndefined()
+    }
   })
 
   it('capítulos: sello, travesía, Distancia, recompensa y pie', () => {

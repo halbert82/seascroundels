@@ -169,7 +169,7 @@
    "EXP": 0,
    "vida": 2,
    "mejoras": 0,
-   "texto": "Inflige {1 herida} a Filibustero borracho: recibe {+2 COM} para esta Prueba. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Filibustero borracho: recibe {+2 COM} en esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«Dos tragos más y abordo yo solo ese galeón.»"
   },
   {
@@ -536,7 +536,7 @@
    "EXP": 0,
    "vida": 3,
    "mejoras": 0,
-   "texto": "Inflige {1 herida} a Galeote fugado: recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Galeote fugado: recibe {+2 NAV} en esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«Veinte años remando encadenado.»"
   },
   {
@@ -4439,7 +4439,7 @@
      "textoEfecto": "~El gusano ha hecho del casco un queso; hay que encontrar la vía entre las cuadernas, y cuanta más carga, más cuesta.~",
      "textoExito": "~La tapáis con estopa y sebo.~ Repara {1 dano g}.",
      "textoFallo": "El Barco queda **Anegado**. Si ya lo estaba, daña {2 dano}.",
-     "notaPrueba": "X = 1 + el Espacio que ocupan tus Mejoras de barco; _Carpintero_ asignado −2."
+     "notaPrueba": "X = 1 + el Espacio que ocupan tus Mejoras de barco (mín. 3); _Carpintero_ asignado −2."
     },
     "nat": {
      "nombre": "Puente desatendido",
@@ -6159,7 +6159,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "**Al revelarse:** **Incautado:** una Mejora a tu elección va debajo de la carta de misión; si llevas el Amuleto vudú, tiene que ser él (cosa de brujas). Si superas la misión, la recuperas.",
+     "textoEfecto": "**Al revelarse:** **Incautado:** una Mejora que elijas va debajo de la carta de misión; si llevas el Amuleto vudú, tiene que ser él (cosa de brujas). Si superas la misión, la recuperas.",
      "textoExito": "~Juráis por los Evangelios.~ Recupera ya la Mejora y el Tripulante asignado con más [EXP] queda **Aguerrido** (sale bendecido).",
      "textoFallo": "~Te sacan en procesión con el sambenito.~ −1 reputación.",
      "etiquetas": [
@@ -7672,7 +7672,7 @@
      "exito": [],
      "siempre": [],
      "nota": "",
-     "textoEfecto": "~Toda la ciudad está en la procesión del santo, y el mercader con ella.~ Puedes colarte en su casa: recupera a la mano 2 cartas de tu descarte (lo que te vendió caro). Si lo haces, un Tripulante a tu elección queda **Buscado** (alguien os vio salir por la ventana)."
+     "textoEfecto": "~Toda la ciudad está en la procesión del santo, y el mercader con ella.~ Puedes recuperar a la mano 2 cartas de tu descarte (os coláis en su casa y os lleváis lo que te vendió caro). Si lo haces, un Tripulante que elijas queda **Buscado** (alguien os vio salir por la ventana)."
     }
    },
    "destino": {
@@ -10649,7 +10649,7 @@
    "id": "ribera",
    "num": 106,
    "nombre": "Carpinteros de ribera",
-   "texto": "**Elige:** repara {2 dano g}, o este turno adquirir una Mejora de barco cuesta 1 menos.",
+   "texto": "**Elige:** repara {2 dano g}, o la primera Mejora de barco que adquieras este turno cuesta 1 menos.",
    "ambientacion": "«Calafates, cordeleros y un herrero que no hace preguntas.»"
   },
   {
@@ -10864,7 +10864,7 @@
    "num": 221,
    "nombre": "Don Anselmo, el comerciante",
    "mision": "maracaibo",
-   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas.\nLos encuentros de tipo #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía o el Barco se hunde, se baja asustado: devuélvelo al mazo de historia. Sin él, la carta 141 no da el Tesoro.\nSi superas la carta 141, se baja y paga: {2 robar}. Devuélvelo al mazo de historia.",
+   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado, y no se le pueden infligir heridas ni poner Estados ni Ventajas.\nLos encuentros de tipo #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía o el Barco se hunde, se baja asustado: devuélvelo al mazo de historia. Sin él, la carta 141 no da el Tesoro.\nSi superas la carta 141, se baja y paga: {2 robar}. Devuélvelo al mazo de historia.",
    "ambientacion": "«Mis papeles y mi bolsa abren puertas.»"
   },
   {
@@ -10872,7 +10872,7 @@
    "num": 222,
    "nombre": "El guía del istmo",
    "mision": "panama",
-   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas.\n[nat]: Las Pruebas de [EXP] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: devuélvelo al mazo de historia.",
+   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado, y no se le pueden infligir heridas ni poner Estados ni Ventajas.\n[nat]: Las Pruebas de [EXP] reciben {−1 g} de dificultad.\nSi fallas una Prueba de [EXP], se marcha por su cuenta: devuélvelo al mazo de historia.",
    "ambientacion": "«Un cimarrón que conoce el camino.»"
   }
  ],

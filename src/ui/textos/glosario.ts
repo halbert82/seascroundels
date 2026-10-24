@@ -366,7 +366,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   pasajero: regla(
     'pasajero',
     'Pasajero',
-    'Carta que viaja contigo. Su carta dice todo lo que hace: no es un Tripulante (no ocupa Capacidad, no puede ser asignado y no recibe heridas, Estados ni Ventajas).',
+    'Carta que viaja contigo. Su carta dice todo lo que hace: no es un Tripulante (no ocupa Capacidad, no puede ser asignado, y no se le pueden infligir heridas ni poner Estados ni Ventajas).',
     { rotulo: 'Cuándo se va', texto: 'Se queda en juego entre misiones hasta que su carta diga que se va.' },
   ),
   descomunal: regla(

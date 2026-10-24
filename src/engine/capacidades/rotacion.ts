@@ -15,7 +15,7 @@ function enrolado(carta: CartaId): Capacidad {
 }
 
 /**
- * «Sufre 1 herida: … para esta Prueba. (Límite de una vez por turno.)» Como el Filibustero borracho: se ofrece durante
+ * «Inflige 1 herida a …: … en esta Prueba. (Límite de una vez por turno.)» Como el Filibustero borracho: se ofrece durante
  * una Prueba de su habilidad si participa, o antes de elegir la opción si aún puede comprometerse (no está agotado).
  * El efecto dura hasta el final de la Prueba; si la herida del coste lo derrota, el efecto se queda (N13: el coste se
  * da por pagado).
@@ -57,7 +57,7 @@ export const CAPACIDADES_ROTACION: Capacidad[] = [
         : 0,
   },
 
-  // Galeote fugado: «Sufre 1 herida: Galeote fugado recibe +2 NAV para esta Prueba.»
+  // Galeote fugado: «Inflige 1 herida a Galeote fugado: recibe +2 NAV en esta Prueba.» (P125: antes «para esta Prueba».)
   sufreHerida('galeote', 'NAV', 'galeote.nav'),
   {
     clave: 'galeote.nav',

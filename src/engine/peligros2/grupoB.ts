@@ -353,6 +353,8 @@ registrarEspecial('p2_jaguar.cazar', (s, t, e) => {
 registrarCodigo('p2_jaguar.cazar', (_s, fuente): NuevaTarea[] => [{ tipo: 'especial', clave: 'p2_jaguar.cazar', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
 // Permanente 229 «Ojos amarillos en la espesura»: Obligado: al final de cada encuentro siguiente, el agotado con menos
 // Vida sufre 1 herida. Acción: agota a un preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es Explorador).
+// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
+// cuando Albert revise el mazo de historia. Mientras, se queda como está.
 registrarPermanente('pm_ojos', {
   quitar: [],
   acciones: [

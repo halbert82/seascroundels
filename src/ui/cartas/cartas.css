@@ -590,6 +590,12 @@
    Tripulantes, Mejoras, Eventos y Habilidades), sin texto grande ni apretado. Viene en --fsj desde CartaJugador: las que
    aún no caben a 18 px llevan una letra provisional (ajustes.ts). La cifra sola de las Mejoras («+1 [NAV]») sigue grande. */
 .card.dj .rules:not(.big){font-size:var(--fsj,18px);line-height:1.36}
+/* P125 (Albert): las cartas cuyo texto no cabe bajan un poco la ilustración (--acorta, desde ajustes.ts) y la caja de
+   texto sube lo mismo, como las Murallas de Port Royal pero mucho menos. Solo en la maqueta de Tripulante y Escenario. */
+.card.acorta .art{height:calc(266px - var(--acorta))}
+.card.acorta .ribbon{top:calc(307px - var(--acorta))}
+.card.acorta .tbox{top:calc(322px - var(--acorta))}
+.card.acorta .vida{top:calc(254px - var(--acorta))}
 
 /* ---------- Fase 16: cartas mini de Estado (marco rojo) y de Ventaja (marco verde), 41 × 63 mm ---------- */
 .card.cmini{width:246px;height:378px;border-radius:13px;

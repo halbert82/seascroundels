@@ -230,14 +230,15 @@ registrarPeligro('p2_presa', {
     // Éxito: robas 3, pero la siguiente Prueba de EXP de esta misión recibe +1. Fallo: pierdes 1 Avance.
     // Fase 13 (I2): «Robas 3 y agota a 1 Tripulante (la plata pesa)» (antes, la siguiente Prueba de EXP +1).
     nat: { exito: [robar(3), agotar(1)], fallo: [pierdesAvance(1)] },
-    // Puedes colarte: recuperas 2 cartas de tu descarte y un Tripulante a tu elección queda Buscado.
+    // P128 (Albert): «Puedes recuperar a la mano 2 cartas de tu descarte (os coláis en su casa…). Si lo haces, un
+    // Tripulante que elijas queda Buscado.»
     ciu: {
       efecto: [
         {
           tipo: 'elegir',
           opciones: [
             {
-              texto: 'Colarte en su casa: recuperas 2 cartas de tu descarte y un Tripulante a tu elección queda Buscado',
+              texto: 'Recuperar 2 cartas de tu descarte (os coláis en su casa): un Tripulante que elijas queda Buscado',
               efectos: [{ tipo: 'recuperarDescarte', n: 2 }, { tipo: 'estado', estado: 'buscado', a: 'uno' }],
             },
             { texto: 'No entrar', efectos: [] },
@@ -339,6 +340,8 @@ registrarCodigo('p2_presagio.pasa', (s, fuente) => {
 // Permanente 235 «La lechuza canta tres veces» (junto al señalado, con 1 ficha): cada nuevo encuentro, 1 ficha; con 3,
 // el señalado sufre 2 heridas y queda Maldito. Acción: agota a un Vigía o supera EXP 3 para descartarla: el señalado
 // queda Aguerrido.
+// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
+// cuando Albert revise el mazo de historia. Mientras, se queda como está.
 registrarPermanente('pm_lechuza', {
   quitar: [
     { tipo: 'agotarRasgo', rasgo: 'Vigía' },

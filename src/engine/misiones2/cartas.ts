@@ -58,6 +58,8 @@ registrarCapacidades(
 // de COM 5, o agota a 2 Tripulantes: descarta esta carta (vuelve al mazo de historia, como cualquier permanente; también
 // al terminar la misión). «Cortar por lo sano» puede devolverla.
 
+// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
+// cuando Albert revise el mazo de historia. Mientras, se queda como está.
 registrarPermanente('guardia', {
   // P54 (confirmada): el +1 de «¡La guardia!» también se aplica a su propia Prueba de COM 5 (queda en 6).
   capacidades: [{ clave: 'todas', ventana: 'constante', modifica: (_ctx, _yo, c: Consulta) => (c.tipo === 'dificultad' ? 1 : 0) }],

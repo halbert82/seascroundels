@@ -76,13 +76,13 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
   // Marineros sin barco: mira las 3 de arriba del mazo de muelle y pon un Tripulante en el muelle (ver arriba).
   alRevelar('reclutas', () => [{ tipo: 'especial', clave: 'reclutas.mirar', datos: {}, paso: 0 }]),
 
-  // Carpinteros de ribera (revisión de Albert, fuera Buscar): «Elige: repara 2 daños, o este turno adquirir una Mejora de
-  // barco cuesta 1 menos.» (Antes, buscar una Mejora de barco y ponerla en el muelle.)
+  // Carpinteros de ribera (revisión de Albert, fuera Buscar; P123): «Elige: repara 2 daños, o la primera Mejora de barco
+  // que adquieras este turno cuesta 1 menos.» (Antes, buscar una Mejora de barco y ponerla en el muelle.)
   alRevelar('ribera', (_s, inst) => [
     elige(
       [
         { texto: `Reparar ${numeroConIcono(textoDe('ribera'), 'dano')} daños del Barco`, efectos: [{ tipo: 'reparar', n: numeroConIcono(textoDe('ribera'), 'dano') }] },
-        { texto: 'Este turno, adquirir una Mejora de barco cuesta 1 menos', efectos: [{ tipo: 'codigo', clave: 'ribera.descuento' }] },
+        { texto: 'La primera Mejora de barco que adquieras este turno cuesta 1 menos', efectos: [{ tipo: 'codigo', clave: 'ribera.descuento' }] },
       ],
       inst,
     ),
@@ -212,8 +212,8 @@ export const CAPACIDADES_ESCENARIO: Capacidad[] = [
     modifica: (_ctx, yo, c) => (c.tipo === 'coste' && yo !== null && c.carta === yo ? -1 : 0),
   },
   {
-    // Carpinteros de ribera: este turno, adquirir una Mejora de barco cuesta 1 menos (cada una que adquieras; el coste
-    // impreso no cambia).
+    // Carpinteros de ribera: la primera Mejora de barco que adquieras este turno cuesta 1 menos (P123: al adquirirla, la
+    // tarea de adquirir quita este efecto; el coste impreso no cambia).
     clave: 'ribera.turno',
     carta: 'ribera',
     ventana: 'constante',

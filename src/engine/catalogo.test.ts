@@ -31,8 +31,8 @@ describe('catálogo de la Caja básica', () => {
 
   it('cumple con los mazos predefinidos de la versión 0', () => {
     const m = DATOS.mazosPredefinidos
-    // TODO(regla): revisión de Albert, opción por defecto pendiente de confirmar: el hueco de «Cortar por lo sano» no se
-    // rellena y el mazo del capitán de inicio queda en 39 hasta que se rehagan los mazos de inicio.
+    // P120 (Albert): la Arenga en lugar del Botín, la segunda Reflejos de gato en lugar de la Retirada y el hueco de
+    // «Cortar por lo sano» sin rellenar: el mazo del capitán de inicio queda en 39 hasta que se rehagan los mazos de inicio.
     expect(m.mazoDelCapitan).toHaveLength(39)
     expect(m.mazoDelCapitan).toContain('arenga')
     expect(m.mazoDelCapitan.filter((id) => id === 'reflejos')).toHaveLength(2)

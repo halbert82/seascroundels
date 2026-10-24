@@ -106,13 +106,41 @@ describe('Escenario 2.0: buenas', () => {
 
   it('Carpinteros de ribera: eliges reparar 2 daños del Barco', () => {
     const j = revelar('ribera', { barco: { dano: 3 }, muelle: ['vela'] })
-    expect(opciones(j)).toEqual(['Reparar 2 daños del Barco', 'Este turno, adquirir una Mejora de barco cuesta 1 menos'])
+    expect(opciones(j)).toEqual(['Reparar 2 daños del Barco', 'La primera Mejora de barco que adquieras este turno cuesta 1 menos'])
     j.opcion('0')
     expect(j.estado.danoBarco).toBe(1)
     expect(j.valor({ tipo: 'coste', carta: j.inst('vela') })).toBe(costeImpreso('vela'))
   })
 
-  it('Carpinteros de ribera (revisión de Albert, fuera Buscar): o este turno adquirir una Mejora de barco cuesta 1 menos', () => {
+  it('Carpinteros de ribera (P123): el texto dice «la primera Mejora de barco que adquieras este turno»', () => {
+    expect(DATOS.escenario.find((e) => e.id === 'ribera')?.texto).toBe(
+      '**Elige:** repara {2 dano g}, o la primera Mejora de barco que adquieras este turno cuesta 1 menos.',
+    )
+  })
+
+  it('Carpinteros de ribera (P123, el ejemplo): con la Vela mayor (1) y el Casco reforzado (2) en el muelle, pagas 0 y 2', () => {
+    const j = revelar('ribera', { muelle: ['vela', 'casco'], mano: ['ojo', 'timon', 'coraje'] })
+    j.opcion('1')
+    expect(j.valor({ tipo: 'coste', carta: j.inst('vela') })).toBe(0)
+    expect(j.valor({ tipo: 'coste', carta: j.inst('casco') })).toBe(1)
+    // La primera, la Vela mayor, sin pagar nada (no se pregunta qué descartar).
+    j.adquirir('vela', 'barco')
+    expect(j.zona('mano')).toHaveLength(3)
+    // El descuento ya se ha gastado: el Casco reforzado cuesta sus 2.
+    expect(j.valor({ tipo: 'coste', carta: j.inst('casco') })).toBe(2)
+    j.adquirir('casco', 'barco').elegir('ojo', 'timon')
+    expect(j.zona('mano')).toEqual(['coraje'])
+    expect(j.zona('mejoras')).toEqual(['vela', 'casco'])
+  })
+
+  it('Carpinteros de ribera (P123): una Mejora de tripulante no gasta el descuento', () => {
+    const j = revelar('ribera', { muelle: ['sable', 'vela'], mano: ['ojo', 'timon', 'coraje'] })
+    j.opcion('1')
+    j.adquirir('sable', 'capitan').elegir('ojo')
+    expect(j.valor({ tipo: 'coste', carta: j.inst('vela') })).toBe(costeImpreso('vela') - 1)
+  })
+
+  it('Carpinteros de ribera (revisión de Albert, fuera Buscar): o la primera Mejora de barco que adquieras cuesta 1 menos (solo las de barco)', () => {
     const j = revelar('ribera', { barco: { dano: 3 }, muelle: ['vela', 'sable', 'bucanero'] })
     j.opcion('1')
     expect(j.estado.danoBarco).toBe(3)

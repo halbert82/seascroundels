@@ -145,6 +145,8 @@ registrarPeligro('escolta', {
 
 // Fuego de cobertura · Leve. Fase 11: pon en juego la carta 237 del mazo de historia.
 // Permanente 237 «Fuego de cobertura»: los Cañones no suman. Acción: Prueba de NAV 3: si la superas, descártala.
+// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
+// cuando Albert revise el mazo de historia. Mientras, se queda como está.
 registrarPermanente('pm_cobertura', {
   quitar: [{ tipo: 'prueba', opciones: [{ hab: 'NAV', dificultad: 3 }] }],
   capacidades: [{ clave: 'sinCanones', ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'sinCanones' ? 1 : 0) }],

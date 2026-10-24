@@ -592,8 +592,8 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
           // pone La Armada encima del mazo.
           return elegir(tieneNavegante(s, 3) ? '1' : '0')
         case 'ribera': {
-          // Revisión de Albert: repara 2 o, este turno, adquirir una Mejora de barco cuesta 1 menos. El descuento solo le
-          // sirve si hay una Mejora de barco en el muelle.
+          // Revisión de Albert: repara 2 o la primera Mejora de barco que adquieras este turno cuesta 1 menos (P123). El
+          // descuento solo le sirve si hay una Mejora de barco en el muelle.
           const mejoraEnMuelle = s.zonas.muelle.some((c) => tipoDe(copia(s, c).id) === 'mejoraBarco')
           return elegir(s.danoBarco >= 2 || (s.danoBarco >= 1 && !mejoraEnMuelle) ? '0' : '1')
         }

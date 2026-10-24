@@ -434,6 +434,18 @@ describe('20 · Arenas movedizas', () => {
     expect(j.estado.danoBarco).toBe(2)
   })
 
+  it('Mar (P129): «por cada 2» cuenta parejas enteras, no se redondea: con 1 Mejora de barco, +0; con 3, +1', () => {
+    const dificultad = (mejoras: CartaId[]) => {
+      const j = en('mar', ['p2_arenas', 'chubasco', 'calma'], { barco: { mejoras } })
+      j.comprometer('NAV', ['capitan'])
+      return dificultadConDestino(j.estado)
+    }
+    expect(dificultad([])).toBe(4)
+    expect(dificultad(['vela'])).toBe(4)
+    expect(dificultad(['vela', 'hamacas'])).toBe(5)
+    expect(dificultad(['vela', 'hamacas', 'botica'])).toBe(5)
+  })
+
   it('Naturaleza: pone en juego la permanente 228 junto al preparado con más EXP, que queda atrapado; con 3 fichas sufre 2 heridas', () => {
     // Sin Explorador preparado (la misión daría 1 de Avance y se superaría en seguida). El Vigía (EXP 2) iba delante.
     const j = en('nat', ['p2_arenas', 'chubasco', 'calma', 'calma'], { tripulacion: ['viejo_lobo', 'vigia'] })

@@ -177,7 +177,7 @@ registrarPeligro('p2_santooficio', {
       // Fase 13 (P79): «Inflige 1 herida por cada Tripulante asignado (máx. 3)» (libres).
       fallo: [heridaPorAsignado({ maximo: 3 })],
     },
-    // Al revelarse: Incautado, una Mejora a tu elección; si llevas el Amuleto, tiene que ser él.
+    // Al revelarse: Incautado, una Mejora que elijas (P128); si llevas el Amuleto, tiene que ser él.
     ciu: {
       alRevelarse: [{ tipo: 'incautar', que: 'mejora', n: 1, obligadas: ['amuleto'] }],
       exito: [{ tipo: 'recuperarIncautadas' }, comprometidoCon(mas('EXP'), { tipo: 'estado', estado: 'aguerrido' })],
@@ -200,6 +200,8 @@ registrarCapacidades({
 // 29. Toque a rebato · Duro
 // Permanente 230 «Campanas a rebato»: al terminar cada encuentro, 1 ficha; con 3, descarta al agotado con menos Vida
 // (fase 14: antes, rehén) y se descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
+// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
+// cuando Albert revise el mazo de historia. Mientras, se queda como está.
 registrarPermanente('pm_campanas', {
   quitar: [
     { tipo: 'agotarRasgo', rasgo: 'Oficial' },
@@ -262,6 +264,8 @@ registrarPeligro('p2_quinto', {
 // 31. Bajo los cañones del Morro · Terrible
 // Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Prueba de COM 5 (4 si tienes un Carpintero preparado):
 // si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.
+// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
+// cuando Albert revise el mazo de historia. Mientras, se queda como está.
 registrarPermanente('pm_cadena', {
   quitar: [
     {

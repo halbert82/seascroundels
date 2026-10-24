@@ -102,6 +102,9 @@ export const adquirir: Manejador<'adquirir'> = (s, t) => {
   c.vinculadaA = t.destino
   const destino = t.destino === 'barco' ? 'el Barco' : nombre(s, t.destino)
   anotar(s, 'jugada', `Adquieres «${nombre(s, t.carta)}» para ${destino}${t.mitad ? ' pagando la mitad de su coste' : ''}.`, { tipo: 'adquirir', carta: c.id })
+  // P123 (Albert): el descuento de los Carpinteros de ribera es solo para la primera Mejora de barco que adquieras ese
+  // turno; se gasta con ella aunque la adquieras sin coste (como el de Catalina, N19).
+  if (porId(c.id).tipo === 'mejoraBarco') s.temporales = s.temporales.filter((x) => x.clave !== 'ribera.turno')
   return 'hecha'
 }
 

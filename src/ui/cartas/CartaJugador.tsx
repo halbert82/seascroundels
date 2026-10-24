@@ -16,7 +16,11 @@ const TAMANOS_PERMANENTE = [16.5, 16, 15.5, 15, 14.5, 14, 13.5, 13, 12.5, 12]
 
 export function CartaJugador({ v }: { v: VistaJugador }) {
   // Fase 16: las cartas de jugador llevan todas la misma letra en las reglas (--fsj; ver ajustes.ts).
-  const estiloCarta = { '--cc': v.color, ...(v.letra !== undefined ? { '--fsj': `${v.letra}px` } : {}) } as CSSProperties
+  const estiloCarta = {
+    '--cc': v.color,
+    ...(v.letra !== undefined ? { '--fsj': `${v.letra}px` } : {}),
+    ...(v.arteCorto ? { '--acorta': `${v.arteCorto}px` } : {}),
+  } as CSSProperties
   const conCoste = v.coste !== undefined
   const caja = useRef<HTMLDivElement>(null)
   useLayoutEffect(() => {
@@ -70,6 +74,7 @@ export function CartaJugador({ v }: { v: VistaJugador }) {
         'card',
         v.alta && 'tall',
         v.permanente && 'perm',
+        v.arteCorto && 'acorta',
         v.letra !== undefined ? 'dj' : esTextoApretado(v.num) && 'tight',
         v.diseno && `jug t-${v.diseno}`,
       ]

@@ -2,6 +2,7 @@
 
 import { describe, expect, it } from 'vitest'
 
+import { DATOS } from './datos.ts'
 import { Jugador, type OpcionesSituacion, dificultadConDestino, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import type { CartaId } from './tipos.ts'
 
@@ -501,7 +502,8 @@ describe('7 · Fuego a bordo', () => {
 })
 
 describe('8 · La broma', () => {
-  it('Mar «Casco carcomido por la broma» (revisión de Albert): EXP X = 1 + el Espacio que ocupan tus Mejoras de barco, −2 con un Carpintero asignado, sin mínimo ni máximo', () => {
+  it('Mar «Casco carcomido por la broma» (revisión de Albert y P130): EXP X = 1 + el Espacio que ocupan tus Mejoras de barco (mín. 3), −2 con un Carpintero asignado, sin máximo', () => {
+    expect(DATOS.peligros.find((p) => p.id === 'p2_broma')?.encuentros.mar?.notaPrueba).toBe('X = 1 + el Espacio que ocupan tus Mejoras de barco (mín. 3); _Carpintero_ asignado −2.')
     // Vela mayor (1), Hamacas (1) y Casco reforzado (2): Espacio 4, X = 5.
     const mejoras = ['vela', 'hamacas', 'casco']
     const j = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras }, tripulacion: ['carpintero'] })
@@ -510,15 +512,23 @@ describe('8 · La broma', () => {
     const k = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras }, tripulacion: ['carpintero'] })
     k.comprometer('EXP', ['carpintero'])
     expect(dificultadConDestino(k.estado)).toBe(3)
-    // Sin Mejoras: X = 1 (antes, como poco 3).
+    // P130 (Albert): sin Mejoras, 1 + 0 = 1, pero el mínimo es 3.
     const l = en('mar', ['p2_broma', 'chubasco', 'calma'])
     l.comprometer('EXP', ['capitan'])
-    expect(dificultadConDestino(l.estado)).toBe(1)
-    // La Bandera negra no ocupa Espacio: X = 1.
+    expect(dificultadConDestino(l.estado)).toBe(3)
+    // La Bandera negra no ocupa Espacio: también 3.
     const m = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras: ['bandera'] } })
     m.comprometer('EXP', ['capitan'])
-    expect(dificultadConDestino(m.estado)).toBe(1)
-    // Con 6 de Espacio (Casco, Bronce y Chalupa), X = 7 (antes, como mucho 5).
+    expect(dificultadConDestino(m.estado)).toBe(3)
+    // Con la Vela mayor (1 de Espacio), 1 + 1 = 2: también 3.
+    const v = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras: ['vela'] } })
+    v.comprometer('EXP', ['capitan'])
+    expect(dificultadConDestino(v.estado)).toBe(3)
+    // El −2 del Carpintero asignado va después del mínimo: sin Mejoras, 3 − 2 = 1.
+    const c = en('mar', ['p2_broma', 'chubasco', 'calma'], { tripulacion: ['carpintero'] })
+    c.comprometer('EXP', ['carpintero'])
+    expect(dificultadConDestino(c.estado)).toBe(1)
+    // Con 6 de Espacio (Casco, Bronce y Chalupa), X = 7 (sin máximo; antes, como mucho 5).
     const n = en('mar', ['p2_broma', 'chubasco', 'calma'], { barco: { mejoras: ['casco', 'bronce', 'chalupa'] } })
     n.comprometer('EXP', ['capitan'])
     expect(dificultadConDestino(n.estado)).toBe(7)

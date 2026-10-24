@@ -62,6 +62,8 @@ export interface OpcionesTexto {
    * espacio de antes no parte la línea.
    */
   unirNumero?: boolean
+  /** P125 (el Barco): también las cifras sin icono («Distancia −1.»): ni se separan de su palabra ni de su punto. */
+  unirCifras?: boolean
 }
 
 function colorDeNumero(
@@ -152,15 +154,16 @@ export function parsearTexto(texto: string, opciones: OpcionesTexto = {}): Segme
     else segmentos.splice(i + 1, 1)
   }
 
-  if (opciones.unirNumero) {
+  if (opciones.unirNumero || opciones.unirCifras) {
+    const vale = (n: Segmento) => n.tipo === 'numero' && (n.icono !== undefined || opciones.unirCifras === true)
     for (let i = 0; i < segmentos.length - 1; i++) {
       const actual = segmentos[i]
       const siguiente = segmentos[i + 1]
-      if (actual?.tipo === 'texto' && siguiente?.tipo === 'numero' && siguiente.icono && /\p{L} $/u.test(actual.texto)) {
+      if (actual?.tipo === 'texto' && siguiente && vale(siguiente) && /\p{L} $/u.test(actual.texto)) {
         actual.texto = `${actual.texto.slice(0, -1)}\u00a0`
       }
       // La puntuación que sigue al icono va con él.
-      if (actual?.tipo === 'numero' && actual.icono && siguiente?.tipo === 'texto') {
+      if (actual?.tipo === 'numero' && vale(actual) && siguiente?.tipo === 'texto') {
         const signos = /^[.,;:)]+/.exec(siguiente.texto)?.[0]
         if (signos) {
           actual.tras = signos

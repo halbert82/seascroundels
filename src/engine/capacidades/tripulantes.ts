@@ -68,7 +68,8 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
   // Rastreador de la selva: «… una Prueba de EXP en la que participe …, gana 1 de Avance.»
   trasSuperar('baqueano', 'EXP', () => [{ tipo: 'ganarAvance', n: numeroConIcono(texto('baqueano'), 'avance'), motivo: 'Rastreador de la selva' }]),
 
-  // Filibustero borracho: «Sufre 1 herida: recibe +2 COM para esta Prueba. (Límite de una vez por turno.)»
+  // Filibustero borracho: «Inflige 1 herida a Filibustero borracho: recibe +2 COM en esta Prueba. (Límite de una vez por
+  // turno.)» (P125: «en esta Prueba», antes «para esta Prueba»).
   // Se ofrece durante una Prueba de COM (o antes de elegir opción) si participa o aún puede comprometerse.
   {
     clave: 'filibustero.furia',

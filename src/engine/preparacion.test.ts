@@ -53,7 +53,7 @@ describe('Preparación de la partida', () => {
     expect(j.zona('mazoMuelle')).toHaveLength(25 - 4) // TODO(regla): excepción temporal de la fase 14 (muelle de 25)
     // 7. Mano inicial: tantas cartas como el Mando (5).
     expect(j.zona('mano')).toHaveLength(5)
-    expect(j.zona('mazoCapitan')).toHaveLength(39 - 5) // TODO(regla): revisión de Albert, por defecto 39 hasta rehacer los mazos
+    expect(j.zona('mazoCapitan')).toHaveLength(39 - 5) // P120: 39 hasta rehacer los mazos de inicio
     expect(j.decision.motivo.clave).toBe('cambiarMano')
   })
 
