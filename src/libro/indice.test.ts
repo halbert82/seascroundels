@@ -154,10 +154,11 @@ describe('Índice de términos de la Referencia de reglas', () => {
     expect(new Set(lista)).toEqual(PALABRAS_CLAVE)
   })
 
-  it('fase 10b · «Destina» tiene su entrada y su línea; fase 15: la usa «La ruta de los alisios»', () => {
+  it('fase 10b · «Destina» tiene su entrada y su línea; la usan «La ruta de los alisios» y las permanentes que antes pedían una Prueba', () => {
     expect(r.referencia.entradas.map((e) => e.titulo)).toContain('Destina')
     expect(enElIndice('Destina')).toBe(true)
-    expect(cartas.filter((c) => textos(c.carta).some((t) => /Destina\b/.test(t))).map((c) => c.id)).toEqual(['vanhoorn'])
+    // Con mayúscula, al empezar la Acción (las campanas y la lechuza dicen «o destina»).
+    expect(cartas.filter((c) => textos(c.carta).some((t) => /Destina\b/.test(t))).map((c) => c.id).sort()).toEqual(['guardia', 'pm_cadena', 'pm_cobertura', 'pm_ojos', 'vanhoorn'])
   })
 
   it('fase 15 · «Descomunal» y «Alerta» tienen su entrada y su línea («Descomunal 2» de las cartas cuenta como «Descomunal»)', () => {

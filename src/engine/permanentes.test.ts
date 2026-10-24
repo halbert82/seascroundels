@@ -71,7 +71,7 @@ describe('Las 12 permanentes en los datos', () => {
   it('«¡La guardia!» (220) la ponen en juego La casa del gobernador y Por el aljibe: «pon en juego la carta 220 del mazo de historia»', () => {
     const guardia = DATOS.permanentes.find((p) => p.id === 'guardia')
     expect(guardia?.texto).toBe(
-      'Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Haz una Prueba de [COM] 5 ~(los echáis a palos)~, o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.',
+      'Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Destina 5 [COM] ~(los echáis a palos)~ o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.',
     )
     for (const id of ['gobernador-I', 'sanfelipe-II-a']) {
       const e = porId(id)

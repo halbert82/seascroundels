@@ -2459,6 +2459,16 @@ body {
   color: var(--tinta-2);
 }
 
+.mazos-inicio-como {
+  margin-top: 4mm;
+  font-size: 10pt;
+  break-inside: avoid;
+}
+
+.mazos-inicio-como p {
+  margin: 0;
+}
+
 .mazos-inicio-listas {
   display: grid;
   /* El mazo del capitán, en dos columnas; el de muelle, en una. */

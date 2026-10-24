@@ -118,8 +118,9 @@ describe('¡Nadie se queda atrás! (revisión de Albert; antes «¡A por ellos!�
 
   it('se llama así, y el ejemplo del reglamento: el Bucanero (2 + 1 de Diego) destina 3 COM y la Vigía no se descarta', () => {
     expect(nombreDe('a_por_ellos')).toBe('¡Nadie se queda atrás!')
-    const j = leva()
-    j.comprometer('COM', ['vigia']).seguir()
+    // La Vigía (Vida 1) y el Carpintero de a bordo (Vida 2) asignados: se va a descartar la Vigía, la de menos Vida.
+    const j = leva({ tripulacion: ['vigia', 'carpintero', 'bucanero'] })
+    j.comprometer('COM', ['vigia', 'carpintero']).seguir()
     expect(j.ofreceCapacidad('a_por_ellos.jugar')).toBe(true)
     j.usar('a_por_ellos.jugar')
     // Coste impreso (1 carta) y Destina 3 COM, en el orden en que los pida el motor.
@@ -131,7 +132,7 @@ describe('¡Nadie se queda atrás! (revisión de Albert; antes «¡A por ellos!�
       else break
     }
     expect(j.copia('bucanero').agotada).toBe(true)
-    expect(j.zona('tripulacion')).toContain('vigia')
+    expect(j.zona('tripulacion')).toEqual(expect.arrayContaining(['vigia', 'carpintero']))
     expect(j.registro).toContain('Vigía inexperta no se descarta.')
     expect(j.registro.some((t) => t.startsWith('Destinas 3 de COM'))).toBe(true)
     // No es una Prueba: no se revela otro Destino.
@@ -197,6 +198,28 @@ describe('Virar y dar la cara (revisión de Albert)', () => {
     expect(j.estado.prueba?.dificultadBase).toBe(4)
     // Los Cañones de bronce (COM, en el Mar) sí se pueden usar en esa Prueba.
     expect(j.ofreceCapacidad('bronce.disparar')).toBe(true)
+  })
+
+  it('ejemplo del reglamento (Persigue): el Destino de «La sombra de Bastián» la pone encima; «Velas a popa» (NAV 4) pasa a COM 4 agotando los Cañones de bronce', () => {
+    // «Chubasco repentino» (NAV) con el Destino de «La sombra de Bastián» (−1, Persigue): su carta es el siguiente encuentro.
+    const j = Jugador.enMision({
+      misiones: ['pruebas-mar5'],
+      mazoPeligros: ['chubasco', 'p2_bastian', 'calma', 'calma', 'calma'],
+      tripulacion: ['bucanero'],
+      mano: ['virar'],
+      barco: { mejoras: ['bronce'] },
+    })
+    j.pasarOfertas().comprometer('NAV', ['capitan']).pasarOfertas().seguir()
+    expect(j.zona('mazoPeligros')[0]).toBe('p2_bastian')
+    j.seguir()
+    expect(j.registro).toContain('Revelas «La sombra de Bastián»: Velas a popa (Mar). Te ha alcanzado.')
+    expect(j.ofreceCapacidad('virar.jugar')).toBe(true)
+    j.usar('virar.jugar')
+    if (j.decision.tipo === 'elegirCartas') j.elegir('bronce')
+    expect(j.copia('bronce').agotada).toBe(true)
+    expect(j.decision).toMatchObject({ tipo: 'comprometer', opciones: [{ hab: 'COM', dificultad: 4 }] })
+    j.comprometer('COM', ['bucanero'])
+    expect(j.estado.prueba?.hab).toBe('COM')
   })
 
   it('P122: la Prueba pasa a ser de COM a todos los efectos: suman los modificadores de COM (Bandera negra) y ya no los de NAV (Desarbolado)', () => {

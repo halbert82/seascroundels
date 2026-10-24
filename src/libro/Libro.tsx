@@ -248,7 +248,15 @@ function CuerpoAprende({ r }: { r: Reglamento }) {
 
 function CapituloVista({ c, primero = false }: { c: Capitulo; primero?: boolean }) {
   if (c.especial === 'ejemplo-de-juego') return <EjemploDeJuego c={c} />
-  if (c.especial === 'mazos-de-inicio') return <MazosDeInicio c={c} />
+  if (c.especial === 'mazos-de-inicio') {
+    return (
+      <MazosDeInicio c={c}>
+        {c.bloques.map((b, i) => (
+          <BloqueVista key={i} b={b} />
+        ))}
+      </MazosDeInicio>
+    )
+  }
   const nueva = PAGINA_NUEVA.has(c.titulo)
   return (
     <section className={`capitulo ${nueva ? 'pagina-nueva' : ''} ${primero ? 'primero' : ''}`} id={c.id}>

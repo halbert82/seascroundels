@@ -58,12 +58,12 @@ export function nuevaPrueba(encuentro: InstId): PruebaEnCurso {
 }
 
 /**
- * Lo que se prueba con esta carta: la Prueba suelta en curso (Acción de una carta) si es suya, o el encuentro
- * de la carta de Peligro en la misión en curso (lo impreso más sus reglas especiales).
+ * Lo que se prueba con esta carta: el encuentro de la carta de Peligro en la misión en curso (lo impreso más sus reglas
+ * especiales). Solo los encuentros piden Pruebas.
  */
 export function definicionDe(s: Estado, carta: InstId): DefinicionPrueba & { restriccion?: Restriccion } {
   const p = s.prueba
-  const def = p?.encuentro === carta && p.definicion ? p.definicion : definicionEncuentro(s, carta)
+  const def = definicionEncuentro(s, carta)
   // La Prueba en curso es Sin ayuda por otra regla («la primera Prueba de esta misión es Sin ayuda»).
   return p?.encuentro === carta && p.sinAyuda && !def.sinAyuda ? { ...def, sinAyuda: true } : def
 }
@@ -258,7 +258,6 @@ export function problemaCompromiso(
   cartas: readonly InstId[],
 ): string | null {
   for (const c of tripulantes) {
-    if (def.soloCon && c !== def.soloCon) return `Solo puede hacerla ${nombreDe(copia(s, def.soloCon).id)}`
     if (buscadoEnCiudad(s, c)) return `${nombreDe(copia(s, c).id)} está Buscado: no puede ser asignado en Ciudad`
     if (tieneEstado(s, c, 'borracho') && hab !== 'COM') return `${nombreDe(copia(s, c).id)} está Borracho: no puede ser asignado a ${hab}`
     if (s.temporales.some((t) => t.clave === 'noCompromete' && t.inst === c)) return `${nombreDe(copia(s, c).id)} no puede ser asignado ahora`
@@ -289,7 +288,6 @@ export function buscadoEnCiudad(s: Estado, c: InstId): boolean {
 /** Nombre del encuentro de una carta en la misión en curso. */
 export function nombreDelEncuentro(s: Estado, carta: InstId): string {
   const e = porId(copia(s, carta).id)
-  if (s.prueba?.encuentro === carta && s.prueba.definicion) return s.prueba.definicion.nombre
   return e.tipo === 'peligro' || e.tipo === 'mazoPropio' ? definicionEncuentro(s, carta).nombre : e.id
 }
 

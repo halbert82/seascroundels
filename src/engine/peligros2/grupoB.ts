@@ -6,7 +6,6 @@ import { marcado, porCriterio, registrarEspecial } from '../tareas/peligros2.ts'
 import { registrarCapacidades } from '../capacidades/index.ts'
 import { eleccionDe, preguntar } from '../tareas/comun.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
-import { agotar as agotarCarta } from '../estados.ts'
 import type { FichaTripulante } from '../infoEstados.ts'
 import type { Selector } from '../efectos.ts'
 import type { Estado, InstId, NuevaTarea } from '../tipos.ts'
@@ -325,45 +324,11 @@ registrarPeligro('p2_arenas', {
 })
 
 // 21. El jaguar · Terrible
-registrarEspecial('p2_jaguar.cazar', (s, t, e) => {
-  const carta = t.fuente
-  if (!carta || !s.zonas.permanentes.includes(carta) || s.prueba) return 'hecha'
-  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
-  if (preparados.length === 0) return 'hecha'
-  const cazador = preparados.length === 1 ? preparados[0] : e ? eleccionDe(e, 'cartas').ids[0] : undefined
-  if (!cazador) return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'cazador' }, candidatas: preparados, min: 1, max: 1 })
-  anotar(s, 'pagar', `Agotas a ${nombre(s, cazador)} para cazar al jaguar.`)
-  agotarCarta(s, cazador)
-  const explorador = tieneRasgo(s, cazador, 'Explorador')
-  encolar(s, {
-    tipo: 'pruebaSuelta',
-    fuente: carta,
-    paso: 'empezar',
-    definicion: {
-      nombre: 'Cazar al jaguar',
-      palabrasClave: ['Bestia'],
-      opciones: [explorador ? { hab: 'EXP', dificultad: 3 } : { hab: 'COM', dificultad: 5 }],
-      exito: [robar(2), { tipo: 'descartarEsta' }],
-      fallo: [heridasAsignados(1)],
-      soloCon: cazador,
-    },
-  })
-  return 'hecha'
-})
-registrarCodigo('p2_jaguar.cazar', (_s, fuente): NuevaTarea[] => [{ tipo: 'especial', clave: 'p2_jaguar.cazar', datos: {}, paso: 0, ...(fuente ? { fuente } : {}) }])
 // Permanente 229 «Ojos amarillos en la espesura»: Obligado: al final de cada encuentro siguiente, el agotado con menos
-// Vida sufre 1 herida. Acción: agota a un preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es Explorador).
-// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
-// cuando Albert revise el mazo de historia. Mientras, se queda como está.
+// Vida sufre 1 herida. Acción: Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador): roba 2 y descarta esta
+// carta. (Albert: antes, una Prueba de COM 5 solo con él, con 1 herida si fallabas; un coste no se falla.)
 registrarPermanente('pm_ojos', {
-  quitar: [],
-  acciones: [
-    {
-      texto: 'Agota a un Tripulante preparado para cazarlo: Prueba de COM 5 solo con él (EXP 3 si es un Explorador)',
-      requisito: (s) => s.prueba === null && s.zonas.tripulacion.some((c) => !copia(s, c).agotada),
-      efectos: [codigo('p2_jaguar.cazar')],
-    },
-  ],
+  quitar: [{ tipo: 'destina', n: 5, hab: 'COM', solo: true, alternativa: { rasgo: 'Explorador', hab: 'EXP', n: 3 }, efectos: [robar(2)] }],
   disparos: [{ cuando: 'cartaResuelta', efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] }],
 })
 registrarPeligro('p2_jaguar', {

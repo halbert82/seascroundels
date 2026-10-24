@@ -31,13 +31,12 @@ describe('catálogo de la Caja básica', () => {
 
   it('cumple con los mazos predefinidos de la versión 0', () => {
     const m = DATOS.mazosPredefinidos
-    // P120 (Albert): la Arenga en lugar del Botín, la segunda Reflejos de gato en lugar de la Retirada y el hueco de
-    // «Cortar por lo sano» sin rellenar: el mazo del capitán de inicio queda en 39 hasta que se rehagan los mazos de inicio.
-    expect(m.mazoDelCapitan).toHaveLength(39)
+    // «Pólvora y abordaje» (decisión de Albert): mazo del capitán de 36 y muelle de 20 (fuera la excepción de 25).
+    expect(m.nombre).toBe('Pólvora y abordaje')
+    expect(m.mazoDelCapitan).toHaveLength(36)
+    expect(m.mazoDeMuelle).toHaveLength(20)
     expect(m.mazoDelCapitan).toContain('arenga')
     expect(m.mazoDelCapitan.filter((id) => id === 'reflejos')).toHaveLength(2)
-    // TODO(regla): excepción temporal de la fase 14 (de 15 a 20 en el reglamento). Fase 15, quinta ronda: 25, sin el Práctico.
-    expect(m.mazoDeMuelle).toHaveLength(25)
     expect(m.mazoDeMuelle).not.toContain('practico')
     expect(m.capitanInicial).toBe('capitan')
     expect(m.puertoInicial).toBe('tortuga')

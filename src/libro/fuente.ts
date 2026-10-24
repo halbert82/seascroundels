@@ -160,7 +160,7 @@ function terminosDe(entradas: { id: string; titulo: string }[]): Termino[] {
     if (SIN_MARCAR.has(slug(e.titulo))) continue
     for (const forma of formasDe(e.titulo)) lista.push({ forma, id: e.id, titulo: e.titulo })
   }
-  // Las más largas primero: «Prueba de una Acción» antes que «Prueba».
+  // Las más largas primero: «Mazo de historia» antes que «Mazo».
   return lista.sort((a, b) => b.forma.length - a.forma.length)
 }
 

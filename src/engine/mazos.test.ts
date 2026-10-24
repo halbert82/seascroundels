@@ -1,33 +1,68 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO } from './catalogo.ts'
 import { DATOS } from './datos.ts'
-import { claseDe, erroresDeMazos, MUELLE_TEMPORAL_FASE14 } from './mazos.ts'
+import { claseDe, erroresDeMazos } from './mazos.ts'
 
-// Las reglas se prueban con el muelle de inicio de siempre (20 cartas, sin los seis Tripulantes de la fase 14).
+// Las reglas se prueban con los mazos de inicio («Pólvora y abordaje»).
 const predefinidos = () => ({
   capitan: DATOS.mazosPredefinidos.capitanInicial,
   mazoDelCapitan: [...DATOS.mazosPredefinidos.mazoDelCapitan],
-  mazoDeMuelle: DATOS.mazosPredefinidos.mazoDeMuelle.slice(0, 20),
+  mazoDeMuelle: [...DATOS.mazosPredefinidos.mazoDeMuelle],
 })
 
 describe('Construir tu mazo', () => {
-  it('los mazos de inicio de Diego cumplen las reglas: muelle de 25 (excepción temporal de la fase 14), capitán de 39 (revisión de Albert)', () => {
-    // TODO(regla): excepción temporal de la fase 14; quitar cuando se rehagan los mazos de inicio (el reglamento dice de
-    // 15 a 20 cartas de muelle; el de inicio lleva 25 para probar los seis Tripulantes nuevos: eran 26 hasta que el
-    // Práctico del puerto salió de la caja, en la quinta ronda de la fase 15).
-    const m = { ...predefinidos(), mazoDeMuelle: [...DATOS.mazosPredefinidos.mazoDeMuelle] }
-    expect(m.mazoDeMuelle).toHaveLength(MUELLE_TEMPORAL_FASE14)
-    // P120 (Albert): 39 (sin «Cortar por lo sano», cuyo hueco no se rellena) hasta rehacer los mazos de inicio.
-    expect(m.mazoDelCapitan).toHaveLength(39)
-    expect(erroresDeMazos(m, { muelleMaximo: MUELLE_TEMPORAL_FASE14 })).toEqual([])
-    // Sin la excepción, 25 cartas no valen: la regla sigue siendo de 15 a 20.
-    expect(erroresDeMazos(m)).toEqual(['El mazo de muelle tiene 25 cartas; debe tener de 15 a 20.'])
+  it('los mazos de inicio «Pólvora y abordaje» cumplen las reglas: muelle de 20 y capitán de 36 (decisión de Albert)', () => {
+    // Fuera la excepción temporal de la fase 14 (muelle de inicio de 25 cartas) y el hueco de «Cortar por lo sano» (P120).
+    const m = predefinidos()
+    expect(DATOS.mazosPredefinidos.nombre).toBe('Pólvora y abordaje')
+    expect(m.mazoDeMuelle).toHaveLength(20)
+    expect(m.mazoDelCapitan).toHaveLength(36)
+    expect(erroresDeMazos(m)).toEqual([])
+    // Con 25 cartas de muelle, como el de inicio de antes, ya no valdría.
+    expect(erroresDeMazos({ ...m, mazoDeMuelle: [...m.mazoDeMuelle, 'grumete', 'grumete', 'matasanos', 'vela', 'casco'] })).toEqual([
+      'El mazo de muelle tiene 25 cartas; debe tener de 15 a 20.',
+    ])
+  })
+
+  it('«Pólvora y abordaje»: 14 Tripulantes, 5 Mejoras de barco y 1 de tripulante; 12 Habilidades y 24 Eventos', () => {
+    const cuenta = (ids: readonly string[]) => {
+      const n = new Map<string, number>()
+      for (const id of ids) n.set(id, (n.get(id) ?? 0) + 1)
+      return Object.fromEntries([...n].sort(([a], [b]) => a.localeCompare(b)))
+    }
+    const tipos = (ids: readonly string[]) => cuenta(ids.map((id) => CATALOGO.find((e) => e.id === id)?.tipo ?? '?'))
+    const m = predefinidos()
+    expect(tipos(m.mazoDeMuelle)).toEqual({ mejoraBarco: 5, mejoraTripulante: 1, tripulante: 14 })
+    expect(tipos(m.mazoDelCapitan)).toEqual({ evento: 24, habilidad: 12 })
+    expect(cuenta(m.mazoDeMuelle)).toEqual(
+      cuenta(['isabela', 'reinaldo', 'viejo_lobo', 'bucanero', 'bucanero', 'filibustero', 'tuerto', 'carne_canon', 'carne_canon', 'canonero', 'carpintero', 'vigia', 'bartolome', 'loro', 'bandera', 'bronce', 'bronce', 'carronadas', 'hamacas', 'sable']),
+    )
+    expect(cuenta(m.mazoDelCapitan)).toEqual(
+      cuenta([
+        ...['abordaje', 'coraje', 'timon', 'emboscada', 'ojo', 'estrellas'].flatMap((id) => [id, id]),
+        ...['virar', 'polvora_c', 'todos', 'arriba', 'ron_valientes', 'reflejos'].flatMap((id) => [id, id]),
+        ...['ni_hombre', 'a_por_ellos', 'prisionero', 'arenga', 'reparacion', 'vendas', 'ron_descanso', 'cambio_rumbo', 'viento', 'soborno', 'cataplasma', 'taberna'],
+      ]),
+    )
+    // «Para cuando se rehagan los mazos de inicio» (Albert, fase 14): 2 o 3 Vigías, al menos 2 Oficiales además del
+    // Capitán y el Loro parlanchín.
+    const conRasgo = (r: string) => m.mazoDeMuelle.filter((id) => (CATALOGO.find((e) => e.id === id)?.carta as { rasgos?: string[] }).rasgos?.includes(r)).length
+    expect(conRasgo('Vigía')).toBeGreaterThanOrEqual(2)
+    expect(conRasgo('Vigía')).toBeLessThanOrEqual(3)
+    expect(conRasgo('Oficial')).toBeGreaterThanOrEqual(2)
+    expect(m.mazoDeMuelle).toContain('loro')
+  })
+
+  it('las siete cartas del núcleo del mazo de inicio vienen con dos copias en la caja (decisión de Albert)', () => {
+    for (const id of ['virar', 'polvora_c', 'todos', 'arriba', 'ron_valientes', 'carne_canon', 'bronce']) {
+      expect(CATALOGO.find((e) => e.id === id)?.copias, id).toBe(2)
+    }
   })
 
   it('el mazo de muelle debe tener de 15 a 20 cartas y el del capitán de 30 a 40', () => {
     const corto = { ...predefinidos(), mazoDeMuelle: predefinidos().mazoDeMuelle.slice(0, 14) }
     expect(erroresDeMazos(corto)).toEqual(['El mazo de muelle tiene 14 cartas; debe tener de 15 a 20.'])
-    const largo = { ...predefinidos(), mazoDelCapitan: [...predefinidos().mazoDelCapitan, 'estrellas', 'vendas'] }
+    const largo = { ...predefinidos(), mazoDelCapitan: [...predefinidos().mazoDelCapitan, 'vendas', 'reparacion', 'taberna', 'cataplasma', 'soborno'] }
     expect(erroresDeMazos(largo)).toContain('El mazo del capitán tiene 41 cartas; debe tener de 30 a 40.')
   })
 

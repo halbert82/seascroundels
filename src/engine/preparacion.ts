@@ -6,7 +6,7 @@ import { anotar, encolar, estadoVacio } from './estado.ts'
 import { ejecutar } from './motor.ts'
 import { robarCartas, revelarAlMuelle, tamanoMuelle } from './tareas/cartas.ts'
 import { sembrar } from './azar.ts'
-import { erroresDeMazos, MUELLE_TEMPORAL_FASE14 } from './mazos.ts'
+import { erroresDeMazos } from './mazos.ts'
 import type { CartaId, Estado, Modo } from './tipos.ts'
 import { valor } from './valores.ts'
 import { barajar, crearCopia, mover } from './zonas.ts'
@@ -23,6 +23,13 @@ export interface OpcionesPartida {
   modo?: Modo
   /** Otro mazo de muelle (por defecto, el predefinido). Tiene que cumplir las reglas de construcción. */
   mazoDeMuelle?: CartaId[]
+  /** Otro mazo del capitán (por defecto, el predefinido). Tiene que cumplir las reglas de construcción. */
+  mazoDelCapitan?: CartaId[]
+  /**
+   * Solo para medir mazos que ya no son legales (los mazos de inicio de antes de «Pólvora y abordaje», con 25 cartas de
+   * muelle): no comprueba las reglas de construcción.
+   */
+  sinComprobarMazos?: boolean
   /** Cartas de Peligro de más en el mazo de Peligros (las de prueba de la fase 6, ya registradas). */
   peligrosExtra?: CartaId[]
   /** Solo para simular otra regla (ver `Estado.variante`). */
@@ -32,17 +39,11 @@ export interface OpcionesPartida {
 }
 
 /** Prepara una partida con los mazos predefinidos y la deja esperando el cambio de mano inicial. */
-export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, variante, sinEscenario }: OpcionesPartida): Estado {
+export function nuevaPartida({ semilla, modo, mazoDeMuelle, mazoDelCapitan, sinComprobarMazos, peligrosExtra, variante, sinEscenario }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
-  // TODO(regla): excepción temporal de la fase 14 (muelle de inicio de 25 cartas desde la quinta ronda de la fase 15); quitar
-  // cuando se rehagan los mazos de inicio.
-  // Vale también para el muelle de inicio sin alguna de sus cartas (las medidas que quitan una para ver lo que pesa).
-  const delInicio = muelle.every((id) => m.mazoDeMuelle.includes(id))
-  const errores = erroresDeMazos(
-    { capitan: m.capitanInicial, mazoDelCapitan: m.mazoDelCapitan, mazoDeMuelle: muelle },
-    delInicio ? { muelleMaximo: MUELLE_TEMPORAL_FASE14 } : {},
-  )
+  const capitan = mazoDelCapitan ?? m.mazoDelCapitan
+  const errores = sinComprobarMazos ? [] : erroresDeMazos({ capitan: m.capitanInicial, mazoDelCapitan: capitan, mazoDeMuelle: muelle })
   if (errores.length > 0) throw new Error(`Mazos no válidos: ${errores.join(' ')}`)
   const s = estadoVacio(sembrar(semilla))
   s.modo = modo ?? m.modo
@@ -98,7 +99,7 @@ export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, varia
   revelarAlMuelle(s, tamanoMuelle(s))
 
   // 7. Mano inicial: tantas cartas como el Mando del Capitán, con un cambio de mano opcional.
-  for (const id of m.mazoDelCapitan) crearCopia(s, id, 'mazoCapitan')
+  for (const id of capitan) crearCopia(s, id, 'mazoCapitan')
   barajar(s, 'mazoCapitan')
   robarCartas(s, valor(s, { tipo: 'mando' }))
 

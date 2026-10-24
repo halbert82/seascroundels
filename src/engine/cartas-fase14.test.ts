@@ -15,10 +15,11 @@ const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'ojo', 'timon'
 const usada = (e: Eleccion): string | null => (e.tipo === 'usar' ? e.uso.clave : e.tipo === 'accion' && e.accion.tipo === 'usar' ? e.accion.uso.clave : null)
 
 describe('Fase 14 · Los seis Tripulantes nuevos', () => {
-  it('están en la colección (241–246) con sus números, y en el mazo de muelle de inicio', async () => {
+  it('están en la colección (241–246) con sus números; en el mazo de muelle de inicio («Pólvora y abordaje»), la Carne de cañón (2) y El Tuerto', async () => {
     const { DATOS } = await import('./datos.ts')
     expect(nuevas.map((id) => porId(id).num)).toEqual([241, 242, 243, 244, 245, 246])
-    for (const id of nuevas) expect(DATOS.mazosPredefinidos.mazoDeMuelle).toContain(id)
+    expect(nuevas.filter((id) => DATOS.mazosPredefinidos.mazoDeMuelle.includes(id))).toEqual(['carne_canon', 'tuerto'])
+    expect(DATOS.mazosPredefinidos.mazoDeMuelle.filter((id) => id === 'carne_canon')).toHaveLength(2)
     const tuerto = porId('tuerto')
     expect(tuerto.tipo === 'tripulante' && tuerto.carta.unico).toBe(true)
   })

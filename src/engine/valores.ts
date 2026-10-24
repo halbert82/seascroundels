@@ -2,12 +2,12 @@
 // constantes activos (Mejoras preparadas, Tripulantes en juego, efectos temporales y el Barco).
 
 import { capacidadPorClave, capacidadesDe } from './capacidades/index.ts'
-import { costeImpreso, iconosDe, porId } from './catalogo.ts'
+import { costeImpreso, iconosDe, porId, rasgosDe } from './catalogo.ts'
 import { DATOS, type Habilidad } from './datos.ts'
 import { copia } from './estado.ts'
 import { cartaDeEstado } from './infoEstados.ts'
 import { reglasMision } from './misiones2/registro.ts'
-import type { Capacidad, Consulta, Contexto, Estado, InstId } from './tipos.ts'
+import type { Capacidad, Consulta, Contexto, Destina, Estado, InstId } from './tipos.ts'
 import { vinculadas } from './zonas.ts'
 
 export function contexto(s: Estado, supuestasAgotadas?: ReadonlySet<InstId>, participantes?: readonly InstId[]): Contexto {
@@ -233,6 +233,29 @@ export function maximoParaDestina(s: Estado, hab: Habilidad): number {
     mejor = Math.max(mejor, habilidadAlAgotarse(s, lista.filter((_, i) => mascara & (1 << i)), hab))
   }
   return mejor
+}
+
+/** La cifra de «Destina X»: X, o la rebajada si tienes preparado un Tripulante con ese Rasgo («4 si tienes un Carpintero preparado»). */
+export function cifraDeDestina(s: Estado, d: Destina): number {
+  const rebaja = d.rebaja
+  if (rebaja && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && rasgosDe(copia(s, c).id).includes(rebaja.rasgo))) return rebaja.n
+  return d.n
+}
+
+/** «Destina X con un solo Tripulante»: los preparados que llegan solos (con la otra habilidad de su Rasgo, si la hay). */
+export function quienesDestinanSolos(s: Estado, d: Destina): InstId[] {
+  const n = cifraDeDestina(s, d)
+  const alt = d.alternativa
+  return s.zonas.tripulacion.filter(
+    (c) =>
+      !copia(s, c).agotada &&
+      (habilidadAlAgotarse(s, [c], d.hab) >= n || (alt !== undefined && rasgosDe(copia(s, c).id).includes(alt.rasgo) && habilidadAlAgotarse(s, [c], alt.hab) >= alt.n)),
+  )
+}
+
+/** ¿Se puede pagar ahora este «Destina»? */
+export function sePuedeDestinar(s: Estado, d: Destina): boolean {
+  return d.solo ? quienesDestinanSolos(s, d).length > 0 : maximoParaDestina(s, d.hab) >= cifraDeDestina(s, d)
 }
 
 /** Espacio que ocupan las Mejoras de barco (los Tesoros no ocupan). */

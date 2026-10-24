@@ -65,6 +65,17 @@ describe('1 · La corriente del Golfo', () => {
     expect(j.copia('vigia').agotada).toBe(true)
   })
 
+  it('Ciudad «Mercante de La Habana», el ejemplo de «Redondear»: agota a la Carne de cañón y adquiere las Hamacas (coste 1) pagando 1 carta (la mitad de 1 se redondea hacia arriba)', () => {
+    const j = en('ciu', ['p2_corriente', 'calma'], { tripulacion: ['carne_canon'], muelle: ['hamacas', 'bronce'], mano: ['ojo', 'timon'] })
+    j.opcion('0').elegir('carne_canon')
+    j.elegir('hamacas')
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'pagar', n: 1 } })
+    j.elegir('ojo')
+    expect(j.copia('hamacas').vinculadaA).toBe('barco')
+    expect(j.zona('mano')).toEqual(['timon'])
+    expect(j.copia('carne_canon').agotada).toBe(true)
+  })
+
   it('Destino «Chorro»: +1 en cualquier Prueba (fase 13: fuera «Prueba de NAV: +2 en su lugar»)', () => {
     const j = en('mar', ['chubasco', 'p2_corriente', 'calma']) // Chubasco repentino: NAV 2
     j.comprometer('NAV', ['capitan'])
@@ -256,17 +267,30 @@ describe('4 · Niebla', () => {
     expect(j.estados('bucanero')).toEqual(['buscado'])
   })
 
+  it('Ciudad, el ejemplo de «Asignado con más (o menos)»: Diego y el Carpintero de a bordo (EXP 1 los dos) empatan; el jugador elige quién queda Buscado', () => {
+    // Diego 1 + Carpintero 1 (sin el +1 de Diego, que se agota a la vez) con el −1 de «Fauna»: 1 contra 2, falla.
+    const j = en('ciu', ['p2_niebla', 'fauna', 'calma'], { tripulacion: ['carpintero'] })
+    j.comprometer('EXP', ['capitan', 'carpintero']).seguir()
+    expect(j.registro).toContain('Total 1 contra 2: fallas la Prueba.')
+    expect(j.decision.tipo).toBe('elegirCartas')
+    const candidatas = (j.decision as { candidatas: string[] }).candidatas
+    expect(candidatas.map((c) => j.estado.cartas[c as `i${number}`]?.id).sort()).toEqual(['capitan', 'carpintero'])
+    j.elegir('carpintero')
+    expect(j.estados('carpintero')).toEqual(['buscado'])
+    expect(j.estados('capitan')).toEqual([])
+  })
+
   it('P72, regla general: sin nadie asignado, «el asignado con menos EXP» es el de menos EXP de toda la tripulación (ejemplo del reglamento)', () => {
-    // Diego (EXP 1) y el Rufián de cubierta (EXP 0): se descarta el Rufián.
-    const j = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['marinero_p'] })
+    // Diego (EXP 1) y la Carne de cañón (EXP 0): se descarta la Carne de cañón.
+    const j = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['carne_canon'] })
     j.comprometer('EXP', []).seguir()
-    expect(j.zona('tripulacion')).not.toContain('marinero_p')
-    expect(j.zona('descartesMuelle')).toContain('marinero_p')
-    // Con el Rastreador de la selva (EXP 3), el de menos EXP es Diego: sufre 1 herida en su lugar.
-    const k = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['baqueano'] })
+    expect(j.zona('tripulacion')).not.toContain('carne_canon')
+    expect(j.zona('descartesMuelle')).toContain('carne_canon')
+    // Con la Vigía inexperta (EXP 2), el de menos EXP es Diego: sufre 1 herida en su lugar.
+    const k = en('nat', ['p2_niebla', 'chubasco', 'escollos', 'calma'], { tripulacion: ['vigia'] })
     k.comprometer('EXP', []).seguir()
     expect(k.copia('capitan').heridas).toBe(1)
-    expect(k.zona('tripulacion')).toEqual(expect.arrayContaining(['capitan', 'baqueano']))
+    expect(k.zona('tripulacion')).toEqual(expect.arrayContaining(['capitan', 'vigia']))
   })
 
   it('P72, regla general: sin nadie asignado, «el asignado con más EXP queda Buscado» va al de más EXP de toda la tripulación', () => {
@@ -383,14 +407,15 @@ describe('6 · Arrecife', () => {
   })
 
   it('Naturaleza «Raqueros de la costa»: si fallas, Inflige 2 heridas: van a quien quiera el jugador (fase 13)', () => {
-    // El ejemplo del «tanque»: el Rufián (COM 2 + 1 de Diego) falla con el −1 de «Fauna» y las heridas van a Diego, que
-    // se quedó a bordo.
-    const j = en('nat', ['p2_arrecife', 'fauna', 'calma'], { tripulacion: ['marinero_p'] })
-    j.comprometer('COM', ['marinero_p']).seguir()
+    // El ejemplo del «tanque»: el Cañonero (COM 1 + 1 de Diego) falla con el −1 del Destino de «Calma chicha» y las
+    // heridas van a Diego, que se quedó a bordo.
+    const j = en('nat', ['p2_arrecife', 'p2_calma', 'calma'], { tripulacion: ['canonero'] })
+    j.comprometer('COM', ['canonero']).seguir()
+    expect(j.registro).toContain('Total 1 contra 3: fallas la Prueba.')
     expect(j.decision).toMatchObject({ tipo: 'repartir', cantidad: 2 })
     j.repartir({ capitan: 2 })
     expect(j.copia('capitan').heridas).toBe(2)
-    expect(j.copia('marinero_p').heridas).toBe(0)
+    expect(j.copia('canonero').heridas).toBe(0)
   })
 
   it('Ciudad «La barra del puerto»: Marinero asignado −2; si superas, robas 1; si fallas, Daña 1 aunque estés en tierra', () => {

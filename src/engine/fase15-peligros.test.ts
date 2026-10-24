@@ -36,12 +36,13 @@ function repartirA(j: Jugador, ...ids: CartaId[]): Jugador {
 
 describe('247 · Fuerza bruta (Descomunal 2)', () => {
   it('Mar «El cachalote» (NAV 5): asignar a uno solo no vale; con dos que lleguen, se supera y da 3', () => {
-    const j = en('mar', ['p2_fuerza', 'calma', 'calma'], { tripulacion: ['bucanero', 'grumete'] })
+    // El ejemplo del reglamento (mazos de inicio «Pólvora y abordaje»): Diego, el Bucanero veterano e Isabela.
+    const j = en('mar', ['p2_fuerza', 'calma', 'calma'], { tripulacion: ['bucanero', 'isabela'] })
     expect(j.decision.tipo).toBe('comprometer')
     expect(() => j.comprometer('NAV', ['bucanero'])).toThrow(/Descomunal 2/)
-    // Bucanero veterano 1 y Grumete leal 1 (+1 cada uno por Diego, que sigue preparado) + Barco 1 = 5 contra 5; Destino
+    // Bucanero veterano 1 e Isabela 1 (+1 cada uno por Diego, que sigue preparado) + Barco 1 = 5 contra 5; Destino
     // de «Mar en calma»: 0.
-    j.comprometer('NAV', ['bucanero', 'grumete']).seguir()
+    j.comprometer('NAV', ['bucanero', 'isabela']).seguir()
     expect(j.registro).toContain('Total 5 contra 5: superas la Prueba.')
     // El Destino «Remanso» prepara a uno de los asignados.
     j.elegir('bucanero')

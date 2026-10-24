@@ -258,8 +258,7 @@ export function tareasDe(s: Estado, efectos: readonly Efecto[], fuente?: InstId)
         break
       case 'menosAvanceEncuentro':
         // Fase 13: lo apunta la Prueba del encuentro y se descuenta al ganar su Avance (nunca por debajo de 0).
-        // P77 (Albert): en la Prueba de una Acción (sin encuentro) no hay Avance del que descontar: no hace nada.
-        if (s.prueba && s.prueba.origen !== 'accion') {
+        if (s.prueba) {
           s.prueba.avanceMenos = (s.prueba.avanceMenos ?? 0) + e.n
           anotar(s, 'efecto', `Este encuentro da ${e.n} de Avance menos (mín. 0).`)
         }

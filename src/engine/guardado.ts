@@ -116,6 +116,7 @@ export function deserializar(texto: string): Estado {
   migrarFase16(s)
   if (!migrarRevisionJugador(s)) throw new Error('La partida guardada estaba a mitad de una carta que ya no existe o ha cambiado (buscar en un mazo, «Cortar por lo sano», «¡A por ellos!» o «El diario del capitán»): no se puede continuar')
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
+  if (!migrarPruebasDeAccion(s)) throw new Error('La partida guardada estaba a mitad de la Prueba de una permanente, que ahora se quita con Destina: no se puede continuar')
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()
   return s
 }
@@ -174,10 +175,24 @@ function migrarRevisionJugador(s: Estado): boolean {
   for (const t of s.pila ?? []) {
     const tarea = t as { tipo: string; fuente?: InstId; uso?: { clave?: string } }
     if (tarea.tipo === 'buscarMuelle' || tarea.tipo === 'quitarPermanente') return false
-    if (tarea.tipo === 'pruebaSuelta' && tarea.fuente && s.cartas[tarea.fuente]?.id === 'a_por_ellos') return false
     if (tarea.tipo === 'usar' && ['botin.jugar', 'retirada.jugar', 'cortar.jugar', 'a_por_ellos.jugar'].includes(tarea.uso?.clave ?? '')) return false
   }
   for (const [inst, c] of Object.entries(s.cartas ?? {})) if (CARTAS_FUERA.has(c.id)) quitarCopia(s, inst as InstId)
+  return true
+}
+
+/**
+ * Solo los encuentros piden Pruebas (Albert): las seis permanentes que pedían una Prueba con su Acción («¡La guardia!»,
+ * «Ojos amarillos en la espesura», «Campanas a rebato», «La cadena de la bocana», «La lechuza canta tres veces» y «Fuego
+ * de cobertura») usan Destina, y ya no hay Pruebas de una Acción. Devuelve false si la partida estaba a mitad de una.
+ */
+function migrarPruebasDeAccion(s: Estado): boolean {
+  if ((s.prueba as { origen?: string } | null)?.origen === 'accion') return false
+  if (s.pendiente && ['cazador', 'comprometerAccion'].includes(s.pendiente.motivo.clave)) return false
+  for (const t of s.pila ?? []) {
+    const tarea = t as { tipo: string; clave?: string }
+    if (tarea.tipo === 'pruebaSuelta' || (tarea.tipo === 'especial' && tarea.clave === 'p2_jaguar.cazar')) return false
+  }
   return true
 }
 

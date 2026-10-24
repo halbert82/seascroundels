@@ -3,22 +3,22 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { CATALOGO, costeImpreso, destinoNaufragio, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
+import { CATALOGO, costeImpreso, destinoNaufragio, enroladoDe, esIndestructible, esUnica, iconosDe, porId, tipoDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
 import { copia, diasRestantes } from '../estado.ts'
 import { entornoActual } from '../peligros.ts'
 import { avanceSinSuperar, definicionEncuentro, quedaDe } from '../definiciones.ts'
-import { buscadoEnCiudad, definicionActual, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
+import { buscadoEnCiudad, definicionActual, definicionDe, dificultadPrueba, modificadorDeDestino, prevision, problemaCompromiso, totalPrueba } from '../prueba.ts'
 import { esVentaja } from '../infoEstados.ts'
 import { estadosDe } from '../estados.ts'
-import { numeroConIcono, textoDe } from '../textos.ts'
+import { numeroConIcono, numeroTras, textoDe } from '../textos.ts'
 import { capacidadDe } from '../usos.ts'
 import type { Accion, CartaId, Decision, Eleccion, Estado, InstId, Uso } from '../tipos.ts'
-import { plazasLibres, sumaParaCubrir, valor, valorSinMinimo } from '../valores.ts'
+import { cifraDeDestina, plazasLibres, quienesDestinanSolos, sumaParaCubrir, valor } from '../valores.ts'
 import { cumple } from '../tareas/efectos.ts'
-import { puedePrepararse } from '../tareas/peligros2.ts'
+import { puedePrepararse, vetadoAlComprometer } from '../tareas/peligros2.ts'
 import { motivoSinSuperar } from '../misiones2/comun.ts'
 import { canonesPreparados } from '../capacidades/comun.ts'
 import { tienesDelNaufragio } from '../misiones2/fase15.ts'
@@ -178,7 +178,7 @@ const MEJORAS_PREFERIDAS: Record<string, number> = {
   velas_tormenta: 3,
   pistola: 3,
   escapulario: 3,
-  bronce: 2,
+  bronce: 3,
   culebrina: 2,
   pedrero: 2,
   viveres: 2,
@@ -265,8 +265,6 @@ function puntuacionMision(s: Estado, m: InstId): number {
 
 /** Avance que se deja de ganar si no se supera la Prueba de este encuentro (Avance X / Y: X − Y). */
 function avanceEnJuego(s: Estado, carta: InstId): number {
-  // Una Prueba de una Acción (de un Tripulante, de «¡La guardia!»…) no da Avance de encuentro.
-  if (s.prueba?.encuentro === carta && s.prueba.origen === 'accion') return 0
   const tipo = porId(copia(s, carta).id).tipo
   if (tipo !== 'peligro' && tipo !== 'mazoPropio') return 0
   const def = definicionEncuentro(s, carta)
@@ -288,6 +286,84 @@ function margenDestino(s: Estado, encuentro: InstId): number {
   return peligroDeFallo(s, encuentro) >= 2 ? 2 : 1
 }
 
+/** Cañones que suman a una Prueba de esa habilidad, +2 cada uno, en el Mar. */
+const CANONES_QUE_SUMAN: Record<string, readonly ('NAV' | 'COM' | 'EXP')[]> = { bronce: ['COM'], culebrina: ['NAV'], culebrina_sanjose: ['COM', 'NAV'] }
+
+/**
+ * «Pólvora y abordaje»: lo que los Cañones preparados pueden sumar a esta Prueba después del Destino (se disparan solo si
+ * hacen falta), en el Mar, sin Abordaje ni «los Cañones no suman». `sin`: un Cañón que se gasta antes («Virar»).
+ */
+function reservaDeCanones(s: Estado, encuentro: InstId, hab: 'NAV' | 'COM' | 'EXP', sin?: InstId): number {
+  if (entornoActual(s) !== 'mar' || definicionDe(s, encuentro).abordaje) return 0
+  if (s.prueba?.sinCanones || valor(s, { tipo: 'sinCanones' }) > 0) return 0
+  return 2 * canonesPreparados(s).filter((c) => c !== sin && CANONES_QUE_SUMAN[copia(s, c).id]?.includes(hab)).length
+}
+
+/** Lo que vale tener preparado un Cañón para la Prueba de este encuentro (el que menos vale es el que se agota). */
+function utilDelCanon(s: Estado, c: InstId, encuentro?: InstId): number {
+  const id = copia(s, c).id
+  if (id === 'carronadas') return encuentro !== undefined && dificultadDeCOM(s, encuentro) <= numeroTras(textoDe('carronadas'), 'dificultad') ? 4 : 1.5
+  return (CANONES_QUE_SUMAN[id]?.length ?? 0) + (id === 'culebrina' ? 0 : 0.5)
+}
+
+/** La dificultad de la Prueba de COM de este encuentro (la de NAV si se vira), o 99 si no la tiene. */
+function dificultadDeCOM(s: Estado, encuentro: InstId): number {
+  const i = definicionDe(s, encuentro).opciones.findIndex((o) => o.hab === 'COM')
+  return i < 0 ? 99 : prevision(s, encuentro, i, [], []).dificultad
+}
+
+interface Compromiso {
+  coste: number
+  eleccion: Extract<Eleccion, { tipo: 'compromiso' }>
+}
+
+/**
+ * El grupo más barato que llega a la dificultad con margen (para el Destino), con las cartas de la mano que hagan falta y
+ * contando con los Cañones que pueden dispararse después. Null si ninguno llega.
+ */
+function mejorCompromiso(
+  s: Estado,
+  encuentro: InstId,
+  def: ReturnType<typeof definicionDe>,
+  tripulantes: readonly InstId[],
+  mano: readonly InstId[],
+  sinCanon?: InstId,
+): Compromiso | null {
+  const margen = margenDestino(s, encuentro)
+  let mejor: Compromiso | null = null
+  for (let opcion = 0; opcion < def.opciones.length; opcion++) {
+    const hab = def.opciones[opcion]!.hab
+    const reserva = reservaDeCanones(s, encuentro, hab, sinCanon)
+    const cartas = mano.filter((c) => iconos(s, c, hab) > 0).sort((a, b) => iconos(s, b, hab) - iconos(s, a, hab))
+    for (let mascara = 1; mascara < 1 << tripulantes.length; mascara++) {
+      const grupo = tripulantes.filter((_, i) => mascara & (1 << i))
+      if (problemaCompromiso(s, def, hab, grupo, []) !== null) continue
+      const sinCartas = prevision(s, encuentro, opcion, grupo, [])
+      // Margen para el Destino, que aún no se ha revelado (y ya no se puede reforzar con cartas después; con Cañones, sí).
+      const objetivo = sinCartas.dificultad + margen
+      let total = sinCartas.total
+      const usadas: InstId[] = []
+      for (const c of cartas) {
+        if (total + reserva >= objetivo) break
+        usadas.push(c)
+        total += iconos(s, c, hab)
+      }
+      if (total + reserva < sinCartas.dificultad) continue
+      // Los Cañones que habrá que disparar seguro (para llegar) y los que quizá (para el margen).
+      const seguros = Math.ceil(Math.max(0, sinCartas.dificultad - total) / 2)
+      const quizas = Math.ceil(Math.max(0, objetivo - Math.max(total, sinCartas.dificultad)) / 2)
+      const coste =
+        grupo.reduce((n, c) => n + (c === s.capitan ? 2.5 : 1 + valorTripulante(s, c) / 8), 0) +
+        usadas.length * 0.8 +
+        seguros * 0.7 +
+        quizas * 0.3 -
+        (total + reserva >= objetivo ? 0.5 : 0)
+      if (!mejor || coste < mejor.coste) mejor = { coste, eleccion: { tipo: 'compromiso', opcion, tripulantes: grupo, cartas: usadas } }
+    }
+  }
+  return mejor
+}
+
 /** Mejor compromiso: el grupo más barato que llega a la dificultad con margen, o nadie si no compensa. */
 function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' }>): Eleccion {
   const p = s.prueba
@@ -300,30 +376,7 @@ function elegirCompromiso(s: Estado, d: Extract<Decision, { tipo: 'comprometer' 
   if (m && copia(s, m.carta).id === 'espia-I' && (m.fichas?.sospecha ?? 0) >= 2 && d.opciones.every((o) => o.hab === 'COM')) {
     return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
   }
-  const margen = margenDestino(s, encuentro)
-  let mejor: { coste: number; eleccion: Eleccion } | null = null
-  for (let opcion = 0; opcion < d.opciones.length; opcion++) {
-    const hab = d.opciones[opcion]!.hab
-    const cartas = d.cartas.filter((c) => iconos(s, c, hab) > 0).sort((a, b) => iconos(s, b, hab) - iconos(s, a, hab))
-    for (let mascara = 1; mascara < 1 << tripulantes.length; mascara++) {
-      const grupo = tripulantes.filter((_, i) => mascara & (1 << i))
-      if (problemaCompromiso(s, definicionActual(s), hab, grupo, []) !== null) continue
-      const sinCartas = prevision(s, encuentro, opcion, grupo, [])
-      // Margen para el Destino, que aún no se ha revelado (y ya no se puede reforzar después).
-      const objetivo = sinCartas.dificultad + margen
-      let total = sinCartas.total
-      const usadas: InstId[] = []
-      for (const c of cartas) {
-        if (total >= objetivo) break
-        usadas.push(c)
-        total += iconos(s, c, hab)
-      }
-      if (total < sinCartas.dificultad) continue
-      const coste =
-        grupo.reduce((n, c) => n + (c === s.capitan ? 2.5 : 1 + valorTripulante(s, c) / 8), 0) + usadas.length * 0.8 - (total >= objetivo ? 0.5 : 0)
-      if (!mejor || coste < mejor.coste) mejor = { coste, eleccion: { tipo: 'compromiso', opcion, tripulantes: grupo, cartas: usadas } }
-    }
-  }
+  const mejor = mejorCompromiso(s, encuentro, { ...definicionActual(s), opciones: d.opciones }, tripulantes, d.cartas)
   if (mejor) return mejor.eleccion
   // No llega: si el fallo es suave, no compromete a nadie; si duele, lo intenta con todo.
   if (peligroDeFallo(s, encuentro) < 2) return { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] }
@@ -425,6 +478,21 @@ function elegirCartas(s: Estado, d: Extract<Decision, { tipo: 'elegirCartas' }>)
     case 'agotarParaPagar':
     case 'agotarPago':
       return { tipo: 'cartas', ids: por((c) => valorTripulante(s, c)).slice(0, n) }
+    // Agotar un Cañón (para virar o por un efecto): el que menos falta le hace para el encuentro en curso.
+    case 'agotarCanones': {
+      const quedan = [...d.candidatas]
+      const ids: InstId[] = []
+      for (let i = 0; i < n; i++) {
+        const c = canonQueSeAgota(s, quedan, s.zonas.encuentro[0])
+        if (!c) break
+        ids.push(c)
+        quedan.splice(quedan.indexOf(c), 1)
+      }
+      return { tipo: 'cartas', ids }
+    }
+    // «Destina X con un solo Tripulante»: el que menos falta le hace (Diego, el último: su +1 vale más preparado).
+    case 'destinaSolo':
+      return { tipo: 'cartas', ids: por((c) => (c === s.capitan ? 50 : 0) + valorTripulante(s, c)).slice(0, 1) }
     case 'incautar':
     case 'descartarMayorCoste':
       return { tipo: 'cartas', ids: por((c) => (porId(copia(s, c).id).tipo === 'tripulante' ? valorTripulante(s, c) : iconosTotales(s, c))).slice(0, n) }
@@ -821,21 +889,6 @@ function faltaAvance(s: Estado): number {
 }
 
 /** Puntos de usar ahora esta capacidad (0 o menos: no la usa). */
-/** Capacidades que empiezan una Prueba (la de una Acción). */
-const PRUEBAS_DE_ACCION = new Set(['guardia.quitar0', 'pm_ojos.accion0'])
-
-function empiezaUnaPrueba(s: Estado, uso: Uso): boolean {
-  if (PRUEBAS_DE_ACCION.has(uso.clave)) return true
-  const i = /\.quitar(\d+)$/.exec(uso.clave)?.[1]
-  return i !== undefined && uso.fuente !== null && quedaDe(s, uso.fuente)?.quitar[Number(i)]?.tipo === 'prueba'
-}
-
-/** La última Prueba de la misión fue la de una Acción y se falló: no se repite hasta resolver otro encuentro. */
-function acabaDeFallarUnaAccion(s: Estado): boolean {
-  const ultima = s.mision?.pruebas?.at(-1)
-  return ultima !== undefined && !ultima.encuentro && !ultima.superada
-}
-
 function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   const p = s.prueba
   const ev = sucesoPendiente(s, d)
@@ -843,7 +896,6 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   const fuente = uso.fuente
   const enMision = s.mision !== null && !s.mision.fin
   const trasEncuentro = d.motivo.clave === 'trasEncuentro'
-  if (trasEncuentro && acabaDeFallarUnaAccion(s) && empiezaUnaPrueba(s, uso)) return 0
   const enPruebaAbierta = p !== null && p.hab !== null && !p.automatica
   const carta = s.zonas.encuentro[0]
   switch (uso.clave) {
@@ -1010,7 +1062,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'virar.jugar':
       // Revisión de Albert: la Prueba de NAV pasa a ser de COM agotando un Cañón. Si en COM llega mejor (contando los demás
       // Cañones, que sí suman en COM y en el Mar).
-      return ev?.tipo === 'revelarPeligro' && convieneVirar(s, ev.carta) ? 3 : 0
+      return ev?.tipo === 'revelarPeligro' && convieneVirar(s, ev.carta, fuente) ? 3 : 0
     case 'fiador.descarte': {
       // Fase 14: se descarta él (y robas 2) en lugar de otro que valga más.
       if (ev?.tipo !== 'descartarTripulante' || !fuente) return 0
@@ -1026,9 +1078,9 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return convieneArenga(s) ? 2 : 0
     case 'ron_valientes.jugar':
       return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
-    case 'pm_ojos.accion0':
-      // Cazar al jaguar: uno solo, COM 5 (EXP 3 si es un Explorador).
-      return trasEncuentro && s.zonas.tripulacion.some((c) => !copia(s, c).agotada && cazaElJaguar(s, c)) ? 2 : 0
+    case 'pm_ojos.quitar0':
+      // Cazar al jaguar: Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador); roba 2 y deja de herir.
+      return trasEncuentro ? 2 : 0
     case 'peligroEnMuelle.descartar':
       return fuente && mano >= (s.peligrosEnMuelle?.[fuente] ?? 0) + 2 ? 1 : 0
     // Fase 15. «La ruta de los alisios»: Destina 3 NAV para quitar 2 fichas de Rival justo antes de que el siguiente
@@ -1046,9 +1098,9 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     // Misiones 2.0: «Rumbo a la isla»: si ya tiene el Avance y solo falta avistar la isla, agota al Vigía o al Piloto.
     case 'templo-I.isla':
       return trasEncuentro && faltaAvance(s) <= 0 ? 3 : 0
-    // «¡La guardia!» (todas las Pruebas +1): echarlos si se llega, o escabullirse si sobra gente.
+    // «¡La guardia!» (todas las Pruebas +1): echarlos (Destina 5 COM) si queda alguien a bordo, o escabullirse si sobra gente.
     case 'guardia.quitar0':
-      return trasEncuentro && faltaAvance(s) > 0 && alcanza(s, [{ hab: 'COM', dificultad: 6 }]) ? 2 : 0
+      return trasEncuentro && faltaAvance(s) > 0 && quedaAlguienTrasDestinar(s, uso) ? 2 : 0
     case 'guardia.accion0':
       return trasEncuentro && faltaAvance(s) > 0 && s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length >= 3 ? 1 : 0
     default: {
@@ -1056,10 +1108,10 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       const cap = capacidadDe(uso)
       if (cap.desde === 'permanente' && cap.ventana === 'accion') {
         if (!trasEncuentro || !fuente) return 0
-        // La Prueba de una Acción: solo si se llega con margen (cada intento revela un Destino y, sin nadie, Sin oposición).
+        // Destina: solo si después le queda alguien preparado para el siguiente encuentro.
         const i = /\.quitar(\d+)$/.exec(uso.clave)?.[1]
         const forma = i !== undefined ? quedaDe(s, fuente)?.quitar[Number(i)] : undefined
-        if (forma?.tipo === 'prueba') return alcanza(s, forma.opciones) ? 2 : 0
+        if (forma?.tipo === 'destina') return quedaAlguienTrasDestinar(s, uso) ? 2 : 0
         const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada).length
         return preparados >= 2 || mano >= 4 ? 2 : 0
       }
@@ -1068,53 +1120,58 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   }
 }
 
-/**
- * ¿Llegan los preparados (con las cartas de la mano) a alguna de estas Pruebas con 1 de margen? La dificultad es la
- * real: con lo que le sumen la misión, «¡La guardia!» o «la siguiente Prueba recibe +1».
- */
 /** Lo que le sobra (o falta) para superar el encuentro comprometiendo a todos los preparados y las cartas útiles. */
-function margenDelEncuentro(s: Estado, carta: InstId): number {
-  const enc = definicionEncuentro(s, carta)
-  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c))
-  let margen = -99
-  for (let i = 0; i < enc.opciones.length; i++) {
-    const o = enc.opciones[i]!
-    const { total, dificultad } = prevision(s, carta, i, preparados, s.zonas.mano.filter((c) => iconos(s, c, o.hab) > 0))
-    margen = Math.max(margen, total - dificultad)
-  }
-  return margen
-}
-
-/** «Virar y dar la cara»: ¿le va mejor la Prueba de COM (con los Cañones que le queden) que la de NAV? */
-function convieneVirar(s: Estado, carta: InstId): boolean {
+/**
+ * «Virar y dar la cara» («Pólvora y abordaje»): ¿sale más barata la Prueba de COM, contando lo que cuesta virar (la carta
+ * y el Cañón que se agota) y lo que suman los Cañones que quedan (o las Carronadas, que la superan si pide 4 o menos), que
+ * la de NAV? Si la de NAV no se puede superar y la de COM sí, vira.
+ */
+function convieneVirar(s: Estado, carta: InstId, virar: InstId | null): boolean {
   const m = s.mision
   if (!m) return false
-  const nav = margenDelEncuentro(s, carta)
+  const canon = canonQueSeAgota(s, canonesPreparados(s), carta)
+  if (!canon) return false
+  const tripulantes = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c) && !vetadoAlComprometer(s, c))
+  const nav = mejorCompromiso(s, carta, definicionDe(s, carta), tripulantes, s.zonas.mano)
   const antes = m.navAcom
   m.navAcom = carta
-  const canones = definicionEncuentro(s, carta).abordaje ? 0 : 2 * Math.max(0, canonesPreparados(s).length - 1)
-  const com = margenDelEncuentro(s, carta) + canones
-  if (antes === undefined) delete m.navAcom
-  else m.navAcom = antes
-  return nav < 1 && com >= nav + 2
+  let com: Compromiso | null
+  try {
+    const carronadas = canonesPreparados(s).some((c) => c !== canon && copia(s, c).id === 'carronadas')
+    com =
+      carronadas && dificultadDeCOM(s, carta) <= numeroTras(textoDe('carronadas'), 'dificultad')
+        ? { coste: 0.7, eleccion: { tipo: 'compromiso', opcion: 0, tripulantes: [], cartas: [] } }
+        : mejorCompromiso(s, carta, definicionDe(s, carta), tripulantes, s.zonas.mano.filter((c) => c !== virar), canon)
+  } finally {
+    if (antes === undefined) delete m.navAcom
+    else m.navAcom = antes
+  }
+  if (!com) return false
+  if (!nav) return true
+  return com.coste + 0.8 + 0.7 < nav.coste
 }
 
-function alcanza(s: Estado, opciones: readonly { hab: 'NAV' | 'COM' | 'EXP'; dificultad: number }[]): boolean {
-  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c))
-  if (preparados.length === 0) return false
-  return opciones.some((o) => {
-    const total = preparados.reduce((n, c) => n + valor(s, { tipo: 'habilidad', carta: c, hab: o.hab }), 0) + s.zonas.mano.reduce((n, c) => n + iconos(s, c, o.hab), 0)
-    const pendientes = (s.mision?.modsSiguientes ?? []).filter((m) => m.de === 'prueba' && !m.claves && (!m.hab || m.hab === o.hab)).reduce((n, m) => n + (m.n ?? 0), 0)
-    const dificultad = Math.max(0, valorSinMinimo(s, { tipo: 'dificultad', base: o.dificultad, hab: o.hab, claves: [] }) + pendientes)
-    return total >= dificultad + 1
-  })
+/** El Cañón que se agota cuando hay que agotar uno (para virar o por un efecto): el que menos falta le hace ahora. */
+function canonQueSeAgota(s: Estado, candidatos: readonly InstId[], encuentro?: InstId): InstId | undefined {
+  return [...candidatos].sort((a, b) => utilDelCanon(s, a, encuentro) - utilDelCanon(s, b, encuentro))[0]
 }
 
-/** ¿Puede este Tripulante cazar al jaguar él solo (con las cartas de la mano)? */
-function cazaElJaguar(s: Estado, c: InstId): boolean {
-  const explorador = rasgosDe(copia(s, c).id).includes('Explorador')
-  const hab = explorador ? 'EXP' : 'COM'
-  return valor(s, { tipo: 'habilidad', carta: c, hab }) + s.zonas.mano.reduce((n, x) => n + iconos(s, x, hab), 0) >= (explorador ? 3 : 5) + 1
+
+/**
+ * Tras pagar el «Destina» de esta capacidad con el grupo más barato (o con el que menos falta le hace, si es «con un solo
+ * Tripulante»), ¿le queda algún Tripulante preparado?
+ */
+function quedaAlguienTrasDestinar(s: Estado, uso: Uso): boolean {
+  const coste = capacidadDe(uso).coste?.find((c) => c.tipo === 'destina')
+  if (!coste || coste.tipo !== 'destina') return true
+  const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
+  if (coste.solo) return quienesDestinanSolos(s, coste).length > 0 && preparados.length >= 2
+  const n = cifraDeDestina(s, coste)
+  const motivo = { clave: 'destina', texto: coste.hab }
+  for (let mascara = 1; mascara < (1 << preparados.length) - 1; mascara++) {
+    if (sumaParaCubrir(s, motivo, preparados.filter((_, i) => mascara & (1 << i)), []) >= n) return true
+  }
+  return false
 }
 
 // ---------------------------------------------------------------------------

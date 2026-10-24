@@ -13,8 +13,8 @@ import './pruebas/situacion.ts' // registra todas las reglas y capacidades
 /** Los encuentros: lo único que puede pedir una Prueba. */
 const TIPOS_DE_ENCUENTRO = new Set<EntradaCatalogo['tipo']>(['peligro', 'mazoPropio'])
 
-/** Las seis permanentes que todavía piden una Prueba con su Acción (pasarán a Destina cuando Albert revise el mazo de historia). */
-const PENDIENTES = ['guardia', 'pm_ojos', 'pm_campanas', 'pm_cadena', 'pm_lechuza', 'pm_cobertura']
+/** Las seis permanentes que pedían una Prueba con su Acción y ahora usan Destina (decisión de Albert). */
+const ANTES_CON_PRUEBA = ['guardia', 'pm_ojos', 'pm_campanas', 'pm_cadena', 'pm_lechuza', 'pm_cobertura']
 
 /** Todos los textos de una carta (sus campos de texto, a cualquier profundidad), sin los del prototipo antiguo. */
 function textosDe(carta: unknown): string[] {
@@ -42,9 +42,9 @@ function apartado(titulo: string): string {
 }
 
 describe('Regla general (Albert): solo los encuentros piden Pruebas', () => {
-  it('ninguna carta que no sea un encuentro pide una Prueba, salvo las seis permanentes pendientes', () => {
-    const piden = CATALOGO.filter((e) => !TIPOS_DE_ENCUENTRO.has(e.tipo) && textosDe(e.carta).some((t) => PIDE_PRUEBA.test(t))).map((e) => e.id)
-    expect([...new Set(piden)].sort()).toEqual([...PENDIENTES].sort())
+  it('ninguna carta que no sea un encuentro pide una Prueba (las seis permanentes, tampoco: usan Destina)', () => {
+    const piden = CATALOGO.filter((e) => !TIPOS_DE_ENCUENTRO.has(e.tipo) && textosDe(e.carta).some((t) => PIDE_PRUEBA.test(t) || /haz una Prueba|supera una Prueba de/i.test(t))).map((e) => e.id)
+    expect([...new Set(piden)]).toEqual([])
   })
 
   it('ninguna carta de jugador pide ya una Prueba', () => {
@@ -53,19 +53,35 @@ describe('Regla general (Albert): solo los encuentros piden Pruebas', () => {
     expect(piden.map((e) => e.id)).toEqual([])
   })
 
-  it('en el motor, las únicas permanentes que se quitan con una Prueba son las pendientes', () => {
-    const conPrueba = DATOS.permanentes.filter((p) => reglasPermanente(p.id)?.quitar.some((q) => q.tipo === 'prueba')).map((p) => p.id)
-    // «Ojos amarillos» hace su Prueba con su propia Acción (solo con el Tripulante que agota), no con «quitar».
-    expect(conPrueba.sort()).toEqual(PENDIENTES.filter((id) => id !== 'pm_ojos').sort())
+  it('en el motor, las seis permanentes se quitan con Destina, nunca con una Prueba', () => {
+    const formas = (id: string) => (reglasPermanente(id)?.quitar ?? []).map((q) => q.tipo)
+    expect(Object.fromEntries(ANTES_CON_PRUEBA.map((id) => [id, formas(id)]))).toEqual({
+      guardia: ['destina'],
+      pm_ojos: ['destina'],
+      pm_campanas: ['agotarRasgo', 'destina'],
+      pm_cadena: ['destina'],
+      pm_lechuza: ['agotarRasgo', 'destina'],
+      pm_cobertura: ['destina'],
+    })
   })
 
-  it('el reglamento lo dice en la Prueba, en Destina y en «Aprende a jugar»; la Referencia nombra las seis pendientes', () => {
+  it('los textos de Albert: «Destina» en las seis, sin efectos de fallar (un coste no se falla)', () => {
+    const texto = (id: string) => DATOS.permanentes.find((p) => p.id === id)?.texto ?? ''
+    expect(texto('guardia')).toBe(
+      'Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Destina 5 [COM] ~(los echáis a palos)~ o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.',
+    )
+    expect(texto('pm_ojos')).toContain('**Acción:** Destina 5 [COM] con un solo Tripulante (3 [EXP] si es un _Explorador_): {2 robar} y descarta esta carta.')
+    expect(texto('pm_campanas')).toContain('**Acción:** Agota a un _Oficial_ o destina 3 [COM]: descarta esta carta.')
+    expect(texto('pm_cadena')).toBe('No puedes superar la misión. **Acción:** Destina 5 [COM] (4 si tienes un _Carpintero_ preparado): descarta esta carta y gana {1 avance}.')
+    expect(texto('pm_lechuza')).toContain('**Acción:** Agota a un _Vigía_ o destina 3 [EXP]: descarta esta carta y el señalado queda **Aguerrido**.')
+    expect(texto('pm_cobertura')).toBe('Los _Cañones_ no suman. **Acción:** Destina 3 [NAV]: descarta esta carta.')
+    for (const id of ANTES_CON_PRUEBA) expect(texto(id), id).not.toMatch(/si fallas|si superas|Prueba de/)
+  })
+
+  it('el reglamento lo dice en la Prueba, en Destina y en «Aprende a jugar»; ya no hay «Prueba de una Acción»', () => {
     for (const titulo of ['### Prueba', '### Destina', '#### Resolver una Prueba']) expect(apartado(titulo), titulo).toMatch(/Solo los encuentros piden Pruebas/)
-    expect(apartado('### Prueba')).toMatch(/cambiarán a Destina/)
-    for (const nombre of ['¡La guardia!', 'Ojos amarillos en la espesura', 'Campanas a rebato', 'La cadena de la bocana', 'La lechuza canta tres veces', 'Fuego de cobertura']) {
-      expect(apartado('### Prueba de una Acción'), nombre).toContain(`«${nombre}»`)
-    }
-    expect(apartado('#### Pruebas que nacen de una Acción')).toMatch(/seis permanentes .* pasarán a Destina/)
+    expect(fuente).not.toMatch(/cambiarán a Destina|pasarán a Destina|Prueba de una Acción|Pruebas que nacen de una Acción/)
+    expect(fuente).not.toMatch(/^#{2,4} Prueba de una Acción$/m)
   })
 
   it('fuera de los dos libros la regla de la Interrupción que pedía una Prueba con otra a medias', () => {

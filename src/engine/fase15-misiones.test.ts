@@ -437,12 +437,12 @@ describe('Las cartas del mazo del naufragio que se quedan en juego', () => {
   })
 
   it('La culebrina perdida no va a los descartes del muelle: vuelve al mazo de historia (regla general; cierra P108)', () => {
-    // El Barco se hunde con la culebrina y la Vela mayor: la Vela va a los descartes del muelle; la culebrina, al mazo de
-    // historia (el ejemplo del reglamento, en «Mazo de historia»).
-    const j = Jugador.en({ barco: { dano: 5, mejoras: ['culebrina_sanjose', 'vela'] }, mazoHistoria: [] })
+    // El Barco se hunde con la culebrina y los Cañones de bronce: los Cañones van a los descartes del muelle; la
+    // culebrina, al mazo de historia (el ejemplo del reglamento, en «Mazo de historia»).
+    const j = Jugador.en({ barco: { dano: 5, mejoras: ['culebrina_sanjose', 'bronce'] }, mazoHistoria: [] })
     expect(j.zona('mejoras')).toEqual([])
     expect(j.zona('mazoHistoria')).toEqual(['culebrina_sanjose'])
-    expect(j.zona('descartesMuelle')).toEqual(['vela'])
+    expect(j.zona('descartesMuelle')).toEqual(['bronce'])
   })
 
   it('El doblón de la calavera, sacado del naufragio: entra en juego, tu Capitán queda Maldito y no da reputación', () => {

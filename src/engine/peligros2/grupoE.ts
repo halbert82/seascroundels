@@ -338,14 +338,12 @@ registrarCodigo('p2_presagio.pasa', (s, fuente) => {
 })
 
 // Permanente 235 «La lechuza canta tres veces» (junto al señalado, con 1 ficha): cada nuevo encuentro, 1 ficha; con 3,
-// el señalado sufre 2 heridas y queda Maldito. Acción: agota a un Vigía o supera EXP 3 para descartarla: el señalado
-// queda Aguerrido.
-// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
-// cuando Albert revise el mazo de historia. Mientras, se queda como está.
+// el señalado sufre 2 heridas y queda Maldito. Acción: agota a un Vigía o destina 3 EXP para descartarla: el señalado
+// queda Aguerrido. (Albert: antes, una Prueba de EXP 3; solo los encuentros piden Pruebas.)
 registrarPermanente('pm_lechuza', {
   quitar: [
     { tipo: 'agotarRasgo', rasgo: 'Vigía' },
-    { tipo: 'prueba', opciones: [{ hab: 'EXP', dificultad: 3 }] },
+    { tipo: 'destina', n: 3, hab: 'EXP' },
   ],
   fichasIniciales: 1,
   contador: { cuando: 'revelarPeligro', umbral: 3, efectos: [codigo('p2_presagio.cumple')], despues: 'descartar' },

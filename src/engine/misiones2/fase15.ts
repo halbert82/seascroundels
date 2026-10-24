@@ -21,7 +21,7 @@ import { numeroConIcono, textoDe } from '../textos.ts'
 import type { CartaId, Estado, InstId, NuevaTarea, TareaDe } from '../tipos.ts'
 import { espacioLibre } from '../valores.ts'
 import { barajar, mover } from '../zonas.ts'
-import { alFallarPrueba, alRevelarPeligro, alSuperarPrueba, dificultadClaves, fichas, ponerFichas, registrarMision } from './comun.ts'
+import { alFallarPrueba, alRevelarPeligro, dificultadClaves, fichas, ponerFichas, registrarMision } from './comun.ts'
 import { registrarCartaDeRecompensa, registrarVigilante } from './registro.ts'
 
 const reputacion = (n: number): NuevaTarea => ({ tipo: 'cambiarReputacion', n })
@@ -131,14 +131,11 @@ function desviar(clave: string, de: 'danoBarco' | 'heridas', si: (s: Estado) => 
 }
 
 /**
- * «Después de que superes una Prueba de [HAB] (en esta misión), gana 1 de Avance adicional.» En la Prueba de un encuentro
- * se suma a su Avance (así se ve antes, en «Si la superas: +N»); en la de una Acción, se gana al superarla.
+ * «Después de que superes una Prueba de [HAB] (en esta misión), gana 1 de Avance adicional.» Se suma al Avance del
+ * encuentro (así se ve antes, en «Si la superas: +N»). Solo los encuentros piden Pruebas.
  */
-function avanceAdicional(clave: string, hab: 'NAV' | 'EXP', motivo: string): CapacidadDeCarta[] {
-  return [
-    { clave, ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'avanceExtraPrueba' && c.hab === hab ? 1 : 0) },
-    alSuperarPrueba(`${clave}.accion`, (_s, p) => (p.hab === hab && !p.encuentro ? [{ tipo: 'ganarAvance', n: 1, motivo }] : [])),
-  ]
+function avanceAdicional(clave: string, hab: 'NAV' | 'EXP'): CapacidadDeCarta[] {
+  return [{ clave, ventana: 'constante', modifica: (_ctx, _yo, c) => (c.tipo === 'avanceExtraPrueba' && c.hab === hab ? 1 : 0) }]
 }
 
 /** Pon en juego una permanente del mazo de historia (como efecto de una misión). */
@@ -241,7 +238,7 @@ registrarCartaDeRecompensa('cueva_abajo', {
 // «El mapa era falso»: cada Prueba de EXP que superes, 1 de Avance adicional. Su recompensa también es la carta 293 (como
 // ya está superado, se sortean los otros dos capítulos II).
 registrarMision('isla-II-falso', {
-  capacidades: avanceAdicional('pista', 'EXP', 'La pista buena'),
+  capacidades: avanceAdicional('pista', 'EXP'),
 })
 
 // ---------------------------------------------------------------------------
@@ -249,7 +246,7 @@ registrarMision('isla-II-falso', {
 // una Prueba de NAV en esta misión, gana 1 de Avance adicional».
 
 const FICHA_RIVAL = (nota: string) => ({ ficha: 'rival' as const, nombre: 'Rival', umbral: 8, inicial: 0, nota })
-const reglasDeRival = (): CapacidadDeCarta[] => [alRevelarPeligro('rival', () => [ponerFichas('rival', 2)]), ...avanceAdicional('ceñir', 'NAV', 'Ceñís el viento')]
+const reglasDeRival = (): CapacidadDeCarta[] => [alRevelarPeligro('rival', () => [ponerFichas('rival', 2)]), ...avanceAdicional('ceñir', 'NAV')]
 
 // La regata de San Juan (276). «Obligado: Con 8 fichas de Rival, el rival gana la regata y la misión termina. Si no la
 // superas, apártala.» (Fase 16, decisiones de Albert, como «La ruta de los alisios»): termina en el momento de revelar el

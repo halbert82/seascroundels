@@ -10,8 +10,8 @@ describe('Ejemplo · Jugar cartas (Bucanero veterano y Cañones de bronce)', () 
   const inicio = () =>
     Jugador.en({
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
-      muelle: ['bucanero', 'bronce', 'sable', 'matasanos'],
-      mazoMuelle: ['vela', 'casco', 'vigia', 'carpintero'],
+      muelle: ['bucanero', 'bronce', 'sable', 'carpintero'],
+      mazoMuelle: ['hamacas', 'bandera', 'vigia', 'canonero'],
     })
 
   it('si coges los dos, pagas 4 cartas y zarpas con 1 en la mano', () => {
@@ -75,45 +75,48 @@ describe('Ejemplo · −1 Mando (Chubasco repentino)', () => {
 })
 
 describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
-  it('Inicio y Jugar cartas: Rumores del tesoro, recluta al Bucanero y al Rufián, repone el muelle', () => {
+  // Mazos de inicio «Pólvora y abordaje»: la Carne de cañón en lugar del Rufián de cubierta, el Carpintero de a bordo en
+  // lugar del Matasanos y, al reponer, las Hamacas, los Cañones de bronce, la Vigía y el Cañonero.
+  it('Inicio y Jugar cartas: Rumores del tesoro, recluta al Bucanero y a la Carne de cañón, repone el muelle', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'pruebas-calma'],
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
-      muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
-      mazoMuelle: ['bronce', 'vela', 'casco', 'vigia', 'carpintero'],
+      muelle: ['carne_canon', 'bucanero', 'sable', 'carpintero'],
+      mazoMuelle: ['hamacas', 'bronce', 'vigia', 'canonero', 'bandera'],
     })
     // Inicio: revela «Rumores del tesoro»; si zarpa este turno, empezará la misión con 1 de Avance.
     expect(j.zona('escenarioEnCurso')).toEqual(['rumores'])
     expect(j.estado.temporales.map((t) => t.clave)).toEqual(['rumores.turno'])
     expect(j.copia('capitan').agotada).toBe(false)
 
-    // Jugar cartas: recluta al Bucanero con «Soborno» y «Ojo avizor», y al Rufián con «Reflejos de gato».
+    // Jugar cartas: recluta al Bucanero con «Soborno» y «Ojo avizor», y a la Carne de cañón con «Reflejos de gato».
     j.reclutar('bucanero').elegir('soborno', 'ojo')
-    j.reclutar('marinero_p').elegir('reflejos')
+    j.reclutar('carne_canon').elegir('reflejos')
     expect(j.zona('mano')).toEqual(['abordaje', 'timon'])
-    expect(j.zona('tripulacion')).toEqual(['capitan', 'bucanero', 'marinero_p'])
+    expect(j.zona('tripulacion')).toEqual(['capitan', 'bucanero', 'carne_canon'])
 
-    // Termina el paso: descarta el Sable y el Matasanos y revela cuatro cartas nuevas.
+    // Termina el paso: descarta el Sable y el Carpintero y revela cuatro cartas nuevas.
     j.terminar()
-    expect(j.zona('descartesMuelle').sort()).toEqual(['matasanos', 'sable'])
-    expect(j.zona('muelle')).toEqual(['bronce', 'vela', 'casco', 'vigia'])
+    expect(j.zona('descartesMuelle').sort()).toEqual(['carpintero', 'sable'])
+    expect(j.zona('muelle')).toEqual(['hamacas', 'bronce', 'vigia', 'canonero'])
     expect(j.decision.motivo.clave).toBe('quedarseOZarpar')
   })
 
-  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, adquiere gratis la Vela mayor, paga 1 herida y roba cuatro (fase 11)', () => {
+  it('turno completo: zarpa, «Turbonada a popa», asigna con «Mano firme al timón», el Destino de la carta «Arrecife», supera con su Gesta, adquiere gratis las Hamacas, paga 1 herida y roba cuatro (fase 11)', () => {
     const j = Jugador.en({
       empezarEn: 'inicio',
       escenario: ['rumores', 'pruebas-calma'],
       mano: ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno'],
-      muelle: ['marinero_p', 'bucanero', 'sable', 'matasanos'],
-      mazoMuelle: ['vela', 'casco', 'vigia', 'carpintero', 'bronce', 'hamacas'],
+      muelle: ['carne_canon', 'bucanero', 'sable', 'carpintero'],
+      mazoMuelle: ['hamacas', 'bronce', 'vigia', 'canonero', 'bandera', 'loro'],
       mazoPeligros: ['p2_turbonada', 'p2_arrecife', 'p2_calma'],
       mazoCapitan: ['coraje', 'emboscada', 'estrellas', 'ojo', 'timon'],
     })
     j.reclutar('bucanero').elegir('soborno', 'ojo')
-    j.reclutar('marinero_p').elegir('reflejos')
+    j.reclutar('carne_canon').elegir('reflejos')
     j.terminar()
+    expect(j.zona('muelle')).toEqual(['hamacas', 'bronce', 'vigia', 'canonero'])
 
     // Zarpa a «Rumbo a mar abierto»: 1 de «Rumores del tesoro».
     j.zarpar('prueba-I')
@@ -140,21 +143,24 @@ describe('Ejemplo de juego · el primer turno (versión corregida)', () => {
     expect(j.registro).toContain('¡Superas «Rumbo a mar abierto»!')
 
     // Recompensa (fase 11): la misión no da reputación, pero como el Barco no tiene ningún daño, la Gesta da 1.
-    // Adquiere sin coste una Mejora del muelle de coste 1 o menos: la Vela mayor (el muelle repuesto tiene la Vela, el
-    // Casco, la Vigía y el Carpintero). Su precio: inflige 1 herida a un Tripulante, y el jugador elige a Diego.
+    // Adquiere sin coste una Mejora del muelle de coste 1 o menos: las Hamacas en el entrepuente (el muelle repuesto tiene
+    // las Hamacas, los Cañones de bronce, la Vigía y el Cañonero; los Cañones cuestan 2 y el Cañonero, de coste 1, no es
+    // una Mejora). Su precio: inflige 1 herida a un Tripulante, y el jugador elige a Diego.
     expect(j.registro).toContain('¡Gesta cumplida!: +1 de reputación.')
     expect(j.estado.reputacion).toBe(1)
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'gratisDelMuelle' } })
-    expect((j.decision as { candidatas: string[] }).candidatas).toEqual([j.inst('vela')])
-    j.elegir('vela')
-    expect(j.zona('mejoras')).toEqual(['vela'])
+    expect((j.decision as { candidatas: string[] }).candidatas).toEqual([j.inst('hamacas')])
+    j.elegir('hamacas')
+    expect(j.zona('mejoras')).toEqual(['hamacas'])
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'herir', n: 1 } })
     j.elegir('capitan')
     expect(j.copia('capitan').heridas).toBe(1)
 
-    // Final: se queda «¡Al abordaje!» y roba cuatro para tener cinco.
+    // Final: se queda «¡Al abordaje!» y roba cuatro para tener cinco. Con las Hamacas, el Barco lleva 5 Tripulantes
+    // además de Diego (Capacidad 4 + 1).
     j.ninguna()
     expect(j.zona('mano')).toEqual(['abordaje', 'coraje', 'emboscada', 'estrellas', 'ojo'])
+    expect(j.valor({ tipo: 'capacidad' })).toBe(5)
   })
 })
 

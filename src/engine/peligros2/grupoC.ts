@@ -199,13 +199,12 @@ registrarCapacidades({
 
 // 29. Toque a rebato · Duro
 // Permanente 230 «Campanas a rebato»: al terminar cada encuentro, 1 ficha; con 3, descarta al agotado con menos Vida
-// (fase 14: antes, rehén) y se descarta. Acción: agota a un Oficial, o supera una Prueba de COM 3, para descartarla.
-// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
-// cuando Albert revise el mazo de historia. Mientras, se queda como está.
+// (fase 14: antes, rehén) y se descarta. Acción: agota a un Oficial o destina 3 COM: descarta esta carta (Albert: antes,
+// una Prueba de COM 3; solo los encuentros piden Pruebas).
 registrarPermanente('pm_campanas', {
   quitar: [
     { tipo: 'agotarRasgo', rasgo: 'Oficial' },
-    { tipo: 'prueba', opciones: [{ hab: 'COM', dificultad: 3 }] },
+    { tipo: 'destina', n: 3, hab: 'COM' },
   ],
   contador: {
     cuando: 'cartaResuelta',
@@ -262,19 +261,11 @@ registrarPeligro('p2_quinto', {
 })
 
 // 31. Bajo los cañones del Morro · Terrible
-// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Prueba de COM 5 (4 si tienes un Carpintero preparado):
-// si superas, descarta esta carta y gana 1 Avance; si fallas, el Barco sufre 2 daños.
-// TODO(regla): solo los encuentros piden Pruebas (regla general de Albert): esta Acción con Prueba pasará a Destina
-// cuando Albert revise el mazo de historia. Mientras, se queda como está.
+// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Destina 5 COM (4 si tienes un Carpintero
+// preparado): descarta esta carta y gana 1 Avance. (Albert: antes, una Prueba de COM 5 que dañaba 2 si fallabas; un coste
+// no se falla.)
 registrarPermanente('pm_cadena', {
-  quitar: [
-    {
-      tipo: 'prueba',
-      opciones: [{ hab: 'COM', dificultad: 5, alternativa: { rasgo: 'Carpintero', dificultad: 4 } }],
-      exito: [avance(1)],
-      fallo: [dano(2)],
-    },
-  ],
+  quitar: [{ tipo: 'destina', n: 5, hab: 'COM', rebaja: { rasgo: 'Carpintero', n: 4 }, efectos: [avance(1)] }],
   bloqueaSuperar: true,
 })
 registrarPeligro('p2_morro', {

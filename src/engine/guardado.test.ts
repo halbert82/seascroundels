@@ -292,6 +292,24 @@ describe('Revisión de Albert de las cartas de jugador · partidas guardadas con
   })
 })
 
+describe('Albert: las seis permanentes que pedían una Prueba con su Acción usan Destina', () => {
+  it('una partida guardada con una permanente en juego se carga igual (la carta guarda su identificador)', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['cobertura', 'calma', 'calma'] })
+    const t = deserializar(serializar(j.estado))
+    expect(ids(t, 'permanentes')).toEqual(['pm_cobertura'])
+  })
+
+  it('una partida guardada a mitad de la Prueba de una permanente no se puede continuar, y lo dice', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['cobertura', 'calma', 'calma'] })
+    const viejo = JSON.parse(serializar(j.estado)) as Estado
+    viejo.pila.push({ id: 999, tipo: 'pruebaSuelta', fuente: inst(viejo, 'pm_cobertura'), paso: 'cerrar' } as unknown as Estado['pila'][number])
+    expect(() => deserializar(JSON.stringify(viejo))).toThrow(/Prueba de una permanente, que ahora se quita con Destina/)
+    const otro = JSON.parse(serializar(j.estado)) as Estado
+    otro.prueba = { origen: 'accion' } as unknown as Estado['prueba']
+    expect(() => deserializar(JSON.stringify(otro))).toThrow(/Destina/)
+  })
+})
+
 describe('Albert: Vía de agua, Velas rotas y Desánimo pasan a llamarse Anegado, Desarbolado y Desmoralizado', () => {
   it('una partida guardada con esos Estados se carga igual (la clave no cambia) y los muestra con el nombre nuevo', () => {
     const j = Jugador.en({ barco: { dano: 1, estados: ['viaDeAgua', 'velasRotas', 'desanimo'] } })

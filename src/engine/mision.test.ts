@@ -55,16 +55,16 @@ describe('Zarpar', () => {
     expect(sinLobo.registro).toContain('Cubres la Distancia 2: agotas a Bucanero veterano.')
 
     // Fase 10: hay que agotar siempre al menos un Tripulante (aunque tenga NAV 0); las cartas con NAV solo completan.
-    const soloCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
+    const soloCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'carne_canon'], mano: ['timon'], mazoPeligros: ['calma'] })
     soloCarta.zarpar('panama-I')
     expect(() => soloCarta.cubrir('timon')).toThrow('hay que agotar al menos a un Tripulante preparado')
-    const conCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'marinero_p'], mano: ['timon'], mazoPeligros: ['calma'] })
-    conCarta.zarpar('panama-I').cubrir('marinero_p', 'timon') // Rufián NAV 0 + 1 (Diego) y dos iconos de NAV
-    expect(conCarta.copia('marinero_p').agotada).toBe(true)
+    const conCarta = enPuerto({ misiones: ['panama-I'], tripulacion: ['viejo_lobo', 'carne_canon'], mano: ['timon'], mazoPeligros: ['calma'] })
+    conCarta.zarpar('panama-I').cubrir('carne_canon', 'timon') // Carne de cañón NAV 0 + 1 (Diego) y dos iconos de NAV
+    expect(conCarta.copia('carne_canon').agotada).toBe(true)
     expect(conCarta.copia('viejo_lobo').agotada).toBe(false)
     expect(conCarta.copia('capitan').agotada).toBe(false)
     expect(conCarta.zona('descartesCapitan')).toEqual(['timon'])
-    expect(conCarta.registro).toContain('Cubres la Distancia 2: agotas a Rufián de cubierta y descartas Mano firme al timón.')
+    expect(conCarta.registro).toContain('Cubres la Distancia 2: agotas a Carne de cañón y descartas Mano firme al timón.')
   })
 
   it('no vale una combinación que no llega; Tripulantes y cartas con NAV se suman', () => {
@@ -217,7 +217,7 @@ describe('Descartar a un Tripulante (fase 14: fuera el rehén)', () => {
 
 describe('Retirarse y hundirse', () => {
   it('ejemplo del reglamento: si te retiras de «Rumbo a la isla» con 3 de Avance, no te llevas nada', () => {
-    const j = enPuerto({ misiones: ['templo-I'], tripulacion: ['marinero_p'], mazoPeligros: ['racha', 'cazadores', 'calma'] })
+    const j = enPuerto({ misiones: ['templo-I'], tripulacion: ['carne_canon'], mazoPeligros: ['racha', 'cazadores', 'calma'] })
     j.zarpar('templo-I').ninguna() // no agota a ningún Oficial
     expect(j.avance('templo-I')).toBe(3) // Viento de popa
     expect(j.decision.motivo.clave).toBe('trasEncuentro')

@@ -47,16 +47,13 @@ function aplicar(efectos: Efecto[], contexto: 'efecto' | 'pago', fuente: InstId)
  * Empieza la Prueba del encuentro de esta carta. `extra`: dificultad de más («Elige: … o la Prueba recibe +2»).
  * «La siguiente Prueba de esta misión recibe ±X» se aplica aquí y se gasta.
  */
-export function empezarPrueba(s: Estado, carta: InstId, extra: number, origen: 'encuentro' | 'accion'): PruebaEnCurso {
+export function empezarPrueba(s: Estado, carta: InstId, extra: number): PruebaEnCurso {
   const p = nuevaPrueba(carta)
-  p.origen = origen
   const m = s.mision
   if (extra !== 0) p.modExtra = extra
   // Lo que el texto del encuentro cambia en su Prueba («las Mejoras no suman», «invierte el Destino»…).
-  if (origen === 'encuentro') {
-    const cambios = definicionEncuentro(s, carta).prueba
-    if (cambios) Object.assign(p, cambios)
-  }
+  const cambios = definicionEncuentro(s, carta).prueba
+  if (cambios) Object.assign(p, cambios)
   s.prueba = p
   // «La primera Prueba de esta misión es Sin ayuda» (El camarote del capitán).
   if (m) {
@@ -67,7 +64,7 @@ export function empezarPrueba(s: Estado, carta: InstId, extra: number, origen: '
     m.pruebasEmpezadas = (m.pruebasEmpezadas ?? 0) + 1
   }
   // «Soborno»: esta Prueba se supera automáticamente, sin revelar Destino.
-  if (origen === 'encuentro' && m) {
+  if (m) {
     if (m.automatica === carta) p.automatica = true
     m.automatica = null
   }
@@ -80,12 +77,12 @@ function terminada(s: Estado): boolean {
 }
 
 /**
- * La Prueba en curso se corta: en una misión, si ha terminado; en puerto, una Prueba de un encuentro no
- * puede seguir (la de una Acción, sí).
+ * La Prueba en curso se corta: en una misión, si ha terminado; en puerto, la Prueba de un encuentro no puede seguir.
+ * (Solo los encuentros piden Pruebas: no hay Pruebas en puerto.)
  */
 function pruebaCortada(s: Estado): boolean {
   if (s.mision) return s.mision.fin !== null
-  return s.prueba?.origen !== 'accion'
+  return true
 }
 
 /**
@@ -104,7 +101,7 @@ export function avanceExtraEncuentro(s: Estado, claves: readonly string[], p: Pr
  */
 export function avancePrevisto(s: Estado, hab: Habilidad | null): { siSuperas: number; siNo: number } | null {
   const p = s.prueba
-  if (!p || p.origen === 'accion' || !s.zonas.encuentro.includes(p.encuentro)) return null
+  if (!p || !s.zonas.encuentro.includes(p.encuentro)) return null
   const def = definicionEncuentro(s, p.encuentro)
   const claves = def.palabrasClave
   const siempre = valor(s, { tipo: 'avanceExtraEncuentro', claves, hab: null, margen: 0 })
@@ -213,7 +210,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       } else if (def.opciones.length === 0) {
         encolar(s, aplicar(def.efecto, 'efecto', carta))
       } else {
-        const p = empezarPrueba(s, carta, extra, 'encuentro')
+        const p = empezarPrueba(s, carta, extra)
         if (def.superaSi && cumple(s, def.superaSi)) {
           p.automatica = true
           anotar(s, 'efecto', 'Superas la Prueba sin hacerla.')
@@ -234,7 +231,7 @@ export const encuentro: Manejador<'encuentro'> = (s, t, e) => {
       // Avance X / Y: si no superas la Prueba del encuentro (fallas, no comprometes a nadie o el Destino dice «Fallas la
       // Prueba»), ganas Y. Si la superas, si en un «Elige» pagas en vez de hacer la Prueba o si no hay Prueba, ganas X.
       // Lo que la misión da de más al superar una Prueba se suma a X.
-      const sinSuperar = p?.encuentro === carta && p.origen !== 'accion' && p.hab !== null && p.resultado === 'fallada'
+      const sinSuperar = p?.encuentro === carta && p.hab !== null && p.resultado === 'fallada'
       const base = sinSuperar ? avanceSinSuperar(s, def) : def.avance
       // El encuentro que pone una permanente da su Avance impreso; lo de más de la misión solo si ese Avance no es 0 (como
       // cuando se quedaba en juego).
@@ -400,7 +397,7 @@ export function alComprometerse(s: Estado, _p: PruebaEnCurso, c: InstId, agotarl
 export const prueba: Manejador<'prueba'> = (s, t, e) => {
   if (!s.prueba || pruebaCortada(s)) return 'hecha'
   const p = pruebaEnCurso(s)
-  if (p.origen !== 'accion' && !s.zonas.encuentro.includes(p.encuentro)) {
+  if (!s.zonas.encuentro.includes(p.encuentro)) {
     // La carta de Peligro se ha quitado sin resolverla tras revelar el Destino («Retirada a tiempo»): no hay
     // Prueba que resolver, pero el Destino ya revelado se aplica tras su ventana (N9, N16).
     if (t.paso === 'aplicarDestino') encolar(s, ...aplicarDestino(s, p))
@@ -440,14 +437,12 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
         const habs = new Set(def.opciones.map((o) => o.hab))
         const pregunta = {
           tipo: 'comprometer' as const,
-          motivo: { clave: p.origen === 'accion' ? 'comprometerAccion' : 'comprometer', carta: copia(s, p.encuentro).id },
+          motivo: { clave: 'comprometer', carta: copia(s, p.encuentro).id },
           opciones: def.opciones.map((o) => ({ ...o })),
           // Buscado en Ciudad, «no puede comprometerse» o lo que vete la carta: no se ofrecen.
-          tripulantes: def.soloCon
-            ? [def.soloCon]
-            : s.zonas.tripulacion.filter(
-                (c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c) && !vetadoAlComprometer(s, c) && !def.restriccion?.veto?.(s, c),
-              ),
+          tripulantes: s.zonas.tripulacion.filter(
+            (c) => !copia(s, c).agotada && !buscadoEnCiudad(s, c) && !vetadoAlComprometer(s, c) && !def.restriccion?.veto?.(s, c),
+          ),
           // Sin ayuda: solo suman las Habilidades de la mano.
           cartas: s.zonas.mano.filter(
             (c) => [...habs].some((h) => iconosDe(copia(s, c).id, h) > 0) && (!def.sinAyuda || tipoDe(copia(s, c).id) === 'habilidad'),
@@ -464,11 +459,6 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
       p.hab = opcion.hab
       gastarModsSiguientes(s, p, def, opcion.hab)
       for (const x of c.tripulantes) {
-        // Ya agotado como coste de la Acción que pide la Prueba («solo con él»): se compromete sin agotarse otra vez.
-        if (def.soloCon === x) {
-          alComprometerse(s, p, x, false)
-          continue
-        }
         // Rodrigo: en una Prueba de COM se compromete sin agotarse (una vez por turno).
         if (modificadores(s, { tipo: 'sinAgotarAlComprometer', carta: x, hab: opcion.hab }) > 0) {
           const clave = claveUso('turno', x, `${copia(s, x).id}.sinAgotar`)
@@ -539,7 +529,6 @@ export const prueba: Manejador<'prueba'> = (s, t, e) => {
           superada,
           margen: superada ? margen(s) : -faltan(s),
           claves: [...def.palabrasClave],
-          encuentro: p.origen !== 'accion',
           nadie: p.comprometidos.length === 0,
         }
         s.mision.pruebas = [...(s.mision.pruebas ?? []), hecha]

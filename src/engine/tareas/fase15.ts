@@ -3,10 +3,10 @@
 import { porId } from '../catalogo.ts'
 import { reglasPermanente } from '../definiciones.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
-import type { CartaId, Estado, InstId } from '../tipos.ts'
+import type { CartaId, Destina, Estado, InstId } from '../tipos.ts'
 import { mover } from '../zonas.ts'
 import { agotar } from '../estados.ts'
-import { habilidadAlAgotarse } from '../valores.ts'
+import { cifraDeDestina, habilidadAlAgotarse, quienesDestinanSolos } from '../valores.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
 
 /**
@@ -50,17 +50,38 @@ export const ponerEnJuego: Manejador<'ponerEnJuego'> = (s, t) => {
 
 /**
  * «Destina X [habilidad]»: eliges a qué Tripulantes preparados agotas; su habilidad, sumada (con bonificaciones, como al
- * cubrir una Distancia), tiene que llegar a X. Se pregunta como una Distancia sin cartas de la mano (solo NAV, de
- * momento: la única carta que lo usa es «La ruta de los alisios»).
+ * cubrir una Distancia), tiene que llegar a X. Se pregunta como una Distancia sin cartas de la mano. «Con un solo
+ * Tripulante» («Ojos amarillos en la espesura»): eliges a uno de los que llegan solos.
  */
 export const destina: Manejador<'destina'> = (s, t, e) => {
+  const n = cifraDeDestina(s, t)
+  if (t.solo) {
+    const candidatos = quienesDestinanSolos(s, t)
+    if (candidatos.length === 0) return 'hecha'
+    const elegido = candidatos.length === 1 ? candidatos[0] : e ? eleccionDe(e, 'cartas').ids.find((c) => candidatos.includes(c)) : undefined
+    if (!elegido) {
+      return preguntar({ tipo: 'elegirCartas', motivo: { clave: 'destinaSolo', n, texto: textoDestina(t, n) }, candidatas: candidatos, min: 1, max: 1 })
+    }
+    agotar(s, elegido)
+    const alt = t.alternativa
+    const hab = habilidadAlAgotarse(s, [elegido], t.hab) >= n || !alt ? t.hab : alt.hab
+    anotar(s, 'pagar', `Destinas ${habilidadAlAgotarse(s, [elegido], hab)} de ${hab}: agotas a ${nombre(s, elegido)}.`)
+    if (s.prueba && !s.prueba.agotadas.includes(elegido)) s.prueba.agotadas.push(elegido)
+    return 'hecha'
+  }
   const preparados = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada)
   if (!e) {
-    return preguntar({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: t.n, texto: t.hab }, distancia: t.n, tripulantes: preparados, cartas: [] })
+    return preguntar({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n, texto: t.hab }, distancia: n, tripulantes: preparados, cartas: [] })
   }
   const ids = eleccionDe(e, 'cartas').ids.filter((c) => preparados.includes(c))
   for (const c of ids) agotar(s, c)
   anotar(s, 'pagar', `Destinas ${habilidadAlAgotarse(s, ids, t.hab)} de ${t.hab}: agotas a ${nombres(s, ids)}.`)
   if (s.prueba) for (const c of ids) if (!s.prueba.agotadas.includes(c)) s.prueba.agotadas.push(c)
   return 'hecha'
+}
+
+/** «Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador)», para la pregunta. */
+function textoDestina(d: Destina, n: number): string {
+  const alt = d.alternativa ? ` (${d.alternativa.n} ${d.alternativa.hab} si es un ${d.alternativa.rasgo})` : ''
+  return `${n} ${d.hab}${d.solo ? ' con un solo Tripulante' : ''}${alt}`
 }

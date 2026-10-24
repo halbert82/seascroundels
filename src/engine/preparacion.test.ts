@@ -50,10 +50,10 @@ describe('Preparación de la partida', () => {
     expect(historia.filter((id) => ['anselmo', 'guia', 'guardia'].includes(id)).sort()).toEqual(['anselmo', 'guardia', 'guia'])
     // 6. Muelle de Tortuga: 4 cartas.
     expect(j.zona('muelle')).toHaveLength(4)
-    expect(j.zona('mazoMuelle')).toHaveLength(25 - 4) // TODO(regla): excepción temporal de la fase 14 (muelle de 25)
+    expect(j.zona('mazoMuelle')).toHaveLength(20 - 4) // «Pólvora y abordaje»: muelle de 20
     // 7. Mano inicial: tantas cartas como el Mando (5).
     expect(j.zona('mano')).toHaveLength(5)
-    expect(j.zona('mazoCapitan')).toHaveLength(39 - 5) // P120: 39 hasta rehacer los mazos de inicio
+    expect(j.zona('mazoCapitan')).toHaveLength(36 - 5) // «Pólvora y abordaje»: mazo del capitán de 36
     expect(j.decision.motivo.clave).toBe('cambiarMano')
   })
 
@@ -81,7 +81,7 @@ describe('Preparación de la partida', () => {
     j.elegir(a, b)
     expect(j.zona('mano')).toHaveLength(5)
     expect(j.zona('descartesCapitan').sort()).toEqual([a, b].sort())
-    expect(j.zona('mazoCapitan')).toHaveLength(39 - 5 - 2) // mazo de inicio de 39 (revisión de Albert)
+    expect(j.zona('mazoCapitan')).toHaveLength(36 - 5 - 2) // mazo de inicio de 36 («Pólvora y abordaje»)
     expect(j.estado.turno).toBe(1)
     expect(j.estado.pila.some((t) => t.tipo === 'cambioMano')).toBe(false)
   })

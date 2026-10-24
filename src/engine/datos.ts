@@ -403,6 +403,8 @@ export interface PuertoDatos {
 }
 
 export interface MazosPredefinidos {
+  /** Nombre de los mazos de inicio («Pólvora y abordaje»), para el reglamento y la portada. */
+  nombre: string
   mazoDelCapitan: string[]
   mazoDeMuelle: string[]
   mazoDePeligros: string[]

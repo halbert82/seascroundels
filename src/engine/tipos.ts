@@ -2,7 +2,6 @@
 
 import type { Habilidad } from './datos.ts'
 import type { AccionSobre, Efecto, Incautar, ModSiguiente, OpcionEfectos, Selector } from './efectos.ts'
-import type { DefinicionPrueba } from './definiciones.ts'
 import type { EstadoBarco, FichaTripulante } from './estados.ts'
 
 /** Identificador de carta del catálogo («bucanero», «templo-I»…). */
@@ -171,8 +170,6 @@ export interface PruebaHecha {
   margen: number
   /** Palabras clave de lo que se probaba. */
   claves: string[]
-  /** Salía de un encuentro (no de la Acción de una carta). */
-  encuentro: boolean
   /** No se comprometió a nadie (Sin oposición). */
   nadie: boolean
 }
@@ -283,10 +280,6 @@ export interface PruebaEnCurso {
   automatica: boolean
   /** Cartas agotadas para pagar capacidades durante esta Prueba (para distinguirlas en la mesa). */
   agotadas: InstId[]
-  /** De dónde sale: un encuentro, o la Acción de una carta («Prueba de COM 5 para descartar esta carta»). */
-  origen?: 'encuentro' | 'accion'
-  /** Para las Pruebas que no salen de un encuentro: lo que se prueba y qué pasa al superarla o fallarla. */
-  definicion?: DefinicionPrueba
   /** Tripulantes comprometidos que no suman (Aturdido). */
   sinSumar?: InstId[]
   /** Dificultad extra de «la siguiente Prueba recibe ±X» o de «Elige: … o la Prueba recibe +2». */
@@ -557,22 +550,6 @@ export type Tarea = { id: number } & (
   // Reglas nuevas de Peligro (fase 6)
   /** «Elige»: antes de comprometer, una Prueba o pagar algo (o entre dos o tres pagos). */
   | { tipo: 'elegirEncuentro'; carta: InstId; extra?: number }
-  /** Una Prueba que no sale de un encuentro (Acción de una carta, liberar a un Encadenado…). */
-  /**
-   * `anidada` (fase 14, «¡A por ellos!»; desde la revisión de Albert ninguna carta la usa): una Interrupción que hace una
-   * Prueba mientras otra está a medio resolver. La de
-   * fuera se aparta aquí (con sus efectos «para esta Prueba») y vuelve al cerrar esta. `cancelaSuceso`: si se supera, ese
-   * suceso no ocurre.
-   */
-  | {
-      tipo: 'pruebaSuelta'
-      definicion: DefinicionPrueba
-      fuente: InstId
-      paso: 'empezar' | 'cerrar'
-      anidada?: boolean
-      exterior?: { prueba: PruebaEnCurso; temporales: Temporal[] }
-      cancelaSuceso?: number
-    }
   /** La carta de Peligro revelada se queda en juego junto a la misión. */
   /** Pone en juego la permanente `permanente` desde el mazo de historia (si no está, descarta el encuentro sin Avance). */
   | { tipo: 'ponerPermanente'; carta: InstId; permanente: CartaId; junto?: Selector; fichas?: number }
@@ -614,7 +591,7 @@ export type Tarea = { id: number } & (
   | { tipo: 'quitarUnEstado'; estados: FichaTripulante[]; carta?: InstId; curar?: number }
   /** Descarta una de estas cartas de Peligro en juego (eliges cuál). */
   /** Fase 15: paga «Destina X [habilidad]» (eliges a quién agotas). */
-  | { tipo: 'destina'; n: number; hab: Habilidad }
+  | ({ tipo: 'destina' } & Destina)
   /** Fase 15: descarta las N cartas superiores del mazo del capitán (si está vacío, nada). */
   | { tipo: 'descartarMazoCapitan'; n: number }
   /** Fase 15: pone en juego una permanente desde el mazo de historia (si no está allí, aplica `siYa`). */
@@ -754,6 +731,19 @@ export interface Contexto {
   participantes?: readonly InstId[]
 }
 
+/**
+ * «Destina X [habilidad]» (un coste, no una Prueba). `rebaja`: «(4 si tienes un Carpintero preparado)», la cifra baja a
+ * `n` si tienes preparado un Tripulante con ese Rasgo. `solo`: «con un solo Tripulante», que tiene que llegar él solo;
+ * `alternativa`: «(3 [EXP] si es un Explorador)», con ese Rasgo puede llegar con otra habilidad y otra cifra.
+ */
+export interface Destina {
+  n: number
+  hab: Habilidad
+  rebaja?: { rasgo: string; n: number }
+  solo?: boolean
+  alternativa?: { rasgo: string; hab: Habilidad; n: number }
+}
+
 export type Coste =
   | { tipo: 'agotarse' }
   | { tipo: 'descartarse' }
@@ -773,7 +763,7 @@ export type Coste =
    * Fase 15, «Destina X [habilidad]»: agota Tripulantes preparados cuya habilidad sume al menos X (con sus bonificaciones,
    * como al cubrir una Distancia). No es una Prueba.
    */
-  | { tipo: 'destina'; n: number; hab: Habilidad }
+  | ({ tipo: 'destina' } & Destina)
 
 export type Ventana =
   | 'constante'

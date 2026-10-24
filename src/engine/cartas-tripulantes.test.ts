@@ -113,7 +113,8 @@ describe('010 · Cañonero', () => {
 
 describe('011 · Isabela «Cuervo» Saldaña', () => {
   it('se agota y otro Tripulante que iba a quedar derrotado se queda con 1 Vida', () => {
-    // El Barco se hunde: cada Tripulante sufre 1 herida. El Bucanero (Vida 2) ya tenía 1.
+    // El Barco se hunde: cada Tripulante sufre 1 herida. El Bucanero (Vida 2) ya tenía 1. (Es el ejemplo de «Capacidades
+    // de las cartas» del reglamento, con el Barco hundido en lugar del tiburón.)
     const j = Jugador.en({ barco: { dano: 5 }, tripulacion: [{ id: 'bucanero', heridas: 1 }, 'isabela'] })
     expect(j.ofreceCapacidad('isabela.salvar')).toBe(true)
     j.usar('isabela.salvar')

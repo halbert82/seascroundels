@@ -84,10 +84,9 @@ export function ponerAPerseguir(s: Estado, carta: InstId): void {
  * Termina la Prueba en curso: los Destinos revelados se descartan (salvo el que persigue, que vuelve encima del
  * mazo) y caducan los efectos «para esta Prueba».
  */
-export function cerrarPrueba(s: Estado, conservar: readonly InstId[] = []): void {
+export function cerrarPrueba(s: Estado): void {
   const p = s.prueba
-  // `conservar` (fase 14): los Destinos de una Prueba apartada mientras se hace otra («¡A por ellos!») se quedan.
-  for (const d of s.zonas.destino.filter((c) => !conservar.includes(c))) {
+  for (const d of s.zonas.destino) {
     // «Persigue»: pasa por su suceso (una Interrupción puede mandarla al fondo del mazo).
     // Fase 13: con dos Destinos, el segundo también puede perseguir. P84 (Albert): si persiguen los dos, vuelven los dos
     // encima del mazo y el segundo queda arriba (solo el último cuenta como «el que persigue»).

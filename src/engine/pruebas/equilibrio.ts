@@ -115,6 +115,26 @@ export function mazoDeMuelleAlAzar(semilla: number, { sinFase14 = false }: { sin
   return caja.slice(0, LIMITES.muelle.max)
 }
 
+/** Los mazos de inicio de antes de «Pólvora y abordaje» (fase 16 y revisión de Albert: muelle de 25 y capitán de 39). */
+export const MAZOS_ANTERIORES: { muelle: CartaId[]; capitan: CartaId[] } = {
+  muelle: [
+    'grumete', 'bucanero', 'saqueador', 'contrabandista', 'canonero', 'carpintero', 'matasanos', 'vigia', 'viejo_lobo', 'baqueano',
+    'bronce', 'vela', 'hamacas', 'casco', 'botica', 'catalejo', 'herbolaria', 'lengua', 'fiador', 'soldado_fortuna', 'piloto_sueldo',
+    'guia_alquiler', 'carne_canon', 'galeote', 'tuerto',
+  ],
+  capitan: [
+    ...['abordaje', 'timon', 'ojo', 'coraje', 'emboscada', 'estrellas', 'reflejos'].flatMap((id) => [id, id]),
+    'arenga', 'taberna', 'reparacion', 'vendas', 'ron_descanso', 'polvora_c', 'viento', 'mapa', 'arriba', 'animo', 'sangre_fria',
+    'cambio_rumbo', 'soborno', 'todos', 'ni_hombre', 'naufrago', 'prisionero', 'senda', 'espesura', 'trampa', 'leccion', 'cataplasma',
+    'a_por_ellos', 'ron_valientes', 'virar',
+  ],
+}
+
+/** Cuántas cartas de muelle (Tripulantes y Mejoras, con sus copias) trae la caja. */
+function cartasDeMuelleDeLaCaja(): number {
+  return [...DATOS.tripulantes, ...DATOS.mejorasBarco, ...DATOS.mejorasTripulante].reduce((n, c) => n + c.copias, 0)
+}
+
 /** Juega una partida entera con un jugador automático y recoge sus sucesos. */
 export function jugarPartida(
   semilla: number,
@@ -122,6 +142,8 @@ export function jugarPartida(
   {
     invariantes = false,
     mazoDeMuelle,
+    mazoDelCapitan,
+    sinComprobarMazos,
     variante,
     modo,
     sinEscenario,
@@ -130,6 +152,10 @@ export function jugarPartida(
   }: {
     invariantes?: boolean
     mazoDeMuelle?: CartaId[]
+    /** Otro mazo del capitán (para comparar mazos de inicio). */
+    mazoDelCapitan?: CartaId[]
+    /** Solo para medir mazos que ya no son legales (los mazos de inicio de antes, con 25 cartas de muelle). */
+    sinComprobarMazos?: boolean
     variante?: Estado['variante']
     modo?: Modo
     sinEscenario?: boolean
@@ -141,6 +167,8 @@ export function jugarPartida(
   let s = nuevaPartida({
     semilla,
     ...(mazoDeMuelle ? { mazoDeMuelle } : {}),
+    ...(mazoDelCapitan ? { mazoDelCapitan } : {}),
+    ...(sinComprobarMazos ? { sinComprobarMazos } : {}),
     ...(variante ? { variante } : {}),
     ...(modo ? { modo } : {}),
     ...(sinEscenario ? { sinEscenario } : {}),
@@ -660,7 +688,7 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
     lineas.push(
       `## Cartas del muelle con mazos variados (${variadas.length} partidas)`,
       '',
-      'Cada partida usa un mazo de muelle legal de 20 cartas sacado al azar de las 42 de la caja; el mazo del capitán es el predefinido. «Con / sin ella en el mazo» compara partidas que solo se diferencian por el azar del mazo: es la medida limpia de lo que aporta cada carta. Las diferencias de menos de unos 5 puntos son ruido.',
+      `Cada partida usa un mazo de muelle legal de 20 cartas sacado al azar de las ${cartasDeMuelleDeLaCaja()} de la caja; el mazo del capitán es el predefinido. «Con / sin ella en el mazo» compara partidas que solo se diferencian por el azar del mazo: es la medida limpia de lo que aporta cada carta. Las diferencias de menos de unos 5 puntos son ruido.`,
       '',
       '| Carta | Tipo | En el mazo | % victorias con ella en el mazo | sin ella | Diferencia | Recluta / adquiere | Usa su capacidad | % victorias si se usó | si no |',
       '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',

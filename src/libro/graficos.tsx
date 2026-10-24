@@ -538,7 +538,7 @@ export function Anatomia({ tipo, leyenda }: { tipo: string; leyenda: string[] })
 // La mesa al empezar la partida (con los pasos de la preparación)
 
 const MANO = ['abordaje', 'timon', 'ojo', 'reflejos', 'soborno']
-const MUELLE = ['marinero_p', 'bucanero', 'sable', 'matasanos']
+const MUELLE = ['carne_canon', 'bucanero', 'sable', 'carpintero']
 const INICIALES = capitulos((e) => e.mision.inicial).map((e) => e.id)
 
 interface Zona {
@@ -827,9 +827,9 @@ const PANEL_PUERTO: GrupoPanel[] = [
     paso: 2,
     cartas: [
       { id: 'bucanero', insignia: 'Reclutado', tono: 'bien' },
-      { id: 'marinero_p', insignia: 'Reclutado', tono: 'bien' },
+      { id: 'carne_canon', insignia: 'Reclutado', tono: 'bien' },
       { id: 'sable', insignia: 'Se descarta', tono: 'neutro' },
-      { id: 'matasanos', insignia: 'Se descarta', tono: 'neutro' },
+      { id: 'carpintero', insignia: 'Se descarta', tono: 'neutro' },
     ],
   },
 ]

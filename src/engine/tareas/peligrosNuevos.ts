@@ -8,7 +8,7 @@ import { definicionEncuentro, quedaDe, reglasPermanente } from '../definiciones.
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { agotar, conEstado, ponerEstado, ponerEstadoBarco, quitarEstadoAnotado, quitarEstadoBarco, sePuedeQuitar, tieneEstado } from '../estados.ts'
 import { INFO_ESTADO, sujetoJuntoAlBarco } from '../infoEstados.ts'
-import { cerrarPrueba, descartarPeligro, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
+import { descartarPeligro, mazoActivo, persigueVigente, ponerEnMuelle } from '../peligros.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { mover, rebarajar } from '../zonas.ts'
 import { eleccionDe, preguntar, type Manejador } from './comun.ts'
@@ -47,7 +47,7 @@ export const elegirEncuentro: Manejador<'elegirEncuentro'> = (s, t, e) => {
   anotar(s, 'jugada', `Eliges: ${o.texto}.`)
   if (o.prueba) {
     const si = o.modSi && cumple(s, o.modSi.condicion) ? o.modSi.n : 0
-    empezarPrueba(s, t.carta, (t.extra ?? 0) + (o.modDificultad ?? 0) + si, 'encuentro')
+    empezarPrueba(s, t.carta, (t.extra ?? 0) + (o.modDificultad ?? 0) + si)
     // «Le das 2 munición (y haces la Prueba), o la Prueba recibe +2»: primero se paga, luego la Prueba.
     encolar(s, ...(o.efectos && o.efectos.length > 0 ? [{ tipo: 'aplicarEfectos' as const, efectos: o.efectos, contexto: 'pago' as const, fuente: t.carta }] : []), {
       tipo: 'prueba',
@@ -55,49 +55,6 @@ export const elegirEncuentro: Manejador<'elegirEncuentro'> = (s, t, e) => {
     })
   } else {
     encolar(s, { tipo: 'aplicarEfectos', efectos: o.efectos ?? [], contexto: 'pago', fuente: t.carta })
-  }
-  return 'hecha'
-}
-
-/**
- * Una Prueba que no sale de un encuentro (la Acción de una carta, liberar a un Encadenado). Es una Prueba normal:
- * se compromete, se revela Destino y, si no hay nadie, se aplica Sin oposición.
- */
-export const pruebaSuelta: Manejador<'pruebaSuelta'> = (s, t) => {
-  if (t.paso === 'empezar') {
-    // No se puede empezar una Prueba de una Acción durante otra Prueba (P2). Fase 14: la de una Interrupción que lo
-    // dice («¡A por ellos!») sí: la de fuera se aparta, con sus efectos «para esta Prueba», y vuelve al cerrar esta.
-    if (s.prueba && !t.anidada) return 'hecha'
-    if (s.prueba) {
-      t.exterior = { prueba: s.prueba, temporales: s.temporales.filter((x) => x.hasta === 'finPrueba') }
-      s.temporales = s.temporales.filter((x) => x.hasta !== 'finPrueba')
-      s.prueba = null
-    }
-    const p = empezarPrueba(s, t.fuente, 0, 'accion')
-    p.definicion = t.definicion
-    if (t.definicion.sinAyuda) p.sinAyuda = true
-    anotar(s, 'jugada', `${t.definicion.nombre}: Prueba de ${t.definicion.opciones.map((o) => `${o.hab} ${o.dificultad}`).join(' o ')}.`)
-    encolar(s, { tipo: 'prueba', paso: 'comprometer' })
-    t.paso = 'cerrar'
-    return 'sigue'
-  }
-  if (s.prueba?.origen === 'accion' && s.prueba.encuentro === t.fuente) {
-    // «Si la superas, no se descarta» («¡A por ellos!»): el suceso que interrumpía no ocurre.
-    if (t.cancelaSuceso !== undefined && s.prueba.resultado === 'superada') {
-      const suceso = s.pila.find((x) => x.id === t.cancelaSuceso)
-      if (suceso?.tipo === 'evento') {
-        suceso.cancelado = true
-        if (suceso.ev.tipo === 'descartarTripulante') anotar(s, 'efecto', `${nombre(s, suceso.ev.carta)} no se descarta.`)
-      }
-    }
-    // Los Destinos de la Prueba de fuera se quedan donde están: solo se descartan los de esta.
-    const deFuera = t.exterior ? [t.exterior.prueba.destino, t.exterior.prueba.segundoDestino].filter((c): c is InstId => c !== null && c !== undefined) : []
-    cerrarPrueba(s, deFuera)
-  }
-  if (t.exterior) {
-    s.prueba = t.exterior.prueba
-    s.temporales.push(...t.exterior.temporales)
-    delete t.exterior
   }
   return 'hecha'
 }

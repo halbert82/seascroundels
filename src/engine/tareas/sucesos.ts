@@ -71,7 +71,7 @@ function aplicarSuceso(s: Estado, ev: Evento): void {
       // Fase 10b: Maldito se quita al superar una Prueba a la que esté asignado (cualquiera), y Perseguido, al superar
       // un encuentro de tipo Armada.
       for (const c of p.comprometidos) if (s.zonas.tripulacion.includes(c)) quitarEstadoAnotado(s, c, 'maldito', 'supera la Prueba')
-      if (p.origen !== 'accion' && def.palabrasClave.includes('Armada') && quitarEstadoBarco(s, 'perseguido')) {
+      if (def.palabrasClave.includes('Armada') && quitarEstadoBarco(s, 'perseguido')) {
         anotar(s, 'efecto', 'El Barco ya no está Perseguido (superas un encuentro de tipo Armada).')
       }
       encolar(s, ...tareas)
@@ -184,7 +184,7 @@ export const usar: Manejador<'usar'> = (s, t) => {
         continue
       }
       if (coste.tipo === 'destina') {
-        encolar(s, { tipo: 'destina', n: coste.n, hab: coste.hab })
+        encolar(s, { ...coste })
         continue
       }
       if (coste.tipo === 'agotarVarios') {
@@ -250,7 +250,7 @@ export const jugarEvento: Manejador<'jugarEvento'> = (s, t) => {
       else if (c.tipo === 'pagar') pagos.push({ tipo: 'pagar', cantidad: c.n, motivo: copia(s, t.carta).id })
       else if (c.tipo === 'agotarCanon') pagos.push({ tipo: 'agotarCanones', n: 1, coste: true })
       // «¡Nadie se queda atrás!»: destina 3 COM.
-      else if (c.tipo === 'destina') pagos.push({ tipo: 'destina', n: c.n, hab: c.hab })
+      else if (c.tipo === 'destina') pagos.push({ ...c })
       else throw new Error(`Coste no previsto en un Evento: ${c.tipo}`)
     }
     encolar(s, ...pagos)

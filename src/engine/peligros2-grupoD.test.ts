@@ -163,9 +163,9 @@ describe('36 · Sangre caliente', () => {
     expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego COM 3 + 1 por ser Oficial
   })
 
-  it('Mar (fase 14, P94): con Diego, el Bucanero veterano y el Grumete leal, se pelean el Bucanero y el Grumete; solo va Diego', () => {
+  it('Mar (fase 14, P94; ejemplo del reglamento): con Diego, el Bucanero veterano y el Cañonero, se pelean el Bucanero y el Cañonero; solo va Diego', () => {
     // «Sin contar al Capitán» se queda: no es una fórmula de Rasgo, y en las demás elecciones manda la carta.
-    const j = en('mar', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'grumete'] })
+    const j = en('mar', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'canonero'] })
     expect(ids(j, (j.decision as { tripulantes: string[] }).tripulantes)).toEqual(['capitan'])
     j.comprometer('COM', ['capitan'])
     expect(totalSinDestinoPrueba(j.estado)).toBe(4) // Diego COM 3 + 1 por ser Oficial («Oficial asignado»: el Capitán cuenta)
@@ -656,6 +656,25 @@ describe('44 · El cazador de piratas', () => {
     j.comprometer('COM', ['bucanero', 'vigia']).seguir().pasarOfertas() // COM (2 + 1) + (0 + 1) contra 5
     expect(j.zona('descartesMuelle')).toContain('bucanero') // COM impresa 2 contra la 0 de la Vigía
     expect(j.zona('tripulacion')).toContain('vigia')
+  })
+
+  it('Naturaleza, el ejemplo del reglamento («Asignado con más»): la Carne de cañón con el Sable (2 + 1) suma como el Filibustero (3), pero se descarta el Filibustero, el de más COM impresa; con Diego en su lugar, Diego sufre 1 herida', () => {
+    // Diego agotado (sin su +1) y el Destino de «La horca» (−2): 3 + 3 − 2 = 4 contra 5, falla.
+    const mesa = (asignados: CartaId[]) => {
+      const j = en('nat', ['p2_cazador', 'p2_horca', 'calma'], {
+        capitan: { agotada: asignados.includes('capitan') ? false : true },
+        tripulacion: [{ id: 'carne_canon', mejoras: ['sable'] }, 'filibustero'],
+      })
+      return j.comprometer('COM', asignados).pasarOfertas().seguir().pasarOfertas()
+    }
+    const j = mesa(['carne_canon', 'filibustero'])
+    expect(j.registro).toContain('Total 4 contra 5: fallas la Prueba.')
+    expect(j.zona('descartesMuelle')).toContain('filibustero')
+    expect(j.zona('tripulacion')).toContain('carne_canon')
+    // Diego (COM 3) con la Carne de cañón: el de más COM es el Capitán, que no se descarta: 1 herida.
+    const k = mesa(['capitan', 'carne_canon'])
+    expect(k.zona('tripulacion')).toEqual(expect.arrayContaining(['capitan', 'carne_canon', 'filibustero']))
+    expect(k.copia('capitan').heridas).toBe(1)
   })
 
   it('Ciudad: si fallas, el asignado con más EXP queda Buscado y entra La Armada (fase 14)', () => {

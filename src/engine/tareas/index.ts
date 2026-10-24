@@ -74,7 +74,6 @@ import {
   ponerEstadoBarco_,
   ponerEstado_,
   ponerPermanente,
-  pruebaSuelta,
   quitarEstadoBarco_,
   quitarEstado_,
 } from './peligrosNuevos.ts'
@@ -173,7 +172,6 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   ponerEntrenamiento,
   volverAlMuelle,
   elegirEncuentro,
-  pruebaSuelta,
   ponerPermanente,
   devolverPermanente,
   contador,

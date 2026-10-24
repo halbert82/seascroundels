@@ -56,7 +56,7 @@ describe('Marcas nuevas', () => {
   // Fase 10: los ejemplos van sin título («Ejemplo» y su texto).
   it('los ejemplos van sin título y llevan las cartas que nombran', () => {
     const ejemplo = capitulo('Capacidades de las cartas').bloques.find((b) => b.tipo === 'ejemplo')
-    expect(ejemplo).toMatchObject({ tipo: 'ejemplo', titulo: '', cartas: [{ id: 'grumete', partes: [] }, { id: 'capitan', partes: [] }] })
+    expect(ejemplo).toMatchObject({ tipo: 'ejemplo', titulo: '', cartas: [{ id: 'isabela', partes: [] }, { id: 'bucanero', partes: [] }] })
     expect(fuente).not.toMatch(/^> \[!ejemplo\] \S/m)
   })
 
@@ -146,7 +146,9 @@ describe('Textos de la última ronda (docs/archivo/reglamento-textos.md)', () =>
   })
 
   it('«Mazos de inicio» es el último apartado de «Aprende a jugar» y se dibuja desde los datos', () => {
-    expect(r.aprende.capitulos.at(-1)).toMatchObject({ titulo: 'Mazos de inicio', especial: 'mazos-de-inicio', bloques: [] })
+    expect(r.aprende.capitulos.at(-1)).toMatchObject({ titulo: 'Mazos de inicio', especial: 'mazos-de-inicio' })
+    // «Pólvora y abordaje» (decisión de Albert): el nombre sale de los datos y el párrafo «Cómo se juega», del reglamento.
+    expect(htmlDe(capitulo('Mazos de inicio').bloques)).toMatch(/^<p><strong>Cómo se juega «Pólvora y abordaje» —<\/strong> Diego manda desde el puente/)
   })
 
   it('«ver «Mazos de inicio», al final de este libro» remite a su página en «Aprende a jugar» y al otro libro en la Referencia', () => {

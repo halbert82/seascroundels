@@ -392,14 +392,17 @@ describe('29 · Toque a rebato', () => {
     expect(j.zona('permanentes')).toEqual([])
   })
 
-  it('Ciudad: se quita agotando a un Oficial, o con una Prueba de COM 3', () => {
+  it('Ciudad: se quita agotando a un Oficial, o destinando 3 COM (Albert: antes, una Prueba de COM 3)', () => {
     const j = en('ciu', ['p2_rebato', 'calma', 'calma'])
     j.usar('pm_campanas.quitar0')
     expect(j.zona('permanentes')).toEqual([])
     expect(j.copia('capitan').agotada).toBe(true)
-    const k = en('ciu', ['p2_rebato', 'chubasco', 'calma'])
-    k.usar('pm_campanas.quitar1').comprometer('COM', ['capitan']).seguir()
+    // El Bucanero veterano (COM 2, más 1 por Diego, que sigue preparado) basta: no es Oficial, pero destina 3.
+    const k = en('ciu', ['p2_rebato', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
+    k.usar('pm_campanas.quitar1').cubrir('bucanero')
     expect(k.zona('permanentes')).toEqual([])
+    expect(k.copia('capitan').agotada).toBe(false)
+    expect(k.registro).toContain('Destinas 3 de COM: agotas a Bucanero veterano.')
   })
 
   it('Destino «Falsa alarma»: +1 y ya no agota a un no asignado (fase 13, I1); sin oposición, agota a 2 Tripulantes', () => {
@@ -473,24 +476,30 @@ describe('30 · El quinto del rey', () => {
 })
 
 describe('31 · Bajo los cañones del Morro', () => {
-  it('Mar: pone en juego la permanente 231 y no puedes superar la misión; se quita con una Prueba de COM 5 que, si la superas, da 1 Avance', () => {
+  it('Mar: pone en juego la permanente 231 y no puedes superar la misión; Acción: Destina 5 COM: se descarta y da 1 Avance (Albert: antes, una Prueba)', () => {
     const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     expect(j.zona('permanentes')).toEqual(['pm_cadena'])
     expect(avance(j, 'mar')).toBe(2)
-    j.usar('pm_cadena.quitar0').comprometer('COM', ['capitan', 'bucanero'])
-    expect(dificultadConDestino(j.estado)).toBe(5)
-    j.seguir()
+    j.usar('pm_cadena.quitar0')
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 5, texto: 'COM' } })
+    // Diego (3) y el Bucanero (2: sin el +1 de Diego, que se agota a la vez) suman 5.
+    j.cubrir('capitan', 'bucanero')
     expect(j.zona('permanentes')).toEqual([])
     expect(avance(j, 'mar')).toBe(3) // 2 de la carta + 1 por cortar la cadena
+    expect(j.zona('destino')).toEqual([])
   })
 
-  it('Mar: con un Carpintero la Prueba es de COM 4; si la fallas, 2 daños al Barco', () => {
-    const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['carpintero'] })
-    j.usar('pm_cadena.quitar0').comprometer('COM', [])
-    expect(dificultadConDestino(j.estado)).toBe(4)
-    j.seguir()
-    expect(j.estado.danoBarco).toBe(2)
-    expect(j.zona('permanentes')).toEqual(['pm_cadena'])
+  it('Mar: con un Carpintero preparado destina 4 (lo mira antes de agotar a nadie); un coste no se falla: nada de daño', () => {
+    const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['carpintero', 'bucanero'] })
+    j.usar('pm_cadena.quitar0')
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 4 })
+    // El Bucanero (2 + 1) y el Carpintero (0 + 1), con Diego preparado: 4.
+    j.cubrir('bucanero', 'carpintero')
+    expect(j.zona('permanentes')).toEqual([])
+    expect(j.estado.danoBarco).toBe(0)
+    // Sin nadie que llegue a 5 (solo Diego), la Acción no se ofrece.
+    const k = en('mar', ['p2_morro', 'chubasco', 'calma'])
+    expect(k.ofreceCapacidad('pm_cadena.quitar0')).toBe(false)
   })
 
   it('Naturaleza: COM 6 (Artillero −2); si superas, preparas un Cañón; si fallas, Inflige 3 heridas, libres (fase 13)', () => {

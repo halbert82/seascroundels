@@ -184,7 +184,6 @@ export const CLAVES_REGLA = [
   'seRetira',
   'entraEnMazo',
   'volverMuelle',
-  'pruebaDeAccion',
   'misionFalla',
   'alZarpar',
   'gesta',
@@ -207,7 +206,7 @@ export const CLAVES_REGLA = [
 export type ClaveRegla = (typeof CLAVES_REGLA)[number]
 
 /** Palabras que nombran una cosa (no un efecto): su primer apartado es «Qué es» en vez de «Qué hace». */
-const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'cartaRecompensa', 'salidaDoble', 'capituloAlAzar', 'mazoNaufragio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
+const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'gesta', 'finalConEleccion', 'cartaRecompensa', 'salidaDoble', 'capituloAlAzar', 'mazoNaufragio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
 
 function regla(clave: ClaveRegla, nombre: string, hace: string, mas?: ParteAyuda): Ayuda {
   const rotulo = SON_COSAS.includes(clave) ? 'Qué es' : 'Qué hace'
@@ -327,16 +326,6 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Vuelve al muelle',
     'El Tripulante (nunca el Capitán) vuelve al muelle junto con sus Mejoras. Desde el muelle puedes volver a reclutarlo pagando su coste.',
   ),
-  pruebaDeAccion: regla(
-    'pruebaDeAccion',
-    'Prueba de una Acción',
-    'Es una Prueba normal: asignas a tus Tripulantes y añades cartas de tu mano, revelas el Destino y, si no asignaste a nadie, aplicas su línea Sin oposición.',
-    {
-      rotulo: 'Detalles',
-      texto:
-        'No tiene Avance propio: solo ganas lo que diga su texto. No puedes hacerla durante otra Prueba: se usa en la Fase de Reclutamiento o después de resolver una carta de Peligro. La de una Interrupción («¡A por ellos!») se hace en el momento, aunque haya otra Prueba a medio resolver; al terminarla, se sigue con la otra.',
-    },
-  ),
   misionFalla: regla(
     'misionFalla',
     'La misión falla',
@@ -388,7 +377,10 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'destina',
     'Destina',
     'Destina X y una habilidad: para pagarlo, agota Tripulantes preparados cuya habilidad sume al menos X. No es una Prueba: no se revela Destino ni se añaden cartas de la mano.',
-    { rotulo: 'Detalles', texto: 'Cada Tripulante cuenta con sus bonificaciones, como al cubrir una Distancia.' },
+    {
+      rotulo: 'Detalles',
+      texto: 'Cada Tripulante cuenta con sus bonificaciones, como al cubrir una Distancia. «Con un solo Tripulante»: agotas a uno solo, que tiene que llegar a X él solo.',
+    },
   ),
   capituloAlAzar: regla(
     'capituloAlAzar',
@@ -604,7 +596,6 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   seRetira: /\bSe retira\b/,
   entraEnMazo: /\+ «|\+ La Armada|[Ee]ntra en el mazo de Peligros|(?<!esta carta |su carta )encima del mazo de Peligros/,
   volverMuelle: /\b[Vv]uelven? al muelle\b|↩/,
-  pruebaDeAccion: /(Acción|Interrupción):.* [Hh]az una Prueba/,
   misionFalla: /\bla misión falla\b/i,
   alZarpar: /\bAl zarpar\b|\b[Dd]espués de zarpar\b/,
   gesta: /\bGesta\b/,
@@ -614,7 +605,7 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   pasajero: /\bPasajeros?\b/,
   descomunal: /\bDescomunal \d/,
   alerta: /\bAlerta\b/,
-  destina: /\bDestina \d/,
+  destina: /\b[Dd]estina \d/,
   capituloAlAzar: /\bBaraja boca abajo (las cartas \d+|los capítulos II)/,
   mazoNaufragio: /\bmazo del naufragio\b/,
   indestructible: /\bIndestructible\b/,

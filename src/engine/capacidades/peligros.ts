@@ -2,7 +2,7 @@
 // permanentes (fase 11), generadas desde sus reglas: las formas de quitarlas (Prueba, agotar a un Tripulante con un
 // Rasgo, pagar cartas), sus modificadores, lo que hacen cada vez que ocurre algo y su contador de fichas.
 
-import { nombreDe, porId } from '../catalogo.ts'
+import { porId } from '../catalogo.ts'
 import {
   registrarReglasPeligro,
   registrarReglasPermanente,
@@ -66,14 +66,8 @@ export function capacidadesDePeligro(id: CartaId, reglas: ReglasPeligro): Capaci
   return caps
 }
 
-/** Tipo impreso de una permanente (Terreno, Guardia…), como el de un encuentro. */
-function tiposDePermanente(id: CartaId): string[] {
-  const e = porId(id)
-  return e.tipo === 'permanente' ? [...e.carta.palabrasClave] : []
-}
-
 /**
- * Capacidades de una permanente (fase 11), generadas desde sus reglas: las formas de quitarla (Prueba, agotar a un
+ * Capacidades de una permanente (fase 11), generadas desde sus reglas: las formas de quitarla (Destina, agotar a un
  * Tripulante con un Rasgo, pagar cartas), sus Acciones, modificadores, lo que hace cada vez que ocurre algo y su
  * contador de fichas. Solo funcionan mientras está en la zona de permanentes.
  */
@@ -104,34 +98,21 @@ export function capacidadesDePermanente(id: CartaId, q: ReglasPermanente): Capac
   q.quitar.forEach((forma, i) => {
     const clave = `${base}.quitar${i}`
     switch (forma.tipo) {
-      case 'prueba':
-        // La Prueba de una Acción es una Prueba normal: se compromete, sale Destino y Sin oposición si no hay nadie.
-        // No se puede hacer durante otra Prueba (P2). Es del tipo de la permanente (Guardia, Militar…).
+      case 'destina': {
+        // Solo los encuentros piden Pruebas (Albert): «Destina X [habilidad]» es un coste, no una Prueba. Se puede pagar
+        // en cualquier ventana de acción, también durante una Prueba.
+        const { tipo: _tipo, efectos, ...destina } = forma
         caps.push({
           clave,
           carta: id,
           ventana: 'accion',
           desde: 'permanente',
-          requisito: (s, yo) => activa(s, yo) && s.prueba === null,
-          efecto: (_s, yo) =>
-            yo
-              ? [
-                  {
-                    tipo: 'pruebaSuelta',
-                    fuente: yo,
-                    paso: 'empezar',
-                    definicion: {
-                      nombre: `Quitar «${nombreDe(id)}»`,
-                      palabrasClave: tiposDePermanente(id),
-                      opciones: forma.opciones,
-                      exito: [...alQuitar, ...(forma.exito ?? []), { tipo: 'descartarEsta' }],
-                      fallo: forma.fallo ?? [],
-                    },
-                  },
-                ]
-              : [],
+          coste: [{ tipo: 'destina', ...destina }],
+          requisito: activa,
+          efecto: (_s, yo) => (yo ? [...(efectos && efectos.length > 0 ? [{ tipo: 'aplicarEfectos' as const, efectos, contexto: 'efecto' as const, fuente: yo }] : []), ...quitarla(yo)] : []),
         })
         return
+      }
       case 'agotarRasgo':
         caps.push({
           clave,

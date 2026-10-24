@@ -3,7 +3,7 @@
 // que el jugador con criterio gana partidas y que en la simulación ocurre de todo.
 
 import { describe, expect, it } from 'vitest'
-import { capacidadesDelJugador, jugarPartida, mazoDeMuelleAlAzar } from './pruebas/equilibrio.ts'
+import { capacidadesDelJugador, jugarPartida, MAZOS_ANTERIORES, mazoDeMuelleAlAzar } from './pruebas/equilibrio.ts'
 import { jugadorAlAzar, jugadorConCriterio } from './pruebas/jugadores.ts'
 
 describe('Prueba masiva: jugador al azar', () => {
@@ -77,6 +77,12 @@ describe('Prueba masiva: mazos de muelle variados', () => {
     // (la Carne de cañón se usa en ~3 de cada 100, y en 100 a veces no salía).
     for (let i = 0; i < 200; i++) {
       const p = jugarPartida(9000 + i, criterio)
+      for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
+    }
+    // «Pólvora y abordaje» (Albert): ocho Eventos del mazo del capitán y el Galeote fugado ya no van en los mazos de inicio.
+    // Se juegan con los de antes (muelle de 25 con los seis Tripulantes de la fase 14 y capitán de 39).
+    for (let i = 0; i < 200; i++) {
+      const p = jugarPartida(9500 + i, criterio, { mazoDeMuelle: MAZOS_ANTERIORES.muelle, mazoDelCapitan: MAZOS_ANTERIORES.capitan, sinComprobarMazos: true })
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }
     // El Mascarón del galeón solo llega como Tesoro de «La huida con la plata» (Flota IV): desde la fase 8 se usa en

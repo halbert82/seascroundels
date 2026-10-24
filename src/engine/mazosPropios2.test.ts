@@ -192,12 +192,25 @@ describe('131 · Navío de escolta', () => {
 })
 
 describe('132 · Fuego de cobertura', () => {
-  it('pone en juego la permanente 237: los Cañones no suman; Acción: Prueba de NAV 3 para descartarla', () => {
-    const j = en('mar', ['cobertura', 'calma', 'calma'])
+  it('pone en juego la permanente 237: los Cañones no suman; Acción: Destina 3 NAV para descartarla (Albert: antes, Prueba de NAV 3)', () => {
+    const j = en('mar', ['cobertura', 'calma', 'calma'], { tripulacion: ['viejo_lobo'] })
     expect(j.zona('permanentes')).toEqual(['pm_cobertura'])
     expect(j.valor({ tipo: 'sinCanones' })).toBeGreaterThan(0)
-    j.usar('pm_cobertura.quitar0').comprometer('NAV', ['capitan']).seguir()
+    // Destinar es un coste, no una Prueba: agota al Viejo lobo de mar (NAV 3, más 1 por Diego), sin Destino.
+    j.usar('pm_cobertura.quitar0')
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 3, texto: 'NAV' }, cartas: [] })
+    j.cubrir('viejo_lobo')
     expect(j.zona('permanentes')).toEqual([])
+    expect(j.zona('mazoHistoria')).toContain('pm_cobertura')
+    expect(j.zona('destino')).toEqual([])
+    expect(j.copia('viejo_lobo').agotada).toBe(true)
+    expect(j.registro).toContain('Destinas 4 de NAV: agotas a Viejo lobo de mar.')
+  })
+
+  it('con solo Diego (NAV 2) no llega a 3: la Acción no se ofrece', () => {
+    const j = en('mar', ['cobertura', 'calma', 'calma'])
+    expect(j.zona('permanentes')).toEqual(['pm_cobertura'])
+    expect(j.ofreceCapacidad('pm_cobertura.quitar0')).toBe(false)
   })
 })
 

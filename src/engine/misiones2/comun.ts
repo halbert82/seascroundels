@@ -76,7 +76,7 @@ export function hasFallado(s: Estado, hab: Habilidad): boolean {
 
 /** ¿Has fallado en esta misión algún encuentro con alguna de estas palabras clave? */
 export function hasFalladoEncuentro(s: Estado, ...claves: string[]): boolean {
-  return pruebasHechas(s).some((p) => p.encuentro && !p.superada && p.claves.some((k) => claves.includes(k)))
+  return pruebasHechas(s).some((p) => !p.superada && p.claves.some((k) => claves.includes(k)))
 }
 
 // ---------------------------------------------------------------------------

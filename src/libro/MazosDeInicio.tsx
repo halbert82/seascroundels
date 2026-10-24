@@ -1,7 +1,9 @@
-// «Mazos de inicio», al final de «Aprende a jugar»: la partida de iniciación y la lista de sus dos mazos, sacadas de los
-// mazos predefinidos de la app (data/cartas.json). Así quien juegue con las cartas en la mesa puede preparar la
-// primera partida, y si cambian los mazos de la app, cambia el libro.
+// «Mazos de inicio», al final de «Aprende a jugar»: la partida de iniciación, el nombre de sus mazos («Pólvora y
+// abordaje») y la lista de sus dos mazos, sacadas de los mazos predefinidos de la app (data/cartas.json). Así quien juegue
+// con las cartas en la mesa puede preparar la primera partida, y si cambian los mazos de la app, cambia el libro. El
+// párrafo «Cómo se juega» es el texto del reglamento que sigue al gráfico (`children`).
 
+import type { ReactNode } from "react";
 import { DATOS } from "../engine/datos.ts";
 import { nombreDe, porId, type TipoCarta } from "../engine/catalogo.ts";
 import { MODOS } from "../engine/preparacion.ts";
@@ -88,7 +90,7 @@ function Lista({
   );
 }
 
-export function MazosDeInicio({ c }: { c: Capitulo }) {
+export function MazosDeInicio({ c, children }: { c: Capitulo; children?: ReactNode }) {
   const m = DATOS.mazosPredefinidos;
   const modo = MODOS[m.modo];
   const puerto = porId(m.puertoInicial);
@@ -110,13 +112,14 @@ export function MazosDeInicio({ c }: { c: Capitulo }) {
             <b>{DATOS.barco.nombre}</b>, en el puerto de{" "}
             <b>{nombreDe(puerto.id)}</b>, en una partida <b>{m.modo}</b> (
             {modo.reputacion} de reputación para ganar y {modo.escenario} cartas
-            de Escenario).
+            de Escenario), con los mazos de inicio <b>«{m.nombre}»</b>.
           </p>
           <p>
             Prepara tus dos mazos con estas cartas. El número de la derecha es
             su número de colección, el de abajo a la derecha de cada carta.
           </p>
         </div>
+        {children && <div className="mazos-inicio-como ancho">{children}</div>}
         <div className="mazos-inicio-listas ancho">
           <Lista
             titulo="Mazo del capitán"

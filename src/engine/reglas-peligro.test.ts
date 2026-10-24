@@ -6,12 +6,12 @@ import { registrarPeligro, registrarPermanente } from './capacidades/peligros.ts
 
 import { Jugador, PERMANENTE_DE_PRUEBA, dificultadConDestino } from './pruebas/situacion.ts'
 
-// «Percances» (Mar, sin Prueba): pone en juego la permanente de prueba, que se quita superando NAV 3, agotando a un
+// «Percances» (Mar, sin Prueba): pone en juego la permanente de prueba, que se quita destinando 3 NAV, agotando a un
 // Oficial o pagando 2. Mientras esté, las Pruebas de COM reciben +1 y, cada vez que falles una Prueba, un comprometido
 // queda Asustado.
 registrarPermanente(PERMANENTE_DE_PRUEBA, {
   quitar: [
-    { tipo: 'prueba', opciones: [{ hab: 'NAV', dificultad: 3 }], fallo: [{ tipo: 'heridas', n: 1, capitan: true }] },
+    { tipo: 'destina', n: 3, hab: 'NAV' },
     { tipo: 'agotarRasgo', rasgo: 'Oficial' },
     { tipo: 'pagar', n: 2 },
   ],
@@ -55,23 +55,22 @@ describe('Zona de permanentes (fase 11)', () => {
     expect(j.registro).toContain('Pones en juego «Percances (prueba)» (carta 9201 del mazo de historia).')
   })
 
-  it('se quita con una Prueba normal: comprometes, sale Destino y, si superas, vuelve al mazo de historia', () => {
+  it('se quita destinando: un coste, no una Prueba (Albert: solo los encuentros piden Pruebas); vuelve al mazo de historia', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
     expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
     j.usar(`${PERMANENTE_DE_PRUEBA}.quitar0`)
-    expect(j.decision).toMatchObject({ tipo: 'comprometer', motivo: { clave: 'comprometerAccion' } })
-    j.comprometer('NAV', ['viejo_lobo']).pasarOfertas()
-    expect(j.zona('destino')).toEqual(['chubasco'])
-    j.seguir()
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 3 }, cartas: [] })
+    j.cubrir('viejo_lobo')
+    expect(j.zona('destino')).toEqual([])
+    expect(j.zona('mazoPeligros')[0]).toBe('chubasco') // no se revela Destino
     expect(j.zona('permanentes')).toEqual([])
     expect(j.decision.motivo.clave).toBe('trasEncuentro')
   })
 
-  it('una Prueba de una Acción sin nadie comprometido aplica Sin oposición y falla (con su efecto de fallo)', () => {
+  it('si los preparados no llegan, no se ofrece (solo Diego, NAV 2, contra 3)', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'niebla', 'calma'] })
-    j.usar(`${PERMANENTE_DE_PRUEBA}.quitar0`).comprometer('NAV', []).seguir()
     expect(j.zona('permanentes')).toEqual([PERMANENTE_DE_PRUEBA])
-    expect(j.copia('capitan').heridas).toBe(1)
+    expect(j.ofreceCapacidad(`${PERMANENTE_DE_PRUEBA}.quitar0`)).toBe(false)
   })
 
   it('se quita agotando a un Tripulante con el Rasgo pedido, o pagando cartas', () => {
@@ -94,10 +93,12 @@ describe('Zona de permanentes (fase 11)', () => {
     expect(j.estados('carpintero')).toEqual(['asustado'])
   })
 
-  it('no se puede hacer la Prueba de una Acción durante otra Prueba', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'chubasco', 'calma'] })
-    j.seguir().comprometer('NAV', ['capitan'])
-    expect(j.ofreceCapacidad(`${PERMANENTE_DE_PRUEBA}.quitar0`)).toBe(false)
+  it('Destina se paga en cualquier ventana de acción, también en la de la Prueba de un encuentro (ya no hay Pruebas de una Acción)', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['percances', 'chubasco', 'chubasco', 'calma'], tripulacion: ['viejo_lobo'] })
+    j.seguir().comprometer('NAV', ['capitan']).pasarOfertas()
+    expect(j.decision).toMatchObject({ tipo: 'ventanaAccion', motivo: { clave: 'ventanaPrueba' } })
+    // El Viejo lobo de mar (NAV 3; Diego ya está agotado) llega solo a 3.
+    expect(j.ofreceCapacidad(`${PERMANENTE_DE_PRUEBA}.quitar0`)).toBe(true)
   })
 
   it('al terminar la misión, la permanente vuelve al mazo de historia (y la carta del Peligro ya estaba descartada)', () => {

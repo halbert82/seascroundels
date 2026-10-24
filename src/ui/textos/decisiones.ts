@@ -69,8 +69,12 @@ export function textoOpciones(opciones: readonly OpcionPrueba[]): string {
 /** Cómo se quita una carta de Peligro en juego, en palabras. */
 export function textoFormaDeQuitar(f: FormaDeQuitar): string {
   switch (f.tipo) {
-    case 'prueba':
-      return `Prueba de ${textoOpciones(f.opciones)}`
+    case 'destina': {
+      // «Destina 5 COM (4 si tienes un Carpintero preparado)», «Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador)».
+      const rebaja = f.rebaja ? ` (${f.rebaja.n} si tienes un ${f.rebaja.rasgo} preparado)` : ''
+      const alt = f.alternativa ? ` (${f.alternativa.n} ${f.alternativa.hab} si es un ${f.alternativa.rasgo})` : ''
+      return `Destina ${f.n} ${f.hab}${f.solo ? ' con un solo Tripulante' : ''}${rebaja}${alt}`
+    }
     case 'agotarRasgo':
       return f.rasgo ? `Agota a un ${f.rasgo}` : 'Agota a un Tripulante'
     case 'pagar':
@@ -94,10 +98,6 @@ function textoDeLaCapacidad(s: Estado, carta: InstId): string {
 export function textoUso(s: Estado, uso: Uso): { carta: string; texto: string } {
   const cap = capacidadPorClave(uso.clave)
   if (cap?.desde === 'estado' || cap?.desde === 'estadoBarco') {
-    if (uso.clave === 'estado:encadenado.liberar' && uso.fuente) {
-      return { carta: `Liberar a ${nombre(s, uso.fuente)}`, texto: 'Prueba de COM o EXP 3 para quitarle Encadenado.' }
-    }
-    if (uso.clave === 'estado:incendio.apagar') return { carta: 'Apagar el Incendio a bordo', texto: 'Agota a un Tripulante.' }
     const estado = cap.carta.slice('estado:'.length) as FichaTripulante | EstadoBarco
     // Fase 16: las Acciones de las cartas de Estado que las descartan («Acción: Agota a un Cirujano: descarta esta carta»).
     const coste = /Acción: (.+?): descarta esta carta/.exec(textoPlano(cap.carta))?.[1]
@@ -253,8 +253,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
         ayuda:
           'Agota al menos a un Tripulante preparado (aunque tenga NAV 0) y, si no basta, descarta cartas de tu mano con iconos de NAV hasta sumar al menos ese número. Lo que reduce la Distancia, como el Barco, ya está descontado.',
       }
-    case 'comprometer':
-    case 'comprometerAccion': {
+    case 'comprometer': {
       const enc = s.prueba ? nombreDelEncuentro(s, s.prueba.encuentro) : ''
       const sinAyuda = d.tipo === 'comprometer' && d.sinAyuda
       return {
@@ -325,8 +324,6 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return { titulo: '¿Qué Destino cancelas?', ayuda: 'Esta Prueba resuelve 2 Destinos: la carta cancela solo uno, el que elijas.' }
     case 'cambiarCualDestino':
       return { titulo: '¿Qué Destino cambias?', ayuda: 'Esta Prueba resuelve 2 Destinos: descartas el que elijas y revelas otro en su lugar.' }
-    case 'cazador':
-      return { titulo: '¿Quién sale a cazar al jaguar?', ayuda: 'Se agota y hace la Prueba solo: COM 5, o EXP 3 si es un Explorador.' }
     case 'giroDeLaMuerte':
       return { titulo: 'Giro de la muerte: fallas la Prueba…', ayuda: '…salvo que el Tripulante asignado con la habilidad más alta sufra 2 heridas; entonces el Destino es −1.' }
     case 'descartarMuelle':
@@ -384,6 +381,11 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
       return {
         titulo: `Destina ${n} ${m.texto ?? ''}`.trim(),
         ayuda: `Agota a Tripulantes preparados cuya ${m.texto ?? 'habilidad'} sume al menos ${n}, con sus bonificaciones (como al cubrir una Distancia). No es una Prueba: no hay Destino ni cartas de la mano.`,
+      }
+    case 'destinaSolo':
+      return {
+        titulo: `Destina ${m.texto ?? n}`,
+        ayuda: 'Elige al Tripulante preparado que lo paga él solo, con sus bonificaciones: se agota. No es una Prueba: no hay Destino ni cartas de la mano.',
       }
     case 'conservarMision':
       return { titulo: `No has superado «${nombreCarta(m.carta)}»`, ayuda: '¿La dejas disponible para otro turno o la mandas al fondo del mazo de Misiones?' }

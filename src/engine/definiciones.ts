@@ -8,7 +8,7 @@ import { interpretarEfectos, type Condicion, type Efecto, type Selector } from '
 import { copia } from './estado.ts'
 import { porId } from './catalogo.ts'
 import { encuentroDe, entornoActual } from './peligros.ts'
-import type { Capacidad, CartaId, Coste, Estado, InstId, PruebaEnCurso } from './tipos.ts'
+import type { Capacidad, CartaId, Coste, Destina, Estado, InstId, PruebaEnCurso } from './tipos.ts'
 
 /** Capacidad escrita en las reglas de una carta (el registro le pone la carta, desde dónde funciona y su clave). */
 export type CapacidadDeCarta = Omit<Capacidad, 'carta' | 'desde' | 'clave'> & { clave: string }
@@ -31,8 +31,6 @@ export interface DefinicionPrueba {
    * nadie (Sin oposición) o a N o más; con menos de N asignados, la Prueba se falla.
    */
   minimo?: number
-  /** Solo puede hacerla este Tripulante (ya agotado como coste, se compromete solo). */
-  soloCon?: InstId
 }
 
 /**
@@ -58,9 +56,13 @@ export interface OpcionElige {
 /** Momentos en que una permanente hace algo (o suma una ficha a su contador). */
 export type Disparo = 'revelarPeligro' | 'cartaResuelta' | 'finTurno' | 'superarPrueba' | 'fallarPrueba'
 
-/** Cómo se quita una permanente (lo dice la propia carta): vuelve al mazo de historia. */
+/**
+ * Cómo se quita una permanente (lo dice la propia carta): vuelve al mazo de historia. Solo los encuentros piden Pruebas
+ * (Albert): las permanentes que pedían una Prueba con su Acción usan Destina. `efectos`: lo que hace además al quitarla
+ * así («{2 robar} y descarta esta carta», «descarta esta carta y gana 1 Avance»).
+ */
 export type FormaDeQuitar =
-  | { tipo: 'prueba'; opciones: OpcionPrueba[]; fallo?: Efecto[]; exito?: Efecto[] }
+  | ({ tipo: 'destina'; efectos?: Efecto[] } & Destina)
   | { tipo: 'agotarRasgo'; rasgo: string | null }
   | { tipo: 'pagar'; n: number }
 
