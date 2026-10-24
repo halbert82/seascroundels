@@ -169,7 +169,7 @@
    "EXP": 0,
    "vida": 2,
    "mejoras": 0,
-   "texto": "Inflige {1 herida} a Filibustero borracho: recibe {+2 COM} en esta Prueba. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Filibustero borracho: {+2 COM} en esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«Dos tragos más y abordo yo solo ese galeón.»"
   },
   {
@@ -517,7 +517,7 @@
    "EXP": 0,
    "vida": 2,
    "mejoras": 0,
-   "texto": "Inflige {1 herida} a Carne de cañón: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Carne de cañón: {+1 COM} a los demás Tripulantes asignados en esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«El primero en saltar al abordaje. El primero en sangrar.»"
   },
   {
@@ -536,7 +536,7 @@
    "EXP": 0,
    "vida": 3,
    "mejoras": 0,
-   "texto": "Inflige {1 herida} a Galeote fugado: recibe {+2 NAV} en esta Prueba. (Límite de una vez por turno.)",
+   "texto": "Inflige {1 herida} a Galeote fugado: {+2 NAV} en esta Prueba. (Límite de una vez por turno.)",
    "ambientacion": "«Veinte años remando encadenado.»"
   },
   {

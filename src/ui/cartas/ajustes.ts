@@ -51,15 +51,13 @@ export const LETRA_JUGADOR = 18
  * caja de texto sube lo mismo, como las Murallas de Port Royal pero mucho menos. Medido con capturas/medir-jugador18.mjs y
  * capturas/medir-p125.mjs (lo que sobraba): Isabela 17,6, el Viejo lobo de mar 21,6 y el Fiador 23,6 (los tres bajan lo
  * mismo, para que se vean iguales en la mesa); «Marineros sin barco» (Escenario, a su letra normal, 17 px), 13,6.
- * TODO(regla): el Filibustero borracho (con «en esta Prueba») y la Carne de cañón siguen sin caber por 1 px (una línea con
- * icono es 2 px más alta): por defecto, la ilustración 4 px más baja, pendiente de que Albert lo confirme (P132).
+ * P132 (Albert): el Filibustero borracho y la Carne de cañón ya no la bajan: su texto nuevo pone los dos iconos en la
+ * misma línea y cabe.
  */
 const ARTE_CORTO: Record<number, number> = {
-  9: 4, // Filibustero borracho
   11: 26, // Isabela «Cuervo» Saldaña
   18: 26, // Viejo lobo de mar
   168: 26, // Fiador de la Hermandad
-  244: 4, // Carne de cañón
   100: 16, // Marineros sin barco
 }
 

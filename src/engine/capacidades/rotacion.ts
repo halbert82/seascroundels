@@ -44,7 +44,7 @@ export const CAPACIDADES_ROTACION: Capacidad[] = [
   enrolado('piloto_sueldo'),
   enrolado('guia_alquiler'),
 
-  // Carne de cañón: «Sufre 1 herida: los demás Tripulantes asignados a esta Prueba reciben +1 COM.»
+  // Carne de cañón: «Inflige 1 herida a Carne de cañón: +1 COM a los demás Tripulantes asignados en esta Prueba.» (P132.)
   sufreHerida('carne_canon', 'COM', 'carne_canon.com'),
   {
     clave: 'carne_canon.com',
@@ -57,7 +57,7 @@ export const CAPACIDADES_ROTACION: Capacidad[] = [
         : 0,
   },
 
-  // Galeote fugado: «Inflige 1 herida a Galeote fugado: recibe +2 NAV en esta Prueba.» (P125: antes «para esta Prueba».)
+  // Galeote fugado: «Inflige 1 herida a Galeote fugado: +2 NAV en esta Prueba.» (P132: como el Filibustero borracho.)
   sufreHerida('galeote', 'NAV', 'galeote.nav'),
   {
     clave: 'galeote.nav',

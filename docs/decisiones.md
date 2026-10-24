@@ -1855,7 +1855,7 @@ Un solo tamaño para todo el texto de reglas de las cartas de jugador, **18 px**
 - **P123 · Carpinteros de ribera (106): solo la primera.** Texto: «**Elige:** repara {2 dano g}, o la primera Mejora de barco que adquieras este turno cuesta 1 menos.» El descuento se gasta con la primera Mejora de barco que adquieras ese turno, también si la adquieres sin coste o pagando la mitad (como el de Catalina, N19); una Mejora de tripulante no lo gasta. *Prueba (el ejemplo):* con la Vela mayor (1) y el Casco reforzado (2) en el muelle, pagas 0 y 2.
 - **P124 · Soborno contra Alerta:** sigue sin valer (como estaba).
 - **P125 · Cartas que no caben a 18 px:** todas las cartas de jugador llevan ya 18 px; fuera la letra provisional.
-  - **009 Filibustero borracho y 245 Galeote fugado:** «para esta Prueba» pasa a «en esta Prueba». El Galeote cabía; **el Filibustero sigue sin caber por 1 px** (ver P132).
+  - **009 Filibustero borracho y 245 Galeote fugado:** «para esta Prueba» pasa a «en esta Prueba». El Galeote cabía; **el Filibustero sigue sin caber por 1 px** (ver P132, ya cerrada: texto nuevo).
   - **244 Carne de cañón:** no hay un texto «un poco más corto» que quepa sin cambiar lo que hace. Le sobra 1 px porque una línea con icono es 2 px más alta que una sin icono: con tres líneas y dos de ellas con icono, no cabe; acortar unas palabras no le quita ninguna línea (le haría falta bajar a dos, y el «Límite de una vez por turno» ocupa casi una entera). Lo que sí cabe es poner los dos iconos en la misma línea (ver P132). Por defecto, la ilustración baja 4 px.
   - **011 Isabela, 018 Viejo lobo de mar y 168 Fiador de la Hermandad:** la ilustración baja 26 px (lo que necesitaba el Fiador, 23,6, con un poco de margen; los tres igual para que se vean iguales en la mesa) y la caja de texto sube lo mismo, sin tocar el texto. **100 Marineros sin barco** (Escenario, a su letra de 17 px, ya no apretada): 16 px. Comprobado con capturas: los nombres, las pestañas, la cinta del tipo y la Vida siguen en su sitio.
   - **Mejoras de una sola cifra** (021, 023, 035, 036, 042): se quedan con la cifra grande.
@@ -1890,8 +1890,18 @@ La recompensa de **117 La casa del gobernador** se dibujaba «+1 [rep] y roba 2�
 - **Carpinteros de ribera solo la primera:** el jugador automático elige el descuento casi igual que antes (78,5 % de las veces, antes 79,0 %) y la carta sigue ayudando lo mismo (+2,0 puntos de victoria si sale pronto, antes +1,7: ruido).
 - La regla general no cambia ninguna carta de jugador (ya no pedían Pruebas) ni las seis permanentes (no se han tocado). Virar y P129 ya funcionaban así.
 
-### Pregunta para Albert (P132), con la opción por defecto aplicada
+### Pregunta para Albert (P132), con la opción por defecto aplicada (cerrada: ver «Respuesta de Albert P132» justo debajo)
 
 - **P132 · Filibustero borracho (009) y Carne de cañón (244): siguen sin caber por 1 px.** Una línea con icono es 2 px más alta, y las dos cartas tienen tres líneas de reglas con dos iconos en líneas distintas. **Por defecto, la ilustración baja 4 px** en las dos (no se nota) y el texto se queda como está. La otra opción: un texto que pone los dos iconos en la misma línea, sin cambiar lo que hacen (comprobado con capturas: así caben a 18 px sin tocar la ilustración):
   - 009: «Inflige {1 herida} a Filibustero borracho: {+2 COM} en esta Prueba. (Límite de una vez por turno.)» (como la Pistola, sin «recibe»; queda en dos líneas). Si lo quieres, el Galeote fugado (245) diría lo mismo con {+2 NAV}, por coherencia.
   - 244: «Inflige {1 herida} a Carne de cañón: {+1 COM} a los demás Tripulantes asignados en esta Prueba. (Límite de una vez por turno.)»
+
+## Respuesta de Albert P132: los dos iconos en la misma línea (24 de octubre de 2026)
+
+- **P132 · Filibustero borracho (009) y Carne de cañón (244): cerrada.** Albert elige el texto que pone los dos iconos en la misma línea, como la Pistola de chispa («{+3 COM} en esta Prueba»), sin «recibe». **No cambia lo que hacen.**
+  - **009 Filibustero borracho:** «Inflige {1 herida} a Filibustero borracho: {+2 COM} en esta Prueba. (Límite de una vez por turno.)»
+  - **245 Galeote fugado** (por coherencia, aunque ya cabía): «Inflige {1 herida} a Galeote fugado: {+2 NAV} en esta Prueba. (Límite de una vez por turno.)»
+  - **244 Carne de cañón:** «Inflige {1 herida} a Carne de cañón: {+1 COM} a los demás Tripulantes asignados en esta Prueba. (Límite de una vez por turno.)»
+- **Fuera los 4 px** que bajaba la ilustración del Filibustero y de la Carne de cañón (y su `TODO(regla)`). Comprobado con capturas de las tres cartas, a 18 px y con la ilustración entera: el Filibustero y el Galeote quedan en dos líneas de reglas (el Filibustero, como su carta de referencia), con unos 32 px de aire hasta la ambientación; la Carne de cañón, en tres líneas y una sola con icono, con unos 8 px de aire. Solo bajan ya la ilustración Isabela, el Viejo lobo de mar y el Fiador de la Hermandad (26 px) y «Marineros sin barco» (16 px).
+- **Reglamento:** ninguno de los dos libros cita estas tres cartas ni sus textos; no cambia.
+- **Pruebas:** `solo-encuentros.test` (los tres textos nuevos), `vista.test` (ninguna de las tres baja la ilustración y las tres dicen «en esta Prueba») y la de las huellas (la redacción nueva, que el motor entiende igual: los números se siguen leyendo del texto).

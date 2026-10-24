@@ -74,16 +74,15 @@ describe('vista de las cartas', () => {
     for (const n of [148, 97, 278]) expect(jugador(n).letra, `carta ${n}`).toBeUndefined()
   })
 
-  it('P125: Isabela, el Viejo lobo, el Fiador y Marineros sin barco bajan un poco la ilustración, sin tocar su texto', () => {
+  it('P125 y P132: Isabela, el Viejo lobo, el Fiador y Marineros sin barco bajan un poco la ilustración, sin tocar su texto', () => {
     const corta = (n: number) => (vistaDeCarta(carta(n)) as VistaJugador).arteCorto
     expect([11, 18, 168].map(corta)).toEqual([26, 26, 26])
     expect(corta(100)).toBe(16)
-    // TODO(regla) P132: el Filibustero borracho y la Carne de cañón, 4 px.
-    expect([9, 244].map(corta)).toEqual([4, 4])
-    // Las demás, nada (Rufián de cubierta, Galeote fugado, Carpinteros de ribera).
-    for (const n of [4, 245, 106]) expect(corta(n), `carta ${n}`).toBeUndefined()
-    // Los textos de 009 y 245 dicen «en esta Prueba» (como la Pistola).
-    for (const n of [9, 245]) expect(textoPlano((vistaDeCarta(carta(n)) as VistaJugador).texto), `carta ${n}`).toMatch(/en esta Prueba\./)
+    // Las demás, nada (Rufián de cubierta, Carpinteros de ribera y, desde P132, el Filibustero borracho, la Carne de cañón
+    // y el Galeote fugado: con los dos iconos en la misma línea, caben).
+    for (const n of [4, 106, 9, 244, 245]) expect(corta(n), `carta ${n}`).toBeUndefined()
+    // Los textos de 009, 244 y 245 dicen «en esta Prueba» (como la Pistola).
+    for (const n of [9, 244, 245]) expect(textoPlano((vistaDeCarta(carta(n)) as VistaJugador).texto), `carta ${n}`).toMatch(/en esta Prueba\./)
   })
 
   it('P125: en el Barco, «Distancia −1» no se parte (el «−1» nunca solo en la última línea)', () => {

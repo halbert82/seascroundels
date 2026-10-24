@@ -78,9 +78,12 @@ describe('Respuestas de Albert P120–P131: textos de las cartas', () => {
   const encuentro = (id: string, entorno: 'mar' | 'nat' | 'ciu') =>
     (DATOS.peligros.find((p) => p.id === id) as unknown as { encuentros: Record<string, { textoEfecto?: string }> }).encuentros[entorno]
 
-  it('P125: el Filibustero borracho y el Galeote fugado dicen «en esta Prueba» (como la Pistola)', () => {
-    expect(texto('filibustero')?.texto).toBe('Inflige {1 herida} a Filibustero borracho: recibe {+2 COM} en esta Prueba. (Límite de una vez por turno.)')
-    expect(texto('galeote')?.texto).toBe('Inflige {1 herida} a Galeote fugado: recibe {+2 NAV} en esta Prueba. (Límite de una vez por turno.)')
+  it('P125 y P132: el Filibustero borracho, el Galeote fugado y la Carne de cañón, como la Pistola («{+3 COM} en esta Prueba»)', () => {
+    expect(texto('filibustero')?.texto).toBe('Inflige {1 herida} a Filibustero borracho: {+2 COM} en esta Prueba. (Límite de una vez por turno.)')
+    expect(texto('galeote')?.texto).toBe('Inflige {1 herida} a Galeote fugado: {+2 NAV} en esta Prueba. (Límite de una vez por turno.)')
+    expect(texto('carne_canon')?.texto).toBe(
+      'Inflige {1 herida} a Carne de cañón: {+1 COM} a los demás Tripulantes asignados en esta Prueba. (Límite de una vez por turno.)',
+    )
     expect(CATALOGO.flatMap((e) => textosDe(e.carta)).filter((t) => t.includes('para esta Prueba'))).toEqual([])
   })
 
