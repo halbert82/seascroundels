@@ -44,9 +44,11 @@ registrarCodigo('p2_motin.dosHeridas', (s) => [{ tipo: 'repartirHeridas', n: 2, 
 // 34. Hermanos de la Costa · Favorable
 registrarPeligro('p2_hermanos', {
   encuentros: {
-    // Prepara un Cañón y repara 1 daño. Si tienes un Bucanero preparado, prepara otro Cañón.
-    // P93 (Albert): «preparado», no «asignado» (este encuentro no tiene Prueba). Diego es Bucanero y cuenta si no está agotado.
-    mar: { efecto: [preparaCanon(), reparar(1), siTienesPreparado('Bucanero', [preparaCanon()])] },
+    // Prepara un Cañón y repara 1 daño. Si tienes un Pirata preparado, prepara otro Cañón.
+    // P93 (Albert): «preparado», no «asignado» (este encuentro no tiene Prueba). Diego es Pirata y cuenta si no está agotado.
+    // Fase 15, quinta ronda: el Rasgo Bucanero pasa a llamarse Pirata. Es el Rasgo de un Tripulante: nada que ver con que
+    // este encuentro sea de tipo Pirata.
+    mar: { efecto: [preparaCanon(), reparar(1), siTienesPreparado('Pirata', [preparaCanon()])] },
     // Cura 2 heridas, repartidas como quieras. Si no tenías heridas, prepara 1 Tripulante (se mira antes de curar).
     nat: { efecto: [{ tipo: 'si', condicion: { tipo: 'no', condicion: { tipo: 'heridas', minimo: 1 } }, entonces: [preparar(1)] }, { tipo: 'curar', n: 2 }] },
     // Éxito (fase 14, Albert): si tienes Capacidad, recluta un Tripulante del muelle de coste 2 o menos pagando la mitad de
@@ -54,7 +56,6 @@ registrarPeligro('p2_hermanos', {
     // P91 (Albert): se queda «de coste 2 o menos» (la mitad siempre es 1 carta).
     ciu: { exito: [{ tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante', mitad: true }], fallo: [descartar(1)] },
   },
-  // −1; −2 en su lugar si el encuentro es Pirata y comprometiste a un Bucanero. Sin oposición: pierdes 1 munición.
   // −1. Sin oposición: agota 1 Cañón. (Fase 13, I1: fuera «Pirata con un Bucanero asignado: +2».)
   destino: { sinOposicion: [agotaCanones(1)] },
 })
@@ -269,13 +270,13 @@ registrarPeligro('p2_paga', {
     // P41 (confirmada): el Capitán no tiene coste impreso: no cuenta como «el de menor coste» (si no, siempre sería él).
     nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'tripulacion', por: 'menorCoste', sinCapitan: true }, hacer: { tipo: 'alMuelle' } }] },
     // Elige: pagas (1 carta por cada Tripulante que tengas, máx. 3; el Capitán es un Tripulante) o Prueba de COM 3,
-    // +1 por cada Bucanero que tengas (máx. +2).
+    // +1 por cada Pirata que tengas (máx. +2; el Rasgo de tus Tripulantes, antes Bucanero).
     ciu: {
       elige: [
         { texto: 'Pagar: descarta 1 carta por cada Tripulante que tengas (máx. 3)', efectos: [{ tipo: 'porCada', medida: 'tripulantes', efectos: [descartar(1)], maximo: 3 }] },
-        { texto: 'Plantarte: COM 3, +1 de dificultad por cada Bucanero (máx. +2)', prueba: true },
+        { texto: 'Plantarte: COM 3, +1 de dificultad por cada Pirata (máx. +2)', prueba: true },
       ],
-      capacidades: [dificultad('bucaneros', (ctx) => Math.min(2, ctx.s.zonas.tripulacion.filter((c) => tieneRasgo(ctx.s, c, 'Bucanero')).length))],
+      capacidades: [dificultad('piratas', (ctx) => Math.min(2, ctx.s.zonas.tripulacion.filter((c) => tieneRasgo(ctx.s, c, 'Pirata')).length))],
       exito: [robar(2)],
       fallo: [descartar(2), { tipo: 'heridas', n: 1, capitan: true }],
     },

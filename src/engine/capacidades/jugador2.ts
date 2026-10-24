@@ -1,12 +1,13 @@
 // Cartas de jugador 2.0 (fase 6): responden a las reglas nuevas de Peligro (Estados, cartas que se quedan en
-// juego, Persigue y, desde la fase 14, los descartes de Tripulantes). 4 Tripulantes y 5 Eventos.
+// juego, Persigue y, desde la fase 14, los descartes de Tripulantes). 3 Tripulantes y 5 Eventos (fase 15, quinta ronda:
+// fuera el Práctico del puerto).
 
 import { anotar, nombre } from '../estado.ts'
 import { numeroConIcono, primerNumero, textoDe } from '../textos.ts'
-import { tieneEstado, tieneEstadoBarco } from '../estados.ts'
+import { tieneEstado } from '../estados.ts'
 import type { FichaTripulante } from '../infoEstados.ts'
-import type { Capacidad, CartaId, Estado, NuevaTarea, Ventana } from '../tipos.ts'
-import { participa, participantes } from './comun.ts'
+import type { Capacidad, CartaId, Estado, Ventana } from '../tipos.ts'
+import { participantes } from './comun.ts'
 
 function evento(carta: CartaId, ventana: Ventana, resto: Omit<Capacidad, 'clave' | 'carta' | 'ventana' | 'desde'>): Capacidad {
   return { clave: `${carta}.jugar`, carta, ventana, desde: 'mano', ...resto }
@@ -16,10 +17,11 @@ function alguienCon(s: Estado, estados: readonly FichaTripulante[]): boolean {
   return s.zonas.tripulacion.some((c) => estados.some((e) => tieneEstado(s, c, e)))
 }
 
-const MALES: FichaTripulante[] = ['envenenado', 'sangrando', 'asustado']
+// Fase 15, quinta ronda: la Herbolaria ya no quita Asustado.
+const MALES: FichaTripulante[] = ['envenenado', 'sangrando']
 
 export const CAPACIDADES_JUGADOR2: Capacidad[] = [
-  // Herbolaria: «Agotar: Quita 1 Estado a un Tripulante: Envenenado, Sangrando o Asustado.»
+  // Herbolaria: «Agotar: Quita el Estado Envenenado o Sangrando de un Tripulante.»
   {
     clave: 'herbolaria.quitar',
     carta: 'herbolaria',
@@ -30,38 +32,7 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
     efecto: () => [{ tipo: 'quitarUnEstado', estados: [...MALES] }],
   },
 
-  // Práctico del puerto: «Respuesta: Después de que superes una Prueba de NAV en la que participe, quita Vía de
-  // agua o Velas rotas del Barco.»
-  {
-    clave: 'practico.barco',
-    carta: 'practico',
-    ventana: 'respuesta',
-    desde: 'juego',
-    disparo: (s, yo, ev, fase) =>
-      fase === 'despues' &&
-      ev.tipo === 'superarPrueba' &&
-      s.prueba?.hab === 'NAV' &&
-      participa(s, yo) &&
-      (tieneEstadoBarco(s, 'viaDeAgua') || tieneEstadoBarco(s, 'velasRotas')),
-    efecto: (s): NuevaTarea[] => {
-      const via = tieneEstadoBarco(s, 'viaDeAgua')
-      const velas = tieneEstadoBarco(s, 'velasRotas')
-      if (via && velas) {
-        return [
-          {
-            tipo: 'elegirEfectos',
-            opciones: [
-              { texto: 'Quitar Vía de agua', efectos: [{ tipo: 'quitarEstadoBarco', estado: 'viaDeAgua' }] },
-              { texto: 'Quitar Velas rotas', efectos: [{ tipo: 'quitarEstadoBarco', estado: 'velasRotas' }] },
-            ],
-          },
-        ]
-      }
-      return [{ tipo: 'quitarEstadoBarco', estado: via ? 'viaDeAgua' : 'velasRotas' }]
-    },
-  },
-
-  // La Lengua: «Los encuentros #Civil# en los que participe La Lengua reciben −1 de dificultad.»
+  // Lenguaraz (antes La Lengua): «Los encuentros #Civil# en los que participe Lenguaraz reciben −1 de dificultad.»
   {
     clave: 'lengua.civil',
     carta: 'lengua',
@@ -71,16 +42,18 @@ export const CAPACIDADES_JUGADOR2: Capacidad[] = [
       c.tipo === 'dificultad' && yo !== null && c.claves.includes('Civil') && (ctx.participantes ?? participantes(ctx.s)).includes(yo) ? -1 : 0,
   },
 
-  // Fiador de la Hermandad (fase 14, fuera el rehén): «Interrupción: Cuando otro Tripulante vaya a ser descartado por una
-  // carta de Peligro o una permanente, descarta a Fiador de la Hermandad en su lugar y roba 2.» No vale para los que caen
-  // por heridas. Las permanentes, desde la tercera ronda (P90).
+  // Fiador de la Hermandad (fase 14, fuera el rehén): «Interrupción: Cuando otro Tripulante vaya a ser descartado por un
+  // efecto de juego, descarta a Fiador de la Hermandad en su lugar y [2 robar].» Fase 15, quinta ronda (Albert): vale
+  // contra cualquier efecto, no solo Peligros y permanentes. No vale para los que caen por heridas, ni para despedir, ni
+  // para el que se va al acabarse su Enrolado («se va», no se descarta), ni para el que se descarta él mismo para pagar
+  // un coste (el Grumete leal).
   {
     clave: 'fiador.descarte',
     carta: 'fiador',
     ventana: 'interrupcion',
     desde: 'juego',
     disparo: (s, yo, ev, fase) =>
-      fase === 'antes' && ev.tipo === 'descartarTripulante' && ev.dePeligro && yo !== null && ev.carta !== yo && s.zonas.tripulacion.includes(yo),
+      fase === 'antes' && ev.tipo === 'descartarTripulante' && yo !== null && ev.carta !== yo && s.zonas.tripulacion.includes(yo),
     efecto: (s, yo, suceso) => {
       if (!yo || suceso?.ev.tipo !== 'descartarTripulante') return []
       anotar(s, 'efecto', `${nombre(s, yo)} se descarta en lugar de ${nombre(s, suceso.ev.carta)}.`)

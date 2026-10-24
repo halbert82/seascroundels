@@ -19,8 +19,6 @@ export const ICONOS = [
   'avance',
   'robar',
   'curar',
-  // Quitar un Estado (no es lo mismo que curar heridas): una ficha con un aspa.
-  'quitarestado',
   'agotar',
   'descartar',
   'rep',

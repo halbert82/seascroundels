@@ -165,8 +165,9 @@ describe('Destinos', () => {
   it('«Alarma»: +2 si el encuentro es Militar o Guardia', () => {
     const j = enPuerto({ misiones: ['pruebas-mar5'], tripulacion: ['bucanero', 'reinaldo'], mazoPeligros: ['ley', 'ley', 'calma'] })
     j.zarpar('pruebas-mar5').comprometer('COM', ['bucanero', 'reinaldo']).seguir()
-    // Patrulla española (Barco, Militar) COM 4. Bucanero 3 + Rodrigo 5 = 8, y el Destino «Alarma» resta 2: 6.
-    expect(j.registro).toContain('Total 6 contra 4: superas la Prueba.')
+    // Patrulla española (Barco, Militar) COM 4. Bucanero 3 + Rodrigo 4 = 7 (Rodrigo, COM 3 desde la fase 15, quinta ronda),
+    // y el Destino «Alarma» resta 2: 5.
+    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
   })
 
   it('«Corriente traicionera»: +2 si la Prueba es de NAV; si no, +1', () => {

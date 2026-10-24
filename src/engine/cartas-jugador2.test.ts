@@ -3,6 +3,8 @@
 import { describe, expect, it } from 'vitest'
 import { registrarPeligro, registrarPermanente } from './capacidades/peligros.ts'
 import { DATOS } from './datos.ts'
+import { ejecutar } from './motor.ts'
+import { descartarTripulante } from './tareas/peligros2.ts'
 import type { CartaId } from './tipos.ts'
 
 import { Jugador, PERMANENTE_DE_PRUEBA, dificultadConDestino } from './pruebas/situacion.ts'
@@ -13,37 +15,30 @@ registrarPermanente(PERMANENTE_DE_PRUEBA, { quitar: [] })
 registrarPeligro('percances', { encuentros: { mar: { pone: { carta: PERMANENTE_DE_PRUEBA } } } })
 
 describe('Herbolaria', () => {
-  it('Agotar: quita Envenenado, Sangrando, Aturdido o Asustado a un Tripulante (si tiene varios, eliges cuál)', () => {
-    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['envenenado', 'asustado'] }] })
+  it('Agotar: quita el Estado Envenenado o Sangrando de un Tripulante (si tiene los dos, eliges cuál)', () => {
+    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['envenenado', 'sangrando'] }] })
     j.usar('herbolaria.quitar')
     expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'cualEstado' } })
-    j.opcion('asustado')
+    j.opcion('sangrando')
     expect(j.estados('bucanero')).toEqual(['envenenado'])
     expect(j.copia('herbolaria').agotada).toBe(true)
   })
 
-  it('no se ofrece si nadie tiene esos Estados', () => {
-    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['buscado', 'borracho'] }] })
+  it('no se ofrece si nadie tiene esos Estados (fase 15, quinta ronda: ya no quita Asustado)', () => {
+    const j = Jugador.en({ tripulacion: ['herbolaria', { id: 'bucanero', estados: ['buscado', 'borracho', 'asustado'] }] })
     expect(j.ofreceCapacidad('herbolaria.quitar')).toBe(false)
   })
 })
 
-describe('Práctico del puerto', () => {
-  it('Respuesta: tras superar una Prueba de NAV en la que participe, quita Vía de agua o Velas rotas', () => {
-    const j = Jugador.enMision({ misiones: ['pruebas-mar5'], mazoPeligros: ['chubasco', 'chubasco', 'calma'], tripulacion: ['practico'], barco: { estados: ['velasRotas'] } })
-    j.comprometer('NAV', ['practico']).seguir()
-    expect(j.ofreceCapacidad('practico.barco')).toBe(true)
-    j.usar('practico.barco')
-    expect(j.estadosBarco).toEqual([])
-  })
-
-  it('lleva el Rasgo Piloto (como el Viejo lobo de mar)', () => {
-    expect(DATOS.tripulantes.find((t) => t.id === 'practico')?.rasgos).toEqual(['Marinero', 'Piloto'])
+describe('Práctico del puerto (166)', () => {
+  it('fase 15, quinta ronda: sale de la caja y del mazo de muelle', () => {
+    expect(DATOS.tripulantes.some((t) => t.id === 'practico' || t.num === 166)).toBe(false)
+    expect(DATOS.mazosPredefinidos.mazoDeMuelle).not.toContain('practico')
     expect(DATOS.tripulantes.find((t) => t.id === 'viejo_lobo')?.rasgos).toContain('Piloto')
   })
 })
 
-describe('La Lengua', () => {
+describe('Lenguaraz (antes «La Lengua»)', () => {
   it('los encuentros Civil en los que participa reciben −1 de dificultad', () => {
     const j = Jugador.enMision({ misiones: ['ladron-I'], mazoPeligros: ['civiles', 'chubasco', 'calma'], tripulacion: ['lengua'] })
     j.comprometer('EXP', ['lengua'])
@@ -85,6 +80,22 @@ describe('Fiador de la Hermandad', () => {
     expect(m.ofreceCapacidad('fiador.descarte')).toBe(false)
     expect(m.copia('capitan').heridas).toBe(1)
     expect(m.zona('tripulacion')).toEqual(expect.arrayContaining(['capitan', 'fiador']))
+  })
+
+  it('fase 15, quinta ronda: vale contra cualquier efecto de juego, no solo Peligros y permanentes; y es Pirata', () => {
+    expect(DATOS.tripulantes.find((t) => t.id === 'fiador')?.rasgos).toEqual(['Pirata'])
+    // Un efecto que no viene de ninguna carta de Peligro ni permanente descarta a la Vigía.
+    const j = Jugador.en({ tripulacion: ['vigia', 'fiador'], mazoCapitan: ['ojo', 'ojo', 'timon'] })
+    const s = j.estado
+    descartarTripulante(s, j.inst('vigia'), undefined)
+    s.pendiente = null
+    ejecutar(s)
+    expect(j.ofreceCapacidad('fiador.descarte')).toBe(true)
+    const mano = j.zona('mano').length
+    j.usar('fiador.descarte')
+    expect(j.zona('descartesMuelle')).toContain('fiador')
+    expect(j.zona('tripulacion')).toContain('vigia')
+    expect(j.zona('mano').length).toBe(mano + 2)
   })
 })
 

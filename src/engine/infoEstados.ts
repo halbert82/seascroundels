@@ -20,8 +20,8 @@ export function esVentaja(f: string): f is Ventaja {
   return (VENTAJAS as readonly string[]).includes(f)
 }
 
-/** Estados del Barco. Fase 10b: fuera Incendio a bordo. */
-export const ESTADOS_BARCO = ['viaDeAgua', 'velasRotas', 'perseguido', 'polvoraMojada'] as const
+/** Estados del Barco. Fase 10b: fuera Incendio a bordo. Fase 15, quinta ronda: fuera Pólvora mojada. */
+export const ESTADOS_BARCO = ['viaDeAgua', 'velasRotas', 'perseguido'] as const
 export type EstadoBarco = (typeof ESTADOS_BARCO)[number]
 
 export interface InfoEstado {
@@ -52,7 +52,6 @@ export const INFO_ESTADO: Record<FichaTripulante | EstadoBarco, InfoEstado> = {
   },
   velasRotas: { nombre: 'Velas rotas', texto: '−1 al total de las Pruebas de NAV en el Mar. Las Distancias aumentan en 1.' },
   perseguido: { nombre: 'Perseguido', texto: 'Los encuentros de tipo Armada reciben +1 de dificultad. Se quita al superar uno.' },
-  polvoraMojada: { nombre: 'Pólvora mojada', texto: 'Los Cañones no se preparan en la Fase de Inicio.' },
 }
 
 /** Identificador de la «carta» de un Estado en el registro de capacidades («estado:borracho»). */

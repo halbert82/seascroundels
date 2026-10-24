@@ -513,8 +513,9 @@ registrarEspecial('naufragio.robar', (s) => {
 })
 
 /**
- * Regla del motor (Albert): «Quédate esta carta», a un lado; «Pon esta carta en juego», en juego (la culebrina, solo si
- * tienes Espacio: si no, vuelve barajada); «Vuelve a barajar esta carta…», otra vez al mazo; si no dice nada, se aparta.
+ * Regla del motor (Albert): «Quédate esta carta», a un lado; «Pon esta carta en juego», en juego; «Adquiere esta carta»
+ * (la culebrina, fase 15, quinta ronda), en el Barco si tienes Espacio y, si no, se retira del juego (vuelve al mazo de
+ * historia, regla general); «Vuelve a barajar esta carta…», otra vez al mazo; si no dice nada, se aparta.
  */
 registrarEspecial('naufragio.destino', (s, t) => {
   const carta = t.datos.carta as InstId
@@ -536,13 +537,22 @@ registrarEspecial('naufragio.destino', (s, t) => {
         encolar(s, { tipo: 'ponerTesoro', carta })
         break
       }
+      mover(s, carta, 'mejoras', 'abajo')
+      copia(s, carta).vinculadaA = 'barco'
+      anotar(s, 'efecto', `«${nombre(s, carta)}» entra en juego en el Barco.`)
+      break
+    }
+    case 'adquirir': {
+      // «Adquiere esta carta. Si no tienes Espacio en el Barco, retira esta carta del juego.» Cuesta 0: no se paga nada.
+      const e = porId(id)
       if (e.tipo === 'mejoraBarco' && espacioLibre(s) < e.carta.espacio) {
-        volverAlMazo(`No tienes Espacio para «${nombre(s, carta)}»: vuelve barajada al mazo del naufragio.`)
+        mover(s, carta, 'fueraDeJuego')
+        anotar(s, 'efecto', `No tienes Espacio para «${nombre(s, carta)}»: se retira del juego y vuelve al mazo de historia.`)
         break
       }
       mover(s, carta, 'mejoras', 'abajo')
       copia(s, carta).vinculadaA = 'barco'
-      anotar(s, 'efecto', `«${nombre(s, carta)}» entra en juego en el Barco.`)
+      anotar(s, 'efecto', `Adquieres «${nombre(s, carta)}»: entra en juego en el Barco.`)
       break
     }
     case 'barajar':

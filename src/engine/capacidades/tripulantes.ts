@@ -2,10 +2,8 @@
 // Los números se leen del texto de cada carta.
 
 import { tipoDe } from '../catalogo.ts'
-import { anotar, claveUso, copia, nombre } from '../estado.ts'
+import { anotar, copia, nombre } from '../estado.ts'
 import { mazoActivo } from '../peligros.ts'
-import { tieneEstadoBarco } from '../estados.ts'
-import type { Efecto } from '../efectos.ts'
 import { numeroConIcono, numerosEntreLlaves, primerNumero, textoDe } from '../textos.ts'
 import type { Capacidad, CartaId } from '../tipos.ts'
 import { valor } from '../valores.ts'
@@ -137,40 +135,25 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
     efecto: () => [{ tipo: 'quitarEncuentro', modo: 'descartar', avance: false }],
   },
 
-  // Rodrigo: «Puedes comprometer a Rodrigo en una Prueba de COM sin agotarlo. (Límite de una vez por turno.)»
-  // Se aplica solo: no agotarse nunca es peor.
+  // Rodrigo: «Rodrigo «Carnicero» Ortega puede ser asignado a una Prueba de COM sin agotarse.» Se aplica solo: no agotarse
+  // nunca es peor. Fase 15, quinta ronda (Albert): sin límite, en cada Prueba de COM del turno.
   {
     clave: 'reinaldo.sinAgotar',
     carta: 'reinaldo',
     ventana: 'constante',
     desde: 'juego',
-    modifica: (ctx, yo, c) =>
-      c.tipo === 'sinAgotarAlComprometer' && c.carta === yo && c.hab === 'COM' && (ctx.s.usos[claveUso('turno', yo, 'reinaldo.sinAgotar')] ?? 0) < 1 ? 1 : 0,
+    modifica: (_ctx, yo, c) => (c.tipo === 'sinAgotarAlComprometer' && c.carta === yo && c.hab === 'COM' ? 1 : 0),
   },
 
-  // Carpintero de a bordo: «Agotar: Repara 1 daño o quita Vía de agua del Barco.» (fase 10b)
+  // Carpintero de a bordo: «Agotar: Repara 1 daño.» (Fase 15, quinta ronda: ya no quita la Vía de agua.)
   {
     clave: 'carpintero.reparar',
     carta: 'carpintero',
     ventana: 'libre',
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
-    requisito: (s) => hayQueReparar(s) || tieneEstadoBarco(s, 'viaDeAgua'),
-    efecto: (s) => {
-      const reparar: Efecto = { tipo: 'reparar', n: numeroConIcono(texto('carpintero'), 'dano') }
-      const tapar: Efecto = { tipo: 'quitarEstadoBarco', estado: 'viaDeAgua' }
-      if (!tieneEstadoBarco(s, 'viaDeAgua')) return [{ tipo: 'aplicarEfectos', efectos: [reparar], contexto: 'efecto' }]
-      if (!hayQueReparar(s)) return [{ tipo: 'aplicarEfectos', efectos: [tapar], contexto: 'efecto' }]
-      return [
-        {
-          tipo: 'elegirEfectos',
-          opciones: [
-            { texto: 'Repara 1 daño', efectos: [reparar] },
-            { texto: 'Quita Vía de agua del Barco', efectos: [tapar] },
-          ],
-        },
-      ]
-    },
+    requisito: (s) => hayQueReparar(s),
+    efecto: () => [{ tipo: 'aplicarEfectos', efectos: [{ tipo: 'reparar', n: numeroConIcono(texto('carpintero'), 'dano') }], contexto: 'efecto' }],
   },
 
   // Matasanos: «Agotar: Cura 2 heridas a un Tripulante.»
@@ -220,13 +203,15 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
     efecto: () => [{ tipo: 'cambiarDestino', modo: 'otro' }],
   },
 
-  // Loro parlanchín: «Respuesta: Después de que se revele el Destino de una Prueba, compromete a Loro parlanchín en ella.»
-  // Puede unirse aunque nadie se haya comprometido (confirmado por Albert con N14).
+  // Loro parlanchín: «Respuesta: Agotar: Después de que se revele el Destino de una Prueba, asigna a Loro parlanchín a
+  // ella.» Puede unirse aunque nadie se haya comprometido (confirmado por Albert con N14). Fase 15, quinta ronda: se agota
+  // como coste, así que llega a la Prueba ya agotado (no se agota otra vez, y Aguerrido no le ahorra agotarse).
   {
     clave: 'loro.unirse',
     carta: 'loro',
     ventana: 'respuesta',
     desde: 'juego',
+    coste: [{ tipo: 'agotarse' }],
     disparo: (s, yo, ev, fase) =>
       fase === 'despues' &&
       ev.tipo === 'revelarDestino' &&
@@ -237,6 +222,6 @@ export const CAPACIDADES_TRIPULANTES: Capacidad[] = [
       // Encadenado, Borracho, Asustado o Sin ayuda pueden impedir que se una.
       s.prueba.hab !== null &&
       problemaCompromiso(s, definicionActual(s), s.prueba.hab, [...participantes(s), yo], []) === null,
-    efecto: (_s, yo) => (yo ? [{ tipo: 'comprometerUno', carta: yo }] : []),
+    efecto: (_s, yo) => (yo ? [{ tipo: 'comprometerUno', carta: yo, yaAgotado: true }] : []),
   },
 ]

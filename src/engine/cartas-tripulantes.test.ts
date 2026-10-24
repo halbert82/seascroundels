@@ -143,13 +143,20 @@ describe('012 · Íñigo «Lince» Quintero', () => {
 })
 
 describe('013 · Rodrigo «Carnicero» Ortega', () => {
-  it('en la primera Prueba de COM del turno no se agota; en la segunda, sí', () => {
+  it('fase 15, quinta ronda: COM 3 y sin límite: no se agota en ninguna Prueba de COM del turno', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['reinaldo'], mazoPeligros: ['fauna', 'chubasco', 'fauna', 'chubasco', 'calma'] })
+    expect(DATOS.tripulantes.find((t) => t.id === 'reinaldo')?.COM).toBe(3)
     j.comprometer('COM', ['reinaldo']).seguir()
     expect(j.copia('reinaldo').agotada).toBe(false)
     expect(j.registro).toContain('Rodrigo «Carnicero» Ortega es asignado sin agotarse.')
     j.seguir() // trasEncuentro: siguiente carta
     j.comprometer('COM', ['reinaldo']).seguir()
+    expect(j.copia('reinaldo').agotada).toBe(false)
+  })
+
+  it('en una Prueba que no es de COM se agota como cualquiera', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['reinaldo'], mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
+    j.comprometer('NAV', ['reinaldo'])
     expect(j.copia('reinaldo').agotada).toBe(true)
   })
 })
@@ -175,14 +182,16 @@ describe('015 · Matasanos', () => {
 })
 
 describe('016 · Espadachín errante', () => {
-  it('+2 COM si es el único que participa; con otro, no', () => {
+  it('+2 COM si es el único que participa; con otro, no (fase 15, quinta ronda: coste 2 y COM 2)', () => {
+    const datos = DATOS.tripulantes.find((t) => t.id === 'espadachin')
+    expect([datos?.coste, datos?.COM]).toEqual([2, 2])
     // Tiburón tigre (COM 3), Destino «Sin novedad».
     const solo = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     solo.comprometer('COM', ['espadachin'])
-    expect(totalSinDestinoPrueba(solo.estado)).toBe(3 + 1 + 2)
+    expect(totalSinDestinoPrueba(solo.estado)).toBe(2 + 1 + 2)
     const juntos = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['espadachin', 'bucanero'], mazoPeligros: ['bestias', 'chubasco', 'calma'] })
     juntos.comprometer('COM', ['espadachin', 'bucanero'])
-    expect(totalSinDestinoPrueba(juntos.estado)).toBe(3 + 1 + (2 + 1))
+    expect(totalSinDestinoPrueba(juntos.estado)).toBe(2 + 1 + (2 + 1))
   })
 })
 
@@ -219,7 +228,7 @@ describe('019 · Rastreador de la selva', () => {
 })
 
 describe('020 · Loro parlanchín', () => {
-  it('tras revelarse el Destino se compromete en la Prueba y se agota', () => {
+  it('tras revelarse el Destino se agota (coste) y se asigna a la Prueba', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: ['loro', 'bucanero'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
     j.comprometer('EXP', ['bucanero'])
     j.usar('loro.unirse')
@@ -227,5 +236,21 @@ describe('020 · Loro parlanchín', () => {
     expect(j.copia('loro').agotada).toBe(true)
     // Bucanero EXP 0 + 1 (Diego preparado) y el Loro EXP 1 + 1.
     expect(totalSinDestinoPrueba(j.estado)).toBe(3)
+  })
+
+  it('fase 15, quinta ronda: COM 1; se agota como coste, así que Aguerrido no le ahorra agotarse', () => {
+    expect(DATOS.tripulantes.find((t) => t.id === 'loro')?.COM).toBe(1)
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: [{ id: 'loro', estados: ['aguerrido'] }, 'bucanero'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    j.comprometer('EXP', ['bucanero'])
+    j.usar('loro.unirse')
+    expect(j.estado.prueba?.comprometidos).toContain(j.inst('loro'))
+    expect(j.copia('loro').agotada).toBe(true)
+    expect(j.estados('loro')).toEqual(['aguerrido'])
+  })
+
+  it('agotado, no se ofrece', () => {
+    const j = Jugador.enMision({ misiones: ['pruebas-mar3'], tripulacion: [{ id: 'loro', agotada: true }, 'bucanero'], mazoPeligros: ['niebla', 'chubasco', 'calma'] })
+    j.comprometer('EXP', ['bucanero'])
+    expect(j.ofreceCapacidad('loro.unirse')).toBe(false)
   })
 })

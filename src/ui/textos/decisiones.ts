@@ -33,7 +33,6 @@ export function textoPlano(id: string): string {
     avance: 'Avance',
     robar: 'carta',
     curar: 'curación',
-    quitarestado: 'Estado',
     rep: 'reputación',
     vida: 'Vida',
     capacidad: 'Capacidad',

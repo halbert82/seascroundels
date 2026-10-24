@@ -531,7 +531,8 @@ export type Tarea = { id: number } & (
   /** Las heridas de un participante las sufre otro participante («Ni un hombre atrás»). */
   | { tipo: 'desviarHeridas'; suceso: number; entre: InstId[] }
   /** Compromete a un Tripulante en la Prueba en curso, ya revelado el Destino (el Loro). */
-  | { tipo: 'comprometerUno'; carta: InstId }
+  /** El Loro: se agota como coste de su Respuesta y llega a la Prueba ya agotado (`yaAgotado`). */
+  | { tipo: 'comprometerUno'; carta: InstId; yaAgotado?: boolean }
   | { tipo: 'prepararTripulantes' }
   /** Prepara un Cañón agotado (lo eliges tú), o todos. */
   | { tipo: 'prepararCanon'; todos?: boolean }

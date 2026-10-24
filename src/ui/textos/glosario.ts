@@ -64,7 +64,9 @@ function estado(e: FichaTripulante | EstadoBarco, hace: string, propia: string, 
 export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
   envenenado: estado('envenenado', 'Al final de cada turno, sufre 1 herida.', '', 'la Herbolaria o «Cataplasma»'),
   borracho: estado('borracho', 'Recibe +1 COM, pero no puede ser asignado a Pruebas de NAV ni de EXP.', 'Se quita al final del turno.'),
-  asustado: estado('asustado', 'No puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda).', 'Se quita al final del turno.', 'la Herbolaria'),
+  // Fase 15, quinta ronda: la Herbolaria ya no quita Asustado, ni el Carpintero la Vía de agua, y el Práctico del puerto
+  // sale de la caja: esos Estados se quedan sin ejemplo de carta.
+  asustado: estado('asustado', 'No puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda).', 'Se quita al final del turno.'),
   sangrando: estado('sangrando', 'Cada vez que se agota, sufre 1 herida.', '', '«Cataplasma»'),
   buscado: estado('buscado', 'No puede ser asignado en las misiones de Ciudad.', 'Se quita descartando 1 carta en la Fase de Reclutamiento.'),
   maldito: estado('maldito', '−1 al total de cada Prueba a la que esté asignado.', 'Se quita al superar una Prueba a la que esté asignado.', '«La mambo del mercado»'),
@@ -74,11 +76,9 @@ export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
     'viaDeAgua',
     'En una misión de Mar, al final de cada carta de Peligro, el Barco sufre 1 daño, salvo que agotes a un Tripulante para achicar.',
     '',
-    'el Carpintero de a bordo o el Práctico del puerto',
   ),
-  velasRotas: estado('velasRotas', '−1 al total de las Pruebas de NAV en el Mar, y las Distancias aumentan en 1.', '', 'el Práctico del puerto'),
+  velasRotas: estado('velasRotas', '−1 al total de las Pruebas de NAV en el Mar, y las Distancias aumentan en 1.', ''),
   perseguido: estado('perseguido', 'Los encuentros de tipo Armada reciben +1 de dificultad.', 'Se quita al superar un encuentro de tipo Armada.'),
-  polvoraMojada: estado('polvoraMojada', 'Tus Cañones no se preparan en la Fase de Inicio.', ''),
 }
 
 // ---------------------------------------------------------------------------
@@ -491,7 +491,6 @@ export function sinMarcado(texto: string): string {
     avance: 'Avance',
     robar: 'carta',
     curar: 'curar',
-    quitarestado: 'quitar un Estado',
     rep: 'reputación',
     vida: 'Vida',
     capacidad: 'Capacidad',
@@ -574,7 +573,6 @@ const PATRON_ESTADO: Record<FichaTripulante | EstadoBarco, RegExp> = {
   viaDeAgua: /\bVía de agua\b/,
   velasRotas: /\bVelas rotas\b/,
   perseguido: /\bPerseguido\b/,
-  polvoraMojada: /\bPólvora mojada\b/,
 }
 
 const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {

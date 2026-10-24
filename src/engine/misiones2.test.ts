@@ -311,12 +311,12 @@ describe('127 · El galeón rezagado', () => {
     const mision = [...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('permanentes'), ...j.zona('destino')]
     expect(mision).toHaveLength(12)
     expect(j.zona('mazoPeligros')).toEqual(['chubasco'])
-    // Sin mazo de la Escolta, solo Piratas rivales (COM 4): Diego y Rodrigo suman 3 + 4.
+    // Sin mazo de la Escolta, solo Piratas rivales (COM 4): Diego y Rodrigo suman 3 + 3 (Rodrigo, COM 3 desde la fase 15).
     const k = enPuerto({ misiones: ['flota-II'], tripulacion: ['reinaldo'], mazoHistoria: [], mazoPeligros: Array.from({ length: 7 }, () => 'rivales') })
     k.zarpar('flota-II').comprometer('COM', ['capitan', 'reinaldo'])
     if (k.decision.motivo.clave === 'herir') k.elegir('reinaldo') // «Puñal escondido»
     k.seguir()
-    expect(k.registro.some((r) => r.startsWith('Total 6 contra 4: superas'))).toBe(true)
+    expect(k.registro.some((r) => r.startsWith('Total 5 contra 4: superas'))).toBe(true)
     expect(k.registro.some((r) => r.startsWith('Robas 1:'))).toBe(true)
   })
 })

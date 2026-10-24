@@ -190,10 +190,13 @@ export const desviarHeridas: Manejador<'desviarHeridas'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** Compromete a un Tripulante preparado en la Prueba en curso, ya revelado el Destino (el Loro). */
+/**
+ * Compromete a un Tripulante en la Prueba en curso, ya revelado el Destino (el Loro). Fase 15, quinta ronda: el Loro se
+ * agota como coste de su Respuesta (`yaAgotado`): llega agotado y no se agota otra vez.
+ */
 export const comprometerUno: Manejador<'comprometerUno'> = (s, t) => {
   const p = s.prueba
-  if (!p || !s.zonas.tripulacion.includes(t.carta) || copia(s, t.carta).agotada || p.comprometidos.includes(t.carta)) return 'hecha'
+  if (!p || !s.zonas.tripulacion.includes(t.carta) || (copia(s, t.carta).agotada && !t.yaAgotado) || p.comprometidos.includes(t.carta)) return 'hecha'
   if (p.hab) {
     const problema = problemaCompromiso(s, definicionActual(s), p.hab, [...p.comprometidos.filter((c) => s.zonas.tripulacion.includes(c)), t.carta], [])
     if (problema) {
@@ -203,7 +206,7 @@ export const comprometerUno: Manejador<'comprometerUno'> = (s, t) => {
   }
   p.comprometidos.push(t.carta)
   anotar(s, 'jugada', `${nombre(s, t.carta)} es asignado a la Prueba.`)
-  alComprometerse(s, p, t.carta, true)
+  alComprometerse(s, p, t.carta, !t.yaAgotado)
   return 'hecha'
 }
 

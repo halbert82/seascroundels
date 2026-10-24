@@ -94,20 +94,19 @@ try {
     const fila = (tam, fondo = '', verde = '#3D6631', rojo = '#8E2B23') =>
       `<div class="rules" style="font-size:${tam}px;line-height:1.3;${fondo}">` +
       `<span style="display:inline-block;width:4.5em;font-size:11px;color:#7A6248">${tam} px</span>` +
-      `Cura <span class="num" style="color:${verde}">1 <span class="ic i-curar"></span></span> y quita ` +
-      `<span class="num" style="color:${verde}">1 <span class="ic i-quitarestado"></span></span> a un Tripulante. ` +
-      `<span class="ic i-curar" style="color:${rojo}"></span> <span class="ic i-quitarestado" style="color:${rojo}"></span></div>`
+      `Cura <span class="num" style="color:${verde}">1 <span class="ic i-curar"></span></span> a un Tripulante. ` +
+      `<span class="ic i-curar" style="color:${rojo}"></span></div>`
     hoja.innerHTML =
       [10, 11, 12, 13, 14, 17].map((t) => fila(t)).join('') +
       fila(14, 'background:#2A1E15;color:#EADCBF;padding:6px 8px;border-radius:6px;', '#9CC98A', '#F4A08C') +
       `<div style="display:flex;gap:36px;align-items:center;margin-top:6px">` +
-      ['curar', 'quitarestado']
+      ['curar']
         .map(
           (i) =>
             `<div style="display:flex;flex-direction:column;align-items:center;gap:6px"><span class="ic i-${i}" style="font-size:128px;color:#2A2118"></span><span style="font-size:13px;color:#7A6248">${i}</span></div>`,
         )
         .join('') +
-      ['curar', 'quitarestado'].map((i) => `<span class="ic i-${i}" style="font-size:48px;color:#3D6631"></span>`).join('') +
+      ['curar'].map((i) => `<span class="ic i-${i}" style="font-size:48px;color:#3D6631"></span>`).join('') +
       `</div>`
     document.body.appendChild(hoja)
   })

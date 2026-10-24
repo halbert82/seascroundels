@@ -3,7 +3,6 @@
 import { capacidadesDe } from '../capacidades/index.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { esCanon } from '../catalogo.ts'
-import { tieneEstadoBarco } from '../estados.ts'
 import { puedePrepararse } from './peligros2.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { puedeZarpar } from './mision.ts'
@@ -153,10 +152,11 @@ export const aplicarEscenario: Manejador<'aplicarEscenario'> = (s, t) => {
 
 /**
  * Prepara todas tus cartas agotadas (menos las que «no se preparan»). Se acaban los «en tu próximo Inicio». Fase 10b:
- * con Pólvora mojada o «Escasez de pertrechos» (revelada antes, en el paso 1 del Inicio), los Cañones no se preparan.
+ * con «Escasez de pertrechos» (revelada antes, en el paso 1 del Inicio), los Cañones no se preparan. (Fase 15, quinta
+ * ronda: fuera Pólvora mojada.)
  */
 export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
-  const motivo = s.temporales.some((x) => x.clave === 'escasez.turno') ? 'Escasez de pertrechos' : tieneEstadoBarco(s, 'polvoraMojada') ? 'Pólvora mojada' : null
+  const motivo = s.temporales.some((x) => x.clave === 'escasez.turno') ? 'Escasez de pertrechos' : null
   const canones = s.zonas.mejoras.filter((c) => esCanon(copia(s, c).id) && copia(s, c).agotada)
   if (motivo && canones.length > 0) anotar(s, 'aviso', `${motivo}: tus Cañones no se preparan.`)
   for (const c of [...s.zonas.tripulacion, ...s.zonas.mejoras]) {

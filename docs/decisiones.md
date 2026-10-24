@@ -123,7 +123,7 @@ La prueba del ejemplo de juego completo («Así transcurre el primer turno…»)
 ### Lecturas tomadas sin duda (para que conste)
 
 - **«Elige: pagas…, o haces la Prueba»** (Carestía, El aduanero, El reparto, Sed en la trocha): si pagas, ganas el Avance sin Prueba.
-- **«Tienes un Bucanero»** cuenta a Diego (es Bucanero y Oficial).
+- **«Tienes un Pirata»** (antes Bucanero; fase 15, quinta ronda) cuenta a Diego (es Pirata y Oficial).
 - **«Por cada Tripulante que tengas»** cuenta al Capitán (El reparto).
 
 ### Respuestas de Albert a P25–P47 (18 de octubre de 2026)
@@ -862,12 +862,12 @@ Albert quita la palabra clave Desgaste porque se parecía demasiado a Enrolado. 
 
 | Carta | Coste | NAV / COM / EXP | Vida | Rasgos | Texto | Clase | Mejoras |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 241 Soldado de fortuna | 2 | 0 / 3 / 1 | 2 | Bucanero | Enrolado 2. | Neutral | 1 |
+| 241 Soldado de fortuna | 2 | 0 / 3 / 1 | 2 | Bucanero (Pirata desde la fase 15) | Enrolado 2. | Neutral | 1 |
 | 242 Piloto a sueldo | 2 | 3 / 0 / 0 | 2 | Marinero, Piloto | Enrolado 2. | Neutral | 1 |
 | 243 Guía de alquiler | 2 | 0 / 0 / 3 | 2 | Explorador | Enrolado 2. | Neutral | 1 |
-| 244 Carne de cañón | 1 | 0 / 2 / 0 | 2 | Bucanero | Sufre {1 herida}: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.) | Piratería | 0 |
+| 244 Carne de cañón | 1 | 0 / 2 / 0 | 2 | Bucanero (Pirata desde la fase 15) | Sufre {1 herida}: los demás Tripulantes asignados a esta Prueba reciben {+1 COM}. (Límite de una vez por turno.) | Piratería | 0 |
 | 245 Galeote fugado | 1 | 1 / 0 / 0 (tercera ronda; antes 2 / 1 / 0) | 3 | Marinero | Sufre {1 herida}: Galeote fugado recibe {+2 NAV} para esta Prueba. (Límite de una vez por turno.) | Piratería | 0 |
-| 246 El Tuerto (único) | 2 | 0 / 1 / 0 | 3 | Bucanero | El Tuerto recibe {+1 COM} por cada herida que tenga. | Piratería | 1 |
+| 246 El Tuerto (único) | 2 | 0 / 1 / 0 | 3 | Bucanero (Pirata desde la fase 15) | El Tuerto recibe {+1 COM} por cada herida que tenga. | Piratería | 1 |
 
 - Segunda ronda: la Carne de cañón baja de COM 3 a COM 2 y cambia Desgaste por su habilidad; el Galeote cambia Desgaste por la suya.
 - Huecos de Mejora como los demás de su coste: los de coste 2 tienen 1 (como casi todos); los de coste 1, 0 (como 4 de los 6 de coste 1).
@@ -1009,7 +1009,7 @@ En el informe de la tercera ronda: los 12 Rasgos (11 de personas y el Cañón), 
 
 ### Rasgos
 
-- **Criterio (en el reglamento, entrada Rasgo, con ejemplo):** hay Rasgos de grupo (Marinero, Bucanero, Oficial, Explorador, Vigía, Contrabandista), que dicen qué clase de gente es, y Rasgos de oficio (Piloto, Carpintero, Artillero, Cirujano, Animal), el especialista del barco. Un oficio puede tener un solo portador.
+- **Criterio (en el reglamento, entrada Rasgo, con ejemplo):** hay Rasgos de grupo (Marinero, Bucanero —Pirata desde la fase 15, quinta ronda—, Oficial, Explorador, Vigía, Contrabandista), que dicen qué clase de gente es, y Rasgos de oficio (Piloto, Carpintero, Artillero, Cirujano, Animal), el especialista del barco. Un oficio puede tener un solo portador.
 - **Vocabulario del filtro (en el reglamento):** solo tres fórmulas. «Si tienes un X» (en la tripulación, aunque esté agotado), «si tienes un X preparado» y «X asignado». «Vigía −2» bajo la Prueba es «si tienes un Vigía preparado». El Capitán cuenta siempre.
 - Se quedan todos los Rasgos y el Cañón, sin cambiar cartas salvo estas:
   - **El Paso de los Vientos (126):** «Al zarpar: Puedes agotar a un Piloto para ganar 2» (antes, «a un Piloto o a un Marinero»).
@@ -1321,6 +1321,74 @@ Trece recuadros. Con una carta de recompensa (como la 286) para cada uno que lo 
 **Comprobación de Albert: adónde va un capítulo superado.** Por la regla general (toda carta del mazo de historia que sale del juego vuelve a él), un capítulo II, III o IV superado **vuelve al mazo de historia**; el capítulo I, que es del mazo de Misiones, se aparta. El reglamento decía solo «aparta la misión superada» y la app los dejaba aparte; ahora los dos lo dicen igual («Superar una misión», paso 3, y «Capítulo»). Por eso el texto de la 293 excluye los capítulos II que ya has superado: desde la 258, solo se barajan la 256 y la 257. En el motor, «que no hayas superado» se mira en el registro de la partida, no en dónde está la carta. *Pruebas (fase15-misiones.test):* superas la 258, resuelves la carta y la 258, ya en el mazo de historia, no sale (con 20 semillas; y aunque se volviera a coger la 293); sin ningún capítulo II por superar, no ocurre nada. Las pruebas de las travesías enteras comprueban que cada capítulo II–IV superado está en el mazo de historia.
 
 **Carta 286:** la línea de tipo «Recompensa · El naufragio del San José» y su ambientación, aprobadas.
+
+### Quinta ronda: cambios de Albert en Tripulantes, Mejoras y Estados (24 de octubre)
+
+**Reglas y normas generales:**
+
+- **El Rasgo Bucanero pasa a llamarse Pirata** («los bucaneros eran piratas del Caribe»): las once cartas que lo llevaban (1, 6, 7, 9, 11, 13, 16, 168, 241, 244 y 246), la Balandra de la Hermandad (196, «Si tienes un _Pirata_ preparado») y El reparto (200, «por cada _Pirata_ que tengas»), con sus reglas en el motor; el reglamento (Rasgo, con su lista y sus ejemplos) y el índice de términos. No cambian el nombre «Bucanero veterano» ni las ambientaciones que hablan de bucaneros. Todas las menciones del Rasgo en este documento son anteriores y dicen Bucanero.
+  - **Rasgo y tipo de encuentro.** Pirata es también un tipo de encuentro. En las cartas se distinguen por el marcado (el Rasgo, «_Pirata_», en cursiva; el tipo, «#Pirata#» o la línea de tipo del encuentro, en versalitas) y en el motor son dos cosas distintas: el Rasgo es de la carta del Tripulante (`tieneRasgo`) y el tipo, del encuentro (sus palabras clave). Ninguna regla mira las dos. El reglamento (entrada Rasgo) lo dice: «Un encuentro de tipo Pirata no cuenta como un Tripulante Pirata, ni al revés».
+  - **Casos que se leen raros, aunque no son dudosos:** la Balandra de la Hermandad es un encuentro de tipo Pirata que pide un Tripulante Pirata (el ejemplo del reglamento lo aclara); el Destino «Código de la Costa» ya no mira Rasgos desde la fase 13 (I1); «Cobrar la deuda» (113, «Los encuentros de tipo Pirata reciben −1») y «Pulso en el muelle» solo hablan del tipo de encuentro.
+- **Norma de estilo: Cañón es un Rasgo y va en cursiva** en los textos de las cartas: «_Cañón_» y «_Cañones_». En 29 cartas (Peligros, mazos propios, misiones, Escenario, Tripulantes, Eventos, Tesoros y permanentes). No se marca en los nombres de carta («Cañones de bronce», «Cañonero», «Carne de cañón», «Bajo los cañones del Morro»), ni en la línea de Rasgos de las Mejoras, ni cuando no es el Rasgo («le cruzáis la popa a cañonazos», «te cañonea», «su cañón de popa», en minúscula y dentro de la ambientación). En la leyenda de `cartas.json` y en el reglamento (entrada Cañón).
+- **Norma de estilo: el icono de robar ya dice «roba una carta»** y nunca lleva el verbo delante: «{2 robar}» se lee «roba 2 cartas» (como el Avance con icono). «Roba {1 robar}», «roba 2», «Robas 2» pasan a «{1 robar}», «{2 robar}»…, con la gramática de cada frase: «Prepara un _Cañón_ y {1 robar}.», «Recupera ya las cartas incautadas y {1 robar}.», «{2 robar} ({3 robar} si tienes un _Contrabandista_).». **62 frases cambiadas** en 56 cartas (toda la caja, no las cartas retiradas que se quedan para las pruebas). **Se quedan con el verbo** las que hablan de robar de otra manera: «roba hasta tener 2 cartas menos que tu Mando» (105, Escasez de pertrechos), «Al final de este turno, roba 1 carta menos» (188, Destino de «Ojos del gobernador») y «roba 1 carta del mazo del naufragio» (286). Tampoco cambia el texto del botón de «La cueva se viene abajo» («Sales a tiempo: +2 de reputación, robas 2»), que no va impreso en ninguna carta. Reglamento: la tabla de iconos de la Referencia rápida y la cita de «El galeón llega a puerto».
+- **Fuera el icono de quitar un Estado** (`quitarestado`): del juego, de los iconos (`assets/iconos`), de la leyenda de `cartas.json` y del reglamento («con su propio icono»: ahora las cartas lo dicen con palabras, «Quita el Estado Envenenado o Sangrando de un Tripulante»). Solo lo usaban la Herbolaria y la Cataplasma.
+- **Fuera el Estado del Barco Pólvora mojada**: reglas, reglamento (Componentes, Estados del Barco, Cañón, Estado y la tabla de la Referencia rápida), fichas, motor y pruebas. Solo lo usaba **Fuego a bordo** (160, Mar): «Anegar la santabárbara: agota todos tus _Cañones_.» y Fallo «Daña {1 dano} y agota todos tus _Cañones_.» «Escasez de pertrechos» no cambia (no es un Estado). Ninguna otra carta dependía de él: la «pólvora mojada» de «La aduana del rey» (Naturaleza, fallo: «Agota 1 _Cañón_ (pólvora mojada)») es solo la explicación del efecto, en minúscula.
+- **Fuera el Práctico del puerto (166):** de la caja (275 cartas; su número queda libre), del mazo de muelle de inicio (25 cartas, en la excepción temporal de la fase 14), de la escena de capturas (lo sustituye el Viejo lobo de mar) y del jugador automático. Con el cambio del Carpintero, **ninguna carta de la caja quita ya la Vía de agua ni las Velas rotas: solo el Astillero.** Rehechos los ejemplos del reglamento (Vía de agua, Velas rotas y Asustado se quedan sin ejemplo de carta; la tabla de la Referencia rápida dice «—») y del glosario de la mesa. Es temporal: los Estados pasarán a ser cartas que dicen cómo quitarse.
+
+**Cartas:**
+
+| Carta | Cambio |
+| --- | --- |
+| 1 Diego «Garra» Mendoza | Rasgos Pirata, Oficial. |
+| 2 Catalina «la Enganchadora» Rojas | Ambientación «En Tortuga todos le deben algo.» |
+| 4 Rufián de cubierta | Ambientación «Firma con una cruz pero rema por dos.» |
+| 5 Grumete leal | Ambientación «¡Mi capitán, esa bala es para mí!» |
+| 6 Bucanero veterano | Rasgos Pirata, Marinero. Ambientación «Tres galeones, dos naufragios y ni una cicatriz.» |
+| 7 Uñas largas | Rasgo Pirata. «**Respuesta:** Después de que superes una Prueba en la que participe Uñas largas, {1 robar}.» |
+| 8 Contrabandista del bajo Caribe | Ambientación «Conozco cada cala adonde no llega la Armada.» |
+| 9 Filibustero borracho | Rasgo Pirata. |
+| 10 Cañonero | «[agotar]: Prepara un _Cañón_.» |
+| 11 Isabela «Cuervo» Saldaña | Rasgos Pirata, Oficial. |
+| 12 Íñigo «Lince» Quintero | Coste 2 (antes 3), COM 1 (antes 3). Ambientación «Lo vi antes de que el resto supiera que estaba ahí.» |
+| 13 Rodrigo «Carnicero» Ortega | Rasgos Pirata, Oficial. COM 3 (antes 4). Sin límite: no se agota en ninguna Prueba de COM. Ambientación «En el Estrecho no se ruega clemencia. Se paga.» |
+| 14 Carpintero de a bordo | Solo Carpintero (pierde Marinero). «[agotar]: Repara {1 dano g}.» (ya no quita la Vía de agua). Ambientación «Si flota, lo arreglo.» |
+| 16 Espadachín errante | Rasgo Pirata. Coste 2 (antes 3), COM 2 (antes 3). |
+| 20 Loro parlanchín | COM 1 (antes 0). «**Respuesta:** [agotar]: Después de que se revele el Destino de una Prueba, asigna a Loro parlanchín a ella.» |
+| 165 Herbolaria | «[agotar]: Quita el Estado **Envenenado** o **Sangrando** de un Tripulante.» (ya no quita Asustado). |
+| 166 Práctico del puerto | Fuera de la caja. |
+| 167 Lenguaraz (antes La Lengua) | «Los encuentros de tipo #Civil# en los que participe Lenguaraz reciben {−1 g} de dificultad.» |
+| 168 Fiador de la Hermandad | Rasgo Pirata. «**Interrupción:** Cuando otro Tripulante vaya a ser descartado por un efecto de juego, descarta a Fiador de la Hermandad en su lugar y {2 robar}.» Ambientación «Mi palabra vale lo que yo. Que no es mucho…» |
+| 169 Cataplasma | «Quita el Estado **Envenenado** o **Sangrando** de un Tripulante y cúrale {1 herida g}.» |
+| 241, 244, 246 | Rasgo Pirata. El Tuerto: ambientación «Cada cicatriz me enseñó algo.» |
+| 243 Guía de alquiler | Ambientación «Os llevo hasta el río y os traigo de vuelta.» |
+| 26 Botica de a bordo | Ambientación «Láudano, ron y vendas limpias, casi siempre…» |
+| 27 Víveres de reserva | Ambientación «Galleta, cecina y agua dulce.» |
+| 30 Carronadas | «[mar], [agotar]: Supera automáticamente una Prueba de [COM] de dificultad 4 o menos (no reveles carta de Destino).» |
+| 31 Culebrina de proa | Ambientación «Que nos persigan. Tenemos algo para despistarlos.» |
+| 278 La culebrina del San José | «Adquiere esta carta. Si no tienes Espacio en el Barco, retira esta carta del juego.» (antes volvía barajada al mazo del naufragio). El segundo párrafo no cambia. |
+| 34 Sable de abordaje | «{+1 COM}. En una Prueba de **Abordaje**, {+2 COM} en su lugar.» |
+| 35 Brújula de latón | Ambientación «Siempre al norte.» |
+| 37 Pistola de chispa | Coste 1 (antes 2). «[agotar]: {+3 COM} en esta Prueba.» |
+
+Los puntos suspensivos de las ambientaciones de Albert («...») van con su carácter tipográfico («…»), como en el resto de cartas; «Espacio en el barco» va con mayúscula («en el Barco»), como en todas las cartas.
+
+**Lecturas (no son preguntas):**
+
+- **Fiador de la Hermandad, «por un efecto de juego»:** vale contra cualquier efecto que descarte a otro Tripulante, venga de la carta que venga. No vale para despedir (lo decide el jugador), para el Tripulante que se va al acabarse su Enrolado (el reglamento dice que «se va», no que se descarte), para el que se descarta él mismo para pagar un coste (el Grumete leal) ni para el que cae por heridas. Hoy solo descartan Tripulantes las cartas de Peligro y las permanentes, así que en la práctica cambia poco; contará cuando otras cartas lo hagan.
+- **Loro parlanchín:** «[agotar]» es el coste de su Respuesta: tiene que estar preparado, se agota al usarla y llega a la Prueba ya agotado. Por eso Aguerrido no le ahorra agotarse (Aguerrido evita agotarse al ser asignado, no al pagar un coste).
+- **Pistola de chispa, «{+3 COM} en esta Prueba»:** el portador recibe +3 COM hasta el final de la Prueba, solo si participa en ella. Solo se ofrece en una Prueba de COM: en otra no sumaría nada. Cuenta para «el Tripulante asignado con más COM».
+- **Rodrigo:** sin el límite, no se agota en ninguna Prueba de COM del turno; en las de NAV y EXP se agota como cualquiera.
+- **La culebrina del San José:** «Adquiere esta carta» es adquirirla sin coste (cuesta 0); ninguna carta reacciona hoy a adquirir. Sin Espacio, «retira esta carta del juego» la devuelve al mazo de historia (regla general) y ya no vuelve al mazo del naufragio: no puede salir otra vez en ese buceo. La lectura de la tercera ronda («ponerla en juego no es adquirirla») ya no aplica.
+- **El Carpintero ya no es Marinero:** el ejemplo de la entrada Rasgo del reglamento («La cofradía de San Telmo») pasa a usar al Bucanero veterano como único Marinero.
+
+**Lo que dependía de lo que sale (pedido por Albert):**
+
+- **Pólvora mojada:** solo Fuego a bordo (opción y fallo de Mar). El motor la miraba en la Fase de Inicio (los Cañones no se preparaban) y el glosario de la mesa la explicaba. Nada más.
+- **Práctico del puerto:** el mazo de muelle de inicio, los ejemplos del reglamento de Vía de agua y Velas rotas (y la tabla de la Referencia rápida), el glosario de la mesa, una escena de capturas y el jugador automático. Ninguna otra carta lo nombraba.
+- **El Carpintero quitaba la Vía de agua:** el ejemplo de Vía de agua del reglamento y de la tabla, el glosario de la mesa y el jugador automático (lo usaba también para quitarla). Ninguna otra carta dependía de ello.
+- **La Herbolaria quitaba Asustado:** el ejemplo de Asustado del reglamento y del glosario. Asustado sigue quitándose al final del turno, con la Taberna y con dos Peligros («Serpientes» en Ciudad, «Un respiro»).
+
+*Pruebas:* una por carta cambiada (cartas-tripulantes, cartas-jugador2, cartas-mejoras, fase15-misiones), el Fiador contra un efecto que no viene de un Peligro, el Loro Aguerrido, la Pistola solo en COM y con el portador asignado, Rodrigo en dos Pruebas de COM seguidas, el Carpintero con Vía de agua, Fuego a bordo sin Pólvora mojada, la culebrina sin Espacio y el catálogo sin el 166; las huellas de los textos de las cartas del jugador, revisadas carta por carta.
 
 ### Efectos que hay que recordar para el turno siguiente (para la revisión de Peligros de Albert)
 

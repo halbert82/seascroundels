@@ -88,7 +88,7 @@ function enJuego(): PartidaEnMesa {
     mazoPeligros: ['p2_bajamar', 'p2_niebla', 'chubasco', 'p2_cielo', 'calma'],
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon', 'coraje', 'abordaje', 'cataplasma'],
-    tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, { id: 'practico', estados: ['aguerrido'] }],
+    tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, { id: 'marinero_p' }, { id: 'vigia', estados: ['buscado'] }, { id: 'viejo_lobo', estados: ['aguerrido'] }],
     // Sin Vía de agua: desde la fase 10b, al final de cada Peligro pregunta si achicas, y la escena se pararía ahí.
     barco: { estados: ['perseguido', 'velasRotas'], mejoras: [{ id: 'bronce', agotada: true }, 'vela'] },
     reputacion: 6,

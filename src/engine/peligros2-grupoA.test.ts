@@ -423,20 +423,23 @@ describe('6 · Arrecife', () => {
 })
 
 describe('7 · Fuego a bordo', () => {
-  it('Mar, «Anegar la santabárbara»: agotas todos los Cañones y el Barco queda con Pólvora mojada', () => {
-    const j = en('mar', ['p2_fuego', 'calma', 'calma'], { barco: { mejoras: ['bronce'] } })
+  it('Mar, «Anegar la santabárbara»: agotas todos los Cañones (fase 15, quinta ronda: sin Pólvora mojada)', () => {
+    const j = en('mar', ['p2_fuego', 'calma', 'calma'], { barco: { mejoras: ['bronce', 'culebrina'] } })
     j.opcion('0')
     expect(j.copia('bronce').agotada).toBe(true)
-    expect(j.estadosBarco).toEqual(['polvoraMojada'])
+    expect(j.copia('culebrina').agotada).toBe(true)
+    expect(j.estadosBarco).toEqual([])
   })
 
-  it('Mar, «Atacar el fuego»: +1 con algún Cañón preparado; si fallas, 1 daño y Pólvora mojada (fase 10b)', () => {
-    const j = en('mar', ['p2_fuego', 'chubasco', 'calma', 'calma'], { barco: { mejoras: ['bronce'] } })
+  it('Mar, «Atacar el fuego»: +1 con algún Cañón preparado; si fallas, Daña 1 y agota todos tus Cañones (fase 15, quinta ronda)', () => {
+    const j = en('mar', ['p2_fuego', 'chubasco', 'calma', 'calma'], { barco: { mejoras: ['bronce', 'culebrina'] } })
     j.opcion('1').comprometer('NAV', [])
     expect(dificultadConDestino(j.estado)).toBe(5)
     j.seguir()
     expect(j.estado.danoBarco).toBe(1)
-    expect(j.estadosBarco).toEqual(['polvoraMojada'])
+    expect(j.copia('bronce').agotada).toBe(true)
+    expect(j.copia('culebrina').agotada).toBe(true)
+    expect(j.estadosBarco).toEqual([])
   })
 
   it('Naturaleza: pone en juego la permanente 227; con 3 fichas, cada agotado sufre 1 herida y se descarta', () => {

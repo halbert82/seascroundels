@@ -34,11 +34,12 @@ export function claseDe(id: CartaId): string {
 }
 
 /**
- * Fase 14: el mazo de muelle de inicio lleva 26 cartas para probar los seis Tripulantes nuevos (241–246).
+ * Fase 14: el mazo de muelle de inicio lleva 25 cartas para probar los seis Tripulantes nuevos (241–246); eran 26 hasta que
+ * el Práctico del puerto salió de la caja (fase 15, quinta ronda).
  * El reglamento sigue diciendo de 15 a 20.
  * TODO(regla): excepción temporal de la fase 14; quitar cuando se rehagan los mazos de inicio.
  */
-export const MUELLE_TEMPORAL_FASE14 = 26
+export const MUELLE_TEMPORAL_FASE14 = 25
 
 /**
  * Lista de incumplimientos de las reglas de construcción (vacía si los mazos son legales). `muelleMaximo`: solo para la

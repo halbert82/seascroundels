@@ -206,15 +206,13 @@ registrarPeligro('p2_fuego', {
   encuentros: {
     mar: {
       elige: [
-        {
-          texto: 'Anegar la santabárbara: agota todos tus Cañones y el Barco queda con Pólvora mojada',
-          efectos: [agotaCanones('todos'), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
-        },
+        // Fase 15, quinta ronda: fuera Pólvora mojada.
+        { texto: 'Anegar la santabárbara: agota todos tus Cañones', efectos: [agotaCanones('todos')] },
         { texto: 'Atacar el fuego: NAV 4 (+1 de dificultad si tienes algún Cañón preparado)', prueba: true, modSi: { condicion: { tipo: 'canonesPreparados', minimo: 1 }, n: 1 } },
       ],
       exito: [preparaCanon()],
-      // Fase 10b: fuera Incendio a bordo: 1 daño y Pólvora mojada.
-      fallo: [dano(1), { tipo: 'estadoBarco', estado: 'polvoraMojada' }],
+      // Fase 10b: fuera Incendio a bordo. Fase 15, quinta ronda: fuera Pólvora mojada: Daña 1 y agota todos tus Cañones.
+      fallo: [dano(1), agotaCanones('todos')],
     },
     // Pon en juego la carta 227 del mazo de historia («La manigua arde»).
     nat: { pone: { carta: 'pm_manigua' } },

@@ -315,11 +315,11 @@ describe('Escenario 2.0: malas', () => {
   })
 
   it('Bando del virrey: si empatan en COM (impresa), eliges tú', () => {
-    // Diego y el Espadachín errante tienen COM 3.
-    const j = revelar('bando', { tripulacion: ['espadachin', 'marinero_p'] })
+    // Diego y el Filibustero borracho tienen COM 3 (fase 15, quinta ronda: el Espadachín errante baja a COM 2).
+    const j = revelar('bando', { tripulacion: ['filibustero', 'marinero_p'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } })
-    j.elegir('espadachin')
-    expect(j.copia('espadachin').estados).toEqual(['buscado'])
+    j.elegir('filibustero')
+    expect(j.copia('filibustero').estados).toEqual(['buscado'])
     expect(j.copia('capitan').estados).toBeUndefined()
   })
 

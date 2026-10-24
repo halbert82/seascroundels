@@ -31,12 +31,12 @@ describe('Quedarte en puerto (Tortuga)', () => {
   })
 
   it('Fase 8 · Astillero: repara 3 y quita todos los Estados del Barco (también Vía de agua y Perseguido)', () => {
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', barco: { dano: 4, estados: ['viaDeAgua', 'velasRotas', 'perseguido', 'polvoraMojada'] } })
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', barco: { dano: 4, estados: ['viaDeAgua', 'velasRotas', 'perseguido'] } })
     j.opcion('quedarse').opcion('astillero')
     expect(j.estadosBarco).toEqual([])
     // Reparar solo quita daño (fase 10b).
     expect(j.estado.danoBarco).toBe(1)
-    expect(j.registro).toContain('El Barco ya no tiene Vía de agua ni Velas rotas ni Perseguido ni Pólvora mojada.')
+    expect(j.registro).toContain('El Barco ya no tiene Vía de agua ni Velas rotas ni Perseguido.')
   })
 
   it('Fase 8 · Taberna: cura 3 y quita todos los Estados de tus Tripulantes; las Ventajas se quedan', () => {

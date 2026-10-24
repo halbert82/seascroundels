@@ -112,9 +112,32 @@ export function deserializar(texto: string): Estado {
   migrarCartasDeRecompensa(s)
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
+  migrarQuintaRonda(s)
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()
   return s
+}
+
+/**
+ * Fase 15, quinta ronda: fuera el Estado del Barco Pólvora mojada y fuera el Práctico del puerto. Si estaba en la
+ * tripulación, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo; si estaba en el muelle o en su
+ * mazo, sale sin más (el muelle se repone al acabar la Fase de Reclutamiento).
+ */
+function migrarQuintaRonda(s: Estado): void {
+  if (s.estadosBarco) {
+    s.estadosBarco = s.estadosBarco.filter((e) => (e as string) !== 'polvoraMojada')
+    if (s.estadosBarco.length === 0) delete s.estadosBarco
+  }
+  for (const [inst, c] of Object.entries(s.cartas ?? {})) {
+    if (c.id !== 'practico') continue
+    for (const [otra, m] of Object.entries(s.cartas)) {
+      if (m.vinculadaA !== inst) continue
+      m.vinculadaA = null
+      s.zonas.mejoras = s.zonas.mejoras.filter((x) => x !== otra)
+      s.zonas.descartesMuelle.push(otra as InstId)
+    }
+    quitarCopia(s, inst as InstId)
+  }
 }
 
 /** Fase 14: fuera el rehén y el Tripulante incautado. Devuelve false si la partida estaba a mitad de una captura. */

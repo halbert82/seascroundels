@@ -333,19 +333,21 @@ describe('268 · El naufragio del San José y la carta 286, «Fondeáis sobre el
     expect(j.zona('mazoNaufragio')).toHaveLength(11)
   })
 
-  it('«La culebrina del San José» entra en juego en el Barco y se queda al terminar; sin Espacio, vuelve barajada al mazo', () => {
+  it('«La culebrina del San José»: la adquieres y se queda en el Barco al terminar; sin Espacio, se retira del juego (fase 15, quinta ronda)', () => {
     const j = naufragio()
     j.encimaDelNaufragio('culebrina_sanjose').opcion('bucear').elegir('vigia')
     expect(j.copia('culebrina_sanjose').vinculadaA).toBe('barco')
-    expect(j.registro).toContain('«La culebrina del San José» entra en juego en el Barco.')
+    expect(j.registro).toContain('Adquieres «La culebrina del San José»: entra en juego en el Barco.')
     j.opcion('subir')
     expect(j.zonaDe('culebrina_sanjose')).toBe('mejoras')
     // El Barco tiene Espacio 5: con el Casco (2) y la Chalupa (2) solo queda 1, y la culebrina ocupa 1; con 3 Mejoras, 0.
+    // «Si no tienes Espacio en el Barco, retira esta carta del juego»: por la regla general, vuelve al mazo de historia (antes
+    // volvía barajada al mazo del naufragio y podía salir otra vez).
     const k = naufragio({ barco: { mejoras: ['casco', 'chalupa', 'vela'] } })
     k.encimaDelNaufragio('culebrina_sanjose').opcion('bucear').elegir('vigia')
-    expect(k.registro).toContain('No tienes Espacio para «La culebrina del San José»: vuelve barajada al mazo del naufragio.')
-    expect(k.zonaDe('culebrina_sanjose')).toBe('mazoNaufragio')
-    expect(k.zona('mazoNaufragio')).toHaveLength(12)
+    expect(k.registro).toContain('No tienes Espacio para «La culebrina del San José»: se retira del juego y vuelve al mazo de historia.')
+    expect(k.zonaDe('culebrina_sanjose')).toBe('mazoHistoria')
+    expect(k.zona('mazoNaufragio')).toHaveLength(11)
   })
 
   it('«El diario del capitán»: un capítulo I de travesía del mazo de Misiones pasa a tus misiones disponibles con 2 de Avance', () => {

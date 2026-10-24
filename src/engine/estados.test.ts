@@ -20,7 +20,7 @@ describe('Fase 8 · Estados y Ventajas', () => {
   it('Inspirado y Aguerrido son Ventajas; todo lo demás es Estado, Borracho incluido', () => {
     expect([...VENTAJAS]).toEqual(['inspirado', 'aguerrido'])
     expect([...ESTADOS_TRIPULANTE]).toEqual(['envenenado', 'borracho', 'asustado', 'sangrando', 'buscado', 'maldito'])
-    expect([...ESTADOS_BARCO]).toEqual(['viaDeAgua', 'velasRotas', 'perseguido', 'polvoraMojada'])
+    expect([...ESTADOS_BARCO]).toEqual(['viaDeAgua', 'velasRotas', 'perseguido']) // fase 15, quinta ronda: fuera Pólvora mojada
     expect(esVentaja('borracho')).toBe(false)
     expect(esVentaja('aguerrido')).toBe(true)
     for (const e of [...ESTADOS_TRIPULANTE, ...ESTADOS_BARCO]) expect(INFO_ESTADO[e].ventaja).toBeUndefined()
@@ -151,22 +151,25 @@ describe('Estados del Barco (fase 10b)', () => {
     expect(m.decision.motivo.clave).toBe('trasEncuentro')
   })
 
-  it('Vía de agua: reparar ya no la quita; el Carpintero elige entre reparar 1 o quitarla', () => {
+  it('Vía de agua: reparar no la quita; fase 15, quinta ronda: el Carpintero solo repara (solo la quita el Astillero)', () => {
     const j = Jugador.en({ mano: ['reparacion'], barco: { dano: 2, estados: ['viaDeAgua'] } })
     j.usar('reparacion.jugar')
     expect(j.estado.danoBarco).toBe(0)
     expect(j.estadosBarco).toEqual(['viaDeAgua'])
     const k = Jugador.en({ tripulacion: ['carpintero'], barco: { dano: 1, estados: ['viaDeAgua'] } })
-    k.usar('carpintero.reparar').opcion('1')
-    expect(k.estadosBarco).toEqual([])
-    expect(k.estado.danoBarco).toBe(1)
+    k.usar('carpintero.reparar')
+    expect(k.estadosBarco).toEqual(['viaDeAgua'])
+    expect(k.estado.danoBarco).toBe(0)
+    // Sin daño que reparar, el Carpintero no se ofrece (aunque haya Vía de agua).
+    const v = Jugador.en({ tripulacion: ['carpintero'], barco: { estados: ['viaDeAgua'] } })
+    expect(v.ofreceCapacidad('carpintero.reparar')).toBe(false)
   })
 
-  it('Velas rotas: −1 al total de las Pruebas de NAV en el Mar; Distancias 1 mayores; el Astillero la quita (y la Pólvora mojada)', () => {
+  it('Velas rotas: −1 al total de las Pruebas de NAV en el Mar; Distancias 1 mayores; el Astillero la quita', () => {
     const m = mision('pruebas-mar5', ['chubasco', 'chubasco', 'calma'], { tripulacion: ['bucanero'], barco: { estados: ['velasRotas'] } })
     m.comprometer('NAV', ['bucanero'])
     expect(totalSinDestinoPrueba(m.estado)).toBe(2) // NAV 1 + 1 de Diego + 1 del Barco − 1
-    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', barco: { estados: ['velasRotas', 'polvoraMojada'] } })
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', barco: { estados: ['velasRotas'] } })
     expect(valor(j.estado, { tipo: 'distancia', mision: j.inst('aguada-I') })).toBe(1)
     j.opcion('quedarse').opcion('astillero')
     expect(j.estadosBarco).toEqual([])
@@ -180,9 +183,8 @@ describe('Estados del Barco (fase 10b)', () => {
     expect(j.registro).toContain('El Barco ya no está Perseguido (superas un encuentro de tipo Armada).')
   })
 
-  it('Pólvora mojada (fase 10b): los Cañones no se preparan en la Fase de Inicio', () => {
-    const j = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { estados: ['polvoraMojada'], mejoras: [{ id: 'bronce', agotada: true }] } })
-    expect(j.copia('bronce').agotada).toBe(true)
+  it('fase 15, quinta ronda: fuera Pólvora mojada; los Cañones se preparan en la Fase de Inicio', () => {
+    expect((ESTADOS_BARCO as readonly string[]).includes('polvoraMojada')).toBe(false)
     const k = Jugador.en({ empezarEn: 'inicio', escenario: ['pruebas-calma'], barco: { mejoras: [{ id: 'bronce', agotada: true }] } })
     expect(k.copia('bronce').agotada).toBe(false)
   })

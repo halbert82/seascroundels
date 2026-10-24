@@ -163,7 +163,9 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
   // ---------------------------------------------------------------------------
   // Mejoras de tripulante
 
-  // Pistola de chispa: «Agotar: Una Prueba de COM en la que participe el portador recibe +2.»
+  // Pistola de chispa: «Agotar: +3 COM en esta Prueba.» Fase 15, quinta ronda (Albert): el portador recibe +3 COM hasta
+  // el final de esta Prueba, solo si participa en ella (como «for this attack» de Marvel Champions). Solo se ofrece en una
+  // Prueba de COM: en otra, no sumaría nada.
   {
     clave: 'pistola.disparar',
     carta: 'pistola',
@@ -171,7 +173,19 @@ export const CAPACIDADES_MEJORAS: Capacidad[] = [
     desde: 'juego',
     coste: [{ tipo: 'agotarse' }],
     requisito: (s, yo) => pruebaDe(s, 'COM') && participa(s, portadorDe(s, yo)),
-    efecto: (s) => bono(s, numerosEntreLlaves(texto('pistola'))[0] ?? 0, false, 'pistola'),
+    efecto: (s, yo) => {
+      const portador = portadorDe(s, yo)
+      if (!portador) return []
+      anotar(s, 'efecto', `${nombre(s, portador)} recibe ${numeroConIcono(texto('pistola'), 'COM')} COM en esta Prueba.`)
+      return [{ tipo: 'anadirTemporal', temporal: { clave: 'pistola.com', fuente: 'pistola', hasta: 'finPrueba', inst: portador } }]
+    },
+  },
+  {
+    clave: 'pistola.com',
+    carta: 'pistola',
+    ventana: 'constante',
+    desde: 'temporal',
+    modifica: (_ctx, yo, c) => (c.tipo === 'habilidad' && c.hab === 'COM' && c.carta === yo ? numeroConIcono(texto('pistola'), 'COM') : 0),
   },
   // Escapulario del Carmen: «Interrupción: Agotar: Cuando se revele el Destino de una Prueba en la que participe el portador, cancélalo.»
   {

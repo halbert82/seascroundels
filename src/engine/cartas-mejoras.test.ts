@@ -123,11 +123,25 @@ describe('Mejoras de tripulante', () => {
     expect(j.valor({ tipo: 'habilidad', carta: diego, hab: 'EXP' })).toBe(2)
   })
 
-  it('037 · Pistola de chispa: se agota y da +2 a una Prueba de COM en la que participa su portador', () => {
+  it('037 · Pistola de chispa: se agota y su portador recibe +3 COM en esta Prueba (fase 15, quinta ronda)', () => {
     const j = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['pistola'] }, mazoPeligros: ['rivales', 'chubasco', 'calma'] })
-    j.comprometer('COM', ['capitan']).usar('pistola.disparar').seguir()
-    expect(j.registro).toContain('Total 5 contra 4: superas la Prueba.')
+    const diego = j.estado.capitan
+    j.comprometer('COM', ['capitan']).usar('pistola.disparar')
+    expect(j.valor({ tipo: 'habilidad', carta: diego, hab: 'COM' })).toBe(3 + 3)
+    j.seguir()
+    expect(j.registro).toContain('Total 6 contra 4: superas la Prueba.')
     expect(j.copia('pistola').agotada).toBe(true)
+    // Solo dura esta Prueba.
+    expect(j.valor({ tipo: 'habilidad', carta: diego, hab: 'COM' })).toBe(3)
+  })
+
+  it('037 · Pistola de chispa: solo si su portador participa, y solo en una Prueba de COM', () => {
+    const otro = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['pistola'] }, tripulacion: ['bucanero'], mazoPeligros: ['rivales', 'chubasco', 'calma'] })
+    otro.comprometer('COM', ['bucanero'])
+    expect(otro.ofreceCapacidad('pistola.disparar')).toBe(false)
+    const nav = Jugador.enMision({ misiones: ['pruebas-mar3'], capitan: { mejoras: ['pistola'] }, mazoPeligros: ['chubasco', 'chubasco', 'calma'] })
+    nav.comprometer('NAV', ['capitan'])
+    expect(nav.ofreceCapacidad('pistola.disparar')).toBe(false)
   })
 
   it('038 · Escapulario del Carmen: se agota y cancela el Destino de una Prueba en la que participa su portador', () => {

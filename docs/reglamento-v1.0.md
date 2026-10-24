@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 276 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica de Sea Scoundrels contiene 275 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -80,7 +80,7 @@ La Caja básica de Sea Scoundrels contiene 276 cartas, que se dividen en cartas 
 | --- | --- |
 | Capitanes | 2 |
 | Barco | 1 |
-| Tripulantes | 24 |
+| Tripulantes | 23 |
 | Mejoras | 22 |
 | Eventos | 30 |
 | Habilidades | 12 |
@@ -110,7 +110,7 @@ Las cartas de Peligro, las de los mazos propios, los barcos rivales y las de pue
 
 - Fichas de herida, de daño y de Avance.
 - Fichas de Entrenamiento (+1).
-- Fichas de Estado (Envenenado, Borracho, Asustado, Sangrando, Buscado y Maldito para los Tripulantes; Vía de agua, Velas rotas, Perseguido y Pólvora mojada para el Barco) y fichas de Ventaja (Inspirado y Aguerrido).
+- Fichas de Estado (Envenenado, Borracho, Asustado, Sangrando, Buscado y Maldito para los Tripulantes; Vía de agua, Velas rotas y Perseguido para el Barco) y fichas de Ventaja (Inspirado y Aguerrido).
 - Fichas de misión, todas iguales, para las misiones y las cartas que llevan la cuenta de algo.
 - Un marcador de reputación.
 
@@ -328,7 +328,7 @@ Los dos puertos del escenario El Caribe, Tortuga y Nassau, tienen las mismas tre
 - **Tablón de encargos:** el jugador pone al fondo del mazo de Misiones las misiones disponibles que quiera y, a continuación, repone las misiones disponibles hasta tener tantas como indica la carta de puerto.
 - **La opción propia del puerto:** «Soplos de la Hermandad» en Tortuga (se ponen 2 de Avance en una misión disponible) y «Entrenamiento» en Nassau (un Tripulante recibe una ficha de Entrenamiento).
 
-Curar heridas y quitar Estados son efectos distintos, cada uno con su icono: la Taberna hace las dos cosas. Del mismo modo, reparar solo quita daño, y el Astillero, además, quita los Estados del Barco. Algunas cartas de Escenario pueden cerrar una opción durante un turno; en ese turno, dicha opción no puede elegirse.
+Curar heridas y quitar Estados son efectos distintos: la Taberna hace las dos cosas. Del mismo modo, reparar solo quita daño, y el Astillero, además, quita los Estados del Barco. Algunas cartas de Escenario pueden cerrar una opción durante un turno; en ese turno, dicha opción no puede elegirse.
 
 > [!ejemplo]
 > El jugador se encuentra en Tortuga con 3 daños y Velas rotas en el Barco, 2 heridas en Diego y el Bucanero veterano Buscado e Inspirado. Entre las misiones disponibles hay una de Ciudad que no le conviene. Si elige Taberna y Astillero, resuelve todos los daños, heridas y Estados: el Barco queda sin daño ni Velas rotas, Diego queda curado y el Bucanero pierde Buscado, pero sigue Inspirado, porque la Taberna no quita las Ventajas. Si elige Tablón de encargos y Taberna, cambia esa misión y cura a Diego, pero zarpa con Velas rotas en el Barco.
@@ -814,7 +814,7 @@ El Barco del jugador tiene tres valores:
 
 El Barco recibe daño cuando una carta lo indica, en cualquier Entorno. Ver Daño.
 
-El Barco puede tener los siguientes Estados: Vía de agua, Velas rotas, Perseguido y Pólvora mojada. El Astillero del puerto los quita todos.
+El Barco puede tener los siguientes Estados: Vía de agua, Velas rotas y Perseguido. El Astillero del puerto los quita todos.
 
 *Véase también:* Daño, Distancia, Estado, Hundirse, Mejora.
 
@@ -837,14 +837,14 @@ Un efecto cancelado no se aplica. Un Destino cancelado no tiene ningún efecto: 
 
 ### Cañón
 
-Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carronadas, la Culebrina de proa y el Pedrero de borda. Un Cañón dispara agotándose («Agotar:») y se prepara en la Fase de Inicio, como cualquier otra carta.
+Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carronadas, la Culebrina de proa y el Pedrero de borda. Un Cañón dispara agotándose («Agotar:») y se prepara en la Fase de Inicio, como cualquier otra carta. En el texto de las cartas, Cañón va en cursiva, como cualquier Rasgo («Prepara un Cañón»).
 
 - Una Mejora de barco, también un Cañón, se usa en cualquier Entorno, salvo que su carta lo limite. «Mar, agotar: …», con el icono del Mar delante del de agotar, quiere decir que solo se usa en las misiones de Mar. Así lo dicen los cuatro Cañones de la caja.
 - **Agota N Cañones:** el jugador elige N de sus Cañones preparados y los agota. Si tiene menos, agota los que tenga. Como pago de un «Elige», solo se ofrece si tiene N Cañones preparados.
 - **Prepara un Cañón:** el jugador elige uno de sus Cañones agotados y lo prepara.
 - **Los Cañones no suman:** lo que un Cañón añade a esa Prueba no cuenta.
 - **Abordaje:** en una Prueba con Abordaje no se pueden usar Cañones: ni suman ni se pueden agotar sus capacidades.
-- Con **Pólvora mojada**, o con «Escasez de pertrechos», los Cañones no se preparan en la Fase de Inicio.
+- Con «Escasez de pertrechos», los Cañones no se preparan en la Fase de Inicio.
 
 > [!ejemplo]
 > El jugador lleva los Cañones de bronce. En una Prueba de COM en el Mar, los agota y la Prueba recibe +2. Ya no puede volver a usarlos en ese turno, salvo que el Cañonero los prepare («Agotar: Prepara un Cañón»). Al empezar el turno siguiente, se preparan con las demás cartas.
@@ -872,7 +872,7 @@ El Capitán es el Tripulante principal del jugador. Empieza en juego preparado y
 Una carta de recompensa es una carta del mazo de historia que da una misión al superarla («Coge la carta 290 del mazo de historia»). Explica lo que la misión da cuando no basta con decir qué se gana: un final con elección, lo que dan las misiones iniciales, el capítulo II al azar de «La Isla del Tesoro» o el buceo en el naufragio. El jugador la busca por su número, hace lo que dice y, al terminar, la devuelve al mazo de historia. Su línea de tipo dice «Recompensa» y la misión que la da, y lleva el dorso de misión.
 
 > [!ejemplo]
-> El jugador supera «Escolta del San Telmo». Su recompensa le da 2 de reputación y dice «Coge la carta 295 del mazo de historia»: es «El galeón llega a puerto», que dice «Si la carta 273 tiene 3 o más Vida restante, gana 1 de reputación y roba 2». El galeón San Telmo ha llegado con 3 de Vida: el jugador gana 1 de reputación más y roba 2 cartas. Después devuelve la carta 295 al mazo de historia.
+> El jugador supera «Escolta del San Telmo». Su recompensa le da 2 de reputación y dice «Coge la carta 295 del mazo de historia»: es «El galeón llega a puerto», que dice «Si la carta 273 tiene 3 o más Vida restante, gana 1 de reputación y roba 2 cartas». El galeón San Telmo ha llegado con 3 de Vida: el jugador gana 1 de reputación más y roba 2 cartas. Después devuelve la carta 295 al mazo de historia.
 
 *Véase también:* Mazo de historia.
 
@@ -901,7 +901,7 @@ En el texto de una carta, lo que va antes de los dos puntos es el coste, y lo qu
 
 **Curar N** («Cura 2», con el icono de herida) quita N heridas de los Tripulantes del jugador. **Reparar N** («Repara 2», con el icono del casco del Barco) quita N daños del Barco. Si el efecto no indica a quién cura, el jugador reparte la curación como quiera.
 
-- Curar no quita Estados y reparar no quita la Vía de agua. Quitar un Estado es un efecto distinto, con su propio icono: solo lo hacen las cartas que lo dicen, la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
+- Curar no quita Estados y reparar no quita la Vía de agua. Quitar un Estado es un efecto distinto: solo lo hacen las cartas que lo dicen («Quita el Estado Envenenado o Sangrando de un Tripulante»), la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
 
 > [!ejemplo]
 > El Bucanero veterano tiene 1 herida y está Envenenado. El jugador juega «Vendas y aguardiente» (cura 2) sobre él: le cura la herida, pero sigue Envenenado. Con «Cataplasma» le quitaría Envenenado y le curaría 1 herida.
@@ -1061,7 +1061,7 @@ El **mazo de Escenario** actúa como el reloj de la partida. El Caribe incluye 1
 
 Un Estado es una ficha que perjudica o limita a un Tripulante o al Barco. Esta ficha permanece de un turno a otro, también entre misiones, hasta que algún efecto la quita. Un Tripulante no puede tener dos veces el mismo Estado, y el Barco tampoco; si ya lo tiene, no ocurre nada. Cuando un Tripulante sale del juego, sus fichas salen del juego con él.
 
-En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Cualquier carta que así lo indique también puede quitar un Estado; a continuación se incluye un ejemplo para cada uno, aunque no son las únicas cartas que pueden hacerlo. Curar no quita Estados, ni reparar quita la Vía de agua. Además, algunos Estados se quitan por sí solos cuando se cumple una condición:
+En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador y el **Astillero**, todos los del Barco. Cualquier carta que así lo indique también puede quitar un Estado; a continuación se incluyen algunos ejemplos, aunque no son las únicas cartas que pueden hacerlo. Curar no quita Estados, ni reparar quita la Vía de agua. Además, algunos Estados se quitan por sí solos cuando se cumple una condición:
 
 - Si una carta dice que un Estado no se le puede quitar a un Tripulante, como el Maldito que «El doblón de la calavera» pone al Capitán, no se quita de ninguna forma: ni con la Taberna, ni al cumplirse su condición, ni con ninguna carta.
 
@@ -1070,17 +1070,16 @@ En puerto, la **Taberna** quita todos los Estados de los Tripulantes del jugador
 
 - **Envenenado:** al final de cada turno, el Tripulante sufre 1 herida. Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).
 - **Borracho:** el Tripulante recibe +1 COM, pero no puede ser asignado a Pruebas de NAV ni de EXP. Este Estado se quita al final del turno. También se quita con la Taberna o con cualquier carta que así lo indique.
-- **Asustado:** el Tripulante no puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda). Este Estado se quita al final del turno. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria).
+- **Asustado:** el Tripulante no puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda). Este Estado se quita al final del turno. También se quita con la Taberna o con cualquier carta que así lo indique.
 - **Sangrando:** cada vez que el Tripulante se agota, sufre 1 herida. Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, «Cataplasma»).
 - **Buscado:** el Tripulante no puede ser asignado en las misiones de Ciudad. En la Fase de Reclutamiento, el jugador puede descartar 1 carta de su mano para quitar este Estado. También se quita con la Taberna o con cualquier carta que así lo indique.
 - **Maldito:** el total de cada Prueba a la que esté asignado el Tripulante recibe −1. Este Estado se quita cuando se supera una Prueba a la que está asignado. También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, «La mambo del mercado»).
 
 **Estados del Barco**
 
-- **Vía de agua:** en una misión de Mar, al final de cada carta de Peligro, el Barco sufre 1 daño, salvo que el jugador agote a un Tripulante preparado para achicar. Se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Carpintero de a bordo o el Práctico del puerto).
-- **Velas rotas:** el total de las Pruebas de NAV en el Mar recibe −1, y las Distancias aumentan en 1. Se quita con el Astillero o con cualquier carta que así lo indique (por ejemplo, el Práctico del puerto).
+- **Vía de agua:** en una misión de Mar, al final de cada carta de Peligro, el Barco sufre 1 daño, salvo que el jugador agote a un Tripulante preparado para achicar. Se quita con el Astillero o con cualquier carta que así lo indique.
+- **Velas rotas:** el total de las Pruebas de NAV en el Mar recibe −1, y las Distancias aumentan en 1. Se quita con el Astillero o con cualquier carta que así lo indique.
 - **Perseguido:** los encuentros de tipo Armada reciben +1 de dificultad. Este Estado se quita cuando se supera un encuentro de tipo Armada. También se quita con el Astillero o con cualquier carta que así lo indique.
-- **Pólvora mojada:** los Cañones del jugador no se preparan en la Fase de Inicio. Se quita con el Astillero o con cualquier carta que así lo indique.
 
 > [!ejemplo]
 > El Bucanero veterano está Asustado y Sangrando. No puede ser asignado él solo, de modo que el jugador lo asigna junto con Diego a una Prueba de COM. Al agotarse, el Bucanero sufre 1 herida por Sangrando. Al final del turno deja de estar Asustado, pero sigue Sangrando. En el turno siguiente, el jugador se queda en puerto y elige la Taberna: el Bucanero deja de estar Sangrando y se cura la herida.
@@ -1189,7 +1188,7 @@ El mazo del capitán contiene los Eventos y las Habilidades del jugador, de 30 a
 El mazo del naufragio son doce cartas del mazo de historia que se usan en «El naufragio del San José»: las cartas 269 a 271 y 277 a 285. Entre ellas hay una Mejora de barco, «La culebrina del San José», y dos Tesoros, el 270 y el 271. La recompensa de la misión es coger la carta 286, «Fondeáis sobre el San José»: el jugador prepara a todos sus Tripulantes y baraja el mazo del naufragio. Después puede **bucear** las veces que quiera: agota a un Tripulante preparado y roba 1 carta del mazo del naufragio.
 
 - El jugador aplica lo que dice la carta. Lo que le pasa «al Tripulante que ha robado esta carta» le pasa al que acaba de bajar.
-- La carta dice qué hacer con ella: «Quédate esta carta» (el jugador la deja a un lado hasta que termine de bucear), «Pon esta carta en juego» (como cualquier Mejora o Tesoro) o «Vuelve a barajar esta carta en el mazo del naufragio». Una carta que no dice nada de esto se aparta después de aplicarla.
+- La carta dice qué hacer con ella: «Quédate esta carta» (el jugador la deja a un lado hasta que termine de bucear), «Pon esta carta en juego» (como cualquier Tesoro), «Adquiere esta carta» (la culebrina: va al Barco sin coste si tiene Espacio y, si no, se retira del juego y vuelve al mazo de historia) o «Vuelve a barajar esta carta en el mazo del naufragio». Una carta que no dice nada de esto se aparta después de aplicarla.
 - No hay Prueba ni Destino. El jugador puede bucear mientras le quede algún Tripulante preparado y cartas en el mazo, hasta que decida parar.
 - Al terminar de bucear, la carta 286 y todo el mazo del naufragio vuelven al mazo de historia (lo que queda en el mazo, lo que el jugador se ha quedado y lo apartado), salvo las cartas que estén en juego. Si la culebrina se pierde después, también vuelve al mazo de historia (véase Mazo de historia).
 
@@ -1360,11 +1359,13 @@ Los Estados se quitan antes de curar o reparar. De este modo, la curación no se
 
 ### Rasgo
 
-El Rasgo dice qué es un Tripulante y aparece en cursiva sobre su texto. Hay dos clases. Los Rasgos de grupo dicen qué clase de gente es, y los comparten muchos Tripulantes: Marinero, Bucanero, Oficial, Explorador, Vigía y Contrabandista.
+El Rasgo dice qué es un Tripulante y aparece en cursiva sobre su texto. Hay dos clases. Los Rasgos de grupo dicen qué clase de gente es, y los comparten muchos Tripulantes: Marinero, Pirata, Oficial, Explorador, Vigía y Contrabandista.
 
 Los Rasgos de oficio nombran al especialista del barco, el que se encarga de una sola tarea a bordo: Piloto, Carpintero, Artillero, Cirujano y Animal. Un oficio puede tener un solo portador en toda la caja, como el Carpintero de a bordo, que es el único Carpintero. En la tripulación, en cambio, no hay límite por oficio, y el jugador puede llevar a los tres Pilotos a la vez. Solo limita que una carta sea única (ver Única).
 
-Un Tripulante puede tener varios Rasgos, de grupo y de oficio. Los Capitanes también los tienen y cuentan siempre, como cualquier Tripulante (Diego es Bucanero y Oficial). De las Mejoras, solo los Cañones tienen Rasgo (ver Cañón).
+Un Tripulante puede tener varios Rasgos, de grupo y de oficio. Los Capitanes también los tienen y cuentan siempre, como cualquier Tripulante (Diego es Pirata y Oficial). De las Mejoras, solo los Cañones tienen Rasgo (ver Cañón). En el texto de las cartas, los Rasgos van en cursiva («Si tienes un Carpintero»).
+
+Pirata es a la vez un Rasgo de Tripulante y un tipo de encuentro (ver Tipos de encuentro), y no tienen nada que ver. En las cartas, el Rasgo va en cursiva («Si tienes un Pirata preparado») y el tipo de encuentro, en versalitas, debajo del nombre del encuentro o en frases como «Los encuentros de tipo Pirata reciben −1 de dificultad» («Cobrar la deuda»). Un encuentro de tipo Pirata no cuenta como un Tripulante Pirata, ni al revés.
 
 Las cartas piden un Rasgo solo de tres maneras.
 
@@ -1380,13 +1381,13 @@ El Capitán cuenta siempre en las tres maneras de pedir un Rasgo, y también en 
 > El Viejo lobo de mar es Marinero, Oficial y Piloto: pertenece a dos grupos y tiene un oficio. Si aparece «Calma chicha» («agota a un Marinero o a 2 Tripulantes»), sirve cualquiera de los Marineros del muelle, que son muchos. En cambio, si aparece «Guiarse por las estrellas» («Si tienes un Piloto, +1 Avance»), solo sirve uno de los tres Pilotos. El Viejo lobo vale para las dos cartas.
 
 > [!ejemplo]
-> El Carpintero de a bordo, que es Carpintero y Marinero, está agotado, y el jugador no lleva más Marineros. En la Ciudad supera «Casco en seco» («Repara 1 (2 si tienes un Carpintero)») y repara 2, porque el Carpintero está en la tripulación, aunque esté agotado. Después revela «La cofradía de San Telmo» («Si tienes un Marinero preparado, superas sin Prueba»): como su único Marinero está agotado, tiene que hacer la Prueba.
+> El Carpintero de a bordo y el Bucanero veterano, que es Pirata y Marinero, están agotados, y el jugador no lleva más Marineros. En la Ciudad supera «Casco en seco» («Repara 1 (2 si tienes un Carpintero)») y repara 2, porque el Carpintero está en la tripulación, aunque esté agotado. Después revela «La cofradía de San Telmo» («Si tienes un Marinero preparado, superas sin Prueba»): como su único Marinero está agotado, tiene que hacer la Prueba.
 
 > [!ejemplo]
 > El jugador lleva a Diego (COM 3), el Bucanero veterano (COM 2) y el Grumete leal (COM 1). En el Mar revela «Bronca en el sollado» («Tus dos Tripulantes con más COM (sin contar al Capitán) se están pegando: no pueden ser asignados»). Esa elección no pide un Rasgo, así que manda la carta: se pelean el Bucanero y el Grumete, y solo Diego puede ser asignado. Como Diego es Oficial, «Cada Oficial asignado suma +1» también vale para él.
 
 > [!ejemplo]
-> Con el Bucanero veterano agotado y Diego preparado, el jugador revela «Balandra de la Hermandad» («Si tienes un Bucanero preparado, prepara otro Cañón»). Diego es Bucanero, así que el segundo Cañón llega. Si Diego también estuviera agotado, solo llegaría el primero.
+> Con el Bucanero veterano agotado y Diego preparado, el jugador revela «Balandra de la Hermandad» («Si tienes un Pirata preparado, prepara otro Cañón»). Diego es Pirata, así que el segundo Cañón llega. Si Diego también estuviera agotado, solo llegaría el primero, aunque la Balandra sea un encuentro de tipo Pirata: lo que pide es un Tripulante con ese Rasgo.
 
 ### Reclutar
 
@@ -1536,9 +1537,8 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 | Daña N y casco · Repara N y casco | El Barco sufre N daños · se reparan N |
 | N y agotar · «Todos» y agotar | Agota a N Tripulantes · agota a todos |
 | N y descartar | Descarta N cartas de la mano |
-| +N y robar | Roba N cartas |
+| N y robar | Roba N cartas (el icono ya dice «roba»: en las cartas no lleva el verbo delante) |
 | N y curar | Cura N heridas |
-| N y quitar Estado | Quita N Estados (los que diga la carta) |
 | +N y mapa · −N y mapa · «−Todo» y mapa | Se gana N de Avance · se pierden N de Avance · se pierde todo el Avance |
 | −1 y mapa (mín. 0), en Sin oposición | El encuentro da 1 de Avance menos (sin bajar de 0) |
 | −N y Mejora | Se pierden N Mejoras |
@@ -1560,9 +1560,8 @@ Un Tripulante o el Barco no puede tener dos veces la misma ficha. En puerto, la 
 | Sangrando | Estado | Cada vez que se agota, 1 herida | Ejemplo: «Cataplasma» |
 | Buscado | Estado | No puede ser asignado en Ciudad | Descartando 1 carta en la Fase de Reclutamiento |
 | Maldito | Estado | −1 al total de cada Prueba a la que esté asignado | Al superar una Prueba a la que esté asignado |
-| Vía de agua | Estado del Barco | En el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar | Ejemplo: Carpintero de a bordo |
-| Velas rotas | Estado del Barco | −1 al total de las Pruebas de NAV en el Mar; Distancias +1 | Ejemplo: Práctico del puerto |
+| Vía de agua | Estado del Barco | En el Mar, al final de cada carta de Peligro, 1 daño, salvo que agotes a un Tripulante para achicar | — |
+| Velas rotas | Estado del Barco | −1 al total de las Pruebas de NAV en el Mar; Distancias +1 | — |
 | Perseguido | Estado del Barco | Los encuentros de tipo Armada reciben +1 de dificultad | Al superar un encuentro de tipo Armada |
-| Pólvora mojada | Estado del Barco | Los Cañones no se preparan en la Fase de Inicio | — |
 | Inspirado | Ventaja | +1 al total de cada Prueba a la que esté asignado | Al final del turno |
 | Aguerrido | Ventaja | Puede ser asignado sin agotarse | Al hacerlo |

@@ -280,6 +280,8 @@ function destinoDeLaUltima(s: Estado, c: InstId): { texto: string; sello?: strin
   if (s.zonas.mazoNaufragio.includes(c)) return { texto: 'Vuelve barajada al mazo', sello: 'Vuelve al mazo' }
   if (s.zonas.naufragioQuedadas.includes(c)) return { texto: 'Te la quedas, a un lado' }
   if (s.zonas.mejoras.includes(c)) return { texto: 'Entra en juego en el Barco' }
+  // Fase 15, quinta ronda: la culebrina sin Espacio se retira del juego (vuelve al mazo de historia).
+  if (s.zonas.mazoHistoria.includes(c)) return { texto: 'Se retira del juego', sello: 'Se retira' }
   return { texto: 'Se aparta' }
 }
 

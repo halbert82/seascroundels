@@ -35,7 +35,8 @@ export interface OpcionesPartida {
 export function nuevaPartida({ semilla, modo, mazoDeMuelle, peligrosExtra, variante, sinEscenario }: OpcionesPartida): Estado {
   const m = DATOS.mazosPredefinidos
   const muelle = mazoDeMuelle ?? m.mazoDeMuelle
-  // TODO(regla): excepción temporal de la fase 14 (muelle de inicio de 26 cartas); quitar cuando se rehagan los mazos de inicio.
+  // TODO(regla): excepción temporal de la fase 14 (muelle de inicio de 25 cartas desde la quinta ronda de la fase 15); quitar
+  // cuando se rehagan los mazos de inicio.
   // Vale también para el muelle de inicio sin alguna de sus cartas (las medidas que quitan una para ver lo que pesa).
   const delInicio = muelle.every((id) => m.mazoDeMuelle.includes(id))
   const errores = erroresDeMazos(

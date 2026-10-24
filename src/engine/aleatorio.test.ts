@@ -89,7 +89,13 @@ describe('Prueba masiva: mazos de muelle variados', () => {
     // su prueba propia (cartas-eventos) y su medida con un mazo de prueba (medir.informe).
     // Fase 15: la campana, la culebrina y el doblón del San José solo llegan buceando en «El naufragio del San José» (y el
     // doblón salva al Capitán solo si iba a quedar derrotado). Tienen su prueba propia (fase15-misiones.test).
+    // Fase 15, quinta ronda: sin el Práctico del puerto en el muelle, el sorteo de partidas cambia. La Cruz de Santa Bárbara
+    // (más de 2 daños de golpe con la Cruz en juego) sale en ~1 de cada 250 partidas y «¡A por ellos!» (un Peligro descarta a
+    // un Tripulante que vale la pena con la carta en la mano), en ~1 de cada 500: en estas 1000 pueden no salir. Las dos
+    // tienen su prueba propia (cartas-mejoras, cartas-jugador2 y peligros2-grupoC), y el jugador automático las usa.
     const rarisimas = new Set([
+      'cruz.tope',
+      'a_por_ellos.jugar',
       'mascaron.evitar',
       'espada.cancelar',
       'polvora_rey.disparo',

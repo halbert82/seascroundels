@@ -520,11 +520,12 @@ describe('21 · El jaguar', () => {
 
 describe('22 · El caimán', () => {
   it('Mar: al revelarse, el preparado con menos Vida cae al agua y no se compromete; si superas, se prepara y queda Aguerrido', () => {
-    const j = en('mar', ['p2_caiman', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo', 'bucanero', 'practico'] })
-    expect(() => j.comprometer('NAV', ['practico'])).toThrow(/no se puede comprometer/)
+    // Fase 15, quinta ronda: el Rufián de cubierta (Vida 1) en lugar del Práctico del puerto, que sale de la caja.
+    const j = en('mar', ['p2_caiman', 'chubasco', 'calma'], { tripulacion: ['viejo_lobo', 'bucanero', 'marinero_p'] })
+    expect(() => j.comprometer('NAV', ['marinero_p'])).toThrow(/no se puede comprometer/)
     // Diego 2 + Viejo lobo 3 + Bucanero 1 + Barco 1 = 7 contra 6.
     j.comprometer('NAV', ['capitan', 'viejo_lobo', 'bucanero']).pasarOfertas().seguir()
-    expect(j.estados('practico')).toEqual(['aguerrido'])
+    expect(j.estados('marinero_p')).toEqual(['aguerrido'])
   })
 
   it('Mar: si fallas, el que cayó sufre 2 heridas y el Barco 1 daño', () => {

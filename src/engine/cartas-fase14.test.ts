@@ -138,14 +138,15 @@ describe('Fase 14 · El jugador automático', () => {
   const lleno = () =>
     Jugador.en({
       tripulacion: ['fiador', 'grumete', 'saqueador', 'marinero_p'],
-      muelle: ['espadachin'],
+      muelle: ['isabela'],
       mano: ['ojo', 'ojo', 'timon', 'timon', 'coraje'],
     })
 
   it('con el barco lleno, despide al Tripulante que menos vale si en el muelle hay uno claramente mejor que puede pagar', async () => {
     const { jugadorConCriterio } = await import('./pruebas/jugadores.ts')
     const j = lleno()
-    // El Fiador de ron (COM 1, Vida 1) frente al Espadachín (COM 3, Vida 2): 2 puntos o más de diferencia.
+    // El Fiador de ron (COM 1, Vida 1) frente a Isabela (NAV 1, COM 3, Vida 2): 2 puntos o más de diferencia. (Fase 15,
+    // quinta ronda: el Espadachín baja a COM 2 y ya no basta.)
     expect(jugadorConCriterio()(j.estado, j.decision)).toEqual({ tipo: 'accion', accion: { tipo: 'despedir', carta: j.inst('fiador') } })
     // Sin la opción de despedir (la medida de referencia), no lo hace.
     expect(jugadorConCriterio({ despide: false })(j.estado, j.decision)).toEqual({ tipo: 'accion', accion: { tipo: 'terminarPaso' } })

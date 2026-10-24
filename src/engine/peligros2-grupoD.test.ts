@@ -172,13 +172,14 @@ describe('36 · Sangre caliente', () => {
   })
 
   it('Mar: si hay empate en el corte, eliges a quién; si fallas, los dos que se pegaban sufren 1 herida cada uno', () => {
-    const j = en('mar', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['filibustero', 'isabela', 'espadachin'] })
+    // Fase 15, quinta ronda: el Soldado de fortuna (COM 3) en lugar del Espadachín, que baja a COM 2.
+    const j = en('mar', ['p2_sangre', 'chubasco', 'calma'], { tripulacion: ['filibustero', 'isabela', 'soldado_fortuna'] })
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } })
     j.elegir('filibustero', 'isabela')
     j.comprometer('COM', []).seguir()
     expect(j.copia('filibustero').heridas).toBe(1)
     expect(j.copia('isabela').heridas).toBe(1)
-    expect(j.copia('espadachin').heridas).toBe(0)
+    expect(j.copia('soldado_fortuna').heridas).toBe(0)
   })
 
   it('Naturaleza: si superas, curas 1 herida a dos Tripulantes distintos; si fallas, el de más COM cura 1 y el de menos Vida sufre 1', () => {

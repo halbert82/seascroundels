@@ -313,7 +313,7 @@ export function esDelNaufragio(id: string): boolean {
 }
 
 /** Lo que se hace con una carta del mazo del naufragio después de aplicarla. */
-export type DestinoNaufragio = 'quedar' | 'enJuego' | 'barajar' | 'apartar'
+export type DestinoNaufragio = 'quedar' | 'enJuego' | 'adquirir' | 'barajar' | 'apartar'
 
 /**
  * Regla del motor (Albert, fase 15): lo dice el texto de la carta. «Quédate esta carta»: a un lado, hasta que termine la
@@ -325,6 +325,8 @@ export function destinoNaufragio(id: string): DestinoNaufragio {
   const texto = 'texto' in c && typeof c.texto === 'string' ? c.texto : ''
   if (texto.includes('Quédate esta carta')) return 'quedar'
   if (texto.includes('Pon esta carta en juego')) return 'enJuego'
+  // Fase 15, quinta ronda: la culebrina dice «Adquiere esta carta. Si no tienes Espacio en el Barco, retira esta carta del juego.»
+  if (texto.includes('Adquiere esta carta')) return 'adquirir'
   if (texto.includes('Vuelve a barajar esta carta')) return 'barajar'
   return 'apartar'
 }

@@ -192,7 +192,6 @@ const MEJORAS_PREFERIDAS: Record<string, number> = {
 const CAPACIDAD_TRIPULANTE: Record<string, number> = {
   isabela: 2.5,
   herbolaria: 1,
-  practico: 1,
   lengua: 0.5,
   fiador: 1,
   bartolome: 2,
@@ -849,7 +848,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
   switch (uso.clave) {
     // Curar y reparar
     case 'carpintero.reparar':
-      return s.danoBarco > 0 || (s.estadosBarco ?? []).includes('viaDeAgua') ? 2 : 0
+      return s.danoBarco > 0 ? 2 : 0
     case 'reparacion.jugar':
       return s.danoBarco >= 2 ? 2 : 0
     case 'matasanos.curar':
@@ -911,7 +910,9 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       if (uso.clave !== 'pistola.disparar' && (p.sinCanones || valor(s, { tipo: 'sinCanones' }) > 0)) return 0
       const total = totalPrueba(s)
       const dificultad = dificultadPrueba(s)
-      return total < dificultad ? (total + 2 >= dificultad ? 3 : 1) : 0
+      // Fase 15, quinta ronda: la Pistola da +3 COM a su portador; los Cañones, +2.
+      const suma = uso.clave === 'pistola.disparar' ? numeroConIcono(textoDe('pistola'), 'COM') : 2
+      return total < dificultad ? (total + suma >= dificultad ? 3 : 1) : 0
     }
     case 'carronadas.disparar':
       return 3
@@ -989,7 +990,6 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
       return d.motivo.clave === 'jugarCartas' && mano >= 3 ? 1 : 0
     // Cartas de jugador 2.0
     case 'herbolaria.quitar':
-    case 'practico.barco':
     case 'virar.jugar':
       return 3
     case 'fiador.descarte': {

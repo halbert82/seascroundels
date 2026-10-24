@@ -216,3 +216,24 @@ describe('Fase 15, cuarta ronda · partidas guardadas antes de las cartas de rec
     expect(ids(t.estado, 'mazoHistoria')).toEqual(expect.arrayContaining(['ante_altar', 'templo-IV']))
   })
 })
+
+describe('Fase 15, quinta ronda · partidas guardadas con Pólvora mojada o con el Práctico del puerto', () => {
+  it('el Barco pierde la Pólvora mojada y el Práctico sale de la partida (sus Mejoras, a los descartes del muelle)', () => {
+    const j = Jugador.en({ tripulacion: [{ id: 'bucanero' }], barco: { estados: ['viaDeAgua'] } })
+    const viejo = JSON.parse(serializar(j.estado)) as Estado
+    viejo.estadosBarco = ['viaDeAgua', 'polvoraMojada' as never]
+    // Un Práctico en la tripulación, con la Brújula, como en una partida de antes.
+    const practico = 'i900' as InstId
+    const brujula = 'i901' as InstId
+    viejo.cartas[practico] = { ...viejo.cartas[inst(viejo, 'bucanero')], id: 'practico' } as Estado['cartas'][InstId]
+    viejo.cartas[brujula] = { ...viejo.cartas[inst(viejo, 'bucanero')], id: 'brujula', vinculadaA: practico } as Estado['cartas'][InstId]
+    viejo.zonas.tripulacion.push(practico)
+    viejo.zonas.mejoras.push(brujula)
+    const t = deserializar(JSON.stringify(viejo))
+    expect(t.estadosBarco).toEqual(['viaDeAgua'])
+    expect(Object.values(t.cartas).some((c) => c.id === 'practico')).toBe(false)
+    expect(ids(t, 'tripulacion')).not.toContain('practico')
+    expect(ids(t, 'descartesMuelle')).toContain('brujula')
+    expect(t.cartas[brujula]?.vinculadaA).toBeNull()
+  })
+})

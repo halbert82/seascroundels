@@ -131,7 +131,7 @@ describe('224 · El guardián de jade', () => {
     const j = en('nat', ['guardian', 'calma', 'calma'], { capitan: { mejoras: ['escapulario', 'sable'] }, tripulacion: ['reinaldo'] })
     j.comprometer('COM', ['capitan', 'reinaldo'])
     expect(dificultadConDestino(j.estado)).toBe(4)
-    expect(totalSinDestinoPrueba(j.estado)).toBe(7) // 3 + 4, sin el Sable
+    expect(totalSinDestinoPrueba(j.estado)).toBe(6) // 3 + 3 (Rodrigo, COM 3 desde la fase 15, quinta ronda), sin el Sable
     resolver(j)
     expect(robas(j, 2)).toBe(true)
     expect(j.registro).toContain('Ganas 3 de Avance (4/3).')
