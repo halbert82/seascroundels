@@ -1079,7 +1079,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     case 'ron_valientes.jugar':
       return trasEncuentro && faltaAvance(s) > 0 ? 1 : 0
     case 'pm_ojos.quitar0':
-      // Cazar al jaguar: Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador); roba 2 y deja de herir.
+      // Cazar al jaguar: Destina 6 COM con un solo Tripulante (4 EXP si es un Explorador); roba 2 y deja de herir.
       return trasEncuentro ? 2 : 0
     case 'peligroEnMuelle.descartar':
       return fuente && mano >= (s.peligrosEnMuelle?.[fuente] ?? 0) + 2 ? 1 : 0
@@ -1098,7 +1098,7 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     // Misiones 2.0: «Rumbo a la isla»: si ya tiene el Avance y solo falta avistar la isla, agota al Vigía o al Piloto.
     case 'templo-I.isla':
       return trasEncuentro && faltaAvance(s) <= 0 ? 3 : 0
-    // «¡La guardia!» (todas las Pruebas +1): echarlos (Destina 5 COM) si queda alguien a bordo, o escabullirse si sobra gente.
+    // «¡La guardia!» (todas las Pruebas +1): echarlos (Destina 6 COM) si queda alguien a bordo, o escabullirse si sobra gente.
     case 'guardia.quitar0':
       return trasEncuentro && faltaAvance(s) > 0 && quedaAlguienTrasDestinar(s, uso) ? 2 : 0
     case 'guardia.accion0':

@@ -80,7 +80,7 @@ export const destina: Manejador<'destina'> = (s, t, e) => {
   return 'hecha'
 }
 
-/** «Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador)», para la pregunta. */
+/** «Destina 6 COM con un solo Tripulante (4 EXP si es un Explorador)», para la pregunta. */
 function textoDestina(d: Destina, n: number): string {
   const alt = d.alternativa ? ` (${d.alternativa.n} ${d.alternativa.hab} si es un ${d.alternativa.rasgo})` : ''
   return `${n} ${d.hab}${d.solo ? ' con un solo Tripulante' : ''}${alt}`

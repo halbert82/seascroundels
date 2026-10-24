@@ -261,11 +261,11 @@ registrarPeligro('p2_quinto', {
 })
 
 // 31. Bajo los cañones del Morro · Terrible
-// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Destina 5 COM (4 si tienes un Carpintero
+// Permanente 231 «La cadena de la bocana»: no puedes superar la misión. Acción: Destina 6 COM (5 si tienes un Carpintero
 // preparado): descarta esta carta y gana 1 Avance. (Albert: antes, una Prueba de COM 5 que dañaba 2 si fallabas; un coste
-// no se falla.)
+// no se falla. P133: 6 y 5, antes 5 y 4, para compensarlo.)
 registrarPermanente('pm_cadena', {
-  quitar: [{ tipo: 'destina', n: 5, hab: 'COM', rebaja: { rasgo: 'Carpintero', n: 4 }, efectos: [avance(1)] }],
+  quitar: [{ tipo: 'destina', n: 6, hab: 'COM', rebaja: { rasgo: 'Carpintero', n: 5 }, efectos: [avance(1)] }],
   bloqueaSuperar: true,
 })
 registrarPeligro('p2_morro', {

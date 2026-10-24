@@ -10877,7 +10877,7 @@
    "palabrasClave": [
     "Guardia"
    ],
-   "texto": "Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Destina 5 [COM] ~(los echáis a palos)~ o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.",
+   "texto": "Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Destina 6 [COM] ~(los echáis a palos)~ o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.",
    "ambientacion": "",
    "junto": false,
    "misiones": [
@@ -10931,7 +10931,7 @@
    "palabrasClave": [
     "Bestia"
    ],
-   "texto": "**Obligado:** al final de cada encuentro siguiente, inflige {1 herida} al Tripulante agotado con menos Vida. **Acción:** Destina 5 [COM] con un solo Tripulante (3 [EXP] si es un _Explorador_): {2 robar} y descarta esta carta.",
+   "texto": "**Obligado:** al final de cada encuentro siguiente, inflige {1 herida} al Tripulante agotado con menos Vida. **Acción:** Destina 6 [COM] con un solo Tripulante (4 [EXP] si es un _Explorador_): {2 robar} y descarta esta carta.",
    "ambientacion": "",
    "origen": "p2_jaguar",
    "entorno": "nat",
@@ -10957,7 +10957,7 @@
    "palabrasClave": [
     "Militar"
    ],
-   "texto": "No puedes superar la misión. **Acción:** Destina 5 [COM] (4 si tienes un _Carpintero_ preparado): descarta esta carta y gana {1 avance}.",
+   "texto": "No puedes superar la misión. **Acción:** Destina 6 [COM] (5 si tienes un _Carpintero_ preparado): descarta esta carta y gana {1 avance}.",
    "ambientacion": "",
    "origen": "p2_morro",
    "entorno": "mar",

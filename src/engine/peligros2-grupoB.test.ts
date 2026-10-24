@@ -502,12 +502,13 @@ describe('21 · El jaguar', () => {
     expect(j.copia('viejo_lobo').heridas).toBe(1)
   })
 
-  it('Naturaleza, Acción: Destina 5 COM con un solo Tripulante (Albert: antes, una Prueba solo con él): roba 2 y se descarta', () => {
-    // Rodrigo (COM 3, más 1 por Diego y 1 del Sable) llega solo; Isabela (3 + 1) y Diego (3) no: no se le pregunta.
-    const j = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: [{ id: 'reinaldo', mejoras: ['sable'] }, 'isabela'], mazoCapitan: ['ojo', 'timon', 'coraje'] })
+  it('Naturaleza, Acción: Destina 6 COM con un solo Tripulante (P133: antes 5; y antes, una Prueba solo con él): roba 2 y se descarta', () => {
+    // Rodrigo (COM 3, más 1 por Diego, 1 del Sable y 1 de Entrenamiento) llega solo; Isabela (3 + 1) y Diego (3) no: no se
+    // le pregunta.
+    const j = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: [{ id: 'reinaldo', mejoras: ['sable'], entrenamiento: ['COM'] }, 'isabela'], mazoCapitan: ['ojo', 'timon', 'coraje'] })
     expect(j.zona('permanentes')).toEqual(['pm_ojos'])
     j.usar('pm_ojos.quitar0')
-    expect(j.registro).toContain('Destinas 5 de COM: agotas a Rodrigo «Carnicero» Ortega.')
+    expect(j.registro).toContain('Destinas 6 de COM: agotas a Rodrigo «Carnicero» Ortega.')
     expect(j.copia('reinaldo').agotada).toBe(true)
     expect(j.copia('isabela').agotada || j.copia('capitan').agotada).toBe(false)
     expect(j.zona('permanentes')).toEqual([])
@@ -516,10 +517,10 @@ describe('21 · El jaguar', () => {
     expect(j.zona('destino')).toEqual([])
   })
 
-  it('«3 EXP si es un Explorador»: el Rastreador de la selva (EXP 3, más 1 por Diego) también puede; si llegan varios, eliges', () => {
-    const j = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: [{ id: 'reinaldo', mejoras: ['sable'] }, 'baqueano'], mazoCapitan: ['ojo', 'timon', 'coraje'] })
+  it('«4 EXP si es un Explorador»: el Rastreador de la selva (EXP 3, más 1 por Diego) también puede; si llegan varios, eliges', () => {
+    const j = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: [{ id: 'reinaldo', mejoras: ['sable'], entrenamiento: ['COM'] }, 'baqueano'], mazoCapitan: ['ojo', 'timon', 'coraje'] })
     j.usar('pm_ojos.quitar0')
-    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'destinaSolo', n: 5, texto: '5 COM con un solo Tripulante (3 EXP si es un Explorador)' } })
+    expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'destinaSolo', n: 6, texto: '6 COM con un solo Tripulante (4 EXP si es un Explorador)' } })
     expect(j.decision.tipo === 'elegirCartas' && j.decision.candidatas.map((c) => j.estado.cartas[c]?.id).sort()).toEqual(['baqueano', 'reinaldo'])
     j.elegir('baqueano')
     expect(j.registro).toContain('Destinas 4 de EXP: agotas a Rastreador de la selva.')
@@ -527,6 +528,9 @@ describe('21 · El jaguar', () => {
   })
 
   it('si nadie llega solo (aunque juntos sí), la Acción no se ofrece', () => {
+    // Rodrigo con el Sable (3 + 1 + 1) llegaba a 5, la cifra de antes de P133; a 6, no.
+    const k = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: [{ id: 'reinaldo', mejoras: ['sable'] }, 'isabela'] })
+    expect(k.ofreceCapacidad('pm_ojos.quitar0')).toBe(false)
     const j = en('nat', ['p2_jaguar', 'racha', 'calma'], { tripulacion: ['isabela', 'bucanero'] })
     expect(j.zona('permanentes')).toEqual(['pm_ojos'])
     expect(j.ofreceCapacidad('pm_ojos.quitar0')).toBe(false)

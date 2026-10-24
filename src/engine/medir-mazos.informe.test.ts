@@ -2,6 +2,8 @@
 // Juega las partidas de las semillas 1–N (INFORME_PARTIDAS, 1000 por defecto) con cada pareja de mazos, el mismo jugador
 // automático y las mismas reglas, y escribe el resumen en JSON en MEDIR_SALIDA (o en la consola). MEDIR_MAZOS_SOLO=antes
 // o =nuevos juega solo una de las dos; MEDIR_MAZOS_VARIADOS=1, las de muelle variado con cada mazo del capitán.
+// MEDIR_MAZOS_VARIANTE=A, B, C o D juega una sola variante del mazo del capitán «Pólvora y abordaje» (VARIANTES), con el
+// muelle de inicio o, con MEDIR_MAZOS_VARIADOS=1, con muelles variados (semillas 100000…).
 
 import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'
@@ -157,8 +159,41 @@ function medir(mazos: { muelle: CartaId[]; capitan: CartaId[] } | null) {
   return resumen(partidas, v, rebarajes)
 }
 
+/**
+ * Variantes del mazo del capitán «Pólvora y abordaje» que pidió medir Albert (25 de octubre de 2026): una copia menos de
+ * «¡Arriba, perros!», de «Ron para los valientes» o de las dos. Solo para medir: el mazo de inicio no cambia.
+ */
+export const VARIANTES: Record<string, { nombre: string; quitar: CartaId[] }> = {
+  A: { nombre: 'El mazo actual (36)', quitar: [] },
+  B: { nombre: '1 sola copia de ¡Arriba, perros! (35)', quitar: ['arriba'] },
+  C: { nombre: '1 sola copia de Ron para los valientes (35)', quitar: ['ron_valientes'] },
+  D: { nombre: '1 sola copia de las dos (34)', quitar: ['arriba', 'ron_valientes'] },
+}
+
+/** El mazo del capitán de inicio con una copia menos de cada carta de la lista. */
+export function mazoDelCapitanSin(quitar: readonly CartaId[]): CartaId[] {
+  const mazo = [...DATOS.mazosPredefinidos.mazoDelCapitan]
+  for (const id of quitar) {
+    const i = mazo.indexOf(id)
+    if (i < 0) throw new Error(`El mazo del capitán no lleva «${id}»`)
+    mazo.splice(i, 1)
+  }
+  return mazo
+}
+
 it.runIf(process.env.MEDIR_MAZOS)(`mazos de inicio de antes frente a «Pólvora y abordaje» (${PARTIDAS} partidas cada uno)`, { timeout: 7_200_000 }, () => {
   const solo = process.env.MEDIR_MAZOS_SOLO
+  const letra = process.env.MEDIR_MAZOS_VARIANTE
+  if (letra) {
+    const variante = VARIANTES[letra]
+    if (!variante) throw new Error(`No hay variante «${letra}»`)
+    const capitan = mazoDelCapitanSin(variante.quitar)
+    const datos = process.env.MEDIR_MAZOS_VARIADOS ? medirVariados(capitan) : medir({ muelle: [...DATOS.mazosPredefinidos.mazoDeMuelle], capitan })
+    const json = JSON.stringify({ variante: letra, nombre: variante.nombre, cartas: capitan.length, muelle: process.env.MEDIR_MAZOS_VARIADOS ? 'variados' : 'inicio', ...datos }, null, 1)
+    if (process.env.MEDIR_SALIDA) writeFileSync(process.env.MEDIR_SALIDA, json)
+    else console.log(json)
+    return
+  }
   if (process.env.MEDIR_MAZOS_VARIADOS) {
     const json = JSON.stringify({ capitanDeAntes: medirVariados(MAZOS_ANTERIORES.capitan), capitanNuevo: medirVariados(null) }, null, 1)
     if (process.env.MEDIR_SALIDA) writeFileSync(process.env.MEDIR_SALIDA, json)

@@ -70,7 +70,7 @@ export function textoOpciones(opciones: readonly OpcionPrueba[]): string {
 export function textoFormaDeQuitar(f: FormaDeQuitar): string {
   switch (f.tipo) {
     case 'destina': {
-      // «Destina 5 COM (4 si tienes un Carpintero preparado)», «Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador)».
+      // «Destina 6 COM (5 si tienes un Carpintero preparado)», «Destina 6 COM con un solo Tripulante (4 EXP si es un Explorador)».
       const rebaja = f.rebaja ? ` (${f.rebaja.n} si tienes un ${f.rebaja.rasgo} preparado)` : ''
       const alt = f.alternativa ? ` (${f.alternativa.n} ${f.alternativa.hab} si es un ${f.alternativa.rasgo})` : ''
       return `Destina ${f.n} ${f.hab}${f.solo ? ' con un solo Tripulante' : ''}${rebaja}${alt}`

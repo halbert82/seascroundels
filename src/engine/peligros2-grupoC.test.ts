@@ -476,28 +476,30 @@ describe('30 · El quinto del rey', () => {
 })
 
 describe('31 · Bajo los cañones del Morro', () => {
-  it('Mar: pone en juego la permanente 231 y no puedes superar la misión; Acción: Destina 5 COM: se descarta y da 1 Avance (Albert: antes, una Prueba)', () => {
-    const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
+  it('Mar: pone en juego la permanente 231 y no puedes superar la misión; Acción: Destina 6 COM: se descarta y da 1 Avance (Albert: antes, una Prueba; P133: antes 5)', () => {
+    const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'carne_canon'] })
     expect(j.zona('permanentes')).toEqual(['pm_cadena'])
     expect(avance(j, 'mar')).toBe(2)
     j.usar('pm_cadena.quitar0')
-    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 5, texto: 'COM' } })
-    // Diego (3) y el Bucanero (2: sin el +1 de Diego, que se agota a la vez) suman 5.
-    j.cubrir('capitan', 'bucanero')
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 6, texto: 'COM' } })
+    // Diego (3) y el Bucanero (2: sin el +1 de Diego, que se agota a la vez) suman 5: ya no llegan (P133). Con la Carne de
+    // cañón (2), 7.
+    expect(() => j.cubrir('capitan', 'bucanero')).toThrow(/sumas 5/)
+    j.cubrir('capitan', 'bucanero', 'carne_canon')
     expect(j.zona('permanentes')).toEqual([])
     expect(avance(j, 'mar')).toBe(3) // 2 de la carta + 1 por cortar la cadena
     expect(j.zona('destino')).toEqual([])
   })
 
-  it('Mar: con un Carpintero preparado destina 4 (lo mira antes de agotar a nadie); un coste no se falla: nada de daño', () => {
-    const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['carpintero', 'bucanero'] })
+  it('Mar: con un Carpintero preparado destina 5 (lo mira antes de agotar a nadie); un coste no se falla: nada de daño', () => {
+    const j = en('mar', ['p2_morro', 'chubasco', 'calma'], { tripulacion: ['carpintero', 'reinaldo'] })
     j.usar('pm_cadena.quitar0')
-    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 4 })
-    // El Bucanero (2 + 1) y el Carpintero (0 + 1), con Diego preparado: 4.
-    j.cubrir('bucanero', 'carpintero')
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 5 })
+    // Rodrigo (3 + 1) y el Carpintero (0 + 1), con Diego preparado: 5.
+    j.cubrir('reinaldo', 'carpintero')
     expect(j.zona('permanentes')).toEqual([])
     expect(j.estado.danoBarco).toBe(0)
-    // Sin nadie que llegue a 5 (solo Diego), la Acción no se ofrece.
+    // Sin nadie que llegue a 6 (solo Diego), la Acción no se ofrece.
     const k = en('mar', ['p2_morro', 'chubasco', 'calma'])
     expect(k.ofreceCapacidad('pm_cadena.quitar0')).toBe(false)
   })

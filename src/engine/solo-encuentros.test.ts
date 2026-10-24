@@ -68,11 +68,11 @@ describe('Regla general (Albert): solo los encuentros piden Pruebas', () => {
   it('los textos de Albert: «Destina» en las seis, sin efectos de fallar (un coste no se falla)', () => {
     const texto = (id: string) => DATOS.permanentes.find((p) => p.id === id)?.texto ?? ''
     expect(texto('guardia')).toBe(
-      'Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Destina 5 [COM] ~(los echáis a palos)~ o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.',
+      'Mientras esté, todas las Pruebas reciben {+1 r} de dificultad.\n**Acción:** Destina 6 [COM] ~(los echáis a palos)~ o agota a 2 Tripulantes ~(os escabullís por los tejados)~: descarta esta carta.',
     )
-    expect(texto('pm_ojos')).toContain('**Acción:** Destina 5 [COM] con un solo Tripulante (3 [EXP] si es un _Explorador_): {2 robar} y descarta esta carta.')
+    expect(texto('pm_ojos')).toContain('**Acción:** Destina 6 [COM] con un solo Tripulante (4 [EXP] si es un _Explorador_): {2 robar} y descarta esta carta.')
     expect(texto('pm_campanas')).toContain('**Acción:** Agota a un _Oficial_ o destina 3 [COM]: descarta esta carta.')
-    expect(texto('pm_cadena')).toBe('No puedes superar la misión. **Acción:** Destina 5 [COM] (4 si tienes un _Carpintero_ preparado): descarta esta carta y gana {1 avance}.')
+    expect(texto('pm_cadena')).toBe('No puedes superar la misión. **Acción:** Destina 6 [COM] (5 si tienes un _Carpintero_ preparado): descarta esta carta y gana {1 avance}.')
     expect(texto('pm_lechuza')).toContain('**Acción:** Agota a un _Vigía_ o destina 3 [EXP]: descarta esta carta y el señalado queda **Aguerrido**.')
     expect(texto('pm_cobertura')).toBe('Los _Cañones_ no suman. **Acción:** Destina 3 [NAV]: descarta esta carta.')
     for (const id of ANTES_CON_PRUEBA) expect(texto(id), id).not.toMatch(/si fallas|si superas|Prueba de/)

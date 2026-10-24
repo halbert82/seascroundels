@@ -1973,7 +1973,62 @@ Paso a paso, con las mismas semillas (mazos de antes salvo en el último paso): 
 
 - **Informe de equilibrio regenerado** (`npm run equilibrio`): 47,7 % (Panamá 25), con muelles variados 49,7 %; derrotas por tiempo 71,5 % de las derrotas (antes 63,0 %). El párrafo de los muelles variados decía «las 42 de la caja» (eran 52); ahora lo calcula: 54.
 
-### Pregunta para Albert (P133), con la opción por defecto aplicada
+### Pregunta para Albert (P133), con la opción por defecto aplicada (cerrada: ver «Respuesta de Albert P133» justo debajo)
 
 - **P133 · ¿Se compensa lo que facilitan las permanentes con Destina?** Por defecto, no se toca nada (los números son los tuyos y el +1,5 está cerca del azar). Si quieres compensarlo, la opción más directa es subir 1 lo que se destina en las que se quitan con una cifra alta: «¡La guardia!» Destina 6, «La cadena de la bocana» Destina 6 (5 con un _Carpintero_ preparado) y «Ojos amarillos» Destina 6 con un solo Tripulante (4 EXP si es un _Explorador_). *Ejemplo:* con «La cadena» en juego, Diego (COM 3) y el Bucanero veterano (COM 2) hoy la quitan entre los dos; con 6 haría falta un tercero, como la Carne de cañón (COM 2, sin el +1 de Diego, que se agota a la vez).
 - **Aviso, sin pregunta:** el mazo del capitán nuevo sube 2,8 puntos con muelles variados. No propongo cambiarle cartas sin medirlo: si quieres que el mazo de inicio no facilite el juego, puedo medir variantes (por ejemplo, una sola copia de «¡Arriba, perros!», el Evento que más usa el jugador automático) y te traigo los números.
+
+## Respuesta de Albert P133 y variantes del mazo del capitán (25 de octubre de 2026)
+
+### P133 cerrada: las permanentes con Destina suben 1 (decisión de Albert)
+
+Para compensar lo que facilitaba quitar el riesgo de fallar (+1,5 puntos de victorias en la medición de la ronda anterior), las tres permanentes que se quitan con una cifra alta suben 1 lo que se destina:
+
+- **220 ¡La guardia!:** «**Acción:** Destina 6 [COM] (los echáis a palos) o agota a 2 Tripulantes (os escabullís por los tejados): descarta esta carta.» (antes, 5). Su +1 a las Pruebas sigue sin cambiar lo que se destina.
+- **231 La cadena de la bocana:** «**Acción:** Destina 6 [COM] (5 si tienes un _Carpintero_ preparado): descarta esta carta y gana {1 avance}.» (antes, 5 y 4).
+- **229 Ojos amarillos en la espesura:** «**Acción:** Destina 6 [COM] con un solo Tripulante (4 [EXP] si es un _Explorador_): {2 robar} y descarta esta carta.» (antes, 5 y 3).
+- **230 Campanas a rebato, 235 La lechuza canta tres veces y 237 Fuego de cobertura no cambian** (destinan 3).
+- *Ejemplos:* con «La cadena» en juego, Diego (COM 3) y el Bucanero veterano (COM 2, sin el +1 de Diego, que se agota a la vez) suman 5: ya no llegan, y hace falta un tercero, como la Carne de cañón (7). Con un _Carpintero_ preparado, Rodrigo (3 + 1 de Diego) y el Carpintero (0 + 1) suman 5 y llegan. Contra el jaguar, Rodrigo con el Sable (3 + 1 + 1) ya no llega solo a 6; con una ficha de Entrenamiento de COM, sí. El Rastreador de la selva (EXP 3 + 1 de Diego) sigue llegando a 4.
+- **Reglamento:** la entrada Destina pone de ejemplo «Destina 6 COM con un solo Tripulante» (antes, 5). Ningún otro ejemplo usa estos números.
+- **Pruebas:** las de las tres cartas (misiones2, peligros2-grupoB y grupoC) y los textos (permanentes y solo-encuentros), con los ejemplos de arriba.
+
+### Equilibrio con P133 (1000 partidas, semillas 1–1000)
+
+- **Informe de equilibrio regenerado** (`npm run equilibrio`): 47,7 % → **47,3 %** (Panamá 25, igual); con muelles variados, 49,7 % → **49,3 %**.
+- Con los mazos de inicio de antes y las reglas de hoy, 47,2 % → 46,5 %. P133 devuelve entre 0,4 y 0,7 de los 1,5 puntos que dio pasar las permanentes a Destina: estas tres cartas salen poco (la guardia, solo en «La casa del gobernador» con 3 de Alarma; la cadena y los ojos, con dos Peligros concretos en el Mar y en la Naturaleza).
+
+### Variantes del mazo del capitán «Pólvora y abordaje» (solo medidas: el mazo de inicio no cambia)
+
+Cuatro versiones del mazo del capitán, con P133 aplicada y el mismo jugador automático: **A** el mazo actual (36 cartas); **B** 1 sola copia de «¡Arriba, perros!» (35); **C** 1 sola copia de «Ron para los valientes» (35); **D** 1 sola copia de las dos (34). La **referencia** es la versión publicada antes de esta ronda (mazos de inicio de antes, 39 cartas en el del capitán, y las permanentes con Prueba), medida en una copia aparte del repositorio con el mismo método: da exactamente el 45,4 % y el 44,1 % publicados.
+
+**Lo que se pidió** (muelle de inicio: 1000 partidas, semillas 1–1000; muelles variados: 2000 partidas, semillas 100000–101999; las mismas semillas para todas):
+
+| Versión | Cartas | Victorias, muelle de inicio | Panamá | Días perdidos por rebarajar | Victorias, muelles variados | Panamá | Días perdidos por rebarajar |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Referencia (antes de esta ronda) | 39 | 45,4 % | 4 | 0,63 | 44,1 % | 28 | 0,64 |
+| A · el mazo actual | 36 | 47,3 % | 25 | 0,73 | 49,3 % | 43 | 0,71 |
+| B · 1 «¡Arriba, perros!» | 35 | 48,2 % | 22 | 0,76 | 50,2 % | 45 | 0,73 |
+| C · 1 «Ron para los valientes» | 35 | 48,5 % | 24 | 0,76 | 50,1 % | 45 | 0,73 |
+| D · 1 de cada | 34 | 47,5 % | 21 | 0,75 | 47,6 % | 44 | 0,74 |
+
+**Con más partidas** (muelle de inicio: 4000, semillas 1–4000; muelles variados: 6000, semillas 100000–105999). Con 1000 partidas, el azar mueve el resultado más o menos 1,5 puntos; con 4000 y 6000, unos 0,7:
+
+| Versión | Victorias, muelle de inicio | Panamá | Días perdidos | Victorias, muelles variados | Panamá | Días perdidos |
+| --- | --- | --- | --- | --- | --- | --- |
+| Referencia (antes de esta ronda) | **46,8 %** | 27 (0,7 %) | 0,64 | **44,6 %** | 90 (1,5 %) | 0,64 |
+| A · el mazo actual | 46,1 % | 101 (2,5 %) | 0,73 | 49,1 % | 126 (2,1 %) | 0,69 |
+| B · 1 «¡Arriba, perros!» | 46,2 % | 95 (2,4 %) | 0,76 | 48,2 % | 120 (2,0 %) | 0,72 |
+| C · 1 «Ron para los valientes» | 46,4 % | 94 (2,4 %) | 0,76 | 48,2 % | 118 (2,0 %) | 0,72 |
+| D · 1 de cada | 46,4 % | 90 (2,3 %) | 0,78 | 47,2 % | 121 (2,0 %) | 0,74 |
+
+- **Con el muelle de inicio, las cuatro versiones dejan el juego igual de difícil o algo más que antes** (46,1–46,4 % frente a 46,8 %). El 45,4 % de la referencia fue una tanda de 1000 partidas con mala suerte: con 4000 partidas, la referencia gana el 46,8 %. Entre A, B, C y D no hay diferencia que se pueda medir.
+- **Con muelles variados, ninguna llega a la referencia**: el mazo del capitán nuevo es más fuerte que el de antes cuando no va con su muelle. A, +4,5 puntos; B y C, +3,6; **D, +2,6**, la que más se acerca (1,9 puntos menos que A, el doble de lo que mueve el azar con estas partidas).
+- **Quitar una copia ayuda poco** porque el jugador automático juega cada una de estas cartas unas 0,45 veces por partida (0,24 con una sola copia) y el hueco lo llenan otras cartas buenas, que salen antes en un mazo más corto. El precio es pequeño: unas 0,05 jornadas más perdidas por rebarajar en cada partida (0,73 → 0,78 con el muelle de inicio).
+- **Panamá** sigue muy por debajo del 10 % en todas (2,0–2,5 %).
+- Si se eligiera B, C o D, la segunda copia en la caja de esas cartas (decisión de Albert: núcleo del mazo de inicio a 2 copias) ya no la usaría el mazo de inicio.
+- Medido con `MEDIR_MAZOS=1 MEDIR_MAZOS_VARIANTE=A npx vitest run src/engine/medir-mazos.informe.test.ts` (B, C, D; con `MEDIR_MAZOS_VARIADOS=1`, los muelles variados; `INFORME_PARTIDAS`, el número de partidas).
+
+### Recomendación (sin aplicar: decide Albert)
+
+- **D (34 cartas, una copia de cada una).** Con el muelle de inicio no cambia nada que se pueda medir (el juego ya es igual de difícil que antes). Con muelles variados es la única que acerca el mazo del capitán a la dificultad de antes (+2,6 puntos en lugar de +4,5), y el precio, unas 0,05 jornadas perdidas por partida, es pequeño. No basta para que con muelles variados el juego sea igual de difícil que antes: para eso habría que cambiar otras cartas del mazo del capitán y medirlo.
+

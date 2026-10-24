@@ -55,12 +55,12 @@ registrarCapacidades(
 
 // ---------------------------------------------------------------------------
 // ¡La guardia! (fase 11, P63: es una permanente, carta 220): mientras esté, todas las Pruebas reciben +1. Acción:
-// Destina 5 COM, o agota a 2 Tripulantes: descarta esta carta (vuelve al mazo de historia, como cualquier permanente;
+// Destina 6 COM, o agota a 2 Tripulantes: descarta esta carta (vuelve al mazo de historia, como cualquier permanente;
 // también al terminar la misión).
 // Solo los encuentros piden Pruebas (Albert): antes era una Prueba de COM 5; ahora es un coste, así que su +1 a las
-// Pruebas no lo cambia.
+// Pruebas no lo cambia. P133 (Albert): Destina 6, antes 5, para compensar que un coste no se falla.
 registrarPermanente('guardia', {
   capacidades: [{ clave: 'todas', ventana: 'constante', modifica: (_ctx, _yo, c: Consulta) => (c.tipo === 'dificultad' ? 1 : 0) }],
-  quitar: [{ tipo: 'destina', n: 5, hab: 'COM' }],
+  quitar: [{ tipo: 'destina', n: 6, hab: 'COM' }],
   acciones: [{ texto: 'Agota a 2 Tripulantes (os escabullís por los tejados): descarta esta carta', coste: [{ tipo: 'agotarVarios', n: 2 }], efectos: [{ tipo: 'descartarEsta' }] }],
 })

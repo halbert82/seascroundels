@@ -966,7 +966,7 @@ Destina es una palabra clave de coste: «**Destina X** [habilidad]: efecto». Pa
 
 - Si el jugador no puede llegar a X con sus Tripulantes preparados, no puede pagar el coste.
 - La habilidad de cada Tripulante cuenta con sus bonificaciones, igual que al cubrir una Distancia. Mientras Diego esté preparado, los demás Tripulantes suman 1 más.
-- Si dice «con un solo Tripulante» («Destina 5 COM con un solo Tripulante»), el jugador agota a uno solo, que tiene que llegar a X él solo.
+- Si dice «con un solo Tripulante» («Destina 6 COM con un solo Tripulante»), el jugador agota a uno solo, que tiene que llegar a X él solo.
 - Puede pagarse a mitad de una Prueba: «¡Nadie se queda atrás!» se juega cuando un fallo va a descartar a un Tripulante. Los asignados ya están agotados, así que solo pueden destinarse los Tripulantes que se quedaron a bordo.
 
 > [!ejemplo]

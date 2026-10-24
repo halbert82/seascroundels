@@ -701,7 +701,7 @@ describe('222 · El guía del istmo', () => {
 })
 
 describe('220 · ¡La guardia!', () => {
-  it('Acción: Destina 5 COM (Albert: antes, una Prueba de COM 5): agota a Diego y a Rodrigo, sin Destino, y se descarta', () => {
+  it('Acción: Destina 6 COM (Albert: antes, una Prueba de COM 5; P133: antes 5): agota a Diego y a Rodrigo, sin Destino, y se descarta', () => {
     const timbas = Array.from({ length: 9 }, () => 'oportunidad')
     const j = enPuerto({ misiones: ['gobernador-I'], tripulacion: ['reinaldo', 'filibustero', 'espadachin', 'isabela'], mazoPeligros: timbas })
     j.zarpar('gobernador-I').comprometer('COM', ['filibustero']).seguir().seguir().comprometer('COM', ['espadachin']).seguir().seguir()
@@ -709,7 +709,7 @@ describe('220 · ¡La guardia!', () => {
     expect(j.zona('permanentes')).toEqual(['guardia'])
     const destinos = j.zona('descartesPeligros').length
     j.usar('guardia.quitar0')
-    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 5, texto: 'COM' }, cartas: [] })
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', motivo: { clave: 'destina', n: 6, texto: 'COM' }, cartas: [] })
     // Rodrigo solo no llega (COM 3, más 1 por Diego); con Diego, que se agota a la vez, suman 3 + 3.
     j.cubrir('capitan', 'reinaldo')
     expect(j.zona('permanentes')).toEqual([])
@@ -718,14 +718,14 @@ describe('220 · ¡La guardia!', () => {
     expect(j.zona('descartesPeligros')).toHaveLength(destinos) // no se revela Destino
   })
 
-  it('su +1 es para las Pruebas: no cambia lo que se destina (5), ni lo cambia lo de los encuentros de Guardia (Patente de corso)', () => {
+  it('su +1 es para las Pruebas: no cambia lo que se destina (6), ni lo cambia lo de los encuentros de Guardia (Patente de corso)', () => {
     const timbas = Array.from({ length: 9 }, () => 'oportunidad')
     const j = enPuerto({ misiones: ['gobernador-I'], tripulacion: ['reinaldo', 'filibustero', 'espadachin', 'isabela'], capitan: { mejoras: ['patente'] }, mazoPeligros: timbas })
     j.zarpar('gobernador-I').comprometer('COM', ['filibustero']).seguir().seguir().comprometer('COM', ['espadachin']).seguir().seguir()
     j.comprometer('COM', ['isabela']).seguir()
     expect(j.zona('permanentes')).toEqual(['guardia'])
     j.usar('guardia.quitar0')
-    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 5 })
+    expect(j.decision).toMatchObject({ tipo: 'cubrirDistancia', distancia: 6 })
   })
 
   it('o agota a 2 Tripulantes (os escabullís por los tejados)', () => {

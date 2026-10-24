@@ -325,10 +325,11 @@ registrarPeligro('p2_arenas', {
 
 // 21. El jaguar · Terrible
 // Permanente 229 «Ojos amarillos en la espesura»: Obligado: al final de cada encuentro siguiente, el agotado con menos
-// Vida sufre 1 herida. Acción: Destina 5 COM con un solo Tripulante (3 EXP si es un Explorador): roba 2 y descarta esta
-// carta. (Albert: antes, una Prueba de COM 5 solo con él, con 1 herida si fallabas; un coste no se falla.)
+// Vida sufre 1 herida. Acción: Destina 6 COM con un solo Tripulante (4 EXP si es un Explorador): roba 2 y descarta esta
+// carta. (Albert: antes, una Prueba de COM 5 solo con él, con 1 herida si fallabas; un coste no se falla. P133: 6 y 4,
+// antes 5 y 3, para compensarlo.)
 registrarPermanente('pm_ojos', {
-  quitar: [{ tipo: 'destina', n: 5, hab: 'COM', solo: true, alternativa: { rasgo: 'Explorador', hab: 'EXP', n: 3 }, efectos: [robar(2)] }],
+  quitar: [{ tipo: 'destina', n: 6, hab: 'COM', solo: true, alternativa: { rasgo: 'Explorador', hab: 'EXP', n: 4 }, efectos: [robar(2)] }],
   disparos: [{ cuando: 'cartaResuelta', efectos: [{ tipo: 'aQuien', quien: { de: 'agotados', por: 'menosVida' }, hacer: { tipo: 'heridas', n: 1 } }] }],
 })
 registrarPeligro('p2_jaguar', {
