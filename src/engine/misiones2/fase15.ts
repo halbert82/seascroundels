@@ -29,13 +29,15 @@ const reputacion = (n: number): NuevaTarea => ({ tipo: 'cambiarReputacion', n })
 const robarN = (n: number): NuevaTarea => ({ tipo: 'robar', n })
 const aplicar = (efectos: Efecto[]): NuevaTarea => ({ tipo: 'aplicarEfectos', efectos, contexto: 'efecto' })
 
-/** «La misión termina» (no se supera): como «la misión falla», pero con sus propias palabras. */
-function terminaLaMision(s: Estado, motivo: string): void {
+/** «La misión termina» (no se supera): como «la misión falla», pero con sus propias palabras. Devuelve si la ha terminado. */
+function terminaLaMision(s: Estado, motivo: string): boolean {
   const m = s.mision
-  if (!m || m.fin) return
+  if (!m || m.fin) return false
   m.fin = 'retirada'
   m.motivoFallo = motivo
-  anotar(s, 'aviso', `${motivo.charAt(0).toUpperCase()}${motivo.slice(1)}: la misión termina.`)
+  m.terminaSinSuperarse = true
+  anotar(s, 'aviso', `${motivo.charAt(0).toUpperCase()}${motivo.slice(1)}: la misión termina sin superarse.`)
+  return true
 }
 
 /** «La misión falla» por una permanente (el galeón se hunde, el prisionero muere). */
@@ -250,15 +252,17 @@ registrarMision('isla-II-falso', {
 const FICHA_RIVAL = (nota: string) => ({ ficha: 'rival' as const, nombre: 'Rival', umbral: 8, inicial: 0, nota })
 const reglasDeRival = (): CapacidadDeCarta[] => [alRevelarPeligro('rival', () => [ponerFichas('rival', 2)]), ...avanceAdicional('ceñir', 'NAV', 'Ceñís el viento')]
 
-// La regata de San Juan (276): con 8 o más fichas de Rival, el rival gana la regata y, al superarla, ganas 1 de reputación
-// en lugar de su recompensa (sin el Gallardete).
+// La regata de San Juan (276). «Obligado: Con 8 fichas de Rival, el rival gana la regata: la misión termina sin superarse.
+// Apártala.» (Fase 16, decisión de Albert, como «La ruta de los alisios»): termina en el momento de revelar el Peligro que
+// pone la octava ficha, sin resolverlo; no se pregunta si la dejas disponible (sale de la partida) y no se gana nada, ni
+// reputación ni el Gallardete. Mira «8 o más» y no solo el paso a 8: una partida guardada con la regla anterior (la regata
+// seguía con 8 o más) termina en cuanto se pone la siguiente ficha.
 registrarMision('regata-I', {
-  fichas: [FICHA_RIVAL('Con 8 o más, el rival gana la regata: al superarla, solo ganas 1 de reputación.')],
+  fichas: [FICHA_RIVAL('Con 8, el rival gana la regata: la misión termina sin superarse y se aparta.')],
   capacidades: reglasDeRival(),
-  recompensaEnLugar: (s) => {
-    if (fichas(s, 'rival') < 8) return null
-    anotar(s, 'aviso', 'El rival gana la regata: ganas 1 de reputación en lugar de la recompensa.')
-    return [reputacion(1)]
+  alCambiarFichas: (s, _f, _antes, ahora) => {
+    if (ahora >= 8 && terminaLaMision(s, 'el rival gana la regata con 8 fichas de Rival') && s.mision) s.mision.destinoForzado = 'fuera'
+    return []
   },
 })
 
@@ -279,7 +283,7 @@ registrarMision('vanhoorn-I', {
     },
   ],
   alCambiarFichas: (s, _f, antes, ahora) => {
-    if (antes < 8 && ahora >= 8) terminaLaMision(s, 'van Hoorn llega antes (8 fichas de Rival)')
+    if (antes < 8 && ahora >= 8) terminaLaMision(s, 'van Hoorn llega antes con 8 fichas de Rival')
     return []
   },
   apartarSiNoSuperas: true,

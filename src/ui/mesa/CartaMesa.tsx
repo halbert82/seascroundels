@@ -176,8 +176,7 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
           </b>
         </span>
       )}
-      {/* TODO(regla): P114 — heridas y daño son fichas distintas (las cartas usan iconos distintos); si Albert elige una
-          sola ficha de daño para Tripulantes y Barco, esta ficha y la del Barco pasan a ser la misma. */}
+      {/* P114 (Albert): heridas y daño son fichas distintas, como sus iconos en las cartas. */}
       {heridas > 0 && (
         <span className="ficha ficha-herida" title={`${heridas} ${heridas === 1 ? 'herida' : 'heridas'}${vida ? ` de ${vida}` : ''}`}>
           <span className={claseIcono('herida')} />
@@ -195,7 +194,7 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
       )}
       {contador !== undefined && (
         // Fase 10: un solo tipo de ficha genérica, también para las cartas que se quedan en juego y llevan la cuenta de algo.
-        // TODO(regla): P113 — se llaman «fichas» (como en las cartas); si Albert elige «contadores», cambia este rótulo.
+        // P113 (Albert): se llaman «fichas» (fichas genéricas), como en las cartas.
         <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha' : 'fichas'} en esta carta (su contador)`}>
           <b>{contador}</b>
           <small>{contador === 1 ? 'ficha' : 'fichas'}</small>
@@ -210,8 +209,7 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
           <small>Enrolado</small>
         </span>
       )}
-      {/* TODO(regla): P115 — el Entrenamiento es una ficha propia «+1»; si Albert elige la ficha genérica sobre el icono de
-          la habilidad, se dibuja como las demás fichas genéricas. */}
+      {/* P115 (Albert): el Entrenamiento es una ficha propia «+1». */}
       {entrenamiento.map((h, i) => (
         <span key={i} className={`ficha ficha-entrenamiento hab-${h.toLowerCase()}`} title={`Entrenamiento: +1 ${h}`}>
           <span className={claseIcono(h as 'NAV')} />

@@ -684,18 +684,38 @@ describe('276 · La regata de San Juan y el Tesoro 148 «Gallardete de San Juan�
     expect(j.valor({ tipo: 'mando' })).toBe(6)
   })
 
-  it('con 8 o más fichas de Rival, el rival gana la regata: al superarla, solo 1 de reputación (sin el Gallardete)', () => {
-    // Se revelan «Chubasco» (falla: 1), «Chubasco» (1), «Mar en calma» (2) y «Mar en calma» (2): 6 de Avance, pero el
-    // cuarto Peligro revelado lleva el Rival a 8. (Cada Prueba saca su Destino de la carta siguiente.)
-    const j = enPuerto({ misiones: ['regata-I'], mazoPeligros: ['chubasco', 'calma', 'chubasco', 'calma', 'calma', 'calma', 'calma'] })
+  it('con 8 fichas de Rival, el rival gana la regata: la misión termina sin resolver el Peligro, se aparta y no ganas nada', () => {
+    // Fase 16 (decisión de Albert, como «La ruta de los alisios»). «Mar en calma» (2 de Avance) y, con 6 fichas de Rival,
+    // el Peligro siguiente («Navío a la deriva») pone la octava: la misión termina sin resolverlo.
+    const j = enPuerto({ misiones: ['regata-I'], mazoPeligros: ['calma', 'oportunidad', 'calma', 'calma'] })
     j.zarpar('regata-I')
-    j.comprometer('NAV', []).seguir().seguir()
-    j.comprometer('NAV', []).seguir().seguir()
+    expect(fichas(j, 'rival')).toBe(2)
+    expect(j.copia('regata-I').avance).toBe(2)
+    const m = j.estado.mision
+    if (!m?.fichas) throw new Error('La regata no lleva fichas de Rival')
+    m.fichas.rival = 6
     j.seguir()
+    expect(j.registro).toContain('No superas «La regata de San Juan».')
     expect(j.registro).toContain('Rival: +2 (8 de 8).')
-    expect(j.estado.reputacion).toBe(1)
-    expect(j.registro).toContain('El rival gana la regata: ganas 1 de reputación en lugar de la recompensa.')
+    expect(j.registro).toContain('El rival gana la regata con 8 fichas de Rival: la misión termina sin superarse.')
+    // «Navío a la deriva» no se resuelve: ni Prueba ni Avance.
+    expect(j.registro.some((l) => l.includes('Navío a la deriva') && l.includes('Prueba'))).toBe(false)
+    expect(j.estado.mision).toBeNull()
+    // No se pregunta si la dejas disponible: se aparta (sale de la partida; no vuelve al mazo de historia).
+    expect(j.registro).toContain('«La regata de San Juan» se aparta: sale de la partida.')
+    expect(j.zona('fueraDeJuego')).toContain('regata-I')
+    expect(j.zona('mazoHistoria')).not.toContain('regata-I')
+    expect(disponibles(j)).not.toContain('regata-I')
+    // No se gana nada: ni reputación ni el Tesoro 148.
+    expect(j.estado.reputacion).toBe(0)
     expect(j.zona('mazoHistoria')).toContain('gallardete')
+    expect(j.copia('regata-I').avance).toBe(0)
+  })
+
+  it('si te retiras de la regata (sin 8 fichas de Rival), eliges como siempre si la dejas disponible', () => {
+    const j = enPuerto({ misiones: ['regata-I'], mazoPeligros: ['calma', 'calma', 'calma', 'calma'] })
+    j.zarpar('regata-I').retirarse()
+    expect(j.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'conservarMision' } })
   })
 })
 
@@ -717,7 +737,7 @@ describe('259–263 · La carrera de van Hoorn', () => {
     const j = enPuerto({ misiones: ['vanhoorn-I'], mazoPeligros: ['chubasco', 'calma', 'chubasco', 'calma', 'chubasco', 'calma', 'chubasco', 'calma'] })
     j.zarpar('vanhoorn-I')
     for (let i = 0; i < 3; i++) j.comprometer('NAV', []).seguir().seguir()
-    expect(j.registro).toContain('Van Hoorn llega antes (8 fichas de Rival): la misión termina.')
+    expect(j.registro).toContain('Van Hoorn llega antes con 8 fichas de Rival: la misión termina sin superarse.')
     expect(j.zona('fueraDeJuego')).toContain('vanhoorn-I')
     expect(disponibles(j)).toContain('vanhoorn-II-b')
   })

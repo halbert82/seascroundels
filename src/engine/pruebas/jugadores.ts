@@ -723,8 +723,11 @@ function ventana(s: Estado, d: Extract<Decision, { tipo: 'ventanaAccion' }>, opc
       const sinFuerzas = preparados === 0 && iconosMano < 3 && falta >= 2
       // «El polvorín»: con 3 de Mecha, si el siguiente Peligro no basta para superarla, estalla (2 heridas y retirada).
       const mecha = copia(s, m.carta).id === 'sanfelipe-III' && (m.fichas?.mecha ?? 0) >= 3 && falta >= 3
+      // Fase 16, «La regata de San Juan»: con 6 fichas de Rival, el siguiente Peligro pone la octava y la regata termina sin
+      // superarse y se aparta. Si aún le falta Avance, retirarse da lo mismo (nada) y deja la regata disponible.
+      const regata = copia(s, m.carta).id === 'regata-I' && (m.fichas?.rival ?? 0) >= 6 && falta > 0
       const retirada = d.acciones.find((a) => a.tipo === 'retirarse')
-      if (retirada && (barcoMal || capitanMal || sinFuerzas || mecha)) return { tipo: 'accion', accion: retirada }
+      if (retirada && (barcoMal || capitanMal || sinFuerzas || mecha || regata)) return { tipo: 'accion', accion: retirada }
       return terminar
     }
     default:

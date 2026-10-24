@@ -49,8 +49,6 @@ export interface ReglasMision {
   /** La primera Prueba de la misión es Sin ayuda. */
   primeraSinAyuda?: boolean
   // Fase 15
-  /** Si devuelve tareas, se cobran en lugar de la recompensa impresa (sin Tesoro ni capítulo siguiente). */
-  recompensaEnLugar?: (s: Estado) => NuevaTarea[] | null
   /** Si no la superas, no eliges si la dejas disponible: sale de la partida («apártala»). */
   apartarSiNoSuperas?: boolean
   /**

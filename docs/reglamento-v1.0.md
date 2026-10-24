@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 333 cartas, que se dividen en cartas del jugador, cartas del escenario El Caribe y cartas de Estado y de Ventaja, además de fichas y un marcador de reputación.
+La Caja básica de Sea Scoundrels contiene 333 cartas, que se dividen en cartas del jugador, cartas del escenario El Caribe y cartas de Estado y de Ventaja, además de fichas.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -119,12 +119,10 @@ Las cartas de Peligro, las de los mazos propios, los barcos rivales y las de pue
 - Fichas de herida, de daño y de Avance.
 - Fichas de Entrenamiento (+1).
 - Fichas genéricas, todas iguales, para los contadores y para Enrolado.
-- Un marcador de reputación.
+- Fichas de reputación.
 
 > [!consejo]
 > Si te faltan fichas, puedes llevar cualquier cuenta con un dado sobre la carta.
-
-<!-- TODO(regla): P113 (se llaman «fichas», como en las cartas), P114 (fichas de herida y de daño distintas), P115 (ficha de Entrenamiento propia «+1») y P116 (los dados, solo en este consejo): opciones por defecto, pendientes de respuesta (docs/decisiones.md, fase 16). -->
 
 ### Anatomía de las cartas
 
@@ -264,7 +262,7 @@ Para la primera partida se recomienda jugar con Diego y sus mazos de inicio, en 
 
 La partida se prepara siguiendo estos pasos:
 
-1. **Elige la dificultad de la partida y prepara el mazo de Escenario:** baraja las cartas de Escenario, forma un mazo con tantas cartas como indique la tabla de dificultad y devuelve las demás a la caja sin mirarlas. Pon el marcador de reputación a 0.
+1. **Elige la dificultad de la partida y prepara el mazo de Escenario:** baraja las cartas de Escenario, forma un mazo con tantas cartas como indique la tabla de dificultad y devuelve las demás a la caja sin mirarlas. El jugador empieza sin ninguna ficha de reputación.
 
    | Dificultad | Reputación para ganar | Cartas de Escenario |
    | --- | --- | --- |
@@ -1424,7 +1422,10 @@ Reclutar consiste en pagar el coste de un Tripulante del muelle para que entre e
 
 ### Reputación
 
-La reputación representa los puntos de victoria del jugador. Se gana al superar misiones. Si el jugador alcanza la reputación que fija la dificultad de la partida, gana en ese mismo momento. Algunas cartas muy peligrosas hacen perder reputación, pero esta nunca baja de 0.
+La reputación representa los puntos de victoria del jugador y se lleva con **fichas de reputación**. El jugador empieza la partida sin ninguna. Por cada punto de reputación que gana, coge 1 ficha de reputación, y por cada punto que pierde, devuelve 1: su reputación es el número de fichas de reputación que tiene. Se gana al superar misiones. Si el jugador alcanza la reputación que fija la dificultad de la partida, gana en ese mismo momento. Algunas cartas muy peligrosas hacen perder reputación, pero esta nunca baja de 0: si el jugador no tiene fichas de reputación, no devuelve ninguna.
+
+> [!ejemplo]
+> El jugador tiene 1 ficha de reputación y falla un encuentro que le hace perder 1: devuelve su ficha. Si volviera a perder reputación, no devolvería nada. Al superar una misión que otorga 3, coge 3 fichas de reputación.
 
 ### Respuesta
 
@@ -1572,7 +1573,7 @@ La zona de permanentes está junto a la misión. En ella se colocan las **perman
 | ↩ al muelle · Recluta | Ver sus entradas en la Referencia de reglas |
 | «Añade la carta N» · «Pon la carta N encima» · «Se retira» | Busca esa carta por su número en el mazo de historia (encima: sin barajar) · esta carta sale del juego |
 | Sin fallo (en un Destino) | No se aplica el efecto de fallo |
-| Calavera | Reputación |
+| Calavera | Reputación (1 ficha de reputación por punto) |
 
 ### Estados y Ventajas
 

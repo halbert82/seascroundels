@@ -103,6 +103,17 @@ describe('Marcas nuevas', () => {
     const todo = [...r.aprende.capitulos.flatMap((c) => c.bloques), ...r.referencia.entradas.flatMap((e) => e.bloques)]
     expect(todo.filter((b) => 'html' in b && /\bdados?\b/i.test(b.html.replace(/Dados cargados/g, '')))).toHaveLength(1)
   })
+
+  it('fase 16 (Albert): la reputación se lleva con fichas de reputación; ya no hay marcador', () => {
+    expect(fuente).not.toMatch(/marcador de reputación/i)
+    expect(htmlDe(capitulo('Componentes').bloques)).toContain('<li>Fichas de reputación.</li>')
+    expect(htmlDe(capitulo('Preparación de la partida').bloques)).toContain('El jugador empieza sin ninguna ficha de reputación.')
+    const entrada = r.referencia.entradas.find((e) => e.titulo === 'Reputación')
+    const html = htmlDe(entrada?.bloques ?? [])
+    expect(html).toContain('fichas de reputación</strong>')
+    expect(html).toContain('coge 1 ficha de reputación, y por cada punto que pierde, devuelve 1')
+    expect(r.referencia.indice.some((l) => l.termino === 'Fichas de reputación')).toBe(true)
+  })
 })
 
 describe('Textos de la última ronda (docs/archivo/reglamento-textos.md)', () => {

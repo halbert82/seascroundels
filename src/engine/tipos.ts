@@ -125,7 +125,7 @@ export interface EntradaRegistro {
 export type Suceso =
   | { tipo: 'zarpar'; mision: CartaId }
   | { tipo: 'prueba'; peligro: CartaId; encuentro: string; superada: boolean }
-  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision; resueltas?: number; avance?: number; necesario?: number; motivo?: string }
+  | { tipo: 'finMision'; mision: CartaId; resultado: FinMision; resueltas?: number; avance?: number; necesario?: number; motivo?: string; termina?: boolean }
   /** Cambian las fichas sobre la misión (Ladrón, Alarma…): cuántas hay ahora. */
   | { tipo: 'fichasMision'; ficha: FichaMision; n: number }
   /** Se cumple la Gesta de la misión. */
@@ -214,6 +214,8 @@ export interface MisionEnCurso {
   retiradaVoluntaria?: boolean
   /** La misión falla por una regla suya («el ladrón se escapa»): cuenta como retirarse. */
   motivoFallo?: string
+  /** «La misión termina» sin superarse (el rival con 8 fichas de Rival): como fallar, pero el registro no dice «falla». */
+  terminaSinSuperarse?: boolean
   /** Carta que vuelve a apartarse al terminar de resolverla («La Armada te persigue» en la Flota III). */
   alApartar?: InstId
   /** Pruebas empezadas en esta misión («la primera Prueba de esta misión es Sin ayuda»). */
@@ -226,7 +228,7 @@ export interface MisionEnCurso {
   permanenteNueva?: InstId
   /**
    * Fase 15: adónde va la misión si no se supera, sin preguntar: al fondo del mazo de Misiones (las Murallas de Port Royal
-   * caen) o fuera de la partida («apártala»: La ruta de los alisios).
+   * caen) o fuera de la partida («apártala»: La ruta de los alisios y La regata de San Juan).
    */
   destinoForzado?: 'fondo' | 'fuera'
   /**

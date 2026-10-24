@@ -122,14 +122,49 @@ export function BarraSuperior({ botones }: { botones: ReactNode }) {
           <span className="reloj-n">{s.ultimoTurno ? 'Último turno' : `${dias} ${dias === 1 ? 'día' : 'días'}`}</span>
           {idEscenario && <span className="reloj-sub">· {nombreDe(idEscenario)}</span>}
         </button>
-        <div className="reputacion" title={`Reputación: ganas al llegar a ${s.reputacionObjetivo}`}>
-          <Icono id="rep" />
-          <Numero valor={s.reputacion} />
-          <span className="de">/ {s.reputacionObjetivo}</span>
-        </div>
+        <FichasDeReputacion n={s.reputacion} objetivo={s.reputacionObjetivo} />
         {botones}
       </div>
     </header>
+  )
+}
+
+/**
+ * Fase 16 (decisión de Albert): la reputación se lleva con fichas de reputación. El jugador empieza sin ninguna, coge 1
+ * por cada punto que gana y devuelve 1 por cada punto que pierde. En la barra, su montón de fichas (hasta 3 a la vista) y
+ * cuántas tiene, junto a las que necesita para ganar. Sin fichas, el hueco donde irán.
+ */
+function FichasDeReputacion({ n, objetivo }: { n: number; objetivo: number }) {
+  const velocidad = useVelocidad()
+  const visibles = Math.min(n, 3)
+  const t = duracion(velocidad, 0.28)
+  return (
+    <div className="reputacion" title={`Fichas de reputación: tienes ${n}. Ganas al llegar a ${objetivo}.`} aria-label={`${n} fichas de reputación de ${objetivo}`}>
+      <span className="fichas-rep" style={{ width: 26 + Math.max(0, visibles - 1) * 9 }} aria-hidden>
+        {visibles === 0 ? (
+          <span className="ficha-rep vacia" />
+        ) : (
+          Array.from({ length: visibles }, (_, i) => {
+            const arriba = i === visibles - 1
+            return (
+              // La de arriba cambia de clave con cada cambio de reputación: cae sobre el montón al ganarla.
+              <motion.span
+                key={arriba ? `arriba-${n}` : i}
+                className="ficha-rep"
+                style={{ left: i * 9, zIndex: i }}
+                initial={arriba && t > 0 ? { y: -14, scale: 1.25, opacity: 0 } : false}
+                animate={{ y: 0, scale: 1, opacity: 1 }}
+                transition={{ duration: t }}
+              >
+                <Icono id="rep" />
+              </motion.span>
+            )
+          })
+        )}
+      </span>
+      <Numero valor={n} />
+      <span className="de">/ {objetivo}</span>
+    </div>
   )
 }
 

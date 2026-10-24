@@ -255,12 +255,6 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   const tareas: NuevaTarea[] = []
   // «Si superas la misión, las recuperas y robas 2».
   if (habiaIncautadas && m.alRecuperar && m.alRecuperar.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: m.alRecuperar, contexto: 'efecto' })
-  // Fase 15: «… gana 1 de reputación en lugar de su recompensa» (La regata de San Juan, si el rival gana).
-  const enLugar = reglas?.recompensaEnLugar?.(s) ?? null
-  if (enLugar) {
-    encolar(s, ...tareas, ...enLugar)
-    return 'hecha'
-  }
   if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
   if (gesta) {
     anotar(s, 'efecto', '¡Gesta cumplida!: +1 de reputación.', { tipo: 'gesta', mision: e.id })
@@ -342,7 +336,7 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
     const id = copia(s, m.carta).id
     const reglas = reglasMision(id)
     const textos = { retirada: 'Te retiras de', hundida: 'El Barco se hunde: no superas', superada: '' }
-    const texto = m.motivoFallo ? `La misión falla (${m.motivoFallo}): no superas` : textos[m.fin ?? 'retirada']
+    const texto = m.terminaSinSuperarse ? 'No superas' : m.motivoFallo ? `La misión falla (${m.motivoFallo}): no superas` : textos[m.fin ?? 'retirada']
     const avance = copia(s, m.carta).avance
     anotar(s, 'fin', `${texto} «${nombre(s, m.carta)}».`, {
       tipo: 'finMision',
@@ -352,6 +346,7 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
       avance,
       necesario: valor(s, { tipo: 'avanceNecesario', mision: m.carta }),
       ...(m.motivoFallo ? { motivo: m.motivoFallo } : {}),
+      ...(m.terminaSinSuperarse ? { termina: true } : {}),
     })
     const tareas: NuevaTarea[] = []
     // Saqueo (La casa del gobernador): si te retiras por tu cuenta entre dos Peligros, cobras según tu Avance.
@@ -365,7 +360,7 @@ export const fallarMision: Manejador<'fallarMision'> = (s, t, e) => {
     return 'sigue'
   }
   // Fase 15: lo dice la misión, sin preguntar: al fondo del mazo de Misiones (caen las Murallas de Port Royal) o fuera de
-  // la partida («apártala»: La ruta de los alisios).
+  // la partida («apártala»: La ruta de los alisios; La regata de San Juan si el rival gana).
   const forzado = m.destinoForzado ?? (reglasMision(copia(s, m.carta).id)?.apartarSiNoSuperas ? 'fuera' : undefined)
   if (forzado === 'fondo') {
     mover(s, m.carta, 'mazoMisiones', 'abajo')

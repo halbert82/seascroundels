@@ -249,8 +249,40 @@
   color: var(--oro);
 }
 
-.reputacion .ic {
-  font-size: 22px;
+/* Fase 16: las fichas de reputación, en montón (hasta 3 a la vista), como monedas de oro con la calavera. */
+.fichas-rep {
+  position: relative;
+  flex: none;
+  height: 28px;
+}
+
+.ficha-rep {
+  position: absolute;
+  top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #f8e3a6 0%, #dcb766 45%, #a8803f 80%, #7a5a2a 100%);
+  box-shadow:
+    0 0 0 1.5px #3a2814,
+    inset 0 0 0 2.5px rgba(122, 90, 42, 0.55),
+    inset 0 0 0 3.5px rgba(255, 238, 190, 0.35),
+    -1px 2px 3px rgba(0, 0, 0, 0.6);
+}
+
+.ficha-rep .ic {
+  font-size: 16px;
+  color: #3a2410;
+}
+
+.ficha-rep.vacia {
+  background: none;
+  box-shadow: none;
+  border: 1.5px dashed rgba(232, 200, 119, 0.5);
+  box-sizing: border-box;
 }
 
 .reputacion .de {

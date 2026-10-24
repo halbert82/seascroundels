@@ -1126,7 +1126,7 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 - **Alerta:** si reúnes el Avance a mitad de un encuentro con Alerta (por ejemplo, con «¡A toda vela!» al revelarlo), el encuentro se resuelve igual y la misión se supera después.
 - **Bucear:** la misión ya está superada; si una mala hiere (o derrota) al buzo, se aplica, pero la misión sigue superada. Si el buzo es el Capitán y queda derrotado, se pierde la partida (salvo con el doblón). Sin Tripulantes preparados no se puede bucear.
 - **La ruta de los alisios:** con 8 fichas, la misión termina en el momento de revelar ese Peligro, sin resolverlo, y no se pregunta si la dejas disponible: sale de la partida.
-- **La regata:** «en lugar de su recompensa» incluye el Gallardete (no se gana).
+- **La regata:** «en lugar de su recompensa» incluye el Gallardete (no se gana). *Sustituida en la fase 16:* con 8 fichas de Rival la regata termina sin superarse y se aparta (ver «La regata de San Juan termina con 8 fichas de Rival»).
 - **…tomada por los ingleses:** la carta 95 se baraja en el mazo de Peligros (como «Entra en el mazo de Peligros»); si ya estaba, no pasa nada.
 - **…sacudida por un temblor:** «cada Tripulante sufre 1 herida» incluye al Capitán.
 - **Provisiones perdidas:** con el mazo del capitán vacío, no se descarta nada ni se baraja la pila de descartes (como «Dados cargados», P40).
@@ -1283,7 +1283,7 @@ Trece recuadros. Con una carta de recompensa (como la 286) para cada uno que lo 
 
 - **Dudosa, se queda como está si Albert no dice otra cosa:** 117 «La casa del gobernador», «+1 y busca una Mejora». Buscar una Mejora en el mazo de muelle es lo que se gana, como robar.
 - **Cumplen, aunque eligen entre dos:** las etiquetas «Pon la carta 218 o la 140» (139) y «Pon la carta 219 o la 144» (143). Cuál se pone lo dicen las reglas del capítulo I.
-- **Fuera del recuadro** (no entran en el inventario): las reglas de la misión que cambian la recompensa («La regata»: «ganas 1 de reputación en lugar de su recompensa»; el Saqueo de la 117; las Gestas).
+- **Fuera del recuadro** (no entran en el inventario): las reglas de la misión que cambian la recompensa («La regata»: «ganas 1 de reputación en lugar de su recompensa», regla que la fase 16 quitó; el Saqueo de la 117; las Gestas).
 - Si los cuatro finales con elección (120, 145, 149, 257) pasan a cartas, la entrada «Final con elección» del reglamento cambia: la elección está en la carta de recompensa.
 
 ### Respuestas de Albert, cuarta ronda (24 de octubre)
@@ -1564,23 +1564,74 @@ Las cartas mini de Estado y de Ventaja (297–309, la reserva) no cambian. Lo qu
 | Avance (la misión en curso y las disponibles) | 10 | 7 | 5 | **12** |
 | Entrenamiento | 3 (en Nassau; 1 en Tortuga) | 2 | 0 | **6** |
 | Genéricas (contadores y Enrolado juntos) | 12 | 10 | 3 | **20** |
-| Marcador de reputación | — | — | — | **1** |
+| Reputación (sustituye al marcador: ver «Reputación con fichas de reputación») | 15 (19 en la larga) | 15 (19) | 11 (14) | **20** |
 
 - **Herida:** el máximo sale en capítulos largos con varios Tripulantes tocados a la vez (Panamá II, «…sacudida por un temblor», «El fugitivo» II).
 - **Daño:** el Barco solo no pasa de 6 (5 de Daño máximo y 1 más con el Casco reforzado); lo que sube la cuenta es el daño de las Murallas de Port Royal, que siguen en juego entre misiones mientras «El asedio de Port Royal» esté disponible, y el del Galeón San Telmo.
 - **Avance:** el máximo (10) es «El asedio de Port Royal» (pide 7) con los Soplos de la Hermandad puestos en otra misión.
 - **Entrenamiento:** el jugador automático entrena poco; un jugador que vuelva a menudo a Nassau puede acumular más (cada ficha ocupa un hueco de Mejora). Propongo 6 por si acaso.
 - **Genéricas:** el máximo es «La regata de San Juan» (8 de Rival) con una permanente o la Pólvora del Rey. Las demás: Ladrón 5, Mecha 4, Alarma, Sospecha, Persecución, Defensa, Derrumbe, Campanas, Lechuza, Murmullos y Pólvora del Rey 3, Manigua y Arenas 2, Varados 1; Enrolado, hasta 4 en toda la tripulación.
-- **Nota sobre la regata:** su carta dice «pon 2 fichas de Rival» después de cada Peligro, sin tope, y «Con 8 o más fichas de Rival, el rival gana la regata». A partir de 8 ya no cambia nada, así que cuento hasta 8; contadas todas, en una partida llegaron a 24 (en el 99 %, hasta 10). Con 20 genéricas, quien siga poniéndolas después de 8 se puede quedar sin ellas.
+- **Nota sobre la regata:** su carta dice «pon 2 fichas de Rival» después de cada Peligro, sin tope, y «Con 8 o más fichas de Rival, el rival gana la regata». A partir de 8 ya no cambia nada, así que cuento hasta 8; contadas todas, en una partida llegaron a 24 (en el 99 %, hasta 10). Con 20 genéricas, quien siga poniéndolas después de 8 se puede quedar sin ellas. *Ya no pasa:* desde la decisión de Albert de la fase 16, con 8 fichas la regata termina (ver «La regata de San Juan termina con 8 fichas de Rival»).
 - **Si P114 o P115 cambian:** con una sola ficha para heridas y daño, hay como mucho 11 a la vez (en el 99 %, 9): bastan **20** fichas de daño en lugar de 12 + 12. Con el Entrenamiento como ficha genérica, genéricas y Entrenamiento juntas no pasan de 12: las mismas **20** genéricas bastan.
-- **En total** no hay más de 23 fichas en la mesa a la vez (en el 99 % de las partidas, 18). La propuesta suma 62 fichas y el marcador.
-
-### Preguntas nuevas para Albert (P113–P116), con la opción por defecto aplicada
-
-- **P113 · Cómo se llaman las fichas de los contadores.** Por defecto, **«fichas»** (fichas genéricas): las 21 cartas no cambian («pon 1 ficha de Alarma») y la entrada «Contadores» explica que un contador se lleva con fichas genéricas. La otra opción: llamarlas **«contadores»**, y las 21 cartas (26 frases) pasarían a «pon 1 contador de Alarma», «quita 2 contadores de Rival», «Con 3 contadores…». *Ejemplo:* en «La casa del gobernador» superas una Prueba de COM. Con «fichas», pones 1 ficha de Alarma sobre la misión; con «contadores», pones 1 contador de Alarma (la misma pieza, con otro nombre). `TODO(regla) P113` en el reglamento (Componentes) y en la mesa (la ficha de una carta en juego).
-- **P114 · Heridas y daño: una ficha o dos.** Por defecto, **dos fichas distintas**, de herida y de daño, porque las cartas usan iconos distintos (la gota de sangre de las heridas y el casco del Barco). La otra opción: **una sola ficha de daño** para los Tripulantes y para el Barco (menos clases de ficha en la caja). *Ejemplo:* fallas «Lanchas de la guarnición» (Mar, COM 4): «Daña 1 y el Tripulante asignado con más COM sufre 1 herida». Con dos fichas, pones 1 ficha de daño en el Barco y 1 de herida en el Bucanero; con una sola, 2 fichas de daño iguales, una en cada carta. `TODO(regla) P114` en el reglamento y en la mesa.
-- **P115 · Entrenamiento: ficha propia o genérica.** Por defecto, **ficha propia «+1»** (como en la lista de antes de la fase 16). La otra opción: una **ficha genérica** puesta sobre el icono de la habilidad del Tripulante (una clase de ficha menos). *Ejemplo:* en Nassau eliges «Entrenamiento» y le das +1 COM al Bucanero veterano. Con ficha propia, pones una ficha «+1» junto a su COM; con la genérica, pones una ficha genérica sobre su icono de COM. En los dos casos ocupa un hueco de Mejora. `TODO(regla) P115` en el reglamento y en la mesa.
-- **P116 · Los dados en el reglamento.** Por defecto, **un consejo de una línea en Componentes**: «Si te faltan fichas, puedes llevar cualquier cuenta con un dado sobre la carta.» La otra opción: **ninguna mención** (los dados quedan como regla casera de cada jugador, fuera del libro). *Ejemplo:* un jugador pierde fichas de herida; con el consejo, sabe que puede poner un dado con el 2 sobre el Bucanero en lugar de 2 fichas. `TODO(regla) P116` en el reglamento (Componentes).
+- **En total** no hay más de 23 fichas en la mesa a la vez (en el 99 % de las partidas, 18), sin contar las de reputación. La propuesta suma 62 fichas y el marcador; con las fichas de reputación que sustituyen al marcador, 82.
 
 *Pruebas:* fuente.test (Componentes trae las fichas, un solo consejo nombra los dados y los comentarios no salen en el libro) e indice.test (el índice tiene «Fichas genéricas» y la lista de «Contadores»).
 
+### Respuestas de Albert (P113–P116, 24 de octubre)
+
+Las cuatro, con la opción por defecto que ya estaba aplicada. Fuera los `TODO(regla)` del reglamento (el comentario de Componentes) y de la mesa (las fichas de una carta en juego).
+
+- **P113 · Las fichas de los contadores se llaman «fichas»** (fichas genéricas). Las 21 cartas no cambian («pon 1 ficha de Alarma») y la entrada «Contadores» explica que un contador se lleva con fichas genéricas. *Ejemplo:* en «La casa del gobernador» superas una Prueba de COM y pones 1 ficha de Alarma (una ficha genérica) sobre la misión.
+- **P114 · Heridas y daño: dos fichas distintas**, de herida y de daño, porque las cartas usan iconos distintos (la gota de sangre y el casco del Barco). *Ejemplo:* fallas «Lanchas de la guarnición» (Mar, COM 4): pones 1 ficha de daño en el Barco y 1 de herida en el Bucanero.
+- **P115 · El Entrenamiento es una ficha propia «+1».** *Ejemplo:* en Nassau eliges «Entrenamiento» y pones una ficha «+1» junto a la COM del Bucanero veterano; ocupa un hueco de Mejora.
+- **P116 · Los dados, solo en el consejo de una línea de Componentes:** «Si te faltan fichas, puedes llevar cualquier cuenta con un dado sobre la carta.» Nada más en el libro.
+
+### Cantidades de fichas de la caja (decisión de Albert, 24 de octubre)
+
+Albert acepta la propuesta de la medición anterior: **12 fichas de herida, 12 de daño, 12 de Avance, 6 de Entrenamiento y 20 genéricas**. El marcador de reputación desaparece: lo sustituyen las fichas de reputación (ver la sección siguiente, con su cantidad propuesta).
+
+### Reputación con fichas de reputación (decisión de Albert, 24 de octubre)
+
+**Regla:** fuera el marcador de reputación. La reputación se lleva con **fichas de reputación**: el jugador empieza sin ninguna, coge 1 ficha por cada punto que gana y devuelve 1 por cada punto que pierde (nunca baja de 0: sin fichas, no devuelve ninguna). Ganar al alcanzar la reputación de la dificultad no cambia. El principio de fabricación queda: «… genéricas (los contadores de misiones, permanentes y Tesoros, y Enrolado), más las fichas de reputación.»
+
+- **Reglamento.** Componentes: «Fichas de reputación» en la lista de fichas, y la frase de la caja dice solo «además de fichas». Preparación, paso 1: fuera «Pon el marcador de reputación a 0»; ahora «El jugador empieza sin ninguna ficha de reputación». La entrada Reputación explica las fichas (coger una por punto ganado, devolver una por punto perdido, y que sin fichas no se devuelve nada), con un ejemplo corto: con 1 ficha falla un encuentro que le hace perder 1 y la devuelve; si volviera a perder reputación, no devolvería nada; al superar una misión que otorga 3, coge 3. (El ejemplo no nombra cartas a propósito: con «El puerto en llamas» y «La goleta del correo» dibujadas, el final de la Referencia se corría y dejaba una página casi vacía.) «Fichas de reputación» entra en el índice de términos. Referencia rápida: «Calavera: Reputación (1 ficha de reputación por punto)» (una fila más larga no cabía en su página). Ningún otro ejemplo hablaba del marcador. Los libros siguen con el mismo número de páginas.
+- **Mesa:** en la barra superior, la reputación es un montón de fichas de reputación (monedas de oro con la calavera, hasta 3 a la vista) con su número y la meta («4 / 12»); sin fichas, el hueco punteado donde irán. Al ganar reputación, la ficha de arriba cae sobre el montón. Sin escala de marcador.
+- **Motor:** no cambia (la reputación ya era un número que no baja de 0).
+
+**Medición** (1000 partidas normales y 1000 largas, semillas 1–1000, mazos de inicio, el jugador automático; la reputación más alta que se llega a tener en cada partida, contando lo que se pasa de la meta con la última recompensa):
+
+| Dificultad | Meta | Como mucho | En el 99 % de las partidas, no más de | En el 95 % | La mitad, no más de |
+| --- | --- | --- | --- | --- | --- |
+| Normal | 12 | 15 | 15 | 14 | 11 |
+| Larga | 16 | 19 | 19 | 18 | 14 |
+
+- **Lo que se pasa de la meta al ganar** (partida normal, 444 victorias por reputación): justo la meta en 245, +1 en 128, +2 en 47 y +3 en 24. En la larga, lo mismo (+3 como mucho).
+- **El tope no es casualidad:** lo más que se gana de una vez en la caja son 4 de reputación (la recompensa de «La huida con la plata», 128, y una opción de las cartas de recompensa 291 y 292), y la partida se gana en el momento de alcanzar la meta. Así que se llega como mucho a la meta − 1 + 4: **15 en la normal, 19 en la larga y 12 en la corta**. Las 1000 partidas llegan justo a ese tope.
+- En 58 partidas normales (108 largas) la reputación baja después de su máximo (cartas que la hacen perder): las fichas devueltas vuelven a la reserva y no cambian la cuenta.
+- **Propuesta para la caja: 20 fichas de reputación.** Con 19 basta para cualquier partida de la caja básica; la 20 es el margen (por si se pierde una). Medir: `MEDIR_REPUTACION=1 npx vitest run src/engine/medir-reputacion.informe.test.ts` (con `MEDIR_REPUTACION_MODOS=normal` o `larga`).
+
+*Pruebas:* fuente.test («la reputación se lleva con fichas de reputación; ya no hay marcador»: Componentes, Preparación, la entrada Reputación y su línea en el índice).
+
+### La regata de San Juan termina con 8 fichas de Rival (decisión de Albert, 24 de octubre)
+
+- **Texto nuevo de la carta 276**, segunda regla: «**Obligado:** Con 8 fichas de Rival, el rival gana la regata: la misión termina sin superarse. Apártala.» La primera regla no cambia. Cabe sin ajustar nada: sus reglas quedan a 13,6 px (la 259, «La ruta de los alisios», con tres reglas, está en el mínimo, 10,8).
+- **Cómo se juega, igual que en la 259:** la misión termina en el momento de revelar el Peligro que pone la octava ficha, sin resolverlo, y no se pregunta si la dejas disponible: la carta se aparta (sale de la partida; es una Aventura del mazo de Misiones, no vuelve al mazo de historia). No se gana nada: ni reputación ni el Tesoro 148, «Gallardete de San Juan». Fuera la lectura anterior («al superarla, 1 de reputación en lugar de su recompensa»).
+- *Ejemplo:* zarpas a la regata, que pide 6 de Avance. Revelas «Mar en calma» (2 de Avance) y después dos «Chubasco» cuyas Pruebas de NAV fallas (1 de Avance cada uno): tienes 4 de Avance y 6 fichas de Rival. Al revelar el cuarto Peligro, «Navío a la deriva», pones la octava ficha: el rival gana la regata. La misión termina sin resolver «Navío a la deriva», pierdes el Avance, apartas la carta y no ganas nada. Si te hubieras retirado antes de revelarlo, tampoco ganarías nada, pero podrías dejar la regata disponible para otro turno.
+- **Si te retiras antes** (o el Barco se hunde), la regla de siempre: no la superas y eliges si la dejas disponible o la pones al fondo del mazo de Misiones.
+- **Motor:** la regla mira «8 o más» (una partida guardada con la regla anterior que ya pasara de 8 termina con la siguiente ficha). Fuera del motor la regla «en lugar de su recompensa» (ya no la usa ninguna carta). El registro dice «El rival gana la regata con 8 fichas de Rival: la misión termina sin superarse.» y el panel del final de misión, «La misión termina» (también en la 259, que antes decía «La misión falla»).
+- **Jugador automático:** con 6 fichas de Rival y Avance por reunir, se retira de la regata. Seguir no le daría nada (el Peligro siguiente la termina) y retirándose tampoco gana nada, pero la regata sigue disponible para otro turno. En la 259 no cambia nada: retirarse o llegar a 8 da lo mismo (se aparta y llega el capítulo II-b).
+- **Mesa:** la ayuda del contador de Rival explica las dos misiones con la regla nueva.
+- **Reglamento:** no cita la regata (la entrada «Contadores» solo nombra el Rival): no cambia.
+- *Pruebas:* fase15-misiones.test: «con 8 fichas de Rival, el rival gana la regata…» (con 6 fichas, revelar un Peligro pone la octava, la misión termina sin resolverlo, no se gana nada y la carta queda apartada) y «si te retiras de la regata…».
+
+**Equilibrio** (1000 partidas normales, semillas 1–1000, mazos de inicio; la regata llega a estar disponible en el 21 % de las partidas):
+
+| | Antes (regla anterior) | Regla nueva, el mismo jugador | Regla nueva y el jugador que se retira con 6 de Rival |
+| --- | --- | --- | --- |
+| Victorias | 45,4 % | 45,3 % | 45,6 % |
+| Panamá | 1,2 % | 1,2 % | 1,2 % |
+| Zarpes a la regata | 283 | 277 | 333 |
+| Regatas ganadas, con su recompensa (2 y el Gallardete) | 160 | 157 | 193 |
+| Regatas que gana el rival | 39 (superadas con 8 o más: solo 1 de reputación) | 43 (termina la misión y se aparta) | 6 |
+
+La regata es más dura (el rival ya no deja 1 de reputación de consuelo y la carta se pierde), pero el cambio en las victorias es del tamaño del azar: no baja la dificultad. Con el jugador que se retira a tiempo, la regata se intenta más veces (333 zarpes, 128 retiradas) y se gana más a menudo, porque no se pierde la carta.

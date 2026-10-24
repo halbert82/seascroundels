@@ -122,7 +122,7 @@ it.runIf(process.env.MEDIR_F15)(`fase 15: medida de las misiones nuevas (${PARTI
       derrotasDuranteElBuceo: derrotados,
       capitanSalvadoPorElDoblon: contar('El doblón de la calavera: '),
     },
-    regata: { superadas: misiones['regata-I']?.superada ?? 0, perdidaContraElRival: contar('El rival gana la regata') },
+    regata: { superadas: misiones['regata-I']?.superada ?? 0, perdidaContraElRival: contar('El rival gana la regata'), retiradas: contar('Te retiras de «La regata de San Juan»'), apartadas: contar('«La regata de San Juan» se aparta') },
     vanHoorn: { llegaAntes: contar('Van Hoorn llega antes'), destina: contar('Destinas ') },
     escolta: { galeonHundido: contar('el galeón San Telmo se hunde'), conBonificacion: contar('El galeón llega con') },
     asedio: { murallasCaen: contar('Caen las murallas de Port Royal'), conBonificacion: contar('Las murallas aguantan con') },

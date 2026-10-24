@@ -13,6 +13,7 @@
 //   - no queda ningún «[epígrafe pendiente]» ni «[nota pendiente]» (los créditos sí pueden llevar «[pendiente]»);
 //   - ninguna página de texto queda casi vacía (con menos de 15 % de su alto ocupado, como unas pocas líneas que no
 //     cupieron), salvo la última de los créditos;
+//   - la contraportada (la Referencia rápida) cabe en una sola página;
 //   - el ejemplo de juego tiene sus dos paneles (el del puerto a la izquierda y el de la misión a la derecha);
 //   - ninguna palabra queda partida entre dos páginas («cart-» / «as»);
 //   - no se pierde nada: cada nota, ejemplo, recuadro o gráfico está dentro de su página, y todo el texto del
@@ -210,6 +211,10 @@ function revisar([arteDeCarta, muestras]) {
       })
     }
   })
+  // Fase 16: la contraportada (con la Referencia rápida) cabe en una sola página. Si no cabe, Paged.js la parte y el libro
+  // acaba en una página casi en blanco (la regla de las páginas casi vacías no mira la contraportada).
+  const conContraportada = paginas.map((p, i) => (p.querySelector('.contraportada') ? i + 1 : 0)).filter(Boolean)
+  if (conContraportada.length > 1) problemas.push(`la contraportada (Referencia rápida) no cabe en una página: sale en las págs. ${conContraportada.join(', ')}`)
   // Ilustraciones de adorno (cabeceras, viñetas y láminas): ninguna repite en su doble página (la par, a la izquierda,
   // con la impar siguiente) una ilustración de una carta o de otro adorno.
   paginas.forEach((pagina, i) => {

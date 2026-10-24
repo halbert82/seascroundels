@@ -307,7 +307,8 @@ export function FinDeMision({ s, desde, alCerrar, elegir }: { s: Estado; desde: 
   const i = s.registro.findIndex((r, k) => k >= desde && r.dato?.tipo === 'finMision')
   const fin = s.registro[i]?.dato
   if (i < 0 || fin?.tipo !== 'finMision') return null
-  const r = fin.motivo ? { titulo: 'La misión falla', clase: 'mal' } : RESULTADO_MISION[fin.resultado]
+  // «La misión termina» sin superarse (el rival con 8 fichas de Rival) o «la misión falla» por una regla suya.
+  const r = fin.motivo ? { titulo: fin.termina ? 'La misión termina' : 'La misión falla', clase: 'mal' } : RESULTADO_MISION[fin.resultado]
   const cifras = cifrasDeMision(s, i)
   const d = s.pendiente
   const pendiente = d?.motivo.clave

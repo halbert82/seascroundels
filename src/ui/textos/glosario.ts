@@ -150,7 +150,7 @@ export const AYUDA_FICHA_MISION: Record<FichaMision, Ayuda> = {
     'rival',
     'Rival',
     'Después de que reveles una carta de Peligro: 2 fichas de Rival. En «La ruta de los alisios», su Acción (Destina 3 NAV, una vez por misión) quita 2.',
-    'En «La regata de San Juan», con 8 o más el rival gana la regata: al superarla, ganas 1 de reputación en lugar de su recompensa. En «La ruta de los alisios», con 8 van Hoorn llega antes: la misión termina y llega el capítulo II-b.',
+    'Con 8, la misión termina sin superarse, en cuanto se revela el Peligro que pone la octava, sin resolverlo. En «La regata de San Juan», el rival gana la regata: la carta se aparta y no ganas nada. En «La ruta de los alisios», van Hoorn llega antes: la carta se aparta y llega el capítulo II-b.',
   ),
   mecha: fichaMision(
     'mecha',
