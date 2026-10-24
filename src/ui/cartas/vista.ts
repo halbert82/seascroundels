@@ -4,8 +4,7 @@
 import arteJson from '../../../data/arte.json'
 import { codigoColeccion, type EntradaCatalogo } from '../../engine/catalogo.ts'
 import { dorsoDeHistoria, type DorsoHistoria } from './historia.ts'
-import type { DestinoDatos, EncuentroDatos, Entorno, Habilidad } from '../../engine/datos.ts'
-import type { Efecto } from '../../engine/efectos.ts'
+import type { DestinoDatos, EncuentroDatos, Entorno, Habilidad, MisionDatos } from '../../engine/datos.ts'
 import { esTextoGrande } from './ajustes.ts'
 import { parsearFichas, parsearTexto, type Ficha, type IconoId, type Segmento } from './marcado.ts'
 
@@ -609,10 +608,11 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
         ...base(entrada),
         nombre: c.nombre,
         color: COLOR_TIPO.recompensa,
-        tipoTexto: `Recompensa · ${entrada.mision.nombre}`,
+        tipoTexto: `Recompensa · ${nombreImpresoDeLaMision(entrada.mision)}`,
         permanente: true,
         pestanasIzqTop: 74,
-        texto: parsearTexto(c.texto),
+        // Como en las permanentes, el número no se separa de su verbo («gana 1 [rep]»).
+        texto: parsearTexto(c.texto, UNIR),
         ambientacion: c.ambientacion,
         ...conArte(entrada.id),
       }
@@ -643,7 +643,7 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       const c = entrada.carta
       const m = entrada.mision
       const r = c.recompensa
-      // Fase 10b: una misión inicial puede dar 0 de reputación («Agua y leña»): se ve el 0.
+      // La reputación con su icono, si el recuadro no lleva texto propio («Coge la carta 287 del mazo de historia.»).
       const recompensa: Ficha[] = r.rep !== undefined && !r.texto ? [{ texto: r.rep > 0 ? `+${r.rep}` : `${r.rep}`, icono: 'rep' }] : []
       let recompensaTexto: string | undefined
       if (r.texto) recompensaTexto = undefined
@@ -652,12 +652,6 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
       else if (r.search === 'ship') recompensaTexto = 'y busca una Mejora de barco'
       else if (r.search === 'up') recompensaTexto = 'y busca una Mejora'
       else if (r.draw) recompensaTexto = `y roba ${r.draw}`
-      else if (r.reclutaGratis !== undefined) recompensaTexto = `Recluta sin coste un Tripulante del muelle de coste ${r.reclutaGratis} o menos.${textoPrecio(r.precio)}`
-      else if (r.adquiereGratis !== undefined) recompensaTexto = `Adquiere sin coste una Mejora del muelle de coste ${r.adquiereGratis} o menos.${textoPrecio(r.precio)}`
-      // Fase 13 (P74, confirmado por Albert): Otear es siempre del mazo de Peligros. «Cobrar la deuda» lo dice sin la
-      // palabra clave (mismo efecto).
-      else if (r.oteaMisiones)
-        recompensaTexto = `Mira las ${r.oteaMisiones} cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles.`
       const vista: VistaCapitulo = {
         forma: 'capitulo',
         num: entrada.num,
@@ -700,16 +694,12 @@ function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
   }
 }
 
-/** El precio de una recompensa, tal como se imprime detrás de ella (fase 11: misiones iniciales). */
-function textoPrecio(precio: readonly Efecto[] | undefined): string {
-  return (precio ?? [])
-    .map((e) => {
-      // Fase 13: las cartas se leen al pie de la letra; ya no hace falta «aunque estés en tierra».
-      if (e.tipo === 'dano') return ` El Barco sufre ${e.n} ${e.n === 1 ? 'daño' : 'daños'}.`
-      if (e.tipo === 'heridas') return ` Un Tripulante sufre ${e.n} ${e.n === 1 ? 'herida' : 'heridas'}.`
-      throw new Error(`Precio de recompensa sin texto: ${e.tipo}`)
-    })
-    .join('')
+/**
+ * El nombre de una misión tal y como se lee en sus cartas: el de la travesía o la aventura y, en una misión inicial (cuyo
+ * nombre de misión no se imprime: su carta dice «Misión inicial»), el de su capítulo («Cobrar la deuda»).
+ */
+export function nombreImpresoDeLaMision(m: MisionDatos): string {
+  return m.inicial ? (m.capitulos[0]?.nombre ?? m.nombre) : m.nombre
 }
 
 function conArte(id: string): { arte?: Arte } {

@@ -277,7 +277,7 @@ describe('Superar una misión', () => {
 
   it('un Tesoro de tripulante lo lleva quien elijas', () => {
     // «El templo»: final con elección; la Espada del sacerdote es un Tesoro de tripulante.
-    const j = enPuerto({ misiones: ['templo-IV'], tripulacion: ['viejo_lobo', 'bucanero'], avance: { 'templo-IV': 5 }, mazoPeligros: ['calma'], mazoHistoria: ['espada'] })
+    const j = enPuerto({ misiones: ['templo-IV'], tripulacion: ['viejo_lobo', 'bucanero'], avance: { 'templo-IV': 5 }, mazoPeligros: ['calma'], mazoHistoria: ['espada', 'ante_altar'] })
     j.zarpar('templo-IV')
     while (j.decision.motivo.clave !== 'finalMision') j.seguir()
     j.opcion('espada')
@@ -286,30 +286,40 @@ describe('Superar una misión', () => {
     expect(j.copia('espada').vinculadaA).toBe(j.inst('bucanero'))
   })
 
-  it('fase 10b · las recompensas de las misiones iniciales: otear 3 del mazo de Misiones, adquirir o reclutar gratis', () => {
-    // «Cobrar la deuda» (0 de reputación desde la fase 11): otea 3 del mazo de Misiones antes de reponer las disponibles.
+  it('fase 10b · las recompensas de las misiones iniciales (287–289): otear 3 del mazo de Misiones, adquirir o reclutar gratis', () => {
+    // Fase 15, cuarta ronda: cada misión inicial da su carta de recompensa, que se coge, se hace y vuelve al mazo de historia.
+    // 287 «El soplo del deudor» («Cobrar la deuda», 0 de reputación desde la fase 11): mira 3 del mazo de Misiones antes de
+    // reponer las disponibles.
     const deuda = enPuerto({ avance: { 'deuda-I': 3 }, mazoMisiones: ['templo-I', 'flota-I', 'ladron-I', 'gobernador-I'], mazoPeligros: ['calma'] })
     deuda.zarpar('deuda-I')
+    expect(deuda.registro).toContain('Coges la carta 287 del mazo de historia: «El soplo del deudor».')
     expect(deuda.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'otear', carta: 'templo-I' } })
     deuda.opcion('fondo').opcion('arriba').opcion('arriba').elegir('ladron-I', 'flota-I')
     expect(deuda.estado.reputacion).toBe(0)
     // Se repone con la de arriba: el Ladrón, que ha quedado encima.
     expect(deuda.zona('misionesDisponibles')).toContain('ladron-I')
     expect(deuda.zona('mazoMisiones')).toEqual(['flota-I', 'gobernador-I', 'templo-I'])
-    // «Rumbo a mar abierto» (0 y la Gesta): adquiere sin coste una Mejora del muelle de coste 1 o menos. Fase 11: con
-    // precio, un Tripulante sufre 1 herida (aquí solo está Diego).
+    expect(deuda.zona('mazoHistoria')).toContain('soplo_deudor')
+    // 288 «Pertrechos para el viaje» («Rumbo a mar abierto», 0 y la Gesta): adquiere sin coste una Mejora del muelle de
+    // coste 1 o menos y un Tripulante sufre 1 herida (aquí solo está Diego).
     const prueba = enPuerto({ misiones: ['prueba-I'], avance: { 'prueba-I': 3 }, muelle: ['vela', 'casco'], mazoPeligros: ['calma'] })
-    prueba.zarpar('prueba-I').elegir('vela')
+    prueba.zarpar('prueba-I')
+    expect(prueba.registro).toContain('Coges la carta 288 del mazo de historia: «Pertrechos para el viaje».')
+    prueba.elegir('vela')
     expect(prueba.zona('mejoras')).toEqual(['vela'])
     expect(prueba.estado.reputacion).toBe(1) // 0 de la recompensa y 1 de la Gesta
     expect(prueba.copia('capitan').heridas).toBe(1)
-    // «Agua y leña» (0): recluta sin coste un Tripulante del muelle de coste 2 o menos, si cabe. Fase 11: con precio, el
-    // Barco sufre 1 daño, también en esta misión de Naturaleza (como en la medida I2 de la fase 10c).
+    expect(prueba.zona('mazoHistoria')).toContain('pertrechos')
+    // 289 «Gente de la aguada» («Agua y leña», 0): recluta sin coste un Tripulante del muelle de coste 2 o menos, si cabe, y
+    // el Barco sufre 1 daño, también en esta misión de Naturaleza (como en la medida I2 de la fase 10c).
     const aguada = enPuerto({ avance: { 'aguada-I': 3 }, muelle: ['bucanero', 'contrabandista'], mazoPeligros: ['calma'], tripulacion: ['vigia'] })
-    aguada.zarpar('aguada-I').elegir('bucanero') // Distancia 1 − 1 del Barco: 0, no se agota a nadie (P3)
+    aguada.zarpar('aguada-I') // Distancia 1 − 1 del Barco: 0, no se agota a nadie (P3)
+    expect(aguada.registro).toContain('Coges la carta 289 del mazo de historia: «Gente de la aguada».')
+    aguada.elegir('bucanero')
     expect(aguada.zona('tripulacion')).toContain('bucanero')
     expect(aguada.estado.reputacion).toBe(0)
     expect(aguada.estado.danoBarco).toBe(1)
+    expect(aguada.zona('mazoHistoria')).toContain('gente_aguada')
   })
 
   it('«Las puertas de Panamá»: ¡victoria! (sin fichas de Defensa)', () => {

@@ -501,7 +501,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'prepararUno'; entre: InstId[] }
   | { tipo: 'superarMision' }
   /** Final con elección: eliges una de las recompensas de la misión. */
-  | { tipo: 'elegirFinal'; mision: InstId }
+  /** Final con elección: la carta de recompensa cogida («Ante el altar»). */
+  | { tipo: 'elegirFinal'; carta: InstId }
   // Misiones 2.0 (fase 7)
   /** Pon (o quita, con `n` negativo) fichas sobre la misión en curso, y mira si llegan a su número. */
   | { tipo: 'fichasMision'; ficha: FichaMision; n: number }

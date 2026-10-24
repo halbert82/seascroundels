@@ -2,7 +2,7 @@
 
 import { candidatas, sePuedeUsar } from '../usos.ts'
 import { reputacionMinima } from '../capacidades/misiones.ts'
-import { CATALOGO, iconosDe, porId, rasgosDe } from '../catalogo.ts'
+import { CATALOGO, esDeHistoria, iconosDe, porId, rasgosDe } from '../catalogo.ts'
 import { reglasMision } from '../misiones2/registro.ts'
 import { anotar, copia, encolar, nombre, nombres } from '../estado.ts'
 import { devolverPeligros, persigueVigente } from '../peligros.ts'
@@ -228,8 +228,8 @@ export const mezclarMazoPropio: Manejador<'mezclarMazoPropio'> = (s, t) => {
 // Fin de la misión
 
 /**
- * Superar la misión: lo incautado vuelve, reputación y recompensa (o el final con elección),
- * Gesta, Pasajero, capítulo siguiente (con salida doble, el que toque) y Tesoro.
+ * Superar la misión: lo incautado vuelve, reputación y recompensa, Gesta, Pasajero, la carta de recompensa que se coge
+ * (en ella, el final con elección), capítulo siguiente (con salida doble, el que toque) y Tesoro.
  */
 export const superarMision: Manejador<'superarMision'> = (s) => {
   const m = s.mision
@@ -261,35 +261,27 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
     encolar(s, ...tareas, ...enLugar)
     return 'hecha'
   }
-  if (r.elige && r.elige.length > 0) tareas.push({ tipo: 'elegirFinal', mision: m.carta })
-  else if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
+  if (r.rep) tareas.push({ tipo: 'cambiarReputacion', n: r.rep })
   if (gesta) {
     anotar(s, 'efecto', '¡Gesta cumplida!: +1 de reputación.', { tipo: 'gesta', mision: e.id })
     tareas.push({ tipo: 'cambiarReputacion', n: 1 })
   }
   if (r.search) tareas.push({ tipo: 'buscarMuelle', filtro: r.search === 'crew' ? 'tripulante' : r.search === 'ship' ? 'mejoraBarco' : 'mejora' })
   if (r.draw) tareas.push({ tipo: 'robar', n: r.draw })
-  // Misiones iniciales (fase 10b): reclutar o adquirir gratis del muelle, u otear el mazo de Misiones.
-  if (r.reclutaGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.reclutaGratis, que: 'tripulante' })
-  if (r.adquiereGratis !== undefined) tareas.push({ tipo: 'gratisDelMuelle', maxCoste: r.adquiereGratis, que: 'mejora' })
-  if (r.oteaMisiones) tareas.push({ tipo: 'otear', n: r.oteaMisiones, mazo: 'misiones', cartas: [], arriba: [], fondo: [] })
-  // Fase 11: el precio de las misiones iniciales. «Agua y leña» (Naturaleza): «El Barco sufre 1 daño» (fase 13: las cartas
-  // se leen al pie de la letra, así que daña el Barco aunque la misión sea de tierra).
-  if (r.precio && r.precio.length > 0) tareas.push({ tipo: 'aplicarEfectos', efectos: r.precio, contexto: 'efecto' })
   if (r.pasajero) tareas.push({ tipo: 'ponerPasajero', carta: r.pasajero })
-  // Fase 15: «Coge la carta N del mazo de historia» (El naufragio del San José). Una partida guardada con la versión
+  // Fase 15: «Coge la carta N del mazo de historia»: una carta de recompensa (bucear en el naufragio, los finales con
+  // elección, lo que daban las misiones iniciales, el capítulo II al azar de la isla…). Una partida guardada con la versión
   // anterior mientras se buceaba (el buceo iba antes de superar la misión) ya ha buceado.
   if (r.coge !== undefined && !m.antesDeSuperarHecho) tareas.push({ tipo: 'cogerCarta', num: r.coge })
   // Capítulo siguiente o Tesoro. Con salida doble se añade el que corresponda; el otro no sale nunca y se queda en el mazo
   // de historia (fase 15, regla general de Albert: lo que sale del juego vuelve allí).
   const posibles = e.carta.siguiente
   const num = elegido ?? posibles[0]
-  // Fase 15: con un capítulo al azar («La Isla del Tesoro»), los demás también se quedan en el mazo de historia.
-  for (const otro of reglas?.conservarOtros ? [] : posibles.filter((n) => n !== num)) {
+  for (const otro of posibles.filter((n) => n !== num)) {
     const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === otro)
     if (carta) anotar(s, 'efecto', `«${nombre(s, carta)}» se queda en el mazo de historia.`)
   }
-  if (num !== undefined && !(r.elige && r.elige.length > 0)) {
+  if (num !== undefined) {
     const carta = s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === num)
     if (carta) {
       const tipo = porId(copia(s, carta).id).tipo
@@ -300,10 +292,7 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
         // Fase 12 (Albert): el capítulo siguiente va siempre encima del mazo de Misiones, sin barajar. Las misiones
         // disponibles se reponen al volver a puerto (después), así que sale enseguida entre ellas.
         mover(s, carta, 'mazoMisiones', 'arriba')
-        if (reglas?.conservarOtros) {
-          const cartas = posibles.filter((n) => n === num || s.zonas.mazoHistoria.some((c) => porId(copia(s, c).id).num === n))
-          anotar(s, 'efecto', `Barajas boca abajo las cartas ${listaDeNumeros(cartas)} del mazo de historia y pones una encima del mazo de Misiones sin mirarla.`)
-        } else anotar(s, 'efecto', `«${nombre(s, carta)}» se pone encima del mazo de Misiones.`)
+        anotar(s, 'efecto', `«${nombre(s, carta)}» se pone encima del mazo de Misiones.`)
       }
     }
   }
@@ -314,11 +303,6 @@ export const superarMision: Manejador<'superarMision'> = (s) => {
   }
   encolar(s, ...tareas)
   return 'hecha'
-}
-
-/** «256, 257 y 258». */
-function listaDeNumeros(nums: readonly number[]): string {
-  return nums.length <= 1 ? nums.join('') : `${nums.slice(0, -1).join(', ')} y ${nums[nums.length - 1]}`
 }
 
 /** Un Tesoro entra en juego sin coste: los de barco, en el Barco; los de tripulante, en quien elijas. */
@@ -447,7 +431,14 @@ function perderIncautadas(s: Estado): void {
 export const cerrarMision: Manejador<'cerrarMision'> = (s) => {
   const m = s.mision
   if (!m) return 'hecha'
-  if (m.fin === 'superada' && s.zonas.misionesDisponibles.includes(m.carta)) mover(s, m.carta, 'misionesSuperadas', 'abajo')
+  if (m.fin === 'superada' && s.zonas.misionesDisponibles.includes(m.carta)) {
+    // Fase 15, cuarta ronda: un capítulo II, III o IV superado es una carta del mazo de historia que sale del juego, así
+    // que vuelve al mazo de historia (regla general de Albert). El capítulo I se aparta.
+    if (esDeHistoria(copia(s, m.carta).id)) {
+      mover(s, m.carta, 'mazoHistoria', 'abajo')
+      anotar(s, 'efecto', `«${nombre(s, m.carta)}» vuelve al mazo de historia.`)
+    } else mover(s, m.carta, 'misionesSuperadas', 'abajo')
+  }
   // «La Armada te persigue» de la Flota IV vuelve a apartarse aunque no haya llegado a salir.
   const apartar = m.alApartar
   // Fase 15: también si se descartó sin resolverse (los barcos rivales vuelven al mazo de historia al terminar).

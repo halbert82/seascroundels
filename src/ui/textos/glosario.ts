@@ -177,6 +177,7 @@ export const CLAVES_REGLA = [
   'alZarpar',
   'gesta',
   'finalConEleccion',
+  'cartaRecompensa',
   'salidaDoble',
   'pasajero',
   'descomunal',
@@ -194,7 +195,7 @@ export const CLAVES_REGLA = [
 export type ClaveRegla = (typeof CLAVES_REGLA)[number]
 
 /** Palabras que nombran una cosa (no un efecto): su primer apartado es «Qué es» en vez de «Qué hace». */
-const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'salidaDoble', 'capituloAlAzar', 'mazoNaufragio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
+const SON_COSAS: readonly ClaveRegla[] = ['sinOposicion', 'comprometidoCon', 'pruebaDeAccion', 'gesta', 'finalConEleccion', 'cartaRecompensa', 'salidaDoble', 'capituloAlAzar', 'mazoNaufragio', 'pasajero', 'entrenamiento', 'tesoro', 'estados']
 
 function regla(clave: ClaveRegla, nombre: string, hace: string, mas?: ParteAyuda): Ayuda {
   const rotulo = SON_COSAS.includes(clave) ? 'Qué es' : 'Qué hace'
@@ -338,12 +339,17 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   finalConEleccion: regla(
     'finalConEleccion',
     'Final con elección',
-    'Al superar este capítulo eliges una de las dos opciones de su recompensa (por ejemplo, un Tesoro y 2 de reputación, o 4 de reputación).',
+    'Al superar el capítulo coges su carta de recompensa y eliges una de sus dos opciones (por ejemplo, un Tesoro y 2 de reputación, o 3 de reputación).',
+  ),
+  cartaRecompensa: regla(
+    'cartaRecompensa',
+    'Carta de recompensa',
+    'Carta del mazo de historia que te da una misión al superarla («Coge la carta 290 del mazo de historia»). La coges, haces lo que dice y, al terminar, vuelve al mazo de historia.',
   ),
   salidaDoble: regla(
     'salidaDoble',
     'Salida doble',
-    'Esta travesía tiene dos capítulos II, «II-a» y «II-b». Su capítulo I dice cuál añades según cómo lo superes; el otro sale de la partida.',
+    'Esta travesía tiene dos capítulos II, «II-a» y «II-b». Su capítulo I dice cuál añades según cómo lo superes; el otro se queda en el mazo de historia.',
   ),
   pasajero: regla(
     'pasajero',
@@ -375,7 +381,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   capituloAlAzar: regla(
     'capituloAlAzar',
     'Capítulo al azar',
-    'Al superar el capítulo I de «La Isla del Tesoro», barajas boca abajo sus tres capítulos II y pones uno encima del mazo de Misiones sin mirarlo; los otros vuelven al mazo de historia. No sabes cuál te espera hasta que sale.',
+    'La carta 293, «Las tres cruces del mapa», que dan el capítulo I de «La Isla del Tesoro» y «El mapa era falso», baraja boca abajo los capítulos II que no hayas superado y pone uno encima del mazo de Misiones sin mirarlo; los demás vuelven al mazo de historia. No sabes cuál te espera hasta que sale.',
   ),
   mazoNaufragio: regla(
     'mazoNaufragio',
@@ -544,7 +550,8 @@ function recoger(valor: unknown, campo: string, recompensa: boolean, lista: Text
 /** Todos los textos de reglas de una carta, sin marcado. */
 export function textosDeCarta(entrada: EntradaCatalogo): TextoCarta[] {
   const lista: TextoCarta[] = []
-  recoger(entrada.carta, '', false, lista)
+  // Fase 15, cuarta ronda: el texto de una carta de recompensa es una recompensa («Elige» es un final con elección).
+  recoger(entrada.carta, '', entrada.tipo === 'recompensa', lista)
   return lista.map((t) => ({ ...t, texto: sinMarcado(t.texto) })).filter((t) => t.texto)
 }
 
@@ -590,12 +597,13 @@ const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
   alZarpar: /\bAl zarpar\b|\b[Dd]espués de zarpar\b/,
   gesta: /\bGesta\b/,
   finalConEleccion: /\bElige\b/,
+  cartaRecompensa: /\bCoge la carta \d+ del mazo de historia\b/,
   salidaDoble: /\bSalida doble\b/,
   pasajero: /\bPasajeros?\b/,
   descomunal: /\bDescomunal \d/,
   alerta: /\bAlerta\b/,
   destina: /\bDestina \d/,
-  capituloAlAzar: /\bBaraja boca abajo las cartas \d+/,
+  capituloAlAzar: /\bBaraja boca abajo (las cartas \d+|los capítulos II)/,
   mazoNaufragio: /\bmazo del naufragio\b/,
   indestructible: /\bIndestructible\b/,
   enrolado: /\bEnrolado \d/,
@@ -646,7 +654,8 @@ const AL_FINAL = ['regla:comprometidoCon', 'regla:sinOposicion']
 export function ayudasDeCarta(id: string): Ayuda[] {
   const entrada = porId(id)
   const lista = ayudasDeTextos(textosDeCarta(entrada))
-  const extra = entrada.tipo === 'pasajero' ? AYUDA_REGLA.pasajero : entrada.tipo === 'tesoro' ? AYUDA_REGLA.tesoro : null
+  const extra =
+    entrada.tipo === 'pasajero' ? AYUDA_REGLA.pasajero : entrada.tipo === 'tesoro' ? AYUDA_REGLA.tesoro : entrada.tipo === 'recompensa' ? AYUDA_REGLA.cartaRecompensa : null
   if (extra && !lista.includes(extra)) lista.unshift(extra)
   return lista
 }

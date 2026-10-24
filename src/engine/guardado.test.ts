@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest'
 import { deserializar, serializar } from './guardado.ts'
 import { nuevaPartida } from './preparacion.ts'
+import { Jugador } from './pruebas/situacion.ts'
 import type { Estado, InstId } from './tipos.ts'
 
 const inst = (s: Estado, id: string) => {
@@ -175,5 +176,43 @@ describe('Fase 15, tercera ronda · partidas guardadas antes de la carta 286 («
     const t = deserializar(JSON.stringify(viejo))
     expect(ids(t, 'mazoHistoria')).toContain('fondeo_sanjose')
     expect(t.zonas.cogidas).toEqual([])
+  })
+})
+
+describe('Fase 15, cuarta ronda · partidas guardadas antes de las cartas de recompensa 287–296', () => {
+  it('las diez cartas nuevas esperan en el mazo de historia', () => {
+    const s = nuevaPartida({ semilla: 5 })
+    const viejo = JSON.parse(serializar(s)) as Estado
+    const nuevas = ['soplo_deudor', 'pertrechos', 'gente_aguada', 'ante_altar', 'mecha_encendida', 'bitacora_capitan', 'tres_cruces', 'cueva_abajo', 'galeon_puerto', 'port_royal_resiste']
+    for (const id of nuevas) {
+      const i = inst(viejo, id)
+      viejo.zonas.mazoHistoria = viejo.zonas.mazoHistoria.filter((x) => x !== i)
+      delete viejo.cartas[i]
+    }
+    const t = deserializar(JSON.stringify(viejo))
+    for (const id of nuevas) expect(ids(t, 'mazoHistoria'), id).toContain(id)
+  })
+
+  it('con «El templo» superado y el final a medio elegir: al seguir, se coge «Ante el altar» y se elige en ella', () => {
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], misiones: ['templo-IV'], avance: { 'templo-IV': 3 }, mazoPeligros: Array.from({ length: 7 }, () => 'calma') })
+    j.zarpar('templo-IV')
+    expect(j.decision).toMatchObject({ motivo: { clave: 'finalMision', carta: 'ante_altar' } })
+    // Así estaba antes: la carta de recompensa no se había cogido y la tarea apuntaba a la misión.
+    const viejo = JSON.parse(serializar(j.estado)) as Estado
+    const altar = inst(viejo, 'ante_altar')
+    const templo = inst(viejo, 'templo-IV')
+    mover(viejo, altar, 'mazoHistoria')
+    viejo.pila = viejo.pila.filter((t) => t.tipo !== 'devolverCogida')
+    const tarea = viejo.pila.find((t) => t.tipo === 'elegirFinal') as unknown as { carta?: InstId; mision?: InstId }
+    delete tarea.carta
+    tarea.mision = templo
+    if (viejo.pendiente) viejo.pendiente.motivo = { clave: 'finalMision', carta: 'templo-IV' }
+    const t = new Jugador(deserializar(JSON.stringify(viejo)))
+    t.opcion('idolo')
+    expect(t.registro).toContain('Coges la carta 290 del mazo de historia: «Ante el altar».')
+    expect(t.decision).toMatchObject({ motivo: { clave: 'finalMision', carta: 'ante_altar' } })
+    t.opcion('idolo')
+    expect(t.estado.reputacion).toBe(3)
+    expect(ids(t.estado, 'mazoHistoria')).toEqual(expect.arrayContaining(['ante_altar', 'templo-IV']))
   })
 })

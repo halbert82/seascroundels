@@ -186,12 +186,15 @@ function alarma(): PartidaEnMesa {
   return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 6) }
 }
 
-/** Fase 7, «El templo» superado: final con elección (la Espada del sacerdote o devolver el ídolo). */
+/**
+ * Fase 7, «El templo» superado: final con elección (la Espada del sacerdote o devolver el ídolo). Fase 15, cuarta ronda: la
+ * elección está en su carta de recompensa, «Ante el altar» (290).
+ */
 function finalMision(): PartidaEnMesa {
   const j = Jugador.enMision({
     misiones: ['templo-IV'],
     avance: { 'templo-IV': 3 },
-    mazoHistoria: ['espada'],
+    mazoHistoria: ['espada', 'ante_altar'],
     mazoPeligros: Array.from({ length: 7 }, () => 'calma'),
     mazoCapitan: [...MAZO],
     mano: ['ojo', 'timon'],

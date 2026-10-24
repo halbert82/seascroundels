@@ -1255,9 +1255,13 @@ Todo entra en el mazo de Misiones inicial: los tres capítulos I nuevos y las cu
 
 ### Pregunta nueva para Albert (P110), con la opción por defecto aplicada
 
+*Respondida el 24 de octubre: ver «Respuestas de Albert, cuarta ronda».*
+
 - **P110 · «Se retira» en una carta de mazo propio.** Con la regla general, una carta del mazo de historia que sale del juego vuelve al mazo de historia. La única carta de mazo propio que Se retira es la 122, «Guerreros esqueleto» (mazo del Templo, «Se deshacen en polvo»). Por defecto, **vuelve al mazo de historia** (la regla, al pie de la letra), y por tanto puede volver a salir si se vuelve a barajar el mazo del Templo. *Ejemplo:* en «El templo» superas a los Guerreros esqueleto (vuelven al mazo de historia), pero fallas la misión y la dejas disponible. Al zarpar otra vez, barajas el mazo del Templo con 6 Peligros y los esqueletos vuelven a estar en él. La otra opción: una carta que Se retira sale de la partida aunque sea del mazo de historia (y el jugador tiene que apartarla para no barajarla con su mazo propio la próxima vez). `TODO(regla) P110` en el código (peligros.ts); el reglamento («Se retira») ya lo dice así. *Prueba:* mazosPropios2.test (122).
 
-### Inventario: recuadros de recompensa que dicen algo más que «coge / pon la carta N» o «gana X» (sin cambiar nada)
+### Inventario: recuadros de recompensa que dicen algo más que «coge / pon la carta N» o «gana X»
+
+*Aplicado el 24 de octubre: ver «Respuestas de Albert, cuarta ronda».*
 
 Trece recuadros. Con una carta de recompensa (como la 286) para cada uno que lo necesita, harían falta **10 cartas nuevas** (números 287 a 296; la caja pasaría a 276). Tres se arreglan sin carta nueva.
 
@@ -1281,6 +1285,42 @@ Trece recuadros. Con una carta de recompensa (como la 286) para cada uno que lo 
 - **Cumplen, aunque eligen entre dos:** las etiquetas «Pon la carta 218 o la 140» (139) y «Pon la carta 219 o la 144» (143). Cuál se pone lo dicen las reglas del capítulo I.
 - **Fuera del recuadro** (no entran en el inventario): las reglas de la misión que cambian la recompensa («La regata»: «ganas 1 de reputación en lugar de su recompensa»; el Saqueo de la 117; las Gestas).
 - Si los cuatro finales con elección (120, 145, 149, 257) pasan a cartas, la entrada «Final con elección» del reglamento cambia: la elección está en la carta de recompensa.
+
+### Respuestas de Albert, cuarta ronda (24 de octubre)
+
+**P110 · «Se retira» en una carta de mazo propio: sí, como está.** La 122, «Guerreros esqueleto», vuelve al mazo de historia y puede volver a salir si se baraja otra vez el mazo del Templo. Fuera la marca pendiente. *Pruebas (mazosPropios2.test):* se retira y vuelve al mazo de historia; al zarpar a «El templo», el mazo del Templo se baraja con los esqueletos que estén en el mazo de historia.
+
+**Inventario de recompensas: aplicadas todas las propuestas.** Diez cartas de recompensa nuevas (287–296), con los nombres propuestos; la caja pasa a 276 cartas (Componentes: «Cartas de recompensa», 11). Cada recuadro solo dice qué carta coger o qué se gana:
+
+| Misión | Recuadro nuevo | Carta de recompensa |
+| --- | --- | --- |
+| 113 Cobrar la deuda | Coge la carta 287 del mazo de historia. | 287 «El soplo del deudor»: Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles. |
+| 114 Rumbo a mar abierto | Coge la carta 288… | 288 «Pertrechos para el viaje»: Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 [herida]. |
+| 115 Agua y leña | Coge la carta 289… | 289 «Gente de la aguada»: Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 [daño]. |
+| 120 El templo | Coge la carta 290… (fuera la etiqueta del Tesoro 121) | 290 «Ante el altar»: Elige: Te llevas la Espada del sacerdote: pon en juego el Tesoro 121 y gana 2 [rep]; tu Capitán queda Maldito. / Devuelves el ídolo a su altar: gana 3 [rep]. |
+| 141 La cala de los contrabandistas | +2 [rep] (y la etiqueta del Tesoro 142) | Ninguna: lo de Don Anselmo va en su carta (221). |
+| 145 El polvorín | Coge la carta 291… (fuera la etiqueta del Tesoro 146) | 291 «La mecha encendida»: Elige: Rescatas a tu amigo: gana 4 [rep]. / Vuelas el polvorín: pon en juego el Tesoro 146 y gana 3 [rep]; el Barco queda Perseguido. |
+| 149 El camarote del capitán | Coge la carta 292… (fuera la etiqueta del Tesoro 150; la Gesta se queda en la misión) | 292 «La bitácora del capitán muerto»: Elige: Te llevas el Farol de los ahogados: pon en juego el Tesoro 150 y gana 3 [rep]. / Le devuelves su bitácora: gana 4 [rep] y quita Maldito de todos tus Tripulantes. |
+| 151 El prisionero de Portobelo | +1 [rep]. Pon en juego la carta 222. | Ninguna: el guía explica sus reglas en su carta. |
+| 255 El mapa del ahorcado | +1 [rep]. Coge la carta 293… | 293 «Las tres cruces del mapa»: Baraja boca abajo los capítulos II de La Isla del Tesoro que no hayas superado ~(cartas 256, 257 y 258 del mazo de historia)~. Pon uno encima del mazo de Misiones sin mirarlo y devuelve los demás al mazo de historia. |
+| 258 El mapa era falso | +1 [rep] y roba 2. Coge la carta 293… | La misma 293. |
+| 257 …sacudida por un temblor | Coge la carta 294… | 294 «La cueva se viene abajo»: Elige: Cargas con todo el oro: gana 3 [rep]; cada Tripulante sufre 1 [herida]. / Sales a tiempo: gana 2 [rep] y roba 2. |
+| 272 Escolta del San Telmo | +2 [rep]. Coge la carta 295… | 295 «El galeón llega a puerto»: Si la carta 273 tiene 3 o más Vida restante, gana 1 [rep] y roba 2. |
+| 274 El asedio de Port Royal | +2 [rep]. Coge la carta 296… | 296 «Port Royal resiste»: Si la carta 275 tiene 4 o más Vida restante, gana 1 [rep]. |
+
+- **117 «+1 y busca una Mejora»:** se queda como está.
+- **Don Anselmo (221):** su última línea, «Se va al terminar la carta 141», pasa a «Si superas la carta 141, se baja y paga: roba 2 [robar]. Devuélvelo al mazo de historia.» (La propuesta decía «Al terminar la carta 141»; «Si superas» dice lo mismo sin dudas: si fallas la 141, ya se ha bajado asustado por la línea anterior.) El motor no cambia.
+- **Ambientaciones** de las diez cartas: mías, cortas (como la de la 286). Están en `cartas.json`; si Albert quiere otras, se cambian allí.
+- **Línea de tipo:** «Recompensa · » y el nombre de la travesía o la aventura («Recompensa · El templo perdido»). En las misiones iniciales, cuyo nombre de misión no se imprime, el de su carta: «Recompensa · Cobrar la deuda».
+- **Reglamento:** «Final con elección» (la elección está en la carta de recompensa, con un ejemplo de «Ante el altar»), Anatomía de la misión (Recompensa), «Superar una misión» (pasos 1 y 3 y «Capítulo II al azar»), «Capítulo», el ejemplo del primer turno (la recompensa de «Rumbo a mar abierto» es la carta 288), Otear («El soplo del deudor»), Tesoro y una entrada nueva, **«Carta de recompensa»**, con el ejemplo de la escolta.
+- **En la mesa:** el panel de «Misión superada» enseña, debajo de la misión, la carta de recompensa que se coge; en un final con elección, las dos opciones siguen siendo botones del mismo panel. Glosario: entrada nueva «Carta de recompensa»; en las cartas de recompensa, «Elige» se explica como final con elección.
+- **Partidas guardadas:** las diez cartas aparecen en el mazo de historia; una partida guardada con un final a medio elegir coge su carta de recompensa al seguir y vuelve a preguntar.
+- **Jugador automático:** valora cada misión como antes (en un final con elección, la mejor opción de su carta); no se ha medido el equilibrio (Albert: sin medir).
+- *Pruebas:* una por carta: 287–289 (mision.test, las misiones iniciales), 290–292 (misiones2.test: el templo, el polvorín y el camarote), 293–296 (fase15-misiones.test), y que las once cartas de recompensa tienen su efecto escrito y las coge algún recuadro (textos.test).
+
+**Comprobación de Albert: adónde va un capítulo superado.** Por la regla general (toda carta del mazo de historia que sale del juego vuelve a él), un capítulo II, III o IV superado **vuelve al mazo de historia**; el capítulo I, que es del mazo de Misiones, se aparta. El reglamento decía solo «aparta la misión superada» y la app los dejaba aparte; ahora los dos lo dicen igual («Superar una misión», paso 3, y «Capítulo»). Por eso el texto de la 293 excluye los capítulos II que ya has superado: desde la 258, solo se barajan la 256 y la 257. En el motor, «que no hayas superado» se mira en el registro de la partida, no en dónde está la carta. *Pruebas (fase15-misiones.test):* superas la 258, resuelves la carta y la 258, ya en el mazo de historia, no sale (con 20 semillas; y aunque se volviera a coger la 293); sin ningún capítulo II por superar, no ocurre nada. Las pruebas de las travesías enteras comprueban que cada capítulo II–IV superado está en el mazo de historia.
+
+**Carta 286:** la línea de tipo «Recompensa · El naufragio del San José» y su ambientación, aprobadas.
 
 ### Efectos que hay que recordar para el turno siguiente (para la revisión de Peligros de Albert)
 

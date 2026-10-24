@@ -184,12 +184,21 @@ function migrarNaufragio(s: Estado): boolean {
 
 /**
  * Fase 15, tercera ronda: la recompensa del naufragio es la carta 286, «Fondeáis sobre el San José», que espera en el mazo
- * de historia, y la zona de la carta cogida es nueva. (Una partida guardada mientras se buceaba con la versión anterior
+ * de historia, y la zona de la carta cogida es nueva. Cuarta ronda: las cartas de recompensa 287–296 también esperan allí. (Una partida guardada mientras se buceaba con la versión anterior
  * sigue buceando y no vuelve a bucear al cobrar la misión: ver `superarMision`.)
  */
 function migrarCartasDeRecompensa(s: Estado): void {
   const zonas = s.zonas as Record<string, InstId[] | undefined>
   if (!Array.isArray(zonas.cogidas)) zonas.cogidas = []
+  // Cuarta ronda: los finales con elección están en su carta de recompensa. Un final a medio elegir apuntaba a la misión;
+  // al seguir, se coge su carta de recompensa y se vuelve a preguntar (ver `elegirFinal`).
+  for (const t of s.pila ?? []) {
+    const vieja = t as { tipo: string; carta?: InstId; mision?: InstId }
+    if (vieja.tipo === 'elegirFinal' && vieja.carta === undefined && vieja.mision !== undefined) {
+      vieja.carta = vieja.mision
+      delete vieja.mision
+    }
+  }
   const cartas = Object.values(s.cartas ?? {})
   if (cartas.length === 0) return
   const ids = new Set(cartas.map((c) => c.id))

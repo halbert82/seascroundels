@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest'
 import { CATALOGO, type EntradaCatalogo } from '../../engine/catalogo.ts'
+import type { Segmento } from './marcado.ts'
 import { COLOR_CLASE, COLOR_MOD, COLOR_TIPO, vistaDeCarta, type VistaCapitulo, type VistaJugador, type VistaPeligro, type VistaPuerto } from './vista.ts'
+
+/** Un texto con marcado, en palabras: «{+2 rep}. Coge…» → «+2. Coge…». */
+function textoPlano(segmentos: readonly Segmento[] | undefined): string {
+  return (segmentos ?? [])
+    .map((x) => (x.tipo === 'numero' ? `${x.valor}${x.tras ?? ''}` : x.tipo === 'parrafo' ? ' ' : x.tipo === 'icono' ? (x.pegado ?? '') : x.texto))
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 
 function carta(num: number): EntradaCatalogo {
   const entrada = CATALOGO.find((c) => c.num === num)
@@ -104,14 +114,19 @@ describe('vista de las cartas', () => {
 
     const deuda = vistaDeCarta(carta(113)) as VistaCapitulo
     expect([deuda.sello, deuda.de, deuda.travesia]).toEqual(['I', 'I', 'Misión inicial'])
+    // Fase 15, cuarta ronda: el recuadro solo dice qué carta coger; lo que se hace, en la carta de recompensa (287).
+    expect(deuda.recompensa).toEqual([])
+    expect(deuda.recompensaTexto).toBeUndefined()
+    expect(textoPlano(deuda.recompensaMarcada)).toBe('Coge la carta 287 del mazo de historia.')
+    const soplo = vistaDeCarta(carta(287)) as VistaJugador
+    expect(soplo.tipoTexto).toBe('Recompensa · Cobrar la deuda')
     // Fase 13: sin «Otea» (Otear es siempre del mazo de Peligros); el mismo efecto.
-    expect(deuda.recompensaTexto).toBe(
+    expect(textoPlano(soplo.texto)).toBe(
       'Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles.',
     )
-    const aguada = vistaDeCarta(carta(115)) as VistaCapitulo
-    expect(aguada.recompensa).toEqual([{ texto: '0', icono: 'rep' }])
-    expect(aguada.recompensaTexto).toBe('Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1 daño.')
-    expect((vistaDeCarta(carta(114)) as VistaCapitulo).recompensaTexto).toBe('Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un Tripulante sufre 1 herida.')
+    expect(textoPlano((vistaDeCarta(carta(115)) as VistaCapitulo).recompensaMarcada)).toBe('Coge la carta 289 del mazo de historia.')
+    // Con reputación y una carta: «+2 [rep]. Coge la carta 295 del mazo de historia.»
+    expect(textoPlano((vistaDeCarta(carta(272)) as VistaCapitulo).recompensaMarcada)).toBe('+2. Coge la carta 295 del mazo de historia.')
     expect(deuda.pie).toBe('Misión inicial · a la vista al empezar')
 
     expect((vistaDeCarta(carta(153)) as VistaCapitulo).recompensaTexto).toBe('¡Victoria!')
@@ -121,10 +136,15 @@ describe('vista de las cartas', () => {
     const barra = vistaDeCarta(carta(218)) as VistaCapitulo
     expect([barra.sello, barra.rama, barra.de, barra.nombre]).toEqual(['II', 'a', 'III', 'La barra de noche'])
     expect((vistaDeCarta(carta(140)) as VistaCapitulo).rama).toBe('b')
-    // Final con elección: la recompensa se imprime como texto.
+    // Final con elección (fase 15, cuarta ronda): el recuadro dice qué carta coger y la elección está en ella; sin etiqueta del
+    // Tesoro (lo pone la opción que lo da).
     const templo = vistaDeCarta(carta(120)) as VistaCapitulo
     expect(templo.recompensa).toEqual([])
-    expect(templo.recompensaMarcada?.length).toBeGreaterThan(0)
+    expect(textoPlano(templo.recompensaMarcada)).toBe('Coge la carta 290 del mazo de historia.')
+    expect(templo.siguiente).toBeUndefined()
+    const altar = vistaDeCarta(carta(290)) as VistaJugador
+    expect(altar.tipoTexto).toBe('Recompensa · El templo perdido')
+    expect(textoPlano(altar.texto)).toMatch(/^Elige:/)
   })
 
   it('puerto: muelle, tres opciones comunes y la propia', () => {

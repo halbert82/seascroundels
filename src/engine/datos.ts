@@ -2,7 +2,6 @@
 // El motor no depende de React: este módulo es TypeScript puro.
 
 import datosJson from '../../data/cartas.json'
-import type { Efecto } from './efectos.ts'
 
 export type Habilidad = 'NAV' | 'COM' | 'EXP'
 export type Entorno = 'mar' | 'nat' | 'ciu'
@@ -293,10 +292,14 @@ export interface CartaRecompensaDatos {
    * (Mejora de barco) y los Tesoros 270 y 271.
    */
   mazoNaufragio?: number[]
+  /**
+   * Fase 15, cuarta ronda (Albert): un final con elección está en su carta de recompensa («Ante el altar»): eliges una de
+   * estas opciones.
+   */
+  elige?: OpcionFinal[]
 }
 
-
-/** Una de las opciones de un final con elección. */
+/** Una de las opciones de un final con elección (en su carta de recompensa). */
 export interface OpcionFinal {
   clave: string
   texto: string
@@ -311,24 +314,18 @@ export interface RecompensaDatos {
   /** Buscar en el mazo de muelle: Tripulante, Mejora de barco o Mejora. */
   search?: 'crew' | 'ship' | 'up'
   draw?: number
-  /** Fase 10b: recluta sin coste un Tripulante del muelle de este coste o menos (si cabe). */
-  reclutaGratis?: number
-  /** Fase 10b: adquiere sin coste una Mejora del muelle de este coste o menos. */
-  adquiereGratis?: number
-  /** Fase 10b: otea N del mazo de Misiones (antes de reponer las misiones disponibles). */
-  oteaMisiones?: number
-  /** Fase 11: lo que cuesta la recompensa («El Barco sufre 1 daño»). Se paga después de cobrarla. */
-  precio?: Efecto[]
   /** id del Tesoro que se gana. */
   tesoro?: string
   victoria?: boolean
   /** Pasajero que se pone en juego. */
   pasajero?: string
-  /** Fase 15: «Coge la carta N del mazo de historia» (una carta de recompensa), por número de colección. */
+  /**
+   * Fase 15: «Coge la carta N del mazo de historia» (una carta de recompensa), por número de colección. Cuarta ronda
+   * (Albert): lo que no es coger o poner una carta ni ganar algo va en ella (los finales con elección, lo que daban las
+   * misiones iniciales, el capítulo II al azar de «La Isla del Tesoro»).
+   */
   coge?: number
-  /** Final con elección: eliges una de estas recompensas. */
-  elige?: OpcionFinal[]
-  /** La recompensa tal y como se imprime, cuando no basta con las fichas («Elige: …»). */
+  /** La recompensa tal y como se imprime, cuando no basta con las fichas («Coge la carta 290 del mazo de historia.»). */
   texto?: string
 }
 

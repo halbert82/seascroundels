@@ -17,7 +17,7 @@ import {
   registrarMision,
   superarAhora,
 } from './comun.ts'
-import type { ReglasMision } from './registro.ts'
+import { registrarCartaDeRecompensa, type ReglasMision } from './registro.ts'
 
 const robar = (n: number): NuevaTarea => ({ tipo: 'robar', n })
 const reputacion = (n: number): NuevaTarea => ({ tipo: 'cambiarReputacion', n })
@@ -105,6 +105,28 @@ registrarMision('aguada-I', {
     alSuperarPrueba('agua', () => [{ tipo: 'aQuien', quien: { de: 'comprometidos', herido: true }, hacer: { tipo: 'curar', n: 1 } }]),
   ],
 })
+
+// Fase 15, cuarta ronda (Albert): lo que daban las tres misiones iniciales va en su carta de recompensa del mazo de
+// historia («Coge la carta 287 del mazo de historia»).
+
+// 287 «El soplo del deudor» (Cobrar la deuda): «Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al
+// fondo, en el orden que quieras, antes de reponer las misiones disponibles.» (Fase 13, P74: no es Otear, que es siempre
+// del mazo de Peligros, aunque se hace igual.)
+registrarCartaDeRecompensa('soplo_deudor', () => [{ tipo: 'otear', n: 3, mazo: 'misiones', cartas: [], arriba: [], fondo: [] }])
+
+// 288 «Pertrechos para el viaje» (Rumbo a mar abierto): «Adquiere sin coste una Mejora del muelle de coste 1 o menos. Un
+// Tripulante sufre 1 herida.»
+registrarCartaDeRecompensa('pertrechos', () => [
+  { tipo: 'gratisDelMuelle', maxCoste: 1, que: 'mejora' },
+  { tipo: 'aplicarEfectos', efectos: [{ tipo: 'heridas', n: 1 }], contexto: 'efecto' },
+])
+
+// 289 «Gente de la aguada» (Agua y leña): «Recluta sin coste un Tripulante del muelle de coste 2 o menos. El Barco sufre 1
+// daño.» (Fase 13: las cartas se leen al pie de la letra: daña el Barco aunque la misión sea de tierra.)
+registrarCartaDeRecompensa('gente_aguada', () => [
+  { tipo: 'gratisDelMuelle', maxCoste: 2, que: 'tripulante' },
+  { tipo: 'aplicarEfectos', efectos: [{ tipo: 'dano', n: 1 }], contexto: 'efecto' },
+])
 
 // ---------------------------------------------------------------------------
 // Aventuras

@@ -635,4 +635,12 @@ export class Jugador {
   get registro(): string[] {
     return this.estado.registro.map((r) => r.texto)
   }
+
+  /**
+   * Las misiones superadas en esta partida, en orden (lo dice el registro). Fase 15, cuarta ronda: un capítulo II, III o IV
+   * superado vuelve al mazo de historia; solo los capítulos I quedan en la zona de misiones superadas.
+   */
+  get superadas(): CartaId[] {
+    return this.estado.registro.flatMap((r) => (r.dato?.tipo === 'finMision' && r.dato.resultado === 'superada' ? [r.dato.mision] : []))
+  }
 }

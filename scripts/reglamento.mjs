@@ -59,11 +59,14 @@ async function capturaDePagina(pagina, indice) {
 async function dobleDesde(pagina, indice) {
   const izquierda = indice % 2 === 1 ? indice : indice - 1
   const [a, b] = [await capturaDePagina(pagina, izquierda), await capturaDePagina(pagina, izquierda + 1)]
-  const meta = await sharp(a).metadata()
-  return sharp({ create: { width: (meta.width ?? 0) * 2, height: meta.height ?? 0, channels: 3, background: '#fbf7ec' } })
+  // Las dos capturas pueden diferir en un píxel por el redondeo de la posición de cada página: el lienzo, el mayor.
+  const [ma, mb] = [await sharp(a).metadata(), await sharp(b).metadata()]
+  const ancho = Math.max(ma.width ?? 0, mb.width ?? 0)
+  const alto = Math.max(ma.height ?? 0, mb.height ?? 0)
+  return sharp({ create: { width: ancho * 2, height: alto, channels: 3, background: '#fbf7ec' } })
     .composite([
       { input: a, left: 0, top: 0 },
-      { input: b, left: meta.width ?? 0, top: 0 },
+      { input: b, left: ancho, top: 0 },
     ])
     .png()
     .toBuffer()

@@ -163,21 +163,53 @@ encimaDePeligros('fugitivo.barco', 'barco_fugitivo')
 
 // ---------------------------------------------------------------------------
 // La Isla del Tesoro (255–258): el capítulo II, al azar
+// Fase 15, cuarta ronda (Albert): el sorteo lo hace la carta de recompensa 293, «Las tres cruces del mapa», que dan «El mapa
+// del ahorcado» (255) y «El mapa era falso» (258).
 
-/** Una carta al azar de entre las de esta lista que estén en el mazo de historia («baraja boca abajo…»). */
-function alAzarDeHistoria(s: Estado, nums: number[]): number | undefined {
-  const presentes = nums.filter((n) => s.zonas.mazoHistoria.some((c) => porId(copia(s, c).id).num === n))
-  if (presentes.length === 0) return undefined
-  s.infoRevelada++
-  return presentes[entero(s, presentes.length)]
+/** Los tres capítulos II de la isla, por número de colección. */
+const CAPITULOS_II_ISLA = [256, 257, 258]
+
+/**
+ * Los capítulos que ya has superado en esta partida (lo dice el registro), con el que se está superando ahora. Un capítulo
+ * II superado vuelve al mazo de historia (regla general de Albert), así que no basta con mirar si está allí.
+ */
+function capitulosSuperados(s: Estado): Set<number> {
+  const nums = new Set<number>()
+  for (const r of s.registro) if (r.dato?.tipo === 'finMision' && r.dato.resultado === 'superada') nums.add(porId(r.dato.mision).num)
+  if (s.mision?.fin === 'superada') nums.add(porId(copia(s, s.mision.carta).id).num)
+  return nums
 }
+
+/** «256, 257 y 258». */
+function listaDeNumeros(nums: readonly number[]): string {
+  return nums.length <= 1 ? nums.join('') : `${nums.slice(0, -1).join(', ')} y ${nums[nums.length - 1]}`
+}
+
+/**
+ * Carta 293, «Las tres cruces del mapa»: «Baraja boca abajo los capítulos II de La Isla del Tesoro que no hayas superado
+ * (cartas 256, 257 y 258 del mazo de historia). Pon uno encima del mazo de Misiones sin mirarlo y devuelve los demás al mazo
+ * de historia.» Desde la 258, quedan la 256 y la 257.
+ */
+registrarEspecial('isla.tresCruces', (s) => {
+  const superados = capitulosSuperados(s)
+  const enHistoria = (n: number) => s.zonas.mazoHistoria.find((c) => porId(copia(s, c).id).num === n)
+  const nums = CAPITULOS_II_ISLA.filter((n) => !superados.has(n) && enHistoria(n) !== undefined)
+  if (nums.length === 0) {
+    anotar(s, 'efecto', 'No queda ningún capítulo II de «La Isla del Tesoro» por superar: no ocurre nada.')
+    return 'hecha'
+  }
+  s.infoRevelada++
+  const num = nums[entero(s, nums.length)] as number
+  const carta = enHistoria(num) as InstId
+  mover(s, carta, 'mazoMisiones', 'arriba')
+  anotar(s, 'efecto', `Barajas boca abajo las cartas ${listaDeNumeros(nums)} del mazo de historia y pones una encima del mazo de Misiones sin mirarla.`)
+  return 'hecha'
+})
+
+registrarCartaDeRecompensa('tres_cruces', () => [{ tipo: 'especial', clave: 'isla.tresCruces', datos: {}, paso: 0 }])
 
 registrarMision('isla-I', {
   alZarpar: () => [{ tipo: 'alZarparOpcional', coste: { tipo: 'descartar', n: 2 }, efectos: [avance(2)], texto: 'Descartar 2 cartas para ganar 2 de Avance (compras el mapa a la viuda)' }],
-  // «Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y
-  // devuelve las otras al mazo de historia.»
-  siguiente: (s) => alAzarDeHistoria(s, [256, 257, 258]) ?? 256,
-  conservarOtros: true,
 })
 
 // «…tomada por los ingleses»: al zarpar, la carta 95 entra en el mazo de Peligros; los #Armada# reciben +1.
@@ -195,17 +227,20 @@ registrarMision('isla-II-temblor', {
     if (antes < 3 && ahora >= 3) fallaPor(s, 'la cueva se viene abajo')
     return []
   },
-  // Elige: cargar con todo el oro (3 y cada Tripulante sufre 1 herida) o salir a tiempo (2 y robas 2).
+})
+
+// 294 «La cueva se viene abajo» (la recompensa de «…sacudida por un temblor»). «Elige: Cargas con todo el oro: gana 3 de
+// reputación; cada Tripulante sufre 1 herida. Sales a tiempo: gana 2 y roba 2.»
+registrarCartaDeRecompensa('cueva_abajo', {
+  efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) =>
     clave === 'oro' ? [{ tipo: 'aQuien', quien: { de: 'tripulacion', cada: true }, hacer: { tipo: 'heridas', n: 1 } }] : clave === 'salir' ? [robarN(2)] : [],
 })
 
-// «El mapa era falso»: cada Prueba de EXP que superes, 1 de Avance adicional. Al superarla, uno de los otros dos capítulos
-// II al azar.
+// «El mapa era falso»: cada Prueba de EXP que superes, 1 de Avance adicional. Su recompensa también es la carta 293 (como
+// ya está superado, se sortean los otros dos capítulos II).
 registrarMision('isla-II-falso', {
   capacidades: avanceAdicional('pista', 'EXP', 'La pista buena'),
-  siguiente: (s) => alAzarDeHistoria(s, [256, 257]) ?? 256,
-  conservarOtros: true,
 })
 
 // ---------------------------------------------------------------------------
@@ -649,13 +684,19 @@ const GALEON = 'pm_galeon'
 
 registrarMision('escolta-I', {
   alZarpar: () => [ponerEnJuego(GALEON)],
-  // {+2 rep}. Si la carta 273 tiene 3 o más Vida restante, +1 de reputación adicional y roba 2.
-  alSuperar: (s) => {
-    const vida = vidaRestanteDe(s, GALEON) ?? 0
-    if (vida < 3) return []
-    anotar(s, 'efecto', `El galeón llega con ${vida} de Vida: +1 de reputación y robas 2.`)
-    return [reputacion(1), robarN(2)]
-  },
+})
+
+// 295 «El galeón llega a puerto» (fase 15, cuarta ronda: la recompensa de la escolta, con «+2 [rep]» en el recuadro). «Si la
+// carta 273 tiene 3 o más Vida restante, gana 1 de reputación y roba 2.» Se coge antes de que el galeón vuelva al mazo de
+// historia (al terminar la misión).
+registrarCartaDeRecompensa('galeon_puerto', (s) => {
+  const vida = vidaRestanteDe(s, GALEON) ?? 0
+  if (vida < 3) {
+    anotar(s, 'efecto', `El galeón llega con ${vida} de Vida: no ganas nada más.`)
+    return []
+  }
+  anotar(s, 'efecto', `El galeón llega con ${vida} de Vida: +1 de reputación y robas 2.`)
+  return [reputacion(1), robarN(2)]
 })
 
 // Permanente 273, «Galeón San Telmo» (Vida 4).
@@ -694,14 +735,18 @@ function zarpasteEsteTurno(s: Estado, mision: CartaId): boolean {
   return false
 }
 
-registrarMision(ASEDIO, {
-  // {+2 rep}. Si la carta 275 tiene 4 o más Vida restante, +1 de reputación adicional.
-  alSuperar: (s) => {
-    const vida = vidaRestanteDe(s, MURALLAS) ?? 0
-    if (vida < 4) return []
-    anotar(s, 'efecto', `Las murallas aguantan con ${vida} de Vida: +1 de reputación.`)
-    return [reputacion(1)]
-  },
+registrarMision(ASEDIO, {})
+
+// 296 «Port Royal resiste» (fase 15, cuarta ronda: la recompensa del asedio, con «+2 [rep]» en el recuadro). «Si la carta
+// 275 tiene 4 o más Vida restante, gana 1 de reputación.»
+registrarCartaDeRecompensa('port_royal_resiste', (s) => {
+  const vida = vidaRestanteDe(s, MURALLAS) ?? 0
+  if (vida < 4) {
+    anotar(s, 'efecto', `Las murallas aguantan con ${vida} de Vida: no ganas nada más.`)
+    return []
+  }
+  anotar(s, 'efecto', `Las murallas aguantan con ${vida} de Vida: +1 de reputación.`)
+  return [reputacion(1)]
 })
 
 // «Obligado: Cuando esta misión pase a estar disponible, pon en juego la carta 275.» Las Murallas están en juego mientras

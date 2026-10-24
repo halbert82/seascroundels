@@ -51,7 +51,10 @@ describe('255 · El mapa del ahorcado (La Isla del Tesoro I)', () => {
     const { j, sale } = islaI(1)
     expect(j.registro).toContain('El mapa del ahorcado: +2 de Avance (2/5).')
     expect(j.estado.reputacion).toBe(1)
+    // Fase 15, cuarta ronda: el sorteo lo hace la carta de recompensa 293, que vuelve al mazo de historia.
+    expect(j.registro).toContain('Coges la carta 293 del mazo de historia: «Las tres cruces del mapa».')
     expect(j.registro).toContain('Barajas boca abajo las cartas 256, 257 y 258 del mazo de historia y pones una encima del mazo de Misiones sin mirarla.')
+    expect(j.zona('mazoHistoria')).toContain('tres_cruces')
     // Los otros dos vuelven al mazo de historia (no salen de la partida).
     for (const otro of ISLA_II.filter((x) => x !== sale)) expect(j.zona('mazoHistoria'), otro).toContain(otro)
     expect(j.zona('fueraDeJuego').filter((id) => ISLA_II.includes(id))).toEqual([])
@@ -98,7 +101,9 @@ describe('257 · …sacudida por un temblor', () => {
   it('final con elección: cargar con todo el oro (3 y cada Tripulante sufre 1 herida) o salir a tiempo (2 y robas 2)', () => {
     const oro = enPuerto({ misiones: ['isla-II-temblor'], tripulacion: ['viejo_lobo'], mazoPeligros: ['calma', 'calma', 'calma'] })
     oro.zarpar('isla-II-temblor').cubrir('viejo_lobo').seguir().seguir()
-    expect(oro.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'finalMision', carta: 'isla-II-temblor' } })
+    // Fase 15, cuarta ronda: el final con elección está en la carta de recompensa 294, «La cueva se viene abajo».
+    expect(oro.registro).toContain('Coges la carta 294 del mazo de historia: «La cueva se viene abajo».')
+    expect(oro.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'finalMision', carta: 'cueva_abajo' } })
     oro.opcion('oro')
     expect(oro.estado.reputacion).toBe(3)
     expect(oro.copia('capitan').heridas).toBe(1)
@@ -122,6 +127,52 @@ describe('258 · El mapa era falso', () => {
     expect(j.registro.some((r) => r.startsWith('Robas 2'))).toBe(true)
     expect(j.registro).toContain('Barajas boca abajo las cartas 256 y 257 del mazo de historia y pones una encima del mazo de Misiones sin mirarla.')
     expect(disponibles(j).some((id) => id === 'isla-II-ingleses' || id === 'isla-II-temblor')).toBe(true)
+  })
+})
+
+describe('293 · Las tres cruces del mapa (la carta de recompensa de 255 y 258)', () => {
+  it('superas la 258 y resuelves la carta: la 258 vuelve al mazo de historia, pero no puede volver a salir', () => {
+    const vistos = new Set<CartaId>()
+    for (let semilla = 1; semilla <= 20; semilla++) {
+      // Solo hay una 258: la que se juega. Las otras dos y la carta 293 esperan en el mazo de historia.
+      const j = enPuerto({
+        semilla,
+        misiones: ['isla-II-falso'],
+        mazoHistoria: ['isla-II-ingleses', 'isla-II-temblor', 'tres_cruces'],
+        tripulacion: ['viejo_lobo', 'vigia'],
+        mazoPeligros: ['fauna', 'chubasco', 'calma', 'calma'],
+      })
+      j.zarpar('isla-II-falso').cubrir('viejo_lobo')
+      j.comprometer('EXP', ['vigia']).seguir()
+      j.seguir()
+      expect(j.superadas).toEqual(['isla-II-falso'])
+      expect(j.registro).toContain('Coges la carta 293 del mazo de historia: «Las tres cruces del mapa».')
+      expect(j.registro).toContain('Barajas boca abajo las cartas 256 y 257 del mazo de historia y pones una encima del mazo de Misiones sin mirarla.')
+      // La 258 superada y la carta 293 vuelven al mazo de historia (regla general de Albert).
+      expect(j.zona('mazoHistoria')).toEqual(expect.arrayContaining(['isla-II-falso', 'tres_cruces']))
+      const sale = [...disponibles(j), ...j.zona('mazoMisiones')].filter((id) => ISLA_II.includes(id))
+      expect(sale).toHaveLength(1)
+      expect(sale[0]).not.toBe('isla-II-falso')
+      if (sale[0]) vistos.add(sale[0])
+      // Aunque la 258 está en el mazo de historia, si se volviera a coger la carta 293 no saldría: ya la has superado.
+      const s = j.estado
+      encolar(s, { tipo: 'cogerCarta', num: 293 })
+      s.pendiente = null
+      ejecutar(s)
+      expect(j.zona('mazoHistoria')).toContain('isla-II-falso')
+      expect([...disponibles(j), ...j.zona('mazoMisiones')]).not.toContain('isla-II-falso')
+    }
+    // Con 20 semillas salen los dos capítulos que quedan.
+    expect([...vistos].sort()).toEqual(['isla-II-ingleses', 'isla-II-temblor'])
+  })
+
+  it('sin ningún capítulo II por superar en el mazo de historia, no ocurre nada', () => {
+    const j = enPuerto({ misiones: ['isla-II-falso'], mazoHistoria: ['tres_cruces'], tripulacion: ['viejo_lobo', 'vigia'], mazoPeligros: ['fauna', 'chubasco', 'calma', 'calma'] })
+    j.zarpar('isla-II-falso').cubrir('viejo_lobo')
+    j.comprometer('EXP', ['vigia']).seguir()
+    j.seguir()
+    expect(j.registro).toContain('No queda ningún capítulo II de «La Isla del Tesoro» por superar: no ocurre nada.')
+    expect(j.zona('mazoHistoria')).toEqual(expect.arrayContaining(['isla-II-falso', 'tres_cruces']))
   })
 })
 
@@ -497,10 +548,23 @@ describe('272 · Escolta del San Telmo y la permanente 273 «Galeón San Telmo»
     expect(j.zona('permanentes')).toEqual(['pm_galeon'])
     j.seguir().seguir()
     expect(j.estado.reputacion).toBe(3)
+    // Fase 15, cuarta ronda: lo que depende de la Vida del galeón está en la carta de recompensa 295.
+    expect(j.registro).toContain('Coges la carta 295 del mazo de historia: «El galeón llega a puerto».')
     expect(j.registro).toContain('El galeón llega con 4 de Vida: +1 de reputación y robas 2.')
+    expect(j.zona('mazoHistoria')).toContain('galeon_puerto')
     // Al terminar la misión vuelve al mazo de historia.
     expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('mazoHistoria')).toContain('pm_galeon')
+  })
+
+  it('295 · «El galeón llega a puerto»: con menos de 3 de Vida, solo los 2 de reputación del recuadro', () => {
+    const j = enPuerto({ misiones: ['escolta-I'], mazoPeligros: ['calma', 'calma', 'calma'] })
+    j.zarpar('escolta-I')
+    j.copia('pm_galeon').heridas = 2
+    j.seguir().seguir()
+    expect(j.estado.reputacion).toBe(2)
+    expect(j.registro).toContain('El galeón llega con 2 de Vida: no ganas nada más.')
+    expect(j.registro.some((r) => r.startsWith('Robas 2'))).toBe(false)
   })
 
   it('cualquier Prueba que falles le inflige 1 daño, también las de NAV', () => {
@@ -568,9 +632,21 @@ describe('274 · El asedio de Port Royal y la permanente 275 «Murallas de Port 
     const j = enPuerto({ misiones: ['asedio-I'], mazoPeligros: ['calma', 'calma', 'calma', 'calma', 'calma'] })
     j.zarpar('asedio-I').seguir().seguir().seguir()
     expect(j.estado.reputacion).toBe(3)
+    // Fase 15, cuarta ronda: lo que depende de la Vida de las murallas está en la carta de recompensa 296.
+    expect(j.registro).toContain('Coges la carta 296 del mazo de historia: «Port Royal resiste».')
     expect(j.registro).toContain('Las murallas aguantan con 6 de Vida: +1 de reputación.')
+    expect(j.zona('mazoHistoria')).toContain('port_royal_resiste')
     expect(j.zona('permanentes')).toEqual([])
     expect(j.zona('mazoHistoria')).toContain('pm_murallas')
+  })
+
+  it('296 · «Port Royal resiste»: con menos de 4 de Vida, solo los 2 de reputación del recuadro', () => {
+    const j = enPuerto({ misiones: ['asedio-I'], mazoPeligros: ['calma', 'calma', 'calma', 'calma', 'calma'] })
+    j.zarpar('asedio-I')
+    j.copia('pm_murallas').heridas = 3
+    j.seguir().seguir().seguir()
+    expect(j.estado.reputacion).toBe(2)
+    expect(j.registro).toContain('Las murallas aguantan con 3 de Vida: no ganas nada más.')
   })
 
   it('durante la misión, pueden sufrir el daño del Barco en su lugar; si caen, la misión falla y va al fondo sin preguntar', () => {

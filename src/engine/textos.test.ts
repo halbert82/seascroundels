@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest'
 import { reputacionMinima } from './capacidades/misiones.ts'
 import { CATALOGO } from './catalogo.ts'
-import { misionesConReglas } from './misiones2/registro.ts'
+import { cartasDeRecompensaConEfecto, misionesConReglas } from './misiones2/registro.ts'
 import './motor.ts'
 import { DATOS, type DestinoDatos, type EncuentroDatos, type OperacionPrototipo } from './datos.ts'
 import { interpretarDestino } from './destinos.ts'
@@ -147,5 +147,17 @@ describe('Textos de las cartas que lee el motor', () => {
     expect([...misionesConReglas()].sort()).toEqual([...misiones].sort())
     expect(reputacionMinima('panama-III')).toBe(6) // fase 11 (P66)
     expect(reputacionMinima('deuda-I')).toBe(0)
+  })
+
+  it('las 11 cartas de recompensa (286 y, desde la cuarta ronda de la fase 15, 287–296) tienen su efecto escrito', () => {
+    const cartas = CATALOGO.filter((e) => e.tipo === 'recompensa')
+    expect(cartas.map((e) => e.num)).toEqual([286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296])
+    expect([...cartasDeRecompensaConEfecto()].sort()).toEqual(cartas.map((e) => e.id).sort())
+    // Cada una la coge al menos un recuadro de recompensa; y cada recuadro que coge una carta la nombra por su número.
+    const capitulos = CATALOGO.flatMap((e) => (e.tipo === 'capitulo' ? [e.carta] : []))
+    for (const e of cartas) expect(capitulos.some((c) => c.recompensa.coge === e.num), e.id).toBe(true)
+    for (const c of capitulos) if (c.recompensa.coge !== undefined) expect(c.recompensa.texto, c.nombre).toContain(`Coge la carta ${c.recompensa.coge} del mazo de historia.`)
+    // Los finales con elección (fase 15, cuarta ronda): sus opciones, en su carta de recompensa.
+    expect(cartas.filter((e) => e.tipo === 'recompensa' && e.carta.elige).map((e) => e.num)).toEqual([290, 291, 292, 294])
   })
 })

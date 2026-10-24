@@ -9,6 +9,7 @@ import { CATALOGO as TODAS, porId, type EntradaCatalogo, type TipoCarta } from '
 const CATALOGO = TODAS.filter((e) => !(e.tipo === 'peligro' && e.carta.retirada))
 import { CartaEscalada, dimensiones } from '../cartas/Carta.tsx'
 import { dorsoDeHistoria } from '../cartas/historia.ts'
+import { nombreImpresoDeLaMision } from '../cartas/vista.ts'
 import { DorsoEscalado } from '../mesa/Dorso.tsx'
 import './galeria.css'
 
@@ -85,7 +86,7 @@ function descripcion(e: EntradaCatalogo): string {
     case 'naufragio':
       return 'Mazo del naufragio'
     case 'recompensa':
-      return `Carta de recompensa · ${e.mision.nombre}`
+      return `Carta de recompensa · ${nombreImpresoDeLaMision(e.mision)}`
     case 'permanente':
       return e.carta.origen ? `Permanente · la pone en juego la carta ${porId(e.carta.origen).num}` : 'Permanente · la ponen en juego misiones'
     case 'peligro':

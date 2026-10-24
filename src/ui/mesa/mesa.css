@@ -2066,6 +2066,15 @@
   filter: drop-shadow(0 12px 22px rgba(0, 0, 0, 0.6));
 }
 
+/* Fase 15: la carta de recompensa cogida, debajo de la misión superada. */
+.fin-mision-cogida {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+
 .este-turno {
   margin-top: auto;
   display: flex;

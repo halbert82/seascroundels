@@ -683,7 +683,6 @@ export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; si
   const r = e.carta.recompensa
   const partes: string[] = []
   if (r.victoria) partes.push('¡ganas la partida!')
-  if (r.elige && r.elige.length > 0) partes.push(`eliges el final: ${r.elige.map((o) => o.texto.charAt(0).toLowerCase() + o.texto.slice(1)).join(' o ')}`)
   if (r.rep) partes.push(`+${r.rep} de reputación`)
   if (como.gesta) partes.push('+1 de reputación por la Gesta')
   if (r.search === 'crew') partes.push('buscas un Tripulante en el mazo de muelle')
@@ -691,14 +690,16 @@ export function partesDeRecompensa(misionId: string, como: { gesta?: boolean; si
   else if (r.search) partes.push('buscas una Mejora en el mazo de muelle')
   if (r.draw) partes.push(`robas ${n2(r.draw, 'carta', 'cartas')}`)
   if (r.pasajero) partes.push(`«${nombreDe(r.pasajero)}» sube a bordo como Pasajero`)
-  // Fase 15: «Coge la carta 286 del mazo de historia» (El naufragio del San José).
+  // Fase 15: «Coge la carta 286 del mazo de historia» (una carta de recompensa). Con un final con elección, sus opciones.
   if (r.coge !== undefined) {
     const carta = CATALOGO.find((c) => c.num === r.coge)
     partes.push(`coges la carta ${r.coge} del mazo de historia${carta ? `, «${nombreDe(carta.id)}»` : ''}`)
+    const elige = carta?.tipo === 'recompensa' ? (carta.carta.elige ?? []) : []
+    if (elige.length > 0) partes.push(`eliges el final: ${elige.map((o) => o.texto.charAt(0).toLowerCase() + o.texto.slice(1)).join(' o ')}`)
   }
   if (r.tesoro) partes.push(como.sinTesoro ? `no ganas el Tesoro «${nombreDe(r.tesoro)}»` : `ganas el Tesoro «${nombreDe(r.tesoro)}»`)
   const siguiente = como.siguiente ?? e.carta.siguiente[0]
-  if (siguiente !== undefined && !r.tesoro && !(r.elige && r.elige.length > 0)) {
+  if (siguiente !== undefined && !r.tesoro) {
     const capitulo = e.mision.capitulos.find((c) => c.num === siguiente)
     partes.push(capitulo ? `«${capitulo.nombre}» va encima del mazo de Misiones` : `la carta ${siguiente} va encima del mazo de Misiones`)
   }

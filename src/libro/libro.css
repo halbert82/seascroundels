@@ -2592,8 +2592,9 @@ body {
   font-family: 'Alegreya Sans', sans-serif;
   font-size: 8pt;
   line-height: 1.1;
-  /* Fase 15: algo más apretado para que el índice siga cabiendo en una página con los términos nuevos. */
-  margin: 0 0 0.3mm;
+  /* Fase 15: algo más apretado para que el índice siga cabiendo en una página con los términos nuevos (cuarta ronda: con
+     «Carta de recompensa», un poco más). */
+  margin: 0 0 0.2mm;
 }
 
 .indice-terminos .indice-linea .num-pag {

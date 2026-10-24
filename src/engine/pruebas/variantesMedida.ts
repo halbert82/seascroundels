@@ -13,7 +13,7 @@
 // Fase 11: la reputación nueva de las misiones (antes R1–R3), las Pruebas fáciles a 1 / 1 (A1) y las misiones iniciales
 // con precio (I2) ya están en los datos; I1 se descartó.
 
-import { porId } from '../catalogo.ts'
+import { CATALOGO, porId } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { MODOS } from '../preparacion.ts'
 import type { Modo } from '../tipos.ts'
@@ -57,7 +57,10 @@ export function aplicarVariante(v: VarianteMedida): void {
   }
   for (const [id, n] of Object.entries(v.reputacionCapitulo)) {
     const r = capitulo(id).recompensa
-    if (r.elige) for (const o of r.elige) o.rep = (o.rep ?? 0) + n
+    // Fase 15, cuarta ronda: un final con elección está en su carta de recompensa («Ante el altar»).
+    const cogida = r.coge !== undefined ? CATALOGO.find((e) => e.num === r.coge) : undefined
+    const elige = cogida?.tipo === 'recompensa' ? cogida.carta.elige : undefined
+    if (elige) for (const o of elige) o.rep = (o.rep ?? 0) + n
     else r.rep = (r.rep ?? 0) + n
   }
   for (const [id, n] of Object.entries(v.avanceCapitulo)) capitulo(id).avanceNecesario = n

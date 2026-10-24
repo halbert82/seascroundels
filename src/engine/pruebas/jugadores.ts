@@ -3,7 +3,7 @@
 // - con criterio: reglas sencillas de un jugador prudente (no es un jugador experto).
 
 import { aleatorio, barajarLista, entero, sembrar } from '../azar.ts'
-import { costeImpreso, destinoNaufragio, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
+import { CATALOGO, costeImpreso, destinoNaufragio, enroladoDe, esIndestructible, esUnica, iconosDe, porId, rasgosDe, tipoDe } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { destinoDe } from '../destinos.ts'
 import type { Efecto } from '../efectos.ts'
@@ -221,11 +221,21 @@ const PESO_CADENA = 0.2
 /** Reputación que da una misión al superarla (en un final con elección, la mejor opción). */
 function reputacionDe(c: CapituloDatos): number {
   const r = c.recompensa
-  // Fase 15: «El naufragio del San José» no da reputación (su recompensa es coger la carta 286, que hace bucear), pero lo
-  // que se saca del mazo del naufragio (el cofre y la llave, la culebrina, la campana, el diario, el doblón) vale para el
-  // jugador automático como 1.
-  if (r.coge !== undefined) return VALOR_NAUFRAGIO
-  return Math.max(r.rep ?? 0, ...(r.elige ?? []).map((o) => o.rep ?? 0))
+  return (r.rep ?? 0) + (r.coge !== undefined ? valorDeLaCogida(r.coge) : 0)
+}
+
+/**
+ * Lo que vale la carta de recompensa que se coge, en reputación. Fase 15: «El naufragio del San José» no da reputación
+ * (coges la carta 286, que hace bucear), pero lo que se saca del mazo del naufragio (el cofre y la llave, la culebrina, la
+ * campana, el diario, el doblón) vale para el jugador automático como 1. Cuarta ronda: en un final con elección («Ante el
+ * altar»), la mejor opción; las demás (lo que daban las misiones iniciales, el capítulo II al azar, lo que depende de la
+ * Vida del galeón o de las murallas) no cuentan, como antes.
+ */
+function valorDeLaCogida(num: number): number {
+  const e = CATALOGO.find((x) => x.num === num)
+  if (e?.tipo !== 'recompensa') return 0
+  if (e.carta.mazoNaufragio) return VALOR_NAUFRAGIO
+  return Math.max(0, ...(e.carta.elige ?? []).map((o) => o.rep ?? 0))
 }
 
 /** Lo que el jugador automático cree que vale el naufragio, en reputación (para elegir a qué misión zarpar). */
@@ -611,7 +621,7 @@ function elegirOpcion(s: Estado, d: Extract<Decision, { tipo: 'elegirOpcion' }>)
       // Final con elección: la reputación cuenta lo que da; un Tesoro vale más cuanto antes llegue; Maldito o
       // Perseguido restan un poco.
       const e = d.motivo.carta ? porId(d.motivo.carta) : null
-      const opciones = e?.tipo === 'capitulo' ? (e.carta.recompensa.elige ?? []) : []
+      const opciones = e?.tipo === 'recompensa' ? (e.carta.elige ?? []) : []
       const quedan = diasRestantes(s)
       // Con días por delante, un Tesoro vale como 3 de reputación (si empatan, la primera opción, que es la del Tesoro).
       const tesoro = quedan >= 3 ? 3 : quedan >= 1 ? 1.5 : 0

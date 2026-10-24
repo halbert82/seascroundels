@@ -64,7 +64,7 @@ export function descartarPeligro(s: Estado, carta: InstId): void {
   if (s.mision?.retirar.includes(carta)) {
     const id = copia(s, carta).id
     // Fase 15 (regla general de Albert): una carta del mazo de historia (la de un mazo propio) vuelve allí.
-    // TODO(regla) P110: con eso, la de un mazo propio puede volver a salir si se vuelve a barajar su mazo propio.
+    // P110 (Albert): sí, y por eso la de un mazo propio puede volver a salir si se vuelve a barajar su mazo propio.
     mover(s, carta, 'fueraDeJuego')
     const vuelve = esDeHistoria(id) ? ' y vuelve al mazo de historia' : ' del juego'
     anotar(s, 'efecto', `«${porId(id).carta.nombre}» se retira${vuelve}.`, { tipo: 'seRetira', carta: id })

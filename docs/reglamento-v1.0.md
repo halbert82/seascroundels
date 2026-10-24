@@ -69,7 +69,7 @@ El jugador pierde la partida si su Capitán queda derrotado, si se acaba el mazo
 > [!epigrafe] Carpintero de a bordo
 > «Pólvora, galleta, ron y cuerda. Lo demás lo pone el mar.»
 
-La Caja básica de Sea Scoundrels contiene 266 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
+La Caja básica de Sea Scoundrels contiene 276 cartas, que se dividen en cartas del jugador y cartas del escenario El Caribe.
 
 > [!tema]
 > Las cartas del jugador son lo tuyo: tu gente, tu barco y tus recursos. Las del escenario son el Caribe: lo que te espera ahí fuera, y no te espera con buenas intenciones.
@@ -100,7 +100,7 @@ La Caja básica de Sea Scoundrels contiene 266 cartas, que se dividen en cartas 
 | Pasajeros | 2 |
 | Permanentes | 17 |
 | Mazo del naufragio | 10 |
-| Cartas de recompensa | 1 |
+| Cartas de recompensa | 11 |
 
 Las cartas que no empiezan la partida en ningún mazo forman el **mazo de historia**: los capítulos II, III y IV, los Tesoros, los mazos propios, los barcos rivales, los Pasajeros, las permanentes, el mazo del naufragio, las cartas de recompensa y una de las cartas de Peligro. Cada una lleva su número de colección bien visible en el anverso y, en el dorso, el dorso del mazo al que va, con el mismo número.
 
@@ -174,7 +174,7 @@ La carta de puerto tiene el texto a la izquierda y la ilustración a la derecha.
 3. **Entorno:** es la primera pestaña (Mar, Naturaleza o Ciudad). Si lleva una franja azul con el icono de NAV y un número, ese número es su **Distancia**.
 4. **Avance:** es la pestaña del mapa. Indica el Avance necesario para superar la misión.
 5. **Texto de la misión:** contiene sus reglas especiales y sus capacidades **Al zarpar**. Algunas reglas ponen fichas de misión sobre la carta, y algunas misiones tienen una **Gesta** (reputación adicional si la misión se supera de cierta manera).
-6. **Recompensa:** indica la reputación (calavera) y lo demás que gana el jugador. Una etiqueta oscura indica, por su número de colección, qué carta se pone encima del mazo de Misiones o qué Tesoro se pone en juego. En un final con elección, la recompensa indica las dos opciones. La recompensa solo dice qué se gana o qué carta del mazo de historia hay que coger; si hace falta explicar alguna regla, la explica esa carta.
+6. **Recompensa:** indica la reputación (calavera) y lo demás que gana el jugador. Una etiqueta oscura indica, por su número de colección, qué carta se pone encima del mazo de Misiones o qué Tesoro se pone en juego. La recompensa solo dice qué se gana o qué carta del mazo de historia hay que coger; si hace falta explicar alguna regla, la explica esa carta, una **carta de recompensa**. En un final con elección, las dos opciones están en ella.
 7. **Mazo:** abajo a la izquierda, indica dónde va la carta al preparar la partida. Si va al mazo de historia, lleva al lado su número.
 
 #### Peligro
@@ -511,16 +511,16 @@ Después de resolver una carta de Peligro, el jugador puede retirarse y volver a
 
 En cuanto el jugador reúne el Avance que pide la misión, la supera. Debe resolver al menos una carta de Peligro: aunque empiece la misión con el Avance suficiente, no la supera hasta resolver la primera. Al superarla:
 
-1. Gana su recompensa. Si la misión tiene una **Gesta** y el jugador la ha cumplido («si superas la misión sin superar ninguna Prueba de COM»), gana además 1 de reputación. En un **final con elección**, elige una de las dos recompensas que indica.
+1. Gana su recompensa. Si la misión tiene una **Gesta** y el jugador la ha cumplido («si superas la misión sin superar ninguna Prueba de COM»), gana además 1 de reputación. En un **final con elección**, la recompensa es una carta de recompensa con dos opciones, y el jugador elige una (véase el paso 2).
 2. Si la recompensa indica una carta, búscala en el mazo de historia por su número de colección. Si es un capítulo, ponlo encima del mazo de Misiones, sin barajar. Si es un Tesoro, ponlo en juego sin coste. Si la recompensa dice «Coge la carta N», haz lo que dice esa carta y, al terminar, devuélvela al mazo de historia.
-3. Descarta las fichas de Avance y las fichas de misión, aparta la misión superada y repón las misiones disponibles hasta tener tantas como indica la carta de puerto.
+3. Descarta las fichas de Avance y las fichas de misión, aparta la misión superada y repón las misiones disponibles hasta tener tantas como indica la carta de puerto. Un capítulo II, III o IV superado es una carta del mazo de historia, así que vuelve a él.
 
 **Capítulos con salida doble.** Algunos capítulos I indican dos cartas posibles para el capítulo II («Si superas la misión sin haber superado ninguna Prueba de COM, pon la carta 219; si no, la 144»). Al superar el capítulo I, se pone encima del mazo de Misiones la carta que corresponda; la otra se queda en el mazo de historia.
 
-**Capítulo II al azar.** «La Isla del Tesoro» tiene tres capítulos II, sin letra. Al superar el capítulo I, el jugador los baraja boca abajo y pone uno encima del mazo de Misiones sin mirarlo; los otros dos vuelven al mazo de historia.
+**Capítulo II al azar.** «La Isla del Tesoro» tiene tres capítulos II, sin letra. Al superar el capítulo I, el jugador coge la carta 293, «Las tres cruces del mapa»: baraja boca abajo los capítulos II que no haya superado, pone uno encima del mazo de Misiones sin mirarlo y devuelve los demás al mazo de historia. «El mapa era falso», uno de los capítulos II, da la misma carta: como ya lo ha superado, solo se barajan los otros dos.
 
 > [!ejemplo]
-> El jugador supera «El mapa del ahorcado», el capítulo I de «La Isla del Tesoro». Baraja boca abajo las cartas 256, 257 y 258 y pone una encima del mazo de Misiones sin mirarla. Al reponer las misiones disponibles sale «…sacudida por un temblor»: hasta ese momento no sabía qué le esperaba en la isla.
+> El jugador supera «El mapa del ahorcado», el capítulo I de «La Isla del Tesoro», y coge la carta 293. Baraja boca abajo las cartas 256, 257 y 258 y pone una encima del mazo de Misiones sin mirarla. Al reponer las misiones disponibles sale «…sacudida por un temblor»: hasta ese momento no sabía qué le esperaba en la isla.
 
 Como el capítulo nuevo se pone encima del mazo de Misiones antes de reponer las misiones disponibles, aparece siempre de inmediato entre ellas. El jugador no está obligado a zarpar a él: puede dejarlo disponible para otro turno o mandarlo al fondo del mazo con el Tablón de encargos.
 
@@ -647,7 +647,7 @@ El jugador revela la carta superior del mazo de Peligros y lee su encuentro de M
 
 El jugador revela el Destino de la carta «Arrecife»: −1. El total baja a 5, que supera los 4 que pide la Prueba. Sin «Mano firme al timón», el total habría sido 3 y el jugador habría fallado. Gana 3 de Avance y, por superar la Turbonada, 1 más; además, la Turbonada queda atrás y la carta va al fondo del mazo. La misión tenía 1 y pedía 3: llega a 5 y el jugador la supera.
 
-**Recompensa.** La misión no da reputación, pero el Barco no ha sufrido daño: el jugador cumple la Gesta y gana 1. Adquiere sin coste la Vela mayor (la única Mejora del muelle de coste 1 o menos) y la pone en el Barco. Como precio, un Tripulante sufre 1 herida, que el jugador da a Diego. Aparta la misión, repone las misiones disponibles, descarta la carta del Destino (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
+**Recompensa.** La misión no da reputación, pero el Barco no ha sufrido daño: el jugador cumple la Gesta y gana 1. Coge la carta 288, «Pertrechos para el viaje»: adquiere sin coste la Vela mayor (la única Mejora del muelle de coste 1 o menos) y un Tripulante sufre 1 herida, que da a Diego. Devuelve la carta, aparta la misión, repone las misiones disponibles, descarta el Destino (la Turbonada sigue al fondo del mazo) y vuelve a puerto.
 
 **Fase de Final de turno.** El jugador conserva «¡Al abordaje!» y roba cuatro cartas para tener cinco. La Vela mayor le dará 1 de Avance al zarpar a su próxima misión de Mar.
 
@@ -856,7 +856,8 @@ Cañón es un Rasgo de cuatro Mejoras de barco: los Cañones de bronce, las Carr
 Un capítulo es cada una de las cartas de misión de una travesía. Su sello indica su número (de I a IV) y cuántos capítulos tiene la travesía. Los capítulos I empiezan en el mazo de Misiones; los demás, en el mazo de historia. Al superar un capítulo, su recompensa indica qué capítulo se pone encima del mazo de Misiones. Nunca se baraja: al reponer las misiones disponibles, sale enseguida.
 
 - **Salida doble:** tres travesías tienen dos capítulos II, «II-a» y «II-b». Su capítulo I indica cuál de ellos se añade según cómo se supere; el otro se queda en el mazo de historia.
-- **Capítulo al azar:** «La Isla del Tesoro» tiene tres capítulos II, sin letra. Al superar su capítulo I, el jugador los baraja boca abajo y pone uno encima del mazo de Misiones sin mirarlo; los otros dos vuelven al mazo de historia.
+- **Capítulo al azar:** «La Isla del Tesoro» tiene tres capítulos II, sin letra. Al superar su capítulo I, el jugador coge la carta 293, que los baraja boca abajo y pone uno encima del mazo de Misiones sin mirarlo; los otros dos vuelven al mazo de historia.
+- Un capítulo II, III o IV superado vuelve al mazo de historia, como toda carta del mazo de historia que sale del juego.
 
 *Véase también:* Travesía.
 
@@ -865,6 +866,15 @@ Un capítulo es cada una de las cartas de misión de una travesía. Su sello ind
 El Capitán es el Tripulante principal del jugador. Empieza en juego preparado y no cuenta para la Capacidad del Barco. Su carta indica el Mando del jugador. El jugador no puede despedirlo ni devolverlo al muelle.
 
 - Si el Capitán queda derrotado, el jugador pierde la partida.
+
+### Carta de recompensa
+
+Una carta de recompensa es una carta del mazo de historia que da una misión al superarla («Coge la carta 290 del mazo de historia»). Explica lo que la misión da cuando no basta con decir qué se gana: un final con elección, lo que dan las misiones iniciales, el capítulo II al azar de «La Isla del Tesoro» o el buceo en el naufragio. El jugador la busca por su número, hace lo que dice y, al terminar, la devuelve al mazo de historia. Su línea de tipo dice «Recompensa» y la misión que la da, y lleva el dorso de misión.
+
+> [!ejemplo]
+> El jugador supera «Escolta del San Telmo». Su recompensa le da 2 de reputación y dice «Coge la carta 295 del mazo de historia»: es «El galeón llega a puerto», que dice «Si la carta 273 tiene 3 o más Vida restante, gana 1 de reputación y roba 2». El galeón San Telmo ha llegado con 3 de Vida: el jugador gana 1 de reputación más y roba 2 cartas. Después devuelve la carta 295 al mazo de historia.
+
+*Véase también:* Mazo de historia.
 
 ### Clase
 
@@ -1087,7 +1097,10 @@ Las fichas de misión son fichas genéricas con las que una misión, o una perma
 
 ### Final con elección
 
-Final con elección es una recompensa del último capítulo de algunas travesías: al superar el capítulo, el jugador elige una de las dos opciones que indica (por ejemplo, un Tesoro y 2 de reputación, o 3 de reputación).
+Final con elección es una recompensa del último capítulo de algunas travesías y de «…sacudida por un temblor». Al superar el capítulo, el jugador coge la carta de recompensa que indica («Coge la carta 290 del mazo de historia») y elige una de las dos opciones de esa carta. Después la devuelve al mazo de historia.
+
+> [!ejemplo]
+> El jugador supera «El templo» y coge la carta 290, «Ante el altar». Si se lleva la Espada del sacerdote, pone en juego el Tesoro 121 y gana 2 de reputación, pero su Capitán queda Maldito. Si devuelve el ídolo a su altar, gana 3 de reputación. Elige el ídolo y devuelve la carta 290 al mazo de historia.
 
 ### Gesta
 
@@ -1235,10 +1248,10 @@ Otear consiste en mirar las cartas superiores del mazo de Peligros y devolver ca
 - Una carta con Alerta, como los barcos rivales, debe quedarse encima del mazo: el jugador no puede ponerla al fondo.
 - Si la misión revela sus cartas de un mazo propio mezclado con el de Peligros («El templo», «El galeón rezagado»), Otear mira ese mazo, el mismo del que se revelan los encuentros.
 
-Otras cartas miran cartas sin decir Otear y explican qué hacer con ellas. «Cobrar la deuda» dice: «Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles».
+Otras cartas miran cartas sin decir Otear y explican qué hacer con ellas. «El soplo del deudor», la carta de recompensa de «Cobrar la deuda», dice: «Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles».
 
 > [!ejemplo]
-> El jugador supera «Cobrar la deuda» y mira las 3 cartas superiores del mazo de Misiones: «Rumbo a la isla», «El Paso de los Vientos» y «El ladrón del puerto». Pone «Rumbo a la isla» al fondo y deja las otras dos encima, con «El ladrón del puerto» primero. Al reponer las misiones disponibles, sale «El ladrón del puerto».
+> El jugador supera «Cobrar la deuda», coge «El soplo del deudor» y mira las 3 cartas superiores del mazo de Misiones: «Rumbo a la isla», «El Paso de los Vientos» y «El ladrón del puerto». Pone «Rumbo a la isla» al fondo y deja las otras dos encima, con «El ladrón del puerto» primero. Al reponer las misiones disponibles, sale «El ladrón del puerto».
 
 ### Ocupar el muelle
 
@@ -1422,7 +1435,7 @@ Sin oposición es el efecto de algunos Destinos que solo se aplica cuando el jug
 
 ### Tesoro
 
-Un Tesoro es una carta única que otorgan algunas misiones («Pon en juego el Tesoro 121»). El jugador la busca por su número en el mazo de historia y la pone en juego de inmediato, sin coste. Si es una Mejora de tripulante, la vincula al Tripulante que elija.
+Un Tesoro es una carta única que otorgan algunas misiones («Pon en juego el Tesoro 142») o sus cartas de recompensa («Ante el altar»). El jugador la busca por su número en el mazo de historia y la pone en juego de inmediato, sin coste. Si es una Mejora de tripulante, la vincula al Tripulante que elija.
 
 - Un Tesoro no ocupa Espacio ni hueco de Mejora.
 - Si su portador queda derrotado, el jugador vincula el Tesoro a otro de sus Tripulantes.

@@ -160,10 +160,13 @@ describe('Lo que se explica junto a una carta ampliada', () => {
     expect(nombres('armada_patrulla')).toContain('Entra en el mazo de Peligros')
   })
 
-  it('en la recompensa de un capítulo, «Elige» es un final con elección', () => {
-    expect(nombres('templo-IV')).toContain('Final con elección')
-    expect(nombres('templo-IV')).not.toContain('Elige')
-    expect(nombres('templo-IV')).toContain('Maldito')
+  it('en una carta de recompensa, «Elige» es un final con elección', () => {
+    // Fase 15, cuarta ronda: la elección de «El templo» está en su carta de recompensa, «Ante el altar» (290).
+    expect(nombres('ante_altar')).toEqual(expect.arrayContaining(['Carta de recompensa', 'Final con elección', 'Maldito']))
+    expect(nombres('ante_altar')).not.toContain('Elige')
+    expect(nombres('templo-IV')).toContain('Carta de recompensa')
+    expect(nombres('fondeo_sanjose')).toEqual(expect.arrayContaining(['Carta de recompensa', 'Mazo del naufragio']))
+    expect(nombres('tres_cruces')).toContain('Capítulo al azar')
   })
 
   it('las fichas de misión de las reglas del capítulo', () => {

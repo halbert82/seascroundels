@@ -26,6 +26,7 @@ import {
   registrarMision,
   viajaContigo,
 } from './comun.ts'
+import { registrarCartaDeRecompensa } from './registro.ts'
 import { alarma } from './sueltas.ts'
 
 const avance = (n: number): Efecto => ({ tipo: 'ganarAvance', n })
@@ -83,7 +84,12 @@ registrarMision('templo-III', {
 // «El templo» (carta 120): el capítulo IV desde la fase 12 (antes, el III).
 registrarMision('templo-IV', {
   alZarpar: () => [mezclar(6)],
-  // La Espada del sacerdote: el Tesoro y 2 de reputación, pero tu Capitán queda Maldito.
+})
+
+// 290 «Ante el altar» (fase 15, cuarta ronda: la recompensa de «El templo»). «Elige: Te llevas la Espada del sacerdote: pon
+// en juego el Tesoro 121 y gana 2 de reputación; tu Capitán queda Maldito. Devuelves el ídolo a su altar: gana 3.»
+registrarCartaDeRecompensa('ante_altar', {
+  efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (s, clave) => {
     if (clave === 'espada' && s.zonas.tripulacion.includes(s.capitan) && ponerEstado(s, s.capitan, 'maldito')) {
       anotar(s, 'aviso', 'Tu Capitán queda Maldito.')
@@ -258,7 +264,12 @@ registrarMision('sanfelipe-III', {
       },
     },
   ],
-  // Vuelas el polvorín: el Barco queda Perseguido.
+})
+
+// 291 «La mecha encendida» (la recompensa de «El polvorín»). «Elige: Rescatas a tu amigo: gana 4 de reputación. Vuelas el
+// polvorín: pon en juego el Tesoro 146 y gana 3; el Barco queda Perseguido.»
+registrarCartaDeRecompensa('mecha_encendida', {
+  efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) => (clave === 'polvorin' ? [{ tipo: 'ponerEstadoBarco', estado: 'perseguido' }] : []),
 })
 
@@ -290,7 +301,13 @@ registrarMision('fantasma-I', {
 registrarMision('fantasma-II', {
   primeraSinAyuda: true,
   gesta: (s) => !hasSuperado(s, 'COM'),
-  // Le devuelves su bitácora: quita Maldito de todos tus Tripulantes.
+})
+
+// 292 «La bitácora del capitán muerto» (la recompensa de «El camarote del capitán»). «Elige: Te llevas el Farol de los
+// ahogados: pon en juego el Tesoro 150 y gana 3 de reputación. Le devuelves su bitácora: gana 4 y quita Maldito de todos tus
+// Tripulantes.»
+registrarCartaDeRecompensa('bitacora_capitan', {
+  efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) => (clave === 'bitacora' ? [{ tipo: 'quitarEstado', estado: 'maldito', de: 'todos' }] : []),
 })
 

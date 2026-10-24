@@ -9652,26 +9652,11 @@
      ],
      "ambientacion": "«Los sacerdotes nunca se fueron. Solo dejaron de respirar.»",
      "recompensa": {
-      "elige": [
-       {
-        "clave": "espada",
-        "texto": "Te llevas la Espada del sacerdote",
-        "rep": 2,
-        "tesoro": "espada",
-        "efecto": "tu Capitán queda Maldito"
-       },
-       {
-        "clave": "idolo",
-        "texto": "Devuelves el ídolo a su altar",
-        "rep": 3
-       }
-      ],
-      "texto": "**Elige:** la Espada del sacerdote y {+2 rep}, pero tu Capitán queda **Maldito**; o devuelves el ídolo a su altar: {+3 rep}."
+      "coge": 290,
+      "texto": "Coge la carta 290 del mazo de historia."
      },
-     "siguiente": [
-      121
-     ],
-     "textoSiguiente": "Pon en juego el Tesoro 121",
+     "siguiente": [],
+     "textoSiguiente": "",
      "mazoPropio": {
       "nombre": "mazo del Templo",
       "cartas": [
@@ -9923,8 +9908,7 @@
      "ambientacion": "«Aquí el Rey no ha puesto nunca el pie. Ni lo pondrá.»",
      "recompensa": {
       "rep": 2,
-      "tesoro": "mapa_calas",
-      "texto": "{+2 rep} y el Tesoro. Don Anselmo se baja y paga: roba {2 robar} y descártalo. Sin él, no hay Tesoro."
+      "tesoro": "mapa_calas"
      },
      "siguiente": [
       142
@@ -10015,26 +9999,11 @@
      ],
      "ambientacion": "«Una chispa y la fortaleza entera salta por los aires. Mejor que nos pille lejos.»",
      "recompensa": {
-      "elige": [
-       {
-        "clave": "amigo",
-        "texto": "Rescatas a tu amigo",
-        "rep": 4
-       },
-       {
-        "clave": "polvorin",
-        "texto": "Vuelas el polvorín",
-        "rep": 3,
-        "tesoro": "polvora_rey",
-        "efecto": "el Barco queda Perseguido"
-       }
-      ],
-      "texto": "**Elige:** rescatas a tu amigo: {+4 rep}; o vuelas el polvorín: {+3 rep} y el Tesoro, y el Barco queda **Perseguido**."
+      "coge": 291,
+      "texto": "Coge la carta 291 del mazo de historia."
      },
-     "siguiente": [
-      146
-     ],
-     "textoSiguiente": "Pon en juego el Tesoro 146"
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -10079,26 +10048,11 @@
      ],
      "ambientacion": "«Sigue en su sillón, con la bitácora abierta. Lleva cien años escribiendo.»",
      "recompensa": {
-      "elige": [
-       {
-        "clave": "farol",
-        "texto": "Te llevas el Farol de los ahogados",
-        "rep": 3,
-        "tesoro": "farol"
-       },
-       {
-        "clave": "bitacora",
-        "texto": "Le devuelves su bitácora y el barco se hunde en paz",
-        "rep": 4,
-        "efecto": "quitas Maldito de todos tus Tripulantes"
-       }
-      ],
-      "texto": "**Elige:** el Farol de los ahogados y {+3 rep}; o le devuelves su bitácora: {+4 rep} y quita **Maldito** de todos tus Tripulantes."
+      "coge": 292,
+      "texto": "Coge la carta 292 del mazo de historia."
      },
-     "siguiente": [
-      150
-     ],
-     "textoSiguiente": "Pon en juego el Tesoro 150"
+     "siguiente": [],
+     "textoSiguiente": ""
     }
    ]
   },
@@ -10123,8 +10077,8 @@
      ],
      "ambientacion": "«En Tortuga las deudas se pagan con oro o con sangre. Que elija él.»",
      "recompensa": {
-      "rep": 0,
-      "oteaMisiones": 3
+      "coge": 287,
+      "texto": "Coge la carta 287 del mazo de historia."
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -10152,14 +10106,8 @@
      ],
      "ambientacion": "«A ver de qué está hecha esta vieja.»",
      "recompensa": {
-      "rep": 0,
-      "adquiereGratis": 1,
-      "precio": [
-       {
-        "tipo": "heridas",
-        "n": 1
-       }
-      ]
+      "coge": 288,
+      "texto": "Coge la carta 288 del mazo de historia."
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -10186,14 +10134,8 @@
      ],
      "ambientacion": "«Agua dulce, leña seca y ni un alma. Casi demasiado fácil.»",
      "recompensa": {
-      "rep": 0,
-      "reclutaGratis": 2,
-      "precio": [
-       {
-        "tipo": "dano",
-        "n": 1
-       }
-      ]
+      "coge": 289,
+      "texto": "Coge la carta 289 del mazo de historia."
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -10222,7 +10164,7 @@
      "recompensa": {
       "rep": 1,
       "pasajero": "guia",
-      "texto": "{+1 rep} y pon en juego al Pasajero **El guía del istmo**."
+      "texto": "{+1 rep}. Pon en juego la carta 222."
      },
      "siguiente": [
       152
@@ -10349,13 +10291,10 @@
      "ambientacion": "«Lo colgaron por no decir dónde. Su viuda lo dirá por diez reales.»",
      "recompensa": {
       "rep": 1,
-      "texto": "{+1 rep}. Baraja boca abajo las cartas 256, 257 y 258 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve las otras al mazo de historia."
+      "coge": 293,
+      "texto": "{+1 rep}. Coge la carta 293 del mazo de historia."
      },
-     "siguiente": [
-      256,
-      257,
-      258
-     ],
+     "siguiente": [],
      "textoSiguiente": ""
     },
     {
@@ -10390,21 +10329,8 @@
      ],
      "ambientacion": "«La tierra tiembla cada hora. El oro no se va a mover; vosotros, sí.»",
      "recompensa": {
-      "elige": [
-       {
-        "clave": "oro",
-        "texto": "Cargas con todo el oro",
-        "rep": 3,
-        "efecto": "cada Tripulante sufre 1 herida"
-       },
-       {
-        "clave": "salir",
-        "texto": "Sales a tiempo",
-        "rep": 2,
-        "efecto": "robas 2"
-       }
-      ],
-      "texto": "**Elige:** cargar con todo el oro, {+3 rep} y cada Tripulante sufre {1 herida}; o salir a tiempo, {+2 rep} y roba {2 robar}."
+      "coge": 294,
+      "texto": "Coge la carta 294 del mazo de historia."
      },
      "siguiente": [],
      "textoSiguiente": "",
@@ -10424,12 +10350,10 @@
      "recompensa": {
       "rep": 1,
       "draw": 2,
-      "texto": "{+1 rep} y roba {2 robar}. Baraja boca abajo las cartas 256 y 257 del mazo de historia. Pon una encima del mazo de Misiones sin mirarla y devuelve la otra al mazo de historia."
+      "coge": 293,
+      "texto": "{+1 rep} y roba {2 robar}. Coge la carta 293 del mazo de historia."
      },
-     "siguiente": [
-      256,
-      257
-     ],
+     "siguiente": [],
      "textoSiguiente": "",
      "clave": "falso"
     }
@@ -10597,7 +10521,8 @@
      "ambientacion": "«Un galeón cargado y lento, y vosotros a su lado. Que nadie se acerque.»",
      "recompensa": {
       "rep": 2,
-      "texto": "{+2 rep}. Si la carta 273 tiene 3 o más Vida restante, {+1 rep} adicional y roba {2 robar}."
+      "coge": 295,
+      "texto": "{+2 rep}. Coge la carta 295 del mazo de historia."
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -10625,7 +10550,8 @@
      "ambientacion": "«Cada día que pasa, una brecha más en la muralla.»",
      "recompensa": {
       "rep": 2,
-      "texto": "{+2 rep}. Si la carta 275 tiene 4 o más Vida restante, {+1 rep} adicional."
+      "coge": 296,
+      "texto": "{+2 rep}. Coge la carta 296 del mazo de historia."
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -10975,7 +10901,7 @@
    "num": 221,
    "nombre": "Don Anselmo, el comerciante",
    "mision": "maracaibo",
-   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas.\nLos encuentros de tipo #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía o el Barco se hunde, se baja asustado: devuélvelo al mazo de historia. Sin él, la carta 141 no da el Tesoro.\nSe va al terminar la carta 141.",
+   "texto": "Viaja contigo, pero no es un Tripulante: no puede ser asignado ni recibir heridas, Estados ni Ventajas.\nLos encuentros de tipo #Guardia# y #Civil# reciben {−1 g} de dificultad.\nSi fallas una misión de esta travesía o el Barco se hunde, se baja asustado: devuélvelo al mazo de historia. Sin él, la carta 141 no da el Tesoro.\nSi superas la carta 141, se baja y paga: roba {2 robar}. Devuélvelo al mazo de historia.",
    "ambientacion": "«Mis papeles y mi bolsa abren puertas.»"
   },
   {
@@ -11311,6 +11237,142 @@
     284,
     285
    ]
+  },
+  {
+   "id": "soplo_deudor",
+   "num": 287,
+   "nombre": "El soplo del deudor",
+   "mision": "deuda",
+   "texto": "Mira las 3 cartas superiores del mazo de Misiones y devuélvelas encima o al fondo, en el orden que quieras, antes de reponer las misiones disponibles.",
+   "ambientacion": "«No tenía con qué pagarte, pero sabe quién zarpa mañana y adónde.»"
+  },
+  {
+   "id": "pertrechos",
+   "num": 288,
+   "nombre": "Pertrechos para el viaje",
+   "mision": "prueba",
+   "texto": "Adquiere sin coste una Mejora del muelle de coste 1 o menos.\nUn Tripulante sufre {1 herida}.",
+   "ambientacion": "«Lona nueva, brea fresca y una mano vendada.»"
+  },
+  {
+   "id": "gente_aguada",
+   "num": 289,
+   "nombre": "Gente de la aguada",
+   "mision": "aguada",
+   "texto": "Recluta sin coste un Tripulante del muelle de coste 2 o menos.\nEl Barco sufre {1 dano}.",
+   "ambientacion": "«Junto al pozo siempre hay alguien con ganas de dejar la isla.»"
+  },
+  {
+   "id": "ante_altar",
+   "num": 290,
+   "nombre": "Ante el altar",
+   "mision": "templo",
+   "texto": "**Elige:**\nTe llevas la Espada del sacerdote: pon en juego el Tesoro 121 y gana {2 rep}; tu Capitán queda **Maldito**.\nDevuelves el ídolo a su altar: gana {3 rep}.",
+   "ambientacion": "«Los ojos de jade del ídolo no se apartan de ti.»",
+   "elige": [
+    {
+     "clave": "espada",
+     "texto": "Te llevas la Espada del sacerdote",
+     "rep": 2,
+     "tesoro": "espada",
+     "efecto": "tu Capitán queda Maldito"
+    },
+    {
+     "clave": "idolo",
+     "texto": "Devuelves el ídolo a su altar",
+     "rep": 3
+    }
+   ]
+  },
+  {
+   "id": "mecha_encendida",
+   "num": 291,
+   "nombre": "La mecha encendida",
+   "mision": "sanfelipe",
+   "texto": "**Elige:**\nRescatas a tu amigo: gana {4 rep}.\nVuelas el polvorín: pon en juego el Tesoro 146 y gana {3 rep}; el Barco queda **Perseguido**.",
+   "ambientacion": "«Tu amigo grita tu nombre desde la celda. La mecha chisporrotea.»",
+   "elige": [
+    {
+     "clave": "amigo",
+     "texto": "Rescatas a tu amigo",
+     "rep": 4
+    },
+    {
+     "clave": "polvorin",
+     "texto": "Vuelas el polvorín",
+     "rep": 3,
+     "tesoro": "polvora_rey",
+     "efecto": "el Barco queda Perseguido"
+    }
+   ]
+  },
+  {
+   "id": "bitacora_capitan",
+   "num": 292,
+   "nombre": "La bitácora del capitán muerto",
+   "mision": "fantasma",
+   "texto": "**Elige:**\nTe llevas el Farol de los ahogados: pon en juego el Tesoro 150 y gana {3 rep}.\nLe devuelves su bitácora: gana {4 rep} y quita **Maldito** de todos tus Tripulantes.",
+   "ambientacion": "«La última página está en blanco.»",
+   "elige": [
+    {
+     "clave": "farol",
+     "texto": "Te llevas el Farol de los ahogados",
+     "rep": 3,
+     "tesoro": "farol"
+    },
+    {
+     "clave": "bitacora",
+     "texto": "Le devuelves su bitácora y el barco se hunde en paz",
+     "rep": 4,
+     "efecto": "quitas Maldito de todos tus Tripulantes"
+    }
+   ]
+  },
+  {
+   "id": "tres_cruces",
+   "num": 293,
+   "nombre": "Las tres cruces del mapa",
+   "mision": "isla",
+   "texto": "Baraja boca abajo los capítulos II de La Isla del Tesoro que no hayas superado ~(cartas 256, 257 y 258 del mazo de historia)~. Pon uno encima del mazo de Misiones sin mirarlo y devuelve los demás al mazo de historia.",
+   "ambientacion": "«Tres cruces y un solo tesoro. El ahorcado no dijo cuál.»"
+  },
+  {
+   "id": "cueva_abajo",
+   "num": 294,
+   "nombre": "La cueva se viene abajo",
+   "mision": "isla",
+   "texto": "**Elige:**\nCargas con todo el oro: gana {3 rep}; cada Tripulante sufre {1 herida}.\nSales a tiempo: gana {2 rep} y roba {2 robar}.",
+   "ambientacion": "«Las paredes crujen. El oro pesa.»",
+   "elige": [
+    {
+     "clave": "oro",
+     "texto": "Cargas con todo el oro",
+     "rep": 3,
+     "efecto": "cada Tripulante sufre 1 herida"
+    },
+    {
+     "clave": "salir",
+     "texto": "Sales a tiempo",
+     "rep": 2,
+     "efecto": "robas 2"
+    }
+   ]
+  },
+  {
+   "id": "galeon_puerto",
+   "num": 295,
+   "nombre": "El galeón llega a puerto",
+   "mision": "escolta",
+   "texto": "Si la carta 273 tiene 3 o más Vida restante, gana {1 rep} y roba {2 robar}.",
+   "ambientacion": "«Su capitán os paga según llegue el casco.»"
+  },
+  {
+   "id": "port_royal_resiste",
+   "num": 296,
+   "nombre": "Port Royal resiste",
+   "mision": "asedio",
+   "texto": "Si la carta 275 tiene 4 o más Vida restante, gana {1 rep}.",
+   "ambientacion": "«Si las murallas aguantan, el gobernador no lo olvidará.»"
   }
  ]
 }

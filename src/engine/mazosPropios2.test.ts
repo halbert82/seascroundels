@@ -25,7 +25,7 @@ describe('122 · Guerreros esqueleto', () => {
   it('COM 4: si superas, esta carta Se retira; si fallas, Inflige 2 heridas, libres (fase 13)', () => {
     const j = en('nat', ['esqueleto', 'calma', 'calma'], { tripulacion: ['reinaldo'] })
     j.comprometer('COM', ['capitan', 'reinaldo']).seguir()
-    // Fase 15 (regla general de Albert): es una carta del mazo de historia, así que vuelve a él (TODO(regla) P110).
+    // Fase 15 (regla general de Albert): es una carta del mazo de historia, así que vuelve a él (P110, confirmada por Albert).
     expect(j.zona('fueraDeJuego')).not.toContain('esqueleto')
     expect(j.zona('mazoHistoria')).toContain('esqueleto')
     expect(j.registro).toContain('«Guerreros esqueleto» se retira y vuelve al mazo de historia.')
@@ -34,6 +34,15 @@ describe('122 · Guerreros esqueleto', () => {
     k.comprometer('COM', ['capitan']).seguir().repartir({ capitan: 1, carpintero: 1 })
     expect(k.copia('capitan').heridas).toBe(1)
     expect(k.copia('carpintero').heridas).toBe(1)
+  })
+
+  it('P110 (Albert): como vuelve al mazo de historia, sale otra vez si se vuelve a barajar el mazo del Templo', () => {
+    // En «El templo» superas a los esqueletos (vuelven al mazo de historia), fallas la misión y la dejas disponible. Al zarpar
+    // otra vez, el mazo del Templo se baraja con las cartas suyas que estén en el mazo de historia: los esqueletos también.
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], misiones: ['templo-IV'], mazoHistoria: ['esqueleto'], mazoPeligros: Array.from({ length: 7 }, () => 'calma') })
+    j.zarpar('templo-IV')
+    expect([...j.zona('mazoMision'), ...j.zona('encuentro'), ...j.zona('descartesMision'), ...j.zona('destino')]).toContain('esqueleto')
+    expect(j.zona('mazoHistoria')).not.toContain('esqueleto')
   })
 
   it('Destino «Huesos que se levantan»: si fallas, la carta vuelve encima del mazo; Sin oposición, 1 herida', () => {

@@ -42,8 +42,6 @@ export interface ReglasMision {
   conTesoro?: (s: Estado) => boolean
   /** Lo que pasa además al superarla (después de la recompensa impresa). */
   alSuperar?: (s: Estado) => NuevaTarea[]
-  /** Final con elección: lo que pasa además con la opción elegida («tu Capitán queda Maldito»). */
-  alElegir?: (s: Estado, clave: string) => NuevaTarea[]
   /** Lo que pasa al no superarla (retirada, fallo o hundimiento). */
   alNoSuperar?: (s: Estado) => NuevaTarea[]
   /** Te retiras por tu cuenta entre dos Peligros: cobras según tu Avance. */
@@ -51,11 +49,6 @@ export interface ReglasMision {
   /** La primera Prueba de la misión es Sin ayuda. */
   primeraSinAyuda?: boolean
   // Fase 15
-  /**
-   * Con `siguiente`, el capítulo elegido no deja fuera de la partida a los demás de la lista: se quedan en el mazo de
-   * historia («La Isla del Tesoro»: uno de los tres capítulos II, al azar).
-   */
-  conservarOtros?: boolean
   /** Si devuelve tareas, se cobran en lugar de la recompensa impresa (sin Tesoro ni capítulo siguiente). */
   recompensaEnLugar?: (s: Estado) => NuevaTarea[] | null
   /** Si no la superas, no eliges si la dejas disponible: sale de la partida («apártala»). */
@@ -104,14 +97,24 @@ export function misionesConReglas(): CartaId[] {
  * 286 del mazo de historia»). Su texto es para leerlo; lo que hace está escrito a mano. Al terminar, vuelve al mazo de
  * historia.
  */
-const CARTAS_DE_RECOMPENSA = new Map<CartaId, (s: Estado) => NuevaTarea[]>()
-
-export function registrarCartaDeRecompensa(id: CartaId, efecto: (s: Estado) => NuevaTarea[]): void {
-  if (CARTAS_DE_RECOMPENSA.has(id)) throw new Error(`Carta de recompensa repetida: ${id}`)
-  CARTAS_DE_RECOMPENSA.set(id, efecto)
+export interface ReglasCartaDeRecompensa {
+  /** Lo que hace al cogerla. `carta` es la copia cogida. */
+  efecto: (s: Estado, carta: InstId) => NuevaTarea[]
+  /**
+   * Cuarta ronda: un final con elección («Ante el altar»). Lo que pasa además con la opción elegida («tu Capitán queda
+   * Maldito»); la reputación y el Tesoro de cada opción están en sus datos (`elige`).
+   */
+  alElegir?: (s: Estado, clave: string) => NuevaTarea[]
 }
 
-export function efectoDeRecompensa(id: CartaId): ((s: Estado) => NuevaTarea[]) | undefined {
+const CARTAS_DE_RECOMPENSA = new Map<CartaId, ReglasCartaDeRecompensa>()
+
+export function registrarCartaDeRecompensa(id: CartaId, reglas: ReglasCartaDeRecompensa['efecto'] | ReglasCartaDeRecompensa): void {
+  if (CARTAS_DE_RECOMPENSA.has(id)) throw new Error(`Carta de recompensa repetida: ${id}`)
+  CARTAS_DE_RECOMPENSA.set(id, typeof reglas === 'function' ? { efecto: reglas } : reglas)
+}
+
+export function reglasDeRecompensa(id: CartaId): ReglasCartaDeRecompensa | undefined {
   return CARTAS_DE_RECOMPENSA.get(id)
 }
 

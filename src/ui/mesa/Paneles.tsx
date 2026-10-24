@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { LIBROS } from '../reglamento.ts'
 import { useEffect, useRef, type ReactNode } from 'react'
-import { esCarta, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
+import { CATALOGO, esCarta, nombreDe, porId, tipoDe } from '../../engine/catalogo.ts'
 import { partesDeRecompensa } from '../textos/decisiones.ts'
 import { CartaEscalada } from '../cartas/Carta.tsx'
 import { resumenDePartida } from '../../engine/resumen.ts'
@@ -324,11 +324,21 @@ export function FinDeMision({ s, desde, alCerrar, elegir }: { s: Estado; desde: 
     ...(capituloSalida ? { siguiente: capituloSalida.num } : {}),
   }
   const recompensa = fin.resultado === 'superada' ? frase(partesDeRecompensa(fin.mision, como)) : ''
+  // Fase 15: la carta de recompensa que se coge («Coge la carta 290 del mazo de historia»), para leerla junto a la misión.
+  const mision = porId(fin.mision)
+  const coge = fin.resultado === 'superada' && mision.tipo === 'capitulo' ? mision.carta.recompensa.coge : undefined
+  const cogida = coge !== undefined ? CATALOGO.find((c) => c.num === coge) : undefined
   return (
     <Capa alCerrar={alCerrar} clase={`fin-mision ${r.clase}`}>
       <div className="fin-mision-cuerpo">
         <div className="fin-mision-carta">
-          <CartaEscalada entrada={porId(fin.mision)} escala={0.5} />
+          <CartaEscalada entrada={mision} escala={0.5} />
+          {cogida && (
+            <div className="fin-mision-cogida">
+              <span className="fin-rotulo">Carta de recompensa</span>
+              <CartaEscalada entrada={cogida} escala={0.34} />
+            </div>
+          )}
         </div>
         <div className="fin-mision-texto">
           <span className="fin-rotulo">{r.titulo}</span>
