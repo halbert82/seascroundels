@@ -237,3 +237,16 @@ describe('Fase 15, quinta ronda · partidas guardadas con Pólvora mojada o con 
     expect(t.cartas[brujula]?.vinculadaA).toBeNull()
   })
 })
+
+describe('Fase 16 · partidas guardadas con fichas de Estado y de Ventaja', () => {
+  it('las fichas que había siguen puestas como cartas, y «no se prepara en tu próxima Fase de Inicio» pasa a Extenuado', () => {
+    const j = Jugador.en({ tripulacion: [{ id: 'bucanero', estados: ['envenenado', 'inspirado'] }, 'vigia'], barco: { estados: ['viaDeAgua'] } })
+    const viejo = JSON.parse(serializar(j.estado)) as Estado
+    viejo.temporales.push({ clave: 'noPrepara', fuente: 'p2_murcielagos', hasta: 'inicio', inst: inst(viejo, 'vigia') })
+    const t = deserializar(JSON.stringify(viejo))
+    expect(t.cartas[inst(t, 'bucanero')]?.estados).toEqual(['envenenado', 'inspirado'])
+    expect(t.estadosBarco).toEqual(['viaDeAgua'])
+    expect(t.cartas[inst(t, 'vigia')]?.estados).toEqual(['extenuado'])
+    expect(t.temporales.some((x) => x.clave === 'noPrepara')).toBe(false)
+  })
+})

@@ -173,7 +173,12 @@ export const usar: Manejador<'usar'> = (s, t) => {
         continue
       }
       if (coste.tipo === 'agotarTripulante') {
-        encolar(s, coste.rasgos ? { tipo: 'agotarParaPagar', rasgo: coste.rasgo, rasgos: coste.rasgos } : { tipo: 'agotarParaPagar', rasgo: coste.rasgo })
+        encolar(s, {
+          tipo: 'agotarParaPagar',
+          rasgo: coste.rasgo,
+          ...(coste.rasgos ? { rasgos: coste.rasgos } : {}),
+          ...(coste.otro && fuente ? { menos: fuente } : {}),
+        })
         continue
       }
       if (coste.tipo === 'agotarCanon') {

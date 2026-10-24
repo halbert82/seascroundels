@@ -29,6 +29,9 @@ export const COLOR_TIPO = {
   naufragio: '#34505A',
   /** Fase 15 (tercera ronda): las cartas de recompensa del mazo de historia («Coge la carta 286 del mazo de historia»). */
   recompensa: '#5A4A2E',
+  /** Fase 16: las cartas mini de Estado (rojo) y de Ventaja (verde). */
+  estado: '#8E2B23',
+  ventaja: '#3D6631',
 } as const
 
 /** El color de cada Clase (fase 10c): enmarca todas sus cartas, de cualquier tipo. */
@@ -265,7 +268,24 @@ export interface HistoriaDeCarta {
   dorso: DorsoHistoria
 }
 
-export type VistaCarta = (VistaJugador | VistaPeligro | VistaMazoPropio | VistaCapitulo | VistaPuerto) & { historia?: HistoriaDeCarta }
+/**
+ * Fase 16: carta mini de Estado o de Ventaja (como los estados de Marvel Champions): el nombre, la línea de tipo
+ * («Estado · Tripulante») y el texto, con el marco rojo (Estados) o verde (Ventajas).
+ */
+export interface VistaMini {
+  forma: 'mini'
+  num: number
+  codigo: string
+  nombre: string
+  tipoTexto: string
+  color: string
+  ventaja: boolean
+  texto: Segmento[]
+  /** Cuántas copias hay en la caja («×6»). */
+  copias: number
+}
+
+export type VistaCarta = (VistaJugador | VistaPeligro | VistaMazoPropio | VistaCapitulo | VistaPuerto | VistaMini) & { historia?: HistoriaDeCarta }
 
 // ---------------------------------------------------------------------------
 
@@ -382,6 +402,21 @@ export function vistaDeCarta(entrada: EntradaCatalogo): VistaCarta {
 
 function vistaSinHistoria(entrada: EntradaCatalogo): VistaCarta {
   switch (entrada.tipo) {
+    case 'estado': {
+      const c = entrada.carta
+      const ventaja = c.clase === 'Ventaja'
+      return {
+        forma: 'mini',
+        num: entrada.num,
+        codigo: codigoColeccion(entrada.num),
+        nombre: c.nombre,
+        tipoTexto: c.de ? `${c.clase} · ${c.de}` : c.clase,
+        color: ventaja ? COLOR_TIPO.ventaja : COLOR_TIPO.estado,
+        ventaja,
+        texto: parsearTexto(c.texto, UNIR),
+        copias: c.copias,
+      }
+    }
     case 'capitan': {
       const c = entrada.carta
       return {
@@ -722,6 +757,7 @@ export function textosDeLaCarta(entrada: EntradaCatalogo): string[] {
     case 'permanente':
     case 'naufragio':
     case 'recompensa':
+    case 'estado':
       return [entrada.carta.texto]
     case 'habilidad':
       return []

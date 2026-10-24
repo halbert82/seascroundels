@@ -55,7 +55,7 @@ export function opcionesDelPuerto(s: Estado): OpcionPuerto[] {
     if (s.zonas.tripulacion.some((c) => huecosLibres(s, c) > 0)) {
       opciones.push({
         clave: 'propia',
-        texto: `${puerto.habilidadPropia.nombre}: ficha de +1 en un Tripulante`,
+        texto: `${puerto.habilidadPropia.nombre}: +1 a una habilidad de un Tripulante`,
         tareas: [{ tipo: 'ponerEntrenamiento', entre: [...s.zonas.tripulacion], hab: null, carta: null }],
       })
     }

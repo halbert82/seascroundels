@@ -32,7 +32,7 @@ export function quitarFichasDeEnrolado(s: Estado): NuevaTarea[] {
     const t = copia(s, c)
     if (c === s.capitan || t.enrolado === undefined || t.enrolado <= 0) continue
     t.enrolado--
-    if (t.enrolado > 0) anotar(s, 'efecto', `${nombre(s, c)} pierde 1 ficha de Enrolado: le ${t.enrolado === 1 ? 'queda 1' : `quedan ${t.enrolado}`}.`)
+    if (t.enrolado > 0) anotar(s, 'efecto', `${nombre(s, c)}: su Enrolado baja a ${t.enrolado}.`)
     else tareas.push({ tipo: 'sacarTripulante', carta: c, destino: 'descartesMuelle', motivo: 'enrolado' })
   }
   return tareas

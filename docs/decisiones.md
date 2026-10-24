@@ -1459,3 +1459,81 @@ Albert: «Cuerda de presos», «Alas sobre el fondeadero» y las demás cartas q
 - **El cofre y la llave se juntan 9 veces** (9 de reputación en 1000 partidas: casi nada; la reputación cuesta bucear mucho). **El doblón sale 42 veces** (22 % de los naufragios) y salva al Capitán 6.
 - La culebrina entra en juego 34 veces (3, sin Espacio, vuelve al mazo); el diario sale 36 veces y trae «El prisionero de Portobelo» (Panamá) en 15 (el jugador automático lo prefiere), sin que suban las victorias de Panamá. El pulpo: 28 veces lo sacan entre dos y 3 se suelta solo. Ningún Tripulante queda derrotado buceando.
 - Lo demás, como antes: el galeón se hunde 36 veces; el fugitivo escapa 154 y se le captura 197.
+
+## Fase 16: Estados y Ventajas como cartas, y juego sin fichas (24 de octubre de 2026)
+
+### Reglas generales (Albert)
+
+- **Los Estados y las Ventajas son cartas mini** (41 × 63 mm, como los estados de Marvel Champions), con el marco rojo (Estados) o verde (Ventajas). Cada carta se pone sobre el Tripulante o junto al Barco y dice qué hace y cómo se quita.
+- No van en ningún mazo: forman una **reserva** aparte. «Queda Envenenado» = coger una carta de Envenenado de la reserva y ponerla sobre el Tripulante. «Quitar un Estado» o «descarta esta carta» = devolverla a la reserva. No hay pila de descartes.
+- Se mantienen: nadie tiene dos veces el mismo Estado o Ventaja (ni el Barco); si un Tripulante sale del juego, sus cartas vuelven a la reserva; la Taberna quita todos los Estados de los Tripulantes y el Astillero, todos los del Barco (lo dice la carta de puerto); la Taberna no quita las Ventajas; en puerto, los Estados se quitan antes de curar o reparar.
+- **Copias:** 6 de cada Estado de Tripulante (Envenenado, Sangrando, Asustado, Borracho, Buscado, Maldito y Extenuado), 6 de cada Ventaja (Inspirado y Aguerrido) y 1 de cada Estado del Barco (Vía de agua, Velas rotas y Perseguido) y de Desánimo: **58 cartas mini y 13 cartas distintas** (Albert escribió 16: son 7 + 2 + 3 + 1 = 13). Números 297 a 309. La caja pasa a 333 cartas. Con Capacidad 4, +1 con las Hamacas, y el Capitán, nunca hay más de 6 Tripulantes: las 6 copias bastan siempre (hay una prueba que lo comprueba).
+
+### Las cartas (297–309)
+
+| Nº | Carta | Tipo | Texto |
+| --- | --- | --- | --- |
+| 297 | Vía de agua | Estado · Barco | **Obligado:** Después de resolver cada carta de Peligro en una misión de [mar], el Barco sufre 1 daño, salvo que agotes a un Tripulante preparado. **Acción:** Agota a un _Carpintero_: descarta esta carta. |
+| 298 | Velas rotas | Estado · Barco | Las Distancias de todas las misiones son 1 mayores. [mar]: Tus Pruebas de [NAV] reciben −1. **Acción:** Agota a un _Carpintero_: descarta esta carta. |
+| 299 | Perseguido | Estado · Barco | Los encuentros de tipo Armada reciben +1 de dificultad. **Obligado:** Después de que superes un encuentro de tipo Armada, descarta esta carta. |
+| 300 | Desánimo | Estado (junto al Barco) | **Obligado:** Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta. |
+| 301 | Envenenado | Estado · Tripulante | **Obligado:** Al final del turno, este Tripulante sufre 1 herida. **Acción:** Agota a un _Cirujano_: descarta esta carta. |
+| 302 | Sangrando | Estado · Tripulante | **Obligado:** Después de que este Tripulante se agote, sufre 1 herida. **Acción:** Agota a otro Tripulante preparado: descarta esta carta. |
+| 303 | Asustado | Estado · Tripulante | Este Tripulante no puede ser asignado solo a una Prueba. **Acción:** Agota a un _Oficial_: descarta esta carta. **Obligado:** Al final del turno, descarta esta carta. |
+| 304 | Borracho | Estado · Tripulante | Este Tripulante recibe +1 COM y no puede ser asignado a Pruebas de [NAV] ni de [EXP]. **Obligado:** Al final del turno, descarta esta carta. |
+| 305 | Buscado | Estado · Tripulante | Este Tripulante no puede ser asignado en las misiones de [ciu]. **Acción:** En la Fase de Reclutamiento, descarta 1 carta de tu mano: descarta esta carta. |
+| 306 | Maldito | Estado · Tripulante | Las Pruebas en las que participe este Tripulante reciben −1 a su total. **Obligado:** Después de que superes una Prueba en la que participe este Tripulante, descarta esta carta. |
+| 307 | Extenuado | Estado · Tripulante | **Obligado:** Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta esta carta. |
+| 308 | Inspirado | Ventaja · Tripulante | Las Pruebas en las que participe este Tripulante reciben +1 a su total. **Obligado:** Al final del turno, descarta esta carta. |
+| 309 | Aguerrido | Ventaja · Tripulante | **Obligado:** Cuando este Tripulante vaya a agotarse al ser asignado a una Prueba, descarta esta carta: no se agota. |
+
+**Lo que he ajustado de los textos (sin cambiar lo que hacen):**
+
+- **Velas rotas:** las dos frases, en el orden contrario («Las Distancias…» primero y «[mar]: Tus Pruebas de [NAV] reciben −1» después). Con el icono del Mar delante de las dos, parecía que las Distancias solo aumentaban en el Mar; aumentan siempre, como hasta ahora.
+- **Desánimo y Extenuado:** con «**Obligado:**» delante, como las demás capacidades que se aplican solas (Borracho, Aguerrido…).
+- Los números con su marcado ({−1}, {+1}), como en el resto de cartas, y la cursiva de las ambientaciones de los Peligros con el marcado de `cartas.json` (~…~) en lugar de los asteriscos.
+
+### Cartas que cambian
+
+- **Extenuado** sustituye a «no se prepara en tu próxima Fase de Inicio»: 164 «La ciudad se hunde», 181 «Alas sobre el fondeadero», 189 «Cuerda de presos» y 213 «Tambores en la noche», con los textos de Albert.
+- **Desánimo** sustituye a «−1 Mando en tu próximo turno» y a «roba 1 carta menos»: 176 «Carestía», 200 «Demasiadas voces», 212 «Albatros muerto» y 188 «Oídos en la pared». El castigo llega al final del mismo turno (decisión de Albert; antes, P29, al final del siguiente). Ya no queda «−1 Mando» en ninguna carta de la caja: fuera del reglamento (entrada Mando y Referencia rápida).
+- **271 El doblón de la calavera:** «Tu Capitán tiene una carta de **Maldito** que no se puede descartar mientras esta carta esté en juego.»
+- **Otros textos de la caja que hablaban de fichas de Estado o de Ventaja:** ninguno más. Tampoco he encontrado textos que se lean mal con cartas («queda Envenenado», «quita Maldito de todos tus Tripulantes» y «quita todos los Estados» se leen igual). Las «fichas» que quedan en las cartas son de contadores (ver P112).
+
+### Juego sin fichas: cartas y dados (principio de fabricación de Albert)
+
+- **Reglamento:** Componentes (las cartas mini en una tabla nueva y «Dados» en lugar de «Fichas»), Preparación (paso 8: la reserva y los dados; la reputación empieza en 0), y todas las entradas que hablaban de fichas: Avance, Daño, Herida, Enrolado, Entrenamiento (un dado sobre el icono de esa habilidad), Permanente, Estado y Ventaja (cartas), Mando (Desánimo), la Referencia rápida y los ejemplos.
+- **«Fichas de misión» pasa a llamarse «Contadores»** (la entrada de la Referencia y el apartado de «Aprende a jugar»). No cambian los nombres de lo que se cuenta (Alarma, Rival…). Como las cartas siguen diciendo «pon 1 ficha de Alarma», el reglamento lo explica: cada «ficha» que nombra una carta es un punto del contador.
+- **Dados que hacen falta:** medido en 1000 partidas, contando cada número hasta donde tiene efecto (el Avance hasta lo que pide la misión, el Rival hasta 8): **como mucho 12 dados a la vez**; la mitad de las veces bastan 6, y en el 99 % de las partidas no pasan de 9. Pasan de 6 la reputación (hasta 12, o 16 en la partida larga), el Rival (8) y el Avance de algunas misiones (7): van con dos dados. Lo demás no pasa de 6 (Ladrón 5, Mecha 4, daño del Barco 6 con el Casco reforzado, las heridas de un Tripulante hasta 5). El reglamento dice «Con 12 dados basta para cualquier partida» (es una propuesta para la caja).
+- **En la mesa** los contadores se dibujan como la cara de un dado.
+
+### Motor, mesa y jugador automático
+
+- Cada carta de Estado tiene sus capacidades en el registro, con el identificador de su carta («estado:envenenado»): los modificadores de siempre, la Obligada de Vía de agua, el −1 al robar del Desánimo y las Acciones que las descartan (Buscado, Envenenado, Sangrando, Asustado, Vía de agua y Velas rotas). Lo que pasa al final del turno, al preparar y al superar una Prueba lo siguen aplicando las reglas del turno y de las Pruebas, igual que antes.
+- **En la mesa:** cada carta se ve sobre su Tripulante o junto al Barco, por su cabecera (el nombre en su placa roja o verde); al pasar el ratón se amplía la carta entera, y si su Acción se puede usar, brilla y se usa al pulsarla (también desde el Tripulante o el Barco). La galería tiene un grupo «Estados y Ventajas».
+- **Jugador automático:** quita la Vía de agua con el Carpintero y las Velas rotas, el Envenenado y el Sangrando cuando el Tripulante que se agota no hace falta (nunca a mitad de una Prueba; el Sangrando, en una misión, solo con alguien preparado que valga poco). El Asustado no lo quita (se va solo al final del turno). En 400 partidas: Vía de agua 2 veces, Velas rotas 2, Envenenado 3 y Sangrando 29.
+- **Partidas guardadas:** los Estados que ya había siguen puestos (ahora como cartas) y lo que antes era «no se prepara en tu próxima Fase de Inicio» pasa a una carta de Extenuado. El «−1 Mando en tu próximo turno» que quedara pendiente se cumple como antes.
+
+### Equilibrio (1000 partidas con las mismas semillas)
+
+| | Antes (fase 15) | Después (fase 16) |
+| --- | --- | --- |
+| Victorias | 44,6 % (434 por reputación, 12 Panamá) | 45,4 % (442 por reputación, 12 Panamá) |
+| Con mazos de muelle variados (2000 partidas) | 44,2 % | 43,6 % |
+| Derrotas por tiempo / por el Capitán | 66,1 % / 33,9 % | 68,5 % / 31,5 % |
+| Tripulantes muertos por partida | 3,32 | 3,28 |
+
+La diferencia (8 partidas de 1000, y hacia abajo con los muelles variados) es del tamaño del azar: no sube la dificultad ni la baja. Lo que ayuda un poco (las Acciones que quitan Estados y que dos Desánimos ya no se sumen) lo compensa el castigo del Desánimo en el mismo turno. Panamá sigue en el 1,2 %.
+
+### Lecturas (no son preguntas)
+
+- **Desánimo:** es de toda la tripulación y su carta va junto al Barco, pero no es un Estado del Barco ni de un Tripulante: no lo quitan el Astillero ni la Taberna (tampoco haría falta: se descarta al robar, al final del mismo turno). Solo hay una carta: dos Desánimos en el mismo turno no se suman (antes, dos «−1 Mando» sí).
+- **Asustado y Envenenado:** «Agota a un Oficial» o «a un Cirujano» vale también si es él mismo (Diego Asustado puede agotarse para quitárselo). Sangrando dice «otro».
+- **Aguerrido** no ahorra un [agotar] que se pague como coste (el del Loro), como hasta ahora.
+
+### Preguntas nuevas para Albert, con la opción por defecto aplicada
+
+- **P111 · Extenuado si ya estaba preparado en la Fase de Inicio.** La carta dice «Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta esta carta». Si en la Fase de Inicio ya está preparado, no «va a prepararse». Por defecto (al pie de la letra), **la carta se queda** hasta la próxima Fase de Inicio en que vaya a prepararse. *Ejemplo:* Rodrigo, asignado a una Prueba de COM, no se agota; fallas «Cuerda de presos» y queda Extenuado. En la Fase de Inicio siguiente ya está preparado: la carta se queda. Ese turno se agota en una Prueba de NAV; en la Fase de Inicio siguiente no se prepara y descarta la carta. La otra opción: la carta se descarta en la primera Fase de Inicio pase lo que pase (y, si estaba agotado, no se prepara). `TODO(regla) P111` en el código (la Fase de Inicio). *Prueba:* estados-cartas.test.
+- **P112 · Las «fichas» de los contadores en las cartas.** 26 frases de 21 cartas dicen «ficha» («pon 1 ficha de Alarma», «quita 2 fichas de Rival», «Con 3 fichas…», la Pólvora del Rey, el Entrenamiento de Nassau y de «Lección aprendida»): 112, 116, 117, 128, 135, 145, 146, 153, 212, 219, 226, 227, 228, 230, 232, 235, 239, 257, 259, 276 y 64. Por defecto, **se quedan así** y el reglamento explica que cada «ficha» es un punto del contador. La otra opción: reescribirlas para los dados («la Alarma sube 1», «el Rival baja 2», «Con 3 de Mecha…»).
+
+*Pruebas:* estados-cartas.test (una por carta nueva o cambiada: el catálogo de las 13 cartas y sus copias, que 6 copias bastan, Extenuado en la Fase de Inicio y con la Taberna, Desánimo al robar y con el Astillero, las cinco Acciones, el jugador automático con la Vía de agua y el doblón), las de los ocho Peligros cambiados (grupos A–E) y guardado.test (una partida con fichas y con «no se prepara» pendiente).

@@ -2,7 +2,7 @@
 
 import { costeImpreso, esIndestructible, nombreDe, tipoDe } from '../catalogo.ts'
 import { anotar, copia, encolar, nombre, nombres, sucesoDescartada } from '../estado.ts'
-import { curable, curarTripulante } from '../estados.ts'
+import { curable, curarTripulante, quitarEstadoBarco } from '../estados.ts'
 import type { Estado, InstId, TareaDe } from '../tipos.ts'
 import { valor } from '../valores.ts'
 import { arriba, barajar, mover, rebarajar } from '../zonas.ts'
@@ -262,5 +262,14 @@ export const robarHastaMando: Manejador<'robarHastaMando'> = (s) => {
   const objetivo = valor(s, { tipo: 'objetivoRobo' })
   const n = objetivo - s.zonas.mano.length
   if (n > 0) encolar(s, { tipo: 'robar', n })
+  return 'hecha'
+}
+
+/**
+ * Fase 16, Desánimo: «Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta.» El −1 al robar lo
+ * da su capacidad constante (capacidades/estados.ts); después de robar, la carta vuelve a la reserva.
+ */
+export const descartarDesanimo: Manejador<'descartarDesanimo'> = (s) => {
+  if (quitarEstadoBarco(s, 'desanimo')) anotar(s, 'efecto', 'Desánimo: robas 1 carta menos y descartas su carta.')
   return 'hecha'
 }

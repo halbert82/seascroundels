@@ -340,7 +340,7 @@ export const ponerEntrenamiento: Manejador<'ponerEntrenamiento'> = (s, t, e) => 
     if (!hab) throw new Error(`Habilidad desconocida: ${clave}`)
   }
   copia(s, t.carta).entrenamiento.push(hab)
-  anotar(s, 'efecto', `${nombre(s, t.carta)} gana una ficha de Entrenamiento de ${hab}.`)
+  anotar(s, 'efecto', `${nombre(s, t.carta)} gana un Entrenamiento: +1 ${hab}.`)
   return 'hecha'
 }
 

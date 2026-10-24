@@ -73,8 +73,9 @@ describe('Prueba masiva: mazos de muelle variados', () => {
       const p = jugarPartida(semilla, jugador, { invariantes: i < 40, mazoDeMuelle })
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }
-    // Las seis cartas de la fase 14, con el muelle de inicio (que las lleva todas) y el jugador con criterio.
-    for (let i = 0; i < 100; i++) {
+    // Las seis cartas de la fase 14, con el muelle de inicio (que las lleva todas) y el jugador con criterio. Fase 16: 200
+    // (la Carne de cañón se usa en ~3 de cada 100, y en 100 a veces no salía).
+    for (let i = 0; i < 200; i++) {
       const p = jugarPartida(9000 + i, criterio)
       for (const [clave, n] of Object.entries(p.capacidades)) if (n > 0) usadas.add(clave)
     }

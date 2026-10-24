@@ -136,7 +136,7 @@ describe('14 · El hambre', () => {
     expect(k.copia('viejo_lobo').heridas).toBe(2)
   })
 
-  it('Ciudad, Elige: pagas 2 cartas (y ganas el Avance) o regateas; si fallas, −1 Mando en tu próximo turno', () => {
+  it('Ciudad, Elige: pagas 2 cartas (y ganas el Avance) o regateas; si fallas, tu tripulación queda con Desánimo (fase 16)', () => {
     const j = en('ciu', ['p2_hambre', 'calma', 'calma'], { mano: ['ojo', 'timon', 'coraje'] })
     j.opcion('0').elegir('ojo', 'timon')
     expect(j.zona('mano')).toEqual(['coraje'])
@@ -144,8 +144,10 @@ describe('14 · El hambre', () => {
     const k = en('ciu', ['p2_hambre', 'chubasco', 'calma'], { mano: ['ojo', 'timon'] })
     const mando = k.valor({ tipo: 'objetivoRobo' })
     k.opcion('1').comprometer('EXP', []).seguir()
-    expect(k.valor({ tipo: 'objetivoRobo' })).toBe(mando) // este turno no
-    expect(k.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'menosMando', desdeTurno: k.estado.turno + 1 }))
+    // Fase 16 (Albert): el castigo llega al final de este mismo turno, no del siguiente.
+    expect(k.estadosBarco).toEqual(['desanimo'])
+    expect(k.valor({ tipo: 'objetivoRobo' })).toBe(mando - 1)
+    expect(k.estado.temporales.some((t) => t.clave === 'menosMando')).toBe(false)
   })
 
   it('Destino «Ración corta»: 0 y nada más (fase 13, I1: el de la habilidad más alta ya no se queda sin preparar); Sin oposición, descartas 1', () => {
@@ -388,10 +390,11 @@ describe('18 · Tiburones', () => {
 })
 
 describe('19 · Murciélagos vampiro', () => {
-  it('Mar: si fallas, los comprometidos no se preparan en tu próximo Inicio', () => {
+  it('Mar: si fallas, los Tripulantes asignados quedan Extenuados (fase 16)', () => {
     const j = en('mar', ['p2_murcielagos', 'chubasco', 'calma'], { tripulacion: ['vigia'] })
     j.comprometer('COM', ['vigia']).pasarOfertas().seguir()
-    expect(j.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'noPrepara', hasta: 'inicio', inst: j.inst('vigia') }))
+    expect(j.estados('vigia')).toEqual(['extenuado'])
+    expect(j.estados('capitan')).toEqual([])
   })
 
   it('Naturaleza: +1 si alguien está Sangrando; si fallas, el comprometido con menos Vida queda Sangrando', () => {

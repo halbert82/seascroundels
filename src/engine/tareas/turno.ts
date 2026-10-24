@@ -4,6 +4,7 @@ import { capacidadesDe } from '../capacidades/index.ts'
 import { anotar, copia, encolar, nombre } from '../estado.ts'
 import { esCanon } from '../catalogo.ts'
 import { puedePrepararse } from './peligros2.ts'
+import { quitarEstado, tieneEstado } from '../estados.ts'
 import type { InstId, NuevaTarea } from '../tipos.ts'
 import { puedeZarpar } from './mision.ts'
 import { arriba, mover } from '../zonas.ts'
@@ -112,6 +113,9 @@ export const turno: Manejador<'turno'> = (s, t, e) => {
       encolar(
         s,
         { tipo: 'robarHastaMando' },
+        // Fase 16, Desánimo: «Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta.» (El −1 lo
+        // pone su capacidad constante; aquí se descarta, robes o no.)
+        { tipo: 'descartarDesanimo' },
         { tipo: 'evento', ev: { tipo: 'finTurno' }, fase: 'antes', cancelado: false, usadas: [] },
         // Estados al final del turno: Envenenado hiere y Borracho se pasa.
         { tipo: 'estadosFinTurno', paso: 'veneno', pendientes: [] },
@@ -163,6 +167,15 @@ export const prepararTodo: Manejador<'prepararTodo'> = (s) => {
     if (motivo && canones.includes(c)) continue
     if (!puedePrepararse(s, c)) {
       if (copia(s, c).agotada) anotar(s, 'efecto', `${nombre(s, c)} no se prepara.`)
+      continue
+    }
+    // Fase 16, Extenuado: «Obligado: Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta
+    // esta carta.» Solo si iba a prepararse (estaba agotado).
+    // TODO(regla) P111: si en la Fase de Inicio ya estaba preparado, la carta se queda hasta la próxima vez que vaya a
+    // prepararse en una Fase de Inicio (el texto, al pie de la letra).
+    if (copia(s, c).agotada && s.zonas.tripulacion.includes(c) && tieneEstado(s, c, 'extenuado')) {
+      quitarEstado(s, c, 'extenuado')
+      anotar(s, 'aviso', `${nombre(s, c)} está Extenuado: no se prepara (descartas su carta de Extenuado).`)
       continue
     }
     copia(s, c).agotada = false

@@ -73,7 +73,9 @@ function puedePagar(s: Estado, coste: Coste, fuente: InstId | null): boolean {
       return estaEn(s, s.capitan, 'tripulacion') && !copia(s, s.capitan).agotada
     case 'agotarTripulante': {
       const rasgos = coste.rasgos ?? (coste.rasgo === null ? null : [coste.rasgo])
-      return s.zonas.tripulacion.some((c) => !copia(s, c).agotada && (rasgos === null || rasgos.some((r) => rasgosDe(copia(s, c).id).includes(r))))
+      return s.zonas.tripulacion.some(
+        (c) => !(coste.otro && c === fuente) && !copia(s, c).agotada && (rasgos === null || rasgos.some((r) => rasgosDe(copia(s, c).id).includes(r))),
+      )
     }
     case 'agotarCanon':
       return canonesPreparados(s).length > 0

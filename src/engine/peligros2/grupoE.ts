@@ -357,7 +357,8 @@ registrarPeligro('p2_presagio', {
     mar: {
       alRevelarse: [alguno('preparados', mas('COM'), { tipo: 'noCompromete', hasta: 'finPrueba' })],
       exito: [avance(1)],
-      fallo: [{ tipo: 'menosMando', proximo: true }],
+      // Fase 16: «Tu tripulación queda con Desánimo» (antes, −1 Mando en tu próximo turno).
+      fallo: [{ tipo: 'estadoBarco', estado: 'desanimo' }],
     },
     // Al revelarse, elige un Tripulante al azar: pon en juego la carta 235 junto a él, con 1 ficha. (Como antes, se
     // elige al resolver el encuentro.)
@@ -389,10 +390,10 @@ registrarPeligro('p2_bokor', {
       exito: [{ tipo: 'seRetira' }],
       fallo: [alComprometido(mas('COM'), varios({ tipo: 'heridas', n: 1 }, estado('maldito')))],
     },
-    // Éxito: prepara a todos. Fallo: agota a 2 preparados, que no se preparan en tu próximo Inicio.
+    // Éxito: prepara a todos. Fallo: agota a 2 preparados; esos 2 quedan Extenuados (fase 16).
     nat: {
       exito: [preparar('todos')],
-      fallo: [{ tipo: 'aQuien', quien: { de: 'preparados', cada: true, maximo: 2 }, hacer: varios({ tipo: 'agotar' }, { tipo: 'noPrepara', hasta: 'inicio' }) }],
+      fallo: [{ tipo: 'aQuien', quien: { de: 'preparados', cada: true, maximo: 2 }, hacer: varios({ tipo: 'agotar' }, { tipo: 'estado', estado: 'extenuado' }) }],
     },
     // Elige: le pagas (3 cartas; 2 si llevas un Amuleto): quita Maldito a todos y uno queda Aguerrido. O buscas tú el
     // muñeco: EXP 4. Éxito: quita Maldito a todos y robas 2. Fallo: el Capitán queda Maldito y descartas 1.

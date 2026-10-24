@@ -13,8 +13,9 @@ import { MEDIDAS } from '../cartas/Carta.tsx'
 import { claseIcono } from '../cartas/TextoCarta.tsx'
 import type { IconoId } from '../cartas/marcado.ts'
 import { textoPlano } from '../textos/decisiones.ts'
-import { INFO_ESTADO, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
-import { AYUDA_ESTADO, AYUDA_REGLA, ayudaJunto, ayudaLimitacion, type Ayuda } from '../textos/glosario.ts'
+import { INFO_ESTADO, cartaDeEstado, type EstadoBarco, type FichaTripulante } from '../../engine/infoEstados.ts'
+import { AYUDA_REGLA, ayudaJunto, ayudaLimitacion, type Ayuda } from '../textos/glosario.ts'
+import type { OpcionCarta } from './interaccion.ts'
 import { Explicable } from './Explicacion.tsx'
 import { PanelPrueba } from './ZonaMision.tsx'
 import { CartaMesa } from './CartaMesa.tsx'
@@ -197,17 +198,25 @@ function Chip({ inst }: { inst: InstId }) {
 }
 
 /**
- * Fichas de Estado (en rojo) y de Ventaja (en verde), y lo que dura «no se prepara», «no puede ser asignado». Al pasar
- * el ratón o al pulsarlas, explican qué hacen y cómo se quitan.
+ * Fase 16: las cartas mini de Estado (marco rojo) y de Ventaja (verde) que lleva un Tripulante o que están junto al Barco,
+ * por su cabecera (el nombre en su placa), y lo que dura «no se prepara», «no puede ser asignado». Al pasar el ratón (o
+ * con un toque) se amplía la carta entera; si su Acción se puede usar ahora («Agota a un Cirujano: descarta esta carta»),
+ * se ofrece al pulsarla. `objetivo`: el Tripulante que la lleva, o «barco».
  */
-export function FichasEstado({ estados, extra = [] }: { estados: readonly (FichaTripulante | EstadoBarco)[]; extra?: { texto: string; ayuda: Ayuda }[] }) {
+export function CartasEstado({
+  objetivo,
+  estados,
+  extra = [],
+}: {
+  objetivo: InstId | 'barco'
+  estados: readonly (FichaTripulante | EstadoBarco)[]
+  extra?: { texto: string; ayuda: Ayuda }[]
+}) {
   if (estados.length === 0 && extra.length === 0) return null
   return (
     <div className="estados">
       {estados.map((e) => (
-        <Explicable key={e} ayuda={AYUDA_ESTADO[e]} className={`estado-ficha ${INFO_ESTADO[e].ventaja ? 'ventaja' : 'estado'}`}>
-          {INFO_ESTADO[e].nombre}
-        </Explicable>
+        <CartaEstadoEnMesa key={e} e={e} objetivo={objetivo} />
       ))}
       {extra.map((x) => (
         <Explicable key={x.ayuda.clave} ayuda={x.ayuda} className="estado-ficha aviso">
@@ -215,6 +224,55 @@ export function FichasEstado({ estados, extra = [] }: { estados: readonly (Ficha
         </Explicable>
       ))}
     </div>
+  )
+}
+
+/** La clave de la capacidad que usa una opción de la mesa («estado:envenenado.quitar»), si usa una. */
+function claveDeOpcion(o: OpcionCarta): string | null {
+  const e = o.eleccion
+  if (!e) return null
+  if (e.tipo === 'usar') return e.uso.clave
+  if (e.tipo === 'accion' && e.accion.tipo === 'usar') return e.accion.uso.clave
+  return null
+}
+
+function CartaEstadoEnMesa({ e, objetivo }: { e: FichaTripulante | EstadoBarco; objetivo: InstId | 'barco' }) {
+  const { inter, pulsar } = useMesa()
+  const id = cartaDeEstado(e)
+  // Las opciones de esta carta, con su posición entre las de quien la lleva (las mismas que salen al pulsarlo a él).
+  const propias = (inter.opciones.get(objetivo) ?? []).flatMap((o, i) => (claveDeOpcion(o)?.startsWith(`${id}.`) ? [{ o, i }] : []))
+  const ultimas = useRef(propias)
+  ultimas.current = propias
+  const acciones = useMemo<AccionesZoom>(
+    () => ({
+      etiquetas: () => ultimas.current.map((x) => x.o.etiqueta),
+      hacer: (ancla, opcion) => {
+        const x = ultimas.current[opcion ?? 0]
+        if (x) pulsar(objetivo, ancla, x.i)
+      },
+    }),
+    [objetivo, pulsar],
+  )
+  const ampliable = useAmpliable(id, acciones)
+  const pulsable = propias.length > 0
+  return (
+    <button
+      type="button"
+      className={`estado-mini ${INFO_ESTADO[e].ventaja ? 'ventaja' : 'estado'}${pulsable ? ' pulsable' : ''}`}
+      data-carta={id}
+      onClick={(ev) => {
+        if (ampliable.alPulsar(ev.currentTarget)) return
+        const x = ultimas.current[0]
+        if (x && ultimas.current.length === 1) pulsar(objetivo, ev.currentTarget, x.i)
+      }}
+      onPointerDown={ampliable.onPointerDown}
+      onPointerEnter={ampliable.onPointerEnter}
+      onPointerLeave={ampliable.onPointerLeave}
+      onContextMenu={ampliable.onContextMenu}
+      title={pulsable ? `${INFO_ESTADO[e].nombre}: ${ultimas.current[0]?.o.etiqueta ?? ''}` : INFO_ESTADO[e].nombre}
+    >
+      {INFO_ESTADO[e].nombre}
+    </button>
   )
 }
 
@@ -247,7 +305,7 @@ function Tripulante({ inst, m, pasajero }: { inst: InstId; m: MedidasTripulacion
     <div className={`tripulante${pasajero ? ' pasajero' : ''}`} style={{ width: m.anchoHueco }}>
       <div className="hueco" style={{ width: m.anchoHueco, height: m.altoHueco }}>
         <CartaDe inst={inst} escala={m.escala} encogeAgotada={m.encogeAgotada} />
-        {!pasajero && <FichasEstado estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />}
+        {!pasajero && <CartasEstado objetivo={inst} estados={copia(s, inst).estados ?? []} extra={restricciones(s, inst)} />}
         {pasajero && (
           <Explicable ayuda={AYUDA_REGLA.pasajero} className="marca-tripulante pasajero-marca">
             <Icono id="capacidad" /> Pasajero
@@ -312,7 +370,7 @@ export function BloqueBarco() {
             <span>Espacio</span>
             <Marcas n={espacioOcupado(s)} maximo={espacio} clase="espacio" />
           </div>
-          <FichasEstado estados={s.estadosBarco ?? []} />
+          <CartasEstado objetivo="barco" estados={s.estadosBarco ?? []} />
           <div className="chips">
             {mejoras.length === 0 && <span className="vacio">Sin Mejoras de barco</span>}
             {mejoras.map((m) => (

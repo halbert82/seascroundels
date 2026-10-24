@@ -304,11 +304,11 @@ describe('49 · La sirena', () => {
 })
 
 describe('50 · Mal presagio', () => {
-  it('Mar: el preparado con más COM no puede comprometerse; si fallas, −1 Mando en tu próximo turno', () => {
+  it('Mar: el preparado con más COM no puede comprometerse; si fallas, tu tripulación queda con Desánimo (fase 16)', () => {
     const j = en('mar', ['p2_presagio', 'chubasco', 'calma'], { tripulacion: ['bucanero'] })
     expect(tripulantes(j)).toEqual(['bucanero'])
     j.comprometer('NAV', []).seguir()
-    expect(j.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'menosMando', desdeTurno: j.estado.turno + 1 }))
+    expect(j.estadosBarco).toEqual(['desanimo'])
   })
 
   it('Naturaleza: la lechuza señala a un Tripulante; con 3 fichas sufre 2 heridas y queda Maldito', () => {
@@ -386,13 +386,15 @@ describe('51 · La maldición del bokor', () => {
     expect(j.zonaDe('p2_bokor')).not.toBe('mazoPeligros')
   })
 
-  it('Naturaleza: si fallas, agotas a 2 preparados, que no se preparan en tu próximo Inicio', () => {
+  it('Naturaleza: si fallas, agotas a 2 preparados; esos 2 quedan Extenuados (fase 16)', () => {
     const j = en('nat', ['p2_bokor', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     j.comprometer('EXP', []).seguir()
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', min: 2, max: 2 })
     j.elegir('bucanero', 'vigia')
     expect(j.copia('bucanero').agotada).toBe(true)
-    expect(j.estado.temporales.filter((t) => t.clave === 'noPrepara' && t.hasta === 'inicio')).toHaveLength(2)
+    expect(j.estados('bucanero')).toEqual(['extenuado'])
+    expect(j.estados('vigia')).toEqual(['extenuado'])
+    expect(j.estado.temporales.some((t) => t.clave === 'noPrepara')).toBe(false)
   })
 
   it('Ciudad: pagarle (3 cartas) quita Maldito a todos y uno queda Aguerrido; con el Amuleto, 2 cartas', () => {

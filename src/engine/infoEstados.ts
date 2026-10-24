@@ -1,11 +1,16 @@
-// Nombres y textos de las fichas que llevan los Tripulantes y el Barco. Sin dependencias: lo usan el catálogo y la interfaz.
+// Nombres y textos de los Estados y las Ventajas que llevan los Tripulantes y el Barco. Sin dependencias: lo usan el
+// catálogo y la interfaz.
 //
 // Fase 8: un efecto que solo ayuda es una Ventaja (Inspirado, Aguerrido); uno que perjudica o limita es un Estado
-// (Borracho también, aunque dé +1 COM). Las dos funcionan igual: fichas sobre el Tripulante, sin repetir la misma.
+// (Borracho también, aunque dé +1 COM). Las dos funcionan igual: sobre el Tripulante, sin repetir la misma.
 // La Taberna quita todos los Estados de tus Tripulantes, pero no las Ventajas. Fase 10b: lo que hace cada una.
+// Fase 16 (Albert): ya no son fichas, sino cartas mini (sección `estados` de cartas.json) de una reserva aparte. En la
+// partida, cada carta puesta es el nombre de su Estado en la lista del Tripulante (`estados`) o en la del Barco
+// (`estadosBarco`); quitarla es devolverla a la reserva. Como mucho hay 6 Tripulantes (Capacidad 4, +1 con las Hamacas, y
+// el Capitán) y ninguno repite Estado, así que las 6 copias de cada Estado de Tripulante bastan siempre.
 
-/** Estados de un Tripulante: perjudican o limitan. Fase 10b: fuera Aturdido y Encadenado. */
-export const ESTADOS_TRIPULANTE = ['envenenado', 'borracho', 'asustado', 'sangrando', 'buscado', 'maldito'] as const
+/** Estados de un Tripulante: perjudican o limitan. Fase 10b: fuera Aturdido y Encadenado. Fase 16: Extenuado. */
+export const ESTADOS_TRIPULANTE = ['envenenado', 'borracho', 'asustado', 'sangrando', 'buscado', 'maldito', 'extenuado'] as const
 export type EstadoTripulante = (typeof ESTADOS_TRIPULANTE)[number]
 
 /** Ventajas de un Tripulante: solo ayudan. */
@@ -20,9 +25,20 @@ export function esVentaja(f: string): f is Ventaja {
   return (VENTAJAS as readonly string[]).includes(f)
 }
 
-/** Estados del Barco. Fase 10b: fuera Incendio a bordo. Fase 15, quinta ronda: fuera Pólvora mojada. */
+/** Estados del Barco (los quita el Astillero). Fase 10b: fuera Incendio a bordo. Fase 15, quinta ronda: fuera Pólvora mojada. */
 export const ESTADOS_BARCO = ['viaDeAgua', 'velasRotas', 'perseguido'] as const
-export type EstadoBarco = (typeof ESTADOS_BARCO)[number]
+/**
+ * Lo que se pone junto al Barco: sus Estados y, fase 16, el Desánimo de la tripulación («Tu tripulación queda con
+ * Desánimo»). El Desánimo no es un Estado del Barco ni de un Tripulante: no lo quitan el Astillero ni la Taberna (se
+ * descarta solo al robar, al final del mismo turno).
+ */
+export const ESTADOS_JUNTO_AL_BARCO = [...ESTADOS_BARCO, 'desanimo'] as const
+export type EstadoBarco = (typeof ESTADOS_JUNTO_AL_BARCO)[number]
+
+/** ¿Es un Estado del Barco (de los que quita el Astillero)? */
+export function esEstadoDelBarco(e: string): boolean {
+  return (ESTADOS_BARCO as readonly string[]).includes(e)
+}
 
 export interface InfoEstado {
   nombre: string
@@ -44,6 +60,7 @@ export const INFO_ESTADO: Record<FichaTripulante | EstadoBarco, InfoEstado> = {
     texto: 'No puede ser asignado en misiones de Ciudad. Se quita descartando 1 carta en la Fase de Reclutamiento.',
   },
   maldito: { nombre: 'Maldito', texto: '−1 al total de cada Prueba a la que esté asignado. Se quita al superar una de ellas.' },
+  extenuado: { nombre: 'Extenuado', texto: 'En la Fase de Inicio no se prepara: en vez de eso, se descarta esta carta.' },
   inspirado: { nombre: 'Inspirado', texto: '+1 al total de cada Prueba a la que esté asignado. Se quita al final del turno.', ventaja: true },
   aguerrido: { nombre: 'Aguerrido', texto: 'Puede ser asignado a una Prueba sin agotarse. Se quita al hacerlo.', ventaja: true },
   viaDeAgua: {
@@ -52,9 +69,13 @@ export const INFO_ESTADO: Record<FichaTripulante | EstadoBarco, InfoEstado> = {
   },
   velasRotas: { nombre: 'Velas rotas', texto: '−1 al total de las Pruebas de NAV en el Mar. Las Distancias aumentan en 1.' },
   perseguido: { nombre: 'Perseguido', texto: 'Los encuentros de tipo Armada reciben +1 de dificultad. Se quita al superar uno.' },
+  desanimo: { nombre: 'Desánimo', texto: 'Al final del turno robas 1 carta menos; después se descarta.' },
 }
 
-/** Identificador de la «carta» de un Estado en el registro de capacidades («estado:borracho»). */
+/**
+ * Identificador de la carta de un Estado («estado:borracho»): el de su carta mini en cartas.json y el de sus capacidades en
+ * el registro (fase 16; antes, de una ficha).
+ */
 export function cartaDeEstado(e: FichaTripulante | EstadoBarco): string {
   return `estado:${e}`
 }

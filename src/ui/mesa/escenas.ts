@@ -28,6 +28,7 @@ export const ESCENAS = [
   'rival',
   'bucear',
   'asedio',
+  'estados',
 ] as const
 export type Escena = (typeof ESCENAS)[number]
 
@@ -64,6 +65,7 @@ const CONDICION: Record<
     | 'rival'
     | 'bucear'
     | 'asedio'
+    | 'estados'
   >,
   (s: Estado, desde: number) => boolean
 > = {
@@ -77,6 +79,28 @@ const CONDICION: Record<
 }
 
 const MAZO = ['ojo', 'ojo', 'timon', 'timon', 'coraje', 'coraje', 'emboscada', 'estrellas', 'abordaje', 'vendas']
+
+/**
+ * Fase 16: en puerto (Jugar cartas), varias cartas de Estado y de Ventaja puestas: sobre los Tripulantes y junto al Barco.
+ * El Carpintero y el Matasanos están preparados, así que las cartas de Vía de agua y de Envenenado ofrecen su Acción.
+ */
+function estados(): PartidaEnMesa {
+  const j = Jugador.en({
+    turno: 4,
+    mazoCapitan: [...MAZO],
+    mano: ['ojo', 'timon', 'coraje', 'cataplasma'],
+    capitan: { estados: ['asustado'] },
+    tripulacion: [
+      { id: 'bucanero', estados: ['envenenado', 'inspirado'] },
+      { id: 'vigia', estados: ['buscado', 'sangrando'], agotada: true },
+      { id: 'carpintero' },
+      { id: 'matasanos', estados: ['extenuado'] },
+    ],
+    barco: { dano: 1, estados: ['viaDeAgua', 'perseguido', 'desanimo'] },
+    reputacion: 5,
+  })
+  return { ...empezar(j.estado), desde: Math.max(0, j.estado.registro.length - 4) }
+}
 
 /**
  * Fase 6, en una misión de Mar: «Bajamar» en juego con 1 ficha, Estados y Ventajas en Tripulantes, Estados en el Barco, una carta incautada
@@ -400,6 +424,7 @@ export function escena(nombre: Escena): PartidaEnMesa {
   if (nombre === 'rival') return rival()
   if (nombre === 'bucear') return bucear()
   if (nombre === 'asedio') return asedio()
+  if (nombre === 'estados') return estados()
   for (let semilla = 1; semilla < 60; semilla++) {
     const p = buscar(semilla, CONDICION[nombre as keyof typeof CONDICION])
     if (p) return p

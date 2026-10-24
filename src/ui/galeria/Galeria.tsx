@@ -40,6 +40,7 @@ const GRUPOS: Grupo[] = [
   { id: 'permanentes', nombre: 'Permanentes', tipos: ['permanente'] },
   { id: 'tesoros', nombre: 'Tesoros', tipos: ['tesoro'] },
   { id: 'escenario', nombre: 'Escenario y Puertos', tipos: ['escenario', 'puerto'] },
+  { id: 'estados', nombre: 'Estados y Ventajas', tipos: ['estado'] },
 ]
 
 /** Fase 15: la culebrina del naufragio es una Mejora de barco, pero va con las Misiones (es del mazo del naufragio). */
@@ -87,6 +88,8 @@ function descripcion(e: EntradaCatalogo): string {
       return 'Mazo del naufragio'
     case 'recompensa':
       return `Carta de recompensa · ${nombreImpresoDeLaMision(e.mision)}`
+    case 'estado':
+      return `${e.carta.clase} · carta mini · ${copias}`
     case 'permanente':
       return e.carta.origen ? `Permanente · la pone en juego la carta ${porId(e.carta.origen).num}` : 'Permanente · la ponen en juego misiones'
     case 'peligro':

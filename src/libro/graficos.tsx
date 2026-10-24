@@ -68,6 +68,13 @@ function cartasDeFila(nombre: string): EntradaCatalogo[] {
     // Fase 15 (tercera ronda): las cartas que coge una recompensa («Coge la carta 286 del mazo de historia»).
     case 'Cartas de recompensa':
       return deTipo('recompensa')
+    // Fase 16: las cartas mini de Estado y de Ventaja.
+    case 'Estados de los Tripulantes':
+      return deTipo('estado').filter((e) => e.tipo === 'estado' && e.carta.clase === 'Estado' && e.carta.de === 'Tripulante')
+    case 'Ventajas':
+      return deTipo('estado').filter((e) => e.tipo === 'estado' && e.carta.clase === 'Ventaja')
+    case 'Estados del Barco y Desánimo':
+      return deTipo('estado').filter((e) => e.tipo === 'estado' && e.carta.de !== 'Tripulante')
     default:
       return []
   }

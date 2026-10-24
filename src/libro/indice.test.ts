@@ -63,8 +63,11 @@ function nombres(x: Json, salida = new Set<string>()): Set<string> {
   return salida
 }
 
-/** Nombres de cartas, encuentros y Destinos: en negrita en una carta, no son términos de juego. */
-const NOMBRES_DE_CARTAS = nombres(cartas.map((c) => c.carta))
+/**
+ * Nombres de cartas, encuentros y Destinos: en negrita en una carta, no son términos de juego. Fase 16: salvo los de las
+ * cartas de Estado y de Ventaja («queda **Envenenado**»), que sí lo son.
+ */
+const NOMBRES_DE_CARTAS = nombres(cartas.filter((c) => !c.id.startsWith('estado:')).map((c) => c.carta))
 
 /** El texto de los encuentros con la etiqueta «Elige» (fase 13: sin la palabra «Elige» en el texto). */
 function textosDeElige(x: Json, salida = new Set<string>()): Set<string> {
@@ -177,7 +180,8 @@ describe('Índice de términos de la Referencia de reglas', () => {
   it('cada ficha de misión que usan las misiones tiene su línea', () => {
     const fichas = new Set(CATALOGO.filter((e) => e.tipo === 'capitulo').flatMap((e) => (reglasMision(e.id)?.fichas ?? []).map((f) => f.nombre)))
     expect(fichas.size).toBe(8) // fase 12: Derrumbe; fase 15: Rival (la Profundidad se fue con el pecio)
-    for (const f of fichas) expect(indice).toContainEqual(expect.objectContaining({ termino: f, en: 'Fichas de misión' }))
+    // Fase 16: la entrada «Fichas de misión» pasa a llamarse «Contadores» (se llevan con dados).
+    for (const f of fichas) expect(indice).toContainEqual(expect.objectContaining({ termino: f, en: 'Contadores' }))
   })
 
   it('las opciones de los puertos y los términos que un jugador buscaría sin entrada propia remiten a la entrada que los explica', () => {
@@ -205,10 +209,13 @@ describe('Índice de términos de la Referencia de reglas', () => {
     }
   })
 
-  it('va en orden alfabético, sin tener en cuenta tildes ni signos («−1 Mando» va con la M)', () => {
+  it('va en orden alfabético, sin tener en cuenta tildes ni signos («−N de Avance» va con la N)', () => {
     const terminos = indice.map((l) => l.termino)
     expect(terminos.indexOf('Abordaje')).toBe(0)
-    expect(terminos.indexOf('−1 Mando')).toBe(terminos.indexOf('Mando') + 1)
+    // Fase 16: ya no hay «−1 Mando» (lo sustituye el Desánimo).
+    const n = terminos.indexOf('−N de Avance')
+    expect(n).toBeGreaterThan(terminos.indexOf('Muelle'))
+    expect(n).toBeLessThan(terminos.indexOf('Número de colección'))
     expect(terminos.indexOf('Única (★)')).toBeGreaterThan(terminos.indexOf('Tripulante'))
   })
 })

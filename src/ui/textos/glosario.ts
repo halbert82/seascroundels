@@ -62,29 +62,41 @@ function estado(e: FichaTripulante | EstadoBarco, hace: string, propia: string, 
 // Estados y Ventajas (reglamento: «Estado», «Ventaja» y la tabla de la Referencia rápida)
 
 export const AYUDA_ESTADO: Record<FichaTripulante | EstadoBarco, Ayuda> = {
-  envenenado: estado('envenenado', 'Al final de cada turno, sufre 1 herida.', '', 'la Herbolaria o «Cataplasma»'),
+  // Fase 16 (Albert): los Estados y las Ventajas son cartas mini; cada una dice cómo se quita («Acción: Agota a un
+  // Cirujano: descarta esta carta»), además de la Taberna (los de los Tripulantes) y el Astillero (los del Barco).
+  envenenado: estado('envenenado', 'Al final del turno, sufre 1 herida.', 'Se quita agotando a un Cirujano (Acción).', 'la Herbolaria o «Cataplasma»'),
   borracho: estado('borracho', 'Recibe +1 COM, pero no puede ser asignado a Pruebas de NAV ni de EXP.', 'Se quita al final del turno.'),
-  // Fase 15, quinta ronda: la Herbolaria ya no quita Asustado, ni el Carpintero la Vía de agua, y el Práctico del puerto
-  // sale de la caja: esos Estados se quedan sin ejemplo de carta.
-  asustado: estado('asustado', 'No puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda).', 'Se quita al final del turno.'),
-  sangrando: estado('sangrando', 'Cada vez que se agota, sufre 1 herida.', '', '«Cataplasma»'),
+  asustado: estado('asustado', 'No puede ser asignado él solo a una Prueba (tampoco a una Prueba Sin ayuda).', 'Se quita al final del turno, o agotando a un Oficial (Acción).'),
+  sangrando: estado('sangrando', 'Cada vez que se agota, sufre 1 herida.', 'Se quita agotando a otro Tripulante preparado (Acción).', '«Cataplasma»'),
   buscado: estado('buscado', 'No puede ser asignado en las misiones de Ciudad.', 'Se quita descartando 1 carta en la Fase de Reclutamiento.'),
-  maldito: estado('maldito', '−1 al total de cada Prueba a la que esté asignado.', 'Se quita al superar una Prueba a la que esté asignado.', '«La mambo del mercado»'),
-  inspirado: estado('inspirado', '+1 al total de cada Prueba a la que esté asignado.', 'Se quita al final del turno.'),
+  maldito: estado('maldito', '−1 al total de cada Prueba en la que participe.', 'Se quita al superar una Prueba en la que participe.', '«La mambo del mercado»'),
+  extenuado: estado('extenuado', 'En la Fase de Inicio no se prepara.', 'Se quita entonces, en lugar de prepararse.'),
+  inspirado: estado('inspirado', '+1 al total de cada Prueba en la que participe.', 'Se quita al final del turno.'),
   aguerrido: estado('aguerrido', 'Puede ser asignado a una Prueba sin agotarse.', 'Se quita al hacerlo; no caduca al final del turno.'),
   viaDeAgua: estado(
     'viaDeAgua',
-    'En una misión de Mar, al final de cada carta de Peligro, el Barco sufre 1 daño, salvo que agotes a un Tripulante para achicar.',
-    '',
+    'En una misión de Mar, después de cada carta de Peligro, el Barco sufre 1 daño, salvo que agotes a un Tripulante preparado.',
+    'Se quita agotando a un Carpintero (Acción).',
   ),
-  velasRotas: estado('velasRotas', '−1 al total de las Pruebas de NAV en el Mar, y las Distancias aumentan en 1.', ''),
+  velasRotas: estado('velasRotas', 'Las Distancias aumentan en 1, y en el Mar tus Pruebas de NAV reciben −1.', 'Se quita agotando a un Carpintero (Acción).'),
   perseguido: estado('perseguido', 'Los encuentros de tipo Armada reciben +1 de dificultad.', 'Se quita al superar un encuentro de tipo Armada.'),
+  // El Desánimo va junto al Barco, pero no es un Estado del Barco ni de un Tripulante.
+  desanimo: {
+    clave: 'estado:desanimo',
+    nombre: INFO_ESTADO.desanimo.nombre,
+    clase: 'estado',
+    partes: [
+      { rotulo: 'Qué hace', texto: 'Al final del turno, cuando vayas a robar, robas 1 carta menos.' },
+      { rotulo: 'Cómo se quita', texto: 'Se descarta sola entonces. No la quitan la Taberna ni el Astillero.' },
+    ],
+  },
 }
 
 // ---------------------------------------------------------------------------
-// Fichas de misión (reglas impresas de cada capítulo y la entrada «Fichas de misión» del reglamento)
+// Contadores de misión (reglas impresas de cada capítulo y la entrada «Contadores» del reglamento; fase 16: antes, fichas de
+// misión). Se llevan con un dado sobre la carta; cada «ficha» que nombra la carta es un punto del contador.
 
-const FIN_FICHAS = 'Las fichas de misión se descartan al terminar la misión, la superes o no.'
+const FIN_FICHAS = 'Los contadores de la misión se quitan al terminarla, la superes o no.'
 const MISION_FALLA = '«La misión falla» es como retirarte: no la superas, pierdes su Avance y eliges si la dejas disponible o la pones al fondo del mazo de Misiones.'
 
 function fichaMision(f: FichaMision, nombre: string, cambia: string, pasa: string, mas = ''): Ayuda {
@@ -93,7 +105,7 @@ function fichaMision(f: FichaMision, nombre: string, cambia: string, pasa: strin
     nombre,
     clase: 'fichaMision',
     partes: [
-      { rotulo: 'Cómo se ponen y se quitan', texto: cambia },
+      { rotulo: 'Cómo sube y baja (un dado sobre la carta)', texto: cambia },
       { rotulo: 'Qué pasa', texto: pasa },
       { rotulo: 'Cuándo terminan', texto: mas ? `${mas} ${FIN_FICHAS}` : FIN_FICHAS },
     ],
@@ -219,7 +231,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
     'Algunos encuentros y misiones dicen «Pon en juego la carta N del mazo de historia»: esa carta, una permanente, se pone junto a la misión (o junto a un Tripulante, si lo dice) con su texto activo. El encuentro da su Avance y su carta se descarta como cualquier otra. Si la permanente no está en el mazo de historia, la carta del encuentro se descarta sin dar su Avance y se revela otra.',
     {
       rotulo: 'Cómo se quita',
-      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia con sus fichas fuera, salvo las que digan otra cosa («Mala fama», las Murallas de Port Royal).',
+      texto: 'Como dice su texto (a menudo con una Acción) o con «Cortar por lo sano». «Descarta esta carta» la devuelve al mazo de historia. Al terminar la misión, todas vuelven al mazo de historia (se quita su dado), salvo las que digan otra cosa («Mala fama», las Murallas de Port Royal).',
     },
   ),
   elige: regla(
@@ -288,7 +300,7 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   comprometidoCon: regla(
     'comprometidoCon',
     'El Tripulante asignado con más (o menos)',
-    'El Tripulante asignado con el número impreso más alto (o más bajo) en esa habilidad, sin contar bonificaciones de Mejoras, fichas de Entrenamiento ni otras cartas. Si empatan, eliges tú.',
+    'El Tripulante asignado con el número impreso más alto (o más bajo) en esa habilidad, sin contar bonificaciones de Mejoras, Entrenamiento ni otras cartas. Si empatan, eliges tú.',
     {
       rotulo: 'Detalles',
       texto:
@@ -396,8 +408,8 @@ export const AYUDA_REGLA: Record<ClaveRegla, Ayuda> = {
   enrolado: regla(
     'enrolado',
     'Enrolado',
-    'Enrolado N: al reclutarlo, recibe N fichas de Enrolado. Al final de cada turno pierde 1, hayas zarpado o no. Cuando no le queda ninguna, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
-    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas, y los turnos en que te quedas en puerto. No cuenta como derrotado. Las fichas no se renuevan ni se añaden.' },
+    'Enrolado N: al reclutarlo, se pone sobre él un dado con el N. Al final de cada turno baja 1, hayas zarpado o no. Cuando llega a 0, se va a la pila de descartes del muelle con sus Mejoras, como al despedirlo.',
+    { rotulo: 'Detalles', texto: 'Cuenta también el turno en que lo reclutas, y los turnos en que te quedas en puerto. No cuenta como derrotado. El Enrolado no se renueva ni sube.' },
   ),
   otear: regla(
     'otear',
@@ -573,6 +585,8 @@ const PATRON_ESTADO: Record<FichaTripulante | EstadoBarco, RegExp> = {
   viaDeAgua: /\bVía de agua\b/,
   velasRotas: /\bVelas rotas\b/,
   perseguido: /\bPerseguido\b/,
+  extenuado: /\bExtenuad[oa]s?\b/,
+  desanimo: /\bDesánimo\b/,
 }
 
 const PATRON_REGLA: Record<ClaveRegla, RegExp | null> = {
@@ -655,8 +669,13 @@ export function ayudasDeCarta(id: string): Ayuda[] {
   const extra =
     entrada.tipo === 'pasajero' ? AYUDA_REGLA.pasajero : entrada.tipo === 'tesoro' ? AYUDA_REGLA.tesoro : entrada.tipo === 'recompensa' ? AYUDA_REGLA.cartaRecompensa : null
   if (extra && !lista.includes(extra)) lista.unshift(extra)
-  return lista
+  // Caben 6 junto a la ampliación. Fase 16: con Extenuado, «La maldición del bokor» llegaba a 7; sobran las del final,
+  // que son las más comunes en las cartas de Peligro («Sin oposición»…).
+  return lista.slice(0, MAX_AYUDAS)
 }
+
+/** Explicaciones que caben junto a una carta ampliada. */
+const MAX_AYUDAS = 6
 
 /** Todas las explicaciones, por grupos (para la Referencia rápida y las pruebas). */
 export function glosarioCompleto(): { titulo: string; ayudas: Ayuda[] }[] {
@@ -664,7 +683,7 @@ export function glosarioCompleto(): { titulo: string; ayudas: Ayuda[] }[] {
     { titulo: 'Estados de los Tripulantes', ayudas: FICHAS_TRIPULANTE.filter((e) => !INFO_ESTADO[e].ventaja).map((e) => AYUDA_ESTADO[e]) },
     { titulo: 'Estados del Barco', ayudas: ESTADOS_BARCO.map((e) => AYUDA_ESTADO[e]) },
     { titulo: 'Ventajas', ayudas: FICHAS_TRIPULANTE.filter((e) => INFO_ESTADO[e].ventaja).map((e) => AYUDA_ESTADO[e]) },
-    { titulo: 'Fichas de misión', ayudas: (Object.keys(AYUDA_FICHA_MISION) as FichaMision[]).map((f) => AYUDA_FICHA_MISION[f]) },
+    { titulo: 'Contadores', ayudas: (Object.keys(AYUDA_FICHA_MISION) as FichaMision[]).map((f) => AYUDA_FICHA_MISION[f]) },
     { titulo: 'Palabras de las cartas', ayudas: CLAVES_REGLA.filter((c) => c !== 'estados').map((c) => AYUDA_REGLA[c]) },
   ]
 }

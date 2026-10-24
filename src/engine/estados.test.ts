@@ -19,7 +19,7 @@ function mision(mision: CartaId, mazoPeligros: CartaId[], op: OpcionesSituacion 
 describe('Fase 8 · Estados y Ventajas', () => {
   it('Inspirado y Aguerrido son Ventajas; todo lo demás es Estado, Borracho incluido', () => {
     expect([...VENTAJAS]).toEqual(['inspirado', 'aguerrido'])
-    expect([...ESTADOS_TRIPULANTE]).toEqual(['envenenado', 'borracho', 'asustado', 'sangrando', 'buscado', 'maldito'])
+    expect([...ESTADOS_TRIPULANTE]).toEqual(['envenenado', 'borracho', 'asustado', 'sangrando', 'buscado', 'maldito', 'extenuado']) // fase 16: Extenuado
     expect([...ESTADOS_BARCO]).toEqual(['viaDeAgua', 'velasRotas', 'perseguido']) // fase 15, quinta ronda: fuera Pólvora mojada
     expect(esVentaja('borracho')).toBe(false)
     expect(esVentaja('aguerrido')).toBe(true)

@@ -108,9 +108,9 @@ registrarPeligro('p2_hambre', {
         { texto: 'Regatear: EXP 3', prueba: true },
       ],
       exito: [robar(1), { tipo: 'curar', n: 1 }],
-      // P29 (confirmada): «−1 Mando en tu próximo turno»: robas una carta menos al final de tu próximo turno (no
-      // al final de este, como el −1 Mando de siempre).
-      fallo: [{ tipo: 'menosMando', proximo: true }],
+      // Fase 16 (Albert): «Tu tripulación queda con Desánimo»: robas 1 carta menos al final de este mismo turno (antes, P29:
+      // −1 Mando en tu próximo turno).
+      fallo: [{ tipo: 'estadoBarco', estado: 'desanimo' }],
     },
   },
   // +0. El comprometido con la habilidad más alta no se prepara en tu próximo Inicio. Sin oposición: descarta 1 carta.
@@ -252,7 +252,8 @@ registrarPeligro('p2_tiburones', {
 // 19. Murciélagos vampiro · Duro
 registrarPeligro('p2_murcielagos', {
   encuentros: {
-    mar: { exito: [avance(1)], fallo: [cadaComprometido({ tipo: 'noPrepara', hasta: 'inicio' })] },
+    // Fase 16: «Los Tripulantes asignados quedan Extenuados» (antes, «no se preparan en tu próxima Fase de Inicio»).
+    mar: { exito: [avance(1)], fallo: [cadaComprometido({ tipo: 'estado', estado: 'extenuado' })] },
     // EXP 3, +1 si algún Tripulante está Sangrando.
     nat: {
       capacidades: [dificultad('sangre', (ctx) => (ctx.s.zonas.tripulacion.some((c) => copia(ctx.s, c).estados?.includes('sangrando')) ? 1 : 0))],

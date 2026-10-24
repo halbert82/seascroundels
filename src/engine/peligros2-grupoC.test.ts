@@ -205,14 +205,15 @@ describe('26 · Ojos del gobernador', () => {
     expect(k.estados('capitan')).toEqual(['buscado'])
   })
 
-  it('Destino «Oídos en la pared»: −1 y ya se pueden jugar Eventos (fase 13, I1); sin oposición, robas 1 menos al final del turno', () => {
+  it('Destino «Oídos en la pared»: −1 y ya se pueden jugar Eventos (fase 13, I1); sin oposición, tu tripulación queda con Desánimo (fase 16)', () => {
     const j = conDestino('p2_ojos', { mano: ['vendas', 'ojo'], capitan: { heridas: 1 } })
     j.comprometer('NAV', ['capitan'])
     expect(dificultadConDestino(j.estado)).toBe(3)
     expect(j.ofreceCapacidad('vendas.jugar')).toBe(true)
     const k = conDestino('p2_ojos')
     k.comprometer('NAV', [])
-    expect(k.estado.temporales.some((t) => t.clave === 'menosMando')).toBe(true)
+    expect(k.estadosBarco).toEqual(['desanimo'])
+    expect(k.estado.temporales.some((t) => t.clave === 'menosMando')).toBe(false)
   })
 })
 
@@ -241,10 +242,10 @@ describe('27 · Los grilletes del rey', () => {
     expect(j.estado.danoBarco).toBe(2)
   })
 
-  it('Naturaleza: si fallas, los comprometidos no se preparan en tu próximo Inicio', () => {
+  it('Naturaleza: si fallas, los Tripulantes asignados quedan Extenuados (fase 16)', () => {
     const j = en('nat', ['p2_grilletes', 'chubasco', 'calma'])
     j.comprometer('EXP', ['capitan']).seguir()
-    expect(j.estado.temporales.some((t) => t.clave === 'noPrepara' && t.inst === j.inst('capitan') && t.hasta === 'inicio')).toBe(true)
+    expect(j.estados('capitan')).toEqual(['extenuado'])
   })
 
   it('Ciudad: si superas, preparas a 2; si fallas, descarta al asignado con menos Vida (fase 14)', () => {

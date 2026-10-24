@@ -7,6 +7,7 @@ import {
   type CapituloDatos,
   type CartaMazoPropioDatos,
   type CartaRecompensaDatos,
+  type EstadoCartaDatos,
   type DatosCartas,
   type EscenarioDatos,
   type EventoDatos,
@@ -51,6 +52,8 @@ export type EntradaCatalogo =
   | { tipo: 'naufragio'; num: number; id: string; copias: number; carta: NaufragioDatos; mision: MisionDatos }
   /** Fase 15: carta de recompensa del mazo de historia («Coge la carta 286 del mazo de historia»). */
   | { tipo: 'recompensa'; num: number; id: string; copias: number; carta: CartaRecompensaDatos; mision: MisionDatos }
+  /** Fase 16: carta mini de Estado o de Ventaja (fuera de los mazos: una reserva aparte). */
+  | { tipo: 'estado'; num: number; id: string; copias: number; carta: EstadoCartaDatos }
   | { tipo: 'escenario'; num: number; id: string; copias: number; carta: EscenarioDatos }
   | { tipo: 'puerto'; num: number; id: string; copias: number; carta: PuertoDatos }
   | {
@@ -80,6 +83,7 @@ export const NOMBRE_TIPO: Record<TipoCarta, string> = {
   permanente: 'Permanente',
   naufragio: 'Carta del naufragio',
   recompensa: 'Carta de recompensa',
+  estado: 'Estado o Ventaja',
   escenario: 'Escenario',
   puerto: 'Puerto',
   capitulo: 'Misión',
@@ -157,6 +161,8 @@ export function construirCatalogo(datos: DatosCartas = DATOS): EntradaCatalogo[]
     if (!mision) throw new Error(`La carta de recompensa «${carta.id}» no pertenece a ninguna misión`)
     lista.push({ tipo: 'recompensa', num: carta.num, id: carta.id, copias: 1, carta, mision })
   }
+  // Fase 16: las cartas mini de Estado y de Ventaja.
+  for (const carta of datos.estados ?? []) lista.push({ tipo: 'estado', num: carta.num, id: carta.id, copias: carta.copias, carta })
 
   return lista.sort((a, b) => a.num - b.num)
 }

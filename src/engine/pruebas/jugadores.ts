@@ -988,6 +988,27 @@ function puntuarUso(s: Estado, uso: Uso, d: Decision): number {
     // Fase 10b: quitar Buscado pagando 1 carta, si sobra mano.
     case 'estado:buscado.quitar':
       return d.motivo.clave === 'jugarCartas' && mano >= 3 ? 1 : 0
+    // Fase 16: las cartas de Estado que se quitan agotando a alguien. Nunca a mitad de una Prueba (el que se agota no
+    // podría ayudar en ella); fuera de una, cuando el Estado cuesta más que el Tripulante que se agota.
+    case 'estado:viaDeAgua.quitar':
+      // En el Mar, cada carta de Peligro cuesta 1 daño o agotar a alguien: el Carpintero la quita en cuanto puede.
+      return enPruebaAbierta ? 0 : 3
+    case 'estado:velasRotas.quitar':
+      // −1 a las Pruebas de NAV en el Mar y +1 a las Distancias.
+      return enPruebaAbierta ? 0 : 2
+    case 'estado:envenenado.quitar':
+      // 1 herida al final de cada turno hasta la Taberna: un Cirujano lo quita fuera de una Prueba.
+      return enPruebaAbierta ? 0 : 2
+    case 'estado:sangrando.quitar': {
+      // 1 herida cada vez que se agota. Lo venda otro Tripulante preparado (el que menos vale: ver `agotarParaPagar`): en
+      // puerto, cualquiera; en una misión, solo si hay alguien preparado que vale poco.
+      if (enPruebaAbierta) return 0
+      const baratos = s.zonas.tripulacion.filter((c) => c !== fuente && !copia(s, c).agotada && valorTripulante(s, c) <= 3)
+      return !enMision ? 2 : baratos.length > 0 ? 1 : 0
+    }
+    case 'estado:asustado.quitar':
+      // Solo impide que vaya solo a una Prueba y se quita al final del turno: no compensa agotar a un Oficial.
+      return 0
     // Cartas de jugador 2.0
     case 'herbolaria.quitar':
     case 'virar.jugar':
@@ -1189,7 +1210,8 @@ function tareaDe(s: Estado, d: Decision) {
  */
 export function tieneNavegante(s: Estado, minimo: number): boolean {
   const t = JSON.parse(JSON.stringify(s)) as Estado
-  for (const c of t.zonas.tripulacion) if (puedePrepararse(t, c)) copia(t, c).agotada = false
+  // Fase 16: un Tripulante Extenuado no se prepara en la Fase de Inicio.
+  for (const c of t.zonas.tripulacion) if (puedePrepararse(t, c) && !(copia(t, c).agotada && (copia(t, c).estados ?? []).includes('extenuado'))) copia(t, c).agotada = false
   return t.zonas.tripulacion.some((c) => !copia(t, c).agotada && valor(t, { tipo: 'habilidad', carta: c, hab: 'NAV' }) >= minimo)
 }
 

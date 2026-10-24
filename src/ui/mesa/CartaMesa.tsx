@@ -192,16 +192,16 @@ function Fichas({ fichas, abajo }: { fichas?: FichasCarta; abajo?: number | unde
         </span>
       )}
       {contador !== undefined && (
-        // Fase 10: un solo tipo de ficha de misión, también para las cartas que se quedan en juego y llevan la cuenta de algo.
-        <span className="ficha ficha-contador" title={`${contador} ${contador === 1 ? 'ficha de misión' : 'fichas de misión'} en esta carta`}>
+        // Fase 10: un solo tipo de contador, también para las cartas que se quedan en juego y llevan la cuenta de algo. Fase 16:
+        // se lleva con un dado (se dibuja como un dado).
+        <span className="ficha ficha-contador dado" title={`Contador: ${contador} (un dado sobre esta carta)`}>
           <b>{contador}</b>
-          <small>{contador === 1 ? 'ficha' : 'fichas'}</small>
         </span>
       )}
       {enrolado !== undefined && (
         <span
-          className="ficha ficha-contador ficha-enrolado"
-          title={`Enrolado: ${enrolado} ${enrolado === 1 ? 'ficha' : 'fichas'}. Pierde 1 al final de cada turno y se va cuando no le queda ninguna.`}
+          className="ficha ficha-contador ficha-enrolado dado"
+          title={`Enrolado: ${enrolado}. Su dado baja 1 al final de cada turno y se va al llegar a 0.`}
         >
           <b>{enrolado}</b>
           <small>Enrolado</small>

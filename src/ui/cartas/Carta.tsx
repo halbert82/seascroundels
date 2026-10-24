@@ -5,6 +5,7 @@ import type { EntradaCatalogo } from '../../engine/catalogo.ts'
 import { CartaCapitulo } from './CartaCapitulo.tsx'
 import { CartaJugador } from './CartaJugador.tsx'
 import { CartaMazoPropio, CartaPeligro } from './CartaPeligro.tsx'
+import { CartaMini } from './CartaMini.tsx'
 import { CartaPuerto } from './CartaPuerto.tsx'
 import { vistaDeCarta, type VistaCarta } from './vista.ts'
 import './cartas.css'
@@ -15,6 +16,8 @@ export const MEDIDAS = {
   normal: { ancho: 378, alto: 528 },
   /** Tamaño tarot (70 × 120 mm), fase 10c: las cartas de Peligro (también las de mazo propio) y la de puerto. */
   tarot: { ancho: 420, alto: 720 },
+  /** Fase 16: carta mini (41 × 63 mm, como las mini de Arkham): los Estados y las Ventajas. */
+  mini: { ancho: 246, alto: 378 },
 } as const
 
 /** Las cartas de Peligro, las de mazo propio y la de puerto van en tamaño tarot (fase 10c). */
@@ -24,6 +27,7 @@ export function esTarot(entrada: EntradaCatalogo): boolean {
 
 /** Tamaño de la carta en píxeles CSS, sin escalar. */
 export function dimensiones(entrada: EntradaCatalogo): { ancho: number; alto: number } {
+  if (entrada.tipo === 'estado') return { ...MEDIDAS.mini }
   if (entrada.tipo === 'puerto') return { ancho: MEDIDAS.tarot.alto, alto: MEDIDAS.tarot.ancho }
   if (esTarot(entrada)) return { ...MEDIDAS.tarot }
   return entrada.tipo === 'capitulo' ? { ancho: MEDIDAS.normal.alto, alto: MEDIDAS.normal.ancho } : { ...MEDIDAS.normal }
@@ -63,6 +67,8 @@ function dibujo(vista: VistaCarta) {
       return <CartaCapitulo v={vista} />
     case 'puerto':
       return <CartaPuerto v={vista} />
+    case 'mini':
+      return <CartaMini v={vista} />
   }
 }
 

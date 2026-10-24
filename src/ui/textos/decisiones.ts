@@ -98,6 +98,12 @@ export function textoUso(s: Estado, uso: Uso): { carta: string; texto: string } 
     }
     if (uso.clave === 'estado:incendio.apagar') return { carta: 'Apagar el Incendio a bordo', texto: 'Agota a un Tripulante.' }
     const estado = cap.carta.slice('estado:'.length) as FichaTripulante | EstadoBarco
+    // Fase 16: las Acciones de las cartas de Estado que las descartan («Acción: Agota a un Cirujano: descarta esta carta»).
+    const coste = /Acción: (.+?): descarta esta carta/.exec(textoPlano(cap.carta))?.[1]
+    if (coste) {
+      const de = uso.fuente ? ` de ${nombre(s, uso.fuente)}` : ''
+      return { carta: `Descartar «${INFO_ESTADO[estado].nombre}»${de}`, texto: `${coste.charAt(0).toUpperCase()}${coste.slice(1)}.` }
+    }
     return { carta: `Usar «${INFO_ESTADO[estado].nombre}»`, texto: INFO_ESTADO[estado].texto }
   }
   if (cap?.desde === 'peligroEnMuelle' && uso.fuente) {
@@ -403,7 +409,7 @@ export function textoDecision(s: Estado, d: Decision): TextoDecision {
     case 'curarUno':
       return { titulo: `¿A quién curas ${plural(n, 'herida', 'heridas')}?` }
     case 'entrenamiento':
-      return { titulo: '¿Quién recibe la ficha de Entrenamiento?', ayuda: 'Ocupa un hueco de Mejora.' }
+      return { titulo: '¿Quién recibe el Entrenamiento?', ayuda: '+1 a una habilidad. Ocupa un hueco de Mejora.' }
     case 'habilidadEntrenamiento':
       return { titulo: '¿A qué habilidad va el +1?' }
     case 'opcionAutomatica':

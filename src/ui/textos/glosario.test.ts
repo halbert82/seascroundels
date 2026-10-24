@@ -45,16 +45,18 @@ describe('Glosario de la mesa', () => {
   })
 
   it('cómo se quita, genérico como el reglamento: la Taberna (o el Astillero) o cualquier carta que así lo indique, con un ejemplo', () => {
-    // Fase 10b: curar ya no quita Estados.
-    expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toBe('Se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).')
-    // Fase 15, quinta ronda: ninguna carta de la caja quita ya la Vía de agua (solo el Astillero).
-    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toBe('Se quita con el Astillero o con cualquier carta que así lo indique.')
+    // Fase 10b: curar ya no quita Estados. Fase 16: cada carta de Estado dice además cómo se quita (su Acción).
+    expect(AYUDA_ESTADO.envenenado.partes[1]?.texto).toBe(
+      'Se quita agotando a un Cirujano (Acción). También se quita con la Taberna o con cualquier carta que así lo indique (por ejemplo, la Herbolaria o «Cataplasma»).',
+    )
+    expect(AYUDA_ESTADO.viaDeAgua.partes[1]?.texto).toBe('Se quita agotando a un Carpintero (Acción). También se quita con el Astillero o con cualquier carta que así lo indique.')
     expect(AYUDA_ESTADO.inspirado.partes[1]?.texto).toContain('La Taberna no quita las Ventajas')
     expect(AYUDA_ESTADO.buscado.partes[1]?.texto).toBe(
       'Se quita descartando 1 carta en la Fase de Reclutamiento. También se quita con la Taberna o con cualquier carta que así lo indique.',
     )
-    // Velas rotas no se quita sola (fase 15, quinta ronda: fuera Pólvora mojada).
-    expect(AYUDA_ESTADO.velasRotas.partes[1]?.texto).toBe('Se quita con el Astillero o con cualquier carta que así lo indique.')
+    expect(AYUDA_ESTADO.velasRotas.partes[1]?.texto).toBe('Se quita agotando a un Carpintero (Acción). También se quita con el Astillero o con cualquier carta que así lo indique.')
+    // El Desánimo no es un Estado de un Tripulante ni del Barco: no lo quitan la Taberna ni el Astillero.
+    expect(AYUDA_ESTADO.desanimo.partes[1]?.texto).toContain('No la quitan la Taberna ni el Astillero')
   })
 
   it('el glosario de la mesa dice lo mismo que el reglamento para quitar cada Estado', async () => {

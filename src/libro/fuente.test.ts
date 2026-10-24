@@ -89,7 +89,7 @@ describe('Marcas nuevas', () => {
 
   it('las tablas de «Componentes» son fichas de componentes', () => {
     const grupos = capitulo('Componentes').bloques.filter((b) => b.tipo === 'componentes')
-    expect(grupos.map((g) => (g.tipo === 'componentes' ? g.grupo : ''))).toEqual(['Cartas del jugador', 'Cartas del escenario El Caribe'])
+    expect(grupos.map((g) => (g.tipo === 'componentes' ? g.grupo : ''))).toEqual(['Cartas del jugador', 'Cartas del escenario El Caribe', 'Cartas de Estado y de Ventaja'])
   })
 })
 

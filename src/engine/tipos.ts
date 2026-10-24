@@ -465,6 +465,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'reponerMisiones' }
   | { tipo: 'descartarFinal' }
   | { tipo: 'robarHastaMando' }
+  /** Fase 16: tras robar al final del turno, la carta de Desánimo vuelve a la reserva. */
+  | { tipo: 'descartarDesanimo' }
   | { tipo: 'anadirTemporal'; temporal: Temporal }
   // Misiones (fase 3)
   | { tipo: 'zarpar'; mision: InstId }
@@ -587,7 +589,8 @@ export type Tarea = { id: number } & (
   | { tipo: 'mirarPeligros'; n: number }
   | { tipo: 'descartarArriba'; n: number }
   /** Agotar a un Tripulante preparado (con un Rasgo, si se pide) para pagar un coste. */
-  | { tipo: 'agotarParaPagar'; rasgo: string | null; rasgos?: string[] }
+  /** `menos`: el Tripulante que no puede ser («Agota a otro Tripulante preparado», fase 16). */
+  | { tipo: 'agotarParaPagar'; rasgo: string | null; rasgos?: string[]; menos?: InstId }
   /** Al empezar una misión de Mar con el Barco «Perseguido»: una carta de Peligro de más. */
   // Peligros 2.0
   /** A quién le pasa algo (según el criterio de la carta; si hay empate, eliges). */
@@ -754,8 +757,11 @@ export type Coste =
   | { tipo: 'pagar'; n: number }
   | { tipo: 'herida'; n: number }
   | { tipo: 'agotarCapitan' }
-  /** Agota a un Tripulante preparado (con ese Rasgo, si lo hay; o con uno de esos Rasgos). */
-  | { tipo: 'agotarTripulante'; rasgo: string | null; rasgos?: string[] }
+  /**
+   * Agota a un Tripulante preparado (con ese Rasgo, si lo hay; o con uno de esos Rasgos). `otro`: no puede ser la carta
+   * que da la capacidad («Agota a otro Tripulante preparado», Sangrando, fase 16).
+   */
+  | { tipo: 'agotarTripulante'; rasgo: string | null; rasgos?: string[]; otro?: boolean }
   /** Agota a N Tripulantes preparados, o a 1 con ese Rasgo («agota a un Marinero o a 2 Tripulantes»). */
   | { tipo: 'agotarVarios'; n: number; oRasgo?: string }
   /** Agota uno de tus Cañones preparados (eliges cuál). */

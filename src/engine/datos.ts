@@ -299,6 +299,25 @@ export interface CartaRecompensaDatos {
   elige?: OpcionFinal[]
 }
 
+/**
+ * Fase 16 (Albert): un Estado o una Ventaja es una carta mini. No va en ningún mazo: forman una reserva aparte. Ponerla
+ * («queda Envenenado») es coger una copia de la reserva; quitarla («descarta esta carta»), devolverla. Lo que hace cada una
+ * está en el registro de capacidades (src/engine/capacidades/estados.ts) y en las reglas del turno y de las Pruebas.
+ */
+export interface EstadoCartaDatos {
+  /** «estado:envenenado»: el mismo identificador que usan sus capacidades. */
+  id: string
+  num: number
+  nombre: string
+  /** Su nombre en el motor («envenenado», «viaDeAgua»…). */
+  clave: string
+  clase: 'Estado' | 'Ventaja'
+  /** Dónde se pone: sobre un Tripulante, junto al Barco (sus Estados) o, sin más («Desánimo»), junto al Barco. */
+  de: 'Tripulante' | 'Barco' | ''
+  copias: number
+  texto: string
+}
+
 /** Una de las opciones de un final con elección (en su carta de recompensa). */
 export interface OpcionFinal {
   clave: string
@@ -412,6 +431,8 @@ export interface DatosCartas {
   naufragio: NaufragioDatos[]
   /** Fase 15: las cartas de recompensa del mazo de historia («Coge la carta N del mazo de historia»). */
   cartasDeRecompensa: CartaRecompensaDatos[]
+  /** Fase 16: las cartas mini de Estado y de Ventaja (una reserva aparte, fuera de los mazos). */
+  estados: EstadoCartaDatos[]
   misiones: MisionDatos[]
   ordenMisiones: { iniciales: string[]; aventuras: string[]; travesias: string[] }
   escenario: EscenarioDatos[]

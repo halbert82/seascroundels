@@ -661,13 +661,14 @@ describe('11 · Maremoto', () => {
     expect(j.estado.danoBarco).toBe(3)
   })
 
-  it('Ciudad (fase 14): si fallas, un asignado queda sepultado: sufre 1 herida y no se prepara en tu próxima Fase de Inicio', () => {
+  it('Ciudad (fase 14): si fallas, un asignado queda sepultado: sufre 1 herida y queda Extenuado (fase 16)', () => {
     const j = en('ciu', ['p2_maremoto', 'chubasco', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     j.comprometer('COM', ['bucanero', 'vigia']).seguir() // COM 5: 2 + 0
     expect(j.decision).toMatchObject({ tipo: 'elegirCartas', motivo: { clave: 'aQuien' } })
     j.elegir('bucanero')
     expect(j.copia('bucanero').heridas).toBe(1)
-    expect(j.estado.temporales.some((t) => t.clave === 'noPrepara' && t.inst === j.inst('bucanero') && t.hasta === 'inicio')).toBe(true)
+    expect(j.estados('bucanero')).toEqual(['extenuado'])
+    expect(j.estado.temporales.some((t) => t.clave === 'noPrepara')).toBe(false)
     expect(j.zona('tripulacion')).toContain('bucanero')
   })
 

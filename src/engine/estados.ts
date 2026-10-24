@@ -1,11 +1,12 @@
-// Fichas de Estado y de Ventaja sobre los Tripulantes, y de Estado sobre el Barco. Duran hasta que se quitan, también
-// entre misiones. Un Tripulante no puede tener dos veces la misma ficha (ni el Barco).
+// Estados y Ventajas sobre los Tripulantes, y Estados junto al Barco. Duran hasta que se quitan, también entre misiones.
+// Un Tripulante no puede tener dos veces el mismo (ni el Barco). Fase 16: son cartas mini de una reserva aparte; ponerlas y
+// quitarlas es cogerlas y devolverlas.
 
 import { anotar, copia, encolar, nombre } from './estado.ts'
 import type { Estado, InstId } from './tipos.ts'
 
-export { ESTADOS_BARCO, ESTADOS_TRIPULANTE, FICHAS_TRIPULANTE, INFO_ESTADO, VENTAJAS, cartaDeEstado, esVentaja, type EstadoBarco, type EstadoTripulante, type FichaTripulante, type InfoEstado, type Ventaja } from './infoEstados.ts'
-import { INFO_ESTADO, esVentaja, type EstadoBarco, type FichaTripulante } from './infoEstados.ts'
+export { ESTADOS_BARCO, ESTADOS_JUNTO_AL_BARCO, ESTADOS_TRIPULANTE, FICHAS_TRIPULANTE, INFO_ESTADO, VENTAJAS, cartaDeEstado, esVentaja, type EstadoBarco, type EstadoTripulante, type FichaTripulante, type InfoEstado, type Ventaja } from './infoEstados.ts'
+import { INFO_ESTADO, esEstadoDelBarco, esVentaja, type EstadoBarco, type FichaTripulante } from './infoEstados.ts'
 
 export function estadosDe(s: Estado, inst: InstId): FichaTripulante[] {
   return copia(s, inst).estados ?? []
@@ -81,10 +82,14 @@ export function quitarEstadosTripulacion(s: Estado): string[] {
   return partes
 }
 
-/** Astillero: quita todos los Estados del Barco. Devuelve sus nombres, para el registro. */
+/**
+ * Astillero: quita todos los Estados del Barco. Devuelve sus nombres, para el registro. Fase 16: el Desánimo, que también
+ * va junto al Barco, no es un Estado del Barco y se queda.
+ */
 export function quitarEstadosBarco(s: Estado): string[] {
-  const quitados = [...(s.estadosBarco ?? [])]
-  delete s.estadosBarco
+  const quitados = (s.estadosBarco ?? []).filter((e) => esEstadoDelBarco(e))
+  s.estadosBarco = (s.estadosBarco ?? []).filter((e) => !esEstadoDelBarco(e))
+  if (s.estadosBarco.length === 0) delete s.estadosBarco
   return quitados.map((e) => INFO_ESTADO[e].nombre)
 }
 

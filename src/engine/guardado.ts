@@ -113,6 +113,7 @@ export function deserializar(texto: string): Estado {
   if (ZONAS.some((z) => !Array.isArray(s.zonas[z]))) throw anterior()
   migrar(s)
   migrarQuintaRonda(s)
+  migrarFase16(s)
   if (!migrarCapitulos(s)) throw new Error('La partida guardada estaba a mitad de un capítulo que ya no existe («Seguirle por los muelles» o el antiguo «A bordo del fantasma»): no se puede continuar')
   if (Object.values(s.cartas ?? {}).some((c) => !esCarta(c.id))) throw anterior()
   return s
@@ -138,6 +139,21 @@ function migrarQuintaRonda(s: Estado): void {
     }
     quitarCopia(s, inst as InstId)
   }
+}
+
+/**
+ * Fase 16: los Estados y las Ventajas son cartas mini. Las que ya estaban puestas (antes, fichas) siguen igual: cada nombre de
+ * la lista de un Tripulante o del Barco es una carta puesta. Lo que antes era «no se prepara en tu próxima Fase de Inicio»
+ * (cuatro Peligros) pasa a ser una carta de Extenuado. El «−1 Mando en tu próximo turno» que quedara pendiente se cumple
+ * como antes.
+ */
+function migrarFase16(s: Estado): void {
+  const extenuados = (s.temporales ?? []).filter((t) => t.clave === 'noPrepara' && t.hasta === 'inicio' && t.inst && s.zonas.tripulacion.includes(t.inst))
+  for (const t of extenuados) {
+    const c = s.cartas[t.inst as InstId]
+    if (c && !(c.estados ?? []).includes('extenuado')) c.estados = [...(c.estados ?? []), 'extenuado']
+  }
+  s.temporales = (s.temporales ?? []).filter((t) => !extenuados.includes(t))
 }
 
 /** Fase 14: fuera el rehén y el Tripulante incautado. Devuelve false si la partida estaba a mitad de una captura. */

@@ -4,7 +4,8 @@
   "iconos": "NAV, COM, EXP = habilidades · mar, nat, ciu = Entornos · herida, dano (daño del Barco), avance, robar (roba una carta: «{2 robar}» se lee «roba 2 cartas», sin verbo delante), curar, agotar, descartar, rep (reputación), vida, mejora, capacidad, MAN (Mando).",
   "fuente": "Textos v1.0 (la verdad). Los campos en inglés o abreviados (fx, win, al, ops, g, atajo, mix…) vienen del prototipo antiguo y sirven de ayuda para el motor: si chocan con el texto, manda el texto y el reglamento.",
   "num": "Número de colección «Caja básica · NNN»; las recompensas de misión citan estos números.",
-  "avance": "En un encuentro con Prueba, «avance» es lo que ganas si la superas y «avanceSinSuperar», lo que ganas si no la superas (fallas o no asignas a nadie). Se ve en la carta como «3 / 2». Fase 11: una Prueba de dificultad 3 o menos da 1 / 1; una dura, 3 / 1 o 3 / 2 (3 / 2 si su fallo es grave). Los encuentros sin Prueba y los que ponen en juego una permanente solo llevan «avance»: 0 o 1 si dan un premio, 1 si no dan nada y 2 si ponen en juego una permanente que perjudica."
+  "avance": "En un encuentro con Prueba, «avance» es lo que ganas si la superas y «avanceSinSuperar», lo que ganas si no la superas (fallas o no asignas a nadie). Se ve en la carta como «3 / 2». Fase 11: una Prueba de dificultad 3 o menos da 1 / 1; una dura, 3 / 1 o 3 / 2 (3 / 2 si su fallo es grave). Los encuentros sin Prueba y los que ponen en juego una permanente solo llevan «avance»: 0 o 1 si dan un premio, 1 si no dan nada y 2 si ponen en juego una permanente que perjudica.",
+  "estados": "Fase 16: los Estados y las Ventajas son cartas mini (sección `estados`), con su número de colección y sus copias. No van en ningún mazo: forman una reserva aparte. «Queda Envenenado» = coge una carta de Envenenado de la reserva y ponla sobre el Tripulante; «descarta esta carta» o «quita el Estado» = devuélvela a la reserva. `clave` es el nombre del Estado en el motor; `de`, dónde se pone (Tripulante, Barco o, Desánimo, junto al Barco)."
  },
  "capitanes": [
   {
@@ -1384,7 +1385,7 @@
    "num": 271,
    "nombre": "El doblón de la calavera",
    "tipo": "Mejora de barco",
-   "texto": "Pon esta carta en juego.\nIndestructible.\nNo puedes descartar esta carta.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante.\nTu Capitán queda **Maldito**, y este Estado no se le puede quitar.",
+   "texto": "Pon esta carta en juego.\nIndestructible.\nNo puedes descartar esta carta.\nTu Capitán no puede quedar derrotado: cuando vaya a quedar derrotado, queda con {1 vida} restante.\nTu Capitán tiene una carta de **Maldito** que no se puede descartar mientras esta carta esté en juego.",
    "ambientacion": "«Era del capitán del San José. Ahora es tuyo.»"
   }
  ],
@@ -4760,7 +4761,7 @@
      "nota": "",
      "textoEfecto": "~Las calles de arena se escurren al mar con las casas encima.~",
      "textoExito": "~Sacáis a los vecinos de los escombros.~ +1 reputación.",
-     "textoFallo": "~Un Tripulante asignado queda sepultado:~ sufre {1 herida} y no se prepara en tu próxima Fase de Inicio."
+     "textoFallo": "~Un Tripulante asignado queda sepultado:~ sufre {1 herida} y queda **Extenuado**."
     }
    },
    "destino": {
@@ -5015,7 +5016,7 @@
      "nota": "",
      "textoEfecto": "**Pagar lo que piden:** descarta 2 cartas.\n**Regatear:** [EXP] 3.",
      "textoExito": "~Compras barato y sobra.~ {1 robar} y cura {1 herida g}.",
-     "textoFallo": "~Os vais con la tripa vacía.~ −1 Mando en tu próximo turno.",
+     "textoFallo": "~Os vais con la tripa vacía.~ Tu tripulación queda con **Desánimo**.",
      "etiquetas": [
       "Elige"
      ]
@@ -5404,7 +5405,7 @@
      "nota": "",
      "textoEfecto": "~Cada noche salen de la costa y vuelven al barco fondeado; hay que espantarlos a golpes de lona.~",
      "textoExito": "~Los ahuyentáis con antorchas y zarpáis antes del alba.~ {+1 avance}.",
-     "textoFallo": "~Nadie pega ojo.~ Los Tripulantes asignados no se preparan en tu próxima Fase de Inicio."
+     "textoFallo": "~Nadie pega ojo.~ Los Tripulantes asignados quedan **Extenuados**."
     },
     "nat": {
      "nombre": "La colonia sale de caza",
@@ -6039,7 +6040,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "Al final de este turno, roba 1 carta menos."
+    "textoSinOposicion": "Tu tripulación queda con **Desánimo**."
    }
   },
   {
@@ -6090,7 +6091,7 @@
      "nota": "",
      "textoEfecto": "~Llevan a los presos encadenados a las minas, monte arriba.~",
      "textoExito": "~Soltáis la cuerda en un descuido de la escolta y los presos os enseñan el atajo.~ {+1 avance}.",
-     "textoFallo": "~Os toman por fugados y os atan a la cuerda.~ Los Tripulantes asignados no se preparan en tu próxima Fase de Inicio."
+     "textoFallo": "~Os toman por fugados y os atan a la cuerda.~ Los Tripulantes asignados quedan **Extenuados**."
     },
     "ciu": {
      "nombre": "Leva forzosa",
@@ -6993,7 +6994,7 @@
     "texto": "",
     "mod": "−1",
     "ambientacion": "",
-    "textoSinOposicion": "−1 Mando en tu próximo turno."
+    "textoSinOposicion": "Tu tripulación queda con **Desánimo**."
    }
   },
   {
@@ -7908,7 +7909,7 @@
      "nota": "",
      "textoEfecto": "**Al revelarse:** el Tripulante preparado con más [COM] lo mató de un tiro. Lleva el pájaro colgado al cuello y no puede ser asignado a esta Prueba.",
      "textoExito": "~Lo arrojáis al mar y vuelve el viento.~ {+1 avance}.",
-     "textoFallo": "~Calma chicha y agua podrida.~ −1 Mando en tu próximo turno."
+     "textoFallo": "~Calma chicha y agua podrida.~ Tu tripulación queda con **Desánimo**."
     },
     "nat": {
      "nombre": "La lechuza canta tres veces",
@@ -8005,7 +8006,7 @@
      "nota": "",
      "textoEfecto": "~Nadie duerme mientras suenan. Hay que dar con el claro donde tocan.~",
      "textoExito": "~Rompéis los tambores y por fin dormís.~ Prepara a todos tus Tripulantes.",
-     "textoFallo": "~Noche en vela.~ Agota a 2 Tripulantes; no se preparan en tu próxima Fase de Inicio."
+     "textoFallo": "~Noche en vela.~ Agota a 2 Tripulantes; esos 2 quedan **Extenuados**."
     },
     "ciu": {
      "nombre": "La mambo del mercado",
@@ -11351,6 +11352,138 @@
    "mision": "asedio",
    "texto": "Si la carta 275 tiene 4 o más Vida restante, gana {1 rep}.",
    "ambientacion": "«Si las murallas aguantan, el gobernador no lo olvidará.»"
+  }
+ ],
+ "estados": [
+  {
+   "id": "estado:viaDeAgua",
+   "num": 297,
+   "nombre": "Vía de agua",
+   "clave": "viaDeAgua",
+   "clase": "Estado",
+   "de": "Barco",
+   "copias": 1,
+   "texto": "**Obligado:** Después de resolver cada carta de Peligro en una misión de [mar], el Barco sufre {1 dano}, salvo que agotes a un Tripulante preparado.\n**Acción:** Agota a un _Carpintero_: descarta esta carta."
+  },
+  {
+   "id": "estado:velasRotas",
+   "num": 298,
+   "nombre": "Velas rotas",
+   "clave": "velasRotas",
+   "clase": "Estado",
+   "de": "Barco",
+   "copias": 1,
+   "texto": "Las Distancias de todas las misiones son 1 mayores.\n[mar]: Tus Pruebas de [NAV] reciben {−1}.\n**Acción:** Agota a un _Carpintero_: descarta esta carta."
+  },
+  {
+   "id": "estado:perseguido",
+   "num": 299,
+   "nombre": "Perseguido",
+   "clave": "perseguido",
+   "clase": "Estado",
+   "de": "Barco",
+   "copias": 1,
+   "texto": "Los encuentros de tipo #Armada# reciben {+1 r} de dificultad.\n**Obligado:** Después de que superes un encuentro de tipo #Armada#, descarta esta carta."
+  },
+  {
+   "id": "estado:desanimo",
+   "num": 300,
+   "nombre": "Desánimo",
+   "clave": "desanimo",
+   "clase": "Estado",
+   "de": "",
+   "copias": 1,
+   "texto": "**Obligado:** Cuando vayas a robar al final del turno, roba 1 carta menos y descarta esta carta."
+  },
+  {
+   "id": "estado:envenenado",
+   "num": 301,
+   "nombre": "Envenenado",
+   "clave": "envenenado",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "**Obligado:** Al final del turno, este Tripulante sufre {1 herida}.\n**Acción:** Agota a un _Cirujano_: descarta esta carta."
+  },
+  {
+   "id": "estado:sangrando",
+   "num": 302,
+   "nombre": "Sangrando",
+   "clave": "sangrando",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "**Obligado:** Después de que este Tripulante se agote, sufre {1 herida}.\n**Acción:** Agota a otro Tripulante preparado: descarta esta carta."
+  },
+  {
+   "id": "estado:asustado",
+   "num": 303,
+   "nombre": "Asustado",
+   "clave": "asustado",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "Este Tripulante no puede ser asignado solo a una Prueba.\n**Acción:** Agota a un _Oficial_: descarta esta carta.\n**Obligado:** Al final del turno, descarta esta carta."
+  },
+  {
+   "id": "estado:borracho",
+   "num": 304,
+   "nombre": "Borracho",
+   "clave": "borracho",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "Este Tripulante recibe {+1 COM} y no puede ser asignado a Pruebas de [NAV] ni de [EXP].\n**Obligado:** Al final del turno, descarta esta carta."
+  },
+  {
+   "id": "estado:buscado",
+   "num": 305,
+   "nombre": "Buscado",
+   "clave": "buscado",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "Este Tripulante no puede ser asignado en las misiones de [ciu].\n**Acción:** En la Fase de Reclutamiento, descarta 1 carta de tu mano: descarta esta carta."
+  },
+  {
+   "id": "estado:maldito",
+   "num": 306,
+   "nombre": "Maldito",
+   "clave": "maldito",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "Las Pruebas en las que participe este Tripulante reciben {−1} a su total.\n**Obligado:** Después de que superes una Prueba en la que participe este Tripulante, descarta esta carta."
+  },
+  {
+   "id": "estado:extenuado",
+   "num": 307,
+   "nombre": "Extenuado",
+   "clave": "extenuado",
+   "clase": "Estado",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "**Obligado:** Cuando este Tripulante vaya a prepararse en la Fase de Inicio, en vez de eso descarta esta carta."
+  },
+  {
+   "id": "estado:inspirado",
+   "num": 308,
+   "nombre": "Inspirado",
+   "clave": "inspirado",
+   "clase": "Ventaja",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "Las Pruebas en las que participe este Tripulante reciben {+1} a su total.\n**Obligado:** Al final del turno, descarta esta carta."
+  },
+  {
+   "id": "estado:aguerrido",
+   "num": 309,
+   "nombre": "Aguerrido",
+   "clave": "aguerrido",
+   "clase": "Ventaja",
+   "de": "Tripulante",
+   "copias": 6,
+   "texto": "**Obligado:** Cuando este Tripulante vaya a agotarse al ser asignado a una Prueba, descarta esta carta: no se agota."
   }
  ]
 }

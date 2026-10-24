@@ -135,8 +135,9 @@ registrarPeligro('p2_ojos', {
     },
   },
   // +1. No puedes jugar Eventos en esta Prueba. Sin oposición: robas 1 menos al final de este turno.
-  // −1. Sin oposición: −1 Mando. (Fase 13, I1: fuera «no puedes jugar Eventos en esta Prueba».)
-  destino: { sinOposicion: [{ tipo: 'menosMando' }] },
+  // −1. Sin oposición: «Tu tripulación queda con Desánimo» (fase 16; antes, «Al final de este turno, roba 1 carta menos»).
+  // (Fase 13, I1: fuera «no puedes jugar Eventos en esta Prueba».)
+  destino: { sinOposicion: [{ tipo: 'estadoBarco', estado: 'desanimo' }] },
 })
 
 // 27. Los grilletes del rey · Duro
@@ -148,7 +149,8 @@ registrarPeligro('p2_grilletes', {
       exito: [{ tipo: 'reclutarDelMazoMuelle', n: 3, maxCoste: 2 }],
       fallo: [dano(2)],
     },
-    nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true }, hacer: { tipo: 'noPrepara', hasta: 'inicio' } }] },
+    // Fase 16: «Los Tripulantes asignados quedan Extenuados».
+    nat: { exito: [avance(1)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', cada: true }, hacer: { tipo: 'estado', estado: 'extenuado' } }] },
     // Fallo (fase 14, fuera el rehén): descarta al asignado con menos Vida.
     ciu: { exito: [preparar(2)], fallo: [{ tipo: 'aQuien', quien: { de: 'comprometidos', por: 'menosVida' }, hacer: { tipo: 'descartar' } }] },
   },

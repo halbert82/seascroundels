@@ -503,6 +503,19 @@
   opacity: 0.7;
 }
 
+/* Fase 16: los contadores se llevan con dados: se dibujan como la cara de un dado (marfil, esquinas redondeadas). */
+.ficha.dado {
+  border-radius: 5px;
+  padding: 0 6px;
+  background: linear-gradient(180deg, #fbf3df, #d8c7a0);
+  border: 1px solid #8a6d3b;
+  color: #2a2118;
+  text-shadow: none;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.ficha.dado small {
+  opacity: 0.75;
+}
 .ficha-herida {
   background: linear-gradient(180deg, #a3271c, #6e140c);
   border-color: #e7a07f;
@@ -2443,6 +2456,34 @@
   background: #23431c;
   color: #d8f0c8;
   border: 1px solid #8fc276;
+}
+/* Fase 16: una carta mini de Estado o de Ventaja, por su cabecera: la placa con el nombre (roja o verde, con el filete
+   dorado de las cartas). Al pasar el ratón se amplía la carta entera; con una Acción que se puede usar, brilla. */
+.estado-mini {
+  --cc: #8e2b23;
+  position: relative;
+  font-family: 'IM Fell English SC', Georgia, serif;
+  font-size: 12.5px;
+  line-height: 1;
+  color: #faf0da;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+  padding: 4px 8px 3px;
+  border: 1px solid #c9a45c;
+  border-radius: 6px 6px 3px 3px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cc), #fff 16%) 0%, var(--cc) 48%, color-mix(in srgb, var(--cc), #000 32%) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 5px rgba(0, 0, 0, 0.65);
+  cursor: zoom-in;
+}
+.estado-mini.ventaja {
+  --cc: #3d6631;
+}
+.estado-mini.pulsable {
+  cursor: pointer;
+  border-color: #f2d58a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0 0 2px rgba(242, 213, 138, 0.55), 0 2px 6px rgba(0, 0, 0, 0.65);
+}
+.estado-mini.pulsable:hover {
+  filter: brightness(1.12);
 }
 .estado-ficha.aviso {
   background: #3a3126;

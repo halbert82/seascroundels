@@ -208,8 +208,10 @@ export const ponerEstado_: Manejador<'ponerEstado'> = (s, t, e) => {
 
 export const ponerEstadoBarco_: Manejador<'ponerEstadoBarco'> = (s, t) => {
   const info = INFO_ESTADO[t.estado]
-  if (ponerEstadoBarco(s, t.estado)) anotar(s, 'aviso', `El Barco: ${info.nombre}.`)
-  else anotar(s, 'efecto', `El Barco ya tiene ${info.nombre}.`)
+  // Fase 16: el Desánimo es de la tripulación («Tu tripulación queda con Desánimo»), aunque su carta va junto al Barco.
+  const quien = t.estado === 'desanimo' ? 'Tu tripulación' : 'El Barco'
+  if (ponerEstadoBarco(s, t.estado)) anotar(s, 'aviso', t.estado === 'desanimo' ? 'Tu tripulación queda con Desánimo.' : `El Barco: ${info.nombre}.`)
+  else anotar(s, 'efecto', `${quien} ya tiene ${info.nombre}.`)
   return 'hecha'
 }
 
@@ -407,7 +409,9 @@ export const descartarArriba: Manejador<'descartarArriba'> = (s, t) => {
 /** Agota a un Tripulante preparado (con ese Rasgo, si lo pide) para pagar un coste. */
 export const agotarParaPagar: Manejador<'agotarParaPagar'> = (s, t, e) => {
   const rasgos = t.rasgos ?? (t.rasgo === null ? null : [t.rasgo])
-  const candidatos = s.zonas.tripulacion.filter((c) => !copia(s, c).agotada && (rasgos === null || rasgos.some((r) => rasgosDe(copia(s, c).id).includes(r))))
+  const candidatos = s.zonas.tripulacion.filter(
+    (c) => c !== t.menos && !copia(s, c).agotada && (rasgos === null || rasgos.some((r) => rasgosDe(copia(s, c).id).includes(r))),
+  )
   if (candidatos.length === 0) return 'hecha'
   if (candidatos.length > 1 && !e) {
     const quien = rasgos?.join(' o ')

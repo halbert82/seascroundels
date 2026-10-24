@@ -282,8 +282,9 @@ registrarPeligro('p2_paga', {
     },
   },
   // +1; +2 en su lugar si comprometiste a 3 o más. Sin oposición: −1 Mando en tu próximo turno.
-  // −1. Sin oposición: −1 Mando en tu próximo turno. (Fase 13, I1: fuera «con 3 o más asignados: −2».)
-  destino: { sinOposicion: [{ tipo: 'menosMando', proximo: true }] },
+  // −1. Sin oposición: «Tu tripulación queda con Desánimo» (fase 16; antes, −1 Mando en tu próximo turno). (Fase 13, I1: fuera
+  // «con 3 o más asignados: −2».)
+  destino: { sinOposicion: [{ tipo: 'estadoBarco', estado: 'desanimo' }] },
 })
 
 // 39. A sueldo · Leve

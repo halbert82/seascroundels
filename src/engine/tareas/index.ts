@@ -13,6 +13,7 @@ import {
   revelarMuelle,
   robar,
   robarHastaMando,
+  descartarDesanimo,
 } from './cartas.ts'
 import {
   prepararCanon,
@@ -129,6 +130,7 @@ export const MANEJADORES: { [K in TipoTarea]: Manejador<K> } = {
   reponerMisiones,
   descartarFinal,
   robarHastaMando,
+  descartarDesanimo,
   anadirTemporal,
   evento,
   zarpar,

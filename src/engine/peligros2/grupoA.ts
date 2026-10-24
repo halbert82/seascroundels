@@ -387,11 +387,11 @@ registrarPeligro('p2_maremoto', {
   encuentros: {
     mar: { exito: [avance(2)], fallo: [dano(2), codigo('p2_maremoto.ola')] },
     nat: { exito: [robar(2), avance(1)], fallo: [pierdesAvance(2), comprometidoCon(mas('COM'), { tipo: 'heridas', n: 1 })] },
-    // Fase 14 (fuera el rehén): «Un Tripulante asignado queda sepultado: sufre 1 herida y no se prepara en tu próxima
-    // Fase de Inicio.» Lo eliges tú; sin nadie asignado, a quien elijas (como las heridas).
+    // Fase 14 (fuera el rehén): «Un Tripulante asignado queda sepultado: sufre 1 herida y queda Extenuado» (fase 16; antes,
+    // «no se prepara en tu próxima Fase de Inicio»). Lo eliges tú; sin nadie asignado, a quien elijas (como las heridas).
     ciu: {
       exito: [reputacion(1)],
-      fallo: [comprometidoCon('eleccion', { tipo: 'varios', acciones: [{ tipo: 'heridas', n: 1 }, { tipo: 'noPrepara', hasta: 'inicio' }] })],
+      fallo: [comprometidoCon('eleccion', { tipo: 'varios', acciones: [{ tipo: 'heridas', n: 1 }, { tipo: 'estado', estado: 'extenuado' }] })],
     },
   },
   // −2. Sin oposición: el Capitán sufre 1 herida. (Fase 13, I1: fuera «si fallas, la siguiente Prueba recibe +1».)

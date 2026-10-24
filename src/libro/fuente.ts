@@ -721,7 +721,7 @@ function creadorDeAnclas(prefijo: string): (titulo: string) => string {
 // Índice de términos de la Referencia de reglas
 
 /** Entradas cuya primera frase es una lista («…: Barco, Bestia, … y Tripulación.»): cada palabra va al índice. */
-const LISTAS_DEL_INDICE: Record<string, string> = { 'Tipos de encuentro': 'tipo de encuentro', Rasgo: 'Rasgo', 'Fichas de misión': 'ficha de misión' }
+const LISTAS_DEL_INDICE: Record<string, string> = { 'Tipos de encuentro': 'tipo de encuentro', Rasgo: 'Rasgo', Contadores: 'contador' }
 
 const mayuscula = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
 
@@ -739,7 +739,7 @@ export function claveIndice(t: string): string {
  *   - cada entrada, y cada parte de las que juntan dos términos («Curar y reparar» → «Reparar»);
  *   - lo que cada entrada pone en negrita para explicarlo («**Envenenado:**», «**misión lejana**»), con su página exacta:
  *     a esa negrita se le pone un ancla (el atributo `id` de su token);
- *   - cada palabra de las listas de «Tipos de encuentro», «Rasgo» y «Fichas de misión».
+ *   - cada palabra de las listas de «Tipos de encuentro», «Rasgo» y «Contadores» (antes, «Fichas de misión»).
  * No cuentan las negritas de los ejemplos, los pasos numerados ni los rótulos que van solos en su párrafo.
  */
 function indiceDeTerminos(secciones: Seccion[], ids: string[]): LineaIndice[] {

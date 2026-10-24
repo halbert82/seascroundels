@@ -41,7 +41,7 @@ describe('Enrolado N', () => {
     j.pasarTurnoEnPuerto()
     expect(j.estado.turno).toBe(4)
     expect(j.copia('piloto_sueldo').enrolado).toBe(1)
-    expect(j.registro).toContain('Piloto a sueldo pierde 1 ficha de Enrolado: le queda 1.')
+    expect(j.registro).toContain('Piloto a sueldo: su Enrolado baja a 1.')
     j.pasarTurnoEnPuerto()
     expect(j.zona('tripulacion')).not.toContain('piloto_sueldo')
     expect(j.zona('descartesMuelle')).toContain('piloto_sueldo')

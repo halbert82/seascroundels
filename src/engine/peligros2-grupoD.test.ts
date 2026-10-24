@@ -333,13 +333,13 @@ describe('38 · Paga atrasada', () => {
     expect(k.copia('capitan').heridas).toBe(1)
   })
 
-  it('Destino «Demasiadas voces»: −1 en cualquier Prueba, también con 3 o más asignados (fase 13, I1); Sin oposición: −1 Mando en tu próximo turno', () => {
+  it('Destino «Demasiadas voces»: −1 en cualquier Prueba, también con 3 o más asignados (fase 13, I1); Sin oposición: Desánimo (fase 16)', () => {
     const j = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'], { tripulacion: ['bucanero', 'vigia'] })
     j.comprometer('COM', ['capitan', 'bucanero', 'vigia'])
     expect(dificultadConDestino(j.estado)).toBe(3)
     const k = en('ciu', ['p2_hermanos', 'p2_paga', 'calma'])
     k.comprometer('COM', [])
-    expect(k.estado.temporales).toContainEqual(expect.objectContaining({ clave: 'menosMando', desdeTurno: k.estado.turno + 1 }))
+    expect(k.estadosBarco).toEqual(['desanimo'])
   })
 })
 
