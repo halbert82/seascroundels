@@ -4,7 +4,7 @@
 
 import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'
-import { jugarPartida, ultimoCapitulo } from './pruebas/equilibrio.ts'
+import { capitulosFinales, jugarPartida } from './pruebas/equilibrio.ts'
 import { CATALOGO } from './catalogo.ts'
 import { jugadorConCriterio } from './pruebas/jugadores.ts'
 import { aplicarVariante, leerVariante } from './pruebas/variantesMedida.ts'
@@ -47,7 +47,7 @@ it.runIf(process.env.MEDIR)(`medida de equilibrio (${PARTIDAS} partidas)`, { tim
     // Fase 11: cada travesía, en cuántas partidas la completa (supera su último capítulo) y cuántas de esas gana.
     travesias: Object.fromEntries(
       DATOS.ordenMisiones.travesias.map((t) => {
-        const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo(t) && r.resultado === 'superada'))
+        const completan = partidas.filter((p) => p.resultados.some((r) => capitulosFinales(t).includes(r.mision) && r.resultado === 'superada'))
         return [t, { completada: (100 * completan.length) / PARTIDAS, ganaSiLaCompleta: completan.length > 0 ? (100 * completan.filter((p) => p.gana).length) / completan.length : 0 }]
       }),
     ),

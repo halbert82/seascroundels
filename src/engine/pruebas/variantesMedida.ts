@@ -15,6 +15,8 @@
 //             Prueba, AVP:p.e=X)
 //   FUERA:p   saca la carta de Peligro p del mazo de Peligros (todas sus copias)
 //   SINGESTA:id  el capítulo id no tiene Gesta (no da el +1 de reputación)
+//   ANTES_P134  la reputación de antes de P134: las diez recompensas de 3 o más con 1 más (la manera 3 del informe de
+//             dificultad está en los datos desde el 5 de noviembre de 2026)
 //
 // Fase 11: la reputación nueva de las misiones (antes R1–R3), las Pruebas fáciles a 1 / 1 (A1) y las misiones iniciales
 // con precio (I2) ya están en los datos; I1 se descartó.
@@ -47,7 +49,8 @@ export interface VarianteMedida {
 
 export function leerVariante(texto: string | undefined): VarianteMedida {
   const v: VarianteMedida = { claves: new Set(), modo: 'normal', reputacionCapitulo: {}, avanceCapitulo: {}, mazo: {}, dificultadPeligro: {}, avancePeligro: {}, fueraDelMazo: [], sinGesta: [] }
-  for (const parte of (texto ?? '').split(',').map((p) => p.trim()).filter(Boolean)) {
+  const partes = (texto ?? '').split(',').map((p) => p.trim()).filter(Boolean).flatMap((p) => (p === 'ANTES_P134' ? ANTES_P134.split(',') : [p]))
+  for (const parte of partes) {
     const [clave, valor] = parte.split('=')
     if (clave === 'REP') v.rep = Number(valor)
     else if (clave === 'ESC') v.escenario = Number(valor)
@@ -131,8 +134,18 @@ export function aplicarVariante(v: VarianteMedida): void {
 }
 
 /**
+ * P134 (5 de noviembre de 2026, decisión de Albert): las diez recompensas que daban 3 o más de reputación dan 1 menos (en
+ * los finales con elección, cada opción). Esta variante las deja como estaban, para comparar con lo de antes.
+ */
+export const ANTES_P134 =
+  'R:espia-II=1,R:sanfelipe-II-b=1,R:sanfelipe-III=1,R:fantasma-II=1,R:flota-IV=1,' +
+  'R:isla-II-ingleses=1,R:isla-II-temblor=1,R:vanhoorn-II-a=1,R:fugitivo-II=1,R:templo-IV=1'
+
+/**
  * Las maneras de endurecer el juego del informe de dificultad (5 de noviembre de 2026), como variantes de medida. Solo
- * para medir: la partida real no cambia (P134, pendiente de Albert).
+ * para medir. P134: Albert eligió la 3, que ya está en los datos; aquí queda «antes» (la reputación de antes de P134). La
+ * 1 (el reloj) queda como idea de «modo difícil» y la 2 (los Peligros), para cuando Albert termine de revisar sus textos.
+ * Medidas sobre los datos de hoy, la 1, la 2 y «gesta» se suman a la 3.
  */
 export const MANERAS: Record<string, { nombre: string; variante: string }> = {
   1: { nombre: 'El reloj: 10 cartas de Escenario en la partida normal', variante: 'ESC=10' },
@@ -150,12 +163,6 @@ export const MANERAS: Record<string, { nombre: string; variante: string }> = {
       'AVP:p2_paga.mar=1,AVP:p2_motin.ciu=1,AVP:p2_estrella.ciu=0,AVP:p2_presa.ciu=0,' +
       'AVP:p2_presagio.nat=1',
   },
-  3: {
-    nombre: 'Recompensas: −1 a las diez de 3 o más de reputación',
-    variante:
-      'R:espia-II=-1,R:sanfelipe-II-b=-1,R:sanfelipe-III=-1,R:fantasma-II=-1,' +
-      'R:flota-IV=-1,R:isla-II-ingleses=-1,R:isla-II-temblor=-1,R:vanhoorn-II-a=-1,' +
-      'R:fugitivo-II=-1,R:templo-IV=-1',
-  },
+  antes: { nombre: 'Antes de P134: las diez recompensas grandes con 1 más de reputación', variante: 'ANTES_P134' },
   gesta: { nombre: '«Rumbo a mar abierto» sin Gesta', variante: 'SINGESTA:prueba-I' },
 }

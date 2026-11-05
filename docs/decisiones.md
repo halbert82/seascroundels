@@ -2045,7 +2045,7 @@ La dificultad general del juego se trata aparte: ver «Informe de dificultad» m
 
 ## Informe de dificultad: de dónde salen las victorias y tres maneras de endurecer el juego (5 de noviembre de 2026)
 
-Solo se mide y se propone: **no cambia ningún dato, regla ni carta** (tampoco los textos de los Peligros, que está revisando Albert). Norma de Albert: el juego tiene que ser más difícil. **Hoy se gana el 47,3 % de las partidas con los mazos de inicio y el 49,3 % con muelles variados** (el 47,7 % y el 49,7 % eran de antes de P133).
+Solo se mide y se propone: **no cambia ningún dato, regla ni carta** (tampoco los textos de los Peligros, que está revisando Albert). *P134 cerrada: Albert eligió la manera 3; ver «P134 · Decisión de Albert» más abajo.* Norma de Albert: el juego tiene que ser más difícil. **Hoy se gana el 47,3 % de las partidas con los mazos de inicio y el 49,3 % con muelles variados** (el 47,7 % y el 49,7 % eran de antes de P133).
 
 *Cómo se ha medido:* el jugador automático de siempre, con las mismas semillas para todas las versiones: 1000 partidas con los mazos de inicio (semillas 1–1000) y 2000 con muelles variados (semillas 100000–101999, un muelle de 20 al azar de la caja). Con 1000 partidas, el azar mueve el resultado más o menos 1,5 puntos; con 2000, más o menos 1. Las versiones son variantes de medida (cambian los datos solo en la memoria del proceso que mide). Orden: `MEDIR_DIFICULTAD=1 MEDIR_DIFICULTAD_MANERA=2 npx vitest run src/engine/medir-dificultad.informe.test.ts` (la manera 1, 2, 3 o `gesta`; o cualquier otra variante con `MEDIR_VARIANTE=…`; con `MEDIR_DIFICULTAD_MUELLE=variados`, los muelles variados). Variantes nuevas en `src/engine/pruebas/variantesMedida.ts`: `DIF` (dificultad de un encuentro de Peligro), `AVP` (su Avance), `FUERA` (una carta fuera del mazo de Peligros) y `SINGESTA` (un capítulo sin Gesta), con su prueba.
 
@@ -2187,7 +2187,7 @@ Objetivo orientativo: que las victorias bajen a un 35–40 %, sin que las derrot
 
 **Recomendación (sin aplicar: decide Albert):** si se endurece, **la manera 3**, porque es la que mejor encaja con «no se regala reputación», llega al objetivo con los dos muelles y no sube las derrotas por el Capitán. La manera 1 hace casi lo mismo con un solo número, pero acorta la partida en lugar de encarecer la reputación. La manera 2 es la que más cambia cómo se juega (el COM deja de ser la vía fácil), pero toca muchas cartas que Albert está revisando y es la única que sube las derrotas por el Capitán. Combinarlas no se ha medido: dos juntas bajarían seguramente por debajo del 35 %.
 
-### Pregunta para Albert (P134), con la opción por defecto aplicada
+### Pregunta para Albert (P134), con la opción por defecto aplicada (cerrada: ver «P134 · Decisión de Albert» justo debajo)
 
 - **P134 · ¿Se endurece el juego, y cómo?** **Por defecto, no se toca nada** (47,3 % con los mazos de inicio y 49,3 % con muelles variados). Opciones medidas: **1** el reloj (10 cartas de Escenario en la partida normal), **2** los Peligros concretos (22 Pruebas de COM +1 y 15 Avances −1), **3** las recompensas (las diez de 3 o más, −1), o **«Rumbo a mar abierto» sin Gesta**, sola o junto a otra. Si eliges una, la aplico en los datos, el reglamento y las pruebas, y mido la combinación si eliges más de una.
 
@@ -2196,5 +2196,101 @@ Bloque para responder (cópialo y rellénalo):
 ```
 P134 (dificultad): no se toca nada / 1 reloj / 2 Peligros / 3 recompensas / Rumbo a mar abierto sin Gesta / otra: …
 Si es la 2: ¿las 22 Pruebas de COM o las 50? ¿con los 15 Avances?
+Notas:
+```
+
+
+## P134 · Decisión de Albert: las recompensas grandes bajan 1 (5 de noviembre de 2026)
+
+**Albert eligió la manera 3:** las diez recompensas que daban 3 o más de reputación dan 1 menos (en los finales con elección, cada opción). **No se aplican el reloj ni los Peligros**, y **«Rumbo a mar abierto» conserva su Gesta**: es la misión con la que se aprende. Los textos de las cartas de Peligro no se tocan (los está revisando Albert).
+
+### Qué cambia
+
+| Capítulo | Antes | Ahora |
+| --- | --- | --- |
+| La goleta del correo (El espía de Cádiz II) | 3 | 2 |
+| Al asalto de las murallas (La fortaleza de San Felipe II-b) | 3 | 2 |
+| El polvorín (La fortaleza de San Felipe III), carta 291 «La mecha encendida»: rescatas a tu amigo / vuelas el polvorín | 4 / 3 | 3 / 2 |
+| El camarote del capitán (El barco fantasma II), carta 292 «La bitácora del capitán muerto»: el Farol / la bitácora | 3 / 4 | 2 / 3 |
+| La huida con la plata (La Flota de la Plata IV) | 4 | 3 |
+| …tomada por los ingleses (La Isla del Tesoro II) | 3 | 2 |
+| …sacudida por un temblor (La Isla del Tesoro II), carta 294 «La cueva se viene abajo»: el oro / salir a tiempo | 3 / 2 | 2 / 1 |
+| La isla de Aves (La carrera de van Hoorn II-a) | 3 | 2 |
+| Vivo, no muerto (El fugitivo II) | 3 | 2 |
+| El templo (El templo perdido IV), carta 290 «Ante el altar»: la Espada / el ídolo | 2 / 3 | 1 / 2 |
+
+- **Datos:** los diez recuadros y los textos de las cuatro cartas de recompensa. El motor no cambia (lee la reputación de los datos); solo sus comentarios. La Gesta de «El camarote del capitán» sigue dando 1 más.
+- **Reglamento:** el ejemplo del último turno ahora empieza con 10 de reputación («La goleta del correo» otorga 2 y llega a 12) y el de «Ante el altar» dice 1 y 2. No había más cifras de estas recompensas en el reglamento.
+- **Pruebas:** las de cada capítulo y cada carta de recompensa, las de las travesías enteras y una nueva, «P134», que comprueba los diez valores, que los textos de las cartas de recompensa digan lo mismo que sus opciones y que ninguna recompensa de capítulo dé ya 4 o más.
+- **Medidas:** la manera 3 sale de las variantes de medida (ya está en los datos). Su lugar lo ocupa «antes» (`MEDIR_VARIANTE=ANTES_P134` o `MEDIR_DIFICULTAD_MANERA=antes`), que devuelve el punto a las diez para comparar. De paso, el informe de equilibrio contaba mal las travesías terminadas de La Isla del Tesoro (salían 0) y de La carrera de van Hoorn (solo el II-b): ahora cuenta cualquiera de sus capítulos finales.
+- **Ejemplo de juego:** con 8 de reputación superas «La huida con la plata». Antes ganabas 4 y llegabas a 12: victoria. Ahora ganas 3, te quedas en 11 y necesitas otra misión, como «Los muelles de Maracaibo» (1), con los turnos que te queden.
+
+### Equilibrio con P134 (informe de equilibrio regenerado)
+
+| | Victorias | Panamá | Derrotas por tiempo / por el Capitán |
+| --- | --- | --- | --- |
+| Mazos de inicio, antes (1000 partidas) | 47,3 % | 25 (2,5 %) | 37,1 % / 15,6 % |
+| **Mazos de inicio, ahora** | **35,5 %** | 28 (2,8 %) | 48,0 % / 16,5 % |
+| Muelles variados, antes (2000 partidas) | 49,3 % | 43 (2,2 %) | 35,2 % / 15,6 % |
+| **Muelles variados, ahora** | **36,1 %** | 42 (2,1 %) | 47,9 % / 16,1 % |
+
+- **Dentro del objetivo (35–40 %) con los dos muelles.** Suben casi solo las derrotas por tiempo; las del Capitán, menos de 1 punto.
+- **Panamá sigue muy por debajo del 10 %** (2,8 % y 2,1 %).
+- Las cifras son las mismas que dio la manera 3 en el informe de dificultad: el cambio en los datos reproduce exactamente la variante que se midió.
+
+### ¿Siguen compensando las travesías? (antes → ahora)
+
+Cada zarpe gasta un turno. **Rep. por turno:** toda la reputación de los zarpes a esas misiones (recompensa, Gesta y lo que se gane o pierda en ellas), las supere o no, entre los zarpes; en una travesía, todos sus capítulos, la termine o no. **La empieza:** partidas en que zarpa a su capítulo I; **la termina:** en que supera su último capítulo. **Cuando la termina:** solo esas partidas, con todos los zarpes a sus capítulos (los fallidos también). Los Tesoros no dan reputación, así que no cuentan aquí. Panamá no se compara: su final no da reputación, gana la partida. Mismas semillas antes y ahora. Orden: `MEDIR_TRAVESIAS=1 npx vitest run src/engine/medir-travesias.informe.test.ts` (con `MEDIR_TRAVESIAS_MUELLE=variados`, los muelles variados; con `MEDIR_VARIANTE=ANTES_P134`, lo de antes). El informe de equilibrio trae ahora esta tabla.
+
+| Misiones | Rep. por turno, mazos de inicio | Rep. por turno, muelles variados | La empieza / la termina, mazos de inicio (1000 partidas) | La empieza / la termina, muelles variados (2000) | Rep. por turno cuando la termina (inicio / variados) | Rep. de la travesía terminada (inicio) | Turnos para terminarla (inicio) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **Misiones iniciales** | 0,54 → 0,49 | 0,54 → 0,48 | — | — | — | — | — |
+| **Aventuras** | 1,00 → 1,00 | 0,96 → 0,99 | — | — | — | — | — |
+| El templo perdido | 1,22 → 1,12 | 1,25 → 1,17 | 233 / 99 → 253 / 112 | 495 / 217 → 515 / 236 | 1,43 → 1,25 / 1,49 → 1,34 | 7,6 → 6,6 | 5,3 → 5,2 |
+| La Flota de la Plata | 1,42 → 1,37 | 1,35 → 1,25 | 119 / 59 → 150 / 72 | 258 / 119 → 326 / 140 | 1,82 → 1,68 / 1,79 → 1,61 | 9,3 → 8,2 | 5,1 → 4,9 |
+| El espía de Cádiz | 1,48 → 1,17 | 1,54 → 1,31 | 112 / 102 → 7 / 5 | 240 / 218 → 14 / 11 | 1,55 → 1,40 / 1,62 → 1,50 | 3,9 → 2,8 | 2,5 → 2,0 |
+| El cargamento de Maracaibo | 1,44 → 1,46 | 1,50 → 1,50 | 211 / 139 → 226 / 153 | 419 / 283 → 441 / 307 | 1,48 → 1,52 / 1,55 → 1,56 | 5,4 → 5,4 | 3,6 → 3,5 |
+| La fortaleza de San Felipe | 1,68 → 1,34 | 1,73 → 1,42 | 229 / 133 → 239 / 142 | 478 / 305 → 506 / 341 | 1,85 → 1,46 / 1,85 → 1,50 | 6,9 → 5,4 | 3,7 → 3,7 |
+| El barco fantasma | 1,80 → 1,43 | 1,76 → 1,40 | 187 / 143 → 194 / 156 | 336 / 282 → 364 / 303 | 2,10 → 1,61 / 1,95 → 1,54 | 4,9 → 3,7 | 2,3 → 2,3 |
+| El saqueo de Panamá | 0,51 → 0,52 | 0,49 → 0,52 | 146 / 25 → 164 / 28 | 305 / 43 → 345 / 42 | 0,69 → 0,68 / 0,77 → 0,77 | 3,2 → 3,3 | 4,6 → 4,8 |
+| La Isla del Tesoro | 1,24 → 0,95 | 1,31 → 0,99 | 150 / 129 → 144 / 128 | 288 / 253 → 293 / 256 | 1,33 → 1,03 / 1,45 → 1,10 | 4,2 → 3,3 | 3,2 → 3,2 |
+| La carrera de van Hoorn | 1,15 → 1,04 | 1,41 → 1,18 | 168 / 144 → 173 / 149 | 305 / 284 → 314 / 285 | 1,24 → 1,12 / 1,45 → 1,22 | 3,0 → 2,6 | 2,4 → 2,3 |
+| El fugitivo | 1,25 → 0,97 | 1,23 → 0,93 | 151 / 132 → 151 / 137 | 317 / 269 → 324 / 272 | 1,40 → 1,07 / 1,45 → 1,09 | 4,0 → 3,0 | 2,8 → 2,8 |
+
+- **Las aventuras no cambian** (1,00 por turno; ninguna daba 3 o más) y las misiones iniciales bajan un poco (se juegan más veces en partidas más largas).
+- **Siete travesías siguen dando más que una aventura:** el templo, la Flota, el espía, Maracaibo, San Felipe y el barco fantasma (de 1,12 a 1,50 por turno), y van Hoorn, justo por encima (1,04 con los mazos de inicio y 1,18 con muelles variados; además da un Tesoro).
+- **Dos pasan a dar lo mismo o menos que una aventura:** **El fugitivo** (0,97 y 0,93, frente a 1,00 y 0,99; antes, 1,25 y 1,23) y **La Isla del Tesoro** (0,95 con los mazos de inicio, por debajo; 0,99 con muelles variados, empate; antes, 1,24 y 1,31). Son las dos únicas que no dan ningún Tesoro: la reputación es todo lo que dan. Terminadas siguen un poco por encima (1,03 a 1,10), pero terminarlas no es seguro: «Vivo, no muerto» se supera el 55 % de las veces que se zarpa y «…sacudida por un temblor», el 54 %.
+- **Cuántas se empiezan y se terminan:** casi igual que antes, salvo dos. La Flota se empieza más (150 de 1000 partidas, antes 119): las partidas duran más y da tiempo. **El espía de Cádiz casi desaparece:** el jugador automático solo lo empieza en 7 de 1000 partidas (antes, 112) y en 14 de 2000 con muelles variados (antes, 240). Es cosa de cómo elige misión: «Seguirle por Port Royal» (1, Ciudad, Distancia 2) ya la evitaba 3 de cada 4 veces, y con la goleta a 2 lo que queda de la cadena ya no la compensa. Cuando la juega, el espía terminado da 1,40–1,50 por turno, por encima de una aventura; un jugador de verdad lo seguiría jugando. No se toca.
+
+### Propuesta para El fugitivo y La Isla del Tesoro (P135, sin aplicar)
+
+**Devolver el punto solo al capítulo final**, que es el que lo perdió: el punto solo llega al terminar la travesía, después de su capítulo más arriesgado, así que no se regala. Medida con las mismas semillas (variantes de medida, sin cambiar los datos):
+
+| Versión | Victorias, mazos de inicio | Victorias, muelles variados | El fugitivo, rep. por turno | La Isla del Tesoro, rep. por turno |
+| --- | --- | --- | --- | --- |
+| Hoy (P134) | 35,5 % | 36,1 % | 0,97 / 0,93 | 0,95 / 0,99 |
+| **A:** «Vivo, no muerto» da 3 | 37,2 % (+1,7) | 37,6 % (+1,5) | 1,28 / 1,23 | 0,95 / 0,99 |
+| **B:** A, y «…tomada por los ingleses» da 3 y «La cueva se viene abajo», 3 o 2 | 38,3 % (+2,8) | 39,1 % (+3,0) | 1,27 / 1,23 | 1,23 / 1,30 |
+
+(Rep. por turno: mazos de inicio / muelles variados; las aventuras dan 1,00 / 0,99. Panamá no cambia: 28 y 39–42 partidas, menos del 3 %.)
+
+- **Recomendación: B.** Las dos travesías vuelven a dar más que una aventura, como antes de P134, y las victorias siguen dentro del 35–40 %. A arregla solo el fugitivo, que es el que queda por debajo con los dos muelles; la Isla está en el límite del ruido.
+- **Ejemplo de juego:** tienes dos turnos por delante. Entre las misiones disponibles están «Tras la pista» (El fugitivo I, 1) y dos aventuras, «El asedio de Port Royal» y «La regata de San Juan» (2 cada una). Hoy, el fugitivo entero da 1 + 2 = 3 en esos dos turnos, y solo si superas los dos capítulos («Vivo, no muerto» falla casi la mitad de las veces); las dos aventuras dan 4, y si una sale mal, la otra no depende de ella. Con la propuesta, «Vivo, no muerto» da 3 y el fugitivo entero da 4, como las dos aventuras: su capítulo I es más fácil (se supera 3 de cada 4 veces), pero el II solo llega si superas el I.
+- **Por defecto, no se toca nada** hasta que Albert decida.
+
+### Ideas para más adelante (sin aplicar)
+
+- **«Modo difícil»: el reloj de 10 cartas de Escenario.** La partida normal con 10 cartas de Escenario en lugar de 11 (12 de reputación para ganar). Medido sobre lo de hoy (con P134): **24,6 % de victorias con los mazos de inicio y 26,3 % con muelles variados** (hoy, 35,5 % y 36,1 %); derrotas por tiempo 59,7 % y 58,8 %, por el Capitán 15,7 % y 14,9 %; Panamá 1,7 % y 1,4 %. Antes de P134 bajaba al 35,6 % y al 38,6 %. Sería una fila más de la tabla de dificultad para quien quiera un reto mayor, no un cambio de la partida normal. Orden: `MEDIR_DIFICULTAD=1 MEDIR_DIFICULTAD_MANERA=1 npx vitest run src/engine/medir-dificultad.informe.test.ts`.
+- **La manera de los Peligros** (22 Pruebas de COM +1 y 15 Avances gratis −1) se estudiará cuando Albert termine de revisar sus textos.
+
+### Pregunta para Albert (P135), con la opción por defecto aplicada
+
+- **P135 · ¿Se devuelve el punto al capítulo final de El fugitivo y La Isla del Tesoro?** **Por defecto, no** (se quedan como con P134). Opciones: **A** solo «Vivo, no muerto» (3); **B** también «…tomada por los ingleses» (3) y «La cueva se viene abajo» (3 o 2); **otra**.
+
+Bloque para responder (cópialo y rellénalo):
+
+```
+P135 (travesías tras P134): no se toca nada / A solo El fugitivo / B El fugitivo y La Isla del Tesoro / otra: …
+Modo difícil (10 cartas de Escenario): más adelante / ahora / no
 Notas:
 ```

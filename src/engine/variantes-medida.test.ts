@@ -70,7 +70,7 @@ describe('variantes de medida del informe de dificultad', () => {
     const dos = leerVariante(MANERAS[2]?.variante)
     expect(Object.keys(dos.dificultadPeligro)).toHaveLength(22)
     expect(Object.keys(dos.avancePeligro)).toHaveLength(15)
-    expect(Object.keys(leerVariante(MANERAS[3]?.variante).reputacionCapitulo)).toHaveLength(10)
+    expect(Object.keys(leerVariante(MANERAS.antes?.variante).reputacionCapitulo)).toHaveLength(10)
     expect(leerVariante(MANERAS[1]?.variante).escenario).toBe(10)
     // La 2: solo Pruebas de COM y solo encuentros sin Prueba.
     for (const clave of Object.keys(dos.dificultadPeligro)) {
@@ -84,6 +84,22 @@ describe('variantes de medida del informe de dificultad', () => {
       expect(e.tipo === 'peligro' && e.carta.encuentros[entorno].prueba.length === 0, clave).toBe(true)
     }
     aplicarVariante(dos)
+  })
+
+  it('P134: ANTES_P134 devuelve el punto a las diez recompensas (en un final con elección, a cada opción)', () => {
+    const goleta = porId('espia-II')
+    const bitacora = porId('bitacora_capitan')
+    if (goleta.tipo !== 'capitulo' || bitacora.tipo !== 'recompensa') throw new Error('sin cartas')
+    expect(goleta.carta.recompensa.rep).toBe(2)
+    expect(bitacora.carta.elige?.map((o) => o.rep)).toEqual([2, 3])
+    const v = leerVariante('ANTES_P134')
+    expect(Object.values(v.reputacionCapitulo)).toEqual(Array.from({ length: 10 }, () => 1))
+    aplicarVariante(v)
+    expect(goleta.carta.recompensa.rep).toBe(3)
+    expect(bitacora.carta.elige?.map((o) => o.rep)).toEqual([3, 4])
+    aplicarVariante({ ...v, reputacionCapitulo: Object.fromEntries(Object.keys(v.reputacionCapitulo).map((id) => [id, -1])) })
+    expect(goleta.carta.recompensa.rep).toBe(2)
+    expect(bitacora.carta.elige?.map((o) => o.rep)).toEqual([2, 3])
   })
 
   it('una carta que no es de Peligro o que no está en el mazo da error', () => {

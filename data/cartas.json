@@ -9728,7 +9728,7 @@
      ],
      "ambientacion": "«Ahora nos busca la Armada entera. Que busque.»",
      "recompensa": {
-      "rep": 4,
+      "rep": 3,
       "tesoro": "mascaron"
      },
      "siguiente": [
@@ -9779,7 +9779,7 @@
      ],
      "ambientacion": "«Lleva el Caribe entero en una valija sellada.»",
      "recompensa": {
-      "rep": 3,
+      "rep": 2,
       "tesoro": "despachos"
      },
      "siguiente": [
@@ -9944,7 +9944,7 @@
      ],
      "ambientacion": "«Treinta pies de piedra y un centinela dormido.»",
      "recompensa": {
-      "rep": 3
+      "rep": 2
      },
      "siguiente": [
       145
@@ -10275,7 +10275,7 @@
      ],
      "ambientacion": "«La cruz del mapa está bajo un fuerte con bandera inglesa.»",
      "recompensa": {
-      "rep": 3
+      "rep": 2
      },
      "siguiente": [],
      "textoSiguiente": "",
@@ -10364,7 +10364,7 @@
      "reglas": [],
      "ambientacion": "«Llegasteis primero. El guano huele igual, pero sabe a victoria.»",
      "recompensa": {
-      "rep": 3
+      "rep": 2
      },
      "siguiente": [
       263
@@ -10432,7 +10432,7 @@
      ],
      "ambientacion": "«Su balandra es rápida, pero la vuestra tiene más hambre.»",
      "recompensa": {
-      "rep": 3
+      "rep": 2
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -11223,20 +11223,20 @@
    "num": 290,
    "nombre": "Ante el altar",
    "mision": "templo",
-   "texto": "**Elige:**\nTe llevas la Espada del sacerdote: pon en juego el Tesoro 121 y gana {2 rep}; tu Capitán queda **Maldito**.\nDevuelves el ídolo a su altar: gana {3 rep}.",
+   "texto": "**Elige:**\nTe llevas la Espada del sacerdote: pon en juego el Tesoro 121 y gana {1 rep}; tu Capitán queda **Maldito**.\nDevuelves el ídolo a su altar: gana {2 rep}.",
    "ambientacion": "«Los ojos de jade del ídolo no se apartan de ti.»",
    "elige": [
     {
      "clave": "espada",
      "texto": "Te llevas la Espada del sacerdote",
-     "rep": 2,
+     "rep": 1,
      "tesoro": "espada",
      "efecto": "tu Capitán queda Maldito"
     },
     {
      "clave": "idolo",
      "texto": "Devuelves el ídolo a su altar",
-     "rep": 3
+     "rep": 2
     }
    ]
   },
@@ -11245,18 +11245,18 @@
    "num": 291,
    "nombre": "La mecha encendida",
    "mision": "sanfelipe",
-   "texto": "**Elige:**\nRescatas a tu amigo: gana {4 rep}.\nVuelas el polvorín: pon en juego el Tesoro 146 y gana {3 rep}; el Barco queda **Perseguido**.",
+   "texto": "**Elige:**\nRescatas a tu amigo: gana {3 rep}.\nVuelas el polvorín: pon en juego el Tesoro 146 y gana {2 rep}; el Barco queda **Perseguido**.",
    "ambientacion": "«Tu amigo grita tu nombre desde la celda. La mecha chisporrotea.»",
    "elige": [
     {
      "clave": "amigo",
      "texto": "Rescatas a tu amigo",
-     "rep": 4
+     "rep": 3
     },
     {
      "clave": "polvorin",
      "texto": "Vuelas el polvorín",
-     "rep": 3,
+     "rep": 2,
      "tesoro": "polvora_rey",
      "efecto": "el Barco queda Perseguido"
     }
@@ -11267,19 +11267,19 @@
    "num": 292,
    "nombre": "La bitácora del capitán muerto",
    "mision": "fantasma",
-   "texto": "**Elige:**\nTe llevas el Farol de los ahogados: pon en juego el Tesoro 150 y gana {3 rep}.\nLe devuelves su bitácora: gana {4 rep} y quita **Maldito** de todos tus Tripulantes.",
+   "texto": "**Elige:**\nTe llevas el Farol de los ahogados: pon en juego el Tesoro 150 y gana {2 rep}.\nLe devuelves su bitácora: gana {3 rep} y quita **Maldito** de todos tus Tripulantes.",
    "ambientacion": "«La última página está en blanco.»",
    "elige": [
     {
      "clave": "farol",
      "texto": "Te llevas el Farol de los ahogados",
-     "rep": 3,
+     "rep": 2,
      "tesoro": "farol"
     },
     {
      "clave": "bitacora",
      "texto": "Le devuelves su bitácora y el barco se hunde en paz",
-     "rep": 4,
+     "rep": 3,
      "efecto": "quitas Maldito de todos tus Tripulantes"
     }
    ]
@@ -11297,19 +11297,19 @@
    "num": 294,
    "nombre": "La cueva se viene abajo",
    "mision": "isla",
-   "texto": "**Elige:**\nCargas con todo el oro: gana {3 rep}; inflige {1 herida} a cada Tripulante.\nSales a tiempo: gana {2 rep} y {2 robar}.",
+   "texto": "**Elige:**\nCargas con todo el oro: gana {2 rep}; inflige {1 herida} a cada Tripulante.\nSales a tiempo: gana {1 rep} y {2 robar}.",
    "ambientacion": "«Las paredes crujen. El oro pesa.»",
    "elige": [
     {
      "clave": "oro",
      "texto": "Cargas con todo el oro",
-     "rep": 3,
+     "rep": 2,
      "efecto": "inflige 1 herida a cada Tripulante"
     },
     {
      "clave": "salir",
      "texto": "Sales a tiempo",
-     "rep": 2,
+     "rep": 1,
      "efecto": "robas 2"
     }
    ]

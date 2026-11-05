@@ -227,8 +227,8 @@ registrarMision('isla-II-temblor', {
   },
 })
 
-// 294 «La cueva se viene abajo» (la recompensa de «…sacudida por un temblor»). «Elige: Cargas con todo el oro: gana 3 de
-// reputación; cada Tripulante sufre 1 herida. Sales a tiempo: gana 2 y roba 2.»
+// 294 «La cueva se viene abajo» (la recompensa de «…sacudida por un temblor»). «Elige: Cargas con todo el oro: gana 2 de
+// reputación; inflige 1 herida a cada Tripulante. Sales a tiempo: gana 1 y roba 2.» (P134: antes, 3 y 2.)
 registrarCartaDeRecompensa('cueva_abajo', {
   efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) =>

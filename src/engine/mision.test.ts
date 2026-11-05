@@ -271,7 +271,7 @@ describe('Superar una misión', () => {
     // Fase 12: «La huida con la plata» es el capítulo IV de la Flota.
     const j = enPuerto({ misiones: ['flota-IV'], tripulacion: ['bucanero'], avance: { 'flota-IV': 3 }, mazoPeligros: ['calma'] })
     j.zarpar('flota-IV')
-    expect(j.estado.reputacion).toBe(4) // fase 11: 4 de reputación (antes 5)
+    expect(j.estado.reputacion).toBe(3) // P134: 3 de reputación (antes, 4; antes de la fase 11, 5)
     expect(j.copia('mascaron').vinculadaA).toBe('barco')
     expect(j.zona('mejoras')).toContain('mascaron')
   })
@@ -336,12 +336,12 @@ describe('Superar una misión', () => {
     expect(j.estado.resultado).toEqual({ gana: true, motivo: 'Has superado «Las puertas de Panamá».' })
   })
 
-  it('ejemplo del reglamento: en el último turno, con 9 de reputación, «La goleta del correo» da 3 y ganas', () => {
-    // Fase 12: «La goleta del correo» es el capítulo II del espía y da 3.
+  it('ejemplo del reglamento: en el último turno, con 10 de reputación, «La goleta del correo» da 2 y ganas', () => {
+    // Fase 12: «La goleta del correo» es el capítulo II del espía. P134: da 2 (antes, 3, y el ejemplo empezaba con 9).
     const j = Jugador.en({
       empezarEn: 'quedarseOZarpar',
       escenario: [],
-      reputacion: 9,
+      reputacion: 10,
       misiones: ['espia-II'],
       tripulacion: ['viejo_lobo'],
       avance: { 'espia-II': 2 },

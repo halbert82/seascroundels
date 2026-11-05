@@ -5,8 +5,9 @@
 //
 // MEDIR_DIFICULTAD_MUELLE=inicio (por defecto: mazos de inicio, semillas 1–N) o =variados (muelle de 20 al azar de la
 // caja, semillas 100000…, como el informe de equilibrio). INFORME_PARTIDAS: N (1000 por defecto; con muelles variados,
-// el doble). MEDIR_VARIANTE: la variante de medida (ver pruebas/variantesMedida.ts); MEDIR_DIFICULTAD_MANERA=1, 2, 3 o
-// gesta: una de las maneras del informe (MANERAS, en pruebas/variantesMedida.ts). Escribe el resumen en JSON en
+// el doble). MEDIR_VARIANTE: la variante de medida (ver pruebas/variantesMedida.ts); MEDIR_DIFICULTAD_MANERA=1, 2, antes o
+// gesta: una de las maneras del informe (MANERAS, en pruebas/variantesMedida.ts; la 3 está en los datos desde P134 y
+// «antes» la deshace). Escribe el resumen en JSON en
 // MEDIR_SALIDA (o en la consola).
 
 import { writeFileSync } from 'node:fs'

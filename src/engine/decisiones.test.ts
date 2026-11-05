@@ -2,6 +2,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { registrarParaPruebas } from './capacidades/index.ts'
+import { CATALOGO, porId } from './catalogo.ts'
 import { desgloseDificultad, desgloseTotal, dificultadPrueba, totalPrueba } from './prueba.ts'
 import { Jugador, type OpcionesSituacion, totalSinDestinoPrueba } from './pruebas/situacion.ts'
 import { navParaDistancia } from './valores.ts'
@@ -668,5 +669,47 @@ describe('P84 · Dos Destinos que persiguen a la vez: vuelven los dos encima del
     j.comprometer('EXP', ['capitan']).pasarOfertas().seguir()
     expect(j.zona('mazoPeligros').slice(0, 2)).toEqual(['p2_bastian', 'p2_armada'])
     expect(j.registro).toContain('«La sombra de Bastián» te persigue: será el siguiente encuentro.')
+  })
+})
+
+describe('P134 · Las diez recompensas que daban 3 o más de reputación dan 1 menos (en los finales con elección, cada opción)', () => {
+  // Decisión de Albert (5 de noviembre de 2026): la manera 3 del informe de dificultad.
+  const NUEVAS: Record<string, number | number[]> = {
+    'espia-II': 2, // La goleta del correo
+    'sanfelipe-II-b': 2, // Al asalto de las murallas
+    'sanfelipe-III': [3, 2], // El polvorín: «La mecha encendida»
+    'fantasma-II': [2, 3], // El camarote del capitán: «La bitácora del capitán muerto»
+    'flota-IV': 3, // La huida con la plata
+    'isla-II-ingleses': 2, // …tomada por los ingleses
+    'isla-II-temblor': [2, 1], // …sacudida por un temblor: «La cueva se viene abajo»
+    'vanhoorn-II-a': 2, // La isla de Aves
+    'fugitivo-II': 2, // Vivo, no muerto
+    'templo-IV': [1, 2], // El templo: «Ante el altar»
+  }
+
+  it('los datos y los textos de las cartas de recompensa', () => {
+    for (const [id, rep] of Object.entries(NUEVAS)) {
+      const e = porId(id)
+      if (e.tipo !== 'capitulo') throw new Error(`${id} no es un capítulo`)
+      const r = e.carta.recompensa
+      if (typeof rep === 'number') {
+        expect(r.rep, id).toBe(rep)
+        continue
+      }
+      const cogida = porId(CATALOGO.find((x) => x.num === r.coge)?.id ?? '')
+      if (cogida.tipo !== 'recompensa') throw new Error(`${id}: sin carta de recompensa`)
+      expect(cogida.carta.elige?.map((o) => o.rep), id).toEqual(rep)
+      // El texto impreso dice lo mismo, opción por opción.
+      expect([...cogida.carta.texto.matchAll(/\{(\d+) rep\}/g)].map((m) => Number(m[1])), id).toEqual(rep)
+    }
+    // Ninguna otra recompensa de capítulo da ya 4 o más (Panamá da la victoria).
+    for (const e of CATALOGO) if (e.tipo === 'capitulo') expect(e.carta.recompensa.rep ?? 0, e.id).toBeLessThan(4)
+  })
+
+  it('con 8 de reputación superas «La huida con la plata»: da 3 y te quedas en 11, a falta de otra misión', () => {
+    const j = Jugador.en({ empezarEn: 'quedarseOZarpar', escenario: ['pruebas-calma'], reputacion: 8, misiones: ['flota-IV'], tripulacion: ['bucanero'], avance: { 'flota-IV': 3 }, mazoPeligros: ['calma'] })
+    j.zarpar('flota-IV')
+    expect(j.estado.reputacion).toBe(11) // antes de P134, 4: 12 y ganabas
+    expect(j.estado.resultado).toBeNull()
   })
 })

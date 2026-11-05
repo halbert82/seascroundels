@@ -214,7 +214,7 @@ describe('Fase 15, cuarta ronda · partidas guardadas antes de las cartas de rec
     expect(t.registro).toContain('Coges la carta 290 del mazo de historia: «Ante el altar».')
     expect(t.decision).toMatchObject({ motivo: { clave: 'finalMision', carta: 'ante_altar' } })
     t.opcion('idolo')
-    expect(t.estado.reputacion).toBe(3)
+    expect(t.estado.reputacion).toBe(2)
     expect(ids(t.estado, 'mazoHistoria')).toEqual(expect.arrayContaining(['ante_altar', 'templo-IV']))
   })
 })

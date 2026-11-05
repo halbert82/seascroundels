@@ -34,7 +34,7 @@ const robar = (n: number): NuevaTarea => ({ tipo: 'robar', n })
 const mezclar = (n: number): NuevaTarea => ({ tipo: 'mezclarMazoPropio', n })
 
 // ---------------------------------------------------------------------------
-// El templo perdido · Media, 4 capítulos (fase 12: 1 / 2 / 2 / 2 o 3)
+// El templo perdido · Media, 4 capítulos (fase 12: 1 / 2 / 2 / 2 o 3; P134: 1 / 2 / 2 / 1 o 2)
 
 /** «Rumbo a la isla»: habéis avistado la isla (agotando a un Vigía o a un Piloto). */
 const ISLA = 'templo-I.isla'
@@ -87,7 +87,7 @@ registrarMision('templo-IV', {
 })
 
 // 290 «Ante el altar» (fase 15, cuarta ronda: la recompensa de «El templo»). «Elige: Te llevas la Espada del sacerdote: pon
-// en juego el Tesoro 121 y gana 2 de reputación; tu Capitán queda Maldito. Devuelves el ídolo a su altar: gana 3.»
+// en juego el Tesoro 121 y gana 1 de reputación; tu Capitán queda Maldito. Devuelves el ídolo a su altar: gana 2.» (P134: antes, 2 y 3.)
 registrarCartaDeRecompensa('ante_altar', {
   efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (s, clave) => {
@@ -99,7 +99,7 @@ registrarCartaDeRecompensa('ante_altar', {
 })
 
 // ---------------------------------------------------------------------------
-// La Flota de la Plata · Difícil, 4 capítulos (fase 12: 1 / 2 / 2 / 4)
+// La Flota de la Plata · Difícil, 4 capítulos (fase 12: 1 / 2 / 2 / 4; P134: 1 / 2 / 2 / 3)
 
 registrarMision('flota-I', {
   capacidades: [dificultadClaves('tormenta', ['Tormenta'], 1)],
@@ -155,7 +155,7 @@ registrarCodigo('mision.alcance', (s) => {
 })
 
 // ---------------------------------------------------------------------------
-// El espía de Cádiz · Fácil, 2 capítulos (fase 12: 1 / 3)
+// El espía de Cádiz · Fácil, 2 capítulos (fase 12: 1 / 3; P134: 1 / 2)
 
 // Fase 12: «Seguirle por Port Royal» (carta 135) une «Un soplo en Port Royal» y «Seguirle por los muelles»: el soplo
 // de pago al zarpar y la Sospecha. Ya no da 1 de Avance más por los encuentros #Civil#.
@@ -222,7 +222,7 @@ registrarMision('maracaibo-III', {
 })
 
 // ---------------------------------------------------------------------------
-// La fortaleza de San Felipe · Difícil (2 / 3 / 5)
+// La fortaleza de San Felipe · Difícil (2 / 3 / 5 en la fase 7; desde P134, 1 / 2 / 3 o 2)
 
 registrarMision('sanfelipe-I', {
   capacidades: [dificultadHabilidad('disparo', 'COM', 1), dificultadHabilidad('noche', 'EXP', -1)],
@@ -266,15 +266,15 @@ registrarMision('sanfelipe-III', {
   ],
 })
 
-// 291 «La mecha encendida» (la recompensa de «El polvorín»). «Elige: Rescatas a tu amigo: gana 4 de reputación. Vuelas el
-// polvorín: pon en juego el Tesoro 146 y gana 3; el Barco queda Perseguido.»
+// 291 «La mecha encendida» (la recompensa de «El polvorín»). «Elige: Rescatas a tu amigo: gana 3 de reputación. Vuelas el
+// polvorín: pon en juego el Tesoro 146 y gana 2; el Barco queda Perseguido.» (P134: antes, 4 y 3.)
 registrarCartaDeRecompensa('mecha_encendida', {
   efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) => (clave === 'polvorin' ? [{ tipo: 'ponerEstadoBarco', estado: 'perseguido' }] : []),
 })
 
 // ---------------------------------------------------------------------------
-// El barco fantasma · Media, 2 capítulos (fase 12: 1 / 3 o 4)
+// El barco fantasma · Media, 2 capítulos (fase 12: 1 / 3 o 4; P134: 1 / 2 o 3)
 
 // Fase 12: «A bordo del fantasma» (carta 147) une «Niebla en el estrecho» y «A bordo del fantasma»: los Cañones no
 // suman y el Barco no sufre daño. Sin los dos modificadores de los encuentros #Sobrenatural# (se anulaban).
@@ -304,8 +304,8 @@ registrarMision('fantasma-II', {
 })
 
 // 292 «La bitácora del capitán muerto» (la recompensa de «El camarote del capitán»). «Elige: Te llevas el Farol de los
-// ahogados: pon en juego el Tesoro 150 y gana 3 de reputación. Le devuelves su bitácora: gana 4 y quita Maldito de todos tus
-// Tripulantes.»
+// ahogados: pon en juego el Tesoro 150 y gana 2 de reputación. Le devuelves su bitácora: gana 3 y quita Maldito de todos tus
+// Tripulantes.» (P134: antes, 3 y 4.)
 registrarCartaDeRecompensa('bitacora_capitan', {
   efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) => (clave === 'bitacora' ? [{ tipo: 'quitarEstado', estado: 'maldito', de: 'todos' }] : []),

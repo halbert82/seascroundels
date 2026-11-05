@@ -624,7 +624,7 @@ La lista completa de Estados y Ventajas, con lo que hace cada uno y cómo se qui
 > La temporada se acaba. Si no tienes nombre cuando llegue, tu tripulación buscará otro capitán.
 
 > [!ejemplo]
-> El jugador llega al último turno con 9 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que otorga 3. Recluta todo lo que puede pagar y zarpa. Si supera la misión, llega a 12 y gana la partida. Si se retira o su Barco se hunde, pierde.
+> El jugador llega al último turno con 10 de reputación en una partida normal. Entre las misiones disponibles está «La goleta del correo», que otorga 2. Recluta todo lo que puede pagar y zarpa. Si supera la misión, llega a 12 y gana la partida. Si se retira o su Barco se hunde, pierde.
 
 ### Ejemplo de juego
 
@@ -1122,7 +1122,7 @@ Un Evento es una carta del mazo del capitán con un efecto propio. Para jugarlo,
 Final con elección es una recompensa del último capítulo de algunas travesías y de «…sacudida por un temblor». Al superar el capítulo, el jugador coge la carta de recompensa que indica («Coge la carta 290 del mazo de historia») y elige una de las dos opciones de esa carta. Después la devuelve al mazo de historia.
 
 > [!ejemplo]
-> El jugador supera «El templo» y coge la carta 290, «Ante el altar». Si se lleva la Espada del sacerdote, pone en juego el Tesoro 121 y gana 2 de reputación, pero su Capitán queda Maldito. Si devuelve el ídolo a su altar, gana 3 de reputación. Elige el ídolo y devuelve la carta 290 al mazo de historia.
+> El jugador supera «El templo» y coge la carta 290, «Ante el altar». Si se lleva la Espada del sacerdote, pone en juego el Tesoro 121 y gana 1 de reputación, pero su Capitán queda Maldito. Si devuelve el ídolo a su altar, gana 2 de reputación. Elige el ídolo y devuelve la carta 290 al mazo de historia.
 
 ### Gesta
 

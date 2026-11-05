@@ -2,7 +2,7 @@
 
 import { barajarLista, sembrar } from '../azar.ts'
 import { capacidadesDe } from '../capacidades/index.ts'
-import { CATALOGO, esCartaDelJugador, nombreDe, porId, tipoDe } from '../catalogo.ts'
+import { CATALOGO, esCartaDelJugador, idCapitulo, nombreDe, porId, tipoDe } from '../catalogo.ts'
 import { DATOS } from '../datos.ts'
 import { copia } from '../estado.ts'
 import { LIMITES } from '../mazos.ts'
@@ -534,7 +534,67 @@ function tablaDeVariantes(variantes: readonly VarianteSimulada[]): string[] {
 export function ultimoCapitulo(travesia: string): CartaId {
   const m = DATOS.misiones.find((x) => x.id === travesia)
   const ultimo = m?.capitulos.at(-1)
-  return m && ultimo ? `${m.id}-${ultimo.capitulo}${ultimo.rama ? `-${ultimo.rama}` : ''}` : `${travesia}-III`
+  return m && ultimo ? idCapitulo(m.id, ultimo) : `${travesia}-III`
+}
+
+/**
+ * Los capítulos con los que termina una travesía: los del último número (los dos de una salida doble, como «vanhoorn-II-a»
+ * y «vanhoorn-II-b»). En La Isla del Tesoro, «El mapa era falso» no la termina: su recompensa pone otro capítulo II.
+ */
+export function capitulosFinales(travesia: string): CartaId[] {
+  const m = DATOS.misiones.find((x) => x.id === travesia)
+  const ultimo = m?.capitulos.at(-1)?.capitulo
+  if (!m || !ultimo) return []
+  return m.capitulos.filter((c) => c.capitulo === ultimo).map((c) => idCapitulo(m.id, c)).filter((id) => id !== 'isla-II-falso')
+}
+
+/** Reputación por turno de un tipo de misión (las iniciales, las aventuras o una travesía). */
+export interface RepPorTipo {
+  nombre: string
+  /** «iniciales», «aventuras» o el identificador de la travesía. */
+  clave: string
+  /** Zarpes a esas misiones (cada uno, un turno) y la reputación que dieron, superadas o no. */
+  zarpes: number
+  rep: number
+  /** Solo las travesías. */
+  travesia?: {
+    /** Partidas en que zarpa a su capítulo I y en que supera su último capítulo. */
+    empieza: number
+    termina: number
+    /** De las que la terminan: las que gana, y la reputación y los zarpes de todos sus capítulos. */
+    gana: number
+    repTerminada: number
+    turnosTerminada: number
+  }
+}
+
+/** P134 (5 de noviembre de 2026): la reputación por turno de las misiones iniciales, las aventuras y cada travesía. */
+export function reputacionPorTipo(partidas: readonly Partida[]): RepPorTipo[] {
+  const misionDe = new Map<CartaId, string>()
+  for (const m of DATOS.misiones) for (const c of m.capitulos) misionDe.set(idCapitulo(m.id, c), m.id)
+  const grupo = (clave: string, nombre: string, ids: readonly string[]): RepPorTipo => {
+    const zarpes = partidas.flatMap((p) => p.repPorZarpe).filter((z) => ids.includes(misionDe.get(z.mision) ?? ''))
+    return { clave, nombre, zarpes: zarpes.length, rep: zarpes.reduce((n, z) => n + z.rep, 0) }
+  }
+  const filas = [grupo('iniciales', 'Misiones iniciales', DATOS.ordenMisiones.iniciales), grupo('aventuras', 'Aventuras', DATOS.ordenMisiones.aventuras)]
+  for (const t of DATOS.ordenMisiones.travesias) {
+    const m = DATOS.misiones.find((x) => x.id === t)
+    const primero = m?.capitulos[0]
+    if (!m || !primero) continue
+    const fila = grupo(t, m.nombre, [t])
+    const finales = capitulosFinales(t)
+    const terminadas = partidas.filter((p) => p.resultados.some((r) => r.resultado === 'superada' && finales.includes(r.mision)))
+    const suyos = terminadas.flatMap((p) => p.repPorZarpe).filter((z) => misionDe.get(z.mision) === t)
+    fila.travesia = {
+      empieza: partidas.filter((p) => p.zarpes.includes(idCapitulo(t, primero))).length,
+      termina: terminadas.length,
+      gana: terminadas.filter((p) => p.gana).length,
+      repTerminada: suyos.reduce((n, z) => n + z.rep, 0),
+      turnosTerminada: suyos.length,
+    }
+    filas.push(fila)
+  }
+  return filas
 }
 
 export function informe(partidas: readonly Partida[], titulo: string, variadas: readonly Partida[] = [], variantes: readonly VarianteSimulada[] = []): string {
@@ -652,23 +712,23 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   )
 
   // Fase 11: las travesías que completa el jugador automático (supera su último capítulo) y cuánto gana cuando lo hace.
+  // P134 (5 de noviembre de 2026): con la reputación por turno de cada tipo de misión.
   lineas.push(
-    '## Travesías completadas',
+    '## Reputación por turno y travesías completadas',
     '',
-    'En cuántas partidas supera el último capítulo de cada travesía y, de esas, en cuántas gana.',
+    'Cada zarpe gasta un turno. «Rep. por turno»: la reputación de todos los zarpes a esas misiones (recompensa, Gesta y lo que se gane o pierda en ellas), las supere o no, entre esos zarpes; en una travesía, todos sus capítulos, la termine o no. «La empieza»: partidas en que zarpa a su capítulo I; «la termina»: en que supera su último capítulo (cualquiera de los dos de una salida doble; en La Isla del Tesoro, «…tomada por los ingleses» o «…sacudida por un temblor»). «Cuando la termina»: solo esas partidas, con todos los zarpes a sus capítulos (los fallidos también). Los Tesoros no dan reputación, así que no cuentan aquí. Panamá no da reputación al final: gana la partida.',
     '',
-    '| Travesía | Partidas en que la completa | % de las partidas | Gana de esas |',
-    '| --- | --- | --- | --- |',
+    '| Misiones | Turnos (zarpes) | Rep. por turno | La empieza | La termina | % de las empezadas | Rep. por turno cuando la termina | Turnos para terminarla | Rep. de la travesía terminada | Gana de esas |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   )
-  const travesias = DATOS.ordenMisiones.travesias
-    .map((t) => {
-      const completan = partidas.filter((p) => p.resultados.some((r) => r.mision === ultimoCapitulo(t) && r.resultado === 'superada'))
-      return { t, n: completan.length, gana: completan.filter((p) => p.gana).length }
-    })
-    .sort((a, b) => b.n - a.n)
-  for (const { t, n, gana } of travesias) {
-    const nombre = DATOS.misiones.find((m) => m.id === t)?.nombre ?? t
-    lineas.push(`| ${nombre} | ${n} | ${porcentaje(n, partidas.length)} | ${n > 0 ? porcentaje(gana, n) : '—'} |`)
+  const decimal = (n: number, total: number, d = 2) => (total === 0 ? '—' : (n / total).toFixed(d))
+  for (const f of reputacionPorTipo(partidas)) {
+    const t = f.travesia
+    lineas.push(
+      t
+        ? `| ${f.nombre} | ${f.zarpes} | ${decimal(f.rep, f.zarpes)} | ${t.empieza} | ${t.termina} | ${porcentaje(t.termina, t.empieza)} | ${decimal(t.repTerminada, t.turnosTerminada)} | ${decimal(t.turnosTerminada, t.termina, 1)} | ${decimal(t.repTerminada, t.termina, 1)} | ${t.termina > 0 ? porcentaje(t.gana, t.termina) : '—'} |`
+        : `| ${f.nombre} | ${f.zarpes} | ${decimal(f.rep, f.zarpes)} | — | — | — | — | — | — | — |`,
+    )
   }
   lineas.push('')
 
