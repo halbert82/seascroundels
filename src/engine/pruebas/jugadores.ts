@@ -215,8 +215,27 @@ const CAPACIDAD_TRIPULANTE: Record<string, number> = {
 
 /** Lo que vale para el jugador la victoria de «Las puertas de Panamá», en puntos de reputación. */
 const VALOR_VICTORIA = 12
-/** Cuánto pesa lo que queda de una cadena (ajustado jugando: más peso le hace jugar San Felipe y pierde más). */
+/**
+ * Cuánto pesa lo que queda de una cadena en el criterio de antes de P135 (ajustado jugando: más peso le hace jugar San
+ * Felipe y pierde más). Desde P135 solo lo usa la victoria de Panamá; la reputación de la travesía se valora por turno.
+ */
 const PESO_CADENA = 0.2
+
+/**
+ * Cómo valora el jugador automático una travesía al elegir misión:
+ * - «travesia» (desde P135, 5 de noviembre de 2026): como una persona, por lo que da la travesía entera por turno. Cada
+ *   capítulo que queda cuesta un turno; cuenta los que caben en los turnos que quedan y puede dejarla cuando ya no le
+ *   compense (vale lo mejor de seguir hasta el capítulo que más le convenga).
+ * - «capitulo» (antes): casi solo por el capítulo que se ofrece; la reputación del resto de la travesía contaba un 20 %.
+ *   Con él, «El espía de Cádiz» casi no se jugaba (7 de 1000 partidas): las misiones iniciales, que no dan reputación,
+ *   puntuaban más que su capítulo I. Solo para medir (variante JUGADOR_ANTES).
+ */
+let VALORACION: 'travesia' | 'capitulo' = 'travesia'
+
+/** Solo para medir: el criterio de antes de P135 para elegir misión (variante de medida JUGADOR_ANTES). */
+export function valorarTravesias(como: 'travesia' | 'capitulo'): void {
+  VALORACION = como
+}
 
 /** Reputación que da una misión al superarla (en un final con elección, la mejor opción). */
 function reputacionDe(c: CapituloDatos): number {
@@ -241,26 +260,48 @@ function valorDeLaCogida(num: number): number {
 /** Lo que el jugador automático cree que vale el naufragio, en reputación (para elegir a qué misión zarpar). */
 const VALOR_NAUFRAGIO = 1
 
+/**
+ * Puntos de un capítulo por sí solo: 2,2 por punto de reputación, −0,9 por cada Avance que le falta, −0,6 por punto de
+ * Distancia y +0,5 si es de Mar (el mazo de inicio es fuerte en el Mar).
+ */
+function puntosDeCapitulo(rep: number, falta: number, distancia: number, entorno: string): number {
+  return rep * 2.2 - falta * 0.9 - distancia * 0.6 + (entorno === 'mar' ? 0.5 : 0)
+}
+
 /** Puntuación de una misión disponible para zarpar o para poner Avance. */
-function puntuacionMision(s: Estado, m: InstId): number {
+export function puntuacionMision(s: Estado, m: InstId): number {
   const e = porId(copia(s, m).id)
   if (e.tipo !== 'capitulo') return -99
   const falta = Math.max(0, valor(s, { tipo: 'avanceNecesario', mision: m }) - copia(s, m).avance)
   const rep = reputacionDe(e.carta)
   const victoria = e.carta.recompensa.victoria ? 30 : 0
-  // Lo que vale el resto de la cadena, si quedan turnos para terminarla (cada capítulo hay que sacarlo del mazo de Misiones y jugarlo).
-  // Con salida doble, de los dos capítulos II solo se juega uno: cuenta el mejor.
+  const distancia = valor(s, { tipo: 'distancia', mision: m })
+  const aqui = puntosDeCapitulo(rep, falta, distancia, e.carta.entorno) + victoria
+  // Los capítulos que quedan de la travesía. Con salida doble, de los dos capítulos II solo se juega uno: cuenta el mejor.
   const orden = ['I', 'II', 'III', 'IV']
   const posteriores = orden
     .slice(orden.indexOf(e.carta.capitulo) + 1)
     .map((n) => e.mision.capitulos.filter((c) => c.capitulo === n))
     .filter((grupo) => grupo.length > 0)
-  const futuro = posteriores.reduce((n, grupo) => n + Math.max(...grupo.map((c) => (c.recompensa.victoria ? VALOR_VICTORIA : reputacionDe(c)))), 0)
+  // Panamá: la victoria no es reputación por turno; vale lo mismo que antes, si quedan turnos para llegar a ella.
   const holgura = diasRestantes(s) - 2 * posteriores.length
-  const cadena = futuro * Math.min(PESO_CADENA, Math.max(0, holgura / 10)) * 2.2
-  const distancia = valor(s, { tipo: 'distancia', mision: m })
-  const enMar = e.carta.entorno === 'mar' ? 0.5 : 0
-  return rep * 2.2 + victoria + cadena - falta * 0.9 - distancia * 0.6 + enMar
+  const pesoCadena = Math.min(PESO_CADENA, Math.max(0, holgura / 10)) * 2.2
+  const victoriaDespues = posteriores.some((grupo) => grupo.some((c) => c.recompensa.victoria)) ? VALOR_VICTORIA * pesoCadena : 0
+  if (VALORACION === 'capitulo') {
+    const futuro = posteriores.reduce((n, grupo) => n + Math.max(...grupo.map((c) => (c.recompensa.victoria ? VALOR_VICTORIA : reputacionDe(c)))), 0)
+    return aqui + futuro * pesoCadena
+  }
+  // P135: la travesía entera, por turno. Cada capítulo que queda cuesta un turno más: cuenta los que caben en los turnos
+  // que quedan (sin el de la victoria). La persona puede dejar la travesía cuando quiera: vale la mejor media por turno
+  // de seguir hasta un capítulo u otro (nunca menos que este capítulo solo).
+  const caben = posteriores.filter((grupo) => !grupo.some((c) => c.recompensa.victoria)).slice(0, Math.max(0, diasRestantes(s)))
+  let suma = aqui
+  let mejor = aqui
+  caben.forEach((grupo, i) => {
+    suma += Math.max(...grupo.map((c) => puntosDeCapitulo(reputacionDe(c), c.avanceNecesario, c.distancia, c.entorno)))
+    mejor = Math.max(mejor, suma / (i + 2))
+  })
+  return mejor + victoriaDespues
 }
 
 /** Avance que se deja de ganar si no se supera la Prueba de este encuentro (Avance X / Y: X − Y). */

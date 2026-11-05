@@ -59,7 +59,9 @@ describe('Desglose de la Prueba', () => {
 
 describe('Resumen de la partida', () => {
   it('cuadra con lo que cuenta la simulación de equilibrio para la misma partida', { timeout: 60_000 }, () => {
-    for (const semilla of [5, 8]) {
+    // P135: con el jugador automático que valora la travesía entera, la semilla 5 termina en el turno 3 sin usar ninguna
+    // carta; se miran dos partidas largas, una ganada (6) y otra perdida (8).
+    for (const semilla of [6, 8]) {
       const { final } = partidaCompleta(semilla)
       const r = resumenDePartida(final)
       const p = jugarPartida(semilla, jugadorConCriterio())

@@ -70,7 +70,7 @@ describe('variantes de medida del informe de dificultad', () => {
     const dos = leerVariante(MANERAS[2]?.variante)
     expect(Object.keys(dos.dificultadPeligro)).toHaveLength(22)
     expect(Object.keys(dos.avancePeligro)).toHaveLength(15)
-    expect(Object.keys(leerVariante(MANERAS.antes?.variante).reputacionCapitulo)).toHaveLength(10)
+    expect(Object.keys(leerVariante(MANERAS.antes?.variante).reputacionCapitulo)).toHaveLength(7)
     expect(leerVariante(MANERAS[1]?.variante).escenario).toBe(10)
     // La 2: solo Pruebas de COM y solo encuentros sin Prueba.
     for (const clave of Object.keys(dos.dificultadPeligro)) {
@@ -86,20 +86,36 @@ describe('variantes de medida del informe de dificultad', () => {
     aplicarVariante(dos)
   })
 
-  it('P134: ANTES_P134 devuelve el punto a las diez recompensas (en un final con elección, a cada opción)', () => {
+  it('P134: ANTES_P134 devuelve el punto a las siete recompensas que siguen bajadas (en un final con elección, a cada opción)', () => {
     const goleta = porId('espia-II')
     const bitacora = porId('bitacora_capitan')
     if (goleta.tipo !== 'capitulo' || bitacora.tipo !== 'recompensa') throw new Error('sin cartas')
     expect(goleta.carta.recompensa.rep).toBe(2)
     expect(bitacora.carta.elige?.map((o) => o.rep)).toEqual([2, 3])
     const v = leerVariante('ANTES_P134')
-    expect(Object.values(v.reputacionCapitulo)).toEqual(Array.from({ length: 10 }, () => 1))
+    expect(Object.values(v.reputacionCapitulo)).toEqual(Array.from({ length: 7 }, () => 1))
     aplicarVariante(v)
     expect(goleta.carta.recompensa.rep).toBe(3)
     expect(bitacora.carta.elige?.map((o) => o.rep)).toEqual([3, 4])
     aplicarVariante({ ...v, reputacionCapitulo: Object.fromEntries(Object.keys(v.reputacionCapitulo).map((id) => [id, -1])) })
     expect(goleta.carta.recompensa.rep).toBe(2)
     expect(bitacora.carta.elige?.map((o) => o.rep)).toEqual([2, 3])
+  })
+
+  it('P135: ANTES_P135 quita el punto que devolvió P135 y JUGADOR_ANTES lee la variante del jugador de antes', () => {
+    const fugitivo = porId('fugitivo-II')
+    const cueva = porId('cueva_abajo')
+    if (fugitivo.tipo !== 'capitulo' || cueva.tipo !== 'recompensa') throw new Error('sin cartas')
+    const v = leerVariante('ANTES_P135')
+    expect(v.reputacionCapitulo).toEqual({ 'isla-II-ingleses': -1, 'isla-II-temblor': -1, 'fugitivo-II': -1 })
+    aplicarVariante(v)
+    expect(fugitivo.carta.recompensa.rep).toBe(2)
+    expect(cueva.carta.elige?.map((o) => o.rep)).toEqual([2, 1])
+    aplicarVariante({ ...v, reputacionCapitulo: { 'isla-II-ingleses': 1, 'isla-II-temblor': 1, 'fugitivo-II': 1 } })
+    expect(fugitivo.carta.recompensa.rep).toBe(3)
+    expect(cueva.carta.elige?.map((o) => o.rep)).toEqual([3, 2])
+    expect(leerVariante('JUGADOR_ANTES').claves.has('JUGADOR_ANTES')).toBe(true)
+    aplicarVariante(leerVariante(''))
   })
 
   it('una carta que no es de Peligro o que no está en el mazo da error', () => {

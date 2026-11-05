@@ -7,7 +7,8 @@
 // MEDIR_TRAVESIAS_MUELLE=inicio (por defecto: mazos de inicio, semillas 1–N) o =variados (muelle de 20 al azar de la caja,
 // semillas 100000…, el doble de partidas, como el informe de equilibrio). INFORME_PARTIDAS: N (1000 por defecto).
 // MEDIR_VARIANTE: una variante de medida (pruebas/variantesMedida.ts); la reputación de antes de P134 es la variante
-// ANTES_P134. Escribe el resumen en JSON en MEDIR_SALIDA (o en la consola).
+// ANTES_P134, la de P134 sin P135, ANTES_P135, y el jugador automático de antes de P135 (que valoraba cada capítulo casi
+// por sí solo), JUGADOR_ANTES. Escribe el resumen en JSON en MEDIR_SALIDA (o en la consola).
 
 import { writeFileSync } from 'node:fs'
 import { it } from 'vitest'

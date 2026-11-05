@@ -10275,7 +10275,7 @@
      ],
      "ambientacion": "«La cruz del mapa está bajo un fuerte con bandera inglesa.»",
      "recompensa": {
-      "rep": 2
+      "rep": 3
      },
      "siguiente": [],
      "textoSiguiente": "",
@@ -10432,7 +10432,7 @@
      ],
      "ambientacion": "«Su balandra es rápida, pero la vuestra tiene más hambre.»",
      "recompensa": {
-      "rep": 2
+      "rep": 3
      },
      "siguiente": [],
      "textoSiguiente": ""
@@ -11297,19 +11297,19 @@
    "num": 294,
    "nombre": "La cueva se viene abajo",
    "mision": "isla",
-   "texto": "**Elige:**\nCargas con todo el oro: gana {2 rep}; inflige {1 herida} a cada Tripulante.\nSales a tiempo: gana {1 rep} y {2 robar}.",
+   "texto": "**Elige:**\nCargas con todo el oro: gana {3 rep}; inflige {1 herida} a cada Tripulante.\nSales a tiempo: gana {2 rep} y {2 robar}.",
    "ambientacion": "«Las paredes crujen. El oro pesa.»",
    "elige": [
     {
      "clave": "oro",
      "texto": "Cargas con todo el oro",
-     "rep": 2,
+     "rep": 3,
      "efecto": "inflige 1 herida a cada Tripulante"
     },
     {
      "clave": "salir",
      "texto": "Sales a tiempo",
-     "rep": 1,
+     "rep": 2,
      "efecto": "robas 2"
     }
    ]

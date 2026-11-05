@@ -15,8 +15,11 @@
 //             Prueba, AVP:p.e=X)
 //   FUERA:p   saca la carta de Peligro p del mazo de Peligros (todas sus copias)
 //   SINGESTA:id  el capítulo id no tiene Gesta (no da el +1 de reputación)
-//   ANTES_P134  la reputación de antes de P134: las diez recompensas de 3 o más con 1 más (la manera 3 del informe de
-//             dificultad está en los datos desde el 5 de noviembre de 2026)
+//   ANTES_P134  la reputación de antes de P134: las siete recompensas que siguen bajadas, con 1 más (la manera 3 del
+//             informe de dificultad está en los datos desde el 5 de noviembre de 2026; las otras tres volvieron con P135)
+//   ANTES_P135  la reputación de P134 sin P135: las recompensas finales de El fugitivo y La Isla del Tesoro con 1 menos
+//   JUGADOR_ANTES  el jugador automático elige misión con el criterio de antes de P135 (cada capítulo casi por sí solo;
+//             el resto de la travesía contaba un 20 %)
 //
 // Fase 11: la reputación nueva de las misiones (antes R1–R3), las Pruebas fáciles a 1 / 1 (A1) y las misiones iniciales
 // con precio (I2) ya están en los datos; I1 se descartó.
@@ -25,6 +28,7 @@ import { CATALOGO, porId } from '../catalogo.ts'
 import { DATOS, type CapituloDatos } from '../datos.ts'
 import { reglasMision } from '../misiones2/registro.ts'
 import { MODOS } from '../preparacion.ts'
+import { valorarTravesias } from './jugadores.ts'
 import type { Modo } from '../tipos.ts'
 
 export interface VarianteMedida {
@@ -49,13 +53,14 @@ export interface VarianteMedida {
 
 export function leerVariante(texto: string | undefined): VarianteMedida {
   const v: VarianteMedida = { claves: new Set(), modo: 'normal', reputacionCapitulo: {}, avanceCapitulo: {}, mazo: {}, dificultadPeligro: {}, avancePeligro: {}, fueraDelMazo: [], sinGesta: [] }
-  const partes = (texto ?? '').split(',').map((p) => p.trim()).filter(Boolean).flatMap((p) => (p === 'ANTES_P134' ? ANTES_P134.split(',') : [p]))
+  const atajos: Record<string, string> = { ANTES_P134, ANTES_P135 }
+  const partes = (texto ?? '').split(',').map((p) => p.trim()).filter(Boolean).flatMap((p) => atajos[p]?.split(',') ?? [p])
   for (const parte of partes) {
     const [clave, valor] = parte.split('=')
     if (clave === 'REP') v.rep = Number(valor)
     else if (clave === 'ESC') v.escenario = Number(valor)
     else if (clave === 'MODO') v.modo = valor as Modo
-    else if (clave === 'SINESC') v.claves.add(clave)
+    else if (clave === 'SINESC' || clave === 'JUGADOR_ANTES') v.claves.add(clave)
     else if (clave?.startsWith('R:')) v.reputacionCapitulo[clave.slice(2)] = Number(valor)
     else if (clave?.startsWith('AV:')) v.avanceCapitulo[clave.slice(3)] = Number(valor)
     else if (clave?.startsWith('MAZO:') && valor) v.mazo[clave.slice(5)] = valor
@@ -72,6 +77,7 @@ export function leerVariante(texto: string | undefined): VarianteMedida {
 
 /** Aplica la variante a los datos en memoria. Llamar una sola vez por proceso, antes de jugar. */
 export function aplicarVariante(v: VarianteMedida): void {
+  valorarTravesias(v.claves.has('JUGADOR_ANTES') ? 'capitulo' : 'travesia')
   if (v.rep !== undefined) MODOS[v.modo].reputacion = v.rep
   if (v.escenario !== undefined) MODOS[v.modo].escenario = v.escenario
   const capitulo = (id: string): CapituloDatos => {
@@ -135,11 +141,13 @@ export function aplicarVariante(v: VarianteMedida): void {
 
 /**
  * P134 (5 de noviembre de 2026, decisión de Albert): las diez recompensas que daban 3 o más de reputación dan 1 menos (en
- * los finales con elección, cada opción). Esta variante las deja como estaban, para comparar con lo de antes.
+ * los finales con elección, cada opción). P135 (el mismo día, opción B) devolvió el punto a tres: «Vivo, no muerto»,
+ * «…tomada por los ingleses» y «La cueva se viene abajo». ANTES_P134 deja las otras siete como estaban antes de P134, para
+ * comparar con lo de antes; ANTES_P135 quita el punto a las tres (la reputación de P134 sola).
  */
 export const ANTES_P134 =
-  'R:espia-II=1,R:sanfelipe-II-b=1,R:sanfelipe-III=1,R:fantasma-II=1,R:flota-IV=1,' +
-  'R:isla-II-ingleses=1,R:isla-II-temblor=1,R:vanhoorn-II-a=1,R:fugitivo-II=1,R:templo-IV=1'
+  'R:espia-II=1,R:sanfelipe-II-b=1,R:sanfelipe-III=1,R:fantasma-II=1,R:flota-IV=1,R:vanhoorn-II-a=1,R:templo-IV=1'
+export const ANTES_P135 = 'R:isla-II-ingleses=-1,R:isla-II-temblor=-1,R:fugitivo-II=-1'
 
 /**
  * Las maneras de endurecer el juego del informe de dificultad (5 de noviembre de 2026), como variantes de medida. Solo
@@ -163,6 +171,6 @@ export const MANERAS: Record<string, { nombre: string; variante: string }> = {
       'AVP:p2_paga.mar=1,AVP:p2_motin.ciu=1,AVP:p2_estrella.ciu=0,AVP:p2_presa.ciu=0,' +
       'AVP:p2_presagio.nat=1',
   },
-  antes: { nombre: 'Antes de P134: las diez recompensas grandes con 1 más de reputación', variante: 'ANTES_P134' },
+  antes: { nombre: 'Antes de P134: las siete recompensas que siguen bajadas, con 1 más de reputación', variante: 'ANTES_P134' },
   gesta: { nombre: '«Rumbo a mar abierto» sin Gesta', variante: 'SINGESTA:prueba-I' },
 }

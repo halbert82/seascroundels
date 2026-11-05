@@ -210,7 +210,8 @@ registrarMision('isla-I', {
   alZarpar: () => [{ tipo: 'alZarparOpcional', coste: { tipo: 'descartar', n: 2 }, efectos: [avance(2)], texto: 'Descartar 2 cartas para ganar 2 de Avance (compras el mapa a la viuda)' }],
 })
 
-// «…tomada por los ingleses»: al zarpar, la carta 95 entra en el mazo de Peligros; los #Armada# reciben +1.
+// «…tomada por los ingleses»: al zarpar, la carta 95 entra en el mazo de Peligros; los #Armada# reciben +1. Da 3 de
+// reputación (P134 la bajó a 2; P135 la devolvió a 3).
 registrarMision('isla-II-ingleses', {
   alZarpar: () => [{ tipo: 'entrarEnMazo', carta: 'armada' }],
   capacidades: [dificultadClaves('ingleses', ['Armada'], 1)],
@@ -227,8 +228,9 @@ registrarMision('isla-II-temblor', {
   },
 })
 
-// 294 «La cueva se viene abajo» (la recompensa de «…sacudida por un temblor»). «Elige: Cargas con todo el oro: gana 2 de
-// reputación; inflige 1 herida a cada Tripulante. Sales a tiempo: gana 1 y roba 2.» (P134: antes, 3 y 2.)
+// 294 «La cueva se viene abajo» (la recompensa de «…sacudida por un temblor»). «Elige: Cargas con todo el oro: gana 3 de
+// reputación; inflige 1 herida a cada Tripulante. Sales a tiempo: gana 2 y roba 2.» (P134 los bajó a 2 y 1; P135 los
+// devolvió a 3 y 2.)
 registrarCartaDeRecompensa('cueva_abajo', {
   efecto: (_s, carta) => [{ tipo: 'elegirFinal', carta }],
   alElegir: (_s, clave) =>
@@ -322,7 +324,8 @@ registrarPeligro('barco_vanhoorn', {
 
 registrarMision('fugitivo-I', {})
 
-// P98 (Albert): «No puedes superar esta misión si la carta 267 (el prisionero) no está en juego.»
+// P98 (Albert): «No puedes superar esta misión si la carta 267 (el prisionero) no está en juego.» Da 3 de reputación
+// (P134 la bajó a 2; P135 la devolvió a 3).
 registrarMision('fugitivo-II', {
   alZarpar: () => [aplicar([codigo('fugitivo.barco')])],
   impideSuperar: (s) => (s.zonas.permanentes.some((c) => copia(s, c).id === 'pm_prisionero') ? null : 'Sin el prisionero (carta 267) en juego, no puedes superarla'),

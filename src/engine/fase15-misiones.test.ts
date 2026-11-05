@@ -98,19 +98,19 @@ describe('257 · …sacudida por un temblor', () => {
     expect(j.decision.motivo.clave).toBe('conservarMision')
   })
 
-  it('final con elección: cargar con todo el oro (2 e inflige 1 herida a cada Tripulante) o salir a tiempo (1 y robas 2; P134: antes, 3 y 2)', () => {
+  it('final con elección: cargar con todo el oro (3 e inflige 1 herida a cada Tripulante) o salir a tiempo (2 y robas 2; P135: P134 los había bajado a 2 y 1)', () => {
     const oro = enPuerto({ misiones: ['isla-II-temblor'], tripulacion: ['viejo_lobo'], mazoPeligros: ['calma', 'calma', 'calma'] })
     oro.zarpar('isla-II-temblor').cubrir('viejo_lobo').seguir().seguir()
     // Fase 15, cuarta ronda: el final con elección está en la carta de recompensa 294, «La cueva se viene abajo».
     expect(oro.registro).toContain('Coges la carta 294 del mazo de historia: «La cueva se viene abajo».')
     expect(oro.decision).toMatchObject({ tipo: 'elegirOpcion', motivo: { clave: 'finalMision', carta: 'cueva_abajo' } })
     oro.opcion('oro')
-    expect(oro.estado.reputacion).toBe(2)
+    expect(oro.estado.reputacion).toBe(3)
     expect(oro.copia('capitan').heridas).toBe(1)
     expect(oro.copia('viejo_lobo').heridas).toBe(1)
     const salir = enPuerto({ misiones: ['isla-II-temblor'], tripulacion: ['viejo_lobo'], mazoPeligros: ['calma', 'calma', 'calma'] })
     salir.zarpar('isla-II-temblor').cubrir('viejo_lobo').seguir().seguir().opcion('salir')
-    expect(salir.estado.reputacion).toBe(1)
+    expect(salir.estado.reputacion).toBe(2)
     expect(salir.registro.some((r) => r.startsWith('Robas 2'))).toBe(true)
   })
 })
@@ -833,6 +833,16 @@ describe('264–267 · El fugitivo', () => {
     j.opcion('1')
     expect(vida(j, 'pm_prisionero', 3)).toBe(2)
     expect(j.copia('bucanero').heridas).toBe(0)
+  })
+
+  it('II: superada, «Vivo, no muerto» da 3 de reputación (P135; con P134, 2)', () => {
+    const j = enPuerto({ misiones: ['fugitivo-II'], tripulacion: ['bucanero', 'marinero_p'], avance: { 'fugitivo-II': 5 }, mazoPeligros: ['calma', 'calma', 'calma'] })
+    // Diego 3 + Bucanero veterano 2 + Rufián de cubierta 2 contra COM 3: el prisionero entra en juego. El Destino «Remanso»
+    // prepara a uno; el barco da 1 de Avance y la misión llega a 6.
+    j.zarpar('fugitivo-II').comprometer('COM', ['capitan', 'bucanero', 'marinero_p']).pasarOfertas().seguir().elegir('capitan')
+    expect(j.registro).toContain('¡Superas «Vivo, no muerto»!')
+    expect(j.registro).toContain('Ganas 3 de reputación (3).')
+    expect(j.estado.reputacion).toBe(3)
   })
 
   it('II: si fallas el barco del fugitivo, Abordaje y el fugitivo escapa: la misión falla', () => {

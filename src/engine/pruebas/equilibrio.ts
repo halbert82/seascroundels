@@ -604,7 +604,7 @@ export function informe(partidas: readonly Partida[], titulo: string, variadas: 
   const lineas: string[] = []
   lineas.push(`# Informe de equilibrio`, '', titulo, '')
   lineas.push(
-    '> Lo juega un jugador automático sencillo y prudente, no un jugador experto: sirve para comparar versiones de las cartas, no como dificultad real. Una carta que el jugador automático usa mal parecerá floja.',
+    '> Lo juega un jugador automático sencillo y prudente, no un jugador experto: sirve para comparar versiones de las cartas, no como dificultad real. Una carta que el jugador automático usa mal parecerá floja. Desde P135 elige misión valorando cada travesía entera, por lo que da por turno (antes, casi solo por el capítulo que se ofrecía).',
     '',
   )
 

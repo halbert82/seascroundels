@@ -2262,7 +2262,7 @@ Cada zarpe gasta un turno. **Rep. por turno:** toda la reputación de los zarpes
 - **Dos pasan a dar lo mismo o menos que una aventura:** **El fugitivo** (0,97 y 0,93, frente a 1,00 y 0,99; antes, 1,25 y 1,23) y **La Isla del Tesoro** (0,95 con los mazos de inicio, por debajo; 0,99 con muelles variados, empate; antes, 1,24 y 1,31). Son las dos únicas que no dan ningún Tesoro: la reputación es todo lo que dan. Terminadas siguen un poco por encima (1,03 a 1,10), pero terminarlas no es seguro: «Vivo, no muerto» se supera el 55 % de las veces que se zarpa y «…sacudida por un temblor», el 54 %.
 - **Cuántas se empiezan y se terminan:** casi igual que antes, salvo dos. La Flota se empieza más (150 de 1000 partidas, antes 119): las partidas duran más y da tiempo. **El espía de Cádiz casi desaparece:** el jugador automático solo lo empieza en 7 de 1000 partidas (antes, 112) y en 14 de 2000 con muelles variados (antes, 240). Es cosa de cómo elige misión: «Seguirle por Port Royal» (1, Ciudad, Distancia 2) ya la evitaba 3 de cada 4 veces, y con la goleta a 2 lo que queda de la cadena ya no la compensa. Cuando la juega, el espía terminado da 1,40–1,50 por turno, por encima de una aventura; un jugador de verdad lo seguiría jugando. No se toca.
 
-### Propuesta para El fugitivo y La Isla del Tesoro (P135, sin aplicar)
+### Propuesta para El fugitivo y La Isla del Tesoro (P135; Albert eligió la B, ver «P135 · Decisión de Albert»)
 
 **Devolver el punto solo al capítulo final**, que es el que lo perdió: el punto solo llega al terminar la travesía, después de su capítulo más arriesgado, así que no se regala. Medida con las mismas semillas (variantes de medida, sin cambiar los datos):
 
@@ -2283,7 +2283,7 @@ Cada zarpe gasta un turno. **Rep. por turno:** toda la reputación de los zarpes
 - **«Modo difícil»: el reloj de 10 cartas de Escenario.** La partida normal con 10 cartas de Escenario en lugar de 11 (12 de reputación para ganar). Medido sobre lo de hoy (con P134): **24,6 % de victorias con los mazos de inicio y 26,3 % con muelles variados** (hoy, 35,5 % y 36,1 %); derrotas por tiempo 59,7 % y 58,8 %, por el Capitán 15,7 % y 14,9 %; Panamá 1,7 % y 1,4 %. Antes de P134 bajaba al 35,6 % y al 38,6 %. Sería una fila más de la tabla de dificultad para quien quiera un reto mayor, no un cambio de la partida normal. Orden: `MEDIR_DIFICULTAD=1 MEDIR_DIFICULTAD_MANERA=1 npx vitest run src/engine/medir-dificultad.informe.test.ts`.
 - **La manera de los Peligros** (22 Pruebas de COM +1 y 15 Avances gratis −1) se estudiará cuando Albert termine de revisar sus textos.
 
-### Pregunta para Albert (P135), con la opción por defecto aplicada
+### Pregunta para Albert (P135), con la opción por defecto aplicada (cerrada: ver «P135 · Decisión de Albert» justo debajo)
 
 - **P135 · ¿Se devuelve el punto al capítulo final de El fugitivo y La Isla del Tesoro?** **Por defecto, no** (se quedan como con P134). Opciones: **A** solo «Vivo, no muerto» (3); **B** también «…tomada por los ingleses» (3) y «La cueva se viene abajo» (3 o 2); **otra**.
 
@@ -2294,3 +2294,98 @@ P135 (travesías tras P134): no se toca nada / A solo El fugitivo / B El fugitiv
 Modo difícil (10 cartas de Escenario): más adelante / ahora / no
 Notas:
 ```
+
+
+## P135 · Decisión de Albert: El fugitivo y La Isla del Tesoro recuperan el punto final; el jugador automático valora la travesía entera (5 de noviembre de 2026)
+
+**Albert eligió la opción B:** «Vivo, no muerto» vuelve a dar 3 de reputación, «…tomada por los ingleses» vuelve a dar 3 y «La cueva se viene abajo», 3 (el oro) o 2 (salir a tiempo). Las otras siete recompensas se quedan como las dejó P134. Los textos de las cartas de Peligro no se tocan (los está revisando Albert).
+
+### Qué cambia
+
+| Capítulo | Antes de P134 | Con P134 | Ahora (P135) |
+| --- | --- | --- | --- |
+| Vivo, no muerto (El fugitivo II) | 3 | 2 | **3** |
+| …tomada por los ingleses (La Isla del Tesoro II) | 3 | 2 | **3** |
+| …sacudida por un temblor (La Isla del Tesoro II), carta 294 «La cueva se viene abajo»: el oro / salir a tiempo | 3 / 2 | 2 / 1 | **3 / 2** |
+
+- **Datos:** los dos recuadros y la carta 294 (su texto y sus dos opciones).
+- **Reglamento:** no cita la reputación de estas tres recompensas; no cambia.
+- **Pruebas:** la de P134 recoge las siete que siguen bajadas y las tres devueltas; una nueva de P135 comprueba los valores y el texto de la 294; «Vivo, no muerto» se juega entera y da 3, y el final con elección de «…sacudida por un temblor» da 3 o 2.
+- **Ejemplo de juego:** con 8 de reputación y dos turnos por delante, superas «Tras la pista» (llegas a 9) y después «Vivo, no muerto»: ahora llegas a 12 y ganas; con P134 te quedabas en 11.
+- **Medidas:** la variante ANTES_P134 deja como estaban antes de P134 solo las siete que siguen bajadas; la nueva ANTES_P135 quita el punto a las tres (P134 sola).
+
+### Por qué el jugador automático casi no jugaba «El espía de Cádiz»: era un fallo suyo
+
+Con P134, el jugador automático empezaba el espía en 7 de cada 1000 partidas (antes, en 112). **Era un fallo de cómo elegía misión, no de la travesía:**
+
+- **Valoraba cada misión casi solo por el capítulo que se le ofrecía:** su reputación, el Avance que le faltaba, la Distancia y si era de Mar. El resto de la travesía contaba solo un 20 %.
+- **«Seguirle por Port Royal» era el capítulo I que peor puntuaba:** da 1 de reputación, pide 6 de Avance, tiene Distancia 2 y es de Ciudad, y lo que viene después es un solo capítulo. Con P134 la goleta bajó de 3 a 2 y su 20 % se encogió.
+- **Por eso elegía misiones que no dan reputación:** «Cobrar la deuda» y «Agua y leña» (0,03 y 0,00 de reputación por zarpe) le puntuaban más que el espía. En 1000 partidas, «Seguirle por Port Royal» estuvo disponible para zarpar 1203 veces y solo la eligió 7 (la evitó el 99,4 % de las veces); en 300 partidas medidas una a una, de las 360 veces que se le ofreció, 81 se fue a una de esas dos y 25 se quedó en puerto.
+- **Una persona no lo haría:** cuando el jugador automático sí lo jugaba, terminaba la travesía casi siempre (102 de 112 partidas antes de P134).
+
+**Arreglo:** el jugador automático valora ahora la **travesía entera, por lo que da por turno**, como una persona: suma lo que vale cada capítulo que queda (cada uno cuesta un turno) y lo reparte entre esos turnos. Solo cuenta los capítulos que caben en los turnos que quedan, y puede dejar la travesía cuando ya no le compense: vale lo mejor de seguir hasta un capítulo u otro, y nunca menos que el capítulo que se ofrece solo. La victoria de Panamá no es reputación por turno: la sigue valorando como antes. *Ejemplo:* el espía da 1 + 2 = 3 de reputación en dos turnos, 1,5 por turno; «Cobrar la deuda» no da nada. Con turnos por delante, ahora elige el espía; en el último turno, el capítulo I vale solo lo suyo, como antes. Pruebas nuevas del jugador automático con estos ejemplos; la variante de medida JUGADOR_ANTES vuelve al criterio de antes para comparar.
+
+### Equilibrio con P135 y el jugador automático nuevo (informe de equilibrio regenerado)
+
+Mismas semillas: 1000 partidas con los mazos de inicio y 2000 con muelles variados.
+
+| Versión | Victorias, mazos de inicio | Victorias, muelles variados | Panamá (inicio / variados) |
+| --- | --- | --- | --- |
+| P134, jugador de antes (lo que se medía hasta hoy) | 35,5 % | 36,1 % | 28 / 42 |
+| P135, jugador de antes | 38,3 % | 39,1 % | 28 / 39 |
+| P134, jugador nuevo | 40,2 % | 43,3 % | 28 / 44 |
+| **P135, jugador nuevo (hoy)** | **43,1 %** | **45,9 %** | 28 (2,8 %) / 41 (2,1 %) |
+
+- **El jugador nuevo gana más (+5 puntos con los mazos de inicio y +7 con muelles variados) porque juega mejor:** deja de perder turnos en misiones iniciales que no dan reputación (de 1775 zarpes a 1397 en 1000 partidas) y juega el espía. El juego no ha cambiado; lo que ha cambiado es que se mide mejor. **El 35,5 % de P134 era en parte un error del jugador automático.**
+- **P135 suma unos 3 puntos**, como se midió en la propuesta.
+- **Derrotas con los mazos de inicio:** por tiempo, 38,9 % (con P134 y el jugador de antes, 48,0 %); por el Capitán, 18,0 % (16,5 %): el jugador nuevo arriesga un poco más con travesías que antes no empezaba.
+- **«Seguirle por Port Royal»** se ofrece 344 veces en 1000 partidas y se elige 224 (la evita el 34,9 %, antes el 99,4 %); se supera el 68 % de las veces y «La goleta del correo», el 84 %.
+- **Fuera del objetivo (35–40 %) con los dos muelles.** Ver la pregunta P136 más abajo.
+- **Panamá sigue muy por debajo del 10 %** (2,8 % y 2,1 %).
+
+### Reputación por turno de cada tipo de misión (jugador de antes → jugador nuevo, los dos con P135)
+
+Mismas columnas que en P134. Las aventuras dan 0,99 → 0,96 por turno con los mazos de inicio y 0,98 → 0,95 con muelles variados.
+
+| Misiones | Rep. por turno, inicio | Rep. por turno, variados | La empieza / la termina, inicio (1000) | La empieza / la termina, variados (2000) | Rep. por turno cuando la termina (inicio / variados) |
+| --- | --- | --- | --- | --- | --- |
+| **Misiones iniciales** | 0,50 → 0,63 | 0,49 → 0,63 | — | — | — |
+| **Aventuras** | 0,99 → 0,96 | 0,98 → 0,95 | — | — | — |
+| El templo perdido | 1,13 → 1,05 | 1,17 → 1,11 | 250 / 109 → 216 / 95 | 507 / 228 → 425 / 199 | 1,25 → 1,21 / 1,33 → 1,32 |
+| La Flota de la Plata | 1,37 → 1,28 | 1,25 → 1,25 | 146 / 70 → 170 / 79 | 320 / 138 → 379 / 183 | 1,69 → 1,61 / 1,61 → 1,59 |
+| **El espía de Cádiz** | 1,17 → 1,10 | 1,31 → 1,13 | **7 / 5 → 156 / 149** | **14 / 11 → 332 / 307** | 1,40 → 1,12 / 1,50 → 1,17 |
+| El cargamento de Maracaibo | 1,45 → 1,42 | 1,51 → 1,49 | 223 / 146 → 204 / 143 | 430 / 298 → 416 / 305 | 1,50 → 1,48 / 1,55 → 1,55 |
+| La fortaleza de San Felipe | 1,33 → 1,29 | 1,42 → 1,38 | 237 / 138 → 221 / 131 | 495 / 337 → 459 / 313 | 1,46 → 1,40 / 1,50 → 1,46 |
+| El barco fantasma | 1,43 → 1,47 | 1,39 → 1,40 | 192 / 153 → 221 / 183 | 360 / 300 → 403 / 334 | 1,61 → 1,62 / 1,53 → 1,54 |
+| El saqueo de Panamá | 0,52 → 0,48 | 0,51 → 0,48 | 164 / 28 → 133 / 28 | 344 / 39 → 289 / 41 | 0,68 → 0,67 / 0,80 → 0,77 |
+| La Isla del Tesoro | 1,23 → 1,20 | 1,30 → 1,25 | 152 / 133 → 169 / 143 | 299 / 261 → 332 / 268 | 1,33 → 1,35 / 1,44 → 1,44 |
+| La carrera de van Hoorn | 1,04 → 0,98 | 1,18 → 1,13 | 171 / 147 → 167 / 156 | 307 / 280 → 324 / 308 | 1,12 → 1,03 / 1,22 → 1,17 |
+| El fugitivo | 1,27 → 1,24 | 1,23 → 1,12 | 159 / 145 → 166 / 145 | 341 / 288 → 348 / 289 | 1,44 → 1,39 / 1,47 → 1,33 |
+
+- **El espía vuelve a jugarse:** lo empieza en 156 de 1000 partidas (332 de 2000 con muelles variados) y lo termina el 95 % de las veces. **Rinde algo más que una aventura** (1,10 y 1,13 por turno, frente a 0,96 y 0,95); terminado, 2,9 de reputación en 2,6 turnos. Con van Hoorn, es la travesía que menos da por turno, pero es la fácil y casi siempre se termina. **No se propone ningún cambio.**
+- **Todas las travesías dan más que una aventura**, salvo van Hoorn con los mazos de inicio (0,98, empate; además da un Tesoro) y Panamá, que no se mide por reputación. Las cifras de casi todas bajan un poco: el jugador nuevo las empieza también cuando lo tiene más difícil (antes solo las elegía cuando le salían muy bien).
+- **P135 sigue haciendo falta con el jugador nuevo:** sin ella, El fugitivo da 1,00 y 0,93 por turno, y La Isla del Tesoro, 0,99 y 1,01, lo mismo o menos que una aventura. Con ella, 1,24 / 1,12 y 1,20 / 1,25.
+- **Las misiones iniciales suben** (0,63 por turno): el jugador nuevo ya no las elige cuando no le dan nada.
+
+### Pregunta para Albert (P136), con la opción por defecto aplicada
+
+Con el jugador automático corregido, **se gana el 43,1 % con los mazos de inicio y el 45,9 % con muelles variados**, por encima del 35–40 % que buscábamos con P134. **Por defecto, no se toca nada.** Dos maneras medidas sobre lo de hoy (P135 y el jugador nuevo, mismas semillas), sin tocar los Peligros:
+
+| Opción | Victorias, mazos de inicio | Victorias, muelles variados | Panamá (inicio / variados) | Derrotas por tiempo / por el Capitán (inicio) |
+| --- | --- | --- | --- | --- |
+| Hoy | 43,1 % | 45,9 % | 28 / 41 | 38,9 % / 18,0 % |
+| **1** El reloj: 10 cartas de Escenario en la partida normal | 32,3 % | 36,0 % | 18 / 28 | 50,9 % / 16,8 % |
+| **2** 13 de reputación para ganar la partida normal | 35,2 % | 37,7 % | 28 / 43 | 46,6 % / 18,2 % |
+
+- **1, el reloj:** un turno menos para todo. *Ejemplo:* llegas al último turno con 9 de reputación y «La goleta del correo» disponible; con 11 cartas de Escenario aún te quedaría otro turno para una misión de 1, con 10 ya no. Es la idea del «modo difícil», aquí para la partida normal.
+- **2, 13 de reputación:** el mismo tiempo, pero hay que ganar un punto más. *Ejemplo:* el ejemplo del último turno del reglamento empezaría con 11 de reputación (la goleta da 2 y llegas a 13). Cambia la tabla de modos de juego del reglamento.
+- Las dos se miden con el jugador nuevo; Panamá sigue por debajo del 10 % en todas.
+- **Recomendación: 2.** Deja los dos muelles dentro del 35–40 % (35,2 % y 37,7 %) sin quitar tiempo para jugar las travesías largas; el reloj baja los mazos de inicio al 32,3 %. El reloj de 10 cartas sigue valiendo como «modo difícil».
+
+Bloque para responder (cópialo y rellénalo):
+
+```
+P136 (victorias con el jugador corregido, 43–46 %): no se toca nada / 1 reloj de 10 cartas / 2 13 de reputación / otra: …
+Notas:
+```
+

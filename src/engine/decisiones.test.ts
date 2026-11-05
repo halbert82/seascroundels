@@ -672,18 +672,19 @@ describe('P84 · Dos Destinos que persiguen a la vez: vuelven los dos encima del
   })
 })
 
-describe('P134 · Las diez recompensas que daban 3 o más de reputación dan 1 menos (en los finales con elección, cada opción)', () => {
-  // Decisión de Albert (5 de noviembre de 2026): la manera 3 del informe de dificultad.
+describe('P134 y P135 · Las recompensas que daban 3 o más de reputación dan 1 menos, salvo las tres que P135 devolvió', () => {
+  // Decisión de Albert (5 de noviembre de 2026): la manera 3 del informe de dificultad (P134). Con P135 (opción B), las
+  // recompensas finales de El fugitivo y La Isla del Tesoro vuelven a ser las de antes.
   const NUEVAS: Record<string, number | number[]> = {
     'espia-II': 2, // La goleta del correo
     'sanfelipe-II-b': 2, // Al asalto de las murallas
     'sanfelipe-III': [3, 2], // El polvorín: «La mecha encendida»
     'fantasma-II': [2, 3], // El camarote del capitán: «La bitácora del capitán muerto»
     'flota-IV': 3, // La huida con la plata
-    'isla-II-ingleses': 2, // …tomada por los ingleses
-    'isla-II-temblor': [2, 1], // …sacudida por un temblor: «La cueva se viene abajo»
+    'isla-II-ingleses': 3, // …tomada por los ingleses (P135: vuelve a 3)
+    'isla-II-temblor': [3, 2], // …sacudida por un temblor: «La cueva se viene abajo» (P135: vuelve a 3 y 2)
     'vanhoorn-II-a': 2, // La isla de Aves
-    'fugitivo-II': 2, // Vivo, no muerto
+    'fugitivo-II': 3, // Vivo, no muerto (P135: vuelve a 3)
     'templo-IV': [1, 2], // El templo: «Ante el altar»
   }
 
@@ -711,5 +712,20 @@ describe('P134 · Las diez recompensas que daban 3 o más de reputación dan 1 m
     j.zarpar('flota-IV')
     expect(j.estado.reputacion).toBe(11) // antes de P134, 4: 12 y ganabas
     expect(j.estado.resultado).toBeNull()
+  })
+})
+
+describe('P135 · El fugitivo y La Isla del Tesoro recuperan el punto en su capítulo final (opción B)', () => {
+  // Decisión de Albert (5 de noviembre de 2026): con P134 las dos travesías daban menos reputación por turno que una
+  // aventura. Solo vuelve el punto de su último capítulo, que llega al terminar la travesía.
+  it('«Vivo, no muerto» y «…tomada por los ingleses» dan 3; «La cueva se viene abajo», 3 (el oro) o 2 (salir a tiempo)', () => {
+    const fugitivo = porId('fugitivo-II')
+    const ingleses = porId('isla-II-ingleses')
+    const cueva = porId('cueva_abajo')
+    if (fugitivo.tipo !== 'capitulo' || ingleses.tipo !== 'capitulo' || cueva.tipo !== 'recompensa') throw new Error('sin cartas')
+    expect(fugitivo.carta.recompensa.rep).toBe(3)
+    expect(ingleses.carta.recompensa.rep).toBe(3)
+    expect(cueva.carta.elige?.map((o) => [o.clave, o.rep])).toEqual([['oro', 3], ['salir', 2]])
+    expect(cueva.carta.texto).toBe('**Elige:**\nCargas con todo el oro: gana {3 rep}; inflige {1 herida} a cada Tripulante.\nSales a tiempo: gana {2 rep} y {2 robar}.')
   })
 })
