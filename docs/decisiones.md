@@ -2028,7 +2028,173 @@ Cuatro versiones del mazo del capitán, con P133 aplicada y el mismo jugador aut
 - Si se eligiera B, C o D, la segunda copia en la caja de esas cartas (decisión de Albert: núcleo del mazo de inicio a 2 copias) ya no la usaría el mazo de inicio.
 - Medido con `MEDIR_MAZOS=1 MEDIR_MAZOS_VARIANTE=A npx vitest run src/engine/medir-mazos.informe.test.ts` (B, C, D; con `MEDIR_MAZOS_VARIADOS=1`, los muelles variados; `INFORME_PARTIDAS`, el número de partidas).
 
-### Recomendación (sin aplicar: decide Albert)
+### Recomendación (no aplicada: Albert eligió A, ver «Decisión de Albert: versión A» justo debajo)
 
 - **D (34 cartas, una copia de cada una).** Con el muelle de inicio no cambia nada que se pueda medir (el juego ya es igual de difícil que antes). Con muelles variados es la única que acerca el mazo del capitán a la dificultad de antes (+2,6 puntos en lugar de +4,5), y el precio, unas 0,05 jornadas perdidas por partida, es pequeño. No basta para que con muelles variados el juego sea igual de difícil que antes: para eso habría que cambiar otras cartas del mazo del capitán y medirlo.
 
+### Decisión de Albert: versión A, el mazo del capitán no cambia (5 de noviembre de 2026)
+
+Albert se queda con la **versión A**: el mazo del capitán de inicio de «Pólvora y abordaje» sigue con sus 36 cartas, con las dos copias de «¡Arriba, perros!» y de «Ron para los valientes». No cambia ninguna carta, ni en el mazo de inicio ni en la caja. Motivos:
+
+- **Con el muelle de inicio, ninguna versión cambia la dificultad:** las cuatro dejan el juego igual de difícil que antes (A gana el 46,1 % frente al 46,8 % de la referencia, en 4000 partidas).
+- **Quitar copias va contra la idea de que el núcleo del mazo de inicio lleve dos** (la decisión de las siete cartas a 2 copias en la caja).
+- **Que un mazo bien construido sea más fuerte con otros muelles es lo normal en un juego de construir mazos:** los +4,5 puntos con muelles variados no se compensan quitando cartas al mazo de inicio.
+
+La dificultad general del juego se trata aparte: ver «Informe de dificultad» más abajo.
+
+
+## Informe de dificultad: de dónde salen las victorias y tres maneras de endurecer el juego (5 de noviembre de 2026)
+
+Solo se mide y se propone: **no cambia ningún dato, regla ni carta** (tampoco los textos de los Peligros, que está revisando Albert). Norma de Albert: el juego tiene que ser más difícil. **Hoy se gana el 47,3 % de las partidas con los mazos de inicio y el 49,3 % con muelles variados** (el 47,7 % y el 49,7 % eran de antes de P133).
+
+*Cómo se ha medido:* el jugador automático de siempre, con las mismas semillas para todas las versiones: 1000 partidas con los mazos de inicio (semillas 1–1000) y 2000 con muelles variados (semillas 100000–101999, un muelle de 20 al azar de la caja). Con 1000 partidas, el azar mueve el resultado más o menos 1,5 puntos; con 2000, más o menos 1. Las versiones son variantes de medida (cambian los datos solo en la memoria del proceso que mide). Orden: `MEDIR_DIFICULTAD=1 MEDIR_DIFICULTAD_MANERA=2 npx vitest run src/engine/medir-dificultad.informe.test.ts` (la manera 1, 2, 3 o `gesta`; o cualquier otra variante con `MEDIR_VARIANTE=…`; con `MEDIR_DIFICULTAD_MUELLE=variados`, los muelles variados). Variantes nuevas en `src/engine/pruebas/variantesMedida.ts`: `DIF` (dificultad de un encuentro de Peligro), `AVP` (su Avance), `FUERA` (una carta fuera del mazo de Peligros) y `SINGESTA` (un capítulo sin Gesta), con su prueba.
+
+### De dónde salen las victorias (hoy, mazos de inicio; entre paréntesis, muelles variados cuando cambia)
+
+**El Mar da más de la mitad de la reputación de las partidas ganadas:** Mar 54 % (52 %), Ciudad 26 %, Naturaleza 21 % (22 %). En una partida ganada se superan 3,7 misiones de Mar; en una perdida, 2,3. En Ciudad (2,2 frente a 1,8) y en Naturaleza (1,4 frente a 1,1) la diferencia es mucho menor.
+
+**El motivo: las Pruebas de COM son las fáciles.** El mazo de inicio es de combate (Diego da +1 y los Piratas tienen COM 2 o 3), y se nota en el fallo de cada habilidad:
+
+| Habilidad de la Prueba | Mar | Naturaleza | Ciudad |
+| --- | --- | --- | --- |
+| COM | 27 % de fallo | 31 % | 31 % |
+| NAV | 49 % | 51 % | 56 % |
+| EXP | 69 % | 71 % | 71 % |
+
+Los encuentros grandes del Mar de COM 4 y Avance 3 («Galera de forzados», «El barco fantasma», «Zombis en la jarcia», «Lanchas de la guarnición», «Patache de los oficiales reales», «Al abordaje del filibote») se superan 3 de cada 4 veces y dan unos 2,6 de Avance cada vez que salen.
+
+**Las misiones que más reputación dan a las partidas ganadas** (% de la reputación de todas las ganadas; «superada en ganadas / perdidas»: en qué % de esas partidas se supera):
+
+| Misión | Entorno | Superada en ganadas / perdidas | Reputación al superarla | Parte de la reputación de las ganadas |
+| --- | --- | --- | --- | --- |
+| Rumbo a mar abierto (misión inicial) | Mar | 98 % / 91 % | 0,92 (su Gesta) | 7,6 % |
+| El camarote del capitán (El barco fantasma II) | Mar | 23 % / 7 % | 3,80 | 7,2 % |
+| Escolta del San Telmo | Mar | 29 % / 17 % | 2,58 | 6,0 % |
+| El polvorín (La fortaleza de San Felipe III) | Ciudad | 21 % / 7 % | 3,48 | 6,0 % |
+| Vivo, no muerto (El fugitivo II) | Mar | 17 % / 10 % | 3,05 | 4,1 % |
+| El asedio de Port Royal | Ciudad | 19 % / 12 % | 2,39 | 3,8 % |
+| La goleta del correo (El espía de Cádiz II) | Mar | 15 % / 6 % | 3,02 | 3,7 % |
+| Al asalto de las murallas (La fortaleza de San Felipe II-b) | Ciudad | 15 % / 4 % | 2,98 | 3,6 % |
+| La huida con la plata (La Flota de la Plata IV) | Mar | 11 % / 2 % | 4,10 | 3,6 % |
+
+- **«Rumbo a mar abierto» da un punto casi regalado:** es la primera misión en el 98 % de las partidas ganadas y su Gesta («sin haber dañado el Barco en esta misión») se cumple el 92 % de las veces, porque la misma carta evita el primer daño. Ningún otro punto de reputación es tan barato.
+- **Las recompensas de 3 o 4** (los capítulos II, III y IV) son las que separan las ganadas de las perdidas: «El camarote del capitán» se supera en el 23 % de las ganadas y en el 7 % de las perdidas; «La huida con la plata», en el 11 % y el 2 %.
+- Las otras dos misiones iniciales («Cobrar la deuda» y «Agua y leña», que el jugador evita el 94 % y el 98 % de las veces) y «El naufragio del San José» casi no dan reputación (de 0 a 0,2 cada vez que se superan).
+
+**Cuántos turnos sobran al ganar:** se gana en el turno 9,1 de media y sobran 2,2 turnos. **El 21 % de las victorias llega en el último turno y el 44 %, con uno o ninguno de sobra**; solo el 15 % gana con 5 o más de sobra. **Las derrotas por tiempo se quedan cerca:** el 36 % termina con 10 u 11 de reputación (el 13,5 % de todas las partidas). Por eso el reloj pesa tanto: un turno menos convierte muchas victorias justas en derrotas por tiempo.
+
+**Las cartas de jugador que más pesan en las partidas ganadas** (veces que se usan por turno en las ganadas frente a las perdidas; 1 es igual):
+
+- **Más en las ganadas:** Rodrigo «Carnicero» Ortega 1,45; ¡Todos a una! 1,36 (se juega poco); ¡Arriba, perros! 1,26; Cañones de bronce 1,22; Filibustero borracho 1,19; Sable de abordaje 1,17; Viejo lobo de mar 1,14. Casi todas son de combate (Rodrigo, los Cañones de bronce, el Filibustero y el Sable) o sirven para tener a más gente preparada en las Pruebas («¡Arriba, perros!», «¡Todos a una!»).
+- **Las que más se usan** (por partida): Íñigo «Lince» Quintero 2,4; Carne de cañón 1,8; Viejo lobo de mar e Isabela 1,4. Salen igual en las ganadas que en las perdidas.
+- **Más en las perdidas:** El capitán hace guardia 0,68; Remiendo de urgencia 0,78; Carpintero de a bordo 0,79. Son las que arreglan heridas y daño: se usan cuando la partida va mal.
+- **Con muelles variados** (la medida limpia: partidas con la carta en el muelle frente a sin ella), las que más suben las victorias son el Rufián de cubierta (+6,3) y el Grumete leal (+6,0), por encima del ruido (unos 5 puntos); después, el Ron de la reserva (+4,0) y la Chalupa (+3,7).
+
+**Tesoros** (% de victorias en las partidas en que entran en juego; ojo: llegan al superar una misión grande, así que acompañan a las partidas que ya van bien): Mascarón del galeón 83 %, Farol de los ahogados 72 %, Pólvora del Rey 71 %, Los despachos del Rey 70 %, Carta de marear de van Hoorn 63 %, Mapa de las calas 62 %, Gallardete de San Juan 61 %, Espada del sacerdote 60 %. **Los dos del naufragio no ayudan:** El doblón de la calavera 44 % y La campana del San José 44 % (por debajo del 47 % de todas las partidas).
+
+**Peligros que apenas hacen daño:** 26 de los 189 encuentros del mazo de Peligros (el 12 % de las veces que sale un encuentro) no hacen ningún daño en su encuentro (heridas, daño, Avance perdido, Tripulantes perdidos o misiones retiradas). Son de tres clases:
+
+- **Respiros sin Avance** (10): «Una noche en tierra», «Campamento en el claro», «Al abrigo de la isla de Pinos», «Desove en la playa», «Bucán en la playa», «Agua dulce», «Barriles en la playa», «Barril a la deriva», «Viento a favor» y «Guiarse por las estrellas». Están hechos para ayudar.
+- **«La hoguera de la atalaya»** (191 Toque a rebato, Naturaleza): el único con Prueba (NAV 4, se falla el 59 %), pero su fallo deja el Barco **Perseguido**, que esta cuenta no ve.
+- **Avance gratis** (15): dan 1 o 2 de Avance sin Prueba y sin daño, como «El cabo del portillo», «La cadena de la bocana» o «No vuelven de la taberna». Varios ponen en juego una permanente o agotan a Tripulantes, un coste (destinar para quitarla, el +1 a las Pruebas, gente agotada) que esta cuenta no ve. Lista completa en la manera 2.
+- Los que más daño hacen: «El cazador de piratas» y «La Armada de Barlovento» en el Mar; «El Holandés errante», «Mar de fondo» y «Huracán» en la Naturaleza; «El caimán» y «La ronda de noche» en Ciudad.
+
+### Tres maneras de endurecer el juego (solo medidas)
+
+Objetivo orientativo: que las victorias bajen a un 35–40 %, sin que las derrotas por el Capitán suban más que las de tiempo, con Panamá siempre por debajo del 10 % y sin regalar reputación. Cada manera se mide sola, con todo lo demás como hoy. Entre paréntesis, la diferencia con hoy.
+
+#### Manera 1 · El reloj: 10 cartas de Escenario en la partida normal (hoy, 11)
+
+**Qué cambia:** la partida normal se juega con 10 cartas de Escenario en lugar de 11, es decir, 11 turnos en lugar de 12. Nada más: ni cartas ni reputación (12 para ganar). Las partidas corta y larga no se han medido.
+
+| Versión | Victorias, mazos de inicio | Panamá | Derrotas por tiempo / por el Capitán | Victorias, muelles variados | Panamá | Derrotas por tiempo / por el Capitán |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hoy (11 cartas) | 47,3 % | 25 (2,5 %) | 37,1 % / 15,6 % | 49,3 % | 43 (2,2 %) | 35,2 % / 15,6 % |
+| **10 cartas de Escenario** | **35,6 % (−11,7)** | 18 (1,8 %) | 49,0 % / 15,4 % (+11,9 / −0,2) | **38,6 % (−10,7)** | 27 (1,4 %) | 46,9 % / 14,6 % (+11,7 / −1,0) |
+| *Para comparar:* 9 cartas | 25,7 % (−21,6) | 11 (1,1 %) | 59,7 % / 14,6 % (+22,6 / −1,0) | — | — | — |
+| *Para comparar:* 13 de reputación para ganar | 40,5 % (−6,8) | 26 (2,6 %) | 43,6 % / 15,9 % (+6,5 / +0,3) | 41,6 % (−7,7) | 43 (2,2 %) | 42,8 % / 15,7 % (+7,6 / +0,1) |
+| *Para comparar:* 14 de reputación para ganar | 33,1 % (−14,2) | 26 (2,6 %) | 51,0 % / 15,9 % (+13,9 / +0,3) | — | — | — |
+
+- **Cumple el objetivo con los dos muelles.** Solo suben las derrotas por tiempo; las del Capitán bajan un poco (hay menos turnos en los que morir). Panamá baja.
+- Es la manera más sencilla (un número de la preparación) y la que menos cambia cómo se juega: se gana igual, pero con menos margen. El 29 % de las victorias llega en el último turno (hoy, el 21 %).
+- **La reputación para ganar** hace lo mismo, pero en la fase 10c Albert prefirió no subirla y que cada punto sea escaso; por eso va solo para comparar. 13 se queda en el 40,5 %.
+- **Ejemplo de juego:** llegas al turno 11 con 9 de reputación y «La goleta del correo» (3) disponible. Hoy zarpas en el turno 11 y, si te retiras, aún te queda el turno 12 para otra misión. Con 10 cartas, el turno 11 es el último: si la goleta sale mal, pierdes por tiempo. Y quedarse un turno en puerto para curar, o perder un día al rebarajar el mazo del capitán, cuesta 1 de 11 turnos en lugar de 1 de 12.
+
+#### Manera 2 · Peligros concretos: las Pruebas de COM que casi nunca se fallan y los encuentros que dan Avance gratis
+
+**Qué cambia** (solo números de las cartas de Peligro; ningún texto):
+
+- **+1 a la dificultad de las 22 Pruebas de COM que se fallan menos de 1 de cada 4 veces** (hoy, entre el 12 % y el 27 %):
+  - Mar: «Mercante sin escolta» (209 Presa fácil, COM 2), «Una presa que escapa» (253 Malas lenguas, COM 2), «Tortugas dormidas» (174 Tortugas, COM 2), «Aletas en la estela» (180 Tiburones, COM 3), «Bronca en el sollado» (198 Sangre caliente, COM 3), «Proa en la niebla» (157 Niebla, COM 3; 2 con un _Vigía_), «Alas sobre el fondeadero» (181 Murciélagos vampiro, COM 3), «Galera de forzados» (189 Los grilletes del rey, COM 4), «El barco fantasma» (217 El Holandés errante, COM 4), «Zombis en la jarcia» (213 La maldición del bokor, COM 4), «Lanchas de la guarnición» (191 Toque a rebato, COM 4), «Patache de los oficiales reales» (192 El quinto del rey, COM 4) y «Al abordaje del filibote» (203 Los holandeses de Curazao, COM 4).
+  - Naturaleza: «Arrastrar la chalupa» (248 Arrimar el hombro, COM 3), «Tiro al blanco» (199 El tahúr, COM 2) y «La aguada de los holandeses» (203 Los holandeses de Curazao, COM 4).
+  - Ciudad: «Una carreta en el barro» (247 Fuerza bruta, COM 3), «Por la ventana de la posada» (181 Murciélagos vampiro, COM 3), «Pulso en el muelle» (196 Hermanos de la Costa, COM 2), «El dueño del oro» (214 El oro de los muertos, COM 3), «Tu nombre corre por las tabernas» (253 Malas lenguas, COM 3) y «El puerto en llamas» (160 Fuego a bordo, COM 3).
+- **−1 al Avance de los 15 encuentros sin Prueba que dan Avance sin hacer daño:**
+  - De 2 a 1: «Varados en la arena» (158 Bajamar, Mar), «La cadena de la bocana» (193 Bajo los cañones del Morro, Mar), «Murmullos en el sollado» (200 Paga atrasada, Mar), «La manigua arde» (160 Fuego a bordo, Naturaleza), «Arenas movedizas» (182, Naturaleza), «Ojos amarillos en la espesura» (183 El jaguar, Naturaleza), «La lechuza canta tres veces» (212 Mal presagio, Naturaleza), «Campanas a rebato» (191 Toque a rebato, Ciudad) y «No vuelven de la taberna» (205 Motín, Ciudad).
+  - De 1 a 0: «Bote de desertores» (185 Desertores del rey, Mar), «Balandra de la Hermandad» (196 Hermanos de la Costa, Mar), «El cabo del portillo» (185 Desertores del rey, Ciudad), «Lenguas sueltas» (197 Barril de ron, Ciudad), «La lotería del virrey» (207 Buena estrella, Ciudad) y «Casa del mercader en fiestas» (209 Presa fácil, Ciudad).
+- Si Albert la elige, se aplicaría después de su revisión de los textos de los Peligros. Los Avances de los encuentros con Prueba no cambian (siguen las reglas 1 / 1, 2 / 1, 3 / 1 y 3 / 2).
+
+| Versión | Victorias, mazos de inicio | Panamá | Derrotas por tiempo / por el Capitán | Victorias, muelles variados | Panamá | Derrotas por tiempo / por el Capitán |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hoy | 47,3 % | 25 (2,5 %) | 37,1 % / 15,6 % | 49,3 % | 43 (2,2 %) | 35,2 % / 15,6 % |
+| Solo las 22 Pruebas de COM, +1 | 43,1 % (−4,2) | 24 (2,4 %) | 41,6 % / 15,3 % (+4,5 / −0,3) | 45,8 % (−3,5) | 35 (1,8 %) | 37,1 % / 17,1 % (+1,9 / +1,5) |
+| Solo los 15 Avances gratis, −1 | 40,5 % (−6,8) | 15 (1,5 %) | 42,2 % / 17,3 % (+5,1 / +1,7) | 44,4 % (−4,9) | 36 (1,8 %) | 37,6 % / 18,1 % (+2,4 / +2,5) |
+| **Las dos cosas** | **37,7 % (−9,6)** | 14 (1,4 %) | 44,6 % / 17,7 % (+7,5 / +2,1) | **40,7 % (−8,6)** | 30 (1,5 %) | 40,5 % / 18,8 % (+5,3 / +3,2) |
+| *Más fuerte:* las 50 Pruebas de COM del mazo, +1, y los 15 Avances, −1 | 34,7 % (−12,6) | 11 (1,1 %) | 46,8 % / 18,5 % (+9,7 / +2,9) | 37,4 % (−11,9) | 16 (0,8 %) | 42,0 % / 20,7 % (+6,8 / +5,1) |
+| *Para comparar:* solo las 50 Pruebas de COM, +1 | 40,9 % (−6,4) | 17 (1,7 %) | 43,0 % / 16,1 % (+5,9 / +0,5) | — | — | — |
+
+- **Las dos cosas juntas llegan al objetivo con los mazos de inicio (37,7 %) y se quedan justo encima con muelles variados (40,7 %).** La versión más fuerte (las 50 Pruebas de COM) llega con los dos muelles, pero toca muchas más cartas y acerca las derrotas por el Capitán a las de tiempo (+5,1 frente a +6,8 con muelles variados).
+- **Es la única manera que sube las derrotas por el Capitán** (+2 o +3 puntos): se fallan más Pruebas y se sufren más heridas (2,84 Tripulantes muertos por partida, hoy 2,60). Siguen subiendo menos que las de tiempo, salvo los Avances gratis solos con muelles variados (+2,5 frente a +2,4, empate).
+- **Cambia cómo se juega, no solo cuánto se gana:** el Mar de COM deja de ser tan seguro (ataca directamente a lo que hoy da la mitad de la reputación) y las misiones duran un encuentro más. Panamá baja.
+- **Ejemplo de juego:** en el Mar sale «Galera de forzados» (COM 4, Avance 3 / 2; si fallas, el Barco recibe 2 daños). Hoy Isabela (COM 3, +1 de Diego preparado) llega sola a 4, antes del Destino. Con COM 5 necesita además «¡Al abordaje!» (2 iconos de COM) o a la Carne de cañón, y esa carta o ese Tripulante ya no está para el encuentro siguiente. Y en «Rumbo a la isla» (Avance 5), «La cadena de la bocana» daba 2 de Avance y pone en juego la cadena; con 1, hace falta un encuentro más para llegar a 5.
+
+#### Manera 3 · Recompensas: −1 a las recompensas de 3 o más de reputación
+
+**Qué cambia:** las diez recompensas que dan 3 o más de reputación bajan 1 (en los finales con elección, cada opción). Las demás, Panamá y la Gesta no cambian:
+
+| Capítulo | Hoy | Con la manera 3 |
+| --- | --- | --- |
+| La goleta del correo (El espía de Cádiz II) | 3 | 2 |
+| Al asalto de las murallas (La fortaleza de San Felipe II-b) | 3 | 2 |
+| El polvorín (La fortaleza de San Felipe III), «La mecha encendida» | 4 o 3 | 3 o 2 |
+| El camarote del capitán (El barco fantasma II), «La bitácora del capitán muerto» | 3 o 4 | 2 o 3 |
+| La huida con la plata (La Flota de la Plata IV) | 4 | 3 |
+| …tomada por los ingleses (La Isla del Tesoro II) | 3 | 2 |
+| …sacudida por un temblor (La Isla del Tesoro II), «La cueva se viene abajo» | 3 o 2 | 2 o 1 |
+| La isla de Aves (La carrera de van Hoorn II-a) | 3 | 2 |
+| Vivo, no muerto (El fugitivo II) | 3 | 2 |
+| El templo (El templo perdido IV), «Ante el altar» | 2 o 3 | 1 o 2 |
+
+| Versión | Victorias, mazos de inicio | Panamá | Derrotas por tiempo / por el Capitán | Victorias, muelles variados | Panamá | Derrotas por tiempo / por el Capitán |
+| --- | --- | --- | --- | --- | --- | --- |
+| Hoy | 47,3 % | 25 (2,5 %) | 37,1 % / 15,6 % | 49,3 % | 43 (2,2 %) | 35,2 % / 15,6 % |
+| **Las diez recompensas grandes, −1** | **35,5 % (−11,8)** | 28 (2,8 %) | 48,0 % / 16,5 % (+10,9 / +0,9) | **36,1 % (−13,2)** | 42 (2,1 %) | 47,9 % / 16,1 % (+12,7 / +0,5) |
+| *Más suave:* solo «Rumbo a mar abierto» sin Gesta | 42,9 % (−4,4) | 25 (2,5 %) | 41,4 % / 15,7 % (+4,3 / +0,1) | 43,0 % (−6,3) | 39 (2,0 %) | 41,8 % / 15,3 % (+6,6 / −0,3) |
+
+- **Cumple el objetivo con los dos muelles** y es la que más baja con muelles variados (el muelle ya no compensa: lo que falta es reputación). Casi solo suben las derrotas por tiempo; Panamá no cambia (2,1–2,8 %), muy por debajo del 10 %.
+- **Va con la norma de no regalar reputación:** cada punto cuesta más misiones (7,9 superadas por partida ganada, hoy 7,3). El 31 % de las victorias llega en el último turno (hoy, el 21 %).
+- **Toca cartas de misión y de recompensa** (los números de sus recuadros), ningún Peligro.
+- **«Rumbo a mar abierto» sin Gesta** (la línea «Más suave») es el cambio más pequeño de todo el informe: quita un punto que hoy es casi seguro y baja 4 o 6 puntos por sí solo. Se puede sumar a cualquiera de las tres maneras.
+- **Ejemplo de juego:** zarpas con 8 de reputación a «El camarote del capitán» y la superas. Hoy devuelves la bitácora («La bitácora del capitán muerto»: 4) y ganas con 12. Con la manera 3, la bitácora da 3: te quedas en 11 y necesitas otra misión, como «Los muelles de Maracaibo» (1), con los turnos que te queden.
+
+### Las tres, juntas (cada una medida sola)
+
+| Manera | Qué toca | Victorias, mazos de inicio | Victorias, muelles variados | Derrotas por tiempo / por el Capitán (muelles variados) | Panamá |
+| --- | --- | --- | --- | --- | --- |
+| Hoy | — | 47,3 % | 49,3 % | 35,2 % / 15,6 % | 2,2–2,5 % |
+| 1 · Reloj: 10 cartas de Escenario | Un número de la preparación | 35,6 % | 38,6 % | 46,9 % / 14,6 % (+11,7 / −1,0) | 1,4–1,8 % |
+| 2 · Peligros: 22 Pruebas de COM +1 y 15 Avances −1 | 37 encuentros de 29 cartas de Peligro | 37,7 % | 40,7 % | 40,5 % / 18,8 % (+5,3 / +3,2) | 1,4–1,5 % |
+| 3 · Recompensas: las diez de 3 o más, −1 | 10 capítulos y cartas de recompensa | 35,5 % | 36,1 % | 47,9 % / 16,1 % (+12,7 / +0,5) | 2,1–2,8 % |
+
+**Recomendación (sin aplicar: decide Albert):** si se endurece, **la manera 3**, porque es la que mejor encaja con «no se regala reputación», llega al objetivo con los dos muelles y no sube las derrotas por el Capitán. La manera 1 hace casi lo mismo con un solo número, pero acorta la partida en lugar de encarecer la reputación. La manera 2 es la que más cambia cómo se juega (el COM deja de ser la vía fácil), pero toca muchas cartas que Albert está revisando y es la única que sube las derrotas por el Capitán. Combinarlas no se ha medido: dos juntas bajarían seguramente por debajo del 35 %.
+
+### Pregunta para Albert (P134), con la opción por defecto aplicada
+
+- **P134 · ¿Se endurece el juego, y cómo?** **Por defecto, no se toca nada** (47,3 % con los mazos de inicio y 49,3 % con muelles variados). Opciones medidas: **1** el reloj (10 cartas de Escenario en la partida normal), **2** los Peligros concretos (22 Pruebas de COM +1 y 15 Avances −1), **3** las recompensas (las diez de 3 o más, −1), o **«Rumbo a mar abierto» sin Gesta**, sola o junto a otra. Si eliges una, la aplico en los datos, el reglamento y las pruebas, y mido la combinación si eliges más de una.
+
+Bloque para responder (cópialo y rellénalo):
+
+```
+P134 (dificultad): no se toca nada / 1 reloj / 2 Peligros / 3 recompensas / Rumbo a mar abierto sin Gesta / otra: …
+Si es la 2: ¿las 22 Pruebas de COM o las 50? ¿con los 15 Avances?
+Notas:
+```
