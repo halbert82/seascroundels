@@ -2280,7 +2280,7 @@ Cada zarpe gasta un turno. **Rep. por turno:** toda la reputación de los zarpes
 
 ### Ideas para más adelante (sin aplicar)
 
-- **«Modo difícil»: el reloj de 10 cartas de Escenario.** La partida normal con 10 cartas de Escenario en lugar de 11 (12 de reputación para ganar). Medido sobre lo de hoy (con P134): **24,6 % de victorias con los mazos de inicio y 26,3 % con muelles variados** (hoy, 35,5 % y 36,1 %); derrotas por tiempo 59,7 % y 58,8 %, por el Capitán 15,7 % y 14,9 %; Panamá 1,7 % y 1,4 %. Antes de P134 bajaba al 35,6 % y al 38,6 %. Sería una fila más de la tabla de dificultad para quien quiera un reto mayor, no un cambio de la partida normal. Orden: `MEDIR_DIFICULTAD=1 MEDIR_DIFICULTAD_MANERA=1 npx vitest run src/engine/medir-dificultad.informe.test.ts`.
+- **«Modo difícil»: el reloj de 10 cartas de Escenario.** La partida normal con 10 cartas de Escenario en lugar de 11 (12 de reputación para ganar). Medido sobre lo de hoy (con P134): **24,6 % de victorias con los mazos de inicio y 26,3 % con muelles variados** (hoy, 35,5 % y 36,1 %); derrotas por tiempo 59,7 % y 58,8 %, por el Capitán 15,7 % y 14,9 %; Panamá 1,7 % y 1,4 %. Antes de P134 bajaba al 35,6 % y al 38,6 %. Sería una fila más de la tabla de dificultad para quien quiera un reto mayor, no un cambio de la partida normal. Orden: `MEDIR_DIFICULTAD=1 MEDIR_DIFICULTAD_MANERA=1 npx vitest run src/engine/medir-dificultad.informe.test.ts`. *Desde P136, es una idea de Albert y no una propuesta pendiente: ver «P136 · Decisión de Albert».*
 - **La manera de los Peligros** (22 Pruebas de COM +1 y 15 Avances gratis −1) se estudiará cuando Albert termine de revisar sus textos.
 
 ### Pregunta para Albert (P135), con la opción por defecto aplicada (cerrada: ver «P135 · Decisión de Albert» justo debajo)
@@ -2367,7 +2367,7 @@ Mismas columnas que en P134. Las aventuras dan 0,99 → 0,96 por turno con los m
 - **P135 sigue haciendo falta con el jugador nuevo:** sin ella, El fugitivo da 1,00 y 0,93 por turno, y La Isla del Tesoro, 0,99 y 1,01, lo mismo o menos que una aventura. Con ella, 1,24 / 1,12 y 1,20 / 1,25.
 - **Las misiones iniciales suben** (0,63 por turno): el jugador nuevo ya no las elige cuando no le dan nada.
 
-### Pregunta para Albert (P136), con la opción por defecto aplicada
+### Pregunta para Albert (P136), con la opción por defecto aplicada (cerrada: ver «P136 · Decisión de Albert» justo debajo)
 
 Con el jugador automático corregido, **se gana el 43,1 % con los mazos de inicio y el 45,9 % con muelles variados**, por encima del 35–40 % que buscábamos con P134. **Por defecto, no se toca nada.** Dos maneras medidas sobre lo de hoy (P135 y el jugador nuevo, mismas semillas), sin tocar los Peligros:
 
@@ -2380,7 +2380,7 @@ Con el jugador automático corregido, **se gana el 43,1 % con los mazos de inici
 - **1, el reloj:** un turno menos para todo. *Ejemplo:* llegas al último turno con 9 de reputación y «La goleta del correo» disponible; con 11 cartas de Escenario aún te quedaría otro turno para una misión de 1, con 10 ya no. Es la idea del «modo difícil», aquí para la partida normal.
 - **2, 13 de reputación:** el mismo tiempo, pero hay que ganar un punto más. *Ejemplo:* el ejemplo del último turno del reglamento empezaría con 11 de reputación (la goleta da 2 y llegas a 13). Cambia la tabla de modos de juego del reglamento.
 - Las dos se miden con el jugador nuevo; Panamá sigue por debajo del 10 % en todas.
-- **Recomendación: 2.** Deja los dos muelles dentro del 35–40 % (35,2 % y 37,7 %) sin quitar tiempo para jugar las travesías largas; el reloj baja los mazos de inicio al 32,3 %. El reloj de 10 cartas sigue valiendo como «modo difícil».
+- **Recomendación (no aplicada: Albert no toca nada, ver «P136 · Decisión de Albert»): 2.** Deja los dos muelles dentro del 35–40 % (35,2 % y 37,7 %) sin quitar tiempo para jugar las travesías largas; el reloj baja los mazos de inicio al 32,3 %. El reloj de 10 cartas sigue valiendo como «modo difícil».
 
 Bloque para responder (cópialo y rellénalo):
 
@@ -2389,3 +2389,15 @@ P136 (victorias con el jugador corregido, 43–46 %): no se toca nada / 1 reloj 
 Notas:
 ```
 
+
+## P136 · Decisión de Albert: no se toca nada; las cifras generales las decide Albert jugando (5 de noviembre de 2026)
+
+- **P136 cerrada: no se toca nada.** La partida normal sigue con **11 cartas de Escenario** y **12 de reputación** para ganar. Albert ajustará esas cifras con su experiencia jugando, no con las mediciones del jugador automático. Hoy se gana el 43,1 % con los mazos de inicio y el 45,9 % con muelles variados (Panamá, 2,8 % y 2,1 %); el 35–40 % de P134 era un objetivo orientativo de las mediciones, no una regla.
+- **El «modo difícil» con 10 cartas de Escenario** queda como **idea de Albert**, no como propuesta pendiente. Sus medidas se quedan en «Informe de dificultad» y en «Pregunta para Albert (P136)», solo como información.
+- Sin cambios en los datos, el motor, el reglamento ni la web.
+
+### Norma general de Albert: las cifras generales de la partida
+
+Las cifras generales de la partida (la reputación para ganar, el número de cartas de Escenario y los modos corto, normal y largo) las decide Albert jugando. Las mediciones del jugador automático solo informan: no propongas cambiar esas cifras para corregir el equilibrio. Los ajustes de equilibrio que propongas tienen que ser de cartas concretas.
+
+*Ejemplo:* si una medición sale con demasiadas victorias, el informe lo dice y, si propone algo, es de cartas: subir 1 la dificultad de un Peligro que casi nunca se falla, o bajar 1 la reputación de una recompensa concreta (como P134). No propone pasar a 10 cartas de Escenario ni pedir 13 de reputación para ganar. Por eso la manera 1 del informe de dificultad (el reloj) y las dos opciones de P136 no se vuelven a proponer.
